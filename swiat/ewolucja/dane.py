@@ -204,6 +204,79 @@ def kulki(P, J, prz, LS=None):
     return w
 
 
+def kulki_v2(P, J, W2, LS):
+    """mapa2a: kule startowe przy legowiskach, las jak dotąd, kule łąki rozsiane po wszystkich strefach maski 1 (łąka, polana,
+    jezioro, wąwóz bramy, szlak) z dala od przeszkód, wody i głębi; wielkie kule na SKY NEST."""
+    import swiat_mapa2 as M2
+    los = random.Random(7)
+    w = []
+    G = ustawienia()["legowisko"]
+    for (dx, dz) in legowiska(G):
+        d = math.hypot(dx, dz)
+        ux, uz = -dx / d, -dz / d
+        for j in range(G.get("kulki_startowe", 0)):
+            odl = G["r"] + 2.5 + j * 2.2
+            bok = (j % 3 - 1) * 2.2
+            w.append([round(dx + ux * odl - uz * bok, 2), round(dz + uz * odl + ux * bok, 2), 1])
+    lx, lz = LS["srodek"]
+    for typ, ile in ((3, LS["wielkie"]), (2, LS["duze"])):
+        n = 0
+        while n < ile:
+            a, r = los.random() * 2 * math.pi, math.sqrt(los.random()) * (LS["r"] - 6)
+            x, z = round(lx + math.sin(a) * r, 2), round(lz + math.cos(a) * r, 2)
+            if math.hypot(x, z) > P["r"] + 4 and M2.wolny_punkt(W2, x, z, 2.5, 2):
+                w.append([x, z, typ])
+                n += 1
+    WY = W2["wyspa"]
+    # łąka: tyle kul co dotąd (gęstość startu bez zmian), potem nowe strefy: + ok. 30% (polana, jezioro, wąwóz, szlak)
+    for typ, ile in ((2, J["duze"]), (1, J["male"])):
+        n = 0
+        while n < ile:
+            a, r = los.random() * 2 * math.pi, math.sqrt(los.random()) * (P["r"] - 5)
+            x, z = round(math.sin(a) * r, 2), round(math.cos(a) * r, 2)
+            if M2.wolny_punkt(W2, x, z, 2.5, 1) and not M2.w_wodzie(W2, x, z) and math.hypot(x - WY["x"], z - WY["z"]) > WY["r_zew"] + 2:
+                w.append([x, z, typ])
+                n += 1
+    for typ, ile in ((2, round(J["duze"] * 0.3)), (1, round(J["male"] * 0.3))):
+        n = 0
+        while n < ile:
+            x, z = round(-200 + los.random() * 440, 2), round(-265 + los.random() * 420, 2)
+            if math.hypot(x, z) < P["r"] + 2 or (math.hypot(x - lx, z - lz) < LS["r"] + 2):
+                continue
+            if M2.wolny_punkt(W2, x, z, 2.5, 1) and not M2.w_wodzie(W2, x, z):
+                w.append([x, z, typ])
+                n += 1
+    for i in range(WY["kulek"]):
+        a = 2 * math.pi * i / WY["kulek"]
+        w.append([round(WY["x"] + math.sin(a) * WY["r_wew"] * 0.55, 2), round(WY["z"] + math.cos(a) * WY["r_wew"] * 0.55, 2), 3])
+    return w
+
+
+def punkty_botow(W2, formy):
+    """mapa2a: miejsca odrodzenia botów maski 1 rozsiane po strefach (łąka i nowe kieszenie, waga nowych × 2), z największym
+    promieniem, który się tam mieści (polana i tunel tylko dla małych)."""
+    import swiat_mapa2 as M2
+    los = random.Random(17)
+    rr = sorted({f["r"] for f in formy})
+    w = []
+    proby = 0
+    while len(w) < 160 and proby < 20000:
+        proby += 1
+        x, z = -200 + los.random() * 440, -265 + los.random() * 420
+        st = M2.strefa_punktu(W2["M"], x, z)
+        if st not in ("laka", "polana", "jezioro", "brama", "szlak_popiolu"):
+            continue
+        if st == "laka" and los.random() < 0.5:
+            continue  # nowe strefy gęściej niż łąka (waga × 2)
+        rm = 0
+        for r in rr:
+            if M2.wolny_punkt(W2, x, z, r, 1) and not M2.w_wodzie(W2, x, z):
+                rm = r
+        if rm > 0:
+            w.append([round(x, 1), round(z, 1), rm])
+    return w
+
+
 def wystroj(P):
     """Tylko scena: plamy trawy, drzewa za murem, kwiaty."""
     los = random.Random(5)
@@ -326,7 +399,15 @@ def dane():
     LS = {k: v for k, v in U["las"].items() if k != "opis"}
     prz = przeszkody(P, LS)
     SW = None
-    if zestaw == "blender" and U.get("swiat", {}).get("mapa"):
+    W2 = None
+    if zestaw == "blender" and U.get("swiat", {}).get("mapa") == 2:
+        # mapa2a: mapa v2 na płaskiej ziemi (swiat_mapa2.py) — obszar ze stref, przeszkody (koła i prostokąty), woda, bramy, kryjówki
+        import swiat_mapa2 as M2
+        W2 = M2.mapa({k: v for k, v in U["wyspa"].items() if k != "opis"}, legowiska(U["legowisko"]), U["swiat"].get("gestosc", 1.0),
+                     U["swiat"].get("teren_v2", False))
+        prz = W2["przeszkody"]
+        SW = {"stawy": []}
+    elif zestaw == "blender" and U.get("swiat", {}).get("mapa"):
         # świat z propozycji mapy: przeszkody = koła blokujących rekwizytów + stawy (swiat_mapa.py)
         import swiat_mapa as SM
         WY0 = {k: v for k, v in U["wyspa"].items() if k != "opis"}
@@ -361,7 +442,8 @@ def dane():
         # odczucie1: tabela dźwięków gry (0 = cisza), sklep (flaga i numery produktów)
         "dzwiekiGry": dict(U["dzwieki_gry"]["id"]),
         "sklep": {k: v for k, v in U["sklep"].items() if k != "opis"},
-        "pole": P, "przeszkody": prz, "przSiatka": siatka_przeszkod(prz), "kulkiPoz": kulki(P, J, prz, LS), "jedzenie": J, "formy": formy,
+        "pole": P, "przeszkody": prz, "przSiatka": siatka_przeszkod(prz), "kulkiPoz": kulki_v2(P, J, W2, LS) if W2 else kulki(P, J, prz, LS),
+        "jedzenie": J, "formy": formy,
         "las": {"nazwa": LS["nazwa"], "x": LS["srodek"][0], "z": LS["srodek"][1], "r": LS["r"], "od_formy": LS["od_formy"]}, "boss": B,
         "legowisko": {k: v for k, v in U["legowisko"].items() if k != "opis"}, "legowiska": legowiska(U["legowisko"]),
         "warianty": U["warianty"], "zapis": {k: v for k, v in U["zapis"].items() if k != "opis"},
@@ -370,7 +452,7 @@ def dane():
         "gryzienie": {k: v for k, v in U["gryzienie"].items() if k != "opis"},
         "walka": {k: v for k, v in U["walka"].items() if k != "opis"},
         "zdolnosci": {k: v for k, v in U["zdolnosci"].items() if k != "opis"},
-        "wyspa": {k: v for k, v in U["wyspa"].items() if k != "opis"},
+        "wyspa": W2["wyspa"] if W2 else {k: v for k, v in U["wyspa"].items() if k != "opis"},
         "ulepszenia": U["ulepszenia"],
         "smierc": {k: v for k, v in U["smierc"].items() if k != "opis"},
         "ewolucja": {k: v for k, v in U["ewolucja"].items() if k != "opis"},
@@ -381,8 +463,18 @@ def dane():
         "miejsceBC": U["miejsce_bc"],
         "zestaw": zestaw,
         "blender": BL,
-        "swiat": ({k: v for k, v in U["swiat"].items() if k not in ("opis", "mapa", "gestosc")} | {"stawy": SW["stawy"]}) if SW else None,
+        "swiat": ({k: v for k, v in U["swiat"].items() if k not in ("opis", "mapa", "gestosc", "mapa_opis", "owce_v2_dodatkowe")} | {"stawy": SW["stawy"]})
+        if SW else None,
     }
+    if W2:
+        D["swiat"]["owce"] = dict(D["swiat"]["owce"], stada=[list(p) for p in W2["owce"]] + U["swiat"].get("owce_v2_dodatkowe", []))
+        D["ranking"] = dict(D["ranking"], x=W2["ranking"][0], z=W2["ranking"][1])
+        nastroj = {sid: W2["strefy"][sid]["nastroj"] for sid in ("polana", "jezioro", "brama", "szlak_popiolu") if W2["strefy"][sid]["nastroj"]}
+        D["mapa2"] = {"obszar": W2["obszar"], "woda": W2["woda"], "suche": W2["suche"], "woda_x": W2["woda_x"], "glebia": W2["glebia"],
+                      "podesty": W2["podesty"], "bramy": W2["bramy"], "kryjowki": W2["kryjowki"], "sekrety": W2["sekrety"],
+                      "lamliwe": [{k: v for k, v in q.items() if k not in ("rid", "sk", "o")} for q in W2["lamliwe"]],
+                      "przenikalne": W2["przenikalne"], "nastroj": nastroj, "punktyBotow": punkty_botow(W2, formy),
+                      "sekret_r": 2.5, "ukrycie_bot_st": 8, "odkrycie_s": 1.5, "lamliwa_x": {"ogon": 2, "meteor": 2}, "rozbite": {}}
     return D
 
 

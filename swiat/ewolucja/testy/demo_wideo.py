@@ -13,6 +13,7 @@ W kadrze gracz próby, bez listy graczy i czatu. Okna Studio nie wysuwa (bez ste
 """
 import argparse
 import json
+import math
 import os
 import shutil
 import subprocess
@@ -685,6 +686,94 @@ def sceny_odczucie(p, f):
     p.ustaw("EW_TestZoom", "nil")
 
 
+def sceny_mapa2(p, f):
+    """mapa2a (ok. 25 s): rzeka i Most Startowy → DRAGON za duży na tunel („TOO BIG!”) → pisklę przechodzi pod wygaszonym dachem →
+    kryjówka w wysokiej trawie (HIDDEN) → WAR DRAGON rozbija skałę w wyłomie Szlaku Popiołu → pisklę znajduje skrzynię w paszczy czaszki."""
+    M2 = D["mapa2"]
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    PP.czekaj(lambda: p.serwer('"wydarzenia_zegar", false'), 30, 0.5)
+    p.przycisk("powitanie_zamknij")
+    p.serwer('"boty_cisza", 300')
+    p.serwer('"boty_stoj_wszystkie", 120')
+    p.serwer('"hp", nil, 9000')
+    p.serwer('"sekrety_zeruj"')
+    p.serwer('"lamliwe", "zeruj"')
+
+    def ster(kx, kz, czas):
+        p.ustaw("EW_TestSter", "Vector3.new(%f, %f, %f)" % (-kx, kz, czas))
+
+    # 1. rzeka i most: WHELP przechodzi po Moście Startowym nad nurtem
+    p.serwer('"forma_gracza", 2')
+    p.serwer('"przenies", %d, -22, -0.5' % byt)
+    p.ustaw("EW_TestZoom", "0.62")
+    time.sleep(1.2)
+    f.nagrywaj("most")
+    ster(-1, -0.1, 3.6)
+    time.sleep(3.8)
+    f.stop()
+    # 2. tunel Grzbietu Nory: DRAGON odbija się („TOO BIG!”), pisklę przechodzi pod wygaszonym dachem
+    a = math.radians(98)
+    ux, uz = math.sin(a), math.cos(a)
+    p.serwer('"forma_gracza", 5')
+    p.serwer('"przenies", %d, %f, %f' % (byt, 58 + ux * 18, 24 + uz * 18))
+    p.ustaw("EW_TestZoom", "0.75")
+    time.sleep(1.2)
+    f.nagrywaj("za_duzy")
+    ster(-ux, -uz, 2.6)
+    time.sleep(2.8)
+    f.stop()
+    p.serwer('"forma_gracza", 1')
+    p.serwer('"przenies", %d, %f, %f' % (byt, 58 + ux * 12, 24 + uz * 12))
+    p.ustaw("EW_TestZoom", "0.6")
+    time.sleep(1.2)
+    f.nagrywaj("tunel")
+    ster(-ux, -uz, 3.4)
+    time.sleep(3.6)
+    f.stop()
+    # 3. kryjówka: WHELP wchodzi w wysoką trawę (HIDDEN)
+    k = [k for k in M2["kryjowki"] if k["id"] == "K04"][0]
+    p.serwer('"forma_gracza", 2')
+    p.serwer('"przenies", %d, %f, %f' % (byt, k["x"] + 12, k["z"]))
+    p.ustaw("EW_TestZoom", "0.6")
+    time.sleep(1.2)
+    f.nagrywaj("kryjowka")
+    ster(-1, 0, 0.75)
+    time.sleep(3.2)
+    f.stop()
+    # 4. WAR DRAGON rozbija skałę w wyłomie Szlaku Popiołu (L06)
+    q = [q for q in M2["lamliwe"] if q["id"] == "L06"][0]
+    p.serwer('"forma_gracza", 6')
+    p.serwer('"przenies", %d, %f, %f' % (byt, q["x"] + 10, q["z"]))
+    p.serwer('"lamliwe", "hp", "L06", 55')
+    p.ustaw("EW_TestZoom", "0.7")
+    time.sleep(1.3)
+    f.nagrywaj("rozbicie")
+    for _ in range(8):
+        ster(-1, 0, 0.3)
+        p.przycisk("odnowa_zeruj")
+        p.przycisk("gryz")
+        time.sleep(0.5)
+        if (p.serwer('"lamliwe"') or {}).get("L06", {}).get("rozbita"):
+            break
+    time.sleep(1.4)
+    f.stop()
+    # 5. pisklę znajduje skrzynię w paszczy czaszki (S02)
+    s02 = [s for s in M2["sekrety"] if s["id"] == "S02"][0]
+    p.serwer('"forma_gracza", 1')
+    p.serwer('"przenies", %d, %f, %f' % (byt, s02["x"] - 4, s02["z"] - 9))
+    p.ustaw("EW_TestZoom", "0.6")
+    time.sleep(1.2)
+    f.nagrywaj("skrzynia")
+    dx, dz = 4, 9
+    d = math.hypot(dx, dz)
+    ster(dx / d, dz / d, 1.1)
+    time.sleep(3.2)
+    f.stop()
+    p.ustaw("EW_TestZoom", "nil")
+    p.serwer('"lamliwe", "zeruj"')
+
+
 def sklej(klipy, wyj, kat, pasy=False):
     gotowe = []
     vf = (r"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x1C162C,fps=30,format=yuv420p" if pasy
@@ -724,6 +813,7 @@ def main():
     ap.add_argument("--interfejs", action="store_true", help="interfejs z makiet (interfejs1)")
     ap.add_argument("--odrodzenie", action="store_true", help="odrodzenie, wydarzenia, jajo dnia (odrodzenie1)")
     ap.add_argument("--retencja", action="store_true", help="powitanie, zadania, pisklę z bliska, linie, ranking (retencja1)")
+    ap.add_argument("--mapa2", action="store_true", help="mapa v2: rzeka i most, tunel, kryjówka, rozbicie, skrzynia (mapa2a)")
     ap.add_argument("--odczucie", action="store_true", help="trafienia z bliska, ogień, kule z „pop”, połowa paska, ewolucja (odczucie1)")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)
@@ -741,11 +831,11 @@ def main():
             PP.czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
             p.luau(PP.BEZ_LISTY, "Client")
             time.sleep(1.0)
-            (sceny_odczucie if a.odczucie else sceny_retencja if a.retencja else sceny_odrodzenie if a.odrodzenie else sceny_interfejs if a.interfejs else sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
+            (sceny_mapa2 if a.mapa2 else sceny_odczucie if a.odczucie else sceny_retencja if a.retencja else sceny_odrodzenie if a.odrodzenie else sceny_interfejs if a.interfejs else sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
         finally:
             log("Stop:", PP.play(a.studio, False)[-40:])
             PP.czekaj(lambda: "Current Studio Mode: Edit" in p.call("get_studio_state")["text"], 40, 0.5)
-    sklej(f.klipy, wyj, kat, pasy=a.interfejs or a.odrodzenie or a.retencja or a.odczucie)
+    sklej(f.klipy, wyj, kat, pasy=a.interfejs or a.odrodzenie or a.retencja or a.odczucie or a.mapa2)
     pl = plansza(wyj)
     if not a.zostaw_klipy:
         shutil.rmtree(kat, ignore_errors=True)

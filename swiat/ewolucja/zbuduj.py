@@ -589,7 +589,7 @@ end
 local n = 0
 for _, e in P.inst do
 	local d = P.defs[e[1]]
-	local cf = CFrame.new(C + Vector3.new(e[2], 0, e[3])) * CFrame.Angles(0, math.rad(e[4]), 0)
+	local cf = CFrame.new(C + Vector3.new(e[2], e[8] or 0, e[3])) * CFrame.Angles(0, math.rad(e[4]), 0)
 	local sk = e[5]
 	local rodzic = folder(e[6])
 	if e[6] == "legowisko" or e[6] == "znak" or e[6] == "lawa" then
@@ -629,6 +629,120 @@ for _, e in P.inst do
 		p.Parent = rodzic
 		n += 1
 	end
+end
+-- mapa2a: bryły terenu [k (0 blok, 3 klin, 2 walec), px, py, pz, sx, sy, sz, o, kolor, materiał, przezr., strefa, flagi
+-- (1 przenikalny — dach, 2 woda, 4 lawa)]; walec: Size = (s.y, s.x, s.x), obrót 90° wokół Z
+local nt = 0
+for _, t in P.teren or {} do
+	local p
+	if t[1] == 3 then
+		p = Instance.new("WedgePart")
+	else
+		p = Instance.new("Part")
+		p.Shape = if t[1] == 2 then Enum.PartType.Cylinder else Enum.PartType.Block
+	end
+	p.Name = if t[13] % 2 == 1 then "Dach" elseif t[13] >= 4 then "Lawa" elseif t[13] >= 2 then "Woda" else "Teren"
+	p.Anchored, p.CanCollide, p.CanTouch, p.CanQuery = true, false, false, false
+	if t[1] == 2 then
+		p.Size = Vector3.new(t[6], t[5], t[5])
+		p.CFrame = CFrame.new(C + Vector3.new(t[2], t[3], t[4])) * CFrame.Angles(0, 0, math.rad(90))
+	else
+		p.Size = Vector3.new(t[5], t[6], t[7])
+		p.CFrame = CFrame.new(C + Vector3.new(t[2], t[3], t[4])) * CFrame.Angles(0, math.rad(t[8]), 0)
+	end
+	p.Color = Color3.fromHex(t[9])
+	local ok = pcall(function()
+		p.Material = Enum.Material[t[10]]
+	end)
+	if not ok then
+		p.Material = Enum.Material.SmoothPlastic
+	end
+	p.Transparency = t[11]
+	if t[13] >= 2 then
+		p.Reflectance = 0.15
+	end
+	p.CastShadow = t[13] < 2 and t[6] > 1
+	p.TopSurface, p.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+	if t[13] % 2 == 1 then
+		p:SetAttribute("Przenikalny", true)
+	end
+	p.Parent = folder(if t[12] == "sceneria" then "sceneria_teren" else "teren")
+	nt += 1
+end
+-- rzeczy do rozbicia: osobne modele z nazwą id (serwer chowa je po rozbiciu)
+for _, q in P.lamliwe or {} do
+	local d = P.defs[q.rid]
+	local m = Instance.new("Model")
+	m.Name = q.id
+	m:SetAttribute("Lamliwa", true)
+	m.Parent = folder("lamliwe")
+	local cf = CFrame.new(C + Vector3.new(q.x, 0, q.z)) * CFrame.Angles(0, math.rad(q.o), 0)
+	for _, c in d.czesci do
+		local ks = c[1]
+		local p
+		if ks == 3 then
+			p = Instance.new("WedgePart")
+		elseif ks == 4 then
+			p = Instance.new("CornerWedgePart")
+		else
+			p = Instance.new("Part")
+			p.Shape = if ks == 1 then Enum.PartType.Ball elseif ks == 2 then Enum.PartType.Cylinder else Enum.PartType.Block
+		end
+		p.Name = q.rid
+		p.Anchored, p.CanCollide, p.CanTouch, p.CanQuery = true, false, false, false
+		p.Size = Vector3.new(c[8] * q.sk, c[9] * q.sk, c[10] * q.sk)
+		p.CFrame = cf * CFrame.new(c[2] * q.sk, c[3] * q.sk, c[4] * q.sk) * CFrame.fromOrientation(c[5], c[6], c[7])
+		p.Color = Color3.fromHex(c[11])
+		local mat = d.materialy[c[12] + 1]
+		p.Material = Enum.Material[mat[1]]
+		p.Reflectance = mat[2]
+		p.TopSurface, p.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+		p.Parent = m
+		n += 1
+	end
+end
+-- tablice COMING SOON w przejściach do stref rzeźby (lico na południe — w stronę kamery)
+for _, tb in P.tablice or {} do
+	local slup = Instance.new("Part")
+	slup.Name = "TablicaSlup"
+	slup.Size = Vector3.new(0.9, 6.4, 0.9)
+	slup.CFrame = CFrame.new(C + Vector3.new(tb.x, 3.2, tb.z))
+	slup.Color = Color3.fromHex("6B4A2E")
+	slup.Material = Enum.Material.Wood
+	slup.Anchored, slup.CanCollide, slup.CanTouch, slup.CanQuery = true, false, false, false
+	slup.Parent = folder("tablice")
+	local deska = Instance.new("Part")
+	deska.Name = "Tablica"
+	deska.Size = Vector3.new(11, 4.2, 0.5)
+	deska.CFrame = CFrame.new(C + Vector3.new(tb.x, 6.2, tb.z - 0.6))
+	deska.Color = Color3.fromHex("8A5A32")
+	deska.Material = Enum.Material.WoodPlanks
+	deska.Anchored, deska.CanCollide, deska.CanTouch, deska.CanQuery = true, false, false, false
+	deska.Parent = folder("tablice")
+	local sg = Instance.new("SurfaceGui")
+	sg.Face = Enum.NormalId.Front
+	sg.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	sg.PixelsPerStud = 40
+	sg.LightInfluence = 0.2
+	sg.Parent = deska
+	local function linia(tekst, y0, h, kolor)
+		local l = Instance.new("TextLabel")
+		l.BackgroundTransparency = 1
+		l.Size = UDim2.new(0.92, 0, h, 0)
+		l.Position = UDim2.new(0.04, 0, y0, 0)
+		l.Text = tekst
+		l.TextScaled = true
+		l.Font = Enum.Font.FredokaOne
+		l.TextColor3 = kolor
+		local st = Instance.new("UIStroke")
+		st.Thickness = 3
+		st.Color = Color3.fromHex("2A1A10")
+		st.Parent = l
+		l.Parent = sg
+	end
+	linia(tb.tekst, 0.08, 0.5, Color3.fromHex("FFD24A"))
+	linia(tb.pod, 0.6, 0.3, Color3.fromHex("FFF4E0"))
+	nt += 2
 end
 -- płaty ziemi: [x, z, promień, kolor, wysokość, świeci]
 local ziemia = folder("ziemia")
@@ -679,7 +793,7 @@ for nazwa, f in foldery do
 	end
 	table.insert(liczby, nazwa .. " " .. c)
 end
-return string.format("rekwizyty: %d części, płaty i woda: %d; %s", n, np, table.concat(liczby, ", "))
+return string.format("rekwizyty: %d części, płaty i woda: %d, teren: %d; %s", n, np, nt, table.concat(liczby, ", "))
 '''
 
 # sylwetki mieszkańców lasu na tablicy (po budowie rigów: czarne, nieruchome kopie wzorców)
@@ -882,6 +996,15 @@ def paczka_swiata(D):
     """Instancje rekwizytów, płaty ziemi i stawy z mapy (swiat_mapa.py) + bryły rekwizytów dla kroku SWIAT."""
     import swiat_mapa as SM
     U = DN.ustawienia()
+    if U["swiat"].get("mapa") == 2:
+        # mapa2a: mapa v2 (swiat_mapa2.py) — rekwizyty z y, bryły terenu, rzeczy do rozbicia (modele z id), tablice COMING SOON
+        import swiat_mapa2 as M2
+        W2 = M2.mapa({k: v for k, v in U["wyspa"].items() if k != "opis"}, D["legowiska"], U["swiat"].get("gestosc", 1.0),
+                     U["swiat"].get("teren_v2", False))
+        lam = [{"id": q["id"], "rid": q["rid"], "x": q["x"], "z": q["z"], "o": q["o"], "sk": q["sk"]} for q in W2["lamliwe"]]
+        ids = sorted({i[0] for i in W2["instancje"]} | {q["rid"] for q in lam})
+        return {"C": D["pole"]["srodek"], "defs": M2.definicje(ids), "inst": W2["instancje"], "platy": W2["platy"], "stawy": [],
+                "dekoracja": sorted(SM.DEKORACJA), "teren": W2["teren"], "lamliwe": lam, "tablice": W2["tablice"]}
     W = {k: v for k, v in U["wyspa"].items() if k != "opis"}
     M = SM.mapa(W, D["legowiska"], D["pole"]["r"], {"x": D["las"]["x"], "z": D["las"]["z"], "r": D["las"]["r"]}, U["swiat"].get("gestosc", 1.0))
     ids = sorted({i[0] for i in M["instancje"]})

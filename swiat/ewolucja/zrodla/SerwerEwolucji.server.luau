@@ -197,6 +197,7 @@ local function atrybuty(plr: Player, g: Gracz)
 	ustawAtr(plr, g, "EW_Przepustki", table.concat(pr, ","))
 	ustawAtr(plr, g, "EW_VIP", (b.przepustki or {}).vip == true)
 	ustawAtr(plr, g, "EW_Sklep", L.sklepWidoczny(D))
+	ustawAtr(plr, g, "EW_Sekrety", if b.sekrety then table.concat(b.sekrety.lista, ",") else "")
 	ustawAtr(plr, g, "EW_Boost", math.ceil(b.boostS or 0))
 	if b.zadania then
 		local zl = {}
@@ -600,6 +601,13 @@ local function poZdarzeniu(z)
 				Enum.AnalyticsEconomyTransactionType.Gameplay.Name, "quest_" .. pole(z.zad))
 		elseif z.t == "kulka" then
 			onboarding(plr, g, 2, "FirstOrb")
+		elseif z.t == "sekret" then
+			analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Source, "Gold", z.zloto, math.floor(g.byt.zloto),
+				Enum.AnalyticsEconomyTransactionType.Gameplay.Name, "secret_" .. pole(z.sid))
+			analityka("LogCustomEvent", plr, "SecretFound", 1, { [Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = "Secret - " .. pole(z.sid) })
+		elseif z.t == "lamliwa_rozbita" then
+			analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Source, "Gold", z.zloto, math.floor(g.byt.zloto),
+				Enum.AnalyticsEconomyTransactionType.Gameplay.Name, "smash_" .. pole(z.l))
 		elseif z.t == "zebrano" then
 			g.miary.zb = (g.miary.zb or 0) + 1
 			analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Source, "Gold", z.ile, math.floor(g.byt.zloto),
@@ -649,6 +657,48 @@ local function poZdarzeniu(z)
 			plr:SetAttribute("EW_Miary", miaryJSON(g))
 		elseif z.t == "olbrzym_obalony" then
 			table.insert(doWyslania, { t = "ogloszenie", tekst = string.format(D.ui.ogl_obalony, g.nazwa) })
+		end
+	end
+end
+
+------------------------------------------------------------------ mapa2a: rzeczy do rozbicia w scenie
+local rozbiteSyg = nil
+local lamCzesci = {}
+local function synchronizujLamliwe()
+	local M2 = D.mapa2
+	if not M2 then
+		return
+	end
+	local ids = {}
+	for _, q in M2.lamliwe do
+		if M2.rozbite[q.id] then
+			table.insert(ids, q.id)
+		end
+	end
+	local syg = table.concat(ids, ",")
+	if syg == rozbiteSyg then
+		return
+	end
+	rozbiteSyg = syg
+	kontener:SetAttribute("Rozbite", syg)
+	local sw = kontener:FindFirstChild("Scena") and kontener.Scena:FindFirstChild("Swiat")
+	local fl = sw and sw:FindFirstChild("lamliwe")
+	for _, q in M2.lamliwe do
+		local m = fl and fl:FindFirstChild(q.id)
+		if m then
+			if not lamCzesci[q.id] then
+				local lista = {}
+				for _, d in m:GetDescendants() do
+					if d:IsA("BasePart") then
+						table.insert(lista, { p = d, t = d.Transparency })
+					end
+				end
+				lamCzesci[q.id] = lista
+			end
+			local roz = M2.rozbite[q.id] ~= nil
+			for _, e in lamCzesci[q.id] do
+				e.p.Transparency = if roz then 1 else e.t
+			end
 		end
 	end
 end
@@ -708,6 +758,7 @@ RunService.Heartbeat:Connect(function(dt: number)
 		kontener:SetAttribute("WydDeszczDo", if E.deszczDo then tn + (E.deszczDo - S.czas) else 0)
 		kontener:SetAttribute("WydRampNast", if E.rampNast < math.huge then tn + (E.rampNast - S.czas) else 0)
 		kontener:SetAttribute("WydRampDo", if E.rampDo then tn + (E.rampDo - S.czas) else 0)
+		synchronizujLamliwe()
 		for plr, g in gracze do
 			atrybuty(plr, g)
 			for _, m in g.miary.po_smierci do
@@ -979,6 +1030,39 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			end
 		end
 		return true
+	elseif polecenie == "lamliwe" then
+		-- próby: stan rzeczy do rozbicia { id = { rozbita, hp } }; a = "zeruj" przywraca wszystkie
+		local w = {}
+		if a == "hp" and D.mapa2 then
+			S.lamHp = S.lamHp or {}
+			S.lamHp[b] = c -- próby: życie wybranej rzeczy (krótka próba rozbicia)
+		end
+		for _, q in (D.mapa2 and D.mapa2.lamliwe) or {} do
+			if a == "zeruj" then
+				D.mapa2.rozbite[q.id] = nil
+				if S.lamHp then
+					S.lamHp[q.id] = nil
+				end
+			end
+			w[q.id] = { rozbita = D.mapa2.rozbite[q.id] ~= nil, hp = (S.lamHp and S.lamHp[q.id]) or q.hp }
+		end
+		synchronizujLamliwe()
+		return w
+	elseif polecenie == "lamliwa_odrost" then
+		-- próby: odrost za a s (zamiast odrost_s)
+		for _, q in (D.mapa2 and D.mapa2.lamliwe) or {} do
+			if D.mapa2.rozbite[q.id] then
+				D.mapa2.rozbite[q.id] = S.czas + (a or 0)
+			end
+		end
+		return true
+	elseif polecenie == "sekrety_zeruj" then
+		if byt then
+			byt.sekrety = nil
+		end
+		return true
+	elseif polecenie == "ukryty" then
+		return byt ~= nil and L.ukryty(S, byt)
 	elseif polecenie == "boty_stoj_wszystkie" then
 		-- próby pomiaru stóp: wszystkie boty stoją i nie gryzą przez a s (bez potrąceń na torze pomiaru)
 		for _, e in S.byty do

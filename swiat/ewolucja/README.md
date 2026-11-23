@@ -408,6 +408,44 @@ testy offline), serwer i klient tylko wołają.
   (nowe T9 klatka w walce z bliska: 16,7 ms; T8 otwiera powitanie przed pomiarem); zrzuty `47_trafienie`,
   `48_polowa`; film `%TEMP%\ewolucja_demo\ewolucja_odczucie.mp4` (21 s, `demo_wideo.py --odczucie`).
 
+## Mapa v2 na płaskiej ziemi (mapa2a, 23.11.2026)
+- **Dane**: `modele/dane/mapa_v2.json` i 26 nowych `rekwizyt_*_rig.json` skopiowane z `dane_nastepne/` (zgoda koordynatora);
+  `ustawienia.json → swiat.mapa = 2` (1/true = dawna mapa swiat1), `teren_v2 = false` (etap B — wysokość ziemi — wyłączony).
+  Kod mapy: `swiat_mapa2.py` (instancje, bryły terenu, obszar ze stref, przeszkody koła + prostokąty, woda, głębia, bramy,
+  kryjówki, rzeczy do rozbicia, sekrety, tablice); `dane.py` → `D.mapa2`; `zbuduj.py` buduje teren, modele rzeczy do
+  rozbicia (`Swiat/lamliwe/<id>`) i tablice.
+- **Chodzi się** po łące (rzeka, 3 mosty, 2 brody, czaszka z paszczą, Grzbiet Nory z tunelem, 4 linie latarni, kępy
+  wysokiej trawy), Ukrytej Polanie (niski łuk), DEEP WOODS (grota Wzgórza Mchu, barykada, zakątek), Lily Lake (głębia
+  tylko przez bród na wysepkę), wąwozie Sealed Gate i Szlaku Popiołu (za skałą L06). Obszar gry = suma kształtów stref
+  (koło, prostokąt, pas — pas kurczony tylko w poprzek); maska 1 (łąka i kieszenie) i 2 (las) jak dotąd.
+- **Płaska ziemia (A)**: pagóry łąki (Kwietny Pagór, Bazaltowy Stół) spłaszczone — ich rekwizyty stoją na ziemi; most
+  i wysepka podnoszą smoka tylko w obrazie (`L.podestY`, klient); ruch, boty, kamera i kule bez wysokości.
+- **Strefy rzeźby** (Windy Highlands, Wind Canyon, Waterfall Basin, Lava Caldera): stoją jako sceneria za granicą
+  obszaru gry; w przejściach głazy i tablica **COMING SOON** (nazwa strefy). Runy, prądy wznoszące, gniazdo i skrzynie
+  w tych strefach wyłączone (etap B).
+- **SKY NEST** zostaje na łące, ale rzeka v2 płynie przez dawne miejsce (−36, −42) — wyspa przesunięta na najbliższe wolne
+  miejsce (−66, −54) (`swiat_mapa2.WYSPA_A`, wyszukiwanie `szukaj_wyspy`); rekwizyty z wyspy kaldery (bazalt, ołtarz) na niej.
+- **Zasady**: woda × 0,7 (gracze w przewidywaniu klienta, boty na serwerze; mosty i brody rzeki szybkie); bramy rozmiaru
+  B01 czaszka, B02 tunel, B03 polana (r ≤ 3,0), B05 grota w lesie (r ≤ 5,2) — także boty, u gracza „TOO BIG!”;
+  kryjówki (20: trawa r ≤ 5,2, paproć r ≤ 6,8) — pigułka HIDDEN, boty dalej niż 8 st. gubią cel, BITE/zdolność odkrywa na
+  1,5 s (nazw nad smokami gra nie ma, więc nie ma czego chować); rzeczy do rozbicia L03 (kłoda w lesie), L04 (zakątek),
+  L06 (wyłom do Szlaku Popiołu — prostokąt na całą szerokość) od stadium 6: HP 420, odrost 180 s, 60 złota; BITE ×1,
+  TAIL i METEOR ×2, ROAR ×1; mniejsi: „STAGE 6 TO SMASH”; sekrety dnia S01–S04, S07, S08, S11, S13 (złoto raz na
+  gracza na dzień UTC, błysk nad nieznalezioną skrzynią); dachy tunelu i groty oraz czaszka wygaszane nad własnym smokiem;
+  nastrój stref (polana, jezioro, brama, szlak) płynnie jak las.
+- **Zapis w wersji 3**: pole `sekrety = {dzien, lista}` (tylko znane id); migracja z 1–2 = nic nie znalezione.
+- **Boty i owce**: 160 miejsc odrodzenia botów maski 1 rozsianych po strefach (nowe × 2, polana i tunel tylko dla małych),
+  boty spacerują wokół swojego miejsca; owce: 4 stada z `punkty_gry` + Lily Lake i wąwóz; kule łąki jak dotąd + 30% w
+  nowych strefach; ranking na (22, −58).
+- **Części sceny**: 5639 (było 4084): rekwizyty 4757 (łąka 1430, las 536, legowiska 516, sceneria rzeźby 725 +
+  teren 180, obramowanie 944), teren stref chodzonych 105, woda i płaty 76. Telefon A06 i iPad: klatka 16,6–16,7 ms
+  (granica 60 kl./s emulacji Studio), w walce z bliska 16,7 ms; cięcia obramowania i drobnej trawy niepotrzebne.
+- Wyniki: testy offline 45 (44 OK + 1 pominięty; nowe `test_44` bramy, głębia, woda, strefy; `test_45` kryjówka,
+  rozbicie L06, sekret dnia i zapis v3); Play P01–P62 (63/63; nowe P57 rzeka i most, P58 tunel, P59 kryjówka, P60
+  rozbicie, P61 sekret, P62 nastrój strefy; P33 liczy prostokąty); telefon i iPad 10/10; zrzuty `49_most`–`54_brama`;
+  film `%TEMP%\ewolucja_demo\ewolucja_mapa2.mp4` (`demo_wideo.py --mapa2`). `tempo.py` nie zna mapy v2 (dalej łąka
+  i las z kół) — tempo po mapie v2 niepoliczone.
+
 ## Pomiar prób z graczami (D-128, 22.11.2026)
 - **AnalyticsService** (tylko serwer opublikowanej gry; w Studio wywołania pomijamy):
   - lejek startu: Spawned → FirstOrb → FirstEvolve → HoardCollected → FirstUpgrade;

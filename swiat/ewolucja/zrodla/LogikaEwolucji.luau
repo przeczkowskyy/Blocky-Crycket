@@ -325,9 +325,182 @@ function L.wLesie(D, x: number, z: number): boolean
 	return dlug(x - D.las.x, z - D.las.z) < D.las.r and dlug(x, z) > D.pole.r - 2
 end
 
+------------------------------------------------------------------ mapa2a: mapa v2 na płaskiej ziemi (swiat_mapa2.py)
+-- obrys: koło {k = "k", x, z, r} albo prostokąt {k = "p" | "pas", x, z, o, hx, hz}; lokalne z = dx·sin o + dz·cos o
+local function lokXZ(dx: number, dz: number, o: number): (number, number)
+	local a = math.rad(o)
+	local c, s = math.cos(a), math.sin(a)
+	return dx * c - dz * s, dx * s + dz * c
+end
+local function swXZ(lx: number, lz: number, o: number): (number, number)
+	local a = math.rad(o)
+	local c, s = math.cos(a), math.sin(a)
+	return lx * c + lz * s, -lx * s + lz * c
+end
+L.lokXZ = lokXZ
+
+function L.wObrysie(f, x: number, z: number, m: number?): boolean
+	local mm = m or 0
+	if f.k == "k" then
+		return dlug(x - f.x, z - f.z) <= f.r + mm
+	end
+	local lx, lz = lokXZ(x - f.x, z - f.z, f.o)
+	return math.abs(lx) <= f.hx + mm and math.abs(lz) <= f.hz + mm
+end
+
+-- wypchnięcie z prostokąta powiększonego o m — wzdłuż osi najmniejszego zagłębienia
+local function wypchnijProst(f, x: number, z: number, m: number): (number, number)
+	local lx, lz = lokXZ(x - f.x, z - f.z, f.o)
+	local px, pz = f.hx + m - math.abs(lx), f.hz + m - math.abs(lz)
+	if px <= 0 or pz <= 0 then
+		return x, z
+	end
+	if px < pz then
+		lx = (if lx >= 0 then 1 else -1) * (f.hx + m)
+	else
+		lz = (if lz >= 0 then 1 else -1) * (f.hz + m)
+	end
+	local dx, dz = swXZ(lx, lz, f.o)
+	return f.x + dx, f.z + dz
+end
+
+local function wypchnijKolo(cx: number, cz: number, rr: number, x: number, z: number): (number, number)
+	local d = dlug(x - cx, z - cz)
+	if d < rr and d > 0.01 then
+		return cx + (x - cx) / d * rr, cz + (z - cz) / d * rr
+	end
+	return x, z
+end
+
+-- obszar gry: kształt pomniejszony o 0,6 r (pas — tylko w poprzek, żeby przejścia łączyły się ze strefami)
+local function wObszarze(o, x: number, z: number, r: number): boolean
+	if o.k == "k" then
+		return dlug(x - o.x, z - o.z) <= o.r - r * 0.6
+	end
+	local lx, lz = lokXZ(x - o.x, z - o.z, o.o)
+	local hz = if o.k == "pas" then o.hz else o.hz - r * 0.6
+	return math.abs(lx) <= o.hx - r * 0.6 and math.abs(lz) <= hz
+end
+
+local function rzutNaObszar(o, x: number, z: number, r: number): (number, number, number)
+	if o.k == "k" then
+		local R = o.r - r * 0.6
+		if R <= 0 then
+			return x, z, math.huge
+		end
+		local d = dlug(x - o.x, z - o.z)
+		if d <= R or d < 0.01 then
+			return x, z, 0
+		end
+		return o.x + (x - o.x) / d * R, o.z + (z - o.z) / d * R, d - R
+	end
+	local hx = o.hx - r * 0.6
+	local hz = if o.k == "pas" then o.hz else o.hz - r * 0.6
+	if hx <= 0 or hz <= 0 then
+		return x, z, math.huge
+	end
+	local lx, lz = lokXZ(x - o.x, z - o.z, o.o)
+	local cx, cz = math.clamp(lx, -hx, hx), math.clamp(lz, -hz, hz)
+	local dx, dz = swXZ(cx, cz, o.o)
+	return o.x + dx, o.z + dz, dlug(lx - cx, lz - cz)
+end
+
+local function maskaPasuje(m: number, o): boolean
+	return (m ~= 2 and o.maska == 1) or (m >= 2 and o.maska == 2)
+end
+
+-- głębia (jezioro): środek smoka nie wejdzie w głęboką wodę poza brodem i wysepką — najbliższe dozwolone miejsce
+local function zGlebi(g, x: number, z: number, r: number): (number, number)
+	local G = g.obrys
+	local R = G.r - r * 0.3
+	local d = dlug(x - G.x, z - G.z)
+	if d >= R then
+		return x, z
+	end
+	for _, f in g.wolne do
+		if L.wObrysie(f, x, z) then
+			return x, z
+		end
+	end
+	local dd0 = math.max(0.01, d)
+	local bx, bz, bd = G.x + (x - G.x) / dd0 * (R + 0.01), G.z + (z - G.z) / dd0 * (R + 0.01), R - d
+	for _, f in g.wolne do
+		local px, pz
+		if f.k == "k" then
+			local df = math.max(0.01, dlug(x - f.x, z - f.z))
+			px, pz = f.x + (x - f.x) / df * f.r * 0.99, f.z + (z - f.z) / df * f.r * 0.99
+		else
+			local lx, lz = lokXZ(x - f.x, z - f.z, f.o)
+			local dx, dz = swXZ(math.clamp(lx, -f.hx * 0.99, f.hx * 0.99), math.clamp(lz, -f.hz * 0.99, f.hz * 0.99), f.o)
+			px, pz = f.x + dx, f.z + dz
+		end
+		local dd = dlug(px - x, pz - z)
+		if dd < bd then
+			bx, bz, bd = px, pz, dd
+		end
+	end
+	return bx, bz
+end
+
+-- prędkość w płytkiej wodzie (rzeka, bród jeziora) × woda_x; mosty i brody rzeki szybkie
+function L.wodaX(D, x: number, z: number): number
+	local M2 = D.mapa2
+	if not M2 then
+		return 1
+	end
+	for _, f in M2.suche do
+		if L.wObrysie(f, x, z) then
+			return 1
+		end
+	end
+	for _, f in M2.woda do
+		if L.wObrysie(f, x, z) then
+			return M2.woda_x
+		end
+	end
+	return 1
+end
+
+-- wysokość podestu pod punktem (most, wysepka) — tylko obraz u klienta (etap A: ruch płaski)
+function L.podestY(D, x: number, z: number): number
+	local M2 = D.mapa2
+	local y = 0
+	if M2 then
+		for _, f in M2.podesty do
+			if f.y > y and L.wObrysie(f, x, z) then
+				y = f.y
+			end
+		end
+	end
+	return y
+end
+
 -- ograniczenia ruchu: suma dozwolonych kół i przeszkody (wspólne dla serwera i przewidywania u klienta)
 function L.ogranicz(D, x: number, z: number, r: number, maska: number?): (number, number)
 	local m = maska or 1
+	local M2 = D.mapa2
+	if M2 then
+		local ok = false
+		for _, o in M2.obszar do
+			if maskaPasuje(m, o) and wObszarze(o, x, z, r) then
+				ok = true
+				break
+			end
+		end
+		if not ok then
+			local bx, bz, bd = x, z, math.huge
+			for _, o in M2.obszar do
+				if maskaPasuje(m, o) then
+					local px, pz, d = rzutNaObszar(o, x, z, r)
+					if d < bd then
+						bx, bz, bd = px, pz, d
+					end
+				end
+			end
+			x, z = bx, bz
+		end
+		return L.przeszkodyV2(D, x, z, r)
+	end
 	local m1 = D.pole.r - r * 0.6
 	local m2 = D.las.r - r * 0.6
 	local d1 = dlug(x, z)
@@ -354,11 +527,15 @@ function L.ogranicz(D, x: number, z: number, r: number, maska: number?): (number
 	if not G or lista then
 		for _, i in lista or D.przeszkody do
 			local s = if lista then D.przeszkody[i] else i
-			local ds = dlug(x - s.x, z - s.z)
-			local min = s.r + r * 0.7
-			if ds < min and ds > 0.01 then
-				x = s.x + (x - s.x) / ds * min
-				z = s.z + (z - s.z) / ds * min
+			if s.k == "p" then
+				x, z = wypchnijProst(s, x, z, r * 0.7)
+			else
+				local ds = dlug(x - s.x, z - s.z)
+				local min = s.r + r * 0.7
+				if ds < min and ds > 0.01 then
+					x = s.x + (x - s.x) / ds * min
+					z = s.z + (z - s.z) / ds * min
+				end
 			end
 		end
 	end
@@ -372,6 +549,153 @@ function L.ogranicz(D, x: number, z: number, r: number, maska: number?): (number
 		end
 	end
 	return x, z
+end
+
+-- mapa v2: przeszkody (siatka), rzeczy do rozbicia (dopóki stoją), bramy rozmiaru (dla większych), głębia, fosa SKY NEST
+function L.przeszkodyV2(D, x: number, z: number, r: number): (number, number)
+	local M2 = D.mapa2
+	local G = D.przSiatka
+	local lista = G and G.komorki[tostring((math.floor(x / G.krok) + 100) * 1000 + (math.floor(z / G.krok) + 100))]
+	for _, i in lista or {} do
+		local s = D.przeszkody[i]
+		if s.k == "p" then
+			x, z = wypchnijProst(s, x, z, r * 0.7)
+		else
+			x, z = wypchnijKolo(s.x, s.z, s.r + r * 0.7, x, z)
+		end
+	end
+	for _, q in M2.lamliwe do
+		if not M2.rozbite[q.id] and dlug(x - q.x, z - q.z) < q.r + r + 14 then
+			for _, c in q.kola do
+				x, z = wypchnijKolo(c[1], c[2], c[3] + r * 0.7, x, z)
+			end
+			for _, f in q.prost do
+				x, z = wypchnijProst(f, x, z, r * 0.7)
+			end
+		end
+	end
+	for _, b in M2.bramy do
+		if r > b.r_maks and dlug(x - b.x, z - b.z) < b.hx + b.hz + r + 2 then
+			x, z = wypchnijProst(b, x, z, r * 0.7)
+		end
+	end
+	for _, g in M2.glebia do
+		x, z = zGlebi(g, x, z, r)
+	end
+	local WY = D.wyspa
+	if WY then
+		local dw = dlug(x - WY.x, z - WY.z)
+		local wew, zew = math.max(0.5, WY.r_wew - r * 0.6), WY.r_zew + r * 0.6
+		if dw > wew and dw < zew and dw > 0.01 then
+			local cel = if dw - wew < zew - dw then wew else zew
+			x, z = WY.x + (x - WY.x) / dw * cel, WY.z + (z - WY.z) / dw * cel
+		end
+	end
+	return x, z
+end
+
+-- kryjówki (mapa v2): smok mieszczący się w kępie (r ≤ r_maks), nie odkryty atakiem — boty dalej niż 8 st. go gubią
+function L.ukryty(S, q): boolean
+	local M2 = S.D.mapa2
+	if not M2 or q.boss or (q.odkrytyDo or 0) > S.czas then
+		return false
+	end
+	if q.ukrytyT == S.czas then
+		return q.ukrytyW
+	end
+	local r = L.promien(S.D, q.forma)
+	local w = false
+	for _, k in M2.kryjowki do
+		if r <= k.r_maks and dlug(q.x - k.x, q.z - k.z) <= k.r then
+			w = true
+			break
+		end
+	end
+	q.ukrytyT, q.ukrytyW = S.czas, w
+	return w
+end
+
+-- rzeczy do rozbicia (mapa v2): od stadium q.od; BITE, TAIL ×2, METEOR ×2, ROAR; zero → rozsypka, złoto, odrost po odrost_s
+function L.uderzLamliwe(S, b, zas: number, ile: number, jak: string, zd): boolean
+	local D = S.D
+	local M2 = D.mapa2
+	if not M2 or b.slot == 0 then
+		return false
+	end
+	local trafil = false
+	for _, q in M2.lamliwe do
+		if not M2.rozbite[q.id] and dlug(b.x - q.x, b.z - q.z) < zas + q.r then
+			trafil = true
+			if b.forma < q.od then
+				if (b.lamPodpDo or -1) < S.czas then
+					b.lamPodpDo = S.czas + 2
+					table.insert(zd, { t = "lamliwa_mala", id = b.id, s = b.slot, l = q.id, od = q.od, x = q.x, z = q.z })
+				end
+			else
+				S.lamHp = S.lamHp or {}
+				local rana = math.max(1, math.floor(ile * (M2.lamliwa_x[jak] or 1) + 0.5))
+				local hp = (S.lamHp[q.id] or q.hp) - rana
+				if hp <= 0 then
+					M2.rozbite[q.id] = S.czas + q.odrost_s
+					S.lamHp[q.id] = nil
+					b.zloto += q.zloto
+					table.insert(zd, { t = "lamliwa_rozbita", id = b.id, s = b.slot, l = q.id, zloto = q.zloto, x = q.x, z = q.z, ile = rana })
+				else
+					S.lamHp[q.id] = hp
+					table.insert(zd, { t = "lamliwa_rana", id = b.id, s = b.slot, l = q.id, ile = rana, hp = hp / q.hp, x = q.x, z = q.z })
+				end
+			end
+		end
+	end
+	return trafil
+end
+
+-- odrost rzeczy do rozbicia (czas symulacji); smok w środku zostaje wypchnięty przy następnym ruchu
+function L.krokLamliwych(S, zd)
+	local M2 = S.D.mapa2
+	if not M2 then
+		return
+	end
+	for _, q in M2.lamliwe do
+		local do_ = M2.rozbite[q.id]
+		if type(do_) == "number" and S.czas >= do_ then
+			M2.rozbite[q.id] = nil
+			table.insert(zd, { t = "lamliwa_odrost", l = q.id, x = q.x, z = q.z })
+		end
+	end
+end
+
+-- sekrety dnia (mapa v2): dotknięcie = złoto raz na gracza na dzień UTC
+function L.krokSekretow(S, b, zd)
+	local D = S.D
+	local M2 = D.mapa2
+	if not (M2 and S.zegar) or b.martwyDo ~= nil then
+		return
+	end
+	local dz = L.dzienUTC(S.zegar)
+	if not b.sekrety or b.sekrety.dzien ~= dz then
+		b.sekrety = { dzien = dz, lista = {} }
+	end
+	local r = L.promien(D, b.forma) + M2.sekret_r
+	for _, s in M2.sekrety do
+		if dlug(b.x - s.x, b.z - s.z) < r then
+			local byl = false
+			for _, id in b.sekrety.lista do
+				if id == s.id then
+					byl = true
+				end
+			end
+			if not byl then
+				table.insert(b.sekrety.lista, s.id)
+				b.zloto += s.zloto
+				b.sekretPodpDo = S.czas + 8 -- bez „już znalezione” zaraz po znalezieniu
+				table.insert(zd, { t = "sekret", id = b.id, s = b.slot, sid = s.id, zloto = s.zloto, x = s.x, z = s.z })
+			elseif (b.sekretPodpDo or -1) < S.czas then
+				b.sekretPodpDo = S.czas + 8
+				table.insert(zd, { t = "sekret_byl", id = b.id, s = b.slot, sid = s.id })
+			end
+		end
+	end
 end
 
 -- czy punkt jest na wyspie (SKY NEST)
@@ -394,6 +718,22 @@ function L.bezpieczneMiejsce(S, forma: number, gracz: boolean, strefa: number?, 
 			local i = 1 + math.floor(S.los() * #D.kulkiPoz)
 			local k = D.kulkiPoz[i]
 			x, z = k[1] * 0.97 + 3, k[2] * 0.97 - 3
+		elseif not gracz and strefa ~= 2 and D.mapa2 and D.mapa2.punktyBotow then
+			-- mapa v2: punkt z listy (łąka i nowe strefy), taki, w którym ta forma się mieści
+			local PB = D.mapa2.punktyBotow
+			local rf = D.formy[forma].r
+			for _ = 1, 16 do
+				local p = PB[1 + math.floor(S.los() * #PB)]
+				if p[3] >= rf then
+					x, z = p[1], p[2]
+					break
+				end
+			end
+			if not x then
+				local a = S.los() * 2 * math.pi
+				local r = math.sqrt(S.los()) * (D.pole.r - 14)
+				x, z = math.sin(a) * r, math.cos(a) * r
+			end
 		elseif strefa == 2 then
 			local a = S.los() * 2 * math.pi
 			local r = math.sqrt(S.los()) * (D.las.r - 14)
@@ -915,13 +1255,15 @@ function L.gryz(S, b, zd): boolean
 	b.gryzDo = S.czas + D.gryzienie.slad_s
 	local zas = L.zasiegGryzu(D, b)
 	local q = celGryzu(S, b, zas)
-	table.insert(zd, { t = "gryz", id = b.id, x = b.x, z = b.z, k = k, trafil = q ~= nil })
+	b.odkrytyDo = S.czas + (if D.mapa2 then D.mapa2.odkrycie_s else 0)
+	local lam = q == nil and L.uderzLamliwe(S, b, L.promien(D, b.forma) + zas, L.obrazenia(D, b) * W.lancuch_x[k], "gryz", zd)
+	table.insert(zd, { t = "gryz", id = b.id, x = b.x, z = b.z, k = k, trafil = q ~= nil or lam })
 	if q then
 		local d = math.max(0.1, dlug(q.x - b.x, q.z - b.z))
 		b.kier = math.atan2(q.x - b.x, q.z - b.z)
 		L.ran(S, b, q, L.obrazenia(D, b) * W.lancuch_x[k], zd, "gryz", (q.x - b.x) / d, (q.z - b.z) / d,
 			if k == 3 then W.odrzut else W.odrzut_maly, if k == 3 then W.przewrot_s else nil, true)
-	elseif b.slot > 0 then
+	elseif b.slot > 0 and not lam then
 		for _, i in kulkiW(S, b.x, b.z, L.promien(D, b.forma) + zas + D.jedzenie.mala_r, 3) do
 			zjedzKulke(S, b, i, zd)
 		end
@@ -970,6 +1312,7 @@ function L.zdolnosc(S, b, linia: any, zd): boolean
 	-- boty rzadziej (czytelna łąka): dłuższa odnowa
 	b.gotowy[linia] = S.czas + zs + A.odnowa_s * (if b.slot == 0 then D.boty.zdolnosci_odnowa_x or 1 else 1)
 	b.zamach = { A = A, t1 = S.czas + zs }
+	b.odkrytyDo = S.czas + zs + (if D.mapa2 then D.mapa2.odkrycie_s else 0)
 	if b.wx ~= 0 or b.wz ~= 0 then
 		b.kier = math.atan2(b.wx, b.wz)
 	end
@@ -1019,6 +1362,7 @@ local function wykonaj(S, b, A, zd)
 				end
 			end
 		end
+		L.uderzLamliwe(S, b, rb + A.r, sila * A.x, "ogon", zd)
 		table.insert(zd, { t = "ogon", id = b.id, x = b.x, z = b.z, r = rb + A.r })
 	elseif A.typ == "lot" or A.typ == "meteor" then
 		local x1, z1 = L.ogranicz(D, b.x + kx * A.d, b.z + kz * A.d, rb, L.maska(D, b))
@@ -1044,6 +1388,7 @@ local function wykonaj(S, b, A, zd)
 				end
 			end
 		end
+		L.uderzLamliwe(S, b, rb + A.r, sila * A.x, "ryk", zd)
 		table.insert(zd, { t = "ryk", id = b.id, x = b.x, z = b.z, r = rb + A.r })
 	end
 end
@@ -1066,6 +1411,7 @@ local function ladowanie(S, b, k, zd)
 			end
 		end
 	end
+	L.uderzLamliwe(S, b, r + A.r, L.obrazenia(D, b) * A.x, A.typ, zd)
 	if A.typ == "meteor" and b.slot > 0 then
 		for _, i in kulkiW(S, b.x, b.z, r + A.r, 99) do
 			zjedzKulke(S, b, i, zd)
@@ -1141,7 +1487,7 @@ local function krokPociskow(S, dt: number, zd)
 			p.z += dz
 			local kamien = false
 			for _, o in D.przeszkody do
-				if o.typ ~= "staw" and dlug(p.x - o.x, p.z - o.z) < o.r then
+				if o.typ ~= "staw" and (if o.k == "p" then L.wObrysie(o, p.x, p.z) else dlug(p.x - o.x, p.z - o.z) < o.r) then
 					kamien = true
 				end
 			end
@@ -1288,6 +1634,9 @@ function L.mysl(S, b, zd)
 				if (q.id == b.odpuszcza and S.czas < b.odpuszczaDo) or (q.slot > 0 and q.laskaDo > S.czas) then
 					widzi = -999
 				end
+				if D.mapa2 and L.ukryty(S, q) and d - r - rq > D.mapa2.ukrycie_bot_st then
+					widzi = -999 -- mapa v2: ukryty w wysokiej trawie / paproci
+				end
 				if d < widzi + r and d < dof then
 					ofiara, dof = q, d
 				end
@@ -1296,6 +1645,9 @@ function L.mysl(S, b, zd)
 	end
 	-- odwet (walka1): kto mnie ranił, a jest najwyżej o stadium większy — walczę z nim zamiast uciekać
 	local nap = if b.napastnikDo > S.czas then L.bytPoId(S, b.napastnik) else nil
+	if nap and D.mapa2 and L.ukryty(S, nap) and dlug(nap.x - b.x, nap.z - b.z) - r - L.promien(D, nap.forma) > D.mapa2.ukrycie_bot_st then
+		nap = nil
+	end
 	if nap and nap.martwyDo == nil and nap.forma <= b.forma + 1 and bezbronny(S, nap) and not (nap.slot > 0 and nap.laskaDo > S.czas) then
 		ofiara, dof = nap, dlug(nap.x - b.x, nap.z - b.z)
 		if zagr == nap or (zagr and zagr.forma <= b.forma + 1) then
@@ -1394,6 +1746,12 @@ function L.mysl(S, b, zd)
 			local cx, cz, R = 0, 0, D.pole.r
 			if b.strefa == 2 then
 				cx, cz, R = D.las.x, D.las.z, D.las.r
+			elseif D.mapa2 then
+				-- mapa v2: wokół miejsca odrodzenia (nowe strefy nie pustoszeją)
+				if not b.domBX then
+					b.domBX, b.domBZ = b.x, b.z
+				end
+				cx, cz, R = b.domBX, b.domBZ, 45
 			end
 			b.wx, b.wz = math.sin(a) * 0.6 - (b.x - cx) / R * 0.3, math.cos(a) * 0.6 - (b.z - cz) / R * 0.3
 		end
@@ -1556,6 +1914,7 @@ local function odrodz(S, b, zd)
 		return
 	end
 	b.x, b.z = L.bezpieczneMiejsce(S, b.forma, b.slot > 0, b.strefa, b.slot)
+	b.domBX, b.domBZ = nil, nil
 	b.ostRaport = S.czas
 	if b.slot > 0 then
 		table.insert(S.strefy, { x = b.x, z = b.z, do_ = S.czas + D.boty.strefa_startu_s })
@@ -1707,7 +2066,7 @@ function L.krok(S, dt: number)
 			elseif b.slot == 0 and S.czas >= b.myslDo then
 				L.mysl(S, b, zd)
 			end
-			local v = L.predkosc(D, b) * mnoznik(S, b)
+			local v = L.predkosc(D, b) * mnoznik(S, b) * L.wodaX(D, b.x, b.z)
 			local a = math.min(1, D.ruch.przyspieszenie * dt * (if mnoznik(S, b) > 1 then 3 else 1))
 			b.vx += (b.wx * v - b.vx) * a
 			b.vz += (b.wz * v - b.vz) * a
@@ -1815,6 +2174,7 @@ function L.krok(S, dt: number)
 		end
 	end
 	L.krokZadan(S, dt, zd)
+	L.krokLamliwych(S, zd)
 	return zd
 end
 
@@ -2158,6 +2518,9 @@ function L.krokZadan(S, dt: number, zd)
 			if b.martwyDo == nil and L.naWyspie(D, b.x, b.z) then
 				L.postepZadania(S, b, "wyspa", 1, zd)
 			end
+			if D.mapa2 then
+				L.krokSekretow(S, b, zd)
+			end
 		end
 	end
 	local n = #zd
@@ -2244,7 +2607,7 @@ end
 function L.profilNowy(D)
 	return { wersja = D.zapis.wersja, zloto = 0, zlotoLeg = 0, poziomy = { szczeka = 1, szybkosc = 1, apetyt = 1 }, maxForma = 1,
 		warianty = {}, trofea = {}, bossTrofea = 0, ostatnio = 0, pierwszy = 0, odrodzenia = 0, linia = 1, linie = {}, dzienJaja = -1,
-		seria = { dzien = -1, dni = 0 }, zadania = { dzien = -1, lista = {} }, boostS = 0, paragony = {} }
+		seria = { dzien = -1, dni = 0 }, zadania = { dzien = -1, lista = {} }, boostS = 0, paragony = {}, sekrety = { dzien = -1, lista = {} } }
 end
 
 -- dane z magazynu → profil (migracja wersji, uzgodnienie z szablonem, walidacja liczb i nazw)
@@ -2287,6 +2650,21 @@ function L.profilZ(D, dane: any)
 		for _, x in dane.paragony do
 			if type(x) == "string" and #x <= 64 and #p.paragony < maks then
 				table.insert(p.paragony, x)
+			end
+		end
+	end
+	-- mapa2a (zapis w wersji 3; migracja z 1–2 = brak znalezionych): sekrety dnia (id napisami, tylko znane z mapy)
+	if type(dane.sekrety) == "table" and type(dane.sekrety.lista) == "table" then
+		p.sekrety.dzien = math.floor(liczba(dane.sekrety.dzien, -1, 1e7, -1))
+		for _, id in dane.sekrety.lista do
+			local znany = false
+			for _, sk in (D.mapa2 and D.mapa2.sekrety) or {} do
+				if sk.id == id then
+					znany = true
+				end
+			end
+			if znany and #p.sekrety.lista < 32 then
+				table.insert(p.sekrety.lista, id)
 			end
 		end
 	end
@@ -2345,6 +2723,12 @@ function L.doProfilu(D, b, teraz: number)
 	for _, x in b.paragony or {} do
 		table.insert(p.paragony, x)
 	end
+	if b.sekrety then
+		p.sekrety.dzien = b.sekrety.dzien
+		for _, id in b.sekrety.lista do
+			table.insert(p.sekrety.lista, id)
+		end
+	end
 	if b.zadania then
 		p.zadania.dzien = b.zadania.dzien
 		for _, q in b.zadania.lista do
@@ -2384,6 +2768,10 @@ function L.zProfilu(D, b, p, teraz: number): (number, number)
 	b.paragony = {}
 	for _, x in p.paragony or {} do
 		table.insert(b.paragony, x)
+	end
+	b.sekrety = { dzien = (p.sekrety and p.sekrety.dzien) or -1, lista = {} }
+	for _, id in (p.sekrety and p.sekrety.lista) or {} do
+		table.insert(b.sekrety.lista, id)
 	end
 	b.zadania = nil
 	if p.zadania and p.zadania.dzien >= 0 then

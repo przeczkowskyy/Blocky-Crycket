@@ -95,8 +95,51 @@ function SW:krokNastroju(dt: number, ja)
 	self.nastroj.lawa += ((if wLawie then 1 else 0) - self.nastroj.lawa) * a
 	local fl, fw = self.nastroj.las, self.nastroj.lawa
 	local A = S.atmosfera
-	self.atm.Density = A.Density + (S.las.Density - A.Density) * fl + (S.lawa.Density - A.Density) * fw
-	self.atm.Color = rgb(A.Color):Lerp(rgb(S.las.Color), fl):Lerp(rgb(S.lawa.Color), fw)
+	local gest = A.Density + (S.las.Density - A.Density) * fl + (S.lawa.Density - A.Density) * fw
+	local kol = rgb(A.Color):Lerp(rgb(S.las.Color), fl):Lerp(rgb(S.lawa.Color), fw)
+	local haze, decay, tint = A.Haze, rgb(A.Decay), rgb(S.korekta.TintColor)
+	-- mapa2a: nastrój stref v2 (Ukryta Polana, Lily Lake, Sealed Gate, Szlak Popiołu) — płynnie jak las i lawa
+	local N2 = D.mapa2 and D.mapa2.nastroj
+	if N2 then
+		self.wagi = self.wagi or {}
+		local tu = nil
+		for _, o in D.mapa2.obszar do
+			if N2[o.s] and L.wObrysie(o, ja.x, ja.z) then
+				tu = o.s
+				break
+			end
+		end
+		for sid, n in N2 do
+			local wg = (self.wagi[sid] or 0) + ((if sid == tu then 1 else 0) - (self.wagi[sid] or 0)) * a
+			self.wagi[sid] = wg
+			if wg > 0.001 then
+				if n["Atmosphere.Density"] then
+					gest += (n["Atmosphere.Density"] - gest) * wg
+				end
+				if n["Atmosphere.Color"] then
+					kol = kol:Lerp(rgb(n["Atmosphere.Color"]), wg)
+				end
+				if n["Atmosphere.Haze"] then
+					haze += (n["Atmosphere.Haze"] - haze) * wg
+				end
+				if n["Atmosphere.Decay"] then
+					decay = decay:Lerp(rgb(n["Atmosphere.Decay"]), wg)
+				end
+				if n["ColorCorrection.TintColor"] then
+					tint = tint:Lerp(rgb(n["ColorCorrection.TintColor"]), wg)
+				end
+			end
+		end
+		self.atm.Haze = haze
+		self.atm.Decay = decay
+		local K = Lighting:FindFirstChild("EwolucjaKorekta")
+		if K then
+			K.TintColor = tint
+		end
+		self.strefaNastroju = tu
+	end
+	self.atm.Density = gest
+	self.atm.Color = kol
 	Lighting.Brightness = S.Brightness + (S.las.Brightness - S.Brightness) * fl
 end
 

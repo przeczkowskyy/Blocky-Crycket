@@ -19,7 +19,8 @@ for _s in (os.path.join(REPO, "tools"), os.path.join(REPO, "tools", "walka")):
     if _s not in sys.path:
         sys.path.append(_s)
 sys.path.insert(0, PAKIET)
-import dane as DN  # noqa: E402
+import dane as DN
+import swiat_mapa2 as M2  # noqa: E402
 import luau_mini as LM  # noqa: E402
 
 DN.main()
@@ -291,7 +292,13 @@ class TestPetla(unittest.TestCase):
         jeden("steruj", gr, 5.0, 0.0)
         self.assertAlmostEqual(g(gr, "wx"), 1.0, msg="kierunek przycięty do 1")
         x, z = wolaj("ogranicz", DL, 500.0, 0.0, 1.6)
-        self.assertLessEqual(math.hypot(x, z), D["pole"]["r"], "pole ograniczone")
+        if D.get("mapa2"):
+            # mapa v2: obszar = suma stref (najdalej wąwóz bramy ok. 236 st.); punkt z ograniczenia już nie przesuwa się dalej
+            x2, z2 = wolaj("ogranicz", DL, x, z, 1.6)
+            self.assertLess(math.hypot(x2 - x, z2 - z), 0.01, "pole ograniczone (stały punkt)")
+            self.assertLessEqual(math.hypot(x, z), 240, "pole ograniczone")
+        else:
+            self.assertLessEqual(math.hypot(x, z), D["pole"]["r"], "pole ograniczone")
 
     def test_09_umiejetnosci(self):
         Z = D["zdolnosci"]
@@ -1234,7 +1241,7 @@ class TestRetencja(unittest.TestCase):
         zad.set("postep", 1.0)
         ustaw(gr, boostS=123.4)
         P = LM.z_luau(jeden("doProfilu", DL, gr, 1000))
-        self.assertEqual((P["wersja"], P["seria"], P["boostS"]), (2, {"dzien": 20003, "dni": 1}, 123))
+        self.assertEqual((P["wersja"], P["seria"], P["boostS"]), (D["zapis"]["wersja"], {"dzien": 20003, "dni": 1}, 123))
         self.assertEqual(len(P["zadania"]["lista"]), D["zadania"]["ile"])
         surowe = json.loads(json.dumps(P))
         b2 = byt(S, 2, 1, 50, 50)
@@ -1245,7 +1252,7 @@ class TestRetencja(unittest.TestCase):
         # migracja: zapis w wersji 1 (bez nowych pól) → domyślne; zły wpis zadania odrzucony
         v1 = {"wersja": 1, "zloto": 50, "maxForma": 4, "poziomy": {"szczeka": 2}}
         p1 = LM.z_luau(jeden("profilZ", DL, lu(v1)))
-        self.assertEqual((p1["wersja"], p1["seria"], p1["boostS"], p1["zadania"]["dzien"], p1["zloto"]), (2, {"dzien": -1, "dni": 0}, 0, -1, 50))
+        self.assertEqual((p1["wersja"], p1["seria"], p1["boostS"], p1["zadania"]["dzien"], p1["zloto"]), (D["zapis"]["wersja"], {"dzien": -1, "dni": 0}, 0, -1, 50))
         zle = dict(surowe, seria={"dzien": "x", "dni": 99}, boostS=-5)
         zle["zadania"] = {"dzien": 20003, "lista": [{"id": "hack", "postep": 5}, {"id": "kulki", "postep": 999, "gotowe": True}]}
         p3 = LM.z_luau(jeden("profilZ", DL, lu(zle)))
@@ -1309,6 +1316,122 @@ class TestSklep(unittest.TestCase):
         self.assertEqual(LM.z_luau(jeden("profilZ", DL, lu(zle)))["paragony"], ["ok"])
 
 
+class TestMapa2(unittest.TestCase):
+    """mapa2a: mapa v2 na płaskiej ziemi — obszar ze stref, bramy rozmiaru, głębia, woda, kryjówki, rzeczy do rozbicia, sekrety dnia."""
+
+    def setUp(self):
+        if not D.get("mapa2"):
+            self.skipTest("bez mapy v2")
+        self.roz = DL.get("mapa2").get("rozbite")
+        for q in D["mapa2"]["lamliwe"]:
+            self.roz.set(q["id"], None)
+
+    def tearDown(self):
+        for q in D["mapa2"]["lamliwe"]:
+            self.roz.set(q["id"], None)
+
+    def og(self, x, z, r, m=1):
+        return wolaj("ogranicz", DL, float(x), float(z), float(r), float(m))
+
+    def test_44_bramy_glebia_woda(self):
+        # tunel Grzbietu Nory (B02): pisklę przechodzi, DRAGON (r 5,2) nie
+        x, z = self.og(58, 24, 1.6)
+        self.assertLess(math.hypot(x - 58, z - 24), 0.5, "pisklę w tunelu")
+        x, z = self.og(58, 24, 5.2)
+        self.assertGreater(math.hypot(x - 58, z - 24), 6, "duży smok wypchnięty z bramy")
+        # każda brama zamknięta dla większych niż r_maks
+        for b in D["mapa2"]["bramy"]:
+            x, z = self.og(b["x"], b["z"], b["r_maks"] + 1.5)
+            self.assertGreater(math.hypot(x - b["x"], z - b["z"]), 2, "brama %s zamknięta dla większych" % b["id"])
+        # głębia jeziora: środek wypchnięty, bród i wysepka dozwolone
+        x, z = self.og(-15, -214, 1.6)
+        self.assertGreater(math.hypot(x - 8, z + 214), 28, "głęboka woda → brzeg")
+        x, z = self.og(3, -219, 1.6)
+        self.assertLess(math.hypot(x - 10, z + 224), 7.1, "głęboka woda obok wysepki → wysepka")
+        for (px, pz) in ((10, -224), (22.5, -204.5)):
+            x, z = self.og(px, pz, 1.6)
+            self.assertLess(math.hypot(x - px, z - pz), 0.5, "wysepka / bród")
+        # woda × 0,7, most szybki
+        self.assertAlmostEqual(jeden("wodaX", DL, -13.0, -97.0), D["mapa2"]["woda_x"])
+        self.assertEqual(jeden("wodaX", DL, -37.0, -2.0), 1, "most")
+        self.assertEqual(jeden("wodaX", DL, 50.0, 50.0), 1, "łąka")
+        self.assertGreater(jeden("podestY", DL, -37.0, -2.0), 1.0, "most wyżej (obraz)")
+        # nowe strefy chodzone (pisklę): polana za łukiem, jezioro, wąwóz bramy
+        for (px, pz) in ((148, 106), (30, -200), (190, -52)):
+            x, z = self.og(px, pz, 1.6)
+            self.assertLess(math.hypot(x - px, z - pz), 3, "strefa chodzona (%s, %s)" % (px, pz))
+        # strefy rzeźby niedostępne (A): kanion, kotlina wodospadu, kaldera
+        for (px, pz) in ((-200, 30), (-164, 126), (-318, -96)):
+            x, z = self.og(px, pz, 1.6)
+            self.assertGreater(math.hypot(x - px, z - pz), 10, "strefa rzeźby zamknięta (%s, %s)" % (px, pz))
+
+    def test_45_kryjowki_lamliwe_sekrety(self):
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 1, 46, 8)
+        ustaw(gr, x=46, z=8, tarczaDo=0)
+        self.assertTrue(jeden("ukryty", S, gr), "pisklę w wysokiej trawie")
+        bot = byt(S, 0, 3, 46, 20)
+        ustaw(bot, x=46, z=20)
+        wolaj("mysl", S, bot, lu([]))
+        self.assertNotEqual(g(bot, "cel"), g(gr, "id"), "bot dalej niż 8 st. gubi ukrytego")
+        ustaw(gr, gryzGotowy=0)
+        jeden("gryz", S, gr, lu([]))
+        self.assertFalse(jeden("ukryty", S, gr), "atak odkrywa")
+        duzy = byt(S, 2, 6, 46, 8)
+        ustaw(duzy, x=46, z=8)
+        self.assertFalse(jeden("ukryty", S, duzy), "WAR DRAGON się nie mieści")
+        # L06 (wyłom do Szlaku Popiołu): stadium 5 — podpowiedź, stadium 6 — rozbija, złoto, przejście, odrost
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 5, -113.0, -102.4)
+        ustaw(gr, x=-113.0, z=-102.4, tarczaDo=0, gryzGotowy=0)
+        zd = lu([])
+        jeden("gryz", S, gr, zd)
+        self.assertIn("lamliwa_mala", [e["t"] for e in LM.z_luau(zd, True)])
+        x, z = self.og(-122.9, -102.4, 1.6)
+        self.assertGreater(math.hypot(x + 122.9, z + 102.4), 3, "skała blokuje szlak")
+        x, z = self.og(-122.9, -92.5, 1.6)
+        self.assertGreater(math.hypot(x + 122.9, z + 92.5), 1, "bez szpary przy ścianie korytarza")
+        ustaw(gr, forma=6, zloto=0)
+        zdarz = []
+        for _ in range(80):
+            ustaw(gr, gryzGotowy=0, x=-113.0, z=-102.4)
+            zd = lu([])
+            jeden("gryz", S, gr, zd)
+            zdarz += LM.z_luau(zd, True)
+            if any(e["t"] == "lamliwa_rozbita" for e in zdarz):
+                break
+        self.assertTrue(any(e["t"] == "lamliwa_rozbita" for e in zdarz), "L06 rozbita")
+        self.assertEqual(g(gr, "zloto"), 60)
+        x, z = self.og(-122.9, -102.4, 1.6)
+        self.assertLess(math.hypot(x + 122.9, z + 102.4), 0.5, "szlak otwarty")
+        ustaw(S, czas=g(S, "czas") + 200)
+        zd = lu([])
+        wolaj("krokLamliwych", S, zd)
+        self.assertIn("lamliwa_odrost", [e["t"] for e in LM.z_luau(zd, True)])
+        # sekret dnia: paszcza czaszki (S02) raz na dzień UTC, zapis v3
+        S = stan()
+        bez_kulek(S)
+        ustaw(S, zegar=20003 * 86400 + 100)
+        s02 = [s for s in D["mapa2"]["sekrety"] if s["id"] == "S02"][0]
+        gr = byt(S, 1, 1, s02["x"], s02["z"])
+        ustaw(gr, zloto=0, x=s02["x"], z=s02["z"], tarczaDo=0)
+        zd = lu([])
+        wolaj("krokSekretow", S, gr, zd)
+        wolaj("krokSekretow", S, gr, zd)
+        self.assertEqual(g(gr, "zloto"), s02["zloto"], "raz na dzień")
+        ustaw(S, zegar=20004 * 86400 + 100)
+        wolaj("krokSekretow", S, gr, zd)
+        self.assertEqual(g(gr, "zloto"), 2 * s02["zloto"], "następny dzień UTC")
+        P = LM.z_luau(jeden("doProfilu", DL, gr, 1000))
+        self.assertEqual((P["wersja"], P["sekrety"]), (3, {"dzien": 20004, "lista": ["S02"]}))
+        p2 = LM.z_luau(jeden("profilZ", DL, lu(dict(P, sekrety={"dzien": 20004, "lista": ["S02", "S99", 5]}))))
+        self.assertEqual(p2["sekrety"]["lista"], ["S02"], "tylko znane sekrety")
+        p3 = LM.z_luau(jeden("profilZ", DL, lu({"wersja": 2, "zloto": 5})))
+        self.assertEqual((p3["wersja"], p3["sekrety"]["dzien"], len(p3["sekrety"]["lista"])), (3, -1, 0), "migracja v2 → v3")
+
+
 def T_KL(KL, n, *a):
     r = IT.wywolaj(KL.get(n), [lu(x) for x in a])
     return r[0] if r else None
@@ -1324,7 +1447,7 @@ class TestSwiat(unittest.TestCase):
         leg = [p for p in prz if p["typ"] == "legowisko"]
         self.assertEqual(len(leg), 12 * 13, "krąg (11 skał) i brama (2 filary) w każdym z 12 legowisk")
         self.assertTrue(any(p.get("rid") in ("glaz_1", "glaz_2") for p in prz), "głazy blokują")
-        self.assertTrue(any(p.get("rid") == "czaszka_smoka" for p in prz), "czaszka smoka blokuje")
+        self.assertTrue(any(p.get("rid") in ("czaszka_smoka", "czaszka_wielka") for p in prz), "czaszka smoka blokuje")
         self.assertFalse(any(p.get("rid") in ("trawa_1", "kwiat_zolty", "krzak", "kamyk") for p in prz), "dekoracja bez kolizji")
         # nic nie blokuje wyspy gry ani jej fosy (poza ołtarzem pośrodku wyspy)
         WY = D["wyspa"]
@@ -1361,7 +1484,11 @@ class TestSwiat(unittest.TestCase):
                 b = byt(S, 0, f)
                 r = D["formy"][f - 1]["r"]
                 for p in prz:
-                    self.assertGreater(math.hypot(g(b, "x") - p["x"], g(b, "z") - p["z"]), p["r"] + r * 0.7 - 0.15)
+                    if p.get("k") == "p":
+                        lx, lz = M2.lok(g(b, "x") - p["x"], g(b, "z") - p["z"], p["o"])
+                        self.assertTrue(abs(lx) > p["hx"] + r * 0.7 - 0.15 or abs(lz) > p["hz"] + r * 0.7 - 0.15, "bot poza skałą")
+                    else:
+                        self.assertGreater(math.hypot(g(b, "x") - p["x"], g(b, "z") - p["z"]), p["r"] + r * 0.7 - 0.15)
 
     def test_32_owce(self):
         if not (D.get("swiat") and D["swiat"].get("owce")):

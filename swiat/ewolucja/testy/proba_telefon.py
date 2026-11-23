@@ -142,6 +142,9 @@ def main():
                      rigi=a1.get("EW_K_Rigi"))
             # T9 (odczucie1): klatka w walce z bliska — BITE i FIRE BREATH co chwilę (iskry, łuski, liczby, wstrząs), najgorsza sekunda
             st = p.serwer('"stan"')
+            p.serwer('"przenies", %d, 80, 0' % st["byt"])  # otwarta łąka (mapa v2: bez rzeki i skał w zasięgu)
+            time.sleep(0.6)
+            st = p.serwer('"stan"')
             p.serwer('"boty_cisza", 60')
             p.serwer('"hp", nil, 9000')
             p.serwer('"tarcza_zeruj"')

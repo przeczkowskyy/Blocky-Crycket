@@ -321,6 +321,7 @@ def przebieg(p, zrzuty):
     odrodzenie_proby(p, zrzuty)
     retencja_proby(p, zrzuty)
     odczucie_proby(p, zrzuty)
+    mapa2_proby(p, zrzuty)
     a = p.atr()
     wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), praca_skryptu_ms=round(a.get("EW_K_Praca") or 0, 2),
           czesci_smokow=a.get("EW_K_CzesciSmokow"), rigi=a.get("EW_K_Rigi"), widokow=a.get("EW_K_Widokow"),
@@ -381,7 +382,14 @@ def swiat(p, zrzuty):
                 r = D["formy"][b["forma"] - 1]["r"]
                 probek += 1
                 for q in blok:
-                    if math.hypot(b["x"] - q["x"], b["z"] - q["z"]) < q["r"] + r * 0.7 - 1.0:
+                    if q.get("k") == "p":
+                        # mapa v2: prostokąt (ściana, skała terenu) — obrys obrócony o o
+                        aa = math.radians(q["o"])
+                        dx, dz = b["x"] - q["x"], b["z"] - q["z"]
+                        lx, lz = dx * math.cos(aa) - dz * math.sin(aa), dx * math.sin(aa) + dz * math.cos(aa)
+                        if abs(lx) < q["hx"] + r * 0.7 - 1.0 and abs(lz) < q["hz"] + r * 0.7 - 1.0:
+                            w_srodku.append((b["id"], q.get("rid"), round(math.hypot(dx, dz), 1)))
+                    elif math.hypot(b["x"] - q["x"], b["z"] - q["z"]) < q["r"] + r * 0.7 - 1.0:
                         w_srodku.append((b["id"], q.get("rid"), round(math.hypot(b["x"] - q["x"], b["z"] - q["z"]), 1)))
         time.sleep(1.0)
     wynik("P33 boty nie przechodzą przez przeszkody", probek > 50 and not w_srodku, probek=probek, w_przeszkodzie=w_srodku[:6], przeszkod=len(blok))
@@ -1131,6 +1139,172 @@ def czucie(p):
     return json.loads(p.atr().get("EW_K_Czucie") or "{}")
 
 
+def m2(p):
+    a = json.loads(p.atr().get("EW_K_Mapa2") or "{}")
+    return a if isinstance(a, dict) else {}
+
+
+def ja_poz(p):
+    st = p.serwer('"stan"')
+    j = moje(st)
+    return j["x"], j["z"]
+
+
+def jedz(p, kx, kz, czas):
+    """Sterowanie jak z drążka w kierunku świata (kx, kz) przez czas s (drążek: prawo = −x, góra = +z)."""
+    p.ustaw("EW_TestSter", "Vector3.new(%f, %f, %f)" % (-kx, kz, czas))
+    time.sleep(czas + 0.15)
+
+
+def mapa2_proby(p, zrzuty):
+    """mapa2a: mapa v2 na płaskiej ziemi — rzeka i most, tunel (mały przechodzi, duży nie), kryjówka, rzecz do rozbicia,
+    sekret dnia, nastrój strefy (Sealed Gate)."""
+    M2 = D.get("mapa2")
+    if not M2:
+        return
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    p.przycisk("powitanie_zamknij")
+    p.serwer('"boty_cisza", 300')
+    p.serwer('"boty_stoj_wszystkie", 60')
+    p.serwer('"hp", nil, 9000')
+    # P57 rzeka × 0,7 (tor wzdłuż nurtu) i most (smok wyżej)
+    p.serwer('"forma_gracza", 2')
+    a = math.radians(158.96)
+    ux, uz = math.sin(a), math.cos(a)
+    p.serwer('"przenies", %d, %f, %f' % (byt, -13 - ux * 10, -97 - uz * 10))
+    time.sleep(0.6)
+    x0, z0 = ja_poz(p)
+    jedz(p, ux, uz, 1.0)
+    x1, z1 = ja_poz(p)
+    d_rz = math.hypot(x1 - x0, z1 - z0)
+    p.serwer('"przenies", %d, %f, %f' % (byt, 40, -110))
+    time.sleep(0.6)
+    x0, z0 = ja_poz(p)
+    jedz(p, ux, uz, 1.0)
+    x1, z1 = ja_poz(p)
+    d_tr = math.hypot(x1 - x0, z1 - z0)
+    p.serwer('"przenies", %d, %f, %f' % (byt, -37, -2))
+    czekaj(lambda: m2(p).get("podY", 0) > 1.0, 3, 0.3)
+    pod = m2(p).get("podY", 0)
+    if zrzuty:
+        p.ustaw("EW_TestZoom", "0.6")
+        time.sleep(0.4)
+        p.zrzut("49_most.jpg")
+        p.ustaw("EW_TestZoom", "nil")
+    wynik("P57 rzeka i most", d_tr > 4 and 0.55 <= d_rz / max(0.1, d_tr) <= 0.85 and pod > 1.0,
+          rzeka_st=round(d_rz, 1), trawa_st=round(d_tr, 1), stosunek=round(d_rz / max(0.1, d_tr), 2), most_y=pod)
+    # P58 tunel Grzbietu Nory (B02): pisklę przechodzi pod wygaszonym dachem, DRAGON odbija się („TOO BIG!”)
+    a = math.radians(98)
+    ux, uz = math.sin(a), math.cos(a)
+    p.serwer('"forma_gracza", 1')
+    p.serwer('"przenies", %d, %f, %f' % (byt, 58, 24))
+    time.sleep(1.4)
+    przen = m2(p).get("przenik", 0)
+    if zrzuty:
+        p.ustaw("EW_TestZoom", "0.55")
+        time.sleep(0.3)
+        p.zrzut("50_tunel.jpg")
+        p.ustaw("EW_TestZoom", "nil")
+    p.serwer('"przenies", %d, %f, %f' % (byt, 58 + ux * 14, 24 + uz * 14))
+    time.sleep(0.5)
+    jedz(p, -ux, -uz, 2.2)
+    xm, zm = ja_poz(p)
+    lz_maly = (xm - 58) * ux + (zm - 24) * uz
+    m0 = m2(p).get("zaDuzy", 0)
+    p.serwer('"forma_gracza", 5')
+    p.serwer('"przenies", %d, %f, %f' % (byt, 58 + ux * 16, 24 + uz * 16))
+    time.sleep(0.5)
+    jedz(p, -ux, -uz, 2.2)
+    xd, zd_ = ja_poz(p)
+    lz_duzy = (xd - 58) * ux + (zd_ - 24) * uz
+    time.sleep(1.0)
+    m1 = m2(p).get("zaDuzy", 0)
+    wynik("P58 tunel: mały tak, duży nie", przen >= 1 and lz_maly < -8 and lz_duzy > 6 and m1 > m0,
+          dach_wygaszony=przen, maly_za_tunelem=round(lz_maly, 1), duzy_przed=round(lz_duzy, 1), too_big=m1 - m0)
+    # P59 kryjówka (K04, wysoka trawa): ukryty, pigułka HIDDEN; BITE odkrywa
+    k = [k for k in M2["kryjowki"] if k["id"] == "K04"][0]
+    p.serwer('"forma_gracza", 2')
+    p.serwer('"przenies", %d, %f, %f' % (byt, k["x"], k["z"]))
+    time.sleep(1.3)
+    uk = p.serwer('"ukryty"')
+    pig = m2(p).get("ukryty")
+    if zrzuty:
+        p.zrzut("51_kryjowka.jpg")
+    p.przycisk("odnowa_zeruj")
+    p.przycisk("gryz")
+    time.sleep(0.3)
+    uk2 = p.serwer('"ukryty"')
+    wynik("P59 kryjówka w wysokiej trawie", uk is True and pig is True and uk2 is False, ukryty=uk, pigulka=pig, po_ataku=uk2)
+    # P60 rzecz do rozbicia (L03, kłoda w lesie): stadium 5 — „STAGE 6 TO SMASH”, stadium 6 — rozbita, złoto, przejście, odrost
+    q = [q for q in M2["lamliwe"] if q["id"] == "L03"][0]
+    p.serwer('"lamliwe", "zeruj"')
+    for e in p.serwer('"stan"')["byty"]:
+        if e["slot"] == 0 and math.hypot(e["x"] - q["x"], e["z"] - q["z"]) < 40:
+            p.serwer('"przenies", %d, %f, %f' % (e["id"], q["x"] + 60, q["z"] + 40))  # boty z dala (BITE trafiłby bota)
+    p.serwer('"forma_gracza", 5')
+    p.serwer('"przenies", %d, %f, %f' % (byt, q["x"], q["z"] - 9))
+    time.sleep(0.8)
+    zm0 = m2(p).get("zaMali", 0)
+    p.przycisk("odnowa_zeruj")
+    p.przycisk("gryz")
+    time.sleep(1.2)
+    zm1 = m2(p).get("zaMali", 0)
+    p.serwer('"forma_gracza", 6')
+    p.serwer('"przenies", %d, %f, %f' % (byt, q["x"], q["z"] - 9))
+    p.serwer('"lamliwe", "hp", "L03", 30')
+    time.sleep(0.5)
+    zl0 = p.serwer('"stan"')["zloto"]
+    for _ in range(6):
+        p.przycisk("odnowa_zeruj")
+        p.przycisk("gryz")
+        time.sleep(0.45)
+        if (p.serwer('"lamliwe"') or {}).get("L03", {}).get("rozbita"):
+            break
+    stan_l = p.serwer('"lamliwe"') or {}
+    zl1 = p.serwer('"stan"')["zloto"]
+    time.sleep(1.2)
+    if zrzuty:
+        p.zrzut("52_rozbicie.jpg")
+    jedz(p, 0, 1, 1.4)
+    _, zp = ja_poz(p)
+    p.serwer('"lamliwa_odrost", 0')
+    odrost, _ = czekaj(lambda: not (p.serwer('"lamliwe"') or {}).get("L03", {}).get("rozbita"), 3, 0.3)
+    wynik("P60 kłoda do rozbicia", zm1 > zm0 and stan_l.get("L03", {}).get("rozbita") is True and zl1 - zl0 >= q["zloto"] and zp > q["z"] + 2 and odrost,
+          podpowiedz_maly=zm1 - zm0, rozbita=stan_l.get("L03"), zloto=zl1 - zl0, za_kloda_z=round(zp, 1), odrost=odrost)
+    # P61 sekret dnia (S02, paszcza czaszki — tylko mały): złoto raz na dzień, błysk znika
+    s02 = [s for s in M2["sekrety"] if s["id"] == "S02"][0]
+    p.serwer('"sekrety_zeruj"')
+    p.serwer('"forma_gracza", 1')
+    p.serwer('"przenies", %d, %f, %f' % (byt, 30, 64))
+    time.sleep(1.3)
+    isk0 = m2(p).get("iskier", 0)
+    zl0 = p.serwer('"stan"')["zloto"]
+    p.serwer('"przenies", %d, %f, %f' % (byt, s02["x"], s02["z"]))
+    time.sleep(1.4)
+    zl1 = p.serwer('"stan"')["zloto"]
+    if zrzuty:
+        p.zrzut("53_sekret.jpg")
+    p.serwer('"przenies", %d, %f, %f' % (byt, 30, 64))
+    time.sleep(0.6)
+    p.serwer('"przenies", %d, %f, %f' % (byt, s02["x"], s02["z"]))
+    time.sleep(1.2)
+    zl2 = p.serwer('"stan"')["zloto"]
+    isk1 = m2(p).get("iskier", 0)
+    sek = p.atr().get("EW_Sekrety") or ""
+    wynik("P61 sekret dnia (paszcza czaszki)", zl1 - zl0 >= s02["zloto"] and zl2 - zl1 < s02["zloto"] and "S02" in sek and isk1 == isk0 - 1,
+          zloto=[zl0, zl1, zl2], znalezione=sek, blyski=[isk0, isk1])
+    # P62 nastrój strefy: wąwóz Sealed Gate (fiolet magii)
+    p.serwer('"przenies", %d, %f, %f' % (byt, 190, -52))
+    ok, _ = czekaj(lambda: m2(p).get("strefa") == "brama", 4, 0.4)
+    time.sleep(1.5)
+    if zrzuty:
+        p.zrzut("54_brama.jpg")
+    wynik("P62 nastrój strefy (Sealed Gate)", ok, strefa=m2(p).get("strefa"))
+    p.serwer('"przenies", %d, 0, -20' % byt)
+    p.serwer('"boty_cisza", 0')
+
+
 def odczucie_proby(p, zrzuty):
     """odczucie1: wrażenia walki (zatrzymanie 50–90 ms, wstrząs, liczby, łuski, wybuch przy zjedzeniu, pop kul, spowolnienie
     przy ewolucji, haki dźwięków), krótki ekran powitania, sklep z atrapą MarketplaceService (flaga wyłączona)."""
@@ -1250,7 +1424,7 @@ def odczucie_proby(p, zrzuty):
     p.serwer('"produkt_id", "zloto_1", 0')
     p.serwer('"sklep_atrapa", {}')
     wynik("P55 sklep (atrapa, flaga wyłączona)", ukryty and pa == "wzrost2x" and vip is True and d1 == "PurchaseGranted" and z1 - z0 == 1000
-          and d2 == "PurchaseGranted" and z2 == z1 and d3 == "NotProcessedYet" and z3 == z2 and d4 == "PurchaseGranted" and z4 - z3 == 1000
+          and d2 == "PurchaseGranted" and z2 == z1 and d3 == "NotProcessedYet" and z3 == z2 and d4 == "PurchaseGranted" and 1000 <= z4 - z3 < 1050
           and d5 == "NotProcessedYet" and ww and d6 == "PurchaseGranted" and z6 - z5 < 1000,  # po powrocie: bez drugiej nagrody (złoto skarbu może dojść)
           ukryty=ukryty, przepustki=pa, vip=vip, decyzje=[d1, d2, d3, d4, d5, d6], zloto=[z0, z1, z2, z3, z4, z5, z6])
 
@@ -1289,6 +1463,7 @@ def main():
     ap.add_argument("--tylko-odrodzenie", action="store_true", help="start i próby odrodzenia (P42–P47)")
     ap.add_argument("--tylko-retencja", action="store_true", help="start, powitanie i próby retencji (P48–P52)")
     ap.add_argument("--tylko-odczucie", action="store_true", help="start i próby odczucia walki, powitania i sklepu (P53–P55)")
+    ap.add_argument("--tylko-mapa2", action="store_true", help="start i próby mapy v2 (P57–P62)")
     a = ap.parse_args()
     with StudioMCP(timeout=180) as s:
         p = P(s, a.studio)
@@ -1299,7 +1474,12 @@ def main():
         try:
             # rozkład wydarzeń z zegara UTC wyłączony na czas prób (deszcz i rampage tylko wymuszone) — wyniki nie zależą od godziny
             czekaj(lambda: p.serwer('"wydarzenia_zegar", false'), 30, 0.5)
-            if a.tylko_odczucie:
+            if a.tylko_mapa2:
+                czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
+                p.luau(BEZ_LISTY, "Client")
+                czekaj(lambda: p.atr().get("EW_K_Powitanie"), 8, 0.3)
+                mapa2_proby(p, not a.bez_zrzutow)
+            elif a.tylko_odczucie:
                 czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
                 p.luau(BEZ_LISTY, "Client")
                 czekaj(lambda: p.atr().get("EW_K_Powitanie"), 8, 0.3)

@@ -878,7 +878,7 @@ local function krokSterowania(dt: number)
 		if teraz < szarzaDo then
 			m = math.max(m, szarzaV)
 		end
-		local cel = L.predkosc(D, ja()) * m * (if teraz < WK.wolnoDo then D.walka.zamach_v else 1)
+		local cel = L.predkosc(D, ja()) * m * (if teraz < WK.wolnoDo then D.walka.zamach_v else 1) * L.wodaX(D, predX, predZ)
 		local a = math.min(1, D.ruch.przyspieszenie * dt * (if m > 1 then 3 else 1))
 		local kx, kz = wektor.X, wektor.Z
 		if v.Magnitude <= D.siec.martwa_strefa then
@@ -973,6 +973,7 @@ local function akcja(rodzaj: string, a: any?)
 		end
 		dzwiek(if WK.lancuchK == 3 then "zlapanie" else "cios", if WK.lancuchK == 3 then 1.15 else 1.45 + WK.lancuchK * 0.12)
 		evAkcja:FireServer("gryz")
+		WK.ostAtak = teraz
 	elseif rodzaj == "zryw" then
 		if teraz < zrywGotowy then
 			return
@@ -990,6 +991,7 @@ local function akcja(rodzaj: string, a: any?)
 		if not w then
 			return
 		end
+		WK.ostAtak = teraz
 		local A = L.zdolnoscFormy(D, rodzaj, w.forma)
 		if not A then
 			local N = L.nastepnaZdolnosc(D, rodzaj, w.forma)
@@ -1323,7 +1325,7 @@ local function rysuj(w, dt: number)
 	ustawPrzezroczystosc(w, if widac then 0 else 1)
 	-- krążek: zielony zjesz, czerwony zje ciebie, biały ani to, ani to
 	w.krazek.Size = Vector3.new(0.15, r * 2 + 0.8, r * 2 + 0.8)
-	w.krazek.CFrame = CFrame.new(C + Vector3.new(w.x, 0.14, w.z)) * CFrame.Angles(0, 0, math.pi / 2)
+	w.krazek.CFrame = CFrame.new(C + Vector3.new(w.x, 0.14 + (w.podY or 0), w.z)) * CFrame.Angles(0, 0, math.pi / 2)
 	w.krazek.Transparency = if widac or kokon then (if moj then 0.1 else 0.3) else 1
 	if moj then
 		w.krazek.Color = MOJ
@@ -1336,7 +1338,11 @@ local function rysuj(w, dt: number)
 	if not widac then
 		return
 	end
-	local poz = C + Vector3.new(w.x, 0, w.z)
+	-- mapa2a: most i wysepka (podest) — smok stoi wyżej (tylko obraz; ruch płaski)
+	if D.mapa2 then
+		w.podY = (w.podY or 0) + (L.podestY(D, w.x, w.z) - (w.podY or 0)) * math.min(1, dt * 10)
+	end
+	local poz = C + Vector3.new(w.x, w.podY or 0, w.z)
 	if w.R then
 		-- smok z Blendera: korzeń co klatkę, animacja co w.co klatek (koszt według odległości), efekty z zaczepów
 		local ja0 = widoki[mojId]
@@ -1824,14 +1830,19 @@ function WK.krokPolowy(f: number, wz: number, pt: number)
 	if WK.polowy[klucz] or wz < pt * 0.5 then
 		return
 	end
-	WK.polowy[klucz] = true
 	if not WK.polowyStart then
+		WK.polowy[klucz] = true
 		WK.polowyStart = true
 		return
 	end
-	if f < 2 or odslona ~= nil or wz >= pt then
+	if f < 2 or wz >= pt then
+		WK.polowy[klucz] = true
 		return -- pełny pasek: liczy się już „EVOLVE”, nie połowa
 	end
+	if odslona ~= nil then
+		return -- baner po zamknięciu odsłony
+	end
+	WK.polowy[klucz] = true
 	local zd = nil
 	for _, linia in { "ogien", "moc" } do
 		local N = L.nastepnaZdolnosc(D, linia, f)
@@ -1888,6 +1899,7 @@ local function odswiezHUD()
 		end
 	end
 	WK.krokTablicy()
+	WK.krokMapy2()
 	HUD:gora({ forma = wForma, wz = wz, pt = pt, maks = f >= NF, hp = hpJa, zloto = gracz:GetAttribute("EW_Zloto") or 0,
 		skarb = gracz:GetAttribute("EW_ZlotoLeg") or 0, naS = gracz:GetAttribute("EW_ZlotoNaS") or 0, wariant = wariantD(WK.csv("EW_Warianty")[wForma]) })
 	local teraz = os.clock()
@@ -1933,6 +1945,147 @@ gracz:GetAttributeChangedSignal("EW_Byt"):Connect(function()
 	predOK = false
 end)
 mojId = gracz:GetAttribute("EW_Byt") or 0
+
+------------------------------------------------------------------ mapa2a: mapa v2 u klienta (płaska ziemia)
+-- rzeczy do rozbicia z atrybutu kontenera (przewidywanie ruchu), dachy tunelu i groty wygaszane nad własnym smokiem,
+-- błyski nieznalezionych dziś skrzyń, pigułka HIDDEN w kryjówce, „TOO BIG!” przy bramie rozmiaru
+WK.m2 = { ukryty = false, przenik = 0, zaDuzy = 0, iskier = 0, trafien = 0, rozbite = 0, zaMali = 0, sekrety = 0, rozbiteAtr = "" }
+WK.dachy = nil
+WK.blyskiSek = {}
+if D.mapa2 then
+	local function rozbiteZAtr()
+		local a = kontener:GetAttribute("Rozbite") or ""
+		WK.m2.rozbiteAtr = a
+		for _, q in D.mapa2.lamliwe do
+			D.mapa2.rozbite[q.id] = nil
+		end
+		for id in string.gmatch(a, "[^,]+") do
+			D.mapa2.rozbite[id] = true
+		end
+	end
+	kontener:GetAttributeChangedSignal("Rozbite"):Connect(rozbiteZAtr)
+	rozbiteZAtr()
+	-- błyski skrzyń (lokalne części, bez kolizji)
+	for _, sk in D.mapa2.sekrety do
+		local p = Instance.new("Part")
+		p.Name = "BlyskSekretu"
+		p.Shape = Enum.PartType.Ball
+		p.Size = Vector3.new(1.1, 1.1, 1.1)
+		p.Material = Enum.Material.Neon
+		p.Color = Color3.fromRGB(255, 214, 90)
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+		p.CFrame = CFrame.new(C + Vector3.new(sk.x, 3.4, sk.z))
+		p.Parent = lokalne
+		WK.blyskiSek[sk.id] = p
+	end
+end
+WK.ramkaUkr = warstwa("Ukryty", Vector2.new(0.5, 1), UDim2.new(0.5, 0, 1, -128), Vector2.new(150, 30))
+do
+	local t = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex("1E2A1E"), BackgroundTransparency = 0.25 }, WK.ramkaUkr)
+	nowy("UICorner", { CornerRadius = UDim.new(0.5, 0) }, t)
+	napis(t, UI.ukryty or "HIDDEN", UDim2.fromScale(0.06, 0.12), UDim2.fromScale(0.88, 0.76), hex("9BFFB8"))
+end
+WK.ramkaUkr.Visible = false
+
+function WK.krokMapy2()
+	local M2 = D.mapa2
+	if not M2 then
+		return
+	end
+	local w = widoki[mojId]
+	if not w then
+		return
+	end
+	local r = D.formy[w.forma].r
+	local teraz = os.clock()
+	-- kryjówka (jak na serwerze: r ≤ r_maks, środek w kole, bez ataku w ostatnich odkrycie_s)
+	local ukr = false
+	if teraz - (WK.ostAtak or -99) > M2.odkrycie_s then
+		for _, k in M2.kryjowki do
+			if r <= k.r_maks and (w.x - k.x) ^ 2 + (w.z - k.z) ^ 2 <= k.r * k.r then
+				ukr = true
+				break
+			end
+		end
+	end
+	WK.m2.ukryty = ukr
+	WK.ramkaUkr.Visible = ukr and odslona == nil
+	-- „TOO BIG!” przy bramie rozmiaru
+	for _, b in M2.bramy do
+		if r > b.r_maks and L.wObrysie(b, w.x, w.z, r * 0.7 + 1.0) and teraz > (WK.zaDuzyDo or 0) then
+			WK.zaDuzyDo = teraz + 2.5
+			WK.m2.zaDuzy += 1
+			E:slowo(C + Vector3.new(w.x, r * 1.6 + 3, w.z), UI.za_duzy or "TOO BIG!", hex("FF8A5A"), 0.9, 1.1)
+		end
+	end
+	-- dachy tunelu i groty: wygaszone, gdy własny smok jest pod nimi
+	if not WK.dachy then
+		local sw = kontener:FindFirstChild("Scena") and kontener.Scena:FindFirstChild("Swiat")
+		if sw then
+			WK.dachy = {}
+			for _, d in sw:GetDescendants() do
+				if d:IsA("BasePart") and d:GetAttribute("Przenikalny") then
+					table.insert(WK.dachy, d)
+				end
+			end
+		end
+	end
+	local n = 0
+	for _, d in WK.dachy or {} do
+		local lp = d.CFrame:PointToObjectSpace(Vector3.new(C.X + w.x, d.Position.Y, C.Z + w.z))
+		local pod = math.abs(lp.X) <= d.Size.X / 2 + r and math.abs(lp.Z) <= d.Size.Z / 2 + r
+		d.LocalTransparencyModifier = if pod then 0.65 else 0
+		if pod then
+			n += 1
+		end
+	end
+	-- olbrzymia czaszka: wnętrze paszczy (sekret S02) widać z kamery — czaszka wygaszona, gdy własny smok w niej stoi
+	if WK.czaszka == nil then
+		local sw = kontener:FindFirstChild("Scena") and kontener.Scena:FindFirstChild("Swiat")
+		local m = sw and sw:FindFirstChild("znak") and sw.znak:FindFirstChild("czaszka_wielka")
+		if m then
+			WK.czaszka = {}
+			for _, d in m:GetDescendants() do
+				if d:IsA("BasePart") then
+					table.insert(WK.czaszka, d)
+				end
+			end
+			local cf = m:GetBoundingBox()
+			WK.czaszkaPoz = cf.Position
+		elseif sw then
+			WK.czaszka = false
+		end
+	end
+	if WK.czaszka then
+		local wew = (C.X + w.x - WK.czaszkaPoz.X) ^ 2 + (C.Z + w.z - WK.czaszkaPoz.Z) ^ 2 < 13 * 13
+		if wew ~= WK.czaszkaWew then
+			WK.czaszkaWew = wew
+			for _, d in WK.czaszka do
+				d.LocalTransparencyModifier = if wew then 0.6 else 0
+			end
+		end
+		if wew then
+			n += 1
+		end
+	end
+	WK.m2.przenik = n
+	-- błyski skrzyń: tylko nieznalezione dziś
+	local zn = {}
+	for id in string.gmatch(gracz:GetAttribute("EW_Sekrety") or "", "[^,]+") do
+		zn[id] = true
+	end
+	local ile = 0
+	for id, p in WK.blyskiSek do
+		local wid = not zn[id]
+		p.Transparency = if wid then 0.15 + 0.25 * (0.5 + 0.5 * math.sin(teraz * 3)) else 1
+		if wid then
+			ile += 1
+		end
+	end
+	WK.m2.iskier = ile
+	WK.m2.podY = math.floor((w.podY or 0) * 100 + 0.5) / 100
+	WK.m2.strefa = (SWK and SWK.strefaNastroju) or ""
+end
 
 ------------------------------------------------------------------ strzałka do kulek (pierwsze sekundy)
 WK.lasPodp= nil
@@ -2336,6 +2489,46 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				dzwiek("krol", 1.2)
 				WK.liczZadan = (WK.liczZadan or 0) + 1
 				gracz:SetAttribute("EW_K_ZadaniaGotowe", WK.liczZadan)
+			end
+		elseif t == "lamliwa_rana" then
+			if z.id == mojId then
+				local p = C + Vector3.new(z.x, 3, z.z)
+				E:liczba(p + Vector3.new(0, 3, 0), tostring(z.ile), hex("FFB347"))
+				E:iskry(p, Color3.fromRGB(255, 150, 60), 8, 1)
+				E:iskry(p, Color3.fromRGB(120, 108, 96), 6, 0.8)
+				wstrzasnij(0.25, 0.12)
+				WK.graj("trafienie", 0.8)
+				WK.m2.trafien += 1
+			end
+		elseif t == "lamliwa_rozbita" then
+			local p = C + Vector3.new(z.x, 2, z.z)
+			E:pierscien(C + Vector3.new(z.x, 0.3, z.z), 9, hex("FFB347"), 0.5)
+			E:iskry(p, Color3.fromRGB(120, 108, 96), 16, 1.4)
+			E:iskry(p, Color3.fromRGB(255, 150, 60), 10, 1.2)
+			if z.id == mojId then
+				pokazBaner(string.format(UI.rozbite, z.zloto or 0), zloto, 2)
+				wstrzasnij(0.6, 0.25)
+				WK.graj("poziom", 0.9)
+				dzwiek("monety", 1)
+				WK.m2.rozbite += 1
+			end
+		elseif t == "lamliwa_mala" then
+			if z.id == mojId then
+				E:slowo(C + Vector3.new(z.x, 7, z.z), string.format(UI.rozbij_od, z.od or 6), hex("FFB347"), 0.9, 1.2)
+				WK.m2.zaMali += 1
+			end
+		elseif t == "sekret" then
+			if z.id == mojId then
+				pokazBaner(string.format(UI.sekret, z.zloto or 0), zloto, 2.4)
+				E:pierscien(C + Vector3.new(z.x, 0.4, z.z), 6, zloto, 0.5)
+				E:iskry(C + Vector3.new(z.x, 2, z.z), zloto, 14, 1.2)
+				dzwiek("monety", 1)
+				WK.graj("zadanie", 1.1)
+				WK.m2.sekrety += 1
+			end
+		elseif t == "sekret_byl" then
+			if z.id == mojId then
+				pokazBaner(UI.sekret_jutro, hex("BFE8FF"), 1.6)
 			end
 		elseif t == "zakup_sklep" then
 			if z.id then
@@ -3490,6 +3683,7 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 		gracz:SetAttribute("EW_K_LiniaModelu", if jw then jw.linia or 1 else 0)
 		gracz:SetAttribute("EW_K_Wydarzen", WK.liczWyd or 0)
 		gracz:SetAttribute("EW_K_Czucie", HttpService:JSONEncode(WK.czucie))
+		gracz:SetAttribute("EW_K_Mapa2", HttpService:JSONEncode(WK.m2))
 		gracz:SetAttribute("EW_K_DzwiekiHaki", HttpService:JSONEncode(WK.hakiDzw))
 		local lb = {}
 		for _, q in widoki do
