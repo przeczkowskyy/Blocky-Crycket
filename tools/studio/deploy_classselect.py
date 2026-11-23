@@ -305,6 +305,11 @@ def main():
                'print("[WyborKlasy] modele ras:", n) end')
     # bronie startowe klas w dłoni figury rasy (Paweł 18.11)
     out.append(bronie_startowe_luau())
+    # miększa kreska sali (Paweł 24.11): obrysy sylwetek grup sali brązowe i w połowie przezroczyste (po przebudowie
+    # sali studio_buduj.py --obrysy daje czarne — tu je zmiękczamy); postacie na podeście mają własny, wyraźny obrys
+    out.append("do local k = workspace:FindFirstChild(\"WyborKlasy\") if k then for _, d in ipairs(k:GetDescendants()) do "
+               "if d:IsA(\"Highlight\") then d.OutlineColor = Color3.fromHex(\"3A2A20\") d.OutlineTransparency = 0.5 end end "
+               "k:SetAttribute(\"KreskaMiekka\", true) end end")
     out += ["f.Parent = RS", "end",
             'local SG = game:GetService("StarterGui")',
             "do", build_luau(gui, "root", "ClassSelect"),
