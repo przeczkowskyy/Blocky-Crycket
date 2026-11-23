@@ -6,6 +6,9 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Pawła (propozycja zestawów przedmiotów do ikon)
+- Na prośbę Pawła agent przejrzał listę broni wojownika na stronie fanów Shakes & Fidget (tylko wzór humoru i postępu) i zaproponował 3 zestawy zbroi (Las, Bagno, Dżungla, po 5 slotów) i 3 miecze: nowa notatka [[Przedmioty — zestawy v1]] (propozycja). Rendery z Blendera (katalog Karola) są klockowe i słabo czytelne w slocie, dlatego ikony mają być rysowane w stylu broni startowych Pawła. Do ustalenia: stosunek do katalogu Karola z przedmiotami dla każdej klasy.
+
 ## 2026-11-23 · Claude Code u Pawła (sklep oskryptowany; D-140 i D-141: Diamenty za poziom, trening AFK)
 - **Gdzie stanęliśmy (z GitHuba):** cztery areny walki stoją w Studio od 17–18.11 (las, Bagno, plac ćwiczeń, Dżungla). Od 20.11 praca szła w inne gry. Paweł: zostajemy przy tych arenach i dopracowujemy szczegóły.
 - **Sklep naprawiony i oskryptowany.** Przyczyna „nie działa”: sklep Karola na próbę (`Workspace/SklepProba`) po E przy zbrojmistrzu chował okno `Shop` w tej samej klatce, w której się otwierało. Teraz okno Pawła przejmuje zbrojownię bez zmian w plikach Karola: lewa strona jest kopią EQ, prawa pokazuje towar i kupno z serwera kowala. Szczegóły: [[Sklepy i bronie startowe — prompty]] („Sklep oskryptowany”), [[Okno ekwipunku]]. Pliki: `src/client/EkwipunekStan.luau` (nowy), `src/shared/IkonyPrzedmiotow.luau` (nowy), `src/client/ShopClient.client.luau`, `src/client/EquipmentPanelClient.client.luau`, `tools/shop_build_gui.py` → `src/gui/Shop.model.json`, `tools/studio/deploy_gui.py` (nowa opcja `--moduly`). Wdrożone do Studio i sprawdzone w Play: kupno kapelusza 2684 → 2534 Złota, kapelusz w sklepie i w EQ, zakładki, sklep magiczny „COMING SOON”, bez błędów.

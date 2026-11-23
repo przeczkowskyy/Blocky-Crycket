@@ -2644,6 +2644,72 @@
       "approved_sha256": "a67c850b9432cae26fb3c38bcadaf5c37869972bc0922f1d8e333c3e2d3dda30",
       "roblox_image": "90477826007829",
       "notes": "18.11: wersja bez bialego tla, po tak Pawla"
+    },
+    "ItemBucketHelm": {
+      "created_at": "2026-11-23T21:29:50+00:00",
+      "history": [],
+      "category": "item",
+      "status": "processed",
+      "raw": "assets/raw/PrzedmiotyLv01",
+      "processed": "assets/processed/Przedmioty/ItemBucketHelm.png",
+      "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
+      "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
+      "updated_at": "2026-11-23T21:29:50+00:00"
+    },
+    "ItemBarrelVest": {
+      "created_at": "2026-11-23T21:29:50+00:00",
+      "history": [],
+      "category": "item",
+      "status": "processed",
+      "raw": "assets/raw/PrzedmiotyLv01",
+      "processed": "assets/processed/Przedmioty/ItemBarrelVest.png",
+      "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
+      "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
+      "updated_at": "2026-11-23T21:29:50+00:00"
+    },
+    "ItemOvenMitts": {
+      "created_at": "2026-11-23T21:29:50+00:00",
+      "history": [],
+      "category": "item",
+      "status": "processed",
+      "raw": "assets/raw/PrzedmiotyLv01",
+      "processed": "assets/processed/Przedmioty/ItemOvenMitts.png",
+      "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
+      "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
+      "updated_at": "2026-11-23T21:29:50+00:00"
+    },
+    "ItemMossyClogs": {
+      "created_at": "2026-11-23T21:29:50+00:00",
+      "history": [],
+      "category": "item",
+      "status": "processed",
+      "raw": "assets/raw/PrzedmiotyLv01",
+      "processed": "assets/processed/Przedmioty/ItemMossyClogs.png",
+      "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
+      "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
+      "updated_at": "2026-11-23T21:29:50+00:00"
+    },
+    "ItemPineconeBelt": {
+      "created_at": "2026-11-23T21:29:50+00:00",
+      "history": [],
+      "category": "item",
+      "status": "processed",
+      "raw": "assets/raw/PrzedmiotyLv01",
+      "processed": "assets/processed/Przedmioty/ItemPineconeBelt.png",
+      "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
+      "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
+      "updated_at": "2026-11-23T21:29:50+00:00"
+    },
+    "ItemSplintersword": {
+      "created_at": "2026-11-23T21:29:50+00:00",
+      "history": [],
+      "category": "item",
+      "status": "processed",
+      "raw": "assets/raw/PrzedmiotyLv01",
+      "processed": "assets/processed/Przedmioty/ItemSplintersword.png",
+      "usage": "Przedmiot zwykly, pula Lv 1-10 (D-142)",
+      "notes": "arkusz nano_banana_2_1, 1 wariant, ref KeyArt + BronieStartowe_arkusz; prompt w assets/raw/PrzedmiotyLv01/prompt.txt",
+      "updated_at": "2026-11-23T21:29:50+00:00"
     }
   },
   "updated_at": "2026-11-18T21:05:08+00:00"
