@@ -17,8 +17,8 @@ tags: [postacie, rasy, kot-mag, modele]
 ## Referencje (Higgsfield, Nano Banana 2.1, po jednej wersji; pliki w `assets/raw/RasyKoty/`, poza repozytorium)
 | Rasa | Plik | Stan |
 |---|---|---|
-| Człowiek | sam Kot-Mag (`swiat/postacie/wynik/kot_mag/kot_mag_bohater.jpg`) | baza |
-| Demon | `kot_demon.png` (wersja 2; czerwone futro, czarne rogi przez rondo, żółte oczy, kieł, ogon ze szpicem, czarna szata z czerwonym obszyciem, kostur z płomieniem) | **zatwierdzony przez Pawła 23.11** — w budowie w Blenderze |
+| Człowiek | sam Kot-Mag (`swiat/postacie/wynik/kot_mag/kot_mag_bohater.jpg`) | baza; w wyborze rasy rudy kot w koszulce i niebieskich spodenkach (`kot_demon.czlowiek_podstawowy()`, `Race_Human`) |
+| Demon | `kot_demon.png` (wersja 2; czerwone futro, czarne rogi przez rondo, żółte oczy, kieł, ogon ze szpicem, czarna szata z czerwonym obszyciem, kostur z płomieniem) | **zatwierdzony przez Pawła 23.11** — zbudowany 24.11 (`swiat/postacie/kot_demon.py`: pełny strój i podstawowy, klipy Kota-Maga), w Studio `Workspace/KotDemonPodglad`, w wyborze rasy jako `Race_Demon` |
 | Elf | `kot_elf.png` | do akceptacji (uszy — patrz uwaga wyżej) |
 | Mroczny elf | `kot_mroczny_elf.png` (wygenerowany 24.11 osobno — pierwsze zlecenie odrzucił limit 4 zadań naraz) | do akceptacji (uszy — patrz uwaga wyżej) |
 | Ork | `kot_ork.png` | do akceptacji |

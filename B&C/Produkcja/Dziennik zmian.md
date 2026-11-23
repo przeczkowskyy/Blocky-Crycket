@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-24 · Claude Code u Pawła (koty ras: Kot-Demon i Kot-Człowiek w wyborze rasy; D-145)
+- Referencje 7 kocich ras (Higgsfield, po jednej wersji): [[Rasy jako koty — referencje]]; uwaga Pawła — elfy (i goblin) z jedną parą uszu.
+- Kot-Demon zbudowany na modelu Kota-Maga bez zmian proporcji: `swiat/postacie/kot_demon.py` (własna kopia `kot_mag` z inną paletą + rogi, żółte oczy, brwi, kieł, grot ogona; pełny strój i strój podstawowy) oraz Kot-Człowiek (rudy kot w koszulce i niebieskich spodenkach). Wszystkie klipy Kota-Maga (11). Budowa w Studio: `tools/studio/kot_demon_studio.py` → własny kontener `Workspace/KotDemonPodglad` na placu miasteczka (figury grają animacje w Play). Plik Karola `kot_mag.py` nietknięty.
+- Wybór rasy: `ReplicatedStorage.WyborKlasyModele.Race_Demon` i `Race_Human` to teraz koty (bez klipów, ×1,4); ludziki zostały jako `Race_*_ludek`. Sprawdzone w Play.
+- Decyzja Pawła D-145 (wszystkie postacie gracza to koty, Blocky właścicielem kotów w lore) i pytanie 93 dla Karola. Numery zmienione z 144/92, bo druga sesja w tym czasie dodała D-144 i pytanie 92.
+
 ## 2026-11-23 · Claude Code u Pawła (grafiki wgrane do Roblox, okno treningu z grafik, pasek natywny)
 - Po „tak” Pawła wgrane do Roblox przez Studio MCP (`upload_image`; klucz Open Cloud w `.env` na tym komputerze jest pusty): 10 grafik ekranu treningu (`Trening*`) i 6 ikon przedmiotów puli Lv 1–10 (`Item*`); ID w `assets/manifest.json` (status `in_roblox`).
 - Okno treningu na gałęzi `pawel/diamenty-afk` składa się teraz z tych grafik: drewniany panel, ikona stanowiska, czerwony STOP z napisem natywnym, złota moneta z pięścią i „2X” przy skill checku. Pasek postępu jest NATYWNY (Paweł: obrazek paska się pikselował) — zaokrąglona ramka z gradientem zieleni, obrysem i połyskiem, tak samo w makiecie Figmy (ramka 49:115). `TreningPasek` wgrany, ale nieużywany. Sprawdzone w Play (dodatki tylko w sesji Play).

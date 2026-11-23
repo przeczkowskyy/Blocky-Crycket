@@ -662,5 +662,11 @@ Po wyborze rasy gracz porusza się po świecie **modelem swojej rasy** (np. demo
 
 Uwaga agenta (D-114): zgoda. Modele ras mają ten sam szkielet R15 i te same klipy co bohaterowie klas (`RASY.md` pkt 1), więc zamiana jest technicznie tania, a animacje treningu AFK z gałęzi `pawel/diamenty-afk` już działają na każdym szkielecie R15. Rasa staje się wtedy widoczną tożsamością gracza (lepsze dla pokazywania się innym), a klasę trzeba będzie pokazać inaczej — bronią i strojem z przymierzalni. Zmienię zdanie, jeśli gracze w próbie będą mylić klasy innych graczy.
 
+### D-145 Wszystkie postacie gracza to koty; Blocky jest ich właścicielem
+✅ zatwierdzona · game design / postacie / lore · 2026-11-24 · źródło: polecenia Pawła w Claude Code w nocy 23/24.11 · zdecydował: Paweł 2026-11-24
+Gracz gra **kotem**: każda rasa to wariant naszego Kota-Maga — ten sam model (wymiary, sylwetka, kości, klipy), inne kolory, twarz i cechy rasy (notatka [[Rasy jako koty — referencje]]). Rasa Człowiek = rudy Kot-Mag. W wyborze klasy też mają być koty zamiast ludzików: Rycerz i Zwiadowca to rudy kot w przedmiotach tych klas, przebudowanych pod ciało kota. **Blocky** (rycerz z tytułu gry) zostaje jako **właściciel i opiekun kotów** w lore (Paweł: „bloki będzie po prostu jakby takim właścicielem tych naszych kotków”), nie postać gracza. Rozszerza D-143. Ramki portretu z paskiem doświadczenia dostaną mordki kotów zamiast ludzików (Paweł: do zrobienia, gdy modele ras będą gotowe). Czeka na potwierdzenie Karola (D-043) — modele 3D, bohater w świecie i przedmioty to jego obszar (D-093, D-071); pytanie 93 w [[Pytania otwarte]].
+
+Uwaga agenta (D-114), zgoda z poprawką: jeden słodki, rozpoznawalny bohater (kot) to mocniejsza marka i miniatura niż ludziki Roblox, a jeden szkielet dla wszystkich ras upraszcza klipy i przedmioty. Poprawka: przedmioty Rycerza i Zwiadowcy oraz cały katalog sklepu (`swiat/postacie/sklep_przedmioty.json`, ciało „czlowiek”) trzeba przerobić pod ciało „kot” — to duża praca 3D, najlepiej po stronie Karola. Tytuł „Blocky & Crycket” zostaje spójny tylko, jeśli Blocky jest widoczny w grze (np. NPC-opiekun w miasteczku, przewodnik w samouczku). Zmienię zdanie, jeśli testerzy będą woleli wygląd ludzików.
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

@@ -880,3 +880,11 @@ Szczegóły: wykryte 23.11 przy podpinaniu sklepu Pawła pod serwer sklepu Karol
 
 Szczegóły: modele ras mają ten sam szkielet R15 i klipy co bohaterowie (`swiat/postacie/RASY.md` pkt 1). Animacje treningu AFK (gałąź `pawel/diamenty-afk`) już działają na bohaterze, awatarze i każdym szkielecie R15 — nadpisują pozę tylko lokalnie, w czasie treningu, po pętli Twojego bohatera (priorytet Last + 1). Poza tym trening potrzebuje od Ciebie: rozszerzenia umowy `RuchBohatera` o wymuszony obrót korzenia (leżenie na ławce) albo zgody na obecne obejście.
 **Odpowiedź:**
+
+## 93. Karol: koty zamiast ludzików — kto robi modele i przedmioty?
+- Paweł 24.11 (D-145): wszystkie postacie gracza to koty (rasy = warianty Kota-Maga), w wyborze klasy koty w przedmiotach Rycerza i Zwiadowcy; Blocky zostaje właścicielem kotów w lore.
+- Zrobione u Pawła na próbę: Kot-Demon (pełny strój i podstawowy) i Kot-Człowiek w wyborze rasy (`swiat/postacie/kot_demon.py`, kopie w `ReplicatedStorage.WyborKlasyModele`); Twoje pliki nietknięte.
+- Do wyboru: (a) Twoja strona robi resztę ras, przedmioty klas i sklepu pod ciało kota oraz bohatera w świecie (plan Max); (b) agent Pawła robi to krok po kroku; (c) nie zgadzasz się z D-144 — rozmowa na sesji.
+
+Szczegóły: referencje 7 ras (jedna para uszu u elfów i goblina): [[Rasy jako koty — referencje]]. Przedmioty z katalogu sklepu mają ciało „czlowiek” i nie pasują do kota. Bohater w świecie (`swiat/bohater_swiat`) dalej pokazuje Rycerza/Zwiadowcę/Kota-Maga — zob. też pytanie 91. Kopie ludzików w wyborze rasy zostały jako `Race_Demon_ludek` i `Race_Human_ludek`.
+**Odpowiedź:**
