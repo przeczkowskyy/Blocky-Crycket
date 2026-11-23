@@ -378,12 +378,90 @@ def sceny_swiat(p, f):
     f.stop()
 
 
-def sklej(klipy, wyj, kat):
+def sceny_interfejs(p, f):
+    """Interfejs (interfejs1): HUD z portretem i drabiną → bieg i ogień z rigu (odnowa jako wycinek) → zamknięta linia →
+    odsłona ewolucji (kokon → nazwa i moc → NEXT → CONTINUE) → panel legowiska (trofea, ulepszenia)."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    x0, z0 = PP.wolna_droga()
+    # stadium 1: zamknięte linie (kłódki i pigułki „at <STADIUM>”), bieg i BITE
+    p.serwer('"forma_gracza", 1')
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
+    p.serwer('"hp", nil, 5000')
+    time.sleep(1.4)
+    f.nagrywaj("zamkniete")
+    p.ustaw("EW_TestSter", "Vector3.new(-1, 0, 4)")
+    time.sleep(1.5)
+    p.przycisk("gryz")
+    time.sleep(0.6)
+    p.przycisk("zryw")
+    time.sleep(2.2)
+    f.stop()
+    p.serwer('"forma_gracza", 3')
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
+    p.serwer('"zloto", 12450')
+    p.serwer('"zloto_leg", 860')
+    p.serwer('"hp", nil, 5000')
+    time.sleep(1.4)
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"wzrost", %d' % int((p.atr().get("EW_Potrzeba") or 170) * 0.55))
+    f.nagrywaj("hud")
+    p.ustaw("EW_TestSter", "Vector3.new(-1, 0, 8)")
+    time.sleep(2.4)
+    p.przycisk("zryw")
+    time.sleep(1.2)
+    p.przycisk("ogien")
+    time.sleep(1.4)
+    p.przycisk("gryz")
+    time.sleep(0.5)
+    p.przycisk("gryz")
+    time.sleep(3.6)
+    f.stop()
+    # ogień z rigu (stadium 4) i wycinek odnowy
+    p.serwer('"forma_gracza", 4')
+    p.serwer('"zdolnosci_zeruj"')
+    p.przycisk("odnowa_zeruj")
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0 + 8, z0))
+    time.sleep(1.2)
+    p.serwer('"tarcza_zeruj"')
+    p.ustaw("EW_TestSter", "Vector3.new(-1, 0, 0.4)")
+    time.sleep(0.4)
+    f.nagrywaj("ogien")
+    p.przycisk("ogien")
+    time.sleep(5.6)
+    f.stop()
+    # odsłona: pełny pasek → EVOLVE → kokon → nazwa, nowa moc, NEXT → CONTINUE
+    p.serwer('"wzrost_pelny"')
+    time.sleep(0.6)
+    f.nagrywaj("odslona")
+    time.sleep(0.8)
+    p.przycisk("ewoluuj")
+    time.sleep(D["ewolucja"]["kokon_s"] + 3.2)
+    p.przycisk("dalej")
+    time.sleep(0.8)
+    f.stop()
+    # panel legowiska
+    p.przycisk("legowisko")
+    time.sleep(0.4)
+    f.nagrywaj("legowisko")
+    time.sleep(4.0)
+    p.przycisk("zakladka_u")
+    time.sleep(3.2)
+    p.przycisk("zakladka_t")
+    time.sleep(1.2)
+    p.przycisk("zamknij")
+    time.sleep(0.8)
+    f.stop()
+
+
+def sklej(klipy, wyj, kat, pasy=False):
     gotowe = []
+    vf = (r"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x1C162C,fps=30,format=yuv420p" if pasy
+          else r"crop=trunc(min(iw\,ih*16/9)/2)*2:trunc(min(ih\,iw*9/16)/2)*2,scale=1280:720,fps=30,format=yuv420p")
     for i, (k, od) in enumerate(klipy):
         c = os.path.join(kat, "c%02d.mp4" % i)
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "%.2f" % od, "-i", k, "-map", "0:v:0", "-map", "0:a?",
-                        "-vf", r"crop=trunc(min(iw\,ih*16/9)/2)*2:trunc(min(ih\,iw*9/16)/2)*2,scale=1280:720,fps=30,format=yuv420p",
+                        "-vf", vf,
                         "-c:v", "libx264", "-preset", "medium", "-crf", "24", "-c:a", "aac", "-b:a", "96k", "-ar", "48000", "-ac", "2",
                         c], check=True)
         gotowe.append(c)
@@ -412,6 +490,7 @@ def main():
     ap.add_argument("--walka", action="store_true", help="sceny walki (walka1) zamiast przeglądu gry")
     ap.add_argument("--blender", action="store_true", help="smoki z Blendera: wyklucie → … → stadium 8 (smok-blender1)")
     ap.add_argument("--swiat", action="store_true", help="wycieczka po świecie (swiat1)")
+    ap.add_argument("--interfejs", action="store_true", help="interfejs z makiet (interfejs1)")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)
     if wyj.startswith(os.path.abspath(PP.REPO)):
@@ -428,11 +507,11 @@ def main():
             PP.czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
             p.luau(PP.BEZ_LISTY, "Client")
             time.sleep(1.0)
-            (sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
+            (sceny_interfejs if a.interfejs else sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
         finally:
             log("Stop:", PP.play(a.studio, False)[-40:])
             PP.czekaj(lambda: "Current Studio Mode: Edit" in p.call("get_studio_state")["text"], 40, 0.5)
-    sklej(f.klipy, wyj, kat)
+    sklej(f.klipy, wyj, kat, pasy=a.interfejs)
     pl = plansza(wyj)
     if not a.zostaw_klipy:
         shutil.rmtree(kat, ignore_errors=True)

@@ -60,6 +60,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--studio", required=True)
     ap.add_argument("--urzadzenie", default="Samsung Galaxy A06")
+    ap.add_argument("--przyrostek", default="", help="przyrostek nazw zrzutów (np. _tablet)")
     a = ap.parse_args()
     with PP.StudioMCP(timeout=180) as s:
         p = PP.P(s, a.studio)
@@ -76,7 +77,7 @@ def main():
             p.luau(PP.BEZ_LISTY, "Client")
             p.ustaw("EW_TestAuto", "true")
             time.sleep(6)
-            p.zrzut("06_telefon.jpg")
+            p.zrzut("06_telefon%s.jpg" % a.przyrostek)
             u1 = uklad(p)
             p.ustaw("EW_TestAuto", "false")
             PP.wynik("T1 HUD w grze", u1 and not u1["nakladanie"] and not u1["poza"] and not u1["male"] and not u1.get("rogi_paska"),
@@ -90,12 +91,17 @@ def main():
             p.przycisk("ewoluuj")
             time.sleep(PP.D["ewolucja"]["kokon_s"] + 0.4)
             u3 = uklad(p)
-            PP.wynik("T3 tabliczka odsłony mieści się", u3 and "Tabliczka" in u3["prostokaty"] and "Tabliczka" not in u3["poza"],
-                     tabliczka=u3.get("prostokaty", {}).get("Tabliczka"), poza=u3.get("poza"))
-            time.sleep(1.5)
+            time.sleep(1.2)
+            u3 = uklad(p)
+            p.zrzut("33_telefon_odslona%s.jpg" % a.przyrostek)
+            PP.wynik("T3 odsłona mieści się", u3 and "OdslonaSrodek" in u3["prostokaty"] and "OdslonaSrodek" not in u3["poza"] and not u3["male"],
+                     srodek=u3.get("prostokaty", {}).get("OdslonaSrodek"), okno=u3.get("okno"), poza=u3.get("poza"), male=u3.get("male"))
+            p.przycisk("dalej")
+            time.sleep(0.5)
             p.przycisk("legowisko")
             time.sleep(0.5)
             u4 = uklad(p)
+            p.zrzut("34_telefon_panel%s.jpg" % a.przyrostek)
             PP.wynik("T4 panel legowiska mieści się", u4 and "Panel" in u4["prostokaty"] and "Panel" not in u4["poza"] and not u4["male"],
                      panel=u4.get("prostokaty", {}).get("Panel"), okno=u4.get("okno"), male=u4.get("male"))
             p.przycisk("zakladka_u")
@@ -118,7 +124,7 @@ def main():
                      and (zd1.get("moc", {}).get("zamkniete") or zd1.get("ogien", {}).get("zamkniete")),
                      przed=zd1, po=zd7, nakladanie=u7 and u7.get("nakladanie"), poza=u7 and u7.get("poza"),
                      prostokaty={k: v for k, v in pr7.items() if k in ("Gryz", "Zryw", "Ogien", "Moc", "OgienNast", "MocNast", "Zycie")})
-            p.zrzut("17_telefon_walka.jpg")
+            p.zrzut("17_telefon_walka%s.jpg" % a.przyrostek)
             a1 = p.atr()
             PP.wynik("T5 klatka na telefonie", (a1.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a1.get("EW_K_Klatka") or 0, 1),
                      praca_skryptu_ms=round(a1.get("EW_K_Praca") or 0, 2), widokow=a1.get("EW_K_Widokow"), czesci_smokow=a1.get("EW_K_CzesciSmokow"),

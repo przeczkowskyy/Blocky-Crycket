@@ -192,7 +192,7 @@ class TestPetla(unittest.TestCase):
         oczek = [max(1, math.floor(sila * x + 0.5)) for x in W["lancuch_x"]]
         for z, o in zip(rany, oczek):
             self.assertIn(z["ile"], (o, max(1, math.floor(sila * W["lancuch_x"][rany.index(z)] * W["kryt_x"] + 0.5))), "rana z łańcucha (albo kryt)")
-        self.assertTrue(rany[2]["pw"] and not rany[0]["pw"], "trzeci cios przewraca")
+        self.assertTrue(rany[2].get("pw") and not rany[0].get("pw"), "trzeci cios przewraca")
         self.assertGreater(g(ofiara, "ogluszonyDo"), g(S, "czas"), "przewrócony")
         self.assertGreater(abs(g(ofiara, "vx")), W["odrzut"] * 0.9, "trzeci cios odrzuca")
         # przerwa dłuższa niż lancuch_reset_s → łańcuch od nowa
@@ -345,7 +345,7 @@ class TestPetla(unittest.TestCase):
         self.assertTrue(jeden("zdolnosc", S, gr, "moc", LM.Tabela()))
         zd = krok(S, 8, 0.05)
         self.assertTrue([z for z in zd if z["t"] == "ogon"])
-        self.assertTrue([z for z in zd if z["t"] == "rana" and z["id"] == g(za, "id") and z["pw"]], "za plecami też (360°)")
+        self.assertTrue([z for z in zd if z["t"] == "rana" and z["id"] == g(za, "id") and z.get("pw")], "za plecami też (360°)")
         self.assertFalse([z for z in zd if z["t"] == "rana" and z["id"] == g(mlody, "id")], "gracz stadium 2 chroniony")
     def test_10_odbicie_chronionych(self):
         S = stan()
@@ -780,7 +780,13 @@ class TestModele(unittest.TestCase):
 
     def test_29_wczytanie_danych(self):
         I = self.I
-        self.assertEqual(I["wersja"], 2)
+        self.assertEqual(I["wersja"], 3)
+        # indeks 3: w „stadia” tylko osiem stadiów (jajo pod kluczem „jajo”), nowe klucze efektów, wariantów i prędkości stworów
+        self.assertEqual([S["nr"] for S in I["stadia"]], list(range(1, 9)))
+        self.assertEqual(I["jajo"]["id"], "smok_jajo")
+        self.assertEqual({E["id"] for E in I["efekty"]}, {"ogien_stozek", "przypalenie"})
+        self.assertEqual(I["warianty_modeli"][0]["zamiast"], "smok_1")
+        self.assertEqual(I["predkosc_stworow"]["owca"], {"chod": 1.76, "ucieczka": 5.0})
         self.assertEqual(len(I["stawy"]), 26)
         self.assertEqual(len(I["zaczepy"]), 13)
         self.assertEqual(len(I["regiony"]), 9)
@@ -810,10 +816,34 @@ class TestModele(unittest.TestCase):
             self.assertGreater(K["klipy"]["chod"]["predkosc"], 0)
             self.assertGreater(K["klipy"]["bieg"]["predkosc"], K["klipy"]["chod"]["predkosc"])
         # rigi do budowy: 8 × (pełny, uproszczony) + jajo + rekwizyty + stwory; klipy 8 + jajo + stwory
-        rigi, klipy = DN.modele_do_budowy(DN.ustawienia())
+        U = DN.ustawienia()
+        rigi, klipy = DN.modele_do_budowy(U)
         self.assertEqual(len([n for n, _ in rigi if n.startswith("SmokB_") and n != "SmokB_jajo"]), 16)
         self.assertIn("SmokB_jajo", [n for n, _ in rigi])
         self.assertIn("smok_jajo", [i for i, _ in klipy])
+        # efekty z indeksu 3 i wybór pisklęcia (ustawienia: blender.piskle „obecne” | „lagodne”)
+        R = dict(rigi)
+        self.assertEqual(R["Efekt_ogien_stozek"], "ogien_stozek_rig.json")
+        self.assertEqual(R["Rekwizyt_przypalenie"], "rekwizyt_przypalenie_rig.json")
+        self.assertIn("ogien_stozek", [i for i, _ in klipy])
+        self.assertEqual(R["SmokB_1"], "smok_1_rig.json" if U["blender"].get("piskle", "obecne") == "obecne" else "smok_1_lagodny_rig.json")
+        U2 = json.loads(json.dumps(U))
+        U2["blender"]["piskle"] = "lagodne"
+        stary = DN.ustawienia
+        DN.ustawienia = lambda: U2
+        try:
+            self.assertEqual(dict(DN.modele_do_budowy(U2)[0])["SmokB_1"], "smok_1_lagodny_rig.json")
+        finally:
+            DN.ustawienia = stary
+        Rl = DN.modele_wczytaj("smok_1_lagodny_rig.json")
+        self.assertEqual([k[0] for k in Rl["kosci"]], I["stawy"], "łagodne pisklę: te same stawy")
+        # krótki koziołek i poza portretu w każdym stadium; chód 7 i bieg 18 studs/s
+        for S in st:
+            K = DN.modele_wczytaj(S["pliki"][1])["klipy"]
+            self.assertEqual(K["koziolek"]["dl"], 14)
+            self.assertIn("koziolek_dlugi", K)
+            self.assertIn("portret", K)
+            self.assertEqual((K["chod"]["predkosc"], K["bieg"]["predkosc"]), (7.0, 18.0), S["id"])
         # serwer: zamach zdolności = zdarzenie w klipie stadium
         for i, F in enumerate(D["formy"]):
             K = DN.modele_wczytaj("smok_%d_klipy.json" % (i + 1))
@@ -864,6 +894,98 @@ class TestModele(unittest.TestCase):
         oz = J["klipy"]["ogon_zamach"]
         maks = max(abs(v) for w in oz["probki"] for v in w)
         self.assertGreater(maks, 1800, "obrót ciała w ogon_zamach (dziesiąte stopnia)")
+
+
+class TestRuchIIkony(unittest.TestCase):
+    """Dane 3 i interfejs1: tempo chodu i biegu z prędkości po ziemi (bez poślizgu stóp), zastępstwa ikon."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.KL = IT.wykonaj(open(os.path.join(PAKIET, "zrodla", "KlipyEwolucji.luau"), encoding="utf-8").read(), "KlipyEwolucji")[0]
+
+    def test_33_chod_bieg_z_predkosci(self):
+        KL = self.KL
+        LOD = D["blender"]["lod"]
+        for nr in range(1, 9):
+            J = DN.modele_wczytaj("smok_%d_klipy.json" % nr)
+            W = T_KL(KL, "przygotuj", J)
+            vc, vb = J["klipy"]["chod"]["predkosc"], J["klipy"]["bieg"]["predkosc"]
+            prog = math.sqrt(vc * vb)
+
+            def wybor(v, pop=None):
+                o = lu({"skala": 1, "mn": LOD["tempo_min"], "mx": LOD["tempo_maks"], "hist": LOD["bieg_hist"]})
+                r = IT.wywolaj(KL.get("chodBieg"), [W, float(v), pop, o])
+                return r[0], r[1]
+            self.assertEqual(wybor(0.5)[0], "spoczynek")
+            # szybkości gry: chód przy wolnym ruchu, bieg przy 16–26 studs/s; stopa w podporze stoi: v = tempo × predkosc
+            for v, nazwa in ((3, "chod"), (7, "chod"), (11, "chod"), (14, "bieg"), (16, "bieg"), (22, "bieg"), (26, "bieg")):
+                n, t = wybor(v)
+                self.assertEqual(n, nazwa, (nr, v))
+                pk = vc if n == "chod" else vb
+                self.assertAlmostEqual(t * pk, v, places=6, msg="poślizg stopy przy %s studs/s (stadium %d)" % (v, nr))
+            # histereza wokół środka geometrycznego (≈11,2): bez migotania chód ↔ bieg
+            h = LOD["bieg_hist"]
+            self.assertEqual(wybor(prog + h * 0.5, "chod")[0], "chod")
+            self.assertEqual(wybor(prog + h * 1.2, "chod")[0], "bieg")
+            self.assertEqual(wybor(prog - h * 0.5, "bieg")[0], "bieg")
+            self.assertEqual(wybor(prog - h * 1.2, "bieg")[0], "chod")
+            # granice tempa nie obcinają zakresu prędkości gry (16–26 studs/s, ulepszenie SPEED)
+            for v in D["ulepszenia"][1]["wartosci"]:
+                self.assertTrue(LOD["tempo_min"] <= v / vb <= LOD["tempo_maks"], v)
+        # owca i golem: własne predkosc (owca: ucieczka przy 13 studs/s → tempo 2,6)
+        Jo = DN.modele_wczytaj("owca_klipy.json")
+        Wo = T_KL(KL, "przygotuj", Jo)
+        self.assertAlmostEqual(T_KL(KL, "tempo", Wo.get("klipy").get("ucieczka"), 13.0, 1.0, 0.3, 3.0) * 5.0, 13.0, places=6)
+        self.assertAlmostEqual(T_KL(KL, "tempo", Wo.get("klipy").get("chod"), 5.0, 1.0, 0.3, 3.0) * 1.76, 5.0, places=6)
+        Jg = DN.modele_wczytaj("golem_3_klipy.json")
+        Wg = T_KL(KL, "przygotuj", Jg)
+        n, t = IT.wywolaj(KL.get("chodBieg"), [Wg, 9.0, None, lu({"skala": 1, "mn": 0.1, "mx": 3})])[:2]
+        self.assertEqual(n, "chod", "golem nie ma biegu")
+        self.assertAlmostEqual(t * Jg["klipy"]["chod"]["predkosc"], 9.0, places=6)
+
+    def test_34_ikony_i_zastepstwa(self):
+        U = DN.ustawienia()
+        ids = U["ikony"]["id"]
+        # 24 ikony z modele/README.md (runda 4), wszystkie na razie bez numeru
+        oczek = ["bite", "dash", "ember_spit", "fire_breath", "inferno_breath", "tail_sweep", "wing_glide", "roar", "meteor_dive", "zablokowane",
+                 "moneta", "skarb", "kula_mala", "kula_duza", "kula_wielka", "wariant_gold", "wariant_crystal", "wariant_ruby", "wariant_rainbow",
+                 "korona", "ulepszenie_jaw", "ulepszenie_speed", "ulepszenie_appetite", "czaszka"]
+        self.assertEqual(sorted(ids), sorted(oczek))
+        self.assertEqual(D["ikony"], ids)
+        for linia in ("ogien", "moc"):
+            for A in D["zdolnosci"][linia]:
+                self.assertIn(A["ikona"], ids, A["id"])
+                self.assertTrue(A.get("opis"), A["id"])
+        for W in D["warianty"]:
+            self.assertIn(W["ikona"], ids)
+        for Up in D["ulepszenia"]:
+            self.assertIn(Up["ikona"], ids)
+        src = open(os.path.join(PAKIET, "zrodla", "IkonyEwolucji.luau"), encoding="utf-8").read()
+        I = IT.wykonaj(src, "IkonyEwolucji")[0]
+        opak = IT.wykonaj("return function(I, ids, n, ma, napis) return I.wybierz(ids, n, function(x) return ma end, napis) end", "opak")[0]
+
+        def wybierz(tab, n, ma=True, napis=None):
+            return LM.z_luau(IT.wywolaj(opak, [I, lu(tab), n, ma, napis])[0])
+        typy = {}
+        for n in oczek:
+            w = wybierz(ids, n)
+            self.assertNotEqual(w["typ"], "obraz", n)
+            typy[n] = w["typ"]
+        # zastępstwa: modele 3D z wzorców (kule, kopiec złota), moneta i korona z części, kłódka i romby rysowane, reszta napis
+        self.assertEqual({n for n, t in typy.items() if t == "wzorzec"}, {"skarb", "kula_mala", "kula_duza", "kula_wielka"})
+        self.assertEqual({n for n, t in typy.items() if t == "model"}, {"moneta", "korona"})
+        self.assertEqual({n for n, t in typy.items() if t == "rysunek"}, {"zablokowane", "wariant_gold", "wariant_crystal", "wariant_ruby", "wariant_rainbow"})
+        self.assertEqual(wybierz(ids, "roar", True, "ROAR")["napis"], "ROAR")
+        # bez wzorca w grze → napis zapasowy na płytce
+        self.assertEqual(wybierz(ids, "kula_mala", False), {"typ": "napis", "napis": "ORB"})
+        # po wpisaniu numeru: obraz bez zmiany kodu (liczba albo napis rbxassetid)
+        ids2 = dict(ids, bite=123456, roar="rbxassetid://987")
+        self.assertEqual(wybierz(ids2, "bite"), {"typ": "obraz", "wartosc": "rbxassetid://123456"})
+        self.assertEqual(wybierz(ids2, "roar")["wartosc"], "rbxassetid://987")
+        self.assertEqual(IT.wywolaj(I.get("ileObrazow"), [lu(ids2)])[0], 2)
+        self.assertEqual(IT.wywolaj(I.get("ileObrazow"), [lu(ids)])[0], 0)
+        # nieznana nazwa → napis z nazwy
+        self.assertEqual(wybierz(ids, "cos_nowego")["typ"], "napis")
 
 
 def T_KL(KL, n, *a):

@@ -56,8 +56,14 @@ local function wariantD(id: string?)
 	end
 	return nil
 end
-local czcionka = Enum.Font[UI.czcionka] or Enum.Font.LuckiestGuy
-local cyfry = Enum.Font[UI.czcionka_cyfr] or Enum.Font.FredokaOne
+local function fontZ(n: string?, zapas: Enum.Font): Enum.Font
+	local ok, f = pcall(function()
+		return Enum.Font[n]
+	end)
+	return if ok and f then f else zapas
+end
+local czcionka = fontZ(UI.czcionka, Enum.Font.FredokaOne)
+local cyfry = fontZ(UI.czcionka_cyfr, Enum.Font.FredokaOne)
 
 local lokalne = Instance.new("Folder")
 lokalne.Name = "EwolucjaLokalne"
@@ -154,9 +160,9 @@ local emulacja: Vector2? = nil
 local skale: { UIScale } = {}
 local function skalaEkranu(): number
 	local v = emulacja or kamera.ViewportSize
-	return math.clamp(math.min(v.X / 667, v.Y / 375), 1, 1.8)
+	return math.clamp(math.min(v.X / 844, v.Y / 390), 0.6, 1.8)
 end
--- warstwa HUD: rozmiar i odsunięcie od kotwicy w punktach wzoru 667 × 375, skalowane razem (bez nakładania na dużych ekranach)
+-- warstwa HUD: rozmiar i odsunięcie od kotwicy w punktach wzoru 844 × 390, skalowane razem (bez nakładania na dużych ekranach)
 local function warstwa(nazwa: string, kotwica: Vector2, poz: UDim2, roz: Vector2): Frame
 	local sk = skalaEkranu()
 	local f = nowy("Frame", { Name = nazwa, AnchorPoint = kotwica, Position = UDim2.new(poz.X.Scale, poz.X.Offset * sk, poz.Y.Scale, poz.Y.Offset * sk),
@@ -195,35 +201,22 @@ local function doEkranu(p: Vector2): Vector2
 	return (p - ekran.AbsolutePosition) / ekranSkala.Scale
 end
 
-local function przyciskOkragly(rodzic: Instance, nazwa: string, t: string, rozmiar: number, kolor: string)
-	local b = nowy("TextButton", { Name = nazwa, Size = UDim2.fromOffset(rozmiar, rozmiar), BackgroundColor3 = hex(kolor), Text = "", AutoButtonColor = true }, rodzic)
-	rog(b, rozmiar // 2)
-	obrys(b, 3, tusz)
-	local cien = nowy("Frame", { Name = "Odnowa", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.fromScale(1, 0),
-		BackgroundColor3 = tusz, BackgroundTransparency = 0.45, BorderSizePixel = 0, ZIndex = 2 }, b)
-	rog(cien, rozmiar // 2)
-	local l = napis(b, t, UDim2.fromScale(0.1, 0.32), UDim2.fromScale(0.8, 0.36))
-	l.ZIndex = 3
-	l.Name = "Napis"
-	return b, cien, l
-end
+-- walka1: stan i przyciski klienta w jednej tabeli (limit 200 zmiennych lokalnych skryptu)
+local WK = {}
 
--- pasek wzrostu (góra, środek)
-local ramkaWzrostu = warstwa("Wzrost", Vector2.new(0.5, 0), UDim2.new(0.5, -40, 0, 6), Vector2.new(230, 48))
-local nazwaFormy = napis(ramkaWzrostu, "", UDim2.fromOffset(0, 0), UDim2.new(1, 0, 0, 22))
-local pasekTlo = nowy("Frame", { Position = UDim2.fromOffset(6, 26), Size = UDim2.new(1, -12, 0, 18), BackgroundColor3 = tusz }, ramkaWzrostu)
-rog(pasekTlo, 9)
-obrys(pasekTlo, 2, papier)
-local pasekW = nowy("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = hex("6BD66B"), BorderSizePixel = 0 }, pasekTlo)
-rog(pasekW, 9)
-local pasekNapis = napis(pasekTlo, "", UDim2.fromScale(0, 0.05), UDim2.fromScale(1, 0.9), papier, cyfry)
-pasekNapis.ZIndex = 2
+-- interfejs1: ekran gry z makiet (moduł InterfejsKlienta): góra z portretem i paskami, złoto i skarb, drabina, przyciski
+-- akcji z odnową, pigułki następnych zdolności, panel legowiska, odsłona ewolucji; ikony z tabeli D.ikony (IkonyEwolucji)
+local HUD = require(Moduly:WaitForChild("InterfejsKlienta")).nowe({ D = D, ekran = ekran, nowy = nowy, warstwa = warstwa, skale = skale,
+	skalaEkranu = skalaEkranu, SK = SK, wzorce = wzorce, Ikony = require(Moduly:WaitForChild("IkonyEwolucji")) })
+WK.HUD = HUD
+local bGryz, bZryw, bLegowisko = HUD.gryz.b, HUD.zryw.b, HUD.bLegowisko
+WK.zdOgien, WK.zdMoc, WK.nastOgien, WK.nastMoc = HUD.ogien, HUD.moc, HUD.nastOgien, HUD.nastMoc
+WK.panel = HUD.panel.ramka
+WK.tabT, WK.tabU = HUD.panel.tabT, HUD.panel.tabU
+WK.trofea, WK.karty, WK.bZamknij = HUD.panel.trofea, HUD.panel.karty, HUD.panel.zamknij
 
-local pasekSkala = nowy("UIScale", { Scale = 1 }, pasekTlo)
-local pulsPaska = 99
-
--- pasek bossa (pod paskiem wzrostu, gdy boss blisko)
-local ramkaBossa = warstwa("Boss", Vector2.new(0.5, 0), UDim2.new(0.5, -40, 0, 74), Vector2.new(250, 34))
+-- pasek bossa (pod górą ekranu, gdy boss blisko)
+local ramkaBossa = warstwa("Boss", Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, 74), Vector2.new(250, 34))
 local bossNazwa = napis(ramkaBossa, D.boss.nazwa, UDim2.fromOffset(0, 0), UDim2.new(1, 0, 0, 16), hex("FF9AD8"))
 local bossTlo = nowy("Frame", { Position = UDim2.fromOffset(6, 17), Size = UDim2.new(1, -12, 0, 14), BackgroundColor3 = tusz }, ramkaBossa)
 rog(bossTlo, 7)
@@ -237,25 +230,12 @@ local blysk = nowy("Frame", { Name = "Blysk", Size = UDim2.fromScale(1, 1), Back
 	ZIndex = 30, Active = false }, gui)
 local blyskT = 99
 
--- złoto + DEN (góra, na prawo od paska)
-local ramkaZlota = warstwa("Zloto", Vector2.new(0, 0), UDim2.new(0.5, 82, 0, 6), Vector2.new(150, 46))
-local bLegowisko = nowy("TextButton", { Name = "Legowisko", Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex("3A2F4A"), Text = "", AutoButtonColor = true }, ramkaZlota)
-rog(bLegowisko, 12)
-obrys(bLegowisko, 3, zloto)
-local moneta = nowy("Frame", { Position = UDim2.fromOffset(6, 9), Size = UDim2.fromOffset(28, 28), BackgroundColor3 = zloto }, bLegowisko)
-rog(moneta, 14)
-obrys(moneta, 2, tusz)
-local zlotoNapis = napis(bLegowisko, "0", UDim2.fromOffset(38, 3), UDim2.new(1, -44, 0, 24), zloto, cyfry)
-zlotoNapis.TextXAlignment = Enum.TextXAlignment.Left
-local naSNapis = napis(bLegowisko, "", UDim2.fromOffset(38, 26), UDim2.new(1, -44, 0, 17), papier, cyfry)
-naSNapis.TextXAlignment = Enum.TextXAlignment.Left
-
 -- toast (dymek pod złotem)
-local ramkaToastu = warstwa("Toast", Vector2.new(0, 0), UDim2.new(0.5, 82, 0, 58), Vector2.new(150, 34))
-local toastTlo = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = zloto }, ramkaToastu)
-rog(toastTlo, 10)
-obrys(toastTlo, 2, tusz)
-local toastNapis = napis(toastTlo, "", UDim2.fromScale(0.05, 0.1), UDim2.fromScale(0.9, 0.8), tusz, cyfry)
+local ramkaToastu = warstwa("Toast", Vector2.new(1, 0), UDim2.new(1, -146, 0, 76), Vector2.new(150, 30))
+local toastTlo = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex(UI.styl.zloto) }, ramkaToastu)
+rog(toastTlo, 15)
+obrys(toastTlo, 2, hex(UI.styl.obrys))
+local toastNapis = napis(toastTlo, "", UDim2.fromScale(0.05, 0.12), UDim2.fromScale(0.9, 0.76), hex(UI.styl.obrys), cyfry)
 toastNapis:FindFirstChildOfClass("UIStroke"):Destroy()
 ramkaToastu.Visible = false
 local toastDo = 0
@@ -265,74 +245,25 @@ local function toast(t: string, czas: number?)
 	toastDo = os.clock() + (czas or 3)
 end
 
--- przyciski akcji (prawy dół)
-local ramkaGryz = warstwa("Gryz", Vector2.new(1, 1), UDim2.new(1, -14, 1, -14), Vector2.new(96, 96))
-local bGryz, cienGryz = przyciskOkragly(ramkaGryz, "Gryz", UI.gryz, 96, "FF5A5A")
-local ramkaZryw = warstwa("Zryw", Vector2.new(1, 1), UDim2.new(1, -122, 1, -14), Vector2.new(68, 68))
-local bZryw, cienZryw = przyciskOkragly(ramkaZryw, "Zryw", UI.zryw, 68, "FF9A3D")
--- FIRE i POWER (walka1): dwie linie zdolności ewoluujące ze stadiami; zamknięta linia — ciemny przycisk z „at <STADIUM>”
--- walka1: stan i przyciski klienta w jednej tabeli (limit 200 zmiennych lokalnych skryptu)
-local WK = {}
-function WK.przyciskZd(nazwa: string, poz: UDim2, kolor: string, linia: string)
-	local ramka = warstwa(nazwa, Vector2.new(1, 1), poz, Vector2.new(68, 68))
-	local b, cien, l = przyciskOkragly(ramka, nazwa, "", 68, kolor)
-	l.Position = UDim2.fromScale(0.08, 0.34)
-	l.Size = UDim2.fromScale(0.84, 0.3)
-	local typ = napis(b, if linia == "ogien" then UI.ogien else UI.moc, UDim2.fromScale(0.18, 0.1), UDim2.fromScale(0.64, 0.2), papier, cyfry)
-	typ.ZIndex = 3
-	local od = napis(b, "", UDim2.fromScale(0.08, 0.66), UDim2.fromScale(0.84, 0.18), hex("D8C8E8"), cyfry)
-	od.ZIndex = 3
-	return { ramka = ramka, b = b, cien = cien, napis = l, od = od, kolor = hex(kolor), linia = linia }
-end
-WK.zdOgien = WK.przyciskZd("Ogien", UDim2.new(1, -14, 1, -122), "FF7A2E", "ogien")
-WK.zdMoc = WK.przyciskZd("Moc", UDim2.new(1, -110, 1, -110), "4FB3FF", "moc")
--- następna wersja linii: ciemna sylwetka z nazwą i „at <STADIUM>” nad przyciskiem
-function WK.pigulka(nazwa: string, poz: UDim2)
-	local ramka = warstwa(nazwa, Vector2.new(1, 1), poz, Vector2.new(110, 30))
-	local tlo = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = tusz, BackgroundTransparency = 0.2 }, ramka)
-	rog(tlo, 10)
-	obrys(tlo, 1.5, hex("6A5A7A"))
-	local syl = nowy("Frame", { Position = UDim2.fromOffset(5, 5), Size = UDim2.fromOffset(20, 20), BackgroundColor3 = hex("1B1424") }, tlo)
-	rog(syl, 10)
-	obrys(syl, 1.5, hex("8A7A9A"))
-	napis(syl, "?", UDim2.fromScale(0.15, 0.1), UDim2.fromScale(0.7, 0.8), hex("8A7A9A"))
-	local n1 = napis(tlo, "", UDim2.fromOffset(29, 2), UDim2.new(1, -33, 0, 14), hex("B8A8C8"), cyfry)
-	local n2 = napis(tlo, "", UDim2.fromOffset(29, 15), UDim2.new(1, -33, 0, 13), papier, cyfry)
-	n1.TextXAlignment = Enum.TextXAlignment.Left
-	n2.TextXAlignment = Enum.TextXAlignment.Left
-	ramka.Visible = false
-	return { ramka = ramka, n1 = n1, n2 = n2 }
-end
-WK.nastOgien = WK.pigulka("OgienNast", UDim2.new(1, -14, 1, -194))
-WK.nastMoc = WK.pigulka("MocNast", UDim2.new(1, -130, 1, -182))
-
--- życie (pod paskiem wzrostu)
-WK.ramkaZycia = warstwa("Zycie", Vector2.new(0.5, 0), UDim2.new(0.5, -40, 0, 56), Vector2.new(230, 14))
-WK.zycieTlo = nowy("Frame", { Position = UDim2.fromOffset(16, 0), Size = UDim2.new(1, -32, 1, 0), BackgroundColor3 = tusz }, WK.ramkaZycia)
-rog(WK.zycieTlo, 7)
-obrys(WK.zycieTlo, 2, hex("FF8A8A"))
-WK.zycieW = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex("6BD66B"), BorderSizePixel = 0 }, WK.zycieTlo)
-rog(WK.zycieW, 7)
-WK.zycieNapis = napis(WK.zycieTlo, UI.hp, UDim2.fromScale(0.03, 0), UDim2.fromScale(0.16, 1), papier, cyfry)
-WK.zycieNapis.ZIndex = 2
-
 -- EVOLVE (dół, środek) — tylko przy pełnym pasku
-local ramkaEwo = warstwa("Ewolucja", Vector2.new(0.5, 1), UDim2.new(0.5, -40, 1, -16), Vector2.new(176, 62))
-local bEwo = nowy("TextButton", { Name = "Ewoluuj", Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex("C27BFF"), Text = "", AutoButtonColor = true }, ramkaEwo)
-rog(bEwo, 18)
-local obrysEwo = obrys(bEwo, 4, zloto)
+local ramkaEwo = warstwa("Ewolucja", Vector2.new(0.5, 1), UDim2.new(0.5, -20, 1, -16), Vector2.new(176, 62))
+local bEwo = nowy("TextButton", { Name = "Ewoluuj", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), Text = "", AutoButtonColor = true }, ramkaEwo)
+rog(bEwo, 31)
+nowy("UIGradient", { Color = ColorSequence.new(hex(UI.styl.zar_gora), hex(UI.styl.zar)), Rotation = 90 }, bEwo)
+local obrysEwo = obrys(bEwo, 4, hex(UI.styl.obrys))
 napis(bEwo, UI.ewoluuj, UDim2.fromScale(0.06, 0.14), UDim2.fromScale(0.88, 0.72))
 local skalaEwo = nowy("UIScale", { Scale = 1 }, bEwo)
 ramkaEwo.Visible = false
 
 -- podpowiedź (dół, środek, nad EVOLVE)
-local ramkaPodp = warstwa("Podpowiedz", Vector2.new(0.5, 1), UDim2.new(0.5, -40, 1, -86), Vector2.new(250, 30))
-local podpTlo = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = tusz, BackgroundTransparency = 0.3 }, ramkaPodp)
-rog(podpTlo, 10)
-local podpNapis = napis(podpTlo, UI.podpowiedz_start, UDim2.fromScale(0.04, 0.12), UDim2.fromScale(0.92, 0.76), hex(UI.kolory.ty))
+local ramkaPodp = warstwa("Podpowiedz", Vector2.new(0.5, 1), UDim2.new(0.5, -20, 1, -86), Vector2.new(250, 28))
+local podpTlo = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex(UI.styl.pas), BackgroundTransparency = 0.15 }, ramkaPodp)
+rog(podpTlo, 14)
+obrys(podpTlo, 2, hex(UI.styl.obrys))
+local podpNapis = napis(podpTlo, UI.podpowiedz_start, UDim2.fromScale(0.04, 0.14), UDim2.fromScale(0.92, 0.72), hex(UI.styl.tekst), cyfry)
 
--- baner (duże słowo) i tabliczka odsłony
-local ramkaBaneru = warstwa("Baner", Vector2.new(0.5, 0), UDim2.new(0.5, -40, 0, 76), Vector2.new(330, 50))
+-- baner (duże słowo) i tabliczka powrotu
+local ramkaBaneru = warstwa("Baner", Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, 80), Vector2.new(300, 46))
 local baner = napis(ramkaBaneru, "", UDim2.fromScale(0, 0), UDim2.fromScale(1, 1))
 local banerSkala = nowy("UIScale", { Scale = 1 }, baner)
 baner.Visible = false
@@ -345,12 +276,12 @@ local function pokazBaner(t: string, kolor: Color3, czas: number?)
 	banerT, banerDo = 0, czas or 1.3
 end
 
-local ramkaTabl = warstwa("Tabliczka", Vector2.new(0.5, 0), UDim2.new(0.5, -40, 0, 58), Vector2.new(330, 116))
-local tablTlo = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = tusz, BackgroundTransparency = 0.15 }, ramkaTabl)
+local ramkaTabl = warstwa("Tabliczka", Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, 80), Vector2.new(330, 116))
+local tablTlo = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = hex(UI.styl.panel), BackgroundTransparency = 0.05 }, ramkaTabl)
 rog(tablTlo, 16)
-obrys(tablTlo, 3, zloto)
-local tablGora = napis(tablTlo, "", UDim2.fromOffset(10, 6), UDim2.new(1, -20, 0, 24), hex("9BFFB8"))
-local tablNazwa = napis(tablTlo, "", UDim2.fromOffset(10, 30), UDim2.new(1, -20, 0, 46), zloto)
+obrys(tablTlo, 3, hex(UI.styl.obrys))
+local tablGora = napis(tablTlo, "", UDim2.fromOffset(10, 6), UDim2.new(1, -20, 0, 24), hex(UI.styl.kup), cyfry)
+local tablNazwa = napis(tablTlo, "", UDim2.fromOffset(10, 30), UDim2.new(1, -20, 0, 46), hex(UI.styl.zloto))
 local tablDol = napis(tablTlo, "", UDim2.fromOffset(10, 78), UDim2.new(1, -20, 0, 20), papier, cyfry)
 local tablDol2 = napis(tablTlo, "", UDim2.fromOffset(10, 98), UDim2.new(1, -20, 0, 18), zloto, cyfry)
 local tablSkala = nowy("UIScale", { Scale = 1 }, tablTlo)
@@ -365,170 +296,6 @@ local galka = nowy("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UD
 	BackgroundColor3 = hex(UI.kolory.ty) }, drazekBaza)
 rog(galka, 25)
 drazek.Visible = false
-
------------------------------------------------------------------- miniatury modeli (ViewportFrame): drabina i legowisko
-local function wzorzecModelu(f: number): Model?
-	local F = D.formy[f]
-	return wzorce and (wzorce:FindFirstChild(F.wzorzecLod or F.wzorzec) or wzorce:FindFirstChild(F.wzorzec))
-end
-
-local function miniatura(rodzic: Instance, f: number, rozmiar: UDim2, poz: UDim2): ViewportFrame
-	local vf = nowy("ViewportFrame", { Size = rozmiar, Position = poz, BackgroundTransparency = 1, Ambient = Color3.fromRGB(190, 190, 190),
-		LightColor = Color3.new(1, 1, 1), LightDirection = Vector3.new(-1, -1.4, -1) }, rodzic)
-	local wz = wzorzecModelu(f)
-	if wz then
-		local m = wz:Clone()
-		m:PivotTo(CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(200), 0))
-		local F = D.formy[f]
-		local Wk = SK and F.rig and SK:klipy(F.rig)
-		if Wk then
-			local wm = Instance.new("WorldModel")
-			wm.Parent = vf
-			m.Parent = wm
-			local r = SK.Rigi.zamroz(m, Wk, "cokol", 0.4)
-			r:ustaw(CFrame.Angles(0, math.rad(200), 0))
-		else
-			m.Parent = vf
-		end
-		local cf, roz = m:GetBoundingBox()
-		local cam = Instance.new("Camera")
-		cam.FieldOfView = 40
-		local d = math.max(roz.X, roz.Y, roz.Z) * 1.55
-		cam.CFrame = CFrame.lookAt(cf.Position + Vector3.new(0, d * 0.25, d), cf.Position)
-		cam.Parent = vf
-		vf.CurrentCamera = cam
-	end
-	return vf
-end
-
-local function sylwetka(vf: ViewportFrame, ciemna: boolean)
-	vf.ImageColor3 = if ciemna then Color3.new(0, 0, 0) else Color3.new(1, 1, 1)
-	vf.ImageTransparency = if ciemna then 0.15 else 0
-end
-
--- drabina (lewa krawędź): formy 1..NF-1 od dołu, na szczycie wielki cień Olbrzyma
--- pod strefą górnego paska Roblox (przycisk menu w lewym górnym rogu telefonu)
-local ramkaDrabiny = warstwa("Drabina", Vector2.new(0, 0), UDim2.new(0, 8, 0, 62), Vector2.new(50, 262))
-local drabinaTlo = nowy("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = tusz, BackgroundTransparency = 0.45 }, ramkaDrabiny)
-rog(drabinaTlo, 14)
-local szczeble = {}
-do
-	local wys, krok = 26, 29
-	-- szczyt: Olbrzym
-	local sz = nowy("Frame", { Name = "Szczebel" .. NF, Position = UDim2.fromOffset(2, 2), Size = UDim2.fromOffset(46, 46), BackgroundColor3 = hex("2A2236"),
-		BackgroundTransparency = 0.2 }, drabinaTlo)
-	rog(sz, 12)
-	local ob = obrys(sz, 2, hex("6A5A7A"))
-	local vf = miniatura(sz, NF, UDim2.fromScale(1.25, 1.25), UDim2.fromScale(-0.125, -0.2))
-	local q = napis(sz, UI.drabina_szczyt, UDim2.fromScale(0.25, 0.25), UDim2.fromScale(0.5, 0.5), hex("B8A8C8"))
-	szczeble[NF] = { ramka = sz, vf = vf, znak = q, obrys = ob }
-	for f = NF - 1, 1, -1 do
-		local y = 52 + (NF - 1 - f) * krok
-		local s = nowy("Frame", { Name = "Szczebel" .. f, Position = UDim2.fromOffset(12, y), Size = UDim2.fromOffset(wys, wys), BackgroundColor3 = hex("2A2236"),
-			BackgroundTransparency = 0.2 }, drabinaTlo)
-		rog(s, 13)
-		local o = obrys(s, 2, hex("6A5A7A"))
-		local v = miniatura(s, f, UDim2.fromScale(1.3, 1.3), UDim2.fromScale(-0.15, -0.2))
-		local z = napis(s, "?", UDim2.fromScale(0.2, 0.15), UDim2.fromScale(0.6, 0.7), hex("B8A8C8"))
-		szczeble[f] = { ramka = s, vf = v, znak = z, obrys = o }
-	end
-end
-local strzalkaDrabiny = napis(drabinaTlo, ">", UDim2.fromOffset(0, 0), UDim2.fromOffset(12, 22), hex(UI.kolory.ty))
-
------------------------------------------------------------------- WK.panel legowiska (WK.trofea + ulepszenia)
-WK.panel = nowy("Frame", { Name = "PanelLegowiska", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
-	Size = UDim2.fromOffset(470, 300), BackgroundColor3 = hex("2A2236"), BackgroundTransparency = 0.04, ZIndex = 20 }, ekran)
-table.insert(skale, nowy("UIScale", { Scale = skalaEkranu() }, WK.panel))
-rog(WK.panel, 18)
-obrys(WK.panel, 3, zloto)
-WK.panel.Visible = false
-WK.panelTytul = napis(WK.panel, UI.legowisko_tytul, UDim2.fromOffset(16, 8), UDim2.fromOffset(200, 32), zloto)
-WK.panelTytul.TextXAlignment = Enum.TextXAlignment.Left
-WK.panelStawka = napis(WK.panel, "", UDim2.fromOffset(220, 12), UDim2.fromOffset(170, 26), papier, cyfry)
-WK.bZamknij = nowy("TextButton", { Name = "Zamknij", Position = UDim2.new(1, -54, 0, 6), Size = UDim2.fromOffset(46, 46), BackgroundColor3 = hex("FF5A5A"),
-	Text = "", AutoButtonColor = true }, WK.panel)
-rog(WK.bZamknij, 12)
-obrys(WK.bZamknij, 3, tusz)
-napis(WK.bZamknij, UI.zamknij, UDim2.fromScale(0.2, 0.15), UDim2.fromScale(0.6, 0.7))
-napis(WK.panel, UI.legowisko_opis, UDim2.fromOffset(16, 40), UDim2.fromOffset(380, 16), hex("C8B8D8"), cyfry)
-WK.trofea = {}
-for f = 1, NF do
-	local x = 14 + (f - 1) * 56
-	local t = nowy("Frame", { Name = "Trofeum" .. f, Position = UDim2.fromOffset(x, 60), Size = UDim2.fromOffset(50, 64), BackgroundColor3 = hex("3A2F4A") }, WK.panel)
-	rog(t, 10)
-	local o = obrys(t, 2, hex("5A4A6A"))
-	local v = miniatura(t, f, UDim2.fromOffset(50, 46), UDim2.fromOffset(0, 0))
-	local z = napis(t, "?", UDim2.fromOffset(12, 8), UDim2.fromOffset(26, 30), hex("8A7A9A"))
-	local s = napis(t, "+" .. D.formy[f].trofeum, UDim2.fromOffset(2, 46), UDim2.fromOffset(46, 16), zloto, cyfry)
-	WK.trofea[f] = { ramka = t, vf = v, znak = z, stawka = s, obrys = o }
-end
-WK.karty = {}
-for i, U in D.ulepszenia do
-	local x = 14 + (i - 1) * 150
-	local k = nowy("Frame", { Name = "Karta_" .. U.id, Position = UDim2.fromOffset(x, 134), Size = UDim2.fromOffset(142, 156), BackgroundColor3 = hex("3A2F4A") }, WK.panel)
-	rog(k, 12)
-	obrys(k, 2, hex("6A5A7A"))
-	napis(k, U.nazwa, UDim2.fromOffset(8, 6), UDim2.new(1, -16, 0, 24), papier)
-	napis(k, U.opis, UDim2.fromOffset(8, 30), UDim2.new(1, -16, 0, 16), hex("C8B8D8"), cyfry)
-	local kropki = {}
-	for p = 1, #U.ceny + 1 do
-		local kr = nowy("Frame", { Position = UDim2.new(0.5, (p - (#U.ceny + 2) / 2) * 22 - 8, 0, 52), Size = UDim2.fromOffset(16, 16), BackgroundColor3 = hex("5A4A6A") }, k)
-		rog(kr, 8)
-		obrys(kr, 2, tusz)
-		kropki[p] = kr
-	end
-	local wart = napis(k, "", UDim2.fromOffset(8, 72), UDim2.new(1, -16, 0, 20), hex("9BFFB8"), cyfry)
-	local b = nowy("TextButton", { Name = "Kup", Position = UDim2.new(0, 10, 1, -56), Size = UDim2.new(1, -20, 0, 48), BackgroundColor3 = hex("3DB36B"),
-		Text = "", AutoButtonColor = true }, k)
-	rog(b, 12)
-	obrys(b, 3, tusz)
-	local bn = napis(b, "", UDim2.fromScale(0.06, 0.15), UDim2.fromScale(0.88, 0.7), papier, cyfry)
-	WK.karty[U.id] = { ramka = k, kropki = kropki, wart = wart, przycisk = b, napis = bn, U = U }
-end
-
--- zakładki panelu (etap 3): TROPHIES (poziomy trofeów w legowisku, warianty, szanse) i UPGRADES
-WK.tabT = nowy("Frame", { Name = "TabTrofea", Position = UDim2.fromOffset(0, 52), Size = UDim2.new(1, 0, 1, -52), BackgroundTransparency = 1 }, WK.panel)
-WK.tabU = nowy("Frame", { Name = "TabUlepszenia", Position = UDim2.fromOffset(0, 52), Size = UDim2.new(1, 0, 1, -52), BackgroundTransparency = 1,
-	Visible = false }, WK.panel)
-WK.panelStawka.Visible = false
-for _, d in WK.panel:GetChildren() do
-	if d:IsA("TextLabel") and d.Text == UI.legowisko_opis then
-		d.Visible = false
-	end
-end
-function WK.zakladka(x: number, tekst: string, tab: Frame)
-	local b = nowy("TextButton", { Name = "Zakladka", Position = UDim2.fromOffset(x, 5), Size = UDim2.fromOffset(100, 44), BackgroundColor3 = hex("4A3A5A"),
-		Text = "", AutoButtonColor = true }, WK.panel)
-	rog(b, 10)
-	obrys(b, 2, tusz)
-	napis(b, tekst, UDim2.fromScale(0.06, 0.18), UDim2.fromScale(0.88, 0.64))
-	b.Activated:Connect(function()
-		WK.tabT.Visible = tab == WK.tabT
-		WK.tabU.Visible = tab == WK.tabU
-	end)
-	return b
-end
-WK.zakladka(196, UI.trofea, WK.tabT)
-WK.zakladka(302, UI.ulepszenia, WK.tabU)
-for f, T in WK.trofea do
-	T.ramka.Parent = WK.tabT
-	T.ramka.Position = UDim2.fromOffset(14 + (f - 1) * 56, 2)
-	T.ramka.Size = UDim2.fromOffset(50, 144)
-	T.poziom = napis(T.ramka, "", UDim2.fromOffset(2, 60), UDim2.fromOffset(46, 14), papier, cyfry)
-	T.wariant = napis(T.ramka, "", UDim2.fromOffset(2, 74), UDim2.fromOffset(46, 12), zloto, cyfry)
-	T.kup = nowy("TextButton", { Name = "KupPoziom", Position = UDim2.fromOffset(2, 92), Size = UDim2.fromOffset(46, 48), BackgroundColor3 = hex("3DB36B"),
-		Text = "", AutoButtonColor = true }, T.ramka)
-	rog(T.kup, 10)
-	obrys(T.kup, 2, tusz)
-	T.kupNapis = napis(T.kup, "", UDim2.fromScale(0.06, 0.12), UDim2.fromScale(0.88, 0.76), papier, cyfry)
-end
-WK.szanseNapis = napis(WK.tabT, UI.szanse, UDim2.fromOffset(14, 150), UDim2.new(1, -28, 0, 16), hex("C8B8D8"), cyfry)
-WK.bossTrofNapis = napis(WK.tabT, "", UDim2.fromOffset(14, 170), UDim2.new(1, -28, 0, 16), hex("FF9AD8"), cyfry)
-WK.legInfo = napis(WK.tabT, UI.tylko_w_legowisku, UDim2.fromOffset(14, 190), UDim2.new(1, -28, 0, 16), zloto, cyfry)
-for _, k in WK.karty do
-	k.ramka.Parent = WK.tabU
-	k.ramka.Position = UDim2.new(0, k.ramka.Position.X.Offset, 0, 30)
-end
 
 ------------------------------------------------------------------ modele: klon, skala, części i przesunięcia (BulkMoveTo)
 -- opis modelu: forma z drabiny albo boss lasu — wszystko z danych (wzorzec, skala, chód, opcjonalne animacje)
@@ -1129,6 +896,11 @@ end
 local function akcja(rodzaj: string, a: any?)
 	local w = widoki[mojId]
 	local teraz = os.clock()
+	local Pw = if rodzaj == "gryz" then HUD.gryz elseif rodzaj == "zryw" then HUD.zryw elseif rodzaj == "ogien" then HUD.ogien elseif rodzaj == "moc" then HUD.moc else nil
+	if Pw then
+		HUD:wcisnij(Pw, false)
+		Pw.wcisniety = 0.1
+	end
 	if rodzaj == "gryz" then
 		if teraz < gryzGotowy then
 			return
@@ -1228,6 +1000,15 @@ for f, T in WK.trofea do
 		akcja("kup_trofeum", f)
 	end)
 end
+for id, k in HUD.panel.duze do
+	k.przycisk.Activated:Connect(function()
+		akcja("kup", id)
+	end)
+end
+HUD.odsl.dalej.Activated:Connect(function()
+	dzwiek("klik", 1.1)
+end)
+WK.ileIkon = require(Moduly:WaitForChild("IkonyEwolucji")).ileObrazow(D.ikony)
 
 UserInputService.InputBegan:Connect(function(wej: InputObject, przetworzone: boolean)
 	if wej.UserInputType == Enum.UserInputType.Gamepad1 then
@@ -1597,7 +1378,10 @@ local function rysuj(w, dt: number)
 		if wKan and not w.stozek then
 			local A = WK.nr[bit32.band(w.akcja, 15)] or WK.ZD[w.kanalAb or ""]
 			if A and A.zasieg then
-				w.stozek = SK.stozek(w, r * 0.4 + A.zasieg, A.kat_st, A.id == "inferno")
+				w.stozek = SK:stozek(w, r * 0.4 + A.zasieg, A.kat_st, A.id == "inferno")
+				if moj and w.stozek then
+					WK.mojOgien = (WK.mojOgien or 0) + 1
+				end
 				SK.kanal(w, true)
 			end
 		elseif not wKan and w.stozek then
@@ -1606,7 +1390,7 @@ local function rysuj(w, dt: number)
 			SK.kanal(w, false)
 		end
 		if w.stozek then
-			SK.stozekKrok(w, w.stozek, tGlob)
+			SK.stozekKrok(w, w.stozek, tGlob, dt)
 			w.ogienDz = (w.ogienDz or 0) - dt
 			if moj and w.ogienDz <= 0 then
 				w.ogienDz = 0.35
@@ -1843,32 +1627,23 @@ local function rysuj(w, dt: number)
 end
 
 ------------------------------------------------------------------ drabina, legowisko, HUD
+function WK.csv(n: string): { string }
+	local w = {}
+	for x in string.gmatch((gracz:GetAttribute(n) or "") .. ",", "([^,]*),") do
+		table.insert(w, x)
+	end
+	return w
+end
+
 local function odswiezDrabine()
 	local mf = gracz:GetAttribute("EW_MaxForma") or 1
-	local f0 = mojaForma()
-	local stan = {}
+	local war = WK.csv("EW_Warianty")
+	local wm = {}
 	for f = 1, NF do
-		local S = szczeble[f]
-		local zdobyta = f <= mf
-		local nastepna = f == mf + 1
-		S.vf.Visible = zdobyta or nastepna or f == NF
-		S.znak.Visible = not S.vf.Visible
-		sylwetka(S.vf, not zdobyta)
-		S.ramka.BackgroundColor3 = if zdobyta then hex("4A3A5A") else hex("2A2236")
-		S.obrys.Color = if f == f0 then hex(UI.kolory.ty) elseif zdobyta then hex("9BFFB8") elseif nastepna then papier else hex("6A5A7A")
-		S.obrys.Thickness = if f == f0 then 3 else 2
-		table.insert(stan, if zdobyta then "Z" elseif nastepna then "N" elseif f == NF then "C" else "?")
-		local T = WK.trofea[f]
-		T.vf.Visible = zdobyta
-		T.znak.Visible = not zdobyta
-		T.ramka.BackgroundColor3 = if zdobyta then hex("4A3A5A") else hex("2F263C")
-		T.obrys.Color = if zdobyta then zloto else hex("5A4A6A")
-		T.stawka.TextColor3 = if zdobyta then zloto else hex("8A7A9A")
+		wm[f] = wariantD(war[f])
 	end
-	-- strzałka przy obecnej formie
-	local y = if f0 == NF then 14 else 52 + (NF - 1 - f0) * 29 + 2
-	strzalkaDrabiny.Position = UDim2.fromOffset(0, y)
-	gracz:SetAttribute("EW_K_Drabina", table.concat(stan))
+	gracz:SetAttribute("EW_K_Drabina", HUD:drabina(mf, mojaForma(), wm))
+	gracz:SetAttribute("EW_K_Portrety", HUD.nPortretow)
 end
 
 function WK.opisWartosci(U, p: number): string
@@ -1886,60 +1661,27 @@ function WK.opisWartosci(U, p: number): string
 	return w(p) .. " > " .. w(p + 1)
 end
 
-function WK.csv(n: string): { string }
-	local w = {}
-	for x in string.gmatch((gracz:GetAttribute(n) or "") .. ",", "([^,]*),") do
-		table.insert(w, x)
-	end
-	return w
-end
-
 function WK.odswiezPanel()
-	local zl = gracz:GetAttribute("EW_Zloto") or 0
-	local mf = gracz:GetAttribute("EW_MaxForma") or 1
-	local wDomu = gracz:GetAttribute("EW_WDomu") == true
 	local war, tro = WK.csv("EW_Warianty"), WK.csv("EW_Trofea")
-	for f, T in WK.trofea do
-		local lv = tonumber(tro[f]) or 1
-		local W = wariantD(war[f])
-		local G = D.legowisko
-		T.poziom.Text = if f <= mf then string.format(UI.poziom, lv) else ""
-		T.wariant.Text = if W then W.nazwa else ""
-		T.wariant.TextColor3 = if W then hex(W.kolor) else zloto
-		T.stawka.Text = "+" .. tostring(math.floor(D.formy[f].trofeum * G.poziomy_x[lv] * (if W then W.x else 1) * 10 + 0.5) / 10)
-		T.vf.ImageColor3 = if f > mf then Color3.new(0, 0, 0) elseif W then Color3.new(1, 1, 1):Lerp(hex(W.kolor), 0.55) else Color3.new(1, 1, 1)
-		local cena = if f <= mf and G.ceny_x[lv] then math.floor(G.ceny_x[lv] * D.formy[f].trofeum) else nil
-		T.kup.Visible = f <= mf
-		T.kupNapis.Text = if cena then tostring(cena) else UI.maks
-		local stac = cena ~= nil and wDomu and zl >= cena
-		T.kup.BackgroundColor3 = if stac then hex("3DB36B") else hex("6A5A7A")
-		T.kup.AutoButtonColor = stac
+	local wm, lv, poz = {}, {}, {}
+	for f = 1, NF do
+		wm[f] = wariantD(war[f])
+		lv[f] = tonumber(tro[f]) or 1
 	end
-	local bt = gracz:GetAttribute("EW_BossTrofea") or 0
-	local bs = 0
-	for i = 1, bt do
-		bs += D.legowisko.boss_trofea[i]
+	for _, U in D.ulepszenia do
+		poz[U.id] = gracz:GetAttribute("EW_Poz_" .. U.id) or 1
 	end
-	WK.bossTrofNapis.Text = string.format(UI.boss_trofea, bt, bs)
-	WK.legInfo.Text = if wDomu then UI.w_legowisku else UI.tylko_w_legowisku
-	WK.panelStawka.Text = string.format(UI.na_s, gracz:GetAttribute("EW_ZlotoNaS") or 0) .. " gold"
-	for id, k in WK.karty do
-		local p = gracz:GetAttribute("EW_Poz_" .. id) or 1
-		for i, kr in k.kropki do
-			kr.BackgroundColor3 = if i <= p then hex("9BFFB8") else hex("5A4A6A")
-		end
-		k.wart.Text = WK.opisWartosci(k.U, p)
-		local cena = k.U.ceny[p]
-		if not cena then
-			k.napis.Text = UI.maks
-			k.przycisk.BackgroundColor3 = hex("6A5A7A")
-			k.przycisk.AutoButtonColor = false
-		else
-			k.napis.Text = UI.kup .. " " .. tostring(cena)
-			k.przycisk.BackgroundColor3 = if zl >= cena then hex("3DB36B") else hex("6A5A7A")
-			k.przycisk.AutoButtonColor = zl >= cena
-		end
+	HUD:panelOdswiez({ zl = gracz:GetAttribute("EW_Zloto") or 0, mf = gracz:GetAttribute("EW_MaxForma") or 1, wDomu = gracz:GetAttribute("EW_WDomu") == true,
+		warianty = wm, tro = lv, poz = poz, bossT = gracz:GetAttribute("EW_BossTrofea") or 0, opisWartosci = WK.opisWartosci })
+	local st, ceny = {}, {}
+	for f, T in HUD.panel.trofea do
+		st[f] = string.sub(T.stan, 1, 1) .. (if T.wariant.Visible then "w" else "")
 	end
+	for id, K in HUD.panel.karty do
+		ceny[id] = K.napis.Text
+	end
+	gracz:SetAttribute("EW_K_Panel", HttpService:JSONEncode({ trofea = table.concat(st, ","), ceny = ceny, zakladka = if HUD.panel.tabU.Visible then "U" else "T",
+		zloto = HUD.panel.zloto.Text }))
 end
 
 -- czy iść do legowiska po złoto: zebranego za mało na najtańszy zakup, z legowiskiem starczy
@@ -1980,25 +1722,15 @@ WK.stanZd = {}
 function WK.zdHUD(P, NB, linia: string, wForma: number, teraz: number)
 	local A = L.zdolnoscFormy(D, linia, wForma)
 	local N = L.nastepnaZdolnosc(D, linia, wForma)
-	WK.stanZd[linia] = { nazwa = if A then A.id else "", zamkniete = A == nil, od = P.od.Text, nast = if N then N.id else "", pigulka = NB.ramka.Visible }
-	if A then
-		P.napis.Text = A.krotko or A.nazwa
-		P.napis.TextColor3 = papier
-		P.od.Text = ""
-		P.b.BackgroundColor3 = P.kolor
-		P.cien.Size = UDim2.fromScale(1, math.clamp((zdGotowy[linia] - teraz) / (A.zamach_s + A.odnowa_s), 0, 1))
-	else
-		P.napis.Text = if N then (N.krotko or N.nazwa) else ""
-		P.napis.TextColor3 = hex("8A7A9A")
-		P.od.Text = if N then string.format(UI.od_stadium, D.formy[N.od].nazwa) else ""
-		P.b.BackgroundColor3 = hex("2A2236")
-		P.cien.Size = UDim2.fromScale(1, 0)
-	end
-	NB.ramka.Visible = A ~= nil and N ~= nil and odslona == nil
+	local pig = N ~= nil and odslona == nil
+	HUD:stanPrzycisku(P, { zamkniety = A == nil, ikona = A and A.ikona, napis = A and (A.krotko or A.nazwa),
+		odnowa = if A then zdGotowy[linia] - teraz else 0, calosc = if A then A.zamach_s + A.odnowa_s else 0 })
+	NB.ramka.Visible = pig
 	if N then
-		NB.n1.Text = string.format(UI.nastepna_zd, N.krotko or N.nazwa)
-		NB.n2.Text = string.format(UI.od_stadium, D.formy[N.od].nazwa)
+		NB.napis.Text = (N.krotko or N.nazwa) .. " " .. string.format(UI.od_stadium, D.formy[N.od].nazwa)
 	end
+	WK.stanZd[linia] = { nazwa = if A then A.id else "", zamkniete = A == nil, od = if A == nil and N then string.format(UI.od_stadium, D.formy[N.od].nazwa) else "",
+		nast = if N then N.id else "", pigulka = pig, odnowa = math.floor((P.p or 0) * 100 + 0.5) / 100, ikona = P.slot:GetAttribute("IkonaTyp") }
 end
 
 local function odswiezHUD()
@@ -2016,29 +1748,23 @@ local function odswiezHUD()
 	local pt = gracz:GetAttribute("EW_Potrzeba") or 1
 	local w = widoki[mojId]
 	local wForma = if w then w.forma else f
-	nazwaFormy.Text = D.formy[wForma].nazwa
-	if f >= NF then
-		pasekW.Size = UDim2.fromScale(1, 1)
-		pasekW.BackgroundColor3 = zloto
-		pasekNapis.Text = UI.maks
-	else
-		local q = math.clamp(wz / math.max(1, pt), 0, 1)
-		pasekW.Size = UDim2.fromScale(q, 1)
-		pasekW.BackgroundColor3 = if q >= 1 then hex("C27BFF") else hex("6BD66B")
-		pasekNapis.Text = if q >= 1 then UI.pelny else string.format("%d / %d", wz, pt)
-	end
+	local hpJa = if w then w.hp else 1
 	local pelny = f < NF and wz >= pt and not (w and serwerSteruje(w.flagi))
 	ramkaEwo.Visible = pelny
-	zlotoNapis.Text = tostring(gracz:GetAttribute("EW_Zloto") or 0)
-	naSNapis.Text = UI.skarb .. " " .. tostring(gracz:GetAttribute("EW_ZlotoLeg") or 0) .. "  " .. string.format(UI.na_s, gracz:GetAttribute("EW_ZlotoNaS") or 0)
+	HUD:gora({ forma = wForma, wz = wz, pt = pt, maks = f >= NF, hp = hpJa, zloto = gracz:GetAttribute("EW_Zloto") or 0,
+		skarb = gracz:GetAttribute("EW_ZlotoLeg") or 0, naS = gracz:GetAttribute("EW_ZlotoNaS") or 0, wariant = wariantD(WK.csv("EW_Warianty")[wForma]) })
 	local teraz = os.clock()
-	cienZryw.Size = UDim2.fromScale(1, math.clamp((zrywGotowy - teraz) / D.ruch.zryw_odnowa_s, 0, 1))
-	cienGryz.Size = UDim2.fromScale(1, math.clamp((gryzGotowy - teraz) / math.max(0.1, WK.gryzOdnowa), 0, 1))
+	HUD:stanPrzycisku(HUD.zryw, { odnowa = zrywGotowy - teraz, calosc = D.ruch.zryw_odnowa_s })
+	HUD:stanPrzycisku(HUD.gryz, { odnowa = gryzGotowy - teraz, calosc = math.max(0.1, WK.gryzOdnowa) })
 	WK.zdHUD(WK.zdOgien, WK.nastOgien, "ogien", wForma, teraz)
 	WK.zdHUD(WK.zdMoc, WK.nastMoc, "moc", wForma, teraz)
-	local hpJa = if w then w.hp else 1
-	WK.zycieW.Size = UDim2.fromScale(math.clamp(hpJa, 0, 1), 1)
-	WK.zycieW.BackgroundColor3 = if hpJa > 0.5 then hex("6BD66B") elseif hpJa > 0.25 then hex("FFC83D") else hex("FF4A4A")
+	gracz:SetAttribute("EW_K_HUD", HttpService:JSONEncode({ wzrost = HUD.pasekNapis.Text, pasek = math.floor(HUD.pasekW.Size.X.Scale * 1000) / 1000,
+		zycie = math.floor(HUD.zycieW.Size.X.Scale * 1000) / 1000, zloto = HUD.zlotoNapis.Text, skarb = HUD.skarbNapis.Text, nazwa = HUD.nazwa.Text,
+		etap = HUD.etap.Text, gryz = math.floor((HUD.gryz.p or 0) * 100) / 100, zryw = math.floor((HUD.zryw.p or 0) * 100) / 100,
+		blyski = HUD.licznikBlyskow or 0, ikony = WK.ileIkon }))
+	local O = HUD.odsl
+	gracz:SetAttribute("EW_K_Odsl", HttpService:JSONEncode({ faza = O.faza or "", nazwa = O.nazwa.Text, moc = O.mocNapis.Text, plytka = O.plytka.Visible,
+		nast = O.nastKolo.Visible, dalej = O.dalej.Visible, portret = O.portret.Visible, kokon = O.kokon.Visible }))
 	-- podpowiedź: na start (do 5 kulek), przy pełnym pasku i po otwarciu lasu
 	if gracz:GetAttribute("EW_WDomu") and not pelny then
 		podpNapis.Text = UI.w_legowisku
@@ -2060,7 +1786,7 @@ local function odswiezHUD()
 		WK.odswiezPanel()
 	end
 end
-for _, n in { "EW_Forma", "EW_MaxForma", "EW_Poz_szczeka", "EW_Poz_szybkosc", "EW_Poz_apetyt" } do
+for _, n in { "EW_Forma", "EW_MaxForma", "EW_Poz_szczeka", "EW_Poz_szybkosc", "EW_Poz_apetyt", "EW_Warianty" } do
 	gracz:GetAttributeChangedSignal(n):Connect(odswiezDrabine)
 end
 gracz:GetAttributeChangedSignal("EW_Byt"):Connect(function()
@@ -2219,21 +1945,16 @@ local function krokJajka(dt: number)
 end
 
 ------------------------------------------------------------------ odsłona nowej formy (kokon → wybuch → tabliczka)
-local function tabliczka(f: number, nowa: boolean)
-	local F = D.formy[f]
-	tablGora.Text = if nowa then UI.nowa_forma else UI.znowu
-	tablNazwa.Text = F.nazwa
-	local nowe = {}
+local function tabliczka(f: number, nowa: boolean, W0)
+	local moce = {}
 	for _, linia in { "ogien", "moc" } do
 		local A = L.zdolnoscFormy(D, linia, f)
-		if A then
-			table.insert(nowe, A.nazwa)
+		if A and A.od == f then
+			table.insert(moce, { nazwa = A.nazwa, opis = A.opis, ikona = A.ikona, krotko = A.krotko, linia = linia })
 		end
 	end
-	tablDol.Text = if #nowe > 0 then table.concat(nowe, " + ") else UI.gryz
-	tablDol2.Text = if nowa then string.format(UI.trofeum_toast, F.trofeum) else ""
-	ramkaTabl.Visible = true
-	tablSkala.Scale = 0.3
+	HUD:odslonaPokaz(f, nowa, W0, moce, math.max(D.ewolucja.tabliczka_s, UI.odslona_s or 3.4))
+	gracz:SetAttribute("EW_K_OdslonaMoc", if moce[1] then moce[1].nazwa else "")
 end
 
 ------------------------------------------------------------------ zdarzenia
@@ -2264,7 +1985,7 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 					local ile = (if typ == 3 then D.jedzenie.wielka elseif typ == 2 then D.jedzenie.duza else D.jedzenie.mala) * L.apetyt(D, ja())
 					E:liczba(k.Position + Vector3.new(0, 2, 0), "+" .. tostring(math.floor(ile + 0.5)), k.Color)
 				end
-				pulsPaska = 0
+				HUD:puls()
 				dzwiek("klik", 1.5 + math.random() * 0.3)
 				local w = widoki[mojId]
 				if w then
@@ -2294,7 +2015,7 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			end
 			if z.a == mojId then
 				WK.liczZjadl += 1
-				pulsPaska = 0
+				HUD:puls()
 				dzwiek("kryt", 1.4)
 				E:iskry(p, hex("C8A070"), 16, 1.4)
 				dzwiek("plusk", 0.9)
@@ -2347,6 +2068,7 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 			end
 			if z.id == mojId then
 				odslona = { t = 0, czas = z.czas, nowa = z.nowa, forma = z.forma, faza = "kokon" }
+				HUD:odslonaKokon(z.forma)
 				dzwiek("wyklucie", 0.8)
 				wstrzasnij(0.3, z.czas)
 				ramkaEwo.Visible = false
@@ -2371,20 +2093,16 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				dzwiek("krol", 1)
 				blyskT = 0
 				wstrzasnij(0.9 + D.formy[z.forma].r * 0.12, 0.55)
-				tabliczka(z.forma, z.nowa)
 				local W = wariantD(z.wariant)
+				tabliczka(z.forma, z.nowa, W)
 				if W then
-					tablGora.Text = string.format(UI.wariant, W.nazwa)
-					tablGora.TextColor3 = hex(W.kolor)
 					E:iskry(C + Vector3.new(predX, 4, predZ), hex(W.kolor), 40, 2.4)
 					dzwiek("boss", 1.4)
-				else
-					tablGora.TextColor3 = hex("9BFFB8")
 				end
 				gracz:SetAttribute("EW_K_Wariant", z.wariant or "")
-				odslona = { t = 0, czas = D.ewolucja.tabliczka_s, nowa = z.nowa, forma = z.forma, faza = "tabliczka" }
+				odslona = { t = 0, czas = D.ewolucja.tabliczka_s, nowa = z.nowa, forma = z.forma, faza = "tabliczka", hud = true }
 				if z.nowa then
-					task.delay(D.ewolucja.tabliczka_s, function()
+					task.delay(math.max(D.ewolucja.tabliczka_s, UI.odslona_s or 3.4), function()
 						toast(string.format(UI.trofeum_toast, D.formy[z.forma].trofeum), 3)
 						dzwiek("monety", 1)
 					end)
@@ -2398,7 +2116,7 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 							table.insert(nazwy, WK.ZD[id].nazwa)
 						end
 					end
-					task.delay(D.ewolucja.tabliczka_s + 0.3, function()
+					task.delay(math.max(D.ewolucja.tabliczka_s, UI.odslona_s or 3.4) + 0.3, function()
 						pokazBaner(string.format(UI.nowa_zdolnosc, table.concat(nazwy, " + ")), hex("FFB347"), 2.4)
 						dzwiek("boss", 1.3)
 					end)
@@ -2505,7 +2223,7 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				E:liczba(p + Vector3.new(0, 2, 0), "+" .. tostring(z.zysk), hex("9BFFB8"))
 				E:slowo(p + Vector3.new(0, 3.5, 0), UI.zjedzony, hex(UI.kolory.ty), 0.7, 0.6)
 				dzwiek("plusk", 1.1)
-				pulsPaska = 0
+				HUD:puls()
 				gracz:SetAttribute("EW_K_Owce", (gracz:GetAttribute("EW_K_Owce") or 0) + 1)
 				local wj = widoki[mojId]
 				if wj and wj.R and SK then
@@ -2559,7 +2277,7 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				end
 			end
 			if q and q.R and SK then
-				SK.rana(q, z.pw == true, D.walka.przewrot_s)
+				SK.rana(q, z.pw ~= nil, tonumber(z.pw) or D.walka.przewrot_s)
 			end
 			if z.pw and q then
 				q.przewT = 0
@@ -2636,7 +2354,9 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				dzwiek("umiejetnosc", 0.8)
 			end
 		elseif t == "plama" then
-			E:plama(C + Vector3.new(z.x, 0, z.z), z.r, z.czas)
+			-- dane 3: przypalona ziemia z rekwizytu (skala promień INFERNO / 10) + płomyki; bez wzorca dawny krąg Neon
+			local pz = C + Vector3.new(z.x, 0, z.z)
+			E:plama(pz, z.r, z.czas, SK ~= nil and SK:przypalenie(E, pz, z.r, z.czas))
 		elseif t == "ogon" then
 			local w = widoki[z.id]
 			local p = C + Vector3.new(z.x, 0.3, z.z)
@@ -2821,15 +2541,111 @@ local function krokAutopilota(dt: number)
 	end
 end
 
+------------------------------------------------------------------ poślizg stóp (próby, dane 3): stopa w podporze ma stać
+-- Pozycję stopy liczymy z łańcucha stawów tej klatki (korzeń × C0 × Transform × C1⁻¹ do kości stopy, potem stała odległość
+-- części „Stopa” przyspawanej do kości) — dokładnie to, co odtwarzacz ustawił, bez opóźnienia silnika. Podpora = środek
+-- stopy w dolnym paśmie 0,03 studa jej wysokości; poślizg = prędkość pozioma między klatkami w podporze (średnia i mediana).
+WK.STOPY = { "NogaPL3", "NogaPP3", "NogaTL3", "NogaTP3" }
+function WK.cfKosci(b: BasePart, glebia: number): CFrame
+	local m = b:FindFirstChildOfClass("Motor6D")
+	if m and m.Part1 == b and m.Part0 and glebia < 12 then
+		return WK.cfKosci(m.Part0, glebia + 1) * m.C0 * m.Transform * m.C1:Inverse()
+	end
+	return b.CFrame
+end
+function WK.krokPoslizgu()
+	local P = WK.poslizg
+	local w = widoki[mojId]
+	local teraz = os.clock()
+	if w and w.model and w.R then
+		if P.model ~= w.model then
+			P.model = w.model
+			P.kosci = {}
+			for _, n in WK.STOPY do
+				local b = w.model:FindFirstChild(n, true)
+				if b then
+					local stopa = nil
+					for _, d in w.model:GetDescendants() do
+						if d:IsA("WeldConstraint") and (d.Part0 == b or d.Part1 == b) then
+							local inny = if d.Part0 == b then d.Part1 else d.Part0
+							if inny and inny.Transparency < 1 and (stopa == nil or inny.Name == "Stopa") then
+								stopa = inny
+							end
+						end
+					end
+					P.kosci[n] = { b = b, off = if stopa then b.CFrame:ToObjectSpace(stopa.CFrame) else CFrame.new(), gr = if stopa then stopa.Size.Y else 0.2 }
+				end
+			end
+			P.stopy = {}
+		end
+		for n, K in P.kosci do
+			-- wysokość nad ziemią pod korzeniem (płaty łąki mają różną wysokość — pasmo podpory liczymy względem nich)
+			local p = (WK.cfKosci(K.b, 0) * K.off).Position
+			p = Vector3.new(p.X, p.Y - (if w.cfBase then w.cfBase.Position.Y else 0), p.Z)
+			P.stopy[n] = P.stopy[n] or {}
+			table.insert(P.stopy[n], { t = teraz, p = p, petla = w.R:petlaNazwa(), tempo = w.R.loko.tempo, v = w.v, gr = K.gr, lt = w.R.loko.t,
+				akcja = if w.R.akcja then w.R.akcja.k.nazwa .. string.format(":%.2f", w.R.akcja.w) else nil, pop = w.R.lokoPop ~= nil })
+		end
+	end
+	if teraz < P.do_ then
+		return
+	end
+	WK.poslizg = nil
+	local suma, n, maks, vs, ts, petle, lista2 = 0, 0, 0, 0, 0, {}, {}
+	for _, lista in P.stopy do
+		local minY = math.huge
+		for _, q in lista do
+			minY = math.min(minY, q.p.Y)
+		end
+		for i = 2, #lista do
+			local a, b = lista[i - 1], lista[i]
+			local dt = b.t - a.t
+			local eps = 0.03
+			if dt > 0.004 and a.p.Y <= minY + eps and b.p.Y <= minY + eps and a.petla == b.petla then
+				local d = b.p - a.p
+				local h = Vector3.new(d.X, 0, d.Z).Magnitude / dt
+				suma += h
+				n += 1
+				maks = math.max(maks, h)
+				vs += b.v
+				ts += b.tempo
+				petle[b.petla] = (petle[b.petla] or 0) + 1
+				if b.akcja then
+					petle["akcja " .. b.akcja] = (petle["akcja " .. b.akcja] or 0) + 1
+				end
+				if b.pop then
+					petle.przenikanie = (petle.przenikanie or 0) + 1
+				end
+				table.insert(lista2, h)
+			end
+		end
+	end
+	table.sort(lista2)
+	if P.surowe and P.stopy.NogaPL3 then
+		local r = {}
+		for i, q in P.stopy.NogaPL3 do
+			if i <= 160 then
+				table.insert(r, { math.floor(q.t * 1000) / 1000, math.floor(q.p.X * 1000) / 1000, math.floor(q.p.Y * 1000) / 1000, math.floor(q.p.Z * 1000) / 1000,
+					math.floor(q.lt * 1000) / 1000 })
+			end
+		end
+		gracz:SetAttribute("EW_K_PoslizgSurowe", HttpService:JSONEncode(r))
+	end
+	gracz:SetAttribute("EW_K_Poslizg", HttpService:JSONEncode({ stadium = w and w.forma, poslizg = if n > 0 then suma / n else -1, mediana = lista2[math.max(1, n // 2)] or -1,
+		maks = maks, probek = n, v = if n > 0 then vs / n else 0, tempo = if n > 0 then ts / n else 0, petle = petle }))
+end
+
 ------------------------------------------------------------------ układ ekranu (próby): prostokąty i nakładanie
 local function uklad(): string
-	local nazwy = { Boss = ramkaBossa, Wzrost = ramkaWzrostu, Zloto = ramkaZlota, Drabina = ramkaDrabiny, Gryz = ramkaGryz, Zryw = ramkaZryw,
-		Ogien = WK.zdOgien.ramka, Moc = WK.zdMoc.ramka, OgienNast = WK.nastOgien.ramka, MocNast = WK.nastMoc.ramka, Zycie = WK.ramkaZycia, Ewolucja = ramkaEwo, Podpowiedz = ramkaPodp, Toast = ramkaToastu, Tabliczka = ramkaTabl, Panel = WK.panel }
+	local nazwy = { Boss = ramkaBossa, Wzrost = HUD.ramkaWzrostu, Zloto = HUD.ramkaZlota, Drabina = HUD.ramkaDrabiny, Gryz = HUD.gryz.ramka, Zryw = HUD.zryw.ramka,
+		Ogien = WK.zdOgien.ramka, Moc = WK.zdMoc.ramka, OgienNast = WK.nastOgien.ramka, MocNast = WK.nastMoc.ramka, Ewolucja = ramkaEwo, Podpowiedz = ramkaPodp,
+		Toast = ramkaToastu, Tabliczka = ramkaTabl, Panel = WK.panel, Odslona = HUD.odsl.ramka, Baner = ramkaBaneru,
+		OdslonaSrodek = HUD.odsl.ramka:FindFirstChild("Srodek") }
 	local pr = {}
 	local v = kamera.ViewportSize
 	local ins = GuiService:GetGuiInset() -- przy IgnoreGuiInset AbsolutePosition liczy się od dołu górnego paska
 	for n, f in nazwy do
-		if f.Visible then
+		if f and f.Visible and not (f.Parent:IsA("GuiObject") and not f.Parent.Visible) then
 			local p, s = f.AbsolutePosition + ins, f.AbsoluteSize
 			pr[n] = { p.X, p.Y, p.X + s.X, p.Y + s.Y }
 		end
@@ -2840,7 +2656,7 @@ local function uklad(): string
 			table.insert(poza, a)
 		end
 		for b, B in pr do
-			if a < b and a ~= "Panel" and b ~= "Panel" and a ~= "Tabliczka" and b ~= "Tabliczka" then
+			if a < b and a ~= "Panel" and b ~= "Panel" and a ~= "Tabliczka" and b ~= "Tabliczka" and string.sub(a, 1, 7) ~= "Odslona" and string.sub(b, 1, 7) ~= "Odslona" and a ~= "Baner" and b ~= "Baner" then
 				local w = math.min(A[3], B[3]) - math.max(A[1], B[1])
 				local h = math.min(A[4], B[4]) - math.max(A[2], B[2])
 				if w > 2 and h > 2 then
@@ -2850,7 +2666,7 @@ local function uklad(): string
 		end
 	end
 	local male = {}
-	local przyciski = { bGryz, bZryw, WK.zdOgien.b, WK.zdMoc.b, bEwo, bLegowisko, WK.bZamknij }
+	local przyciski = { bGryz, bZryw, WK.zdOgien.b, WK.zdMoc.b, bEwo, bLegowisko, WK.bZamknij, HUD.odsl.dalej }
 	for _, d in WK.panel:GetDescendants() do
 		if d:IsA("TextButton") and d.Visible then
 			table.insert(przyciski, d)
@@ -2859,8 +2675,8 @@ local function uklad(): string
 	for _, b in przyciski do
 		if b.Visible and b:FindFirstAncestorWhichIsA("GuiObject").Visible then
 			local s = b.AbsoluteSize
-			if s.X < 44 or s.Y < 44 then
-				table.insert(male, b.Name)
+			if s.X < 43.5 or s.Y < 43.5 then
+				table.insert(male, b.Name .. string.format(" %dx%d", s.X, s.Y))
 			end
 		end
 	end
@@ -2935,12 +2751,22 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 		elseif tp == "jajko" then
 			jajkoBylo = false -- próby / film: wykluwanie jeszcze raz (tylko na stadium 1)
 		elseif tp == "zakladka_u" then
-			WK.tabT.Visible, WK.tabU.Visible = false, true
+			HUD:pokazZakladke("U")
 		elseif tp == "zakladka_t" then
-			WK.tabT.Visible, WK.tabU.Visible = true, false
+			HUD:pokazZakladke("T")
+		elseif tp == "dalej" then
+			HUD:odslonaKoniec()
+		elseif tp == "odnowa_zeruj" then
+			zdGotowy = { ogien = 0, moc = 0 }
+			zrywGotowy, gryzGotowy = 0, 0
 		else
 			akcja(tp)
 		end
+	end
+	local tpl = gracz:GetAttribute("EW_TestPoslizg")
+	if type(tpl) == "number" then
+		gracz:SetAttribute("EW_TestPoslizg", nil)
+		WK.poslizg = { do_ = os.clock() + math.abs(tpl), stopy = {}, czasy = {}, surowe = tpl < 0 }
 	end
 	if gracz:GetAttribute("EW_TestUklad") then
 		gracz:SetAttribute("EW_TestUklad", nil)
@@ -2950,6 +2776,9 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 	krokSterowania(dtPrawdziwe)
 	for _, w in widoki do
 		rysuj(w, dt)
+	end
+	if WK.poslizg then
+		WK.krokPoslizgu()
 	end
 	if olbrzymId == 0 or not widoki[olbrzymId] then
 		korona.Parent = nil
@@ -2973,7 +2802,12 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 	-- odsłona: tabliczka rośnie i znika
 	if odslona then
 		odslona.t += dt
-		if odslona.faza == "tabliczka" then
+		if odslona.faza == "tabliczka" and odslona.hud then
+			-- odsłona z makiety: trwa, dopóki moduł jej nie zamknie (CONTINUE albo czas)
+			if not HUD:odslonaAktywna() then
+				odslona = nil
+			end
+		elseif odslona.faza == "tabliczka" then
 			local t = odslona.t
 			tablSkala.Scale = if t < 0.15 then 0.3 + t / 0.15 * 0.9 elseif t < 0.27 then 1.2 - (t - 0.15) / 0.12 * 0.2 else 1
 			if t > odslona.czas then
@@ -2984,10 +2818,7 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 			odslona = nil
 		end
 	end
-	if pulsPaska < 0.3 then
-		pulsPaska += dt
-		pasekSkala.Scale = 1 + math.sin(math.clamp(pulsPaska / 0.3, 0, 1) * math.pi) * 0.12
-	end
+	HUD:krok(dt, tGlob)
 	if blyskT < 0.5 then
 		blyskT += dt
 		blysk.BackgroundTransparency = math.clamp(0.15 + blyskT / 0.5 * 0.85, 0, 1)
@@ -3084,6 +2915,8 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 			gracz:SetAttribute("EW_K_Rigi", string.format("%d pełne, %d uproszczone, %d animowane co 1–2 klatki", pelne, uproszczone, animowane))
 		end
 		gracz:SetAttribute("EW_K_Legowisko", WK.panel.Visible)
+		gracz:SetAttribute("EW_K_Ogien", WK.mojOgien or 0)
+		gracz:SetAttribute("EW_K_Przypalenia", if SK then SK.licznikPrzypalen or 0 else 0)
 		gracz:SetAttribute("EW_K_Korona", korona.Parent ~= nil)
 		gracz:SetAttribute("EW_K_KameraY", kamera.CFrame.Position.Y)
 		gracz:SetAttribute("EW_K_MigawkaS", os.clock() - czasMigawki)

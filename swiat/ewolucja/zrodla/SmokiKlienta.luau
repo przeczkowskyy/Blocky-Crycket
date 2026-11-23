@@ -191,13 +191,12 @@ function S:ruch(w, v: number, vMaks: number)
 		return
 	end
 	local L = self.LOD
-	if v < 0.8 then
-		R:petla("spoczynek", 1)
-	elseif (v < vMaks * 0.45 or not W.klipy.bieg) and W.klipy.chod then
-		R:petla("chod", KL.tempo(W.klipy.chod, v, R.skala, L.tempo_min or 0.55, L.tempo_maks or 2.4))
-	else
-		R:petla("bieg", KL.tempo(W.klipy.bieg, v, R.skala, L.tempo_min or 0.55, L.tempo_maks or 2.4))
-	end
+	-- dane 3: chód 7 i bieg 18 studs/s w każdym stadium; tempo = prędkość po ziemi / predkosc, przełączenie przy
+	-- środku geometrycznym (≈11,2) z histerezą, przenikanie pętli w Rigi (0,18 s, faza zachowana)
+	local nazwa, tempo = KL.chodBieg(W, v, R:petlaNazwa(), { skala = R.skala, mn = L.tempo_min or 0.1,
+		mx = L.tempo_maks or 3, prog = L.bieg_od, hist = L.bieg_hist or 1.5, szybki = w.szybki })
+	w.petlaRuchu, w.tempoRuchu = nazwa, tempo
+	R:petla(nazwa, tempo)
 end
 
 -- start akcji z wyrównaniem do zdarzenia: zdarzenie wypada po `za` sekundach od teraz
@@ -270,13 +269,24 @@ function S.ladowanie(w, typ: string)
 	end
 end
 
+S.DLUGI_OD = 0.9
+
 function S.rana(w, przewrot: boolean, przewrotS: number)
 	if not w.R then
 		return
 	end
 	if przewrot then
-		local k = w.R.W.klipy.koziolek
-		w.R:graj("koziolek", { tempo = if k then math.max(1, k.dl / (przewrotS + 0.35)) else 1, wejscie = 0.04 })
+		-- dane 3: krótki koziołek (14 klatek, 0,47 s) w tempie 1, ostatnia poza trzymana do końca przewrotu (0,5 s);
+		-- długie przewroty (od dlugi_od s) — koziolek_dlugi (1,2 s, z wstawaniem) dopasowany do czasu przewrotu
+		local W = w.R.W
+		local kd = W.klipy.koziolek_dlugi
+		if kd and przewrotS >= S.DLUGI_OD then
+			w.R:graj("koziolek_dlugi", { tempo = math.clamp(kd.dl / (przewrotS + 0.35), 0.7, 1.6), wejscie = 0.04 })
+		else
+			local k = W.klipy.koziolek
+			w.R:graj("koziolek", { tempo = if k and k.dl > przewrotS + 0.05 then k.dl / przewrotS else 1, wejscie = 0.04,
+				trzymajS = if k then math.max(0, przewrotS - k.dl) else 0 })
+		end
 	else
 		w.R:graj("trafienie", { slaby = true, wejscie = 0.03 })
 	end
@@ -383,42 +393,70 @@ function S.slady(w, wlacz: boolean)
 	end
 end
 
--- stożek ognia (FIRE BREATH / INFERNO) jako objętość: 7 półprzezroczystych kul Neon wzdłuż stożka (rosną ku końcowi,
--- migoczą; od pyska żółte → pomarańczowe → czerwone / różowe przy INFERNO) i cząsteczki z PyskAttachment; uchwyt do kroku
-function S.stozek(w, zasieg: number, kat: number, inferno: boolean)
+-- stożek ognia (FIRE BREATH / INFERNO), dane 3: rig `Efekt_ogien_stozek` (28 części, wachlarz ok. 60°, długość 10 wzdłuż −Z)
+-- przypięty do PyskAttachment, skala = zasięg / 10, klip „migotanie” w pętli; z pyska dodatkowo żar (cząsteczki).
+-- Dawną objętość z kul Neon zostawiamy tylko jako zapas, gdy wzorca rigu nie ma (decyzja: rig czyta się lepiej z kamery gry).
+function S:stozek(w, zasieg: number, kat: number, inferno: boolean)
 	local pysk = S.zaczep(w, "Pysk")
 	if not pysk then
 		return nil
 	end
 	local H = { lista = {}, kule = {}, zasieg = zasieg, szer = 2 * zasieg * math.tan(math.rad(kat / 2)) }
-	local kol = if inferno then { Color3.fromRGB(255, 240, 150), Color3.fromRGB(255, 150, 60), Color3.fromRGB(255, 70, 190) }
-		else { Color3.fromRGB(255, 245, 160), Color3.fromRGB(255, 160, 40), Color3.fromRGB(230, 60, 20) }
-	for i = 1, 7 do
-		local p = Instance.new("Part")
-		p.Shape = Enum.PartType.Ball
-		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
-		p.Material = Enum.Material.Neon
-		local f = (i - 1) / 6
-		p.Color = if f < 0.5 then kol[1]:Lerp(kol[2], f * 2) else kol[2]:Lerp(kol[3], (f - 0.5) * 2)
-		p.Transparency = 0.25 + f * 0.4
-		p.Parent = w.model
-		table.insert(H.kule, p)
-		table.insert(H.lista, p)
+	local wz = self.c.wzorce and self.c.wzorce:FindFirstChild("Efekt_ogien_stozek")
+	local Wk = wz and self:klipy("ogien_stozek")
+	if wz and Wk then
+		local m = wz:Clone()
+		local sk = zasieg / 10
+		for _, d in m:GetDescendants() do
+			if d:IsA("BasePart") then
+				d.CastShadow, d.CanQuery, d.CanTouch, d.CanCollide = false, false, false, false
+				if inferno and d.Transparency < 1 then
+					d.Color = d.Color:Lerp(Color3.fromRGB(255, 70, 190), 0.3)
+				end
+			end
+		end
+		pcall(function()
+			m:ScaleTo(sk)
+		end)
+		m.Parent = self.c.lokalne
+		H.R = Rigi.nowy(m, Wk, sk)
+		H.R:petla("migotanie", 1)
+		H.R.grane = w.grane or H.R.grane
+		H.R.wspolne = self.wszystkie
+		H.R:licz("migotanie")
+		H.m = m
+		table.insert(H.lista, m)
+		self.licznikOgnia = (self.licznikOgnia or 0) + 1
+	else
+		local kol = if inferno then { Color3.fromRGB(255, 240, 150), Color3.fromRGB(255, 150, 60), Color3.fromRGB(255, 70, 190) }
+			else { Color3.fromRGB(255, 245, 160), Color3.fromRGB(255, 160, 40), Color3.fromRGB(230, 60, 20) }
+		for i = 1, 7 do
+			local p = Instance.new("Part")
+			p.Shape = Enum.PartType.Ball
+			p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+			p.Material = Enum.Material.Neon
+			local f = (i - 1) / 6
+			p.Color = if f < 0.5 then kol[1]:Lerp(kol[2], f * 2) else kol[2]:Lerp(kol[3], (f - 0.5) * 2)
+			p.Transparency = 0.25 + f * 0.4
+			p.Parent = w.model
+			table.insert(H.kule, p)
+			table.insert(H.lista, p)
+		end
 	end
-	local zew = kol[3]
-	local p = emiter(pysk, zew, 1.2 + zasieg * 0.06, 60)
+	local zew = if inferno then Color3.fromRGB(255, 70, 190) else Color3.fromRGB(230, 60, 20)
+	local p = emiter(pysk, zew, 0.8 + zasieg * 0.04, 30)
 	p.EmissionDirection = Enum.NormalId.Front
-	p.Speed = NumberRange.new(zasieg * 1.6, zasieg * 2.2)
-	p.Lifetime = NumberRange.new(0.35, 0.5)
-	p.SpreadAngle = Vector2.new(kat / 2, kat / 3)
-	p.Acceleration = Vector3.new(0, 2, 0)
-	p.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(1, 2.4 + zasieg * 0.12) })
+	p.Speed = NumberRange.new(zasieg * 1.4, zasieg * 2)
+	p.Lifetime = NumberRange.new(0.3, 0.45)
+	p.SpreadAngle = Vector2.new(kat / 2.5, kat / 4)
+	p.Acceleration = Vector3.new(0, 3, 0)
+	p.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 1.2 + zasieg * 0.06) })
 	table.insert(H.lista, p)
 	return H
 end
 
--- co klatkę: kule od pyska w kierunku patrzenia smoka (przód korzenia, −Z), lekko opadające, z migotaniem
-function S.stozekKrok(w, H, t: number)
+-- co klatkę: rig od pyska w kierunku patrzenia smoka (przód korzenia), lekko w dół ku ziemi na końcu zasięgu
+function S.stozekKrok(w, H, t: number, dt: number?)
 	local pysk = S.zaczep(w, "Pysk")
 	local korzen = w.model and w.model.PrimaryPart
 	if not (H and pysk and korzen) then
@@ -428,6 +466,13 @@ function S.stozekKrok(w, H, t: number)
 	local kier = -korzen.CFrame.LookVector
 	kier = Vector3.new(-kier.X, 0, -kier.Z)
 	kier = if kier.Magnitude > 0.01 then kier.Unit else Vector3.new(0, 0, -1)
+	if H.R then
+		local wys = math.max(0, od.Y - (korzen.Position.Y - (if w.R then w.R.korzenOff.Y else 0)))
+		local opad = math.atan2(wys * 0.6, H.zasieg)
+		H.R:ustaw(CFrame.lookAt(od, od + kier) * CFrame.Angles(-opad, 0, 0))
+		H.R:krok(dt or 1 / 60)
+		return
+	end
 	local cz, cf = {}, {}
 	for i, p in H.kule do
 		local f = i / #H.kule
@@ -446,6 +491,40 @@ function S.stozekKoniec(H)
 			o:Destroy()
 		end
 	end
+end
+
+-- przypalona ziemia INFERNO (dane 3): rekwizyt `Rekwizyt_przypalenie` (promień 10) w skali promień / 10; żar pulsuje i gaśnie
+function S:przypalenie(E, poz: Vector3, r: number, czas: number): boolean
+	-- wysokość ziemi pod plamą (płaty łąki leżą nad poziomem pola): promień w dół, bez własnych efektów i stworków
+	local rp = RaycastParams.new()
+	rp.FilterType = Enum.RaycastFilterType.Exclude
+	rp.FilterDescendantsInstances = { self.c.lokalne }
+	local traf = workspace:Raycast(poz + Vector3.new(0, 12, 0), Vector3.new(0, -24, 0), rp)
+	local y = if traf then traf.Position.Y + 0.03 else poz.Y + 0.05
+	local m = self:rekwizyt("Rekwizyt_przypalenie", CFrame.new(poz.X, y, poz.Z) * CFrame.Angles(0, math.random() * 6.28, 0), r / 10, self.c.lokalne)
+	if not m then
+		return false
+	end
+	local zar = {}
+	for _, d in m:GetDescendants() do
+		if d:IsA("BasePart") then
+			d.CanQuery, d.CanTouch, d.CanCollide = false, false, false
+			if d.Material == Enum.Material.Neon then
+				table.insert(zar, { d, d.Transparency })
+			end
+		end
+	end
+	self.licznikPrzypalen = (self.licznikPrzypalen or 0) + 1
+	E:dodaj(czas, function(f)
+		local puls = 0.5 + 0.5 * math.sin(f * czas * 7)
+		local gas = math.clamp((f - 0.75) / 0.25, 0, 1)
+		for _, z in zar do
+			z[1].Transparency = math.clamp(z[2] + puls * 0.25 + gas * (1 - z[2]), 0, 1)
+		end
+	end, function()
+		m:Destroy()
+	end)
+	return true
 end
 
 -- cokół trofeum z danych (rekwizyt) i trofeum: uproszczony rig w nieruchomej pozie „cokol”

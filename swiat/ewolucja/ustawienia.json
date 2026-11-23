@@ -6,8 +6,21 @@
  "wzorce_rs": "EwolucjaWzorce",
  "miejsce_bc": 129485428021967,
  "ui": {
-  "czcionka": "LuckiestGuy",
+  "czcionka": "FredokaOne",
   "czcionka_cyfr": "FredokaOne",
+  "czcionka_etykiet": "BuilderSansExtraBold",
+  "czcionka_opis": "interfejs1: tytuły, nazwy stadiów i liczby FredokaOne, etykiety i pigułki BuilderSansExtraBold (przewodnik stylu z modele/README.md; obie sprawdzone w Studio jako Enum.Font).",
+  "styl": {"panel": "2B2238", "karta": "3E3250", "pas": "1C162C", "obrys": "1A1424", "tekst": "FFF6E0", "tekst2": "BEB2D4", "zar": "FF7A2A", "zar_gora": "FFD23F",
+   "zycie": "FF4D6A", "zycie_gora": "FF9AA8", "zloto": "FFC934", "krysztal": "7FF8FF", "kup": "7CE38B", "cien": "080410",
+   "gryz": "FFF6E0", "zryw": "60C8DC", "ogien": "E84C2C", "moc": "3A80EA", "zamkniety": "463C58", "odnowa": "100A1C"},
+  "etap": "STAGE %d / %d",
+  "ewoluowal": "EVOLVED!",
+  "nowa_moc": "NEW POWER",
+  "dalej": "CONTINUE",
+  "szanse_tytul": "VARIANT ODDS",
+  "nieznane": "???",
+  "lv": "Lv %d",
+  "odslona_s": 3.4,
   "kolory": {"tusz": "1B1424", "papier": "FFF6E0", "zloto": "FFC83D", "ty": "FFE14D", "zjesz": "5BFF7A", "zje_cie": "FF4040", "kulka_mala": "7FE9FF", "kulka_duza": "FF9A3D"},
   "gryz": "BITE",
   "zryw": "DASH",
@@ -69,6 +82,12 @@
   "hp": "HP",
   "wyspa_podp": "Glide over the lava to the SKY NEST!"
  },
+ "ikony": {
+  "opis": "TABELA IKON INTERFEJSU (interfejs1): nazwa ikony → numer obrazu Roblox (rbxassetid). 0 = jeszcze nie wgrano — gra pokazuje zastępstwo (mały model 3D z wzorców: kule, kopiec złota, moneta i korona z części; inaczej krótki napis na kolorowej płytce; kłódka i romby wariantów rysowane). Po wgraniu 24 ikon z …/smok_ewolucja/interfejs/ikony wpisać numery tutaj i przebudować paczkę (zbuduj.py) — bez zmian w kodzie.",
+  "id": {"bite": 0, "dash": 0, "ember_spit": 0, "fire_breath": 0, "inferno_breath": 0, "tail_sweep": 0, "wing_glide": 0, "roar": 0, "meteor_dive": 0,
+   "zablokowane": 0, "moneta": 0, "skarb": 0, "kula_mala": 0, "kula_duza": 0, "kula_wielka": 0, "wariant_gold": 0, "wariant_crystal": 0, "wariant_ruby": 0,
+   "wariant_rainbow": 0, "korona": 0, "ulepszenie_jaw": 0, "ulepszenie_speed": 0, "ulepszenie_appetite": 0, "czaszka": 0}
+ },
  "pole": {
   "opis": "Koło o promieniu r wokół srodek (dala od Pet Areny i zabawek). Przeszkody (skały i drzewa w polu) liczy logika jako koła; wystrój (plamy trawy, drzewa za murem, kwiaty) tylko w scenie.",
   "srodek": [0, 0, -800],
@@ -108,10 +127,10 @@
   "kulki_startowe": 6
  },
  "warianty": [
-  {"id": "zloty", "nazwa": "GOLD", "szansa": 0.08, "x": 2, "kolor": "FFC83D"},
-  {"id": "krysztal", "nazwa": "CRYSTAL", "szansa": 0.03, "x": 4, "kolor": "7FE9FF"},
-  {"id": "rubin", "nazwa": "RUBY", "szansa": 0.01, "x": 8, "kolor": "FF3D6A"},
-  {"id": "tecza", "nazwa": "RAINBOW", "szansa": 0.002, "x": 20, "kolor": "FF7AF0"}
+  {"id": "zloty", "ikona": "wariant_gold", "nazwa": "GOLD", "szansa": 0.08, "x": 2, "kolor": "FFC83D"},
+  {"id": "krysztal", "ikona": "wariant_crystal", "nazwa": "CRYSTAL", "szansa": 0.03, "x": 4, "kolor": "7FE9FF"},
+  {"id": "rubin", "ikona": "wariant_ruby", "nazwa": "RUBY", "szansa": 0.01, "x": 8, "kolor": "FF3D6A"},
+  {"id": "tecza", "ikona": "wariant_rainbow", "nazwa": "RAINBOW", "szansa": 0.002, "x": 20, "kolor": "FF7AF0"}
  ],
  "zapis": {
   "opis": "Zapis gracza (klucz player_<UserId>, wersja w danych). W Studio i w każdej próbie magazyn w pamięci serwera (nigdy prawdziwy DataStore); poza Studio DataStore z blokadą sesji (UpdateAsync, job serwera, blokada_s). Zapis co co_s, przy wyjściu i przy zamknięciu serwera. Nieobecność liczona do nieobecnosc_maks_s.",
@@ -182,8 +201,11 @@
  "zestaw": "blender",
  "zestaw_opis": "Zestaw form: blender (domyślny od smok-blender1: osiem stadiów z modeli Blendera — rig, klipy, jajo, rekwizyty z modele/dane), smok (dawny generator części smok.py) albo potwory (modele Pet Areny) — zmiana jedną wartością.",
  "blender": {
-  "opis": "Zestaw blender: progi kosztu (lod) — własny smok pełny rig co klatkę; inni gracze pełny rig do odl_pelny_gracz, boty do odl_pelny_bot (co co_blisko klatek), dalej uproszczony rig co co_daleko klatek, poza kadrem albo dalej niż odl_stop — poza zamrożona. Tempo chodu i biegu = prędkość / predkosc klipu w granicach tempo_min–tempo_maks. warianty: kolory regionów (cialo, luski, brzuch, blona, kolce, zar, zar_rdzen) dla każdego wariantu; tecza tęczuje cialo i blona.",
-  "lod": {"odl_pelny_gracz": 90, "odl_pelny_bot": 45, "odl_stop": 170, "co_blisko": 2, "co_daleko": 4, "co_stop": 12, "histereza": 8, "tempo_min": 0.55, "tempo_maks": 2.4},
+  "opis": "Zestaw blender: progi kosztu (lod) — własny smok pełny rig co klatkę; inni gracze pełny rig do odl_pelny_gracz, boty do odl_pelny_bot (co co_blisko klatek), dalej uproszczony rig co co_daleko klatek, poza kadrem albo dalej niż odl_stop — poza zamrożona. Tempo chodu i biegu = prędkość po ziemi / predkosc klipu (dane 3: chód 7, bieg 18 studs/s) w granicach tempo_min–tempo_maks; przełączenie chód ↔ bieg przy środku geometrycznym obu predkosc (≈11,2 studs/s) z histerezą bieg_hist (bieg_od nadpisuje próg). warianty: kolory regionów (cialo, luski, brzuch, blona, kolce, zar, zar_rdzen) dla każdego wariantu; tecza tęczuje cialo i blona.",
+  "lod": {"odl_pelny_gracz": 90, "odl_pelny_bot": 45, "odl_stop": 170, "co_blisko": 2, "co_daleko": 4, "co_stop": 12, "histereza": 8, "tempo_min": 0.1, "tempo_maks": 3.0,
+   "bieg_hist": 1.5},
+  "piskle": "obecne",
+  "piskle_opis": "Model pisklęcia: obecne (smok_1_rig.json) albo lagodne (smok_1_lagodny_rig.json: mniejsze oczy, jasne brwi) — wybór ludzi.",
   "warianty": {
    "zloty": {"cialo": "F2B53A", "luski": "8A5A0A", "brzuch": "FFF1B8", "blona": "FFD86B", "kolce": "FFFFFF", "zar": "FFE27A", "zar_rdzen": "FFF8D0"},
    "krysztal": {"cialo": "9EEBFF", "luski": "2E7FA8", "brzuch": "E8FBFF", "blona": "7FE9FF", "kolce": "FFFFFF", "zar": "5BE8FF", "zar_rdzen": "D8FAFF"},
@@ -261,15 +283,15 @@
  "zdolnosci": {
   "opis": "Dwa przyciski zdolności (walka1): FIRE (linia ogien) i POWER (linia moc). Każda linia ewoluuje: działa wersja z największym od ≤ stadium; wcześniej przycisk jest ciemny z napisem „at <STADIUM>”. Każda zdolność: zamach_s (widoczny zamach — sygnał dla innych; ogłuszenie w zamachu go przerywa), potem efekt i odnowa_s. Rany = siła BITE stadium (z Szczęką) × x × mnożnik rozmiaru. pocisk: kula lecąca prosto z prędkością v do zasieg (trafia pierwszego); oddech: kanał trwa_s, co tik_s stożek kat_st na zasieg przed pyskiem (sterowany kierunkiem ruchu), inferno zostawia płonącą ziemię (plama_r, plama_s, co plama_co_s × plama_x); ogon: krąg r wokół, odrzut i przewrót; lot: szybowanie d w s (nad mniejszymi i nad fosą wyspy), lądowanie rani w r; ryk: krąg r — mniejsze boty uciekają (ucieczka_s), reszta ogłuszona (ogluszenie_s, więksi i boss o połowę krócej); meteor: skok d w s i wybuch r przy lądowaniu.",
   "ogien": [
-   {"id": "zar", "nazwa": "EMBER SPIT", "krotko": "EMBER", "od": 2, "typ": "pocisk", "zamach_s": 0.3, "odnowa_s": 3, "v": 48, "zasieg": 30, "r": 1.4, "x": 5, "odrzut": 6},
-   {"id": "oddech", "nazwa": "FIRE BREATH", "krotko": "BREATH", "od": 4, "typ": "oddech", "zamach_s": 0.35, "odnowa_s": 6.5, "trwa_s": 1.6, "tik_s": 0.2, "zasieg": 14, "kat_st": 50, "x": 1.3},
-   {"id": "inferno", "nazwa": "INFERNO BREATH", "krotko": "INFERNO", "od": 7, "typ": "oddech", "zamach_s": 0.4, "odnowa_s": 7, "trwa_s": 1.8, "tik_s": 0.2, "zasieg": 20, "kat_st": 75, "x": 1.3, "plama_r": 4.5, "plama_s": 3, "plama_co_s": 0.5, "plama_x": 0.8}
+   {"id": "zar", "ikona": "ember_spit", "opis": "spit a fireball at range", "nazwa": "EMBER SPIT", "krotko": "EMBER", "od": 2, "typ": "pocisk", "zamach_s": 0.3, "odnowa_s": 3, "v": 48, "zasieg": 30, "r": 1.4, "x": 5, "odrzut": 6},
+   {"id": "oddech", "ikona": "fire_breath", "opis": "burn everything in front of you", "nazwa": "FIRE BREATH", "krotko": "BREATH", "od": 4, "typ": "oddech", "zamach_s": 0.35, "odnowa_s": 6.5, "trwa_s": 1.6, "tik_s": 0.2, "zasieg": 14, "kat_st": 50, "x": 1.3},
+   {"id": "inferno", "ikona": "inferno_breath", "opis": "wide fire that leaves burning ground", "nazwa": "INFERNO BREATH", "krotko": "INFERNO", "od": 7, "typ": "oddech", "zamach_s": 0.4, "odnowa_s": 7, "trwa_s": 1.8, "tik_s": 0.2, "zasieg": 20, "kat_st": 75, "x": 1.3, "plama_r": 4.5, "plama_s": 3, "plama_co_s": 0.5, "plama_x": 0.8}
   ],
   "moc": [
-   {"id": "ogon", "nazwa": "TAIL SWEEP", "krotko": "TAIL", "od": 3, "typ": "ogon", "zamach_s": 0.3, "odnowa_s": 5, "r": 6, "x": 7, "odrzut": 24, "przewrot_s": 0.5},
-   {"id": "lot", "nazwa": "WING GLIDE", "krotko": "GLIDE", "od": 5, "typ": "lot", "zamach_s": 0.2, "odnowa_s": 6, "d": 34, "s": 0.9, "r": 5, "x": 8, "odrzut": 14},
-   {"id": "ryk", "nazwa": "ROAR", "krotko": "ROAR", "od": 6, "typ": "ryk", "zamach_s": 0.45, "odnowa_s": 8, "r": 18, "x": 10, "ogluszenie_s": 1.0, "ucieczka_s": 2.5},
-   {"id": "meteor", "nazwa": "METEOR DIVE", "krotko": "METEOR", "od": 8, "typ": "meteor", "zamach_s": 0.45, "odnowa_s": 8, "d": 24, "s": 0.85, "r": 14, "x": 12, "odrzut": 26, "przewrot_s": 0.6}
+   {"id": "ogon", "ikona": "tail_sweep", "opis": "knock down everyone around you", "nazwa": "TAIL SWEEP", "krotko": "TAIL", "od": 3, "typ": "ogon", "zamach_s": 0.3, "odnowa_s": 5, "r": 6, "x": 7, "odrzut": 24, "przewrot_s": 0.5},
+   {"id": "lot", "ikona": "wing_glide", "opis": "glide over foes and lava", "nazwa": "WING GLIDE", "krotko": "GLIDE", "od": 5, "typ": "lot", "zamach_s": 0.2, "odnowa_s": 6, "d": 34, "s": 0.9, "r": 5, "x": 8, "odrzut": 14},
+   {"id": "ryk", "ikona": "roar", "opis": "stun everyone near you", "nazwa": "ROAR", "krotko": "ROAR", "od": 6, "typ": "ryk", "zamach_s": 0.45, "odnowa_s": 8, "r": 18, "x": 10, "ogluszenie_s": 1.0, "ucieczka_s": 2.5},
+   {"id": "meteor", "ikona": "meteor_dive", "opis": "leap and crash down in a blast", "nazwa": "METEOR DIVE", "krotko": "METEOR", "od": 8, "typ": "meteor", "zamach_s": 0.45, "odnowa_s": 8, "d": 24, "s": 0.85, "r": 14, "x": 12, "odrzut": 26, "przewrot_s": 0.6}
   ]
  },
  "swiat": {
@@ -297,9 +319,9 @@
   "kulek": 8
  },
  "ulepszenia": [
-  {"id": "szczeka", "nazwa": "JAW", "opis": "Bite reach & damage", "zasieg": [2.5, 3.6, 4.8, 5.6, 6.4], "przerwa_s": [0.7, 0.52, 0.38, 0.32, 0.27], "ceny": [380, 3200, 9000, 22000]},
-  {"id": "szybkosc", "nazwa": "SPEED", "opis": "Move faster", "wartosci": [16, 19, 22, 24, 26], "ceny": [260, 2600, 8000, 20000]},
-  {"id": "apetyt", "nazwa": "APPETITE", "opis": "Grow faster", "wartosci": [1, 1.25, 1.5, 1.75, 2.0], "ceny": [700, 5200, 12000, 26000]}
+  {"id": "szczeka", "ikona": "ulepszenie_jaw", "nazwa": "JAW", "opis": "Bite reach & damage", "zasieg": [2.5, 3.6, 4.8, 5.6, 6.4], "przerwa_s": [0.7, 0.52, 0.38, 0.32, 0.27], "ceny": [380, 3200, 9000, 22000]},
+  {"id": "szybkosc", "ikona": "ulepszenie_speed", "nazwa": "SPEED", "opis": "Move faster", "wartosci": [16, 19, 22, 24, 26], "ceny": [260, 2600, 8000, 20000]},
+  {"id": "apetyt", "ikona": "ulepszenie_appetite", "nazwa": "APPETITE", "opis": "Grow faster", "wartosci": [1, 1.25, 1.5, 1.75, 2.0], "ceny": [700, 5200, 12000, 26000]}
  ],
  "smierc": {
   "opis": "Zjedzony gracz spada o jedną formę (nie niżej niż 1), pasek nowej formy na pasek_po; po odrodzenie_s wraca z tarczą tarcza_s. Formy do chronione_formy włącznie są chronione przed graczami (zagrażają im tylko boty). Legowisko, złoto i ulepszenia zostają. gral_dalej_s: miara — czy po śmierci gracz grał dalej.",

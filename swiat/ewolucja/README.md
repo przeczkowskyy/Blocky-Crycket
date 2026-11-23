@@ -215,7 +215,7 @@ w `ustawienia.json`). Dane tylko do odczytu z `modele/dane/` (format /2, opis: `
   najkrótszą drogą, zdarzenia, tempo z `predkosc`), `RigiEwolucji` (pętla z przenikaniem 0,18 s + akcja na wierzchu,
   `Motor6D.Transform`), `SmokiKlienta` (klony, warianty, koszt, efekty, golem), `LegowiskaKlienta` (cokoły, trofea,
   gniazdo, skarb).
-- **Stany → klipy**: spoczynek / chod / bieg z prędkości (tempo `v / predkosc`, granice 0,55–2,4); BITE gryz1–3
+- **Stany → klipy**: spoczynek / chod / bieg z prędkości (od danych 3: patrz „Dane 3 i interfejs”); BITE gryz1–3
   (ugryzienie 0,08 s po naciśnięciu); EMBER `splun`; BREATH/INFERNO `ogien_start` → `ogien_petla` → `ogien_koniec`;
   TAIL `ogon_zamach`; ROAR `ryk`; GLIDE `szybowanie_start` → `_petla` → `_ladowanie`; METEOR `nurkowanie_skok` →
   `nurkowanie_ladowanie`; trafienie `trafienie`, przewrót `koziolek`, zjedzenie `pozarcie`, ewolucja `radosc`,
@@ -230,15 +230,69 @@ w `ustawienia.json`). Dane tylko do odczytu z `modele/dane/` (format /2, opis: `
 - **KNIGHT GOLEM** zamiast węża: rig stopnia 1–5, klipy spoczynek/chod/zamach/zachwianie/upadek; serwer czeka
   `boss.zamach_s` (= „uderzenie” w klipie „zamach”, 0,6 s) przed ciosem, krąg zasięgu na ziemi. Owcy nie ma w grze
   (wymaga nowego rodzaju stworka na serwerze — poza budżetem).
-- **Niezgodności z umową danych**: `indeks.json → stadia` zawiera też `smok_jajo` (pomijamy); `predkosc` biegu
-  maluchów (2,78 st./s pisklęcia) a prędkość gry 16 st./s — tempo przycięte do 2,4×, stopy stadiów 1–4 ślizgają się;
-  `koziolek` trwa 1,2 s, przewrót w grze 0,5 s — grany szybciej; jajo ma korzeń przesunięty w Z (−0,19).
+- **Niezgodności z umową danych (wersja 2, usunięte w wersji 3)**: jajo w `stadia`, `predkosc` maluchów niezgodna
+  z prędkością gry, długi `koziolek`; nadal: jajo ma korzeń przesunięty w Z (−0,19).
 - `tempo.py` liczy już zasady walki1 (życie, łańcuch, bez połykania dotykiem). Tempo (6 prób, mediana): forma 2 0:21,
   forma 3 1:10, forma 5 6:08, ANCIENT 14:55 (5/6 doszło), 1. ulepszenie 1:38, 1. pościg 1:59 — w celach; najdłuższa
   przerwa bez nowości 2:51 (cel ≤ 2:30, wcześniej 2:18) — liczb wzrostu nie zmieniałem (przekroczenie niewielkie).
 - Wyniki: testy offline 30 (29 OK + 1 pominięty: stary generator części), Play P01–P30, telefon T1–T7; zrzuty
   `01_start` (wyklucie w gnieździe), `02_jedzenie`, `09_legowisko_swiat` (cokoły z trofeami), `12_olbrzym` (stadium 8,
   korona), `14`–`16` walka, `18_szybowanie`, `06`/`17` telefon; film `%TEMP%\ewolucja_demo\ewolucja_smok_blender.mp4`.
+
+## Dane 3 i interfejs (interfejs1, 23.11.2026)
+**Dane modeli w wersji 3** (`modele/dane/indeks.json`, tylko odczyt): `stadia` = osiem stadiów, jajo pod `jajo`, nowe
+`efekty`, `warianty_modeli`, `predkosc_stworow`; `dane.py` przyjmuje wersję 2 i 3.
+- **Chód i bieg**: tempo = prędkość po ziemi ÷ `predkosc` klipu (chód 7, bieg 18 st./s w każdym stadium), granice
+  0,1–3,0; chód ↔ bieg przy środku geometrycznym (≈ 11,2 st./s) z histerezą 1,5 (`blender.lod.bieg_hist`), przenikanie
+  pętli 0,18 s z zachowaną fazą (`KlipyEwolucji.chodBieg`). Owca (chód 1,76 / ucieczka 5,0) i golem (6,5–8,5) — swoje
+  `predkosc`. Kamera i pole trafienia na korzeniu.
+- **Przewrót**: krótki `koziolek` (14 klatek) w tempie 1, ostatnia poza trzymana do końca przewrotu (0,5 s);
+  `koziolek_dlugi` dla przewrotów od 0,9 s (serwer podaje czas przewrotu w zdarzeniu `rana.pw`).
+- **Ogień**: rig `Efekt_ogien_stozek` przypięty do `PyskAttachment` (przód −Z), skala = zasięg ÷ 10, klip `migotanie`
+  w pętli, lekko pochylony ku ziemi, plus żar z pyska; dawne kule Neon zostają tylko jako zapas bez wzorca (rig czyta się
+  z kamery gry wyraźniej). INFERNO: `Rekwizyt_przypalenie` w skali promień ÷ 10 na wysokości ziemi (promień w dół),
+  pulsuje i gaśnie, płomyki z `E:plama` bez dawnego krążka.
+- **Portrety** (drabina, panel, odsłona, góra ekranu): poza `portret`, kamera z przodu po lewej (¾), popiersie z zaczepów
+  `Glowa`/`Piers`; trofea na cokołach w świecie dalej w pozie `cokol`.
+- **Pisklę**: `blender.piskle` = `"obecne"` (domyślnie) albo `"lagodne"` (`smok_1_lagodny_rig.json`) — wybór ludzi.
+
+**Interfejs z makiet** (moduł `InterfejsKlienta`, przewodnik stylu z `modele/README.md`; wzór 844 × 390 pt, skala
+min(szer./844, wys./390) w granicach 0,6–1,8):
+- góra na środku: portret obecnego stadium w kole z pierścieniem żaru (żywy rig w ViewportFrame), nazwa, `STAGE n / 8`,
+  pasek wzrostu 288 × 18 z gradientem żaru, następne stadium jako czarna sylwetka z „?”, pasek życia; obok dwie pigułki
+  (złoto; skarb legowiska z dochodem /s) — razem przycisk legowiska. Górne rogi puste (≥ 146 pt od prawej);
+- drabina przy lewej krawędzi: zdobyte stadia — portrety, następne — sylwetka, dalsze — „?”, obecne 36 pt z pierścieniem
+  żaru i nazwą;
+- przyciski: BITE 103 pt (#FFF6E0), DASH / FIRE / POWER 68 pt (#60C8DC, #E84C2C, #3A80EA), wewnętrzny pierścień, połysk,
+  cień; wciśnięcie 0,92 i 15% ciemniej; odnowa — ciemny wycinek od godziny 12 (dwie połówki z UIGradient o twardej
+  krawędzi) z sekundami i błyskiem żaru na końcu; zamknięta linia — płytka #463C58 z kłódką; pigułki
+  „<ZDOLNOŚĆ> at <STADIUM>” nad przyciskami; lewy dół wolny dla drążka;
+- panel legowiska (697 × 345 pt): karty trofeów 4 × 2 (portret, poziomy, dochód, odznaka wariantu, cena poziomu —
+  dotknięcie karty kupuje; zamknięte: sylwetka, „???”, kłódka), kolumna ulepszeń z paskiem i ceną, zakładka UPGRADES
+  z dużymi kartami, linia szans wariantów, korona z trofeami bossa, złoto, X; pola dotyku ≥ 54 pt wzoru (≥ 44 pt na A06);
+- odsłona: kokon (poświata) → EVOLVED! + nazwa, portret nowego stadium, NEW POWER z opisem (bez nowej mocy: dochód
+  trofeum) → sylwetka następnego (NEXT) → CONTINUE; zamyka się sama po 3,4 s (`ui.odslona_s`) albo przyciskiem.
+- **Ikony**: tabela numerów obrazów **`ustawienia.json → "ikony" → "id"`** (24 nazwy z `modele/README.md`, wszystkie 0 =
+  nie wgrano; w grze `D.ikony`). Wybór w `zrodla/IkonyEwolucji.luau`: numer > 0 → obraz `rbxassetid://…`; inaczej
+  zastępstwo — model 3D z wzorców (kule `Rekwizyt_kula_*`, kopiec `Rekwizyt_stos_zlota_1`), moneta i korona z części,
+  kłódka i romby wariantów rysowane, reszta krótki napis na płytce (BITE, DASH, EMBER, BREATH, INFERNO, TAIL, GLIDE,
+  ROAR, METEOR, JAW, SPEED, EAT). Zdolności, warianty i ulepszenia mają pole `ikona`. Po wgraniu: wpisać numery,
+  przebudować (`zbuduj.py`) — bez zmian w kodzie. Podpis pod przyciskiem pojawia się dopiero przy obrazie.
+- **Czcionki** (sprawdzone w Studio jako `Enum.Font`): tytuły, nazwy i liczby `FredokaOne`, etykiety i pigułki
+  `BuilderSansExtraBold` (`ui.czcionka`, `ui.czcionka_cyfr`, `ui.czcionka_etykiet`).
+- **Poślizg stóp** (P40, Play; pozycja stopy z łańcucha stawów tej klatki, podpora = dolne 0,03 st. nad ziemią pod
+  korzeniem, mediana prędkości poziomej): bieg stadium 2 — 0,19–0,45 st./s, stadium 3 — 0,55–1,7, stadium 4 — 0,56–1,2
+  (przy 16–19 st./s); **stadium 1 — 16–23** i chód stadium 2 — 0,4–5,8. Kinematyka z samych danych (offline, te same
+  próbki co 2 klatki) daje to samo: sus pisklęcia ma podporę 2 klatek, której próbkowanie co 2 klatki nie oddaje (stopa
+  przy ziemi jedzie z ciałem ~19 st./s); przednie łapy w chodzie stadium 2 — 11,8. Naprawa po stronie danych: chód i bieg
+  z `krok` 1 (albo podpora ≥ 3 klatek). Pomiar bywa niestabilny (stadium 2 raz 11–18 tuż po pomiarze stadium 1 — nie
+  znalazłem przyczyny). Próg P40: mediana biegu stadiów 2–4 ≤ 2 st./s; stadium 1 i chód tylko zgłaszane.
+- Wyniki: testy offline 34 (33 OK + 1 pominięty), nowe: `test_33` (tempo chód/bieg z prędkości, histereza, owca, golem),
+  `test_34` (tabela ikon i zastępstwa); Play 42/42 (P34–P41: HUD, drabina, odnowa, kłódki, panel, odsłona, poślizg,
+  ogień z rigu), telefon Samsung Galaxy A06 (705 × 338, skala 0,84) 8/8 i iPad 6 (1023 × 768, skala 1,21) 8/8; klatka
+  16,7 ms, praca skryptu 3,2–3,4 ms, krok serwera 0,54 ms. Zrzuty `28_hud`, `29_panel`, `29b_panel_ulepszenia`,
+  `30_odslona`, `31_ogien_rig`, `32_inferno_przypalenie`, `33_telefon_odslona`, `34_telefon_panel`, `06`/`17` telefon
+  (`_tablet` — iPad); film `%TEMP%\ewolucja_demo\ewolucja_interfejs.mp4` (35 s, `demo_wideo.py --interfejs`).
 
 ## Pomiar prób z graczami (D-128, 22.11.2026)
 - **AnalyticsService** (tylko serwer opublikowanej gry; w Studio wywołania pomijamy):

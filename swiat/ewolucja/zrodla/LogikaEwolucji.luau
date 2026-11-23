@@ -723,7 +723,7 @@ function L.ran(S, a, q, ile: number, zd, jak: string, nx: number?, nz: number?, 
 		end
 	end
 	table.insert(zd, { t = "rana", a = a.id, id = q.id, s = q.slot, sa = a.slot, ile = ile, hp = math.max(0, q.hp) / q.hpMaks, x = q.x, z = q.z,
-		kr = kryt, jak = jak, pw = przewrot ~= nil })
+		kr = kryt, jak = jak, pw = przewrot })
 	if q.hp <= 0 then
 		zjedz(S, a, q, zd, jak)
 	end

@@ -30,7 +30,7 @@ sys.path.append(os.path.join(REPO, "tools"))
 import dane as DN  # noqa: E402
 
 ZR = os.path.join(PAKIET, "zrodla")
-MODULY = ["DaneEwolucji", "LogikaEwolucji", "EfektyEwolucji", "KlipyEwolucji", "RigiEwolucji", "SmokiKlienta", "LegowiskaKlienta", "SwiatKlienta"]
+MODULY = ["DaneEwolucji", "LogikaEwolucji", "EfektyEwolucji", "KlipyEwolucji", "RigiEwolucji", "SmokiKlienta", "LegowiskaKlienta", "SwiatKlienta", "IkonyEwolucji", "InterfejsKlienta"]
 SKRYPTY = [("SerwerEwolucji", "SerwerEwolucji.server.luau", "Server"), ("KlientEwolucji", "KlientEwolucji.client.luau", "Client")]
 
 

@@ -499,12 +499,16 @@ function Efekty:strumien(od: Vector3, kier: Vector3, zasieg: number, kat: number
 end
 
 -- płonąca ziemia: żarzący się krąg i unoszące się płomyki przez czas
-function Efekty:plama(poz: Vector3, r: number, czas: number)
+function Efekty:plama(poz: Vector3, r: number, czas: number, bezKregu: boolean?)
+	-- bezKregu: krąg rysuje rekwizyt przypalenia (dane 3), tu tylko płomyki
 	local k = czesc(self.folder, Vector3.new(0.18, r * 2, r * 2), Color3.fromRGB(255, 90, 30), Enum.Material.Neon, Enum.PartType.Cylinder)
 	k.CFrame = CFrame.new(poz + Vector3.new(0, 0.16, 0)) * CFrame.Angles(0, 0, math.pi / 2)
+	if bezKregu then
+		k.Transparency = 1
+	end
 	local nast = 0
 	self:dodaj(czas, function(f, dt)
-		k.Transparency = 0.35 + 0.25 * math.sin(f * czas * 9) * 0.5 + math.max(0, f - 0.8) * 3
+		k.Transparency = if bezKregu then 1 else 0.35 + 0.25 * math.sin(f * czas * 9) * 0.5 + math.max(0, f - 0.8) * 3
 		nast -= dt
 		if nast <= 0 then
 			nast = 0.18

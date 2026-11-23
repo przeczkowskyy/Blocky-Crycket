@@ -35,7 +35,7 @@ def modele_wczytaj(plik):
 
 
 def stadia_smoka(I):
-    """Stadia 1–8 z indeksu (indeks wymienia w „stadia” także jajo `smok_jajo` — pomijamy je tutaj)."""
+    """Stadia 1–8 z indeksu (wersja 2 miała w „stadia” także jajo `smok_jajo`; wersja 3 trzyma je pod kluczem `jajo`)."""
     w = [S for S in I["stadia"] if S["id"] != "smok_jajo" and isinstance(S.get("nr"), int)]
     if [S["nr"] for S in w] != list(range(1, 9)):
         raise SystemExit("modele/dane/indeks.json: oczekiwane stadia 1–8, są %s" % [S.get("nr") for S in w])
@@ -57,8 +57,8 @@ def czasy_klipow(K):
 def blender(U):
     """Zestaw „blender”: osiem stadiów z modele/dane (rig pełny i uproszczony, klipy), jajo, rekwizyty, owca, golem."""
     I = modele_wczytaj("indeks.json")
-    if I.get("wersja") != 2:
-        raise SystemExit("modele/dane/indeks.json: oczekiwana wersja 2, jest %s" % I.get("wersja"))
+    if I.get("wersja") not in (2, 3):
+        raise SystemExit("modele/dane/indeks.json: oczekiwana wersja 2 albo 3, jest %s" % I.get("wersja"))
     st = []
     for S in stadia_smoka(I):
         K = modele_wczytaj(S["pliki"][1])
@@ -74,14 +74,28 @@ def modele_do_budowy(U):
     """Dla zbuduj.py: [(wzorzec, plik rigu)] i [(id klipów, plik klipów)] zestawu „blender”."""
     I = modele_wczytaj("indeks.json")
     rigi, klipy = [], []
+    U = ustawienia()
+    # pisklę: „obecne” (smok_1_rig) albo „lagodne” (wariant modelu z indeksu 3: te same stawy, zaczepy i klipy)
+    piskle = U.get("blender", {}).get("piskle", "obecne")
+    zamiana = {}
+    for W in I.get("warianty_modeli", []):
+        if piskle == "lagodne" and W["id"] == "smok_1_lagodny":
+            zamiana[W["zamiast"]] = W["plik"]
     for S in stadia_smoka(I):
-        rigi.append(("SmokB_%d" % S["nr"], S["pliki"][0]))
+        rigi.append(("SmokB_%d" % S["nr"], zamiana.get(S["id"], S["pliki"][0])))
         rigi.append(("SmokB_%d_lod" % S["nr"], S["plik_lod"]))
         klipy.append((S["id"], S["pliki"][1]))
     rigi.append(("SmokB_jajo", "smok_jajo_rig.json"))
     klipy.append(("smok_jajo", "smok_jajo_klipy.json"))
     for r in I.get("rekwizyty", []):
         rigi.append(("Rekwizyt_" + r["id"], r["plik"]))
+    # efekty (indeks 3): stożek ognia (rig + klip „migotanie”) i przypalona ziemia INFERNO
+    for E in I.get("efekty", []):
+        if "pliki" in E:
+            rigi.append(("Efekt_" + E["id"], E["pliki"][0]))
+            klipy.append((E["id"], E["pliki"][1]))
+        elif "plik" in E:
+            rigi.append(("Rekwizyt_" + E["id"], E["plik"]))
     # świat (swiat1): kule trzech rozmiarów i kopce złota legowiska jako wzorce dla klienta
     for rid in ("kula_mala", "kula_duza", "kula_wielka", "stos_zlota_1", "stos_zlota_2", "stos_zlota_3"):
         if os.path.exists(os.path.join(MODELE, "rekwizyt_%s_rig.json" % rid)):
@@ -334,6 +348,8 @@ def dane():
     B.update({"podskok": 0.02, "pochyl": 0.04, "krok": 0.8, "anim": None})
     D = {
         "kontener": U["kontener"], "prefiks": U["prefiks"], "wylacznik": U["wylacznik"], "wzorceRS": U["wzorce_rs"], "ui": U["ui"],
+        # interfejs1: numery obrazów ikon (0 = brak, zastępstwo w grze) — tabela w ustawienia.json, klucz „ikony.id”
+        "ikony": {k: v for k, v in U.get("ikony", {}).get("id", {}).items()},
         "pole": P, "przeszkody": prz, "przSiatka": siatka_przeszkod(prz), "kulkiPoz": kulki(P, J, prz, LS), "jedzenie": J, "formy": formy,
         "las": {"nazwa": LS["nazwa"], "x": LS["srodek"][0], "z": LS["srodek"][1], "r": LS["r"], "od_formy": LS["od_formy"]}, "boss": B,
         "legowisko": {k: v for k, v in U["legowisko"].items() if k != "opis"}, "legowiska": legowiska(U["legowisko"]),

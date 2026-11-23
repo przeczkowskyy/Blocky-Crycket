@@ -123,6 +123,35 @@ function K.tempo(k, v: number, skala: number, mn: number, mx: number): number
 	return math.clamp(v / (k.predkosc * skala), mn, mx)
 end
 
+-- wybór pętli ruchu z prędkości po ziemi (dane 3): spoczynek poniżej `stoj`, chód do progu, bieg powyżej; próg
+-- z histerezą (bez migotania przy prędkości granicznej); tempo = v / predkosc klipu (skala rigu), w granicach [mn, mx].
+-- `wolny` i `szybki` — nazwy klipów (smok: chod / bieg; owca: chod / ucieczka); zwraca nazwę i tempo
+function K.chodBieg(W, v: number, poprzedni: string?, o): (string, number)
+	local wolny, szybki = o.wolny or "chod", o.szybki or "bieg"
+	local kw, ks = W.klipy[wolny], W.klipy[szybki]
+	if v < (o.stoj or 0.8) or not (kw or ks) then
+		return "spoczynek", 1
+	end
+	local prog = o.prog
+	if not prog and kw and ks and kw.predkosc and ks.predkosc then
+		-- środek geometryczny: przy progu oba klipy ślizgają się o ten sam czynnik
+		prog = math.sqrt(kw.predkosc * ks.predkosc)
+	end
+	local hist = o.hist or 0
+	local bieg
+	if not ks then
+		bieg = false
+	elseif not kw or not prog then
+		bieg = true
+	elseif poprzedni == szybki then
+		bieg = v > prog - hist
+	else
+		bieg = v > prog + hist
+	end
+	local nazwa = if bieg then szybki else wolny
+	return nazwa, K.tempo(W.klipy[nazwa], v, o.skala or 1, o.mn or 0.1, o.mx or 3)
+end
+
 -- czas zdarzenia w klipie (sekundy) albo zapas
 function K.czasZdarzenia(W, klip: string, zdarzenie: string, zapas: number?): number?
 	local k = W.klipy[klip]

@@ -253,15 +253,20 @@ function SW:krokOwiec(dt: number, ja)
 		ukryj(w, martwa or daleko)
 		if not (martwa or daleko) then
 			w.R:ustaw(CFrame.new(C + Vector3.new(w.x, 0, w.z)) * CFrame.Angles(0, w.kier + math.pi, 0))
-			local v = math.sqrt((w.x - ox) ^ 2 + (w.z - oz) ^ 2) / math.max(dt, 1 / 240)
+			local sp = math.sqrt((w.x - ox) ^ 2 + (w.z - oz) ^ 2) / math.max(dt, 1 / 240)
+			w.v = (w.v or 0) + (sp - (w.v or 0)) * math.min(1, dt * 10)
 			if w.R:akcjaNazwa() == nil then
-				if w.stan == 2 then
-					w.R:petla("ucieczka", 1.1)
-				elseif v > 0.5 then
-					w.R:petla("chod", 1)
+				-- tempo z prędkości po ziemi / predkosc klipu (owca: chód 1,76, ucieczka 5,0 studs/s)
+				local KL = self.c.SK.KL
+				local W = w.R.W
+				if w.stan == 2 and W.klipy.ucieczka then
+					w.R:petla("ucieczka", KL.tempo(W.klipy.ucieczka, math.max(w.v, 2), 1, 0.3, 3))
+				elseif w.v > 0.5 then
+					w.R:petla("chod", KL.tempo(W.klipy.chod, w.v, 1, 0.3, 3))
 				else
 					w.R:petla("spoczynek", 1)
 				end
+				w.tempoRuchu = w.R.loko.tempo
 			end
 			w.n += 1
 			w.dt = (w.dt or 0) + dt

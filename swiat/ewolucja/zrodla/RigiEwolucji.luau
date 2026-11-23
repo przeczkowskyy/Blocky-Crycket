@@ -85,7 +85,7 @@ function R:graj(nazwa: string, o): boolean
 		return false
 	end
 	self.akcja = { k = k, t = o.od or 0, tempo = o.tempo or 1, w = if A then A.w else 0, wejscie = o.wejscie or 0.07,
-		wyjscie = o.wyjscie or 0.16, slaby = o.slaby, trzymaj = o.trzymaj }
+		wyjscie = o.wyjscie or 0.16, slaby = o.slaby, trzymaj = o.trzymaj, trzymajS = o.trzymajS or 0 }
 	self:licz(nazwa)
 	return true
 end
@@ -98,6 +98,7 @@ function R:przerwij(wyjscie: number?)
 	if self.akcja then
 		self.akcja.t = math.max(self.akcja.t, self.akcja.k.dl)
 		self.akcja.trzymaj = false
+		self.akcja.trzymajS = 0
 		self.akcja.wyjscie = wyjscie or 0.12
 	end
 end
@@ -126,7 +127,7 @@ function R:krok(dt: number)
 		local t0 = A.t
 		A.t += dt * A.tempo
 		KL.zdarzenia(A.k, t0, A.t, zd)
-		if A.t >= A.k.dl and not A.k.petla and not A.trzymaj then
+		if A.t >= A.k.dl + A.trzymajS and not A.k.petla and not A.trzymaj then
 			A.w -= dt / A.wyjscie
 		else
 			A.w = math.min(1, A.w + dt / A.wejscie)

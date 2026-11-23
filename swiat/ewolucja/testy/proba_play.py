@@ -302,6 +302,7 @@ def przebieg(p, zrzuty):
     etap3(p, zrzuty)
     pomiar(p)
     walka(p, zrzuty)
+    interfejs(p, zrzuty)
     a = p.atr()
     wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), praca_skryptu_ms=round(a.get("EW_K_Praca") or 0, 2),
           czesci_smokow=a.get("EW_K_CzesciSmokow"), rigi=a.get("EW_K_Rigi"), widokow=a.get("EW_K_Widokow"),
@@ -707,6 +708,186 @@ def walka(p, zrzuty):
           rany_w_swiecie=l.get("rana"), pociski=l.get("pocisk"), ogony=l.get("ogon"), oddechy=l.get("oddech"), zjedzenia=l.get("zjedz"))
 
 
+def wolna_droga(dl=60.0, zapas=4.0):
+    """Prosty odcinek na łące bez przeszkód (do pomiaru poślizgu): start i kierunek +X."""
+    WY = D["wyspa"]
+    for z0 in (-95, -80, 70, 60, -60, 20, 0, -20, 40):
+        for x0 in (-110, -90, -70, -50, 0, 20):
+            if math.hypot(x0, z0) > D["pole"]["r"] - 20 or math.hypot(x0 + dl, z0) > D["pole"]["r"] - 20:
+                continue
+            dobre = True
+            for t in range(0, int(dl) + 1, 2):
+                x = x0 + t
+                if math.hypot(x - WY["x"], z0 - WY["z"]) < WY["r_zew"] + 8:
+                    dobre = False
+                    break
+                for o in D["przeszkody"]:
+                    if math.hypot(x - o["x"], z0 - o["z"]) < o["r"] + zapas + 3:
+                        dobre = False
+                        break
+                if not dobre:
+                    break
+            if dobre:
+                return x0, z0
+    return -60, 0
+
+
+def hud(p):
+    return json.loads(p.atr().get("EW_K_HUD") or "{}")
+
+
+def interfejs(p, zrzuty):
+    """interfejs1 (dane 3): HUD z makiety, drabina, odnowa, zamknięte pigułki, panel legowiska, odsłona, poślizg stóp, ogień z rigu."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    NF = len(D["formy"])
+    # P34 HUD: nazwa, STAGE, pasek wzrostu, życie, złoto i skarb — zmieniają się z danymi serwera
+    p.serwer('"forma_gracza", 3')
+    p.serwer('"przenies", %d, 0, -20' % byt)
+    time.sleep(1.2)
+    p.serwer('"tarcza_zeruj"')
+    pt = p.atr().get("EW_Potrzeba") or 100
+    wi = p.serwer('"walka_info"')
+    p.serwer('"zloto", 12450')
+    p.serwer('"zloto_leg", 1240')
+    p.serwer('"wzrost", %d' % (pt // 2))
+    p.serwer('"hp", nil, %f' % (wi["hpMaks"] * 0.5))
+    time.sleep(0.8)
+    h = hud(p)
+    wynik("P34 HUD: góra ekranu z danych", h.get("nazwa") == D["formy"][2]["nazwa"] and h.get("etap") == "STAGE 3 / %d" % NF and h.get("zloto") == "12 450"
+          and 1240 <= int((h.get("skarb") or "0").replace(" ", "")) < 1240 + 400 and abs((h.get("pasek") or 0) - 0.5) < 0.12 and 0.35 < (h.get("zycie") or 0) < 0.75, hud=h)
+    if zrzuty:
+        p.zrzut("28_hud.jpg")
+    # P35 drabina: zdobyte portrety, następne sylwetka, dalej „?”; portrety w pozie „portret”
+    a = p.atr()
+    mf = a.get("EW_MaxForma") or 3
+    ocz = ("Z" * mf + ("N" if mf < NF else "") + "?" * max(0, NF - mf - 1))
+    ocz = ocz[:-1] + "C" if ocz.endswith("?") else ocz
+    wynik("P35 drabina z portretami", a.get("EW_K_Drabina") == ocz and (a.get("EW_K_Portrety") or 0) >= 4, drabina=a.get("EW_K_Drabina"),
+          oczekiwana=ocz, portrety=a.get("EW_K_Portrety"))
+    # P36 odnowa: wycinek DASH i BITE po naciśnięciu, potem zero i błysk żaru; FIRE po strzale
+    p.serwer('"hp", nil, 5000')
+    p.serwer('"zdolnosci_zeruj"')
+    p.przycisk("odnowa_zeruj")
+    time.sleep(0.3)
+    b0 = hud(p).get("blyski") or 0
+    p.ustaw("EW_TestSter", "Vector3.new(0, 1, 0.6)")
+    p.przycisk("zryw")
+    time.sleep(0.25)
+    h1 = hud(p)
+    p.przycisk("ogien")
+    zd1, _ = czekaj(lambda: (lambda z: z if (z.get("ogien", {}).get("odnowa") or 0) > 0.2 else None)(json.loads(p.atr().get("EW_K_Zd") or "{}")), 2.0, 0.15)
+    zd1 = zd1 or {}
+    time.sleep(D["ruch"]["zryw_odnowa_s"] + 0.3)
+    h2 = hud(p)
+    wynik("P36 odnowa: wycinek i błysk", (h1.get("zryw") or 0) > 0.3 and h2.get("zryw", 1) == 0 and (h2.get("blyski") or 0) > b0
+          and (zd1.get("ogien", {}).get("odnowa") or 0) > 0.2, zryw_po=h1.get("zryw"), zryw_potem=h2.get("zryw"), blyski=h2.get("blyski"),
+          ogien=zd1.get("ogien"))
+    # P37 zamknięta linia na stadium 1: kłódka i pigułka „<ZDOLNOŚĆ> at <STADIUM>”
+    p.serwer('"forma_gracza", 1')
+    time.sleep(0.8)
+    zd = json.loads(p.atr().get("EW_K_Zd") or "{}")
+    o, m = zd.get("ogien", {}), zd.get("moc", {})
+    wynik("P37 zamknięte: kłódka i pigułka", o.get("zamkniete") and o.get("pigulka") and o.get("ikona") == "rysunek" and m.get("zamkniete") and m.get("pigulka"),
+          ogien=o, moc=m)
+    p.serwer('"forma_gracza", 3')
+    time.sleep(0.6)
+    # P38 panel legowiska: karty trofeów (3 zdobyte), ceny ulepszeń, zakładki, złoto
+    p.przycisk("legowisko")
+    time.sleep(1.0)
+    a = p.atr()
+    pn = json.loads(a.get("EW_K_Panel") or "{}")
+    if zrzuty:
+        p.zrzut("29_panel.jpg")
+    p.przycisk("zakladka_u")
+    time.sleep(0.5)
+    pu = json.loads(p.atr().get("EW_K_Panel") or "{}")
+    if zrzuty:
+        p.zrzut("29b_panel_ulepszenia.jpg")
+    p.przycisk("zakladka_t")
+    time.sleep(0.2)
+    p.przycisk("zamknij")
+    time.sleep(1.3)
+    tro = (pn.get("trofea") or "").split(",")
+    mf = a.get("EW_MaxForma") or 3
+    wynik("P38 panel legowiska", a.get("EW_K_Legowisko") and [t[:1] for t in tro] == ["Z"] * mf + ["?"] * (NF - mf)
+          and abs(int((pn.get("zloto") or "0").replace(" ", "")) - (a.get("EW_Zloto") or 0)) <= 50
+          and len(pn.get("ceny") or {}) == 3 and pu.get("zakladka") == "U" and not p.atr().get("EW_K_Legowisko"), panel=pn, zakladka=pu.get("zakladka"))
+    # P39 odsłona: kokon → nazwa i nowa moc → sylwetka następnego → CONTINUE (zamyka)
+    p.serwer('"wzrost_pelny"')
+    time.sleep(0.5)
+    p.przycisk("ewoluuj")
+    kok, _ = czekaj(lambda: json.loads(p.atr().get("EW_K_Odsl") or "{}").get("faza") == "kokon", 4, 0.2)
+    pok, _ = czekaj(lambda: json.loads(p.atr().get("EW_K_Odsl") or "{}").get("faza") == "pokaz", 6, 0.2)
+    time.sleep(1.5)
+    od = json.loads(p.atr().get("EW_K_Odsl") or "{}")
+    if zrzuty:
+        p.zrzut("30_odslona.jpg")
+    p.przycisk("dalej")
+    time.sleep(0.5)
+    od2 = json.loads(p.atr().get("EW_K_Odsl") or "{}")
+    a = p.atr()
+    wynik("P39 odsłona z makiety", kok and pok and od.get("nazwa") == D["formy"][3]["nazwa"] and od.get("plytka") and od.get("nast") and od.get("dalej")
+          and "FIRE BREATH" in (od.get("moc") or "") and od2.get("faza") == "" and a.get("EW_Forma") == 4, odslona=od, po=od2.get("faza"),
+          forma=a.get("EW_Forma"))
+    # P40 poślizg stóp na stadiach 1–4 (bieg przy prędkości gry; stadium 2 także chód): kość stopy w podporze
+    x0, z0 = wolna_droga()
+    pomiary["poslizg"] = {}
+    for f in (1, 2, 3, 4):
+        for tryb, sila in (("bieg", 1.0), ("chod", 0.3)) if f == 2 else (("bieg", 1.0),):
+            p.serwer('"forma_gracza", %d' % f)
+            p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
+            p.serwer('"hp", nil, 5000')
+            time.sleep(0.9)
+            p.serwer('"tarcza_zeruj"')
+            p.ustaw("EW_TestSter", "Vector3.new(%f, 0, 3.2)" % -sila)
+            time.sleep(1.0)
+            p.ustaw("EW_TestPoslizg", "1.6")
+            time.sleep(2.0)
+            m = json.loads(p.atr().get("EW_K_Poslizg") or "{}")
+            p.ustaw("EW_TestPoslizg", "nil")
+            pomiary["poslizg"]["%d_%s" % (f, tryb)] = {k: (round(v, 3) if isinstance(v, float) else v) for k, v in m.items()}
+            p.luau('game:GetService("Players").LocalPlayer:SetAttribute("EW_K_Poslizg", nil) return "ok"', "Client")
+    P = pomiary["poslizg"]
+    # mediana prędkości stopy w podporze (pasmo 0,03 studa); próg dla biegu stadiów 2–4 (gra odtwarza dane). Stadium 1 (sus)
+    # i chód mają w danych podporę krótszą niż próbka co 2 klatki — mierzone i zgłaszane, nie liczone (patrz README)
+    ok = all(P[k].get("mediana", 99) >= 0 and P[k].get("probek", 0) >= 6 and P[k]["mediana"] <= 2.0 for k in ("2_bieg", "3_bieg", "4_bieg"))
+    wynik("P40 poślizg stóp (bieg 2–4; 1 i chód zgłaszane)", ok, **P)
+    # P41 ogień z rigu: FIRE BREATH (stadium 4) i INFERNO z przypaloną ziemią (stadium 7)
+    p.serwer('"forma_gracza", 4')
+    p.serwer('"zdolnosci_zeruj"')
+    p.przycisk("odnowa_zeruj")
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0 + 10, z0))
+    time.sleep(1.0)
+    p.serwer('"tarcza_zeruj"')
+    p.serwer('"hp", nil, 5000')
+    a0 = p.atr()
+    p.ustaw("EW_TestSter", "Vector3.new(-1, 0, 0.3)")
+    time.sleep(0.35)
+    p.przycisk("ogien")
+    time.sleep(0.9)
+    if zrzuty:
+        p.zrzut("31_ogien_rig.jpg")
+    time.sleep(1.5)
+    p.serwer('"forma_gracza", 7')
+    p.serwer('"zdolnosci_zeruj"')
+    p.przycisk("odnowa_zeruj")
+    time.sleep(1.0)
+    p.serwer('"tarcza_zeruj"')
+    p.ustaw("EW_TestSter", "Vector3.new(-1, 0, 0.3)")
+    time.sleep(0.35)
+    p.przycisk("ogien")
+    time.sleep(1.5)
+    if zrzuty:
+        p.zrzut("32_inferno_przypalenie.jpg")
+    time.sleep(0.9)
+    a1 = p.atr()
+    wynik("P41 ogień z rigu i przypalona ziemia", (a1.get("EW_K_Ogien") or 0) >= (a0.get("EW_K_Ogien") or 0) + 2 and (a1.get("EW_K_Przypalenia") or 0) > (a0.get("EW_K_Przypalenia") or 0),
+          ogien=a1.get("EW_K_Ogien"), przypalenia=a1.get("EW_K_Przypalenia"))
+    p.serwer('"forma_gracza", 1')
+    time.sleep(0.5)
+
+
 def pomiar(p):
     # P22 pomiar prób: podsumowanie sesji trafia tylko do magazynu w pamięci (nigdy do prawdziwego), bez danych osoby
     klucz = p.serwer('"zapisz_probe"')
@@ -737,6 +918,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--studio", required=True)
     ap.add_argument("--bez-zrzutow", action="store_true")
+    ap.add_argument("--tylko-interfejs", action="store_true", help="start i próby interfejsu (P01, P34–P41)")
     a = ap.parse_args()
     with StudioMCP(timeout=180) as s:
         p = P(s, a.studio)
@@ -745,7 +927,13 @@ def main():
             return 1
         log("Play:", play(a.studio, True)[-80:])
         try:
-            przebieg(p, not a.bez_zrzutow)
+            if a.tylko_interfejs:
+                gotowe, _ = czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
+                p.luau(BEZ_LISTY, "Client")
+                time.sleep(1.5)
+                interfejs(p, not a.bez_zrzutow)
+            else:
+                przebieg(p, not a.bez_zrzutow)
         except Exception as e:  # noqa: BLE001
             log("PRZERWANO próbę:", repr(e)[:800])
             wyniki["wyjątek"] = False
