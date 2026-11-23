@@ -429,6 +429,10 @@ local HOLD_ELBOW = math.rad(80)
 local function holdWeapon(h: Hero)
 	local m = h.model
 	local w = modelsFolder:FindFirstChild("Weapon_" .. CLASSES[index].id)
+	-- koty ras (D-145): kocia wersja broni (krótsza i grubsza, tools/studio/bronie_kot.py), gdy jest
+	if m:GetAttribute("BronDoGlowy") then
+		w = modelsFolder:FindFirstChild("Weapon_" .. CLASSES[index].id .. "_Kot") or w
+	end
 	local elbow = m:FindFirstChild("RightElbow", true)
 	if elbow and elbow:IsA("Motor6D") and elbow.Part0 and elbow.Part1 then
 		-- kości od łokcia w dół (przedramię, dłoń) i bryły do nich przyspawane

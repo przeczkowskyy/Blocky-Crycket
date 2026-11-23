@@ -185,6 +185,51 @@ def proca():
 BUDOWNICZE = [kij_z_kamieniem, kostur_spiralny, proca]
 
 
+# --------------------------------------------------------------------------- wersje dla kotów (Paweł 24.11, D-145)
+# Bronie były robione pod ludzika (wzrost 5,3). Kot (Kot-Mag i koty ras) jest niższy i krępy: równe pomniejszenie
+# robiło z kostura cienki patyczek. Wersja kocia: KRÓTSZA wzdłuż rękojeści (oś Y), GRUBSZA w poprzek (X, Z) — klockowa
+# jak kostur Kota-Maga. Czubek broni ma sięgać mniej więcej do czubka głowy kota (referencja kota-demona).
+KOT_DLUGOSC = 0.62      # skala wzdłuż rękojeści dla kota w ekranie wyboru rasy (kot ×1,4)
+KOT_GRUBOSC = 1.1       # skala w poprzek: ~1,8 × grubiej niż przy równym pomniejszeniu
+
+
+def kocia(a, dl=KOT_DLUGOSC, gr=KOT_GRUBOSC):
+    """Przerabia akcesorium w miejscu na proporcje kota: pozycje i osie części mnożone przez diag(gr, dl, gr);
+    obrócone części dostają nowe osie (oś Y części prowadzi, X i Z prostopadle) i rozmiar wzdłuż każdej osi
+    przeskalowany tak, jak skaluje się ta oś. Zwraca a (z dopiskiem „_kot” w id)."""
+    from swiat.postacie.biblioteka.postac import katy_z_macierzy, macierz_obrotu
+    S = (gr, dl, gr)
+
+    def norm(v):
+        d = math.sqrt(sum(x * x for x in v)) or 1.0
+        return [x / d for x in v]
+
+    for c in a.czesci:
+        R = macierz_obrotu(*c["r"])
+        osie = [[R[0][i], R[1][i], R[2][i]] for i in range(3)]            # osie lokalne części w układzie broni
+        w = [[S[j] * osie[i][j] for j in range(3)] for i in range(3)]      # osie po skalowaniu
+        dlug = [math.sqrt(sum(x * x for x in w[i])) for i in range(3)]
+        y = norm(w[1])
+        x = [w[0][j] - sum(w[0][k] * y[k] for k in range(3)) * y[j] for j in range(3)]
+        x = norm(x)
+        z = [x[1] * y[2] - x[2] * y[1], x[2] * y[0] - x[0] * y[2], x[0] * y[1] - x[1] * y[0]]
+        Rn = ((x[0], y[0], z[0]), (x[1], y[1], z[1]), (x[2], y[2], z[2]))
+        c["r"] = katy_z_macierzy(Rn)
+        c["s"] = [c["s"][i] * dlug[i] for i in range(3)]
+        c["p"] = [c["p"][j] * S[j] for j in range(3)]
+        c["f"] = c["f"] * min(dl, gr)
+        if "gora" in c and isinstance(c["gora"], list):
+            c["gora"] = [c["gora"][0] * gr, c["gora"][1] * gr]
+        if "pg" in c and isinstance(c["pg"], list):
+            c["pg"] = [c["pg"][0] * gr, c["pg"][1] * gr]
+    a.id = a.id + "_kot"
+    return a
+
+
+def akcesoria_kocie(dl=KOT_DLUGOSC, gr=KOT_GRUBOSC):
+    return [kocia(f(), dl, gr) for f in BUDOWNICZE]
+
+
 def akcesoria():
     return [f() for f in BUDOWNICZE]
 
