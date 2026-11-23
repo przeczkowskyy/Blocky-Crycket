@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Pawła (gałąź pawel/diamenty-afk: Diamenty za poziom i trening AFK do obejrzenia)
+- Na prośbę Pawła („jako osobna gałąź, żebym sobie mógł zobaczyć”) D-140 i D-141 wdrożone na gałęzi `pawel/diamenty-afk` (osobny folder roboczy `BC-pawel-afk`), nie na `main` i nie we wspólnym miejscu: `swiat/stan_gracza/dane.py` (0 punktów za poziom, 25 Diamentów za poziom), `src/server/TreningAFK.server.luau`, `src/shared/TreningAFKDane.luau`, `src/client/TreningAFKClient.client.luau` (sześć stanowisk z klocków na placu miasteczka, pasek z 4 powtórzeń, skill checki ×2), „+” w EQ schowany bez punktów w puli. Przyrost idzie sygnałem `TreningProba/Sygnaly/PrzyrostStatystyki`, więc stan gracza Karola zapisuje go jak trening. Testy stanu 56/58 — dwa sprawdzają „+” z punktem za poziom (D-097) i padają zgodnie z D-140.
+- Pokaz w Studio tylko w trybie Play (skrypty dodane do uruchomionej gry, znikają po Stop; wspólne miejsce bez zmian): E przy hantlach → Siła 52 → 55 w 11 s, skill check kliknięty → ×2. Pierwsza wersja (długi pasek i tapnięcia) odrzucona przez Pawła jako za wolna — doprecyzowanie pod D-141 w [[Rejestr decyzji]].
+
 ## 2026-11-23 · Claude Code u Pawła (propozycja zestawów przedmiotów do ikon)
 - Na prośbę Pawła agent przejrzał listę broni wojownika na stronie fanów Shakes & Fidget (tylko wzór humoru i postępu) i zaproponował 3 zestawy zbroi (Las, Bagno, Dżungla, po 5 slotów) i 3 miecze: nowa notatka [[Przedmioty — zestawy v1]] (propozycja). Rendery z Blendera (katalog Karola) są klockowe i słabo czytelne w slocie, dlatego ikony mają być rysowane w stylu broni startowych Pawła. Do ustalenia: stosunek do katalogu Karola z przedmiotami dla każdej klasy.
 
