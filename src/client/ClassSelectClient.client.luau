@@ -759,7 +759,8 @@ local function naRase()
 	showClass(false)
 	enterRace()
 end
-if tylkoRasa then
+-- klasa mogła przyjść z zapisu w trakcie ekranu ładowania (przed podłączeniem nasłuchu niżej)
+if tylkoRasa or player:GetAttribute("Class") then
 	task.wait(0.6)
 	naRase()
 end

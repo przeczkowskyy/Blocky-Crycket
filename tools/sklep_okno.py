@@ -16,6 +16,10 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from wymaz_stare_ramki import wymaz  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "assets/raw/Sklepy"
 OUT = ROOT / "assets/processed/Sklepy"
@@ -26,6 +30,7 @@ PASEK_X = (790, 1828)      # między kolumnami slotów ekwipunku
 RAMKA_GORA = 557           # górna krawędź złotej ramki portretu
 CIECIE = (1030, 1177)      # wycinany pas gładkiego granatu (147 px)
 TLO_Z = 410                # skąd brać tło na odsłonięty pas nad ramką
+RAMKA_BOHATERA = (916, 702, 1698, 1569)  # stara ramka z paskiem po popraw_ramke (wymazywana, tools/wymaz_stare_ramki.py)
 
 # elementy (ułamki okna) do napisów i przycisków w GUI — zmierzone na grafice
 UKLAD = {
@@ -74,7 +79,8 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     for rodzaj, nazwa in RODZAJE.items():
         src = RAW / f"sklep_{rodzaj}_4x3_v1.png"
-        im = bez_tla(popraw_ramke(Image.open(src)))
+        # Paweł 23.11: stara pusta ramka bohatera znika z tła — gra kładzie w to miejsce ramkę z portretem rasy
+        im = bez_tla(wymaz(popraw_ramke(Image.open(src)).convert("RGBA"), RAMKA_BOHATERA))
         im.save(OUT / f"sklep_{rodzaj}.png", optimize=True)
         im.convert("RGB").resize((1600, round(1600 * im.height / im.width)), Image.LANCZOS).save(
             OUT / f"sklep_{rodzaj}_podglad.jpg", quality=88)

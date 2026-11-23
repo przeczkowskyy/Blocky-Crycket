@@ -29,6 +29,15 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - **Decyzje Pawła z jednym podpisem, czekają na Karola:** D-140 (za poziom Diamenty na drzewko zamiast punktów statystyk; zmienia D-097) i D-141 (trening na stanowiskach AFK z paskiem zamiast mini-gier). Obie z uwagami agenta (D-114) w [[Rejestr decyzji]]. Nie wdrożone, bo leżą w pakietach i 3D Karola — pytanie 89.
 - **Odkrycie:** pakiety Karola (stan gracza, kowal, sklep) działają tylko w Studio (`IsStudio`), więc gra nie jest dziś gotowa do wydania — pytanie 90.
 
+## 2026-11-23 · Claude Code u Pawła (ramki portretu z portretem rasy)
+- Ramka portretu gracza pokazuje portret wybranej rasy w HUD (lewy górny róg), oknie ekwipunku i obu sklepach. Paweł: zamiast wkładać obrazek do pustej ramki — gotowe ramki z portretem i miejscem na pasek doświadczenia, stare ramki usunięte.
+- Grafika: 7 ramek `RaceFrame<Rasa>` (złota ramka jak PlayerFrame, portret rasy z kwadratową głową jak w modelach Karola, pusty tor paska; Higgsfield Nano Banana 2.1, job db82bfd6). Wcześniejsze próby (okrągłe głowy bez tła; kwadratowe portrety wkładane do ramki `Portrait<Rasa>`) odrzucone przez Pawła — te grafiki są w Roblox, ale nieużywane.
+- HUD podmienia obrazek ramki; w ekwipunku i sklepach stara ramka jest wymazana z tła (`EqBg1`, `SklepBron1`, `SklepMagia1` wgrane na nowo), a nowa leży w jej prostokącie. Bez rasy: zwykła pusta ramka. Wszystko wgrane po „tak” Pawła.
+- Pliki: `tools/raceportraits_assets.py`, `tools/wymaz_stare_ramki.py`, `tools/sklep_okno.py` (wymazywanie przed cięciem), `src/shared/RacePortraits.luau` (wygenerowany), `src/shared/RacePortraitUI.luau`, `HUDClient`, `EquipmentPanelClient`, `ShopClient`, `src/gui/EquipmentPanel.model.json` i `Shop.model.json` (nowe ID tła).
+- Pasek doświadczenia: w HUD w torze ramki (bez obrysu, liczba poziomu wyśrodkowana w pasku). W ekwipunku i sklepach zielony pasek i napis „LV” dopasowane w Figmie (plik gry, strona 9:74, ramki `RaceFrame<Rasa>` z prostokątem `ExpBar` dla każdej rasy, 4 px obrazka od złota ≈ 1 px w grze) — wymiary przeniesione do `Shared.RacePortraits.Tor` (z `tools/raceportraits_assets.py`); pasek bez własnego tła, okrągłe końce.
+- Ikonka klasy przy pasku: na lewym końcu paska i przed nim (HUD mniejsza, EQ trochę większa).
+- Przy okazji: ekran wyboru przechodzi od razu do rasy także wtedy, gdy zapis Karola ustawi klasę w trakcie ekranu ładowania (`ClassSelectClient`).
+
 ## 2026-11-23 · Claude Code u Pawła (decyzja: wracamy do Blocky & Crycket)
 - Paweł zdecydował, że główną grą studia znowu jest Blocky & Crycket — D-139 w [[Rejestr decyzji]] z podpisem Pawła, czeka na potwierdzenie Karola (D-043). D-137 (wydanie gry o smoku 24–25.11, Karol) bez zmian; rozjazd opisuje pytanie 88 w [[Pytania otwarte]]. Uwaga agenta: zgoda z poprawką — najpierw wydać smoka w obecnym stanie, potem całość na Blocky & Crycket.
 
