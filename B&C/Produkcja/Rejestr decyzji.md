@@ -656,5 +656,11 @@ Zwykłe przedmioty (common) są szeroko dostępne i zależą od **poziomu gracza
 
 Uwaga agenta (D-114): zgoda. To wzór Shakes & Fidget i większości RPG-łupów — szansa na rzadki przedmiot daje powód do każdej kolejnej walki, a pule według poziomu trzymają balans. Jedno zastrzeżenie: jeśli rzadkie przedmioty będzie można dostać za Robux (np. losowanie), Roblox wymaga pokazania szans przed zakupem; łup za darmo z walk tego nie wymaga.
 
+### D-143 Gracz chodzi modelem swojej rasy, nie bohaterem klasy
+✅ zatwierdzona · game design / postacie · 2026-11-23 · źródło: polecenie Pawła w Claude Code 23.11 w nocy · zdecydował: Paweł 2026-11-23
+Po wyborze rasy gracz porusza się po świecie **modelem swojej rasy** (np. demonem, elfem, orkiem), a nie bohaterem klasy (Rycerz, Zwiadowca, Kot-Mag). Wszystkie animacje — ruch i trening AFK — mają pasować do tych modeli. Paweł: „żeby gracz się nie poruszał tym kotkiem jako postacią, czy tym rycerzem, czy łucznikiem, tylko się poruszał tym modelem, który jest przy danej rasy. Na przykład wybierze sobie demona, to będzie chodził sobie tym demonem i od niego też dostosować wszystkie animacje pod te modele”. Paweł zastrzegł: jeśli to wpływa na pracę Karola — jako pytanie do zatwierdzenia. Wpływa: bohater w świecie to pakiet Karola `swiat/bohater_swiat` (wybiera model po klasie), modele ras to `swiat/rasy_proba` i `swiat/postacie/RASY.md` (propozycja D-104). Czeka na potwierdzenie Karola — pytanie 91 w [[Pytania otwarte]]. Agent nic nie zmieniał w tych pakietach.
+
+Uwaga agenta (D-114): zgoda. Modele ras mają ten sam szkielet R15 i te same klipy co bohaterowie klas (`RASY.md` pkt 1), więc zamiana jest technicznie tania, a animacje treningu AFK z gałęzi `pawel/diamenty-afk` już działają na każdym szkielecie R15. Rasa staje się wtedy widoczną tożsamością gracza (lepsze dla pokazywania się innym), a klasę trzeba będzie pokazać inaczej — bronią i strojem z przymierzalni. Zmienię zdanie, jeśli gracze w próbie będą mylić klasy innych graczy.
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*

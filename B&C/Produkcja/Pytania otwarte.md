@@ -872,3 +872,11 @@ Szczegóły: poprawki agenta (tapnięcie przyspiesza pasek, przyrost rośnie z p
 
 Szczegóły: wykryte 23.11 przy podpinaniu sklepu Pawła pod serwer sklepu Karola (`swiat/sklep_proba/zrodla/SerwerSklepu.server.luau`, wiersz 19; podobnie `swiat/kowal_proba`, `swiat/stan_gracza`). Prawdopodobnie zabezpieczenie prototypów przed przypadkową publikacją. Właściciel: Karol.
 **Odpowiedź:**
+
+## 91. Karol: gracz chodzi modelem rasy zamiast bohatera klasy?
+- Paweł 23.11 (D-143): po wyborze rasy gracz porusza się modelem rasy (demon, elf, ork…), nie Rycerzem, Zwiadowcą ani Kotem-Magiem; animacje mają pasować do ras.
+- Dotyka Twoich pakietów: `swiat/bohater_swiat` (wybór modelu po klasie) i modeli ras `swiat/rasy_proba` (D-104, propozycja). Agent Pawła ich nie ruszał.
+- Do wyboru: (a) Twój agent przestawia bohatera w świecie na model rasy (klasa = broń i strój); (b) zgoda, żeby zrobił to agent Pawła na swojej gałęzi; (c) zostaje bohater klasy — rozmowa na sesji.
+
+Szczegóły: modele ras mają ten sam szkielet R15 i klipy co bohaterowie (`swiat/postacie/RASY.md` pkt 1). Animacje treningu AFK (gałąź `pawel/diamenty-afk`) już działają na bohaterze, awatarze i każdym szkielecie R15 — nadpisują pozę tylko lokalnie, w czasie treningu, po pętli Twojego bohatera (priorytet Last + 1). Poza tym trening potrzebuje od Ciebie: rozszerzenia umowy `RuchBohatera` o wymuszony obrót korzenia (leżenie na ławce) albo zgody na obecne obejście.
+**Odpowiedź:**
