@@ -2,22 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-23T08:45:12+01:00",
- "prace": [
-  {
-   "id": "smok-retencja1",
-   "tytul": "Gra o smoku: seria logowań, zadania dzienne, ranking, kolory linii, stopy pisklęcia",
-   "stan": "w_toku",
-   "etap": "zlecenie dla agenta budującego",
-   "start": "2026-11-23T08:45:02+01:00",
-   "koniec_szacowany": "2026-11-23T11:45:00+01:00",
-   "aktualizacja": "2026-11-23T08:45:12+01:00",
-   "obszary": [
-    "swiat/ewolucja/**",
-    "studio:EwolucjaGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-23T10:16:34+01:00",
+ "prace": []
 }
