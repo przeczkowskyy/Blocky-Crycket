@@ -1,14 +1,14 @@
 --[[
-	TreningAFKClient — pasek treningu AFK (D-141; gałąź pawel/diamenty-afk). Serwer: src/server/TreningAFK.server.luau.
-	Okno budowane w kodzie (TYMCZASOWE — docelowy wygląd z Figmy, jak inne okna Pawła): na dole ekranu nazwa
-	statystyki, pasek postępu, „+N STR” po pełnym pasku, podpowiedź „TAP TO TRAIN FASTER” i przycisk STOP.
-	Tapnięcie / kliknięcie gdziekolwiek (poza innymi przyciskami) albo spacja wysyła "tap" (serwer liczy najwyżej
-	D.tapMaksNaSekunde na sekundę). Rekwizyt stanowiska lekko podskakuje w rytm treningu (tylko u gracza).
+	TreningAFKClient — okno treningu AFK (D-141; gałąź pawel/diamenty-afk). Serwer: src/server/TreningAFK.server.luau.
+	Druga wersja (Paweł 23.11): postać sama robi powtórzenia, pasek = D.powtorzenNaPasek powtórzeń (podziałki),
+	po pełnym pasku od razu „+N STR”. Klikać nie trzeba. Co kilka sekund wyskakuje skill check (okrągły przycisk
+	w losowym miejscu) — kliknięty na czas daje chwilowe ×2 (decyduje serwer).
+	Okno budowane w kodzie (TYMCZASOWE — docelowy wygląd z Figmy). Rekwizyt stanowiska (hantle, sztanga, księga…)
+	unosi się i opada w rytm powtórzeń — tylko u gracza.
 ]]
 
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
-local UIS = game:GetService("UserInputService")
 local TS = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
@@ -71,16 +71,17 @@ mx.MinSize = Vector2.new(300, 0)
 mx.MaxSize = Vector2.new(620, 160)
 mx.Parent = panel
 
-local tytul = napis(panel, "Tytul", UDim2.fromScale(0.04, 0.06), UDim2.fromScale(0.62, 0.3), Color3.fromRGB(252, 227, 176))
+local tytul = napis(panel, "Tytul", UDim2.fromScale(0.04, 0.07), UDim2.fromScale(0.56, 0.28), Color3.fromRGB(252, 227, 176))
 tytul.TextXAlignment = Enum.TextXAlignment.Left
-local przyrostL = napis(panel, "Przyrost", UDim2.fromScale(0.62, 0.06), UDim2.fromScale(0.34, 0.3), Color3.fromRGB(140, 232, 101))
+local przyrostL = napis(panel, "Przyrost", UDim2.fromScale(0.62, 0.07), UDim2.fromScale(0.34, 0.28), Color3.fromRGB(140, 232, 101))
 przyrostL.TextXAlignment = Enum.TextXAlignment.Right
 
 local tor = Instance.new("Frame")
 tor.Name = "Tor"
 tor.Position = UDim2.fromScale(0.04, 0.42)
-tor.Size = UDim2.fromScale(0.74, 0.28)
+tor.Size = UDim2.fromScale(0.74, 0.3)
 tor.BackgroundColor3 = Color3.fromRGB(14, 10, 16)
+tor.ClipsDescendants = true
 tor.Parent = panel
 rog(tor, 0.4)
 obrys(tor, 2)
@@ -97,13 +98,25 @@ polysk.Position = UDim2.fromScale(0.03, 0.14)
 polysk.Size = UDim2.fromScale(0.94, 0.22)
 polysk.Parent = wyp
 rog(polysk, 0.5)
+-- podziałki powtórzeń
+for i = 1, D.powtorzenNaPasek - 1 do
+	local k = Instance.new("Frame")
+	k.Name = "Podzialka"
+	k.AnchorPoint = Vector2.new(0.5, 0)
+	k.Position = UDim2.fromScale(i / D.powtorzenNaPasek, 0)
+	k.Size = UDim2.new(0, 3, 1, 0)
+	k.BackgroundColor3 = CIEMNY
+	k.BorderSizePixel = 0
+	k.ZIndex = 2
+	k.Parent = tor
+end
 local liczba = napis(tor, "Liczba", UDim2.fromScale(0, 0.05), UDim2.fromScale(1, 0.9), Color3.new(1, 1, 1))
 liczba.ZIndex = 3
 
 local stop = Instance.new("TextButton")
 stop.Name = "Stop"
 stop.Position = UDim2.fromScale(0.81, 0.4)
-stop.Size = UDim2.fromScale(0.16, 0.32)
+stop.Size = UDim2.fromScale(0.16, 0.34)
 stop.BackgroundColor3 = Color3.fromRGB(236, 96, 86)
 stop.Text = "STOP"
 stop.FontFace = FONT
@@ -113,24 +126,55 @@ stop.Parent = panel
 rog(stop, 0.3)
 obrys(stop, 2).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
-local podp = napis(panel, "Podpowiedz", UDim2.fromScale(0.04, 0.76), UDim2.fromScale(0.92, 0.2), Color3.new(1, 1, 1))
-podp.Text = if UIS.TouchEnabled then "TAP THE SCREEN TO TRAIN FASTER" else "CLICK OR PRESS SPACE TO TRAIN FASTER"
+local podp = napis(panel, "Podpowiedz", UDim2.fromScale(0.04, 0.78), UDim2.fromScale(0.92, 0.18), Color3.new(1, 1, 1))
+podp.Text = "HIT THE SKILL CHECKS FOR 2X SPEED!"
+
+-- skill check: okrągły przycisk z kurczącym się pierścieniem
+local check = Instance.new("TextButton")
+check.Name = "SkillCheck"
+check.AnchorPoint = Vector2.new(0.5, 0.5)
+check.Size = UDim2.fromScale(0.09, 0.09)
+check.BackgroundColor3 = Color3.fromRGB(255, 214, 90)
+check.Text = "!"
+check.FontFace = FONT
+check.TextScaled = true
+check.TextColor3 = CIEMNY
+check.Visible = false
+check.AutoButtonColor = false
+check.ZIndex = 20
+check.Parent = gui
+rog(check, 0.5)
+obrys(check, 3).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+local ca = Instance.new("UIAspectRatioConstraint")
+ca.Parent = check
+local mc = Instance.new("UISizeConstraint")
+mc.MinSize = Vector2.new(64, 64) -- duży cel także na telefonie
+mc.Parent = check
+local pierscien = Instance.new("Frame")
+pierscien.Name = "Pierscien"
+pierscien.AnchorPoint = Vector2.new(0.5, 0.5)
+pierscien.Position = UDim2.fromScale(0.5, 0.5)
+pierscien.BackgroundTransparency = 1
+pierscien.ZIndex = 19
+pierscien.Parent = check
+rog(pierscien, 0.5)
+local ps = Instance.new("UIStroke")
+ps.Color = Color3.new(1, 1, 1)
+ps.Thickness = 3
+ps.Parent = pierscien
 
 gui.Parent = player:WaitForChild("PlayerGui")
 
 ------------------------------------------------------------ stan
 local aktywne: string? = nil
-local postep, dlugosc = 0, 1
-local naPasek = 1
+local postep = 0 -- w powtórzeniach, płynnie liczony u gracza między wiadomościami serwera
+local tempo = 1
 
-local function rysuj(anim: boolean)
-	local f = math.clamp(postep / math.max(dlugosc, 0.001), 0, 1)
-	if anim then
-		TS:Create(wyp, TweenInfo.new(0.24, Enum.EasingStyle.Linear), { Size = UDim2.fromScale(f, 1) }):Play()
-	else
-		wyp.Size = UDim2.fromScale(f, 1)
-	end
-	liczba.Text = string.format("%d%%", math.floor(f * 100))
+local function rysuj()
+	local f = math.clamp(postep / D.powtorzenNaPasek, 0, 1)
+	wyp.Size = UDim2.fromScale(f, 1)
+	liczba.Text = string.format("REP %d/%d", math.min(math.floor(postep) + 1, D.powtorzenNaPasek), D.powtorzenNaPasek)
+		.. (if tempo > 1 then "  x" .. tostring(tempo) else "")
 end
 
 local function wyskok(tekst: string, kolor: Color3)
@@ -145,32 +189,24 @@ local function wyskok(tekst: string, kolor: Color3)
 	end)
 end
 
------------------------------------------------------------- rekwizyt podskakuje (tylko u gracza)
-local podskok = 0
-RunService.RenderStepped:Connect(function(dt)
-	if not aktywne then
-		return
-	end
-	podskok += dt
-end)
-
-local function stanowisko()
-	local k = workspace:FindFirstChild("TreningAFK")
-	return k and aktywne and k:FindFirstChild(aktywne)
-end
-
+------------------------------------------------------------ rekwizyt w rytm powtórzeń (tylko u gracza)
+local RUCHOME = { "Hantla", "Krążek", "Sztanga", "Worek", "Lina", "Skakanka", "Uchwyt", "Księga", "Blat", "Kość" }
 local bazowe: { [BasePart]: CFrame } = {}
 local function zapamietaj()
 	bazowe = {}
-	local m = stanowisko()
+	local k = workspace:FindFirstChild("TreningAFK")
+	local m = k and aktywne and k:FindFirstChild(aktywne)
 	if not m then
 		return
 	end
 	for _, p in ipairs(m:GetDescendants()) do
-		if p:IsA("BasePart") and not p.Name:find("Mata") and not p.Name:find("Tabliczka") and not p.Name:find("Noga")
-			and not p.Name:find("Słup") and not p.Name:find("Stojak") and not p.Name:find("Ławka") and not p.Name:find("Pulpit")
-			and not p.Name:find("Stolik") and not p.Name:find("Wysięgnik") then
-			bazowe[p] = p.CFrame
+		if p:IsA("BasePart") then
+			for _, n in ipairs(RUCHOME) do
+				if p.Name:find(n, 1, true) == 1 then
+					bazowe[p] = p.CFrame
+					break
+				end
+			end
 		end
 	end
 end
@@ -182,15 +218,34 @@ local function przywroc()
 	end
 	bazowe = {}
 end
-RunService.RenderStepped:Connect(function()
+
+RunService.RenderStepped:Connect(function(dt)
 	if not aktywne then
 		return
 	end
-	local y = math.abs(math.sin(podskok * 3)) * 0.6
+	-- płynny pasek między wiadomościami serwera (serwer i tak koryguje co 0,2 s)
+	postep = math.min(postep + dt * tempo / D.czasPowtorzenia, D.powtorzenNaPasek - 0.001)
+	rysuj()
+	-- jedno powtórzenie = podniesienie i opuszczenie (sinus po fazie powtórzenia)
+	local faza = postep % 1
+	local y = math.sin(faza * math.pi) * 1.4
 	for p, cf in pairs(bazowe) do
 		if p.Parent then
 			p.CFrame = cf + Vector3.new(0, y, 0)
 		end
+	end
+end)
+
+------------------------------------------------------------ skill check
+local numerCheck: number? = nil
+local function schowajCheck()
+	numerCheck = nil
+	check.Visible = false
+end
+check.Activated:Connect(function()
+	if numerCheck then
+		Z:FireServer("check", numerCheck)
+		schowajCheck()
 	end
 end)
 
@@ -200,58 +255,47 @@ Z.OnClientEvent:Connect(function(akcja, a, b, c, d)
 		przywroc()
 		aktywne = a
 		local s = D.stanowisko(a)
-		postep, dlugosc, naPasek = b or 0, c or 1, d or 1
+		postep, tempo = b or 0, 1
 		tytul.Text = s and (s.nazwa .. " · " .. s.czynnosc) or "TRAINING"
-		przyrostL.Text = s and ("+" .. naPasek .. " " .. s.skrot .. " / BAR") or ""
+		przyrostL.Text = s and ("+" .. tostring(c or 1) .. " " .. s.skrot .. " / BAR") or ""
 		wyp.BackgroundColor3 = s and s.kolor or wyp.BackgroundColor3
-		rysuj(false)
+		rysuj()
 		gui.Enabled = true
 		zapamietaj()
 	elseif akcja == "postep" then
-		postep, dlugosc = a, b
-		rysuj(true)
+		postep, tempo = a, b or 1
 	elseif akcja == "punkt" then
 		local s = aktywne and D.stanowisko(aktywne)
-		postep, dlugosc = 0, c or dlugosc
-		rysuj(false)
+		postep = c or 0
 		wyskok("+" .. tostring(b) .. " " .. (s and s.skrot or ""), s and s.kolor or Color3.new(1, 1, 1))
+		local sc = panel:FindFirstChildOfClass("UIScale") or Instance.new("UIScale")
+		sc.Parent = panel
+		sc.Scale = 1.06
+		TS:Create(sc, TweenInfo.new(0.18), { Scale = 1 }):Play()
+	elseif akcja == "skillcheck" then
+		numerCheck = a
+		local okno = b or 1.2
+		check.Position = UDim2.fromScale(0.3 + math.random() * 0.4, 0.25 + math.random() * 0.3)
+		check.Visible = true
+		pierscien.Size = UDim2.fromScale(2.2, 2.2)
+		TS:Create(pierscien, TweenInfo.new(okno, Enum.EasingStyle.Linear), { Size = UDim2.fromScale(1, 1) }):Play()
+		local moj = a
+		task.delay(okno + 0.1, function()
+			if numerCheck == moj then
+				schowajCheck()
+			end
+		end)
+	elseif akcja == "trafiony" then
+		tempo = D.mnoznikSkillCheck
+		wyskok("x" .. tostring(D.mnoznikSkillCheck) .. " SPEED!", Color3.fromRGB(255, 214, 90))
 	elseif akcja == "koniec" then
 		przywroc()
+		schowajCheck()
 		aktywne = nil
 		gui.Enabled = false
 	end
 end)
 
------------------------------------------------------------- tapnięcia
-local ostatni = 0
-local function tap()
-	if not aktywne then
-		return
-	end
-	local t = os.clock()
-	if t - ostatni < 0.12 then
-		return
-	end
-	ostatni = t
-	Z:FireServer("tap")
-	-- natychmiastowa reakcja u gracza (serwer i tak przyśle prawdziwy stan za chwilę)
-	postep = math.min(postep + D.tapWartosc, dlugosc)
-	rysuj(true)
-	local sc = panel:FindFirstChildOfClass("UIScale") or Instance.new("UIScale")
-	sc.Parent = panel
-	sc.Scale = 1.04
-	TS:Create(sc, TweenInfo.new(0.12), { Scale = 1 }):Play()
-end
-
-UIS.InputBegan:Connect(function(input, processed)
-	if processed or not aktywne then
-		return
-	end
-	local t = input.UserInputType
-	if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch or input.KeyCode == Enum.KeyCode.Space then
-		tap()
-	end
-end)
 stop.Activated:Connect(function()
 	Z:FireServer("stop")
 end)

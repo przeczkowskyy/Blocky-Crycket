@@ -5,8 +5,9 @@
 
 	Stanowiska: kontener Workspace/TreningAFK (atrybut Wygenerowane), budowany przy starcie serwera z klocków
 	(hantle, ławka, worek, skakanka, księgi, kości) na wolnym pasie placu w miasteczku (TreningAFKDane.start).
-	Gracz naciska E przy stanowisku → staje na nim, pasek napełnia się sam (AFK), tapnięcie przyspiesza.
-	Pełny pasek → +przyrost do statystyki.
+	Gracz naciska E przy stanowisku → staje na nim i sam robi powtórzenia (AFK). Pasek = D.powtorzenNaPasek
+	powtórzeń, pełny pasek → od razu +przyrost do statystyki. Co kilka sekund skill check na ekranie: trafiony
+	= chwilowo 2× szybciej (Paweł 23.11, druga wersja).
 
 	Statystyki: NIE piszemy ich sami. Przyrost idzie tym samym sygnałem co mini-gry Training Center:
 	Workspace/TreningProba/Sygnaly/PrzyrostStatystyki (BindableEvent pakietu Karola), którego słucha stan gracza
@@ -14,9 +15,9 @@
 	kontenera (np. w innym miejscu) przyrost trafia wprost do atrybutu gracza — tylko do prób.
 
 	Zdalne: ReplicatedStorage.TreningAFK (RemoteEvent)
-		klient → serwer: "tap" | "stop"
-		serwer → klient: "start", id, postep, dlugosc, przyrost | "postep", postep, dlugosc
-		                 | "punkt", atrybut, ile, dlugosc | "koniec"
+		klient → serwer: "check", numer | "stop"
+		serwer → klient: "start", id, postep, przyrost | "postep", postep, tempo | "punkt", atrybut, ile, postep
+		                 | "skillcheck", numer, okno | "trafiony", czas | "koniec"
 ]]
 
 local Players = game:GetService("Players")
@@ -171,9 +172,12 @@ end
 zbuduj()
 
 ------------------------------------------------------------------ stan treningu graczy (tylko w sesji)
-type Trening = { id: string, postep: number, taps: number, oknoTap: number }
+-- postep liczony w powtórzeniach (0 … D.powtorzenNaPasek); skill check: serwer losuje chwilę i numer,
+-- klient odsyła numer; trafienie w oknie czasu = przyspieszenie (oszukać się nie da bez okna od serwera)
+type Trening = { id: string, postep: number, nastepnyCheck: number, check: number?, checkDo: number, szybkoDo: number }
 local trwa: { [Player]: Trening } = {}
-local postepy: { [Player]: { [string]: number } } = {} -- pasek każdego stanowiska zostaje, gdy gracz odejdzie
+local postepy: { [Player]: { [string]: number } } = {} -- niepełny pasek stanowiska zostaje, gdy gracz odejdzie
+local licznikCheck = 0
 
 local function wartosc(gracz: Player, atrybut: string): number
 	local v = gracz:GetAttribute(atrybut)
@@ -195,6 +199,10 @@ local function dodajStatystyke(gracz: Player, s: any, ile: number)
 	else
 		gracz:SetAttribute(s.atrybut, wartosc(gracz, s.atrybut) + ile)
 	end
+end
+
+local function losujCheck(): number
+	return os.clock() + D.skillCheckCoMin + math.random() * (D.skillCheckCoMaks - D.skillCheckCoMin)
 end
 
 local function zakoncz(gracz: Player)
@@ -219,21 +227,21 @@ local function zacznij(gracz: Player, id: string)
 	if trwa[gracz] then
 		zakoncz(gracz)
 	end
-	-- czy ktoś już tu stoi?
 	for g, t in pairs(trwa) do
 		if t.id == id and g ~= gracz then
-			return
+			return -- ktoś już tu trenuje
 		end
 	end
 	hrp.CFrame = miejsca[id]
 	local p = (postepy[gracz] and postepy[gracz][id]) or 0
-	trwa[gracz] = { id = id, postep = p, taps = 0, oknoTap = os.clock() }
+	trwa[gracz] = { id = id, postep = p, nastepnyCheck = losujCheck(), check = nil, checkDo = 0, szybkoDo = 0 }
 	gracz:SetAttribute("TreningAFK", id)
-	Z:FireClient(gracz, "start", id, p, D.dlugoscPaska(wartosc(gracz, s.atrybut)), przyrostDla(gracz))
+	Z:FireClient(gracz, "start", id, p, przyrostDla(gracz))
 end
 
 for _, m in ipairs(kontener:GetChildren()) do
-	local pp = m:FindFirstChildWhichIsA("BasePart") and (m :: Model).PrimaryPart and (m :: Model).PrimaryPart:FindFirstChildOfClass("ProximityPrompt")
+	local mata = (m :: Model).PrimaryPart
+	local pp = mata and mata:FindFirstChildOfClass("ProximityPrompt")
 	if pp then
 		local id = m.Name
 		pp.Triggered:Connect(function(gracz)
@@ -246,20 +254,17 @@ for _, m in ipairs(kontener:GetChildren()) do
 	end
 end
 
-Z.OnServerEvent:Connect(function(gracz: Player, akcja: unknown)
+Z.OnServerEvent:Connect(function(gracz: Player, akcja: unknown, numer: unknown)
 	local t = trwa[gracz]
 	if not t then
 		return
 	end
-	if akcja == "tap" then
-		local teraz = os.clock()
-		if teraz - t.oknoTap >= 1 then
-			t.oknoTap = teraz
-			t.taps = 0
-		end
-		if t.taps < D.tapMaksNaSekunde then
-			t.taps += 1
-			t.postep += D.tapWartosc
+	if akcja == "check" then
+		if t.check ~= nil and numer == t.check and os.clock() <= t.checkDo + 0.25 then
+			t.check = nil
+			t.szybkoDo = os.clock() + D.czasPrzyspieszenia
+			t.nastepnyCheck = losujCheck()
+			Z:FireClient(gracz, "trafiony", D.czasPrzyspieszenia)
 		end
 	elseif akcja == "stop" then
 		zakoncz(gracz)
@@ -275,29 +280,37 @@ RunService.Heartbeat:Connect(function(dt)
 	end
 	local krok = zebrane
 	zebrane = 0
+	local teraz = os.clock()
 	for gracz, t in pairs(trwa) do
 		local s = D.stanowisko(t.id)
 		local char = gracz.Character
 		local hrp = char and char:FindFirstChild("HumanoidRootPart") :: BasePart?
 		local hum = char and char:FindFirstChildOfClass("Humanoid")
-		-- odległość w poziomie: skok (spacja = tapnięcie) nie przerywa treningu, odejście tak
+		-- odległość w poziomie: skok nie przerywa treningu, odejście tak
 		local roznica = hrp and (hrp.Position - miejsca[t.id].Position) or Vector3.zero
 		if not (s and hrp and hum and hum.Health > 0) or Vector3.new(roznica.X, 0, roznica.Z).Magnitude > D.zasieg then
 			zakoncz(gracz)
 			continue
 		end
-		t.postep += D.afkNaSekunde * krok
-		local dl = D.dlugoscPaska(wartosc(gracz, s.atrybut))
-		if t.postep >= dl then
-			t.postep -= dl
+		local tempo = if teraz < t.szybkoDo then D.mnoznikSkillCheck else 1
+		t.postep += krok * tempo / D.czasPowtorzenia
+		if t.postep >= D.powtorzenNaPasek then
+			t.postep -= D.powtorzenNaPasek
 			local ile = przyrostDla(gracz)
 			dodajStatystyke(gracz, s, ile)
-			task.defer(function()
-				-- nowa długość paska liczy się od wartości po przyroście
-				Z:FireClient(gracz, "punkt", s.atrybut, ile, D.dlugoscPaska(wartosc(gracz, s.atrybut)))
-			end)
+			Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep)
 		else
-			Z:FireClient(gracz, "postep", t.postep, dl)
+			Z:FireClient(gracz, "postep", t.postep, tempo)
+		end
+		-- skill check
+		if t.check == nil and teraz >= t.nastepnyCheck then
+			licznikCheck += 1
+			t.check = licznikCheck
+			t.checkDo = teraz + D.skillCheckOkno
+			Z:FireClient(gracz, "skillcheck", licznikCheck, D.skillCheckOkno)
+		elseif t.check ~= nil and teraz > t.checkDo + 0.25 then
+			t.check = nil -- nie trafił: nic się nie dzieje
+			t.nastepnyCheck = losujCheck()
 		end
 	end
 end)
