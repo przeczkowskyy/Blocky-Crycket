@@ -2,21 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-23T01:50:29+01:00",
- "prace": [
-  {
-   "id": "smok-powody-powrotu",
-   "tytul": "Gra o smoku: odrodzenie, wydarzenia i szlify",
-   "stan": "w_toku",
-   "start": "2026-11-23T01:50:29+01:00",
-   "koniec_szacowany": "2026-11-23T04:50:29+01:00",
-   "aktualizacja": "2026-11-23T01:50:29+01:00",
-   "obszary": [
-    "studio:EwolucjaGra",
-    "swiat/ewolucja/zrodla"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-23T02:44:19+01:00",
+ "prace": []
 }
