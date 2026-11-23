@@ -632,6 +632,143 @@
      ]
     },
     {
+     "Name": "ClassEmblem",
+     "ClassName": "ImageLabel",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0.2174,
+         0
+        ],
+        [
+         0.22104000000000001,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         0.10919999999999999,
+         0
+        ],
+        [
+         0.14592,
+         0
+        ]
+       ]
+      },
+      "BackgroundTransparency": 1,
+      "Image": "",
+      "ScaleType": "Fit",
+      "ZIndex": 3
+     }
+    },
+    {
+     "Name": "ExpBar",
+     "ClassName": "Frame",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0.214,
+         0
+        ],
+        [
+         0.392,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         0.117,
+         0
+        ],
+        [
+         0.036,
+         0
+        ]
+       ]
+      },
+      "BackgroundColor3": [
+       0.0549,
+       0.0392,
+       0.0627
+      ],
+      "ZIndex": 3
+     },
+     "Children": [
+      {
+       "Name": "UICorner",
+       "ClassName": "UICorner",
+       "Properties": {
+        "CornerRadius": {
+         "UDim": [
+          0.3,
+          0
+         ]
+        }
+       }
+      },
+      {
+       "Name": "Fill",
+       "ClassName": "Frame",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0,
+           0
+          ],
+          [
+           1,
+           0
+          ]
+         ]
+        },
+        "BackgroundColor3": [
+         0.2941,
+         0.698,
+         0.2784
+        ],
+        "ZIndex": 4
+       },
+       "Children": [
+        {
+         "Name": "UICorner",
+         "ClassName": "UICorner",
+         "Properties": {
+          "CornerRadius": {
+           "UDim": [
+            0.3,
+            0
+           ]
+          }
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
      "Name": "Level",
      "ClassName": "TextLabel",
      "Properties": {
@@ -705,18 +842,18 @@
      ]
     },
     {
-     "Name": "Tab1",
-     "ClassName": "TextLabel",
+     "Name": "Tabs",
+     "ClassName": "Frame",
      "Properties": {
       "BorderSizePixel": 0,
       "Position": {
        "UDim2": [
         [
-         0.087,
+         0,
          0
         ],
         [
-         0.563,
+         0,
          0
         ]
        ]
@@ -724,72 +861,330 @@
       "Size": {
        "UDim2": [
         [
-         0.088,
+         1,
          0
         ],
         [
-         0.03,
+         1,
          0
         ]
        ]
       },
       "BackgroundTransparency": 1,
-      "Text": "WEAPONS",
-      "TextColor3": [
-       1.0,
-       1.0,
-       1.0
-      ],
-      "FontFace": {
-       "Font": {
-        "family": "rbxasset://fonts/families/LuckiestGuy.json",
-        "weight": "Regular",
-        "style": "Normal"
-       }
-      },
-      "TextXAlignment": "Center",
-      "TextYAlignment": "Center",
-      "TextScaled": true,
-      "ZIndex": 5
+      "ZIndex": 6
      },
      "Children": [
       {
-       "Name": "UITextSizeConstraint",
-       "ClassName": "UITextSizeConstraint",
+       "Name": "TabWeapons",
+       "ClassName": "TextButton",
        "Properties": {
-        "MaxTextSize": 11,
-        "MinTextSize": 6
-       }
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.087,
+           0
+          ],
+          [
+           0.563,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.088,
+           0
+          ],
+          [
+           0.03,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "WEAPONS",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 6,
+        "AutoButtonColor": false
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 11,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 1.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
       },
       {
-       "Name": "UIStroke",
-       "ClassName": "UIStroke",
+       "Name": "TabArmor",
+       "ClassName": "TextButton",
        "Properties": {
-        "Color": [
-         0.102,
-         0.0784,
-         0.0627
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.18,
+           0
+          ],
+          [
+           0.563,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.089,
+           0
+          ],
+          [
+           0.03,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "ARMOR",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
         ],
-        "Thickness": 1.5,
-        "LineJoinMode": "Round",
-        "ApplyStrokeMode": "Contextual"
-       }
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 6,
+        "AutoButtonColor": false
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 11,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 1.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "TabAmulets",
+       "ClassName": "TextButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.274,
+           0
+          ],
+          [
+           0.563,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.087,
+           0
+          ],
+          [
+           0.03,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "AMULETS",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 6,
+        "AutoButtonColor": false
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 11,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 1.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "TabOthers",
+       "ClassName": "TextButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.367,
+           0
+          ],
+          [
+           0.563,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.089,
+           0
+          ],
+          [
+           0.03,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "OTHERS",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 6,
+        "AutoButtonColor": false
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 11,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 1.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
       }
      ]
     },
     {
-     "Name": "Tab2",
-     "ClassName": "TextLabel",
+     "Name": "EquipSlots",
+     "ClassName": "Frame",
      "Properties": {
       "BorderSizePixel": 0,
       "Position": {
        "UDim2": [
         [
-         0.18,
+         0,
          0
         ],
         [
-         0.563,
+         0,
          0
         ]
        ]
@@ -797,72 +1192,1150 @@
       "Size": {
        "UDim2": [
         [
-         0.089,
+         1,
          0
         ],
         [
-         0.03,
+         1,
          0
         ]
        ]
       },
       "BackgroundTransparency": 1,
-      "Text": "ARMOR",
-      "TextColor3": [
-       1.0,
-       1.0,
-       1.0
-      ],
-      "FontFace": {
-       "Font": {
-        "family": "rbxasset://fonts/families/LuckiestGuy.json",
-        "weight": "Regular",
-        "style": "Normal"
-       }
-      },
-      "TextXAlignment": "Center",
-      "TextYAlignment": "Center",
-      "TextScaled": true,
-      "ZIndex": 5
+      "ZIndex": 6
      },
      "Children": [
       {
-       "Name": "UITextSizeConstraint",
-       "ClassName": "UITextSizeConstraint",
+       "Name": "Slot_Helmet",
+       "ClassName": "ImageButton",
        "Properties": {
-        "MaxTextSize": 11,
-        "MinTextSize": 6
-       }
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.093,
+           0
+          ],
+          [
+           0.161,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.066,
+           0
+          ],
+          [
+           0.093,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Cover",
+         "ClassName": "Frame",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.09,
+             0
+            ],
+            [
+             0.08,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.82,
+             0
+            ],
+            [
+             0.84,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.5137,
+           0.3176,
+           0.2471
+          ],
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.12,
+              0
+             ]
+            }
+           }
+          }
+         ]
+        },
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
       },
       {
-       "Name": "UIStroke",
-       "ClassName": "UIStroke",
+       "Name": "Slot_Chest",
+       "ClassName": "ImageButton",
        "Properties": {
-        "Color": [
-         0.102,
-         0.0784,
-         0.0627
-        ],
-        "Thickness": 1.5,
-        "LineJoinMode": "Round",
-        "ApplyStrokeMode": "Contextual"
-       }
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.093,
+           0
+          ],
+          [
+           0.26,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.066,
+           0
+          ],
+          [
+           0.09099999999999997,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Cover",
+         "ClassName": "Frame",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.09,
+             0
+            ],
+            [
+             0.08,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.82,
+             0
+            ],
+            [
+             0.84,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.5137,
+           0.3176,
+           0.2471
+          ],
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.12,
+              0
+             ]
+            }
+           }
+          }
+         ]
+        },
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Slot_Gloves",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.093,
+           0
+          ],
+          [
+           0.359,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.066,
+           0
+          ],
+          [
+           0.08900000000000002,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Cover",
+         "ClassName": "Frame",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.09,
+             0
+            ],
+            [
+             0.08,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.82,
+             0
+            ],
+            [
+             0.84,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.5137,
+           0.3176,
+           0.2471
+          ],
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.12,
+              0
+             ]
+            }
+           }
+          }
+         ]
+        },
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Slot_Boots",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.093,
+           0
+          ],
+          [
+           0.456,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.066,
+           0
+          ],
+          [
+           0.08900000000000002,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Cover",
+         "ClassName": "Frame",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.09,
+             0
+            ],
+            [
+             0.08,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.82,
+             0
+            ],
+            [
+             0.84,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.5137,
+           0.3176,
+           0.2471
+          ],
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.12,
+              0
+             ]
+            }
+           }
+          }
+         ]
+        },
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Slot_Amulet",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.384,
+           0
+          ],
+          [
+           0.161,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.068,
+           0
+          ],
+          [
+           0.093,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Cover",
+         "ClassName": "Frame",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.09,
+             0
+            ],
+            [
+             0.08,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.82,
+             0
+            ],
+            [
+             0.84,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.5137,
+           0.3176,
+           0.2471
+          ],
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.12,
+              0
+             ]
+            }
+           }
+          }
+         ]
+        },
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Slot_Belt",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.384,
+           0
+          ],
+          [
+           0.26,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.068,
+           0
+          ],
+          [
+           0.09099999999999997,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Cover",
+         "ClassName": "Frame",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.09,
+             0
+            ],
+            [
+             0.08,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.82,
+             0
+            ],
+            [
+             0.84,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.5137,
+           0.3176,
+           0.2471
+          ],
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.12,
+              0
+             ]
+            }
+           }
+          }
+         ]
+        },
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Slot_Ring",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.384,
+           0
+          ],
+          [
+           0.359,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.068,
+           0
+          ],
+          [
+           0.08900000000000002,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Cover",
+         "ClassName": "Frame",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.09,
+             0
+            ],
+            [
+             0.08,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.82,
+             0
+            ],
+            [
+             0.84,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.5137,
+           0.3176,
+           0.2471
+          ],
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.12,
+              0
+             ]
+            }
+           }
+          }
+         ]
+        },
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Slot_Trinket",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.384,
+           0
+          ],
+          [
+           0.456,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.068,
+           0
+          ],
+          [
+           0.08900000000000002,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Cover",
+         "ClassName": "Frame",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.09,
+             0
+            ],
+            [
+             0.08,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.82,
+             0
+            ],
+            [
+             0.84,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.5137,
+           0.3176,
+           0.2471
+          ],
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.12,
+              0
+             ]
+            }
+           }
+          }
+         ]
+        },
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Slot_Weapon",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.236,
+           0
+          ],
+          [
+           0.45,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.073,
+           0
+          ],
+          [
+           0.1,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Cover",
+         "ClassName": "Frame",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.09,
+             0
+            ],
+            [
+             0.08,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.82,
+             0
+            ],
+            [
+             0.84,
+             0
+            ]
+           ]
+          },
+          "BackgroundColor3": [
+           0.5137,
+           0.3176,
+           0.2471
+          ],
+          "Visible": false,
+          "ZIndex": 6
+         },
+         "Children": [
+          {
+           "Name": "UICorner",
+           "ClassName": "UICorner",
+           "Properties": {
+            "CornerRadius": {
+             "UDim": [
+              0.12,
+              0
+             ]
+            }
+           }
+          }
+         ]
+        },
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
       }
      ]
     },
     {
-     "Name": "Tab3",
-     "ClassName": "TextLabel",
+     "Name": "BackpackGrid",
+     "ClassName": "Frame",
      "Properties": {
       "BorderSizePixel": 0,
       "Position": {
        "UDim2": [
         [
-         0.274,
+         0,
          0
         ],
         [
-         0.563,
+         0,
          0
         ]
        ]
@@ -870,129 +2343,1098 @@
       "Size": {
        "UDim2": [
         [
-         0.087,
+         1,
          0
         ],
         [
-         0.03,
+         1,
          0
         ]
        ]
       },
       "BackgroundTransparency": 1,
-      "Text": "AMULETS",
-      "TextColor3": [
-       1.0,
-       1.0,
-       1.0
-      ],
-      "FontFace": {
-       "Font": {
-        "family": "rbxasset://fonts/families/LuckiestGuy.json",
-        "weight": "Regular",
-        "style": "Normal"
-       }
-      },
-      "TextXAlignment": "Center",
-      "TextYAlignment": "Center",
-      "TextScaled": true,
-      "ZIndex": 5
+      "ZIndex": 6
      },
      "Children": [
       {
-       "Name": "UITextSizeConstraint",
-       "ClassName": "UITextSizeConstraint",
+       "Name": "BagSlot01",
+       "ClassName": "ImageButton",
        "Properties": {
-        "MaxTextSize": 11,
-        "MinTextSize": 6
-       }
-      },
-      {
-       "Name": "UIStroke",
-       "ClassName": "UIStroke",
-       "Properties": {
-        "Color": [
-         0.102,
-         0.0784,
-         0.0627
-        ],
-        "Thickness": 1.5,
-        "LineJoinMode": "Round",
-        "ApplyStrokeMode": "Contextual"
-       }
-      }
-     ]
-    },
-    {
-     "Name": "Tab4",
-     "ClassName": "TextLabel",
-     "Properties": {
-      "BorderSizePixel": 0,
-      "Position": {
-       "UDim2": [
-        [
-         0.367,
-         0
-        ],
-        [
-         0.563,
-         0
-        ]
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0925,
+           0
+          ],
+          [
+           0.6136,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
        ]
       },
-      "Size": {
-       "UDim2": [
-        [
-         0.089,
-         0
-        ],
-        [
-         0.03,
-         0
-        ]
+      {
+       "Name": "BagSlot02",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.1654,
+           0
+          ],
+          [
+           0.6136,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
        ]
       },
-      "BackgroundTransparency": 1,
-      "Text": "OTHERS",
-      "TextColor3": [
-       1.0,
-       1.0,
-       1.0
-      ],
-      "FontFace": {
-       "Font": {
-        "family": "rbxasset://fonts/families/LuckiestGuy.json",
-        "weight": "Regular",
-        "style": "Normal"
-       }
-      },
-      "TextXAlignment": "Center",
-      "TextYAlignment": "Center",
-      "TextScaled": true,
-      "ZIndex": 5
-     },
-     "Children": [
       {
-       "Name": "UITextSizeConstraint",
-       "ClassName": "UITextSizeConstraint",
+       "Name": "BagSlot03",
+       "ClassName": "ImageButton",
        "Properties": {
-        "MaxTextSize": 11,
-        "MinTextSize": 6
-       }
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.2381,
+           0
+          ],
+          [
+           0.6136,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
       },
       {
-       "Name": "UIStroke",
-       "ClassName": "UIStroke",
+       "Name": "BagSlot04",
+       "ClassName": "ImageButton",
        "Properties": {
-        "Color": [
-         0.102,
-         0.0784,
-         0.0627
-        ],
-        "Thickness": 1.5,
-        "LineJoinMode": "Round",
-        "ApplyStrokeMode": "Contextual"
-       }
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.3113,
+           0
+          ],
+          [
+           0.6136,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot05",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.3844,
+           0
+          ],
+          [
+           0.6136,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot06",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0925,
+           0
+          ],
+          [
+           0.709,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot07",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.1654,
+           0
+          ],
+          [
+           0.709,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot08",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.2381,
+           0
+          ],
+          [
+           0.709,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot09",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.3113,
+           0
+          ],
+          [
+           0.709,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot10",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.3844,
+           0
+          ],
+          [
+           0.709,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot11",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0925,
+           0
+          ],
+          [
+           0.8055,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot12",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.1654,
+           0
+          ],
+          [
+           0.8055,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot13",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.2381,
+           0
+          ],
+          [
+           0.8055,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot14",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.3113,
+           0
+          ],
+          [
+           0.8055,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BagSlot15",
+       "ClassName": "ImageButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.3844,
+           0
+          ],
+          [
+           0.8055,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.0645,
+           0
+          ],
+          [
+           0.0838,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "AutoButtonColor": false,
+        "ZIndex": 6
+       },
+       "Children": [
+        {
+         "Name": "Icon",
+         "ClassName": "ImageLabel",
+         "Properties": {
+          "BorderSizePixel": 0,
+          "Position": {
+           "UDim2": [
+            [
+             0.12,
+             0
+            ],
+            [
+             0.12,
+             0
+            ]
+           ]
+          },
+          "Size": {
+           "UDim2": [
+            [
+             0.76,
+             0
+            ],
+            [
+             0.76,
+             0
+            ]
+           ]
+          },
+          "BackgroundTransparency": 1,
+          "Image": "",
+          "ZIndex": 7,
+          "ScaleType": "Fit"
+         }
+        }
+       ]
       }
      ]
     },
@@ -1172,7 +3614,263 @@
       "Image": "",
       "AutoButtonColor": false,
       "ZIndex": 6
-     }
+     },
+     "Children": [
+      {
+       "Name": "Icon",
+       "ClassName": "ImageLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.12,
+           0
+          ],
+          [
+           0.12,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.76,
+           0
+          ],
+          [
+           0.76,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "ZIndex": 7,
+        "ScaleType": "Fit"
+       }
+      },
+      {
+       "Name": "Price",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.74,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         0.8392,
+         0.3529
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 9
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 18,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Lock",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.4,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 20,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Owned",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           -0.06,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.28,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         0.549,
+         0.9098,
+         0.3961
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 14,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      }
+     ]
     },
     {
      "Name": "ShopSlot2",
@@ -1207,7 +3905,263 @@
       "Image": "",
       "AutoButtonColor": false,
       "ZIndex": 6
-     }
+     },
+     "Children": [
+      {
+       "Name": "Icon",
+       "ClassName": "ImageLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.12,
+           0
+          ],
+          [
+           0.12,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.76,
+           0
+          ],
+          [
+           0.76,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "ZIndex": 7,
+        "ScaleType": "Fit"
+       }
+      },
+      {
+       "Name": "Price",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.74,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         0.8392,
+         0.3529
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 9
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 18,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Lock",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.4,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 20,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Owned",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           -0.06,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.28,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         0.549,
+         0.9098,
+         0.3961
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 14,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      }
+     ]
     },
     {
      "Name": "ShopSlot3",
@@ -1242,7 +4196,263 @@
       "Image": "",
       "AutoButtonColor": false,
       "ZIndex": 6
-     }
+     },
+     "Children": [
+      {
+       "Name": "Icon",
+       "ClassName": "ImageLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.12,
+           0
+          ],
+          [
+           0.12,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.76,
+           0
+          ],
+          [
+           0.76,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "ZIndex": 7,
+        "ScaleType": "Fit"
+       }
+      },
+      {
+       "Name": "Price",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.74,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         0.8392,
+         0.3529
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 9
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 18,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Lock",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.4,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 20,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Owned",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           -0.06,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.28,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         0.549,
+         0.9098,
+         0.3961
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 14,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      }
+     ]
     },
     {
      "Name": "ShopSlot4",
@@ -1277,7 +4487,263 @@
       "Image": "",
       "AutoButtonColor": false,
       "ZIndex": 6
-     }
+     },
+     "Children": [
+      {
+       "Name": "Icon",
+       "ClassName": "ImageLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.12,
+           0
+          ],
+          [
+           0.12,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.76,
+           0
+          ],
+          [
+           0.76,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "ZIndex": 7,
+        "ScaleType": "Fit"
+       }
+      },
+      {
+       "Name": "Price",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.74,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         0.8392,
+         0.3529
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 9
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 18,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Lock",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.4,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 20,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Owned",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           -0.06,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.28,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         0.549,
+         0.9098,
+         0.3961
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 14,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      }
+     ]
     },
     {
      "Name": "ShopSlot5",
@@ -1312,7 +4778,263 @@
       "Image": "",
       "AutoButtonColor": false,
       "ZIndex": 6
-     }
+     },
+     "Children": [
+      {
+       "Name": "Icon",
+       "ClassName": "ImageLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.12,
+           0
+          ],
+          [
+           0.12,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.76,
+           0
+          ],
+          [
+           0.76,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "ZIndex": 7,
+        "ScaleType": "Fit"
+       }
+      },
+      {
+       "Name": "Price",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.74,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         0.8392,
+         0.3529
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 9
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 18,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Lock",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.4,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 20,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Owned",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           -0.06,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.28,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         0.549,
+         0.9098,
+         0.3961
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 14,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      }
+     ]
     },
     {
      "Name": "ShopSlot6",
@@ -1347,7 +5069,859 @@
       "Image": "",
       "AutoButtonColor": false,
       "ZIndex": 6
-     }
+     },
+     "Children": [
+      {
+       "Name": "Icon",
+       "ClassName": "ImageLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.12,
+           0
+          ],
+          [
+           0.12,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.76,
+           0
+          ],
+          [
+           0.76,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Image": "",
+        "ZIndex": 7,
+        "ScaleType": "Fit"
+       }
+      },
+      {
+       "Name": "Price",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.74,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         0.8392,
+         0.3529
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 9
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 18,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Lock",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           0.3,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.4,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 20,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Owned",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.0,
+           0
+          ],
+          [
+           -0.06,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           1.0,
+           0
+          ],
+          [
+           0.28,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         0.549,
+         0.9098,
+         0.3961
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 10
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 14,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "Name": "Card",
+     "ClassName": "Frame",
+     "Properties": {
+      "BorderSizePixel": 0,
+      "Position": {
+       "UDim2": [
+        [
+         0.585,
+         0
+        ],
+        [
+         0.135,
+         0
+        ]
+       ]
+      },
+      "Size": {
+       "UDim2": [
+        [
+         0.31,
+         0
+        ],
+        [
+         0.405,
+         0
+        ]
+       ]
+      },
+      "BackgroundColor3": [
+       0.1686,
+       0.1137,
+       0.0784
+      ],
+      "BackgroundTransparency": 0.06,
+      "Visible": false,
+      "ZIndex": 20
+     },
+     "Children": [
+      {
+       "Name": "UICorner",
+       "ClassName": "UICorner",
+       "Properties": {
+        "CornerRadius": {
+         "UDim": [
+          0.06,
+          0
+         ]
+        }
+       }
+      },
+      {
+       "Name": "UIStroke",
+       "ClassName": "UIStroke",
+       "Properties": {
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Thickness": 3
+       }
+      },
+      {
+       "Name": "ItemName",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.06,
+           0
+          ],
+          [
+           0.04,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.8,
+           0
+          ],
+          [
+           0.17,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         0.9882,
+         0.8902,
+         0.6902
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 21
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 30,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Tier",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.06,
+           0
+          ],
+          [
+           0.2,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.88,
+           0
+          ],
+          [
+           0.09,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 21
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 16,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 1.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Stats",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.06,
+           0
+          ],
+          [
+           0.31,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.88,
+           0
+          ],
+          [
+           0.2,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 21
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 18,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 1.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Req",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.06,
+           0
+          ],
+          [
+           0.52,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.88,
+           0
+          ],
+          [
+           0.09,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 21
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 16,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 1.5,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "Price",
+       "ClassName": "TextLabel",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.06,
+           0
+          ],
+          [
+           0.62,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.88,
+           0
+          ],
+          [
+           0.1,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "",
+        "TextColor3": [
+         1.0,
+         0.8392,
+         0.3529
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextXAlignment": "Center",
+        "TextYAlignment": "Center",
+        "TextScaled": true,
+        "ZIndex": 21
+       },
+       "Children": [
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 22,
+          "MinTextSize": 6
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2,
+          "LineJoinMode": "Round",
+          "ApplyStrokeMode": "Contextual"
+         }
+        }
+       ]
+      },
+      {
+       "Name": "BuyButton",
+       "ClassName": "TextButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.18,
+           0
+          ],
+          [
+           0.76,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.64,
+           0
+          ],
+          [
+           0.18,
+           0
+          ]
+         ]
+        },
+        "BackgroundColor3": [
+         0.2471,
+         0.6078,
+         0.3333
+        ],
+        "Text": "BUY",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextScaled": true,
+        "AutoButtonColor": true,
+        "ZIndex": 22
+       },
+       "Children": [
+        {
+         "Name": "UICorner",
+         "ClassName": "UICorner",
+         "Properties": {
+          "CornerRadius": {
+           "UDim": [
+            0.25,
+            0
+           ]
+          }
+         }
+        },
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2.5,
+          "ApplyStrokeMode": "Border"
+         }
+        },
+        {
+         "Name": "UITextSizeConstraint",
+         "ClassName": "UITextSizeConstraint",
+         "Properties": {
+          "MaxTextSize": 28,
+          "MinTextSize": 8
+         }
+        },
+        {
+         "Name": "UIPadding",
+         "ClassName": "UIPadding",
+         "Properties": {
+          "PaddingTop": {
+           "UDim": [
+            0.15,
+            0
+           ]
+          },
+          "PaddingBottom": {
+           "UDim": [
+            0.12,
+            0
+           ]
+          }
+         }
+        }
+       ]
+      },
+      {
+       "Name": "CloseCard",
+       "ClassName": "TextButton",
+       "Properties": {
+        "BorderSizePixel": 0,
+        "Position": {
+         "UDim2": [
+          [
+           0.86,
+           0
+          ],
+          [
+           0.02,
+           0
+          ]
+         ]
+        },
+        "Size": {
+         "UDim2": [
+          [
+           0.12,
+           0
+          ],
+          [
+           0.12,
+           0
+          ]
+         ]
+        },
+        "BackgroundTransparency": 1,
+        "Text": "X",
+        "TextColor3": [
+         1.0,
+         1.0,
+         1.0
+        ],
+        "FontFace": {
+         "Font": {
+          "family": "rbxasset://fonts/families/LuckiestGuy.json",
+          "weight": "Regular",
+          "style": "Normal"
+         }
+        },
+        "TextScaled": true,
+        "ZIndex": 22
+       },
+       "Children": [
+        {
+         "Name": "UIStroke",
+         "ClassName": "UIStroke",
+         "Properties": {
+          "Color": [
+           0.102,
+           0.0784,
+           0.0627
+          ],
+          "Thickness": 2
+         }
+        }
+       ]
+      }
+     ]
     }
    ]
   }

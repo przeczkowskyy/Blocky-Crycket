@@ -856,3 +856,19 @@ Szczegóły: kod, sprawdzenia i uzasadnienie każdej ceny opisuje sekcja „Odcz
 
 Szczegóły: zdanie agenta (D-114) — (a). Wydanie kosztuje mało, bo gra jest gotowa do próby, a da pierwsze dane o prawdziwych graczach; porzucenie dzień przed wydaniem marnuje największą naukę z tej pracy. Zmienię zdanie, jeśli przed wydaniem zostało więcej niż około dzień pracy.
 **Odpowiedź:**
+
+## 89. Karol: za poziom Diamenty, trening AFK — kto wdraża?
+- Paweł 23.11: awans daje Diamenty na drzewko zamiast punktów statystyk (D-140), a statystyki trenuje się na stanowiskach AFK z paskiem (D-141). Obie czekają na Twoje potwierdzenie.
+- Obie zmiany są w Twoich pakietach (`stan_gracza`, `trening_proba`) i w 3D, więc agent Pawła ich nie ruszał.
+- Do wyboru: (a) Twój agent wdraża obie, a agent Pawła robi okno paska treningu 2D; (b) zgadzasz się, żeby agent Pawła zmienił liczby w `stan_gracza` i zbudował stanowiska; (c) nie zgadzasz się — rozmowa na sesji.
+
+Szczegóły: poprawki agenta (tapnięcie przyspiesza pasek, przyrost rośnie z poziomem, mini-gry jako bonus, przeliczenie tempa walk bez punktów za poziom) są w treści D-140 i D-141 w [[Rejestr decyzji]]. Dotyka D-097 (dwa podpisy), D-050, D-108 i pytania 50.
+**Odpowiedź:**
+
+## 90. Pakiety Karola działają tylko w Studio — przed wydaniem?
+- Stan gracza, kowal, sklep (i inne pakiety `swiat/…`) mają na początku `if not RunService:IsStudio() then return`.
+- W opublikowanej grze nie ruszy więc zapis, łup, poziomy ani sklep — Blocky & Crycket nie jest dziś gotowe do wydania.
+- Do wyboru: (a) zdjąć blokady pakiet po pakiecie i przejść całą grę w prywatnej wersji; (b) zostawić do czasu wyboru, które pakiety idą do wydania.
+
+Szczegóły: wykryte 23.11 przy podpinaniu sklepu Pawła pod serwer sklepu Karola (`swiat/sklep_proba/zrodla/SerwerSklepu.server.luau`, wiersz 19; podobnie `swiat/kowal_proba`, `swiat/stan_gracza`). Prawdopodobnie zabezpieczenie prototypów przed przypadkową publikacją. Właściciel: Karol.
+**Odpowiedź:**

@@ -7,6 +7,10 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Blocky & Crycket (D-140, D-141): za poziom Diamenty zamiast punktów statystyk i trening na stanowiskach AFK z paskiem — Karol potwierdza i wybiera, kto wdraża (pytanie 89); przy wdrożeniu przeliczyć tempo walk bez punktów za poziom · Karol, potem agent · #wysoki
+- [ ] Blocky & Crycket: zdjęcie blokad „tylko Studio” w pakietach przed wydaniem (pytanie 90) · Karol · #wysoki
+- [ ] Sklep: „tak” na wgranie ikon przedmiotów z Blendera (80 plików w `swiat/postacie/wynik/…/ikony/`) — do tego czasu kafelki z nazwą; potem wpisać ID do `src/shared/IkonyPrzedmiotow.luau` · Paweł albo Karol · #średni
+- [ ] Sklep: sprawdzić na telefonie (Device Emulator), czy nazwy na kafelkach i karta przedmiotu są czytelne; ustalić towar sklepu magicznego · Paweł · #średni
 - [ ] Gra o smoku: ceny sklepu i łączenie mnożników — odpowiedź na pytanie #87 w [[Pytania otwarte]] · Karol, Paweł · #wysoki
 - [ ] Gra o smoku: mapa v2 w grze — etap A płaski (do wydania), etap B teren z wysokościami za przełącznikiem (do wydania albo jako pierwsza aktualizacja) · agent · Blender gotowy 2026-11-23, wpięcie w toku · #wysoki
 - [ ] Gra o smoku: zagrać z telefonu w wersję „odrodzenie1” (https://www.roblox.com/games/93704244631419) — co przeszkadza w sterowaniu, walce i interfejsie; wybrać pisklę (obecne czy łagodniejsze) · Karol, Paweł · #wysoki
@@ -146,6 +150,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Sklep z bronią oskryptowany: naprawa znikającego okna (chował je sklep Karola na próbę), lewa strona = kopia EQ (wspólny stan, zakładki, poziom), towar i kupno z serwera kowala, karta przedmiotu, kupione przedmioty w EQ; sprawdzone w Play · agent u Pawła · 2026-11-23
 - [x] Gra o smoku: odczucie walki, miejsca na dźwięki, krótsze powitanie, tempo, kod sklepu wyłączony do decyzji · agent · 2026-11-23 (wersja prywatna „odczucie1”)
 - [x] Gra o smoku: poprawka stóp pisklęcia, seria logowań i zadania dzienne, ranking odrodzeń, kolory trofeów i botów według linii, tempo, zegary wydarzeń według UTC · agent · 2026-11-23 (wersja prywatna „retencja1”)
 - [x] Gra o smoku (D-137): wpięcie nowych modeli i klipów do gry, interfejs, odblokowania przy wzroście, odrodzenie w nowej linii smoka, jedno wydarzenie z zegara — poniedziałek–wtorek · agent · #wysoki · zrobione 2026-11-23 (wersja prywatna „odrodzenie1”)

@@ -422,13 +422,14 @@ end
 
 ------------------------------------------------ przedmioty i przeciąganie (TEST: stan tylko po stronie klienta)
 local GuiService = game:GetService("GuiService")
-local Items = require(RS:WaitForChild("Shared"):WaitForChild("Items"))
+-- stan ekwipunku jest wspólny z oknem sklepu (ShopClient): moduł EkwipunekStan obok tego skryptu
+local Stan = require(script.Parent:WaitForChild("EkwipunekStan"))
 local DRAG_START = 6 -- px ruchu, po których kliknięcie staje się przeciąganiem
 local BAG_TABS = { TabWeapons = "Weapons", TabArmor = "Armor", TabAmulets = "Amulets", TabOthers = "Others" }
 
 local equipFolder, bagFolder = panel.Character.EquipSlots, panel.BackpackGrid
-local equip = {} -- nazwa slotu ("Slot_Trinket") -> id przedmiotu
-local bag = { Weapons = {}, Armor = {}, Amulets = {}, Others = {} } -- kategoria -> [numer slotu 1–25] -> id
+local equip = Stan.equip -- nazwa slotu ("Slot_Trinket") -> id przedmiotu
+local bag = Stan.bag -- kategoria -> [numer slotu 1–25] -> id
 local bagTab = "Weapons" -- aktywna zakładka plecaka
 
 local allSlots = {}
@@ -462,7 +463,7 @@ end
 
 local function render(slot)
 	local id = get(slot)
-	slot.Icon.Image = id and Items[id].icon or ""
+	Stan.rysujIkone(slot.Icon, id)
 	slot.Icon.ImageTransparency = 0
 	slot.Icon.Rotation = 0
 	-- zasłonka wypalonej sylwetki (hełm, sakiewka…): tylko gdy w slocie leży przedmiot
@@ -478,7 +479,8 @@ local function renderAll()
 end
 
 local function fitsEquip(slot, id)
-	return id == nil or Items[id].slot == "Any" or "Slot_" .. Items[id].slot == slot.Name
+	local d = Stan.definicja(id)
+	return id == nil or (d ~= nil and (d.slot == "Any" or "Slot_" .. d.slot == slot.Name))
 end
 
 local function shake(obj)
@@ -492,20 +494,7 @@ local function shake(obj)
 end
 
 -- odkłada przedmiot na stronę plecaka jego kategorii (preferowany numer slotu albo pierwszy wolny)
-local function storeInBag(id, prefer)
-	local page = bag[Items[id].category]
-	if prefer and page[prefer] == nil then
-		page[prefer] = id
-		return prefer
-	end
-	for i = 1, 25 do
-		if page[i] == nil then
-			page[i] = id
-			return i
-		end
-	end
-	return nil
-end
+local storeInBag = Stan.doPlecaka
 
 local function hintTab(category)
 	local tab = panel.BackpackTabs:FindFirstChild("Tab" .. category)
@@ -517,7 +506,7 @@ end
 local function move(from, target)
 	local moving, there = get(from), get(target)
 	if isBag(target) then
-		local cat = Items[moving].category
+		local cat = Stan.definicja(moving).category
 		if cat ~= bagTab then
 			-- inna zakładka: przedmiot trafia na stronę swojej kategorii (tu znika z widoku)
 			if not storeInBag(moving, bagIndex(target)) then
@@ -588,7 +577,8 @@ UIS.InputChanged:Connect(function(input)
 		local g = Instance.new("ImageLabel")
 		g.Name = "DragGhost"
 		g.BackgroundTransparency = 1
-		g.Image = Items[get(drag.from)].icon
+		local d = Stan.definicja(get(drag.from))
+		g.Image = d and d.icon or ""
 		g.AnchorPoint = Vector2.new(0.5, 0.5)
 		g.Size = UDim2.fromOffset(drag.from.Icon.AbsoluteSize.X * 1.15, drag.from.Icon.AbsoluteSize.Y * 1.15)
 		g.ZIndex = 50
@@ -617,7 +607,7 @@ UIS.InputEnded:Connect(function(input)
 	local target = slotAt(screenPos(input))
 	local item = get(d.from)
 	if target and target ~= d.from and move(d.from, target) then
-		renderAll()
+		Stan.zmieniono() -- przerysowuje to okno (renderAll) i lewą stronę sklepu
 		if get(target) == item then
 			pop(target.Icon, 1.25)
 		end
@@ -652,7 +642,7 @@ local function giveStarterWeapon()
 		return require(RS:WaitForChild("Shared"):WaitForChild("ClassData"))
 	end)
 	local c = ok and ClassData.byId(player:GetAttribute("Class") or "")
-	if not (c and c.weapon and Items[c.weapon]) then
+	if not (c and c.weapon and Stan.definicja(c.weapon)) then
 		return
 	end
 	starterGiven = true
@@ -661,8 +651,9 @@ local function giveStarterWeapon()
 	else
 		storeInBag(c.weapon)
 	end
-	renderAll()
+	Stan.zmieniono()
 end
+Stan.Zmiana.Event:Connect(renderAll)
 player:GetAttributeChangedSignal("Class"):Connect(giveStarterWeapon)
 giveStarterWeapon()
 renderAll()

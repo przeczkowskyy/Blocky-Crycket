@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Pawła (sklep oskryptowany; D-140 i D-141: Diamenty za poziom, trening AFK)
+- **Gdzie stanęliśmy (z GitHuba):** cztery areny walki stoją w Studio od 17–18.11 (las, Bagno, plac ćwiczeń, Dżungla). Od 20.11 praca szła w inne gry. Paweł: zostajemy przy tych arenach i dopracowujemy szczegóły.
+- **Sklep naprawiony i oskryptowany.** Przyczyna „nie działa”: sklep Karola na próbę (`Workspace/SklepProba`) po E przy zbrojmistrzu chował okno `Shop` w tej samej klatce, w której się otwierało. Teraz okno Pawła przejmuje zbrojownię bez zmian w plikach Karola: lewa strona jest kopią EQ, prawa pokazuje towar i kupno z serwera kowala. Szczegóły: [[Sklepy i bronie startowe — prompty]] („Sklep oskryptowany”), [[Okno ekwipunku]]. Pliki: `src/client/EkwipunekStan.luau` (nowy), `src/shared/IkonyPrzedmiotow.luau` (nowy), `src/client/ShopClient.client.luau`, `src/client/EquipmentPanelClient.client.luau`, `tools/shop_build_gui.py` → `src/gui/Shop.model.json`, `tools/studio/deploy_gui.py` (nowa opcja `--moduly`). Wdrożone do Studio i sprawdzone w Play: kupno kapelusza 2684 → 2534 Złota, kapelusz w sklepie i w EQ, zakładki, sklep magiczny „COMING SOON”, bez błędów.
+- **Decyzje Pawła z jednym podpisem, czekają na Karola:** D-140 (za poziom Diamenty na drzewko zamiast punktów statystyk; zmienia D-097) i D-141 (trening na stanowiskach AFK z paskiem zamiast mini-gier). Obie z uwagami agenta (D-114) w [[Rejestr decyzji]]. Nie wdrożone, bo leżą w pakietach i 3D Karola — pytanie 89.
+- **Odkrycie:** pakiety Karola (stan gracza, kowal, sklep) działają tylko w Studio (`IsStudio`), więc gra nie jest dziś gotowa do wydania — pytanie 90.
+
 ## 2026-11-23 · Claude Code u Pawła (decyzja: wracamy do Blocky & Crycket)
 - Paweł zdecydował, że główną grą studia znowu jest Blocky & Crycket — D-139 w [[Rejestr decyzji]] z podpisem Pawła, czeka na potwierdzenie Karola (D-043). D-137 (wydanie gry o smoku 24–25.11, Karol) bez zmian; rozjazd opisuje pytanie 88 w [[Pytania otwarte]]. Uwaga agenta: zgoda z poprawką — najpierw wydać smoka w obecnym stanie, potem całość na Blocky & Crycket.
 

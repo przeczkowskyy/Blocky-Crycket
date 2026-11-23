@@ -56,9 +56,19 @@ Negative Prompt: realistic 3D, photorealism, plastic texture, blurry, external d
 - Figma: ramki „ShopWeapon” (46:115) i „ShopMagic” (46:125) na stronie z HUD — grafika + warstwy tekstu: HERO / WEAPON SHOP / MAGIC SHOP, LV 1, zakładki WEAPONS · ARMOR · AMULETS · OTHERS, tabliczka NEW GOODS.
 - Gra: `src/gui/Shop.model.json` (`tools/shop_build_gui.py`), `src/client/ShopClient.client.luau`. Okno otwiera E przy sprzedawcy (zdarzenie `ReplicatedStorage.OknoMiejsca` z pakietu Karola `swiat/miasteczko_bazar_gra`: `zbrojownia` → sklep z bronią, `sklep_magiczny` → sklep magiczny; okno zgłasza się atrybutem, więc dymek „sklep w budowie” znika) albo kliknięcie myszą / dotknięcie samego sprzedawcy (Zbrojmistrz, Mag w `Workspace/MiasteczkoBazar`) z odległości do 22 studów. Zamyka X, Esc albo kliknięcie obok. Sloty, ceny i odświeżanie — jeszcze bez logiki.
 
+## Sklep oskryptowany (23.11)
+- **Dlaczego „nie działało”:** sklep Karola na próbę (`swiat/sklep_proba`, D-106, kontener `Workspace/SklepProba`) też otwiera się po E przy zbrojmistrzu i od 19.11 chował nasze okno, bo było wtedy makietą bez towaru. Okno otwierało się i znikało w tej samej klatce. Teraz nasze okno wyłącza to chowanie tylko po swojej stronie (atrybut `ChowajOknoShop = false`, jak przewidział README Karola) i zamyka jego tymczasowe okno jego haczykiem `SterowanieKlienta "zamknij"`. W plikach Karola nic nie jest zmienione.
+- **Lewa strona = kopia EQ** (Paweł: „żeby to EQ jakby się kopiowało po prostu do tych sklepów”). Wspólny moduł `src/client/EkwipunekStan.luau` trzyma przedmioty, a okno ekwipunku i sklep czytają ten sam stan. Działa 9 slotów wyposażenia (zasłonka sylwetki, gdy coś leży), plecak 5 × 3, czyli trzy górne rzędy z 25 slotów strony EQ, oraz klikane zakładki WEAPONS · ARMOR · AMULETS · OTHERS. Do tego poziom z paskiem doświadczenia i znaczek klasy w portrecie. Kliknięcie przedmiotu pokazuje kartę z nazwą. Przekładanie przedmiotów zostaje w oknie EQ.
+- **Prawa strona = towar zbrojmistrza z serwera Karola** (`SklepProba/Zdalne/Sklep`: `oferta`, `kup`, `zaloz`; ceny, poziomy, klasy i Złoto liczy serwer). Sześć slotów z ceną, kłódką „LV N” i znacznikiem OWNED / EQUIPPED; przycisk odświeżenia pokazuje następną szóstkę. Kliknięcie otwiera kartę ze statystykami i przyciskiem BUY albo EQUIP. Na tabliczce widać Złoto albo odpowiedź serwera. Kupione przedmioty od razu trafiają do EQ (założone do swojego slotu, reszta do plecaka), także po ponownym wejściu do gry.
+- **Ikony:** 80 ikon przedmiotów z Blendera leży lokalnie (`swiat/postacie/wynik/…/ikony/`), ale nie są wgrane. Do czasu wgrania okna rysują kolorowy kafelek stopnia z nazwą. Mapa id → ikona: `src/shared/IkonyPrzedmiotow.luau` (pusta). Wgranie tylko po „tak”.
+- **Sklep magiczny:** serwer obsługuje tylko zbrojownię, więc ma tabliczkę „COMING SOON” i puste sloty.
+- Sprawdzone 23.11 w Play (Studio): E przy zbrojmistrzu → jedno okno; kupno prawdziwym kliknięciem (Kapelusz Kota-Maga, 2684 → 2534 Złota) → kapelusz w slocie hełmu w sklepie i w EQ; zakładki; sklep magiczny; bez błędów skryptów. Na prawdziwym telefonie nie sprawdzone (nazwy na kafelkach są małe).
+- Ograniczenia: serwer sklepu Karola działa tylko w Studio (pytanie 90). Nazwy przedmiotów są po polsku, bo tak są w katalogu Karola. Slot tarczy wojownika (`Slot_OffHand`) nie ma miejsca na grafice sklepu, więc tarcza widać tylko w EQ.
+
 ## Do ustalenia
 - Czy z ekwipunku po lewej można sprzedawać przedmioty (przeciągnięciem do sklepu?) i czy plecak 5 × 2 wystarczy.
-- Ceny: w Złocie czy Diamentach, i co robi przycisk odświeżenia (darmowo raz na czas, potem za Diamenty?).
+- Ceny: w Złocie czy Diamentach, i co robi przycisk odświeżenia (darmowo raz na czas, potem za Diamenty?). Od 23.11 roboczo: ceny w Złocie z katalogu Karola, odświeżenie = następne sześć pozycji, bez kosztu.
+- Co sprzedaje sklep magiczny (mikstury? przedmioty maga?).
 
 ## Powiązane
 - [[Okno ekwipunku]] · [[Instrukcja promptów — Glossy Ink]] · [[Rycerz]] · [[Kot-Mag]] · [[00 Start]]
