@@ -135,6 +135,22 @@ Tytuł: „Dragon Lair Evolution”. Gra ma wyjść publicznie we wtorek–środ
 - **Stan gry rano 23.11 (opublikowana prywatnie, wersja „odrodzenie1”):** smoki z Blendera z 25 klipami w grze (rigi z części, klipy odtwarzane kodem, wersje uproszczone dla dalekich smoków); świat z propozycji mapy (łąka, las, wyspa z lawą, stawy, czaszka, posąg, brama, dwanaście legowisk, przeszkody, owce, światło i niebo ustawiane w grze); interfejs według wzorów (żywe portrety, przyciski z odliczaniem i blokadą, panel legowiska, moment ewolucji, tabela ikon z zastępstwami — prawdziwe ikony po wgraniu); odrodzenie z liniami Ember, Frost, Storm, Shadow i mnożnikiem ×1,25 (do ×3), wydarzenia Dragon Rain co 20 min i Golem Rampage co 45 min, dzienne jajo. Tempo z symulacji: pierwsze odrodzenie ok. 19:30. Testy logiki 38/39 (1 pominięty), próba w Studio 48/48, telefon i tablet 8/8, czas klatki 16,7 ms. Filmy demo: wyklucie i walka, świat, interfejs, odrodzenie.
 - **Znane wady przed wydaniem:** stopy pisklęcia ślizgają się (za krótki krok w danych klipu — poprawka w Blenderze); stadium 5 przychodzi po ok. 8:40 i najdłuższa przerwa bez nowości to 3:48; trofea na postumentach i boty zawsze w kolorach Ember; każda linia ma jedną paletę na osiem stadiów; zegary wydarzeń liczą od startu serwera; brak serii logowań i zadań dziennych, brak rankingu; nikt jeszcze nie grał na prawdziwym telefonie.
 - **Do decyzji ludzi:** uwagi do wyglądu smoków (oczy pisklęcia, kolory stadiów, ikona); folder z ikonami interfejsu do zatwierdzonych folderów wgrywania w Studio (bez tego ikon nie da się wgrać); dźwięki smoka (jedno wgranie arkusza — osobna zgoda).
+- **W budowie od 23.11 rano (krok „retencja1”, agent budujący, koniec ok. 11:45):** poprawka stóp pisklęcia w danych klipów, seria logowań (7 dni), trzy zadania dzienne, ranking (stadium i odrodzenia na serwerze, tablica najwięcej odrodzeń w świecie), kolory trofeów i botów według linii, tempo (stadium 5 do 7:00, przerwa bez nowości do 2:30), zegary wydarzeń według czasu UTC, wspólne dla wszystkich serwerów. Karol 23.11: „Gra wygląda nieźle, ale będziemy jeszcze musieli inwestować… pracuj dalej”.
+
+### Strona gry — szkic (propozycja agenta, do akceptacji przed wydaniem)
+- **Tytuł:** Dragon Lair Evolution (D-138).
+- **Opis** (po angielsku, ok. 600 z 1000 znaków; wiersze z linkami lub prośbą o Robux odpadają):
+  > 🐉 Hatch a tiny dragon and EVOLVE through 8 stages — from Hatchling to Ancient Dragon!
+  > 🔥 Unlock new powers as you grow: Ember Spit, Fire Breath, Inferno, Tail Sweep, Wing Glide, Roar, Meteor Dive.
+  > 🏰 Build your Lair — every trophy you win earns gold, even while you fight.
+  > ✨ Rare dragon variants: Gold, Crystal, Ruby… and Rainbow (0.2%)!
+  > 🔁 Rebirth into a new dragon line: Frost, Storm and Shadow.
+  > ⛈️ Dragon Rain every 20 min · 🗿 Golem Rampage every 45 min — team up and smash him!
+  > 🎁 Free daily egg, login rewards and daily quests.
+  > 👍 Like and favorite to get the next update first!
+- **Ustawienia:** gatunek Simulation; serwer na 12 graczy (dwanaście legowisk); urządzenia: telefon, tablet, komputer — konsola dopiero po próbie z padem; kwestionariusz dojrzałości: łagodna przemoc fantasy (gryzienie, ogień, bez krwi).
+- **Grafiki:** ikona i trzy miniatury z `swiat/ewolucja/modele/podglad/` (13–16). Zostaną wgrane razem z ustawieniami strony, w ramach zgody na wgrywanie modeli smoka. Przełączenie gry na publiczną tylko po wyraźnym „wydajemy” Karola albo Pawła.
+- Opis trzeba poprawić, jeśli zmienią się nazwy zdolności, szanse odmian albo zegary wydarzeń. Nazwy zgodne z `swiat/ewolucja/ustawienia.json` na 23.11.
 
 ## Propozycja: jedno zwierzę zamiast ośmiu różnych potworów (2026-11-22)
 Karol zapytał, czy nie zrobić jednego zwierzęcia. Agent się zgadza: rosnące gry tej fali mają jednego rozpoznawalnego stwora w tytule, ogólne tytuły nie żyją, filmy niesie jedna historia („od słabego do króla”), a jedno zwierzę to jeden szkielet i jeden chód na osiem form. Wybór z liczb: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]] — agent proponuje małpę (małpka → goryl → olbrzymi goryl), bo dwunożną postać da się najpewniej oprzeć na standardowym szkielecie postaci Roblox z gotowym chodem, co zamyka największą lukę wobec lidera bez pracy w Blenderze. Do sprawdzenia przez budującego na początku przeróbki. Kod etapu 1 ma formy w tabeli danych, więc zmiana nie rusza pętli. Decyzja: pytanie 84.

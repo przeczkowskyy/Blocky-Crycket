@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Karola (rano: powody powrotu w budowie, szkic strony gry)
+- Karol rano: „Gra wygląda nieźle, ale będziemy jeszcze musieli inwestować. Pracuj dalej nad następnymi modułami… masz samowolkę”. Link do wersji prywatnej wysłany mu na telefon.
+- Agent budujący (Opus) zaczął krok „retencja1”: poprawka stóp pisklęcia, seria logowań, zadania dzienne, ranking, kolory linii, tempo, zegary wydarzeń według czasu UTC. Koniec ok. 11:45.
+- W [[Projekt próbki — Monster Evolution]] dopisany szkic strony gry (opis po angielsku, ustawienia, grafiki) jako propozycja do akceptacji przed wydaniem.
+
 ## 2026-11-23 · Claude Code u Karola (noc: smoki z Blendera w grze, świat, interfejs, odrodzenie — cztery wersje prywatne)
 - Sesja główna na Opus 5.5 (Karol 22.11: „wracamy na Opus na chwilę”). Agent budujący (Opus) w czterech krokach: smoki i klipy z Blendera w grze („smok-blender1”), świat z mapy z przeszkodami, owcami, światłem i niebem („swiat1”), interfejs według wzorów i dane modeli w wersji 3 („interfejs1”), odrodzenie z czterema liniami, wydarzenia i dzienne jajo („odrodzenie1”). Każda wersja opublikowana prywatnie i potwierdzona znacznikiem czasu wersji; publicznie nic.
 - Wyjątek w kontroli kodu pakietu: moduł `SwiatKlienta` może ustawiać oświetlenie i niebo w trakcie gry po stronie klienta (nigdy w trybie Edit ani na serwerze) — część zlecenia na wygląd świata; do cofnięcia na prośbę ludzi.
