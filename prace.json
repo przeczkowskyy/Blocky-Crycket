@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-23T22:33:15+01:00",
+ "aktualizacja": "2026-11-23T22:44:02+01:00",
  "prace": [
   {
    "id": "diamenty-afk",
    "tytul": "Diamenty za poziom i trening AFK (galaz Pawla)",
    "stan": "w_toku",
+   "etap": "kod gotowy na galezi, czeka na lokalna kopie miejsca do testu",
    "start": "2026-11-23T22:31:39+01:00",
    "koniec_szacowany": "2026-11-24T00:31:39+01:00",
-   "aktualizacja": "2026-11-23T22:31:39+01:00",
+   "aktualizacja": "2026-11-23T22:36:32+01:00",
    "obszary": [
     "swiat/stan_gracza",
     "swiat/trening_proba",
