@@ -173,6 +173,12 @@ Tytuł: „Dragon Lair Evolution”. Gra ma wyjść publicznie we wtorek–środ
   - **Zastrzeżenie agenta mapy (D-114), które sesja główna przyjęła:** teren z wysokościami wymaga zmian w ruchu, botach, kamerze i szybowaniu. Nie należy go wciskać do gry na siłę przed wydaniem. Dlatego wpięcie idzie w dwóch etapach:
     - **A (do wydania):** wszystko, co działa na płaskiej ziemi: rzeka, mosty, nory, kryjówki, rozbijanie skał, dzienne skrzynie, nowy układ łąki i lasu. Strefy z rzeźbą terenu są w tym etapie zamknięte.
     - **B (za przełącznikiem):** wysokości, prądy wznoszące, wodospad, kanion, kaldera i przeniesienie SKY NEST z łąki do kaldery, żeby duże smoki nie krążyły przy placu startu, oraz kamienie run. Wchodzi do wydania, jeśli we wtorek ok. 14:00 będzie stabilny. Jeśli nie, wyjdzie jako pierwsza aktualizacja „Windy Highlands”.
+  - **Etap A w grze (23.11, wersja prywatna „mapa2a”):**
+    - Teren: rzeka z mostami i brodami (woda spowalnia ×0,7), czaszka i tunel tylko dla małych (B01–B03 do promienia 3,0, grota w lesie B05 do 5,2), 20 kryjówek, rozbijanie skał od stadium 6, 8 dziennych sekretów. Zapis gracza w wersji 3.
+    - Strefy z rzeźbą terenu są widoczne za krawędzią i zamknięte głazami z napisem COMING SOON.
+    - SKY NEST przesunięty na łące na (−66, −54), bo w starym miejscu płynie rzeka. Pagórki na łące wrócą w etapie B.
+    - Liczby: 5639 części sceny, testy 44/45 (1 pominięty), próba w Studio 63/63, telefon i tablet 10/10.
+    - Wada: na nowej mapie gra wygląda na wyraźnie szybszą (pierwszy pełny pasek po 3,5 s zamiast 7 s). Tempo jest mierzone i strojone na początku etapu B.
 
 ### Strona gry — szkic (propozycja agenta, do akceptacji przed wydaniem)
 - **Tytuł:** Dragon Lair Evolution (D-138).

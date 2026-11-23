@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Karola (gra o smoku: mapa v2 na płaskiej ziemi — wersja „mapa2a”)
+- Agent budujący (ok. 0,4–0,45 mln tokenów, ok. 1 h) wpiął etap A mapy v2. Sesja główna sprawdziła testy (44/45, 1 pominięty) i film, zapisała zmiany i opublikowała grę prywatnie, co potwierdza znacznik czasu wersji. Film jest na telefonie Karola.
+- Zaczął się etap B: najpierw pomiar i strojenie tempa na nowej mapie, potem teren z wysokościami za przełącznikiem `teren_v2`. Szczegóły: [[Projekt próbki — Monster Evolution]].
+
 ## 2026-11-23 · Claude Code u Karola (gra o smoku: mapa v2 z Blendera, plan wpięcia)
 - Agent mapy (Opus) w ok. 50 min zrobił mapę v2 jako propozycję w `swiat/ewolucja/modele/dane_nastepne/`: rzeźbę terenu, nowe strefy, bramy rozmiaru, kryjówki, rzeczy do rozbicia, prądy wznoszące i 14 sekretów, razem 5244 części. Zapisana w repozytorium. Rendery poszły do Karola na telefon.
 - Agent zgłosił zastrzeżenie, a sesja główna je przyjęła: teren z wysokościami nie wchodzi na siłę przed wydaniem. Etap A jest płaski i idzie do wydania, etap B to wysokości za przełącznikiem. Szczegóły: [[Projekt próbki — Monster Evolution]].
