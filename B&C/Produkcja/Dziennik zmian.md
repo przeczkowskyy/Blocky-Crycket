@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Karola (noc: smoki z Blendera w grze, świat, interfejs, odrodzenie — cztery wersje prywatne)
+- Sesja główna na Opus 5.5 (Karol 22.11: „wracamy na Opus na chwilę”). Agent budujący (Opus) w czterech krokach: smoki i klipy z Blendera w grze („smok-blender1”), świat z mapy z przeszkodami, owcami, światłem i niebem („swiat1”), interfejs według wzorów i dane modeli w wersji 3 („interfejs1”), odrodzenie z czterema liniami, wydarzenia i dzienne jajo („odrodzenie1”). Każda wersja opublikowana prywatnie i potwierdzona znacznikiem czasu wersji; publicznie nic.
+- Wyjątek w kontroli kodu pakietu: moduł `SwiatKlienta` może ustawiać oświetlenie i niebo w trakcie gry po stronie klienta (nigdy w trybie Edit ani na serwerze) — część zlecenia na wygląd świata; do cofnięcia na prośbę ludzi.
+- Przy jednej publikacji automat kliknął w okno przeglądarki zamiast w Studio (otworzyło się tylko menu, nic więcej); dodano sprawdzanie, czy punkt kliknięcia leży w oknie na wierzchu.
+- Stan, wady i lista decyzji: [[Projekt próbki — Monster Evolution]], sekcja „Droga do wydania”. Zadania zaktualizowane.
+
 ## 2026-11-22/23 · Claude Code u Karola (noc: modele smoka z Blendera, walka, świat, interfejs)
 - **Modele** (agent na Fable, cztery rundy, ok. 0,83 mln tokenów): styl „Żarołuska”, osiem stadiów z 23 klipami animacji, wersje uproszczone, jajo, owca, rycerz-golem, rekwizyty; 42 elementy świata z propozycją mapy i oświetlenia; ikona i miniatury; 24 ikony interfejsu, portrety stadiów i trzy wzory ekranów. Wszystko skryptami w Blenderze, bez wgrywania i bez Studio; kod i dane w `swiat/ewolucja/modele/`, duże pliki poza repozytorium.
 - **Walka** (agent budujący na Opus): jedno prawo życia i obrażeń, łańcuch ugryzień, linie FIRE i POWER, wyspa dla ślizgu, symulacja balansu; testy 28/28, w Studio 28 z 29 (czas klatki zawyżony, bo Studio zwalniało przy grającym właścicielu).
