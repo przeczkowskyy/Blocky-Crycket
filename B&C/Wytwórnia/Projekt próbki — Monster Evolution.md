@@ -165,6 +165,14 @@ Tytuł: „Dragon Lair Evolution”. Gra ma wyjść publicznie we wtorek–środ
   - Prośba Karola z 23.11: „Skupmy się również na lepszym i taktyczniejszym 3D enviromentem, żeby to było ładniejsze i ciekawsze do odkrycia dla użytkownika”.
   - Zakres: tarasy, rampy, klify, wąwóz i wzgórze z punktem widokowym; nory tylko dla małych smoków i skały, które rozbijają duże; kryjówki w wysokiej trawie; 12–16 sekretów; prądy powietrza do szybowania; rzeka z mostami i wodospad.
   - Limit to 5,5 tys. części statycznych.
+  - **Gotowa w Blenderze 23.11 o 11:49** (agent na Opus, ok. 0,3–0,5 mln tokenów). Ma 5244 części statycznych.
+    - Rzeźba terenu: 299 brył z wysokościami.
+    - Strefy: łąka z rzeką, trzema mostami i dwoma brodami; Ukryta Polana; kotlina wodospadu z jaskinią; Wyżyna Wichrów z punktem widokowym; Kanion Wichrów; kaldera lawy z SKY NEST; Szlak Popiołu; Lily Lake; wąwóz do zapieczętowanej bramy, za którą zostaje miejsce na aktualizację.
+    - Elementy gry: 5 bram rozmiaru, 22 kryjówki, 6 miejsc do rozbicia, 5 prądów wznoszących, 14 sekretów z kompletem 6 kamieni run.
+    - Kontrakt rozgrywki opisuje sekcja „Mapa v2” w `swiat/ewolucja/modele/README.md`. Podglądy: `podglad/27–31`.
+  - **Zastrzeżenie agenta mapy (D-114), które sesja główna przyjęła:** teren z wysokościami wymaga zmian w ruchu, botach, kamerze i szybowaniu. Nie należy go wciskać do gry na siłę przed wydaniem. Dlatego wpięcie idzie w dwóch etapach:
+    - **A (do wydania):** wszystko, co działa na płaskiej ziemi: rzeka, mosty, nory, kryjówki, rozbijanie skał, dzienne skrzynie, nowy układ łąki i lasu. Strefy z rzeźbą terenu są w tym etapie zamknięte.
+    - **B (za przełącznikiem):** wysokości, prądy wznoszące, wodospad, kanion, kaldera i przeniesienie SKY NEST z łąki do kaldery, żeby duże smoki nie krążyły przy placu startu, oraz kamienie run. Wchodzi do wydania, jeśli we wtorek ok. 14:00 będzie stabilny. Jeśli nie, wyjdzie jako pierwsza aktualizacja „Windy Highlands”.
 
 ### Strona gry — szkic (propozycja agenta, do akceptacji przed wydaniem)
 - **Tytuł:** Dragon Lair Evolution (D-138).

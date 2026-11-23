@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Karola (gra o smoku: mapa v2 z Blendera, plan wpięcia)
+- Agent mapy (Opus) w ok. 50 min zrobił mapę v2 jako propozycję w `swiat/ewolucja/modele/dane_nastepne/`: rzeźbę terenu, nowe strefy, bramy rozmiaru, kryjówki, rzeczy do rozbicia, prądy wznoszące i 14 sekretów, razem 5244 części. Zapisana w repozytorium. Rendery poszły do Karola na telefon.
+- Agent zgłosił zastrzeżenie, a sesja główna je przyjęła: teren z wysokościami nie wchodzi na siłę przed wydaniem. Etap A jest płaski i idzie do wydania, etap B to wysokości za przełącznikiem. Szczegóły: [[Projekt próbki — Monster Evolution]].
+- Agent budujący zaczął etap A.
+
 ## 2026-11-23 · Claude Code u Karola (gra o smoku: odczucie walki — wersja „odczucie1”; mapa v2 w budowie)
 - Agent budujący (Opus, ok. 0,5–0,6 mln tokenów według jego szacunku) zrobił:
   - odczucie walki i wzrostu;

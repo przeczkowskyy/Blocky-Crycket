@@ -8,7 +8,7 @@ tags: [produkcja, zadania]
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] Gra o smoku: ceny sklepu i łączenie mnożników — odpowiedź na pytanie #87 w [[Pytania otwarte]] · Karol, Paweł · #wysoki
-- [ ] Gra o smoku: mapa v2 (teren, nory, kryjówki, sekrety, wiatry) — Blender, potem wpięcie do gry · agent · w budowie od 2026-11-23 · #wysoki
+- [ ] Gra o smoku: mapa v2 w grze — etap A płaski (do wydania), etap B teren z wysokościami za przełącznikiem (do wydania albo jako pierwsza aktualizacja) · agent · Blender gotowy 2026-11-23, wpięcie w toku · #wysoki
 - [ ] Gra o smoku: zagrać z telefonu w wersję „odrodzenie1” (https://www.roblox.com/games/93704244631419) — co przeszkadza w sterowaniu, walce i interfejsie; wybrać pisklę (obecne czy łagodniejsze) · Karol, Paweł · #wysoki
 - [ ] Gra o smoku: zgoda na drogę wgrania 24 ikon interfejsu (folder w zatwierdzonych folderach Studio albo „tak, przez folder modeli”) oraz na jedno wgranie arkusza dźwięków smoka · Karol · #wysoki
 - [ ] Gra o smoku: przed wydaniem — akceptacja opisu i ustawień strony gry (szkic w [[Projekt próbki — Monster Evolution]]), wgranie ikony i miniatur, test z ludźmi, sprawdzenie rankingu i analityki w prawdziwej grze · agent, Karol, Paweł · #wysoki
