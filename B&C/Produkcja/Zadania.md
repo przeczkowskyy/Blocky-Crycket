@@ -117,6 +117,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 
 ## 📥 Backlog
 - [ ] Gracz chodzi modelem swojej RASY (Paweł 18.11): po wyborze rasy bohater w świecie (`swiat/bohater_swiat`) ma ciało rasy z figur `Workspace/RasyProba` w bazowym stroju zamiast Rycerza / Zwiadowcy / Kota-Maga; atrybut gracza `Race` (`Human`, `Demon`, `DarkElf`, `Elf`, `Orc`, `Goblin`; Półbóg zablokowany), mapowanie na figury w `src/shared/RaceData.luau` (`model`). Otwarte: klipy i przedmioty Maga dla ciała człowieka (pytanie 68) · agent: Karol · #wysoki
+- [ ] **Zapis rasy w `StanGracza`** (Karol) — dziś zapisywana jest tylko klasa, więc gracz wybiera rasę przy każdym wejściu (Paweł 23.11, przy naprawie znikającego UI).
 
 - [ ] [[Selektor bohatera]]: upload grafik 2D ekranu wyboru klasy (po „tak”), udostępnienie siatki Zwiadowcy grze (D-044), zapis klasy w DataStore · #wysoki
 

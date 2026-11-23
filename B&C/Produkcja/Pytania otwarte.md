@@ -848,3 +848,11 @@ Szczegóły: kod, sprawdzenia i uzasadnienie każdej ceny opisuje sekcja „Odcz
 - Zdanie agenta (D-114): (a) oraz łączenie do ×4. Pierwsza fala graczy po wydaniu to największa szansa na przychód, więc sklep powinien być od pierwszego dnia. Łączenie mnożników to w grach o wzroście norma, a gracze się go spodziewają.
 - Zmienię zdanie, jeśli próba z ludźmi pokaże, że ×4 przeskakuje stadia tak szybko, że gra traci cel. Wtedy zostaje (a) bez łączenia.
 **Odpowiedź:**
+
+## 88. Powrót do Blocky & Crycket: co z wydaniem smoka?
+- Paweł 23.11 zdecydował: wracamy do Blocky & Crycket jako głównej gry (D-139). Czeka na potwierdzenie Karola.
+- Twoja D-137 zakładała wydanie gry o smoku 24–25.11 — dwie decyzje się rozjeżdżają, żadnej nie zmieniono.
+- Do wyboru: (a) wydajemy smoka w obecnym stanie, potem całość na Blocky & Crycket; (b) smok wstrzymany od razu, bez wydania; (c) smok dalej równolegle.
+
+Szczegóły: zdanie agenta (D-114) — (a). Wydanie kosztuje mało, bo gra jest gotowa do próby, a da pierwsze dane o prawdziwych graczach; porzucenie dzień przed wydaniem marnuje największą naukę z tej pracy. Zmienię zdanie, jeśli przed wydaniem zostało więcej niż około dzień pracy.
+**Odpowiedź:**

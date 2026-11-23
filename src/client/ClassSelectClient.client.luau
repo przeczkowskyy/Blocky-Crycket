@@ -43,9 +43,13 @@ local LOADING_TIMEOUT = 25
 ------------------------------------------------------------ klasa już wybrana?
 -- Scenę (kamera, modele, nocne światło) skrypt ustawia od razu, jeszcze POD ekranem ładowania — światła sali zdążą się
 -- rozjaśnić, zanim gracz ją zobaczy. Sam ekran pokazuje się dopiero po sygnale "LoadingDone".
-if player:GetAttribute("Class") then
-	return -- klasa już wybrana (np. po odrodzeniu skryptu)
+-- Klasę może przywrócić zapis (StanGracza Karola wczytuje atrybut "Class"), a rasy zapis nie zna — wtedy ekran
+-- otwiera się od razu na wyborze rasy, z zapisaną klasą. Bez tego HUD czeka na "Race" w nieskończoność (Paweł 23.11).
+local maEkranRas = RS:WaitForChild("ChooseRace", 10) ~= nil -- zdarzenie tworzy serwer w trakcie gry
+if player:GetAttribute("Class") and (player:GetAttribute("Race") or not maEkranRas) then
+	return -- klasa (i rasa) już wybrane (np. po odrodzeniu skryptu)
 end
+local tylkoRasa = player:GetAttribute("Class") ~= nil
 
 local modelsFolder = RS:WaitForChild("WyborKlasyModele", 20)
 if not modelsFolder then
@@ -664,6 +668,13 @@ UIS.InputBegan:Connect(function(input, processed)
 end)
 
 ------------------------------------------------------------ start
+if tylkoRasa then
+	for i, c in ipairs(CLASSES) do
+		if c.id == player:GetAttribute("Class") then
+			index = i
+		end
+	end
+end
 cam.CameraType = Enum.CameraType.Scriptable
 cam.CFrame = CFrame.lookAt(SC.camPos, SC.camLook)
 cam.Focus = CFrame.new(SC.center)
@@ -734,3 +745,26 @@ do
 		end
 	end
 end
+
+-- klasa z zapisu: od razu wybór rasy (także gdy zapis ustawi klasę chwilę po starcie tego skryptu)
+local function naRase()
+	if mode ~= "class" or finished or not maEkranRas then
+		return
+	end
+	for i, c in ipairs(CLASSES) do
+		if c.id == player:GetAttribute("Class") then
+			index = i
+		end
+	end
+	showClass(false)
+	enterRace()
+end
+if tylkoRasa then
+	task.wait(0.6)
+	naRase()
+end
+player:GetAttributeChangedSignal("Class"):Connect(function()
+	if player:GetAttribute("Class") then
+		naRase()
+	end
+end)

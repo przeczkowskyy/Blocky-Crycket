@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Pawła (decyzja: wracamy do Blocky & Crycket)
+- Paweł zdecydował, że główną grą studia znowu jest Blocky & Crycket — D-139 w [[Rejestr decyzji]] z podpisem Pawła, czeka na potwierdzenie Karola (D-043). D-137 (wydanie gry o smoku 24–25.11, Karol) bez zmian; rozjazd opisuje pytanie 88 w [[Pytania otwarte]]. Uwaga agenta: zgoda z poprawką — najpierw wydać smoka w obecnym stanie, potem całość na Blocky & Crycket.
+
+## 2026-11-23 · Claude Code u Pawła (naprawa: znikające UI po wejściu do gry)
+- Objaw: po wejściu nie było HUD-u ani okien. Przyczyna: zapis Karola (`StanGracza`) przywraca atrybut `Class`, a nasz ekran wyboru przy zapisanej klasie w ogóle się nie otwierał. Rasy zapis nie zna, więc HUD czekał na `Race` bez końca.
+- Poprawka w `src/client/ClassSelectClient.client.luau`: przy zapisanej klasie bez rasy ekran otwiera się od razu na wyborze rasy (także gdy zapis ustawi klasę chwilę po starcie skryptu); `ChooseRace` jest teraz czekane, bo tworzy je serwer w trakcie gry. Wdrożone do Studio (`tools/studio/deploy_gui.py`); próba w Play: Mage z zapisu → wybór rasy → HUD widoczny.
+- Do ustalenia z Karolem: rasa nie jest zapisywana, więc gracz wybiera ją przy każdym wejściu — zadanie dla Karola w [[Zadania]] („Zapis rasy w StanGracza”).
+
 ## 2026-11-23 · Claude Code u Karola (gra o smoku: mapa v2 na płaskiej ziemi — wersja „mapa2a”)
 - Agent budujący (ok. 0,4–0,45 mln tokenów, ok. 1 h) wpiął etap A mapy v2. Sesja główna sprawdziła testy (44/45, 1 pominięty) i film, zapisała zmiany i opublikowała grę prywatnie, co potwierdza znacznik czasu wersji. Film jest na telefonie Karola.
 - Zaczął się etap B: najpierw pomiar i strojenie tempa na nowej mapie, potem teren z wysokościami za przełącznikiem `teren_v2`. Szczegóły: [[Projekt próbki — Monster Evolution]].

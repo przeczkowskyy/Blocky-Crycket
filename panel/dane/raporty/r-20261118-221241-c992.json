@@ -1,0 +1,36 @@
+{
+ "id": "r-20261118-221241-c992",
+ "tytul": "Paweł 17–18.11: ekran ras, okna sklepów, bronie startowe",
+ "opis_md": "Karol, podsumowanie tego, co zrobiliśmy z Pawłem 17–18.11 (sesja Pawła). Wszystko jest w Studio i na GitHubie.\n\n**1. Ekran wyboru postaci — klasa, potem rasa (D-079)**\n- Po wyborze klasy ta sama sala przechodzi w wybór rasy: 6 ras + Półbóg (zablokowany jako premium, D-080).\n- Na podeście stoi **Twoja figura rasy z wystawy `RasyProba`** (kopie, Twojego kontenera nie ruszałem), w bazowym stroju.\n- PLAY zapisuje atrybut gracza `Race` (`Human`, `Demon`, `DarkElf`, `Elf`, `Orc`, `Goblin`); HUD pokazuje się po rasie.\n- Sala dostała 32 tekstury (sala + drobne rekwizyty).\n\n**2. Prośba Pawła do Ciebie: gracz chodzi modelem swojej rasy**\n- Paweł chce, żeby po wyborze rasy bohater w świecie był tą rasą w bazowym stroju (zamiast Rycerza / Zwiadowcy / Kota-Maga). To Twój pakiet `swiat/bohater_swiat`, więc zostawiłem to Tobie — zadanie z polem „agent: Karol” w Zadaniach.\n- Słowa Pawła dopisałem pod pytaniami **67 i 68** — przy 68 (Mag jest kotem) potrzebna decyzja, czy Mag dowolnej rasy chodzi na ciele człowieka.\n- Mapa ras na Twoje figury jest w `src/shared/RaceData.luau` (pole `model`).\n\n**3. Okna sklepów — podpięte pod Twoje E (D-084)**\n- Dwa okna 2D: **sklep z bronią** (Blocky za ladą) i **sklep magiczny** (Crycket za ladą); po lewej ekwipunek gracza, po prawej sklep, 6 slotów towaru, przycisk odświeżania. Grafiki z Higgsfield, napisy natywne.\n- Otwierają się z Twojego zdarzenia `OknoMiejsca` (`zbrojownia`, `sklep_magiczny`) i dodatkowo kliknięciem myszą na Zbrojmistrza / Maga z bliska. Okno zgłasza się atrybutem, więc dymek „sklep w budowie” już się nie pokazuje.\n- Towaru, cen i odświeżania jeszcze nie ma — same okna.\n- Makiety w Figmie: ShopWeapon i ShopMagic.\n\n**4. Bronie startowe (druga sesja Pawła)**\n- Kij z kamieniem (Wojownik), kostur (Mag), proca (Zwiadowca): ikony do ekwipunku, modele, slot broni zależny od klasy.\n\n**5. Drobne**\n- Przyciski w ekwipunku i drzewku: bez ciemnej nakładki, napis już się nie rozjeżdża.\n- Rzuty ras są w `assets/processed/RaceTurnarounds/` (z nich robiłeś modele).\n\nZrzuty: ekran rasy z demonem, sklep z bronią (Figma), sklep magiczny.",
+ "kto": "Claude (Paweł)",
+ "czas": "2026-11-18T22:12:41+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/UI/Selektor bohatera.md",
+   "etykieta": "Ekran wyboru klasy i rasy"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/UI/Sklepy i bronie startowe — prompty.md",
+   "etykieta": "Okna sklepów i bronie"
+  },
+  {
+   "typ": "plik",
+   "cel": "src/shared/RaceData.luau",
+   "etykieta": "Mapa ras na figury"
+  },
+  {
+   "typ": "studio",
+   "cel": "Workspace/WyborKlasy",
+   "etykieta": "Sala wyboru"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "pytanie": "Czy weźmiesz podpięcie modelu rasy do bohatera w świecie (zadanie dla Twojego agenta, pytania 67 i 68)?"
+}

@@ -630,5 +630,11 @@ Gra o smoku ([[Monster Evolution]]) wychodzi pod tytułem „Dragon Lair Evoluti
 
 Uzasadnienie — Karol, 2026-11-22: „Tak. Masz pełne zgody, tytuł jest dobry.” Ta sama wiadomość rozszerza jego zgodę z 14.11 na wgrywanie modeli smoka na konto Roblox do tej gry. Czeka na potwierdzenie Pawła (D-043).
 
+### D-139 Wracamy do Blocky & Crycket jako głównej gry
+✅ zatwierdzona · produkcja / kierunek studia · 2026-11-23 · źródło: polecenie Pawła w Claude Code 23.11 wieczorem („dodaj decyzję, że wracamy do Blocky & Crycket”) · zdecydował: Paweł 2026-11-23
+Główną pracą studia znowu jest Blocky & Crycket (RPG z klasami, rasami, ekwipunkiem, sklepami i biomami). Czeka na potwierdzenie Karola (D-043). Nie zmienia sama z siebie D-137 (gra o smoku, wydanie 24–25.11, podpis Karola): co dalej z wydaniem smoka, rozstrzyga pytanie 88 w [[Pytania otwarte]].
+
+Uzasadnienie — Paweł, 2026-11-23: „dodaj decyzję, że wracamy do Blocky & Crycket”. Uwaga agenta (D-114), zgoda z poprawką: za powrotem przemawia to, że Blocky & Crycket ma najwięcej gotowej pracy (UI, klasy, rasy, sklepy, biomy) i wyższy sufit niż gra o smoku, której gatunek według oceny z 22.11 gaśnie po 4–8 tygodniach. Poprawka: gra o smoku jest dzień przed wydaniem, więc tańsze niż porzucenie jest wydać ją w obecnym stanie (praca Karola) i dopiero potem przejść w całości na Blocky & Crycket; wydanie da pierwsze prawdziwe dane o graczach i przychodzie. Zmienię zdanie, jeśli wydanie wymaga jeszcze więcej niż około jednego dnia pracy albo Karol uzna, że gra nie jest gotowa.
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*
