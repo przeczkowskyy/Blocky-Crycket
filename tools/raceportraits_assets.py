@@ -63,9 +63,9 @@ RAW_RAMKI = ROOT / "assets/raw/RacePortraits/ramki_v2.png"  # job db82bfd6 — r
 
 # Zielony pasek w torze każdej ramki (px obrazka 512 × 556): prostokąty „ExpBar” ułożone w Figmie (plik gry, strona 9:74,
 # ramki RaceFrame<Id>) — wnętrze toru do złotego brzegu, zmierzone na grafice, minus 4 px (w grze ok. 1 px).
-TOR_FIGMA = {
-    "Human": (79, 456, 354, 81), "Demon": (79, 456, 356, 81), "DarkElf": (78, 456, 355, 80), "Elf": (79, 456, 355, 80),
-    "Orc": (79, 455, 350, 82), "Goblin": (83, 455, 347, 82), "Demigod": (81, 455, 351, 82),
+TOR_FIGMA = {  # odczyt z Figmy 23.11 (Paweł: niżej o 3 px i dłuższy o 3 px z każdej strony — do końców toru)
+    "Human": (76, 462, 360, 78), "Demon": (76, 462, 362, 78), "DarkElf": (75, 462, 361, 77), "Elf": (76, 462, 361, 77),
+    "Orc": (76, 461, 356, 79), "Goblin": (80, 461, 353, 79), "Demigod": (78, 461, 357, 79),
 }
 
 

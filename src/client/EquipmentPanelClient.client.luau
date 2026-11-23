@@ -306,6 +306,74 @@ local function flatButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 	end
 end
 
+------------------------------------------------ zakładki: prawdziwa animacja (Paweł 23.11)
+-- Zakładki są wymazane z tła (tools/eq_wymaz_zakladki.py), więc przycisk może się ruszać. Kotwica na dole (0.5, 1):
+-- powiększenie rośnie w górę i na boki, nigdy w dół na ramkę statystyk / plecaka pod zakładką.
+-- nigdy poniżej 1: pod przyciskiem w tle jest tylko obrys zakładki (środek wymazany), zmniejszenie by go odsłoniło
+local TAB_ON, TAB_OFF, TAB_HOVER, TAB_PRESS = 1.05, 1, 0.03, 0.03
+local TAB_IN = TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+local TAB_DOWN = TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local function tabButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
+	local sc = btn:FindFirstChildWhichIsA("UIScale") or Instance.new("UIScale")
+	sc.Parent = btn
+	local shade = Instance.new("ImageLabel") -- przygaszenie nieaktywnej: ten sam kształt na czarno
+	shade.Name = "Shade"
+	shade.Image = btn.Image
+	shade.ScaleType = btn.ScaleType
+	shade.ImageColor3 = Color3.new(0, 0, 0)
+	shade.ImageTransparency = 1
+	shade.BackgroundTransparency = 1
+	shade.Size = UDim2.fromScale(1, 1)
+	shade.ZIndex = 1
+	shade.Parent = btn
+	local label = btn:FindFirstChild("Label")
+	if label and label:IsA("GuiObject") then
+		label.ZIndex = math.max(label.ZIndex, 2)
+	end
+	local active, hovering, pressed = false, false, false
+	local function apply(info: TweenInfo?)
+		local s = active and TAB_ON or TAB_OFF
+		if hovering then
+			s += TAB_HOVER
+		end
+		if pressed then
+			s = math.max(s - TAB_PRESS, 1)
+		end
+		TS:Create(sc, info or TAB_IN, { Scale = s }):Play()
+		local cien = active and 1 or (hovering and 0.88 or 0.72)
+		TS:Create(shade, QUICK, { ImageTransparency = cien }):Play()
+	end
+	btn.MouseEnter:Connect(function()
+		hovering = true
+		apply()
+	end)
+	btn.MouseLeave:Connect(function()
+		hovering, pressed = false, false
+		apply()
+	end)
+	btn.MouseButton1Down:Connect(function()
+		pressed = true
+		apply(TAB_DOWN)
+	end)
+	btn.MouseButton1Up:Connect(function()
+		pressed = false
+		apply()
+	end)
+	btn.Activated:Connect(function()
+		pressed = false
+		onClick()
+		-- sprężyste „kliknięcie”: na chwilę większa, potem na swoje miejsce
+		sc.Scale = TAB_ON + 0.06
+		apply()
+	end)
+	apply()
+	return function(on: boolean)
+		active = on
+		btn.ZIndex = on and 3 or 2 -- aktywna nad sąsiadkami (przy powiększeniu lekko na nie zachodzi)
+		apply()
+	end
+end
+
 ------------------------------------------------ sloty (hotspoty): niewidoczne, tylko kliknięcie
 local function hotspot(slot, kind, arg)
 	slot.Activated:Connect(function()
@@ -353,7 +421,7 @@ local function tabGroup(folder, default)
 		end
 	end
 	for _, t in ipairs(tabs) do
-		setters[t] = flatButton(t, function()
+		setters[t] = tabButton(t, function()
 			activate(t)
 			action:Fire("Tab", t.Name)
 		end)
@@ -385,7 +453,6 @@ local DERIVED = {
 	Armor = function(v) return "DMG RED " .. math.floor(v * 0.44) .. "%" end,
 }
 
-local addStat = RS:WaitForChild("AddStatPoint", 10) -- serwer: src/server/StatPoints.server.luau
 
 for _, card in ipairs(panel.Stats:GetChildren()) do
 	-- nazwa karty = statystyka: „Card_Strength” -> „Strength” (atrybuty z .model.json nie przechodzą przez Rojo)
@@ -410,16 +477,12 @@ for _, card in ipairs(panel.Stats:GetChildren()) do
 			refresh(gui.Enabled)
 		end)
 		refresh(false)
-		bounce(card.PlusButton, function()
-			pop(card.PlusButton, 1.25)
-			if addStat then
-				addStat:FireServer(stat) -- TEST: +1 bez kosztu
-			end
-			action:Fire("AddStat", stat)
-		end)
-		-- D-140 (Paweł 23.11, gałąź pawel/diamenty-afk): „+” usunięty — awans nie daje punktów do rozdania,
-		-- statystyki rosną z treningu AFK (Paweł: „usuń też plusiki przy statach”)
-		card.PlusButton.Visible = false
+		-- Paweł 23.11: statystyki rosną tylko z treningu i przedmiotów — przyciski „+” (TEST: +1 bez kosztu) usunięte
+		local plus = card:FindFirstChild("PlusButton")
+		if plus and plus:IsA("GuiObject") then
+			plus.Visible = false
+			plus.Active = false
+		end
 	end
 end
 
@@ -699,11 +762,11 @@ pcall(function()
 	local napis = badge:WaitForChild("LevelText") :: TextLabel
 	-- ikonka klasy może być większa niż pasek (ScaleWithParentSize ograniczało ją do wysokości LevelBadge)
 	local ikonka = badge:WaitForChild("ClassBadge") :: GuiObject
-	-- pasek bez własnego ciemnego tła i z okrągłymi końcami: tor w ramce rasy jest ciemny i mocno zaokrąglony
+	-- pasek bez własnego ciemnego tła; końce lekko zaokrąglone (Paweł 23.11: „bardziej prosty, żeby na fulla dopełniał”)
 	expBar.BackgroundTransparency = 1
 	for _, d in ipairs(expBar:GetDescendants()) do
 		if d:IsA("UICorner") then
-			d.CornerRadius = UDim.new(0.5, 0)
+			d.CornerRadius = UDim.new(0.25, 0)
 		elseif d.Name == "Track" and d:IsA("Frame") then
 			d.BackgroundTransparency = 1
 			d.Position, d.Size = UDim2.fromScale(0, 0), UDim2.fromScale(1, 1)

@@ -42,7 +42,7 @@ WZNIOS = 11.0                # wznios dachu
 COKOL = 5.6                  # kamienny cokół
 
 PALETA = {
-    "tusz": "1D1916",
+    "tusz": "4A3426",            # Paweł 24.11: miększa kreska — ciepły ciemny brąz zamiast czarnego (było 1D1916)
     # kamień — chłodny, fioletowo-szary jak na ilustracji
     "fuga": "2E2936", "kamien": "8F8799", "kamien2": "7A7286", "kamien3": "A9A2B3", "kamien_cien": "5B546A",
     "plyta": "8C8494", "plyta2": "7B7385", "plyta3": "9D96A4", "wneka": "3B3548", "sadza": "241F28",

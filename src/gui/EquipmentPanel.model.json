@@ -229,7 +229,7 @@
          ]
         },
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://117611283650151",
+        "Image": "rbxassetid://105995639800617",
         "ScaleType": "Stretch"
        }
       },
@@ -263,7 +263,7 @@
          ]
         },
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://136695799877394",
+        "Image": "rbxassetid://105641588997700",
         "ScaleType": "Stretch"
        }
       },
@@ -2364,7 +2364,7 @@
         "Position": {
          "UDim2": [
           [
-           0.09921,
+           0.1006,
            0
           ],
           [
@@ -2376,11 +2376,11 @@
         "Size": {
          "UDim2": [
           [
-           0.10787,
+           0.0928,
            0
           ],
           [
-           0.06086,
+           0.05256,
            0
           ]
          ]
@@ -2390,7 +2390,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://105807701025717",
+        "Image": "rbxassetid://126052999948745",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 1
@@ -2886,7 +2886,7 @@
         "Position": {
          "UDim2": [
           [
-           0.58582,
+           0.5901,
            0
           ],
           [
@@ -2898,11 +2898,11 @@
         "Size": {
          "UDim2": [
           [
-           0.10787,
+           0.0977,
            0
           ],
           [
-           0.06362,
+           0.05809,
            0
           ]
          ]
@@ -2912,7 +2912,7 @@
          1
         ],
         "BackgroundTransparency": 1,
-        "Image": "rbxassetid://119962244091320",
+        "Image": "rbxassetid://117543226238584",
         "ScaleType": "Stretch",
         "AutoButtonColor": false,
         "LayoutOrder": 1
