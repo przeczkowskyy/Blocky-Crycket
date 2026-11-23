@@ -832,3 +832,17 @@ Dopisek z 2026-11-22 (21:00, po sprawdzeniu baseballu): agent ok. 20:30 polecił
 
 Rozstrzyga: D-137.
 
+## 87. Sklep w grze o smoku: ceny i łączenie mnożników
+- Kod sklepu jest w grze, ale wyłączony. Produkty i przepustki w Roblox założymy dopiero po Waszym „tak”, bo ceny to decyzja ludzi.
+- Propozycja agenta, bez płatnych losowań:
+  - przepustki: 2x GROWTH za 199 R$ i VIP LAIR (złoto legowiska ×1,5, złoty sztandar) za 249 R$;
+  - złoto: 1000 za 25 R$, 6000 za 99 R$, 25 000 za 299 R$;
+  - podwójny wzrost na 15 min za 39 R$.
+- Do wyboru: (a) te ceny; (b) inne ceny; (c) sklep dopiero po pierwszym tygodniu.
+- Drugie pytanie: czy 15-minutowy podwójny wzrost łączy się z przepustką, dając ×4?
+
+Szczegóły: kod, sprawdzenia i uzasadnienie każdej ceny opisuje sekcja „Odczucie walki, krótkie powitanie, tempo, sklep (odczucie1)” w `swiat/ewolucja/README.md`, stan gry jest w [[Projekt próbki — Monster Evolution]].
+- ProcessReceipt sprawdzono na udawanym sklepie: nagroda zapisuje się przed potwierdzeniem i nie da się jej dostać dwa razy.
+- Zdanie agenta (D-114): (a) oraz łączenie do ×4. Pierwsza fala graczy po wydaniu to największa szansa na przychód, więc sklep powinien być od pierwszego dnia. Łączenie mnożników to w grach o wzroście norma, a gracze się go spodziewają.
+- Zmienię zdanie, jeśli próba z ludźmi pokaże, że ×4 przeskakuje stadia tak szybko, że gra traci cel. Wtedy zostaje (a) bez łączenia.
+**Odpowiedź:**

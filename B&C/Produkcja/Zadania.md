@@ -7,6 +7,8 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Gra o smoku: ceny sklepu i łączenie mnożników — odpowiedź na pytanie #87 w [[Pytania otwarte]] · Karol, Paweł · #wysoki
+- [ ] Gra o smoku: mapa v2 (teren, nory, kryjówki, sekrety, wiatry) — Blender, potem wpięcie do gry · agent · w budowie od 2026-11-23 · #wysoki
 - [ ] Gra o smoku: zagrać z telefonu w wersję „odrodzenie1” (https://www.roblox.com/games/93704244631419) — co przeszkadza w sterowaniu, walce i interfejsie; wybrać pisklę (obecne czy łagodniejsze) · Karol, Paweł · #wysoki
 - [ ] Gra o smoku: zgoda na drogę wgrania 24 ikon interfejsu (folder w zatwierdzonych folderach Studio albo „tak, przez folder modeli”) oraz na jedno wgranie arkusza dźwięków smoka · Karol · #wysoki
 - [ ] Gra o smoku: przed wydaniem — akceptacja opisu i ustawień strony gry (szkic w [[Projekt próbki — Monster Evolution]]), wgranie ikony i miniatur, test z ludźmi, sprawdzenie rankingu i analityki w prawdziwej grze · agent, Karol, Paweł · #wysoki
@@ -142,6 +144,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Gra o smoku: odczucie walki, miejsca na dźwięki, krótsze powitanie, tempo, kod sklepu wyłączony do decyzji · agent · 2026-11-23 (wersja prywatna „odczucie1”)
 - [x] Gra o smoku: poprawka stóp pisklęcia, seria logowań i zadania dzienne, ranking odrodzeń, kolory trofeów i botów według linii, tempo, zegary wydarzeń według UTC · agent · 2026-11-23 (wersja prywatna „retencja1”)
 - [x] Gra o smoku (D-137): wpięcie nowych modeli i klipów do gry, interfejs, odblokowania przy wzroście, odrodzenie w nowej linii smoka, jedno wydarzenie z zegara — poniedziałek–wtorek · agent · #wysoki · zrobione 2026-11-23 (wersja prywatna „odrodzenie1”)
 - [x] Gra o smoku (D-137): przebudowa walki — jedno prawo życia i obrażeń, łańcuch ugryzień, dwie linie zdolności rosnące ze stadium, odczucie trafienia, balans z symulacji; zrobione w nocy 22/23.11 · agent · #wysoki · zrobione 2026-11-23 (wersja prywatna „odrodzenie1”)

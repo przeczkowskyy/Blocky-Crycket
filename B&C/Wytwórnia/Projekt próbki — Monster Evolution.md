@@ -153,6 +153,18 @@ Tytuł: „Dragon Lair Evolution”. Gra ma wyjść publicznie we wtorek–środ
   - Każda linia ma jedną paletę na osiem stadiów.
   - Gra jest bez dźwięku i bez prawdziwych ikon; oba wymagają zgody na wgranie.
   - Nikt jeszcze nie grał na prawdziwym telefonie.
+- **Krok „odczucie1” (23.11 przed południem, opublikowany prywatnie):**
+  - Odczucie walki: krótkie zatrzymanie przy trafieniu (ok. 56 ms), łagodny wstrząs kamery rosnący ze stadium, liczby obrażeń i wzrostu, cząsteczki łusek i iskier, wyraźniejsze odrzucenie, wybuch „GULP!” przy pożarciu, spowolnienie 0,45 s przy ewolucji.
+  - Dźwięki: tabela ośmiu miejsc (gryzienie, trafienie, rana, ogień, jedzenie, ewolucja, zadanie, poziom). Na razie wyciszone, zagrają same po wpisaniu numerów wgranych dźwięków.
+  - Powitanie znika po 6 s albo po pierwszym dotknięciu.
+  - Baner „HALFWAY to …” w połowie każdego stadium.
+  - Tempo z 12 przebiegów symulacji: najdłuższa przerwa bez nowości 2:00 (bez banera 2:37), stadium 5 ok. 5:49, pierwsze odrodzenie ok. 20:11.
+  - Kod sklepu jest wyłączony, bez założonych produktów: dwie przepustki i cztery produkty, bez płatnych losowań. Ceny czekają na odpowiedź w [[Pytania otwarte]] (#87).
+  - Sprawdzenia: testy logiki 42/43 (1 pominięty), próba w Studio 57/57, telefon i tablet 10/10, w walce wręcz 16,7 ms na klatkę (emulacja w Studio).
+- **Mapa v2 (w budowie od 23.11, agent w Blenderze, koniec ok. 14:30; wpięcie do gry wieczorem):**
+  - Prośba Karola z 23.11: „Skupmy się również na lepszym i taktyczniejszym 3D enviromentem, żeby to było ładniejsze i ciekawsze do odkrycia dla użytkownika”.
+  - Zakres: tarasy, rampy, klify, wąwóz i wzgórze z punktem widokowym; nory tylko dla małych smoków i skały, które rozbijają duże; kryjówki w wysokiej trawie; 12–16 sekretów; prądy powietrza do szybowania; rzeka z mostami i wodospad.
+  - Limit to 5,5 tys. części statycznych.
 
 ### Strona gry — szkic (propozycja agenta, do akceptacji przed wydaniem)
 - **Tytuł:** Dragon Lair Evolution (D-138).

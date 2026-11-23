@@ -6,6 +6,18 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Karola (gra o smoku: odczucie walki — wersja „odczucie1”; mapa v2 w budowie)
+- Agent budujący (Opus, ok. 0,5–0,6 mln tokenów według jego szacunku) zrobił:
+  - odczucie walki i wzrostu;
+  - miejsca na dźwięki;
+  - krótsze powitanie i baner połowy stadium;
+  - tempo: najdłuższa przerwa 2:00;
+  - kod sklepu wyłączony do decyzji: bez produktów w Roblox, bez płatnych losowań.
+- Sesja główna sprawdziła testy (42/43, 1 pominięty) i film. Zapisała zmiany i opublikowała grę prywatnie, co potwierdza znacznik czasu wersji. Film demo jest na telefonie Karola.
+- Nowe pytanie #87 o ceny sklepu i łączenie mnożników, z propozycją cen.
+- Karol: „Skupmy się również na lepszym i taktyczniejszym 3D enviromentem…”. Agent przyjął to z poprawką: najpierw teren, który zmienia grę i nagradza odkrywanie, a ozdoby potem. Nowy agent w Blenderze (Opus) projektuje mapę v2.
+- Stan: [[Projekt próbki — Monster Evolution]]. Zadania zaktualizowane.
+
 ## 2026-11-23 · Claude Code u Karola (gra o smoku: powody powrotu — wersja „retencja1”)
 - Agent budujący (Opus, ok. 450 tys. tokenów, 1 h 45 min) zrobił: stopy pisklęcia bez poślizgu (oraz naprawę rigu, przez którą w części sesji tułów, szyja i ogon smoków stały), serię logowań, trzy zadania dzienne z ekranem powitania, ranking odrodzeń, kolory linii na botach i trofeach, tempo (stadium 5 ok. 5:49) i zegary wydarzeń według UTC. Zapis gracza w wersji 2 z migracją.
 - Sesja główna sprawdziła testy (41/42, 1 pominięty) i dane modeli (0 uwag), przejrzała film, zapisała zmiany w repozytorium i opublikowała grę prywatnie (potwierdzone znacznikiem czasu wersji). Film demo wysłany Karolowi na telefon.
