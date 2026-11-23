@@ -50,6 +50,7 @@ tags: [ui, klasy, wybór]
 - [x] Broń startowa w dłoni figury rasy (Paweł 18.11): na ekranie rasy figura unosi prawe przedramię i trzyma broń wybranej klasy — Wojownik kij z kamieniem, Zwiadowca procę, Mag kostur spiralny (modele z Blendera: `swiat/postacie/bronie_startowe.py`, w grze z części Roblox jako `WyborKlasyModele.Weapon_<klasa>`; `holdWeapon` w `ClassSelectClient`). Test Play 18.11: Wojownik z kijem, Mag z kosturem, po zmianie rasy na orka broń zostaje w dłoni. Propozycja wyglądu, nie kanon
 - [x] 2026-11-24 (Paweł): mniej poświaty w sali — Bloom miejsca wyłączony na czas ekranu, własny Bloom słabszy (0,1 / 16 / próg 2,2), z kominka usunięte kule ognia z Neonu (zostaje żar), światło kominka 0,75 zamiast 1,1
 - [x] 2026-11-24 (Paweł): sala — okno z matowymi szybami w ramie, liście bez tekstury, bez dwóch frontowych chorągwi; kostur kota odsunięty od głowy (`BronPrzesuniecie`)
+- [x] 2026-11-24 (Paweł): kot trzyma kostur w łapce — prawe ramię odchylone w barku o 28° (`HOLD_SHOULDER_OUT`, atrybut `BronBarkStopnie`), bez przesuwania broni poza łapkę; księżyc w środkowym oknie cały w górnym łuku
 - [ ] Zwiadowca to siatka z konta Karola — w opublikowanej grze zasób musi być udostępniony grze (D-044)
 - [ ] Zapis klasy w DataStore; animacje idle na modelach
 

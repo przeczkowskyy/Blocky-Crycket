@@ -434,48 +434,73 @@ end
 -- Figura stoi zakotwiczona, więc „pozę trzymania” robimy wprost: przedramię (wszystko pod łokciem) obracamy do przodu
 -- wokół stawu łokcia, a broń stawiamy na zaczepie dłoni — wtedy stoi pionowo przed postacią.
 local HOLD_ELBOW = math.rad(80)
-local function holdWeapon(h: Hero)
-	local m = h.model
-	local w = modelsFolder:FindFirstChild("Weapon_" .. CLASSES[index].id)
-	-- koty ras (D-145): kocia wersja broni (krótsza i grubsza, tools/studio/bronie_kot.py), gdy jest
-	if m:GetAttribute("BronDoGlowy") then
-		w = modelsFolder:FindFirstChild("Weapon_" .. CLASSES[index].id .. "_Kot") or w
-	end
-	local elbow = m:FindFirstChild("RightElbow", true)
-	if elbow and elbow:IsA("Motor6D") and elbow.Part0 and elbow.Part1 then
-		-- kości od łokcia w dół (przedramię, dłoń) i bryły do nich przyspawane
-		local moving: { [BasePart]: boolean } = { [elbow.Part1 :: BasePart] = true }
-		local grew = true
-		while grew do
-			grew = false
-			for _, d in ipairs(m:GetDescendants()) do
-				if d:IsA("JointInstance") or d:IsA("WeldConstraint") then
-					local a, b = (d :: any).Part0, (d :: any).Part1
-					if a and b and d ~= elbow then
-						if moving[a] and not moving[b] then
-							moving[b] = true
-							grew = true
-						elseif moving[b] and not moving[a] and d:IsA("WeldConstraint") then
-							moving[a] = true
-							grew = true
-						end
+-- koty ras (Paweł 24.11): ramię odchylone w bok w barku, żeby kostur stał w łapce obok wielkiej głowy, a nie w niej
+local HOLD_SHOULDER_OUT = math.rad(28)
+
+-- części poniżej stawu (Part1 i wszystko do niego przyczepione dalej w łańcuchu) — bez samego stawu
+local function partsBelow(m: Model, joint: Motor6D): { [BasePart]: boolean }
+	local moving: { [BasePart]: boolean } = { [joint.Part1 :: BasePart] = true }
+	local grew = true
+	while grew do
+		grew = false
+		for _, d in ipairs(m:GetDescendants()) do
+			if d:IsA("JointInstance") or d:IsA("WeldConstraint") then
+				local a, b = (d :: any).Part0, (d :: any).Part1
+				if a and b and d ~= joint then
+					if moving[a] and not moving[b] then
+						moving[b] = true
+						grew = true
+					elseif moving[b] and not moving[a] and d:IsA("WeldConstraint") then
+						moving[a] = true
+						grew = true
 					end
 				end
 			end
 		end
-		local pivot = (elbow.Part0 :: BasePart).CFrame * elbow.C0
+	end
+	return moving
+end
+
+local function swing(moving: { [BasePart]: boolean }, joint: Motor6D, axis: Vector3, angle: number)
+	local pivot = ((joint.Part0 :: BasePart).CFrame * joint.C0).Position
+	local turn = CFrame.new(pivot) * CFrame.fromAxisAngle(axis, angle) * CFrame.new(-pivot)
+	for part in pairs(moving) do
+		part.CFrame = turn * part.CFrame
+	end
+end
+
+local function holdWeapon(h: Hero)
+	local m = h.model
+	local w = modelsFolder:FindFirstChild("Weapon_" .. CLASSES[index].id)
+	local kot = m:GetAttribute("BronDoGlowy") == true
+	-- koty ras (D-145): kocia wersja broni (krótsza i grubsza, tools/studio/bronie_kot.py), gdy jest
+	if kot then
+		w = modelsFolder:FindFirstChild("Weapon_" .. CLASSES[index].id .. "_Kot") or w
+	end
+	local elbow = m:FindFirstChild("RightElbow", true)
+	local shoulder = m:FindFirstChild("RightShoulder", true)
+	local root = m:FindFirstChild("HumanoidRootPart")
+	local uklad = if root and root:IsA("BasePart") then root.CFrame else m:GetPivot()
+	if elbow and elbow:IsA("Motor6D") and elbow.Part0 and elbow.Part1 then
+		-- zbiory części liczymy, zanim cokolwiek ruszymy
+		local belowElbow = partsBelow(m, elbow)
+		local belowShoulder = if kot and shoulder and shoulder:IsA("Motor6D") and shoulder.Part0 and shoulder.Part1
+			then partsBelow(m, shoulder)
+			else nil
 		-- figura jest zakotwiczona: stawy i spawy wyłączamy, inaczej przesunięcie jednej części ciągnie całe ciało
 		for _, d in ipairs(m:GetDescendants()) do
 			if d:IsA("JointInstance") or d:IsA("WeldConstraint") then
 				(d :: any).Enabled = false
 			end
 		end
-		local root = m:FindFirstChild("HumanoidRootPart")
-		local right = if root and root:IsA("BasePart") then root.CFrame.RightVector else m:GetPivot().RightVector
-		local turn = CFrame.new(pivot.Position) * CFrame.fromAxisAngle(right, HOLD_ELBOW) * CFrame.new(-pivot.Position)
-		for part in pairs(moving) do
-			part.CFrame = turn * part.CFrame
+		if belowShoulder then
+			-- kąt ujemny wokół osi „przód” = łapka w prawo figury, na zewnątrz
+			local out = m:GetAttribute("BronBarkStopnie")
+			local deg = if typeof(out) == "number" then math.rad(out) else HOLD_SHOULDER_OUT
+			swing(belowShoulder, shoulder :: Motor6D, uklad.LookVector, -deg)
 		end
+		-- przedramię do przodu wokół łokcia (oś „w prawo” figury)
+		swing(belowElbow, elbow, uklad.RightVector, HOLD_ELBOW)
 	end
 	-- zaczep dłoni: RightGripAttachment, a gdy figura go nie ma (wystawa ras) — ten sam układ co u bohaterów Karola:
 	-- środek części RightHand, obrót −90° w osi X
@@ -500,7 +525,7 @@ local function holdWeapon(h: Hero)
 	c:PivotTo(gripCF :: CFrame)
 	-- koty ras (Paweł 24.11, D-145): broń z modeli dla ludzików jest za długa — pomniejszamy ją tak, żeby szczyt broni
 	-- sięgał najwyżej do czubka głowy kota (jak na referencji). Tylko figury z atrybutem BronDoGlowy.
-	if m:GetAttribute("BronDoGlowy") then
+	if kot then
 		local head = m:FindFirstChild("Head", true)
 		if head and head:IsA("BasePart") then
 			local szczytGlowy = head.Position.Y + head.Size.Y / 2
@@ -513,14 +538,12 @@ local function holdWeapon(h: Hero)
 				c:PivotTo(gripCF :: CFrame)
 			end
 		end
-		-- Paweł 24.11: broń bliżej końca łapki — odsunięta od głowy w bok (w prawo figury) i lekko do przodu, żeby kostur
-		-- nie wchodził w głowę kota. Przesunięcie w układzie figury (prawo, góra, przód) w studach: atrybut
-		-- BronPrzesuniecie (Vector3) na modelu rasy, domyślnie (0.55, 0, 0.25).
-		local root = m:FindFirstChild("HumanoidRootPart")
-		local uklad = if root and root:IsA("BasePart") then root.CFrame else m:GetPivot()
+		-- opcjonalna poprawka położenia w układzie figury (prawo, góra, przód) w studach: atrybut BronPrzesuniecie (Vector3);
+		-- domyślnie brak — broń siedzi na zaczepie łapki, a od głowy odsuwa ją odchylone ramię (HOLD_SHOULDER_OUT)
 		local przes = m:GetAttribute("BronPrzesuniecie")
-		local v = if typeof(przes) == "Vector3" then przes else Vector3.new(0.55, 0, 0.25)
-		c:PivotTo(c:GetPivot() + uklad.RightVector * v.X + uklad.UpVector * v.Y + uklad.LookVector * v.Z)
+		if typeof(przes) == "Vector3" then
+			c:PivotTo(c:GetPivot() + uklad.RightVector * przes.X + uklad.UpVector * przes.Y + uklad.LookVector * przes.Z)
+		end
 	end
 	c.Parent = m
 end

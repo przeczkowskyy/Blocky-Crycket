@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-24 · Claude Code u Pawła (kot trzyma kostur; księżyc w łuku okna)
+- Paweł: „popraw kostur, żeby kotek go trzymał”. Wcześniejsze przesunięcie broni w bok (`BronPrzesuniecie` 0,55/0,25) odrywało kostur od łapki. Teraz u kotów ras prawe ramię odchyla się w barku o 28° na zewnątrz, a broń siedzi na zaczepie łapki — stoi obok głowy, nie w niej (`src/client/ClassSelectClient.client.luau`, `holdWeapon`; kąt można zmienić atrybutem `BronBarkStopnie`, przesunięcie `BronPrzesuniecie` zostało jako opcja). Sprawdzone w Play.
+- Paweł: księżyc „idealnie w górnej części okna” — w środkowym oknie mniejszy (r 0,42) i cały w łuku nad listwą (`swiat/wybor_klasy/generuj.py`, `czesci.json`; w Studio przestawiony w miejscu).
+- Notatka: [[Selektor bohatera]] (Stan implementacji).
+
 ## 2026-11-24 · Claude Code u Pawła (sala wyboru: mniej poświaty)
 - Paweł: „żeby te światła tak strasznie się nie glowowały”, a coś świecącego w kominku „śmiesznie glowuje”. Przyczyna: na ekranie wyboru działały naraz dwa Bloomy — Bloom miejsca (`Lighting.Bloom`, Intensity 1, Size 24, Threshold 2) i własny `ClassSelectBlask` — i rozlewały poświatę wokół płomieni, świec, latarni i eliksirów z Neonu.
 - Na czas ekranu wyboru (tylko u gracza, po PLAY wraca): Bloom miejsca wyłączony (`hidePlaceBloom`), własny Bloom słabszy — Intensity 0,15 → 0,1, Size 24 → 16, Threshold 1,6 → 2,2 (`src/shared/ClassData.luau`, `src/client/ClassSelectClient.client.luau`).
