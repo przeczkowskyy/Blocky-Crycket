@@ -37,6 +37,7 @@ tags: [ui, klasy, wybór]
 
 ## Stan implementacji
 - [x] 2026-11-24 (Paweł, D-145): w wyborze rasy koty zamiast ludzików — `Race_Human` = rudy Kot-Mag w koszulce i niebieskich spodenkach, `Race_Demon` = Kot-Demon w stroju podstawowym (modele z `swiat/postacie/kot_demon.py` zbudowane `tools/studio/kot_demon_studio.py`, skopiowane bez klipów i powiększone ×1,4, żeby zajmowały podest jak ludziki). Stare ludziki zostały jako `Race_Demon_ludek`, `Race_Human_ludek`. Pozostałe rasy i klasy (Rycerz, Zwiadowca) jeszcze ludziki — pytanie 93
+- [x] 2026-11-24 (Paweł): broń klasy w łapie kota ras pomniejszana tak, żeby sięgała najwyżej do czubka głowy (jak na referencji; `holdWeapon` w `ClassSelectClient`, tylko figury z atrybutem `BronDoGlowy` — ustawiony na `Race_Demon` i `Race_Human`). Sprawdzone w Play: kostur ×0,62, szczyt kostura = czubek głowy
 - [x] 2026-11-23: wybrana rasa ma ramkę z portretem (7 grafik `RaceFrame<Id>`), widoczną w HUD, ekwipunku i sklepach.
 - [x] 2026-11-23: klasa przywrócona z zapisu (`StanGracza`) bez rasy → ekran otwiera się od razu na wyborze rasy (wcześniej UI w ogóle się nie pokazywało).
 - [x] Grafiki i makieta w Figmie (2026-11-16)

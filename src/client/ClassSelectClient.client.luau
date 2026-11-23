@@ -486,6 +486,22 @@ local function holdWeapon(h: Hero)
 		end
 	end
 	c:PivotTo(gripCF :: CFrame)
+	-- koty ras (Paweł 24.11, D-145): broń z modeli dla ludzików jest za długa — pomniejszamy ją tak, żeby szczyt broni
+	-- sięgał najwyżej do czubka głowy kota (jak na referencji). Tylko figury z atrybutem BronDoGlowy.
+	if m:GetAttribute("BronDoGlowy") then
+		local head = m:FindFirstChild("Head", true)
+		if head and head:IsA("BasePart") then
+			local szczytGlowy = head.Position.Y + head.Size.Y / 2
+			local wcf, ws = c:GetBoundingBox()
+			local szczytBroni = wcf.Position.Y + ws.Y / 2
+			local chwytY = (gripCF :: CFrame).Position.Y
+			if szczytBroni > szczytGlowy and szczytBroni - chwytY > 0.01 then
+				local k = math.clamp((szczytGlowy - chwytY) / (szczytBroni - chwytY), 0.3, 1)
+				c:ScaleTo(c:GetScale() * k)
+				c:PivotTo(gripCF :: CFrame)
+			end
+		end
+	end
 	c.Parent = m
 end
 
