@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Pawła (grafiki wgrane do Roblox, okno treningu z grafik, pasek natywny)
+- Po „tak” Pawła wgrane do Roblox przez Studio MCP (`upload_image`; klucz Open Cloud w `.env` na tym komputerze jest pusty): 10 grafik ekranu treningu (`Trening*`) i 6 ikon przedmiotów puli Lv 1–10 (`Item*`); ID w `assets/manifest.json` (status `in_roblox`).
+- Okno treningu na gałęzi `pawel/diamenty-afk` składa się teraz z tych grafik: drewniany panel, ikona stanowiska, czerwony STOP z napisem natywnym, złota moneta z pięścią i „2X” przy skill checku. Pasek postępu jest NATYWNY (Paweł: obrazek paska się pikselował) — zaokrąglona ramka z gradientem zieleni, obrysem i połyskiem, tak samo w makiecie Figmy (ramka 49:115). `TreningPasek` wgrany, ale nieużywany. Sprawdzone w Play (dodatki tylko w sesji Play).
+
 ## 2026-11-23 · Claude Code u Pawła (trening AFK, trzecia wersja: animacje, modele, grafiki ekranu; D-143)
 - Na prośbę Pawła na gałęzi `pawel/diamenty-afk`: pasek w procentach (płynny), sześć stanowisk z nowymi modelami z klocków i animacjami postaci — hantle w dłoniach (uginanie na zmianę), leżenie na ławce i wyciskanie sztangi, bieg na bieżni z ruchomą taśmą (na bohaterze jego własny klip „bieg” przez umowę `RuchBohatera`), czytanie książki z przewracaną kartką, blok tarczą przed pomidorami rzucanymi przez NPC, rzut kośćmi z kubka; „+” przy statystykach w EQ usunięty. Animacje proceduralne (bez wgrywania), działają na bohaterze klasy Karola, awatarze i każdym szkielecie R15 — nadpisują pozę tylko u trenującego, po pętli bohatera; inni gracze tego nie widzą (do tego potrzebne wgrane animacje).
 - Sprawdzone w Play (dodatki tylko w sesji Play, wspólne miejsce bez zmian): wszystkie sześć stanowisk — hantla 0,26 st od dłoni, łokieć 18°–138°, leżenie na ławce, bieg, książka, pomidor w locie, kości; zrzuty w rozmowie.
