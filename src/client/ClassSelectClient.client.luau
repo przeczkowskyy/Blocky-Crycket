@@ -89,6 +89,10 @@ local function applyMood()
 		if a:IsA("Atmosphere") then -- mgła miejsca zszarzałaby głąb sali
 			savedLighting[a] = a.Density
 			a.Density = 0
+		elseif a:IsA("BloomEffect") and MOOD.hidePlaceBloom and a.Enabled then
+			-- Bloom miejsca rozlewał poświatę wokół ognia, świec i latarni (Paweł 24.11) — wyłączony do PLAY
+			savedLighting[a] = true
+			a.Enabled = false
 		end
 	end
 	local cc = Instance.new("ColorCorrectionEffect")
@@ -106,7 +110,11 @@ local function restoreMood()
 		if typeof(k) == "string" then
 			(Lighting :: any)[k] = v
 		elseif k.Parent then
-			k.Density = v
+			if k:IsA("BloomEffect") then
+				k.Enabled = v
+			else
+				k.Density = v
+			end
 		end
 	end
 	for _, e in ipairs(moodEffects) do
@@ -505,6 +513,14 @@ local function holdWeapon(h: Hero)
 				c:PivotTo(gripCF :: CFrame)
 			end
 		end
+		-- Paweł 24.11: broń bliżej końca łapki — odsunięta od głowy w bok (w prawo figury) i lekko do przodu, żeby kostur
+		-- nie wchodził w głowę kota. Przesunięcie w układzie figury (prawo, góra, przód) w studach: atrybut
+		-- BronPrzesuniecie (Vector3) na modelu rasy, domyślnie (0.55, 0, 0.25).
+		local root = m:FindFirstChild("HumanoidRootPart")
+		local uklad = if root and root:IsA("BasePart") then root.CFrame else m:GetPivot()
+		local przes = m:GetAttribute("BronPrzesuniecie")
+		local v = if typeof(przes) == "Vector3" then przes else Vector3.new(0.55, 0, 0.25)
+		c:PivotTo(c:GetPivot() + uklad.RightVector * v.X + uklad.UpVector * v.Y + uklad.LookVector * v.Z)
 	end
 	c.Parent = m
 end

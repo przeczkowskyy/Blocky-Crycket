@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-24 · Claude Code u Pawła (sala wyboru: mniej poświaty)
+- Paweł: „żeby te światła tak strasznie się nie glowowały”, a coś świecącego w kominku „śmiesznie glowuje”. Przyczyna: na ekranie wyboru działały naraz dwa Bloomy — Bloom miejsca (`Lighting.Bloom`, Intensity 1, Size 24, Threshold 2) i własny `ClassSelectBlask` — i rozlewały poświatę wokół płomieni, świec, latarni i eliksirów z Neonu.
+- Na czas ekranu wyboru (tylko u gracza, po PLAY wraca): Bloom miejsca wyłączony (`hidePlaceBloom`), własny Bloom słabszy — Intensity 0,15 → 0,1, Size 24 → 16, Threshold 1,6 → 2,2 (`src/shared/ClassData.luau`, `src/client/ClassSelectClient.client.luau`).
+- Kominek: usunięte kule ognia z Neonu (4 × „Ogień kominka”, 2 × „Ogień kominka żar”); zostają polana i tlący się żar. Światło kominka: jasność 1,1 → 0,75, zasięg 30 → 24, migot 0,3 → 0,2 (`swiat/wybor_klasy/generuj.py` → `czesci.json`, `efekty.json`; w Studio zmienione bezpośrednio w `Workspace/WyborKlasy`, z punktem historii). [[Selektor bohatera]].
+- Dalej (Paweł): okno — szyby matowe zamiast Neonu i odrobinę mniejsze, nie wchodzą już na ramę; girlanda liści bez tekstury (gładka zieleń, reguła `Liście` usunięta z `tekstury.json`); dwie frontowe chorągwie wiszące (granat, czerwona) usunięte, żyrandol odsłonięty. Kostur w łapie kota w selektorze odsunięty od głowy (atrybut `BronPrzesuniecie`, domyślnie 0,55 w bok i 0,25 do przodu). Sprawdzone w Play na zrzucie. Pierwszą część (poświata) zaczął osobny agent na Opus — zatrzymany na prośbę Pawła, resztę dokończyła główna sesja.
+
 ## 2026-11-24 · Claude Code u Pawła (kocie bronie w wyborze rasy; sala wyboru: miększa kreska i tekstury v2)
 - Bronie startowe w wersji dla kotów (Paweł: równe pomniejszenie robiło „mini kijek”): `bronie_startowe.kocia()` — krótsze wzdłuż rękojeści (×0,62), grubsze w poprzek (×1,1); `tools/studio/bronie_kot.py` buduje `WyborKlasyModele.Weapon_<klasa>_Kot`, `ClassSelectClient` daje je kotom ras (atrybut `BronDoGlowy`), czubek broni = czubek głowy kota (sprawdzone w Play liczbowo).
 - Sala wyboru: tusz ciemnobrązowy zamiast czarnego, obrysy sylwetek grup brązowe i półprzezroczyste; nowe tekstury v2 (miększy styl, cienka brązowa kreska) wgrane po „tak” Pawła jako nowe wersje `CsTex01`–`CsTex16` i podmienione w sali (4073 ściany). [[Tekstury sali wyboru klasy]], „Wersja 2”.

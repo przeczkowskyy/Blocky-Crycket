@@ -58,9 +58,12 @@ ClassData.Scene = {
 		contrast = 0.1,
 		saturation = 0.12,
 		exposure = -0.3, -- korekta ekspozycji na czas ekranu (ujemna = ciemniej); Paweł 16.11: „zmniejszmy naświetlenie”
-		bloomIntensity = 0.15,
-		bloomSize = 24,
-		bloomThreshold = 1.6,
+		-- poświata (Paweł 24.11: „żeby światła tak strasznie się nie glowowały”): własny Bloom słaby i tylko na
+		-- najjaśniejszych punktach, a Bloom miejsca (Lighting.Bloom, Intensity 1) wyłączony na czas ekranu
+		bloomIntensity = 0.1,
+		bloomSize = 16,
+		bloomThreshold = 2.2,
+		hidePlaceBloom = true,
 	},
 }
 

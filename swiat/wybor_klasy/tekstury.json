@@ -112,15 +112,6 @@
   },
   {
    "grupa": "*",
-   "nazwa": "Liście",
-   "tekstura": "CsProp09",
-   "studs": "czesc",
-   "sciany": "all",
-   "_drobne": true,
-   "kula": true
-  },
-  {
-   "grupa": "*",
    "nazwa": "Miecz głownia",
    "tekstura": "CsProp10",
    "studs": "czesc",

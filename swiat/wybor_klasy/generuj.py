@@ -321,8 +321,9 @@ def okno(s):
                 x = k * 3.35
                 s.blok("Szyba tusz", (x, y0 + ph / 2.0, 0.42), (pw + 0.56, ph + 0.3, 0.14), "tusz")
                 s.walec("Szyba tusz łuk", (x, y0 + ph, 0.42), pw / 2.0 + 0.28, 0.14, "tusz", os="z")
-                s.blok("Szyba", (x, y0 + ph / 2.0, 0.5), (pw, ph, 0.14), "noc", "Neon")
-                s.walec("Szyba łuk", (x, y0 + ph, 0.5), pw / 2.0, 0.14, "noc", "Neon", os="z")
+                # szyby matowe i odrobinę mniejsze (Paweł 24.11: świecący Neon „wchodził” na ramę)
+                s.blok("Szyba", (x, y0 + ph / 2.0, 0.5), (pw - 0.14, ph - 0.07, 0.14), "noc", "SmoothPlastic")
+                s.walec("Szyba łuk", (x, y0 + ph, 0.5), pw / 2.0 - 0.07, 0.14, "noc", "SmoothPlastic", os="z")
                 s.blok("Szpros", (x, y0 + ph, 0.6), (pw, 0.22, 0.1), "tusz")
                 s.blok("Szpros", (x, y0 + ph / 2.0, 0.6), (0.2, ph, 0.1), "tusz")
             rnd = random.Random(3)
@@ -528,13 +529,11 @@ def kominek(s, rnd):
         sloj(s, (4.0, MH + 0.95, D + 0.1), "kufel", 0.5, 1.0)
         ksiazki(s, (-3.4, MH + 0.95, D - 0.2), 3)
     with s.grupa("Plomienie"), s.cechy(kolizja=False, cien=False):
-        for (fx, fy, fz, fd) in ((0, 1.9, 2.1, 2.5), (-0.55, 2.95, 2.1, 1.7), (0.45, 3.6, 2.1, 1.1), (-0.1, 4.25, 2.1, 0.62)):
-            s.kula("Ogień kominka", (fx, fy, fz), fd, "ogien", "Neon", alfa=0.25)
-        s.kula("Ogień kominka żar", (0, 1.75, 2.1), 1.6, "ogien2", "Neon")
-        s.kula("Ogień kominka żar", (-0.35, 2.7, 2.1), 0.95, "ogien2", "Neon")
+        # Paweł 24.11: kule ognia z Neonu („Ogień kominka”, „Ogień kominka żar”) śmiesznie świeciły — usunięte;
+        # w palenisku zostają polana i tlący się żar, a światło kominka jest słabsze
         for (fx, fz) in ((-1.5, 2.9), (1.4, 2.5), (0.6, 3.2)):
             s.kula("Żar", (fx, 0.75, fz), 0.5, "zar", "Neon")
-    swiatlo(s, "Kominek", (0, 2.6, D + 1.6), 30, 1.1, "FF8A3C", cienie=True, migot=0.3)
+    swiatlo(s, "Kominek", (0, 2.6, D + 1.6), 24, 0.75, "FF8A3C", cienie=True, migot=0.2)
     # tarcza ze skrzyżowanymi mieczami na kominie
     with s.grupa("Tarcza"), s.cechy(kolizja=False), s.uklad(pos=(0, MH + 3.25, 2.6)):
         for d in (-1, 1):
@@ -784,11 +783,8 @@ def sala(s):
     zyrandol(s, "Żyrandol duży", (14.0, 13.0, -4.0), 3.5, WYS + 0.1, 8, 0.42, 24)
     zyrandol(s, "Żyrandol mały", (-12.0, 13.0, -12.0), 2.5, WYS + 0.1, 6, 0.32, 20)
     s.obrys_sylwetki("Zyrandole")
-    # chorągwie wiszące ze ściągów (lewa góra kadru, nad kartą statystyk)
-    with s.uklad(pos=(-12.6, WYS - 0.1, -3.5)):
-        choragiew(s, "Chorągiew wisząca granat", "granat", 3.4, 6.2)
-    with s.uklad(pos=(-7.0, WYS - 0.1, -11.5)):
-        choragiew(s, "Chorągiew wisząca czerwona", "czerwien", 3.2, 5.6)
+    # chorągwie wiszące ze ściągów (granat i czerwona z pierwszego planu) usunięte — Paweł 24.11: nie pasowały
+    # i niebieska zasłaniała żyrandol
     for g in ("Choragwie", "Pochodnie", "Beczki", "Skrzynie"):
         s.obrys_sylwetki(g)
     # pierwszy plan: stół ze świecą (prawy dolny róg kadru), dywan przed kominkiem i ladą

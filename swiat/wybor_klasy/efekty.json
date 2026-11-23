@@ -72,11 +72,11 @@
     402.6,
     3980.277
    ],
-   "zasieg": 30,
-   "jasnosc": 1.1,
+   "zasieg": 24,
+   "jasnosc": 0.75,
    "kolor": "FF8A3C",
    "cienie": true,
-   "migot": 0.3
+   "migot": 0.2
   },
   {
    "n": "Świeca lady",
