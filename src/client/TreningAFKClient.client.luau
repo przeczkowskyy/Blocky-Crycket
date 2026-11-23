@@ -1,10 +1,22 @@
 --[[
-	TreningAFKClient — okno treningu AFK (D-141; gałąź pawel/diamenty-afk). Serwer: src/server/TreningAFK.server.luau.
-	Druga wersja (Paweł 23.11): postać sama robi powtórzenia, pasek = D.powtorzenNaPasek powtórzeń (podziałki),
-	po pełnym pasku od razu „+N STR”. Klikać nie trzeba. Co kilka sekund wyskakuje skill check (okrągły przycisk
-	w losowym miejscu) — kliknięty na czas daje chwilowe ×2 (decyduje serwer).
-	Okno budowane w kodzie (TYMCZASOWE — docelowy wygląd z Figmy). Rekwizyt stanowiska (hantle, sztanga, księga…)
-	unosi się i opada w rytm powtórzeń — tylko u gracza.
+	TreningAFKClient — okno i animacje treningu AFK (D-141; gałąź pawel/diamenty-afk). Serwer: src/server/TreningAFK.server.luau.
+
+	Trzecia wersja (Paweł 23.11): pasek w procentach, płynny; postać naprawdę ćwiczy:
+		Siła — hantle w obu dłoniach, uginanie ramion na zmianę;
+		HP (Kondycja) — leży na ławce i wyciska sztangę;
+		Zręczność — bieg na bieżni (taśma się przesuwa);
+		Inteligencja — stoi z otwartą książką i przewraca kartki;
+		Pancerz — NPC rzuca pomidorami, postać zasłania się tarczą;
+		Szczęście — potrząsa kubkiem i rzuca kości na stolik.
+	Klikać nie trzeba; skill check (okrągły przycisk) daje chwilowe ×2.
+
+	Animacje są PROCEDURALNE (bez wgrywania): co klatkę ustawiamy Transform stawów R15 (nazwy Root, Waist, Neck,
+	*Shoulder, *Elbow, *Wrist, *Hip, *Knee, *Ankle) — działa na każdym szkielecie R15: na bohaterze klasy z pakietu
+	Karola (Workspace/BohaterSwiat/BohaterowieLokalni, stawy Motor6D, jego pętla ma priorytet Last — nasza Last+1,
+	więc nadpisujemy pozę tylko w czasie treningu, bez zmian w jego plikach), na awatarze (AnimationConstraint) i na
+	modelach ras (ten sam szkielet). Bieg na bohaterze gra jego własny klip "bieg" przez umowę RuchBohatera.
+	Ograniczenie: pozę i ruch rekwizytów widzi tylko trenujący gracz — dla innych graczy trzeba będzie te same ruchy
+	wgrać jako animacje Roblox (osobna zgoda na wgranie).
 ]]
 
 local Players = game:GetService("Players")
@@ -98,18 +110,6 @@ polysk.Position = UDim2.fromScale(0.03, 0.14)
 polysk.Size = UDim2.fromScale(0.94, 0.22)
 polysk.Parent = wyp
 rog(polysk, 0.5)
--- podziałki powtórzeń
-for i = 1, D.powtorzenNaPasek - 1 do
-	local k = Instance.new("Frame")
-	k.Name = "Podzialka"
-	k.AnchorPoint = Vector2.new(0.5, 0)
-	k.Position = UDim2.fromScale(i / D.powtorzenNaPasek, 0)
-	k.Size = UDim2.new(0, 3, 1, 0)
-	k.BackgroundColor3 = CIEMNY
-	k.BorderSizePixel = 0
-	k.ZIndex = 2
-	k.Parent = tor
-end
 local liczba = napis(tor, "Liczba", UDim2.fromScale(0, 0.05), UDim2.fromScale(1, 0.9), Color3.new(1, 1, 1))
 liczba.ZIndex = 3
 
@@ -129,7 +129,6 @@ obrys(stop, 2).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 local podp = napis(panel, "Podpowiedz", UDim2.fromScale(0.04, 0.78), UDim2.fromScale(0.92, 0.18), Color3.new(1, 1, 1))
 podp.Text = "HIT THE SKILL CHECKS FOR 2X SPEED!"
 
--- skill check: okrągły przycisk z kurczącym się pierścieniem
 local check = Instance.new("TextButton")
 check.Name = "SkillCheck"
 check.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -148,7 +147,7 @@ obrys(check, 3).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 local ca = Instance.new("UIAspectRatioConstraint")
 ca.Parent = check
 local mc = Instance.new("UISizeConstraint")
-mc.MinSize = Vector2.new(64, 64) -- duży cel także na telefonie
+mc.MinSize = Vector2.new(64, 64)
 mc.Parent = check
 local pierscien = Instance.new("Frame")
 pierscien.Name = "Pierscien"
@@ -169,12 +168,18 @@ gui.Parent = player:WaitForChild("PlayerGui")
 local aktywne: string? = nil
 local postep = 0 -- w powtórzeniach, płynnie liczony u gracza między wiadomościami serwera
 local tempo = 1
+local pokazanyProcent = 0
 
-local function rysuj()
-	local f = math.clamp(postep / D.powtorzenNaPasek, 0, 1)
-	wyp.Size = UDim2.fromScale(f, 1)
-	liczba.Text = string.format("REP %d/%d", math.min(math.floor(postep) + 1, D.powtorzenNaPasek), D.powtorzenNaPasek)
-		.. (if tempo > 1 then "  x" .. tostring(tempo) else "")
+local function rysuj(dt: number)
+	local cel = math.clamp(postep / D.powtorzenNaPasek, 0, 1)
+	-- żwawe, płynne dociąganie do celu (nie skacze przy poprawkach z serwera)
+	if cel < pokazanyProcent - 0.5 then
+		pokazanyProcent = cel -- nowy pasek po pełnym
+	else
+		pokazanyProcent += (cel - pokazanyProcent) * math.min(1, dt * 14)
+	end
+	wyp.Size = UDim2.fromScale(pokazanyProcent, 1)
+	liczba.Text = string.format("%d%%", math.floor(pokazanyProcent * 100 + 0.5)) .. (if tempo > 1 then "  x" .. tostring(tempo) else "")
 end
 
 local function wyskok(tekst: string, kolor: Color3)
@@ -189,49 +194,429 @@ local function wyskok(tekst: string, kolor: Color3)
 	end)
 end
 
------------------------------------------------------------- rekwizyt w rytm powtórzeń (tylko u gracza)
-local RUCHOME = { "Hantla", "Krążek", "Sztanga", "Worek", "Lina", "Skakanka", "Uchwyt", "Księga", "Blat", "Kość" }
-local bazowe: { [BasePart]: CFrame } = {}
-local function zapamietaj()
-	bazowe = {}
-	local k = workspace:FindFirstChild("TreningAFK")
-	local m = k and aktywne and k:FindFirstChild(aktywne)
-	if not m then
+------------------------------------------------------------ szkielet: bohater Karola albo awatar
+local STAWY = { "Root", "Waist", "Neck", "LeftShoulder", "LeftElbow", "LeftWrist", "RightShoulder", "RightElbow", "RightWrist",
+	"LeftHip", "LeftKnee", "LeftAnkle", "RightHip", "RightKnee", "RightAnkle" }
+local CZY_STAW = {}
+for _, n in ipairs(STAWY) do
+	CZY_STAW[n] = true
+end
+
+type Rig = { model: Model, rodzaj: string, stawy: { [string]: any }, korzen: BasePart?, dlonL: BasePart?, dlonP: BasePart? }
+local rig: Rig? = nil
+
+local function ruchBohatera(): BindableFunction?
+	local k = workspace:FindFirstChild("BohaterSwiat")
+	local s = k and k:FindFirstChild("Sygnaly")
+	local f = s and s:FindFirstChild("RuchBohatera")
+	return if f and f:IsA("BindableFunction") then f else nil
+end
+
+local function znajdzRig(): Rig?
+	local char = player.Character
+	local hrp = char and char:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if not (char and hrp) then
+		return nil
+	end
+	local model: Model = char
+	local rodzaj = "awatar"
+	local k = workspace:FindFirstChild("BohaterSwiat")
+	local lok = k and k:FindFirstChild("BohaterowieLokalni")
+	local ruch = ruchBohatera()
+	local stanB = ruch and ruch:Invoke("stan")
+	if lok and stanB then
+		local naj, odl = nil, 10
+		for _, m in ipairs(lok:GetChildren()) do
+			local r = m:IsA("Model") and m:FindFirstChild("HumanoidRootPart") :: BasePart?
+			if r and (r.Position - hrp.Position).Magnitude < odl then
+				naj, odl = m, (r.Position - hrp.Position).Magnitude
+			end
+		end
+		if naj then
+			model, rodzaj = naj, "bohater"
+		end
+	end
+	local stawy = {}
+	for _, d in ipairs(model:GetDescendants()) do
+		if (d:IsA("Motor6D") or d:IsA("AnimationConstraint")) and CZY_STAW[d.Name] and stawy[d.Name] == nil then
+			stawy[d.Name] = d
+		end
+	end
+	return {
+		model = model,
+		rodzaj = rodzaj,
+		stawy = stawy,
+		korzen = model:FindFirstChild("HumanoidRootPart") :: BasePart?,
+		dlonL = model:FindFirstChild("LeftHand") :: BasePart?,
+		dlonP = model:FindFirstChild("RightHand") :: BasePart?,
+	}
+end
+
+local animateWylaczony: LocalScript? = nil
+local function przejmijAwatara(r: Rig)
+	if r.rodzaj ~= "awatar" then
 		return
 	end
-	for _, p in ipairs(m:GetDescendants()) do
-		if p:IsA("BasePart") then
-			for _, n in ipairs(RUCHOME) do
-				if p.Name:find(n, 1, true) == 1 then
+	local a = r.model:FindFirstChild("Animate")
+	if a and a:IsA("LocalScript") and not a.Disabled then
+		a.Disabled = true
+		animateWylaczony = a
+	end
+	local hum = r.model:FindFirstChildOfClass("Humanoid")
+	local an = hum and hum:FindFirstChildOfClass("Animator")
+	if an then
+		for _, tr in ipairs(an:GetPlayingAnimationTracks()) do
+			tr:Stop(0.1)
+		end
+	end
+end
+
+local function oddajSzkielet(r: Rig?)
+	if animateWylaczony then
+		animateWylaczony.Disabled = false
+		animateWylaczony = nil
+	end
+	if r then
+		for _, j in pairs(r.stawy) do
+			pcall(function()
+				j.Transform = CFrame.identity
+			end)
+		end
+	end
+	local ruch = ruchBohatera()
+	if ruch then
+		pcall(function()
+			ruch:Invoke("klip", nil)
+			ruch:Invoke("przesun", nil)
+		end)
+	end
+end
+
+------------------------------------------------------------ rekwizyty stanowiska
+local stanowiskoM: Model? = nil
+local bazowe: { [Instance]: CFrame } = {} -- Model (PivotTo) albo BasePart → pozycja z serwera
+local lokalne: { Instance } = {} -- części tworzone u gracza (pomidor w locie, plamy)
+
+local function grupa(nazwa: string): Model?
+	local m = stanowiskoM and stanowiskoM:FindFirstChild(nazwa, true)
+	return if m and m:IsA("Model") then m else nil
+end
+local function zapamietajGrupe(m: Model?)
+	if m and bazowe[m] == nil then
+		bazowe[m] = m:GetPivot()
+	end
+end
+local function przywrocRekwizyty()
+	for i, cf in pairs(bazowe) do
+		if i.Parent then
+			if i:IsA("Model") then
+				i:PivotTo(cf)
+			elseif i:IsA("BasePart") then
+				i.CFrame = cf
+				i.LocalTransparencyModifier = 0
+			end
+		end
+	end
+	bazowe = {}
+	for _, p in ipairs(lokalne) do
+		p:Destroy()
+	end
+	lokalne = {}
+	stanowiskoM = nil
+end
+
+-- środek maty stanowiska (układ o z serwera: Mata leży w o * (0, 0.15, 0))
+local function ukladO(): CFrame
+	local mata = stanowiskoM and stanowiskoM.PrimaryPart
+	return if mata then mata.CFrame * CFrame.new(0, -0.15, 0) else CFrame.identity
+end
+
+------------------------------------------------------------ pozy (kąty w stopniach, oś X: + = do przodu dla rąk i nóg)
+local function R(x: number, y: number?, z: number?): CFrame
+	return CFrame.Angles(math.rad(x), math.rad(y or 0), math.rad(z or 0))
+end
+local function dzwon(f: number): number -- 0 → 1 → 0 w jednym powtórzeniu
+	return math.sin(math.pi * math.clamp(f, 0, 1))
+end
+
+local POZY: { [string]: (f: number, t: number) -> { [string]: CFrame } } = {
+	Sila = function(f)
+		local p = if f < 0.5 then dzwon(f * 2) else 0
+		local l = if f >= 0.5 then dzwon(f * 2 - 1) else 0
+		return {
+			RightShoulder = R(12 * p, 0, 10), RightElbow = R(18 + 122 * p), RightWrist = R(-10 * p),
+			LeftShoulder = R(12 * l, 0, -10), LeftElbow = R(18 + 122 * l), LeftWrist = R(-10 * l),
+			Waist = R(0, 6 * (p - l), 0), Neck = R(-4),
+		}
+	end,
+	Kondycja = function(f)
+		-- ręce do nieba (do przodu ciała): bark 90−a, łokieć 2a → dłoń wędruje prosto w górę i w dół
+		local a = 62 * (1 - dzwon(f))
+		return {
+			RightShoulder = R(90 - a, 0, 8 + a * 0.25), RightElbow = R(2 * a),
+			LeftShoulder = R(90 - a, 0, -8 - a * 0.25), LeftElbow = R(2 * a),
+			RightHip = R(8), LeftHip = R(8), RightKnee = R(-14), LeftKnee = R(-14),
+			Neck = R(6),
+		}
+	end,
+	Zrecznosc = function(_, t)
+		local fi = t * math.pi * 2 * (1 / D.czasPowtorzenia) * tempo
+		local s = math.sin(fi)
+		return {
+			Root = CFrame.new(0, 0.18 * math.abs(math.cos(fi)), 0) * R(-6),
+			RightHip = R(38 * s), LeftHip = R(-38 * s),
+			RightKnee = R(-(12 + 62 * (0.5 - 0.5 * math.cos(fi)))), LeftKnee = R(-(12 + 62 * (0.5 + 0.5 * math.cos(fi)))),
+			RightShoulder = R(-34 * s, 0, 6), LeftShoulder = R(34 * s, 0, -6),
+			RightElbow = R(85), LeftElbow = R(85),
+		}
+	end,
+	Inteligencja = function(f)
+		local kiw = math.sin(f * math.pi * 2) * 3
+		return {
+			RightShoulder = R(42, 0, -14), RightElbow = R(78), RightWrist = R(-10),
+			LeftShoulder = R(42, 0, 14), LeftElbow = R(78), LeftWrist = R(-10),
+			Neck = R(-20 + kiw), Waist = R(-4),
+		}
+	end,
+	Pancerz = function(f)
+		-- tarcza przed sobą; uderzenie pomidora w 0,55 → odrzut
+		local odrzut = if f > 0.55 and f < 0.8 then dzwon((f - 0.55) / 0.25) else 0
+		return {
+			LeftShoulder = R(82 - 14 * odrzut, 0, 30), LeftElbow = R(72 + 10 * odrzut),
+			RightShoulder = R(14, 0, 10), RightElbow = R(35),
+			Waist = R(5 * odrzut, -8, 0), Neck = R(-6),
+			RightHip = R(-6), LeftHip = R(14), LeftKnee = R(-18), RightKnee = R(-8),
+		}
+	end,
+	Szczescie = function(f)
+		local bark, lokiec, nadg = 50, 75, 0
+		if f < 0.35 then
+			nadg = 25 * math.sin(f * math.pi * 14) -- potrząsanie kubkiem
+		elseif f < 0.5 then
+			local k = (f - 0.35) / 0.15
+			bark, lokiec = 50 + 35 * k, 75 - 55 * k -- rzut
+		elseif f < 0.8 then
+			local k = (f - 0.5) / 0.3
+			bark, lokiec = 85 - 35 * k, 20 + 55 * k -- powrót
+		end
+		return {
+			RightShoulder = R(bark, 0, 6), RightElbow = R(lokiec), RightWrist = R(nadg),
+			LeftShoulder = R(10, 0, -8), LeftElbow = R(20), Neck = R(-10),
+		}
+	end,
+}
+
+------------------------------------------------------------ rekwizyty w ruchu
+local losKosci = { Vector3.new(-0.5, 0, 0.1), Vector3.new(0.4, 0, -0.2) }
+local ostatniaFaza = 0
+local pomidorLot: BasePart? = nil
+
+local function wDloni(dlon: BasePart?, przes: CFrame): CFrame?
+	return dlon and dlon.CFrame * CFrame.new(0, -dlon.Size.Y / 2 - 0.15, 0) * przes
+end
+
+local function plama(pozycja: Vector3)
+	for _ = 1, 6 do
+		local p = Instance.new("Part")
+		p.Shape = Enum.PartType.Ball
+		p.Size = Vector3.one * 0.25
+		p.Color = Color3.fromRGB(214, 50, 40)
+		p.CanCollide = false
+		p.CanQuery = false
+		p.Position = pozycja
+		p.AssemblyLinearVelocity = Vector3.new(math.random(-8, 8), math.random(4, 10), math.random(-8, 8))
+		p.Parent = workspace
+		table.insert(lokalne, p)
+		task.delay(0.8, function()
+			p:Destroy()
+		end)
+	end
+end
+
+local function ruszRekwizyty(f: number, t: number, r: Rig)
+	local o = ukladO()
+	local id = aktywne
+	if id == "Sila" then
+		local L, P = grupa("Hantla_L"), grupa("Hantla_P")
+		zapamietajGrupe(L)
+		zapamietajGrupe(P)
+		local cl, cp = wDloni(r.dlonL, CFrame.identity), wDloni(r.dlonP, CFrame.identity)
+		if L and cl then
+			L:PivotTo(cl)
+		end
+		if P and cp then
+			P:PivotTo(cp)
+		end
+	elseif id == "Kondycja" then
+		local g = grupa("Sztanga")
+		zapamietajGrupe(g)
+		if g and r.dlonL and r.dlonP and r.korzen then
+			local srodek = (r.dlonL.Position + r.dlonP.Position) / 2
+			local prawo = r.korzen.CFrame.RightVector
+			g:PivotTo(CFrame.fromMatrix(srodek, prawo, r.korzen.CFrame.UpVector))
+		end
+	elseif id == "Zrecznosc" then
+		-- paski taśmy jadą do tyłu (+Z układu o) 7 st/s × tempo i wracają na przód
+		for i = 1, 6 do
+			local p = stanowiskoM and stanowiskoM:FindFirstChild("Tasma_" .. i, true) :: BasePart?
+			if p then
+				if bazowe[p] == nil then
 					bazowe[p] = p.CFrame
-					break
+				end
+				local z0 = -2.6 + (i - 1) * 1.0
+				p.CFrame = o * CFrame.new(0, 0.84, ((z0 + 2.8 + t * 7 * tempo) % 6) - 2.8)
+			end
+		end
+	elseif id == "Inteligencja" then
+		local k, kart = grupa("Ksiazka"), grupa("Kartka")
+		zapamietajGrupe(k)
+		zapamietajGrupe(kart)
+		if k and r.dlonL and r.dlonP and r.korzen then
+			local srodek = (r.dlonL.Position + r.dlonP.Position) / 2 + r.korzen.CFrame.UpVector * 0.25
+			local cf = CFrame.new(srodek) * r.korzen.CFrame.Rotation * R(50)
+			k:PivotTo(cf)
+			if kart then
+				-- kartka przewraca się z prawej na lewą w drugiej połowie powtórzenia
+				local kat = if f < 0.5 then 0 elseif f < 0.9 then math.pi * ((f - 0.5) / 0.4) else math.pi
+				kart:PivotTo(cf * CFrame.new(0, 0.09, 0) * CFrame.Angles(0, 0, kat))
+			end
+		end
+	elseif id == "Pancerz" then
+		local tarcza, ramie = grupa("Tarcza"), grupa("Rzucajacy_Ramie")
+		zapamietajGrupe(tarcza)
+		zapamietajGrupe(ramie)
+		local srodekTarczy: Vector3? = nil
+		if tarcza and r.dlonL and r.korzen then
+			local pos = r.dlonL.Position + r.korzen.CFrame.LookVector * 0.5
+			local cf = CFrame.new(pos) * r.korzen.CFrame.Rotation * CFrame.Angles(0, math.rad(90), 0)
+			tarcza:PivotTo(cf)
+			srodekTarczy = pos + r.korzen.CFrame.LookVector * 0.2
+		end
+		if ramie then
+			-- zamach (0–0,25) i rzut (0,25–0,35)
+			local kat = if f < 0.25 then -130 * (f / 0.25) elseif f < 0.35 then -130 + 200 * ((f - 0.25) / 0.1) else 70 * (1 - math.clamp((f - 0.35) / 0.4, 0, 1))
+			ramie:PivotTo(bazowe[ramie] * CFrame.Angles(math.rad(kat), 0, 0))
+			local wReku = ramie:FindFirstChild("Pomidor w ręce") :: BasePart?
+			if wReku then
+				wReku.LocalTransparencyModifier = if f > 0.32 and f < 0.9 then 1 else 0
+			end
+			-- pomidor w locie 0,32 → 0,55, potem plama
+			if f > 0.32 and f < 0.55 and srodekTarczy and wReku then
+				if not pomidorLot then
+					local p = Instance.new("Part")
+					p.Shape = Enum.PartType.Ball
+					p.Size = Vector3.one * 0.6
+					p.Color = Color3.fromRGB(214, 50, 40)
+					p.Anchored = true
+					p.CanCollide = false
+					p.CanQuery = false
+					p.Parent = workspace
+					table.insert(lokalne, p)
+					pomidorLot = p
+				end
+				local k = (f - 0.32) / 0.23
+				local start = bazowe[ramie].Position + Vector3.new(0, 1.2, 0)
+				local poz = start:Lerp(srodekTarczy, k) + Vector3.new(0, 3 * math.sin(math.pi * k), 0)
+				;(pomidorLot :: BasePart).CFrame = CFrame.new(poz)
+			elseif pomidorLot and f >= 0.55 then
+				plama(pomidorLot.Position)
+				pomidorLot:Destroy()
+				pomidorLot = nil
+			end
+		end
+	elseif id == "Szczescie" then
+		local kub = grupa("Kubek")
+		zapamietajGrupe(kub)
+		local cp = wDloni(r.dlonP, CFrame.new(0, 0.2, 0))
+		if kub and cp then
+			kub:PivotTo(cp)
+		end
+		for i = 1, 2 do
+			local g = grupa("Kosc_" .. i)
+			zapamietajGrupe(g)
+			if g and cp then
+				local cel = o * CFrame.new(losKosci[i].X, 2.98, -2.6 + losKosci[i].Z)
+				if f < 0.42 then
+					g:PivotTo(cp * CFrame.new(0, 0.6, 0)) -- w kubku (schowane wyżej przez kubek)
+				elseif f < 0.62 then
+					local k = (f - 0.42) / 0.2
+					local poz = cp.Position:Lerp(cel.Position, k) + Vector3.new(0, 1.2 * math.sin(math.pi * k), 0)
+					g:PivotTo(CFrame.new(poz) * CFrame.Angles(k * 9 + i, k * 7, k * 5))
+				else
+					local k = math.clamp((f - 0.62) / 0.18, 0, 1)
+					g:PivotTo(cel * CFrame.Angles(math.floor((1 - k) * 4 + i) * math.pi / 2, (1 - k) * 2, 0))
+				end
+			end
+		end
+		if f < ostatniaFaza then
+			-- nowe powtórzenie: inne miejsce wypadnięcia kości
+			for i = 1, 2 do
+				losKosci[i] = Vector3.new(math.random(-8, 8) / 10, 0, math.random(-4, 4) / 10)
+			end
+		end
+	end
+	ostatniaFaza = f
+end
+
+------------------------------------------------------------ pętla animacji (po pętli bohatera Karola)
+local czas = 0
+local ruchStoi = 0
+RunService:BindToRenderStep("TreningAFK", Enum.RenderPriority.Last.Value + 1, function(dt)
+	if not aktywne then
+		return
+	end
+	czas += dt
+	postep = math.min(postep + dt * tempo / D.czasPowtorzenia, D.powtorzenNaPasek - 0.001)
+	rysuj(dt)
+	if not rig or not rig.model.Parent then
+		rig = znajdzRig()
+		if rig then
+			przejmijAwatara(rig)
+			if rig.rodzaj == "bohater" and aktywne == "Zrecznosc" then
+				local ruch = ruchBohatera()
+				if ruch then
+					pcall(function()
+						ruch:Invoke("klip", "bieg")
+					end)
 				end
 			end
 		end
 	end
-end
-local function przywroc()
-	for p, cf in pairs(bazowe) do
-		if p.Parent then
-			p.CFrame = cf
-		end
-	end
-	bazowe = {}
-end
-
-RunService.RenderStepped:Connect(function(dt)
-	if not aktywne then
+	local r = rig
+	if not r then
 		return
 	end
-	-- płynny pasek między wiadomościami serwera (serwer i tak koryguje co 0,2 s)
-	postep = math.min(postep + dt * tempo / D.czasPowtorzenia, D.powtorzenNaPasek - 0.001)
-	rysuj()
-	-- jedno powtórzenie = podniesienie i opuszczenie (sinus po fazie powtórzenia)
-	local faza = postep % 1
-	local y = math.sin(faza * math.pi) * 1.4
-	for p, cf in pairs(bazowe) do
-		if p.Parent then
-			p.CFrame = cf + Vector3.new(0, y, 0)
+	local f = postep % 1
+	-- bieg na bohaterze gra jego własny klip; na awatarze nasz
+	local poza = POZY[aktywne :: string]
+	if poza and not (r.rodzaj == "bohater" and aktywne == "Zrecznosc") then
+		local cele = poza(f, czas)
+		for n, j in pairs(r.stawy) do
+			j.Transform = cele[n] or CFrame.identity
+		end
+	end
+	-- bohater leży na ławce razem z postacią (jego pętla trzyma go pionowo)
+	if r.rodzaj == "bohater" and aktywne == "Kondycja" and r.korzen then
+		local char = player.Character
+		local hrp = char and char:FindFirstChild("HumanoidRootPart") :: BasePart?
+		if hrp then
+			r.korzen.CFrame = hrp.CFrame * CFrame.new(0, -0.6, 0)
+		end
+	end
+	ruszRekwizyty(f, czas, r)
+	-- ruch gałką / WASD = zejście ze stanowiska
+	local char = player.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if hum and hum.MoveDirection.Magnitude > 0.2 then
+		ruchStoi += dt
+		if ruchStoi > 0.15 then
+			ruchStoi = -10
+			Z:FireServer("stop")
+		end
+	else
+		ruchStoi = math.min(ruchStoi, 0) + 0
+		if ruchStoi < 0 then
+			ruchStoi = math.min(0, ruchStoi + dt * 20)
 		end
 	end
 end)
@@ -250,28 +635,43 @@ check.Activated:Connect(function()
 end)
 
 ------------------------------------------------------------ zdarzenia z serwera
-Z.OnClientEvent:Connect(function(akcja, a, b, c, d)
+local function koniec()
+	oddajSzkielet(rig)
+	przywrocRekwizyty()
+	rig = nil
+	schowajCheck()
+	aktywne = nil
+	gui.Enabled = false
+end
+
+Z.OnClientEvent:Connect(function(akcja, a, b, c)
 	if akcja == "start" then
-		przywroc()
+		koniec()
 		aktywne = a
 		local s = D.stanowisko(a)
-		postep, tempo = b or 0, 1
+		local k = workspace:FindFirstChild("TreningAFK")
+		stanowiskoM = k and k:FindFirstChild(a)
+		postep, tempo, czas = b or 0, 1, 0
+		pokazanyProcent = math.clamp(postep / D.powtorzenNaPasek, 0, 1)
 		tytul.Text = s and (s.nazwa .. " · " .. s.czynnosc) or "TRAINING"
 		przyrostL.Text = s and ("+" .. tostring(c or 1) .. " " .. s.skrot .. " / BAR") or ""
 		wyp.BackgroundColor3 = s and s.kolor or wyp.BackgroundColor3
-		rysuj()
 		gui.Enabled = true
-		zapamietaj()
+		ruchStoi = -10 -- chwila na puszczenie klawiszy po wejściu
 	elseif akcja == "postep" then
 		postep, tempo = a, b or 1
 	elseif akcja == "punkt" then
 		local s = aktywne and D.stanowisko(aktywne)
 		postep = c or 0
+		pokazanyProcent = 1
 		wyskok("+" .. tostring(b) .. " " .. (s and s.skrot or ""), s and s.kolor or Color3.new(1, 1, 1))
 		local sc = panel:FindFirstChildOfClass("UIScale") or Instance.new("UIScale")
 		sc.Parent = panel
 		sc.Scale = 1.06
 		TS:Create(sc, TweenInfo.new(0.18), { Scale = 1 }):Play()
+		task.delay(0.12, function()
+			pokazanyProcent = 0
+		end)
 	elseif akcja == "skillcheck" then
 		numerCheck = a
 		local okno = b or 1.2
@@ -289,10 +689,7 @@ Z.OnClientEvent:Connect(function(akcja, a, b, c, d)
 		tempo = D.mnoznikSkillCheck
 		wyskok("x" .. tostring(D.mnoznikSkillCheck) .. " SPEED!", Color3.fromRGB(255, 214, 90))
 	elseif akcja == "koniec" then
-		przywroc()
-		schowajCheck()
-		aktywne = nil
-		gui.Enabled = false
+		koniec()
 	end
 end)
 

@@ -20,8 +20,8 @@ D.obrot = 180 -- stopni: obrót stanowiska (gracz patrzy na rekwizyt)
 D.stanowiska = {
 	{ id = "Sila", atrybut = "Strength", nazwa = "STRENGTH", skrot = "STR", czynnosc = "DUMBBELLS", kolor = Color3.fromRGB(236, 96, 86) },
 	{ id = "Kondycja", atrybut = "Constitution", nazwa = "HEALTH", skrot = "CON", czynnosc = "BENCH PRESS", kolor = Color3.fromRGB(120, 210, 120) },
-	{ id = "Pancerz", atrybut = "Armor", nazwa = "ARMOR", skrot = "ARM", czynnosc = "PUNCHING BAG", kolor = Color3.fromRGB(150, 160, 185) },
-	{ id = "Zrecznosc", atrybut = "Dexterity", nazwa = "DEXTERITY", skrot = "DEX", czynnosc = "JUMP ROPE", kolor = Color3.fromRGB(255, 192, 90) },
+	{ id = "Pancerz", atrybut = "Armor", nazwa = "ARMOR", skrot = "ARM", czynnosc = "SHIELD BLOCK", kolor = Color3.fromRGB(150, 160, 185) },
+	{ id = "Zrecznosc", atrybut = "Dexterity", nazwa = "DEXTERITY", skrot = "DEX", czynnosc = "TREADMILL", kolor = Color3.fromRGB(255, 192, 90) },
 	{ id = "Inteligencja", atrybut = "Intelligence", nazwa = "INTELLIGENCE", skrot = "INT", czynnosc = "BOOKS", kolor = Color3.fromRGB(110, 170, 255) },
 	{ id = "Szczescie", atrybut = "Luck", nazwa = "LUCK", skrot = "LCK", czynnosc = "DICE", kolor = Color3.fromRGB(190, 120, 240) },
 }

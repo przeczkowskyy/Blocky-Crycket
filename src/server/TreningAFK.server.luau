@@ -1,18 +1,22 @@
 --!strict
 --[[
-	TreningAFK — trening statystyk na stanowiskach AFK z paskiem postępu (D-141, Paweł 23.11; gałąź
-	pawel/diamenty-afk, wersja do obejrzenia — czeka na Karola).
+	TreningAFK — trening statystyk na stanowiskach AFK (D-141, Paweł 23.11; gałąź pawel/diamenty-afk, wersja do
+	obejrzenia — czeka na Karola).
 
-	Stanowiska: kontener Workspace/TreningAFK (atrybut Wygenerowane), budowany przy starcie serwera z klocków
-	(hantle, ławka, worek, skakanka, księgi, kości) na wolnym pasie placu w miasteczku (TreningAFKDane.start).
-	Gracz naciska E przy stanowisku → staje na nim i sam robi powtórzenia (AFK). Pasek = D.powtorzenNaPasek
-	powtórzeń, pełny pasek → od razu +przyrost do statystyki. Co kilka sekund skill check na ekranie: trafiony
-	= chwilowo 2× szybciej (Paweł 23.11, druga wersja).
+	Stanowiska: kontener Workspace/TreningAFK (atrybut Wygenerowane), budowany przy starcie serwera z klocków na wolnym
+	pasie placu w miasteczku (TreningAFKDane.start). Trzecia wersja (Paweł 23.11): każde stanowisko ma swoją czynność
+	i animację postaci — hantle (Siła), wyciskanie sztangi na ławce (HP), bieżnia (Zręczność), czytanie książki
+	(Inteligencja), blok tarczą przed pomidorami od NPC (Pancerz), rzut kośćmi (Szczęście).
+	Animacje i ruch rekwizytów liczy klient (src/client/TreningAFKClient.client.luau) — serwer tylko stawia gracza
+	na stanowisku (zakotwiczona postać: stoi albo leży na ławce) i liczy pasek.
+
+	Pasek = D.powtorzenNaPasek powtórzeń; pełny → od razu +przyrost do statystyki. Co kilka sekund skill check:
+	trafiony = chwilowo ×2.
 
 	Statystyki: NIE piszemy ich sami. Przyrost idzie tym samym sygnałem co mini-gry Training Center:
 	Workspace/TreningProba/Sygnaly/PrzyrostStatystyki (BindableEvent pakietu Karola), którego słucha stan gracza
-	(swiat/stan_gracza: dopisuje do profilu „wytrenowane”, zapisuje między sesjami i podnosi atrybut). Bez tego
-	kontenera (np. w innym miejscu) przyrost trafia wprost do atrybutu gracza — tylko do prób.
+	(swiat/stan_gracza: profil „wytrenowane”, zapis między sesjami, atrybut). Bez tych kontenerów przyrost trafia
+	wprost do atrybutu gracza — tylko do prób.
 
 	Zdalne: ReplicatedStorage.TreningAFK (RemoteEvent)
 		klient → serwer: "check", numer | "stop"
@@ -35,8 +39,9 @@ if not zdalne then
 end
 local Z = zdalne :: RemoteEvent
 
------------------------------------------------------------------- budowa stanowisk (klocki)
-local function czesc(rodzic: Instance, nazwa: string, rozmiar: Vector3, cf: CFrame, kolor: Color3, ksztalt: Enum.PartType?): Part
+------------------------------------------------------------------ klocki
+local function czesc(rodzic: Instance, nazwa: string, rozmiar: Vector3, cf: CFrame, kolor: Color3, ksztalt: Enum.PartType?,
+	material: Enum.Material?): Part
 	local p = Instance.new("Part")
 	p.Name = nazwa
 	p.Size = rozmiar
@@ -45,7 +50,7 @@ local function czesc(rodzic: Instance, nazwa: string, rozmiar: Vector3, cf: CFra
 	p.Anchored = true
 	p.TopSurface = Enum.SurfaceType.Smooth
 	p.BottomSurface = Enum.SurfaceType.Smooth
-	p.Material = Enum.Material.SmoothPlastic
+	p.Material = material or Enum.Material.SmoothPlastic
 	if ksztalt then
 		p.Shape = ksztalt
 	end
@@ -53,65 +58,179 @@ local function czesc(rodzic: Instance, nazwa: string, rozmiar: Vector3, cf: CFra
 	return p
 end
 
+-- grupa części poruszana przez klienta jako całość (rekwizyt w dłoni, sztanga, kartka…): Model z PrimaryPart „Os”
+local function grupa(rodzic: Instance, nazwa: string, cf: CFrame): (Model, Part)
+	local m = Instance.new("Model")
+	m.Name = nazwa
+	local os_ = czesc(m, "Os", Vector3.new(0.2, 0.2, 0.2), cf, Color3.new(1, 1, 1))
+	os_.Transparency = 1
+	os_.CanCollide = false
+	m.PrimaryPart = os_
+	m.Parent = rodzic
+	return m, os_
+end
+
+local function bezKolizji(m: Instance)
+	for _, p in ipairs(m:GetDescendants()) do
+		if p:IsA("BasePart") then
+			p.CanCollide = false
+			p.CanQuery = false
+			p.CanTouch = false
+		end
+	end
+end
+
 local CIEMNY = Color3.fromRGB(45, 42, 48)
 local DREWNO = Color3.fromRGB(150, 98, 60)
+local DREWNO_J = Color3.fromRGB(196, 142, 92)
 local STAL = Color3.fromRGB(170, 175, 185)
+local CZERWONY = Color3.fromRGB(214, 70, 64)
 
--- rekwizyt stanowiska; wszystko względem środka maty `o` (gracz stoi w o, rekwizyt przed nim)
+-- hantla wzdłuż osi X, środek w (0,0,0) układu cf
+local function hantla(rodzic: Instance, nazwa: string, cf: CFrame, kolor: Color3)
+	local m = grupa(rodzic, nazwa, cf)
+	czesc(m, "Drążek", Vector3.new(1.3, 0.28, 0.28), cf, STAL)
+	for _, x in ipairs({ -0.6, 0.6 }) do
+		czesc(m, "Krążek", Vector3.new(0.34, 0.9, 0.9), cf * CFrame.new(x, 0, 0), kolor, Enum.PartType.Cylinder)
+	end
+	bezKolizji(m)
+	return m
+end
+
+--[[ Rekwizyty: wszystko względem środka maty `o` (gracz stoi w o, patrzy w −Z układu o). Nazwy grup, które rusza
+	klient: Hantla_L / Hantla_P (Siła), Sztanga (HP), Ksiazka + Kartka (Inteligencja), Tasma_* (bieżnia), Tarcza,
+	Rzucajacy (+ Rzucajacy_Ramie), Kubek + Kosc_1/2 (Szczęście). ]]
 local REKWIZYTY: { [string]: (Model, CFrame, Color3) -> () } = {
-	Sila = function(m, o, k) -- stojak z hantlami
-		czesc(m, "Stojak", Vector3.new(5, 0.4, 1.6), o * CFrame.new(0, 2.2, -3), DREWNO)
-		for _, x in ipairs({ -1.6, 0, 1.6 }) do
-			czesc(m, "Hantla drążek", Vector3.new(1.2, 0.3, 0.3), o * CFrame.new(x, 2.6, -3), STAL)
-			czesc(m, "Hantla krążek", Vector3.new(0.35, 0.8, 0.8), o * CFrame.new(x - 0.6, 2.6, -3), k)
-			czesc(m, "Hantla krążek", Vector3.new(0.35, 0.8, 0.8), o * CFrame.new(x + 0.6, 2.6, -3), k)
+	Sila = function(m, o, k)
+		-- stojak z zapasowymi hantlami z boku + dwie hantle do rąk (leżą na stojaku, klient przenosi je do dłoni)
+		czesc(m, "Stojak", Vector3.new(1.6, 0.3, 4.4), o * CFrame.new(3.4, 2.1, -0.6), DREWNO)
+		czesc(m, "Stojak półka", Vector3.new(1.6, 0.3, 4.4), o * CFrame.new(3.4, 1.0, -0.6), DREWNO)
+		for _, z in ipairs({ -2.6, 1.4 }) do
+			czesc(m, "Stojak noga", Vector3.new(0.3, 2.2, 0.3), o * CFrame.new(3.4, 1.1, z), DREWNO)
 		end
-		czesc(m, "Noga", Vector3.new(0.4, 2, 0.4), o * CFrame.new(-2.2, 1.1, -3), DREWNO)
-		czesc(m, "Noga", Vector3.new(0.4, 2, 0.4), o * CFrame.new(2.2, 1.1, -3), DREWNO)
-	end,
-	Kondycja = function(m, o, k) -- ławka ze sztangą
-		czesc(m, "Ławka", Vector3.new(1.6, 0.5, 5), o * CFrame.new(0, 1.4, -2.6), k)
-		czesc(m, "Ławka noga", Vector3.new(1.2, 1.2, 0.4), o * CFrame.new(0, 0.7, -0.6), CIEMNY)
-		czesc(m, "Ławka noga", Vector3.new(1.2, 1.2, 0.4), o * CFrame.new(0, 0.7, -4.6), CIEMNY)
-		czesc(m, "Stojak", Vector3.new(0.4, 3.6, 0.4), o * CFrame.new(-1.6, 1.9, -4.8), CIEMNY)
-		czesc(m, "Stojak", Vector3.new(0.4, 3.6, 0.4), o * CFrame.new(1.6, 1.9, -4.8), CIEMNY)
-		czesc(m, "Sztanga", Vector3.new(5.4, 0.3, 0.3), o * CFrame.new(0, 3.6, -4.8), STAL)
-		czesc(m, "Krążek", Vector3.new(0.4, 1.6, 1.6), o * CFrame.new(-2.4, 3.6, -4.8), CIEMNY, Enum.PartType.Cylinder)
-		czesc(m, "Krążek", Vector3.new(0.4, 1.6, 1.6), o * CFrame.new(2.4, 3.6, -4.8), CIEMNY, Enum.PartType.Cylinder)
-	end,
-	Pancerz = function(m, o, k) -- worek treningowy na szubienicy
-		czesc(m, "Słup", Vector3.new(0.6, 8, 0.6), o * CFrame.new(-2.4, 4, -3.4), DREWNO)
-		czesc(m, "Wysięgnik", Vector3.new(3, 0.5, 0.5), o * CFrame.new(-1, 7.8, -3.4), DREWNO)
-		czesc(m, "Lina", Vector3.new(0.15, 1.2, 0.15), o * CFrame.new(0, 7, -3.4), CIEMNY)
-		czesc(m, "Worek", Vector3.new(1.8, 3.4, 1.8), o * CFrame.new(0, 4.6, -3.4), k)
-		czesc(m, "Worek pas", Vector3.new(1.9, 0.3, 1.9), o * CFrame.new(0, 5.6, -3.4), CIEMNY)
-	end,
-	Zrecznosc = function(m, o, k) -- słupki ze skakanką
-		czesc(m, "Słupek", Vector3.new(0.5, 3, 0.5), o * CFrame.new(-2.6, 1.5, -2.6), DREWNO)
-		czesc(m, "Słupek", Vector3.new(0.5, 3, 0.5), o * CFrame.new(2.6, 1.5, -2.6), DREWNO)
-		czesc(m, "Skakanka", Vector3.new(5.2, 0.2, 0.2), o * CFrame.new(0, 2.6, -2.6), k)
-		czesc(m, "Uchwyt", Vector3.new(0.3, 0.8, 0.3), o * CFrame.new(-2.6, 3.3, -2.6), k)
-		czesc(m, "Uchwyt", Vector3.new(0.3, 0.8, 0.3), o * CFrame.new(2.6, 3.3, -2.6), k)
-	end,
-	Inteligencja = function(m, o, k) -- pulpit z księgą i stos ksiąg
-		czesc(m, "Pulpit", Vector3.new(0.8, 3, 0.8), o * CFrame.new(0, 1.5, -2.8), DREWNO)
-		czesc(m, "Blat", Vector3.new(2.6, 0.3, 1.8), o * CFrame.new(0, 3.1, -2.8) * CFrame.Angles(math.rad(20), 0, 0), DREWNO)
-		czesc(m, "Księga", Vector3.new(2.2, 0.3, 1.5), o * CFrame.new(0, 3.35, -2.8) * CFrame.Angles(math.rad(20), 0, 0), k)
-		for i = 0, 2 do
-			czesc(m, "Stos", Vector3.new(1.4, 0.45, 1), o * CFrame.new(2.4, 0.3 + i * 0.45, -2.4) * CFrame.Angles(0, math.rad(i * 15), 0),
-				if i % 2 == 0 then k else STAL)
+		for i, z in ipairs({ -2.2, -1.2, -0.2, 0.8 }) do
+			hantla(m, "Zapas", o * CFrame.new(3.4, if i % 2 == 0 then 2.7 else 1.6, z) * CFrame.Angles(0, math.rad(90), 0), CIEMNY)
 		end
+		hantla(m, "Hantla_L", o * CFrame.new(3.4, 2.7, 1.0) * CFrame.Angles(0, math.rad(90), 0), k)
+		hantla(m, "Hantla_P", o * CFrame.new(3.4, 1.6, 1.4) * CFrame.Angles(0, math.rad(90), 0), k)
 	end,
-	Szczescie = function(m, o, k) -- stolik z wielkimi kośćmi
-		czesc(m, "Stolik", Vector3.new(3.4, 0.4, 2.4), o * CFrame.new(0, 2.4, -3), DREWNO)
-		czesc(m, "Noga", Vector3.new(0.6, 2.2, 0.6), o * CFrame.new(0, 1.1, -3), DREWNO)
-		czesc(m, "Kość", Vector3.new(1, 1, 1), o * CFrame.new(-0.7, 3.1, -3) * CFrame.Angles(0, math.rad(25), 0), Color3.new(1, 1, 1))
-		czesc(m, "Kość", Vector3.new(1, 1, 1), o * CFrame.new(0.8, 3.1, -2.8) * CFrame.Angles(0, math.rad(-15), 0), k)
+	Kondycja = function(m, o, k)
+		-- długa ławka wzdłuż Z (gracz leży na plecach, głowa w stronę +Z) + stojak ze sztangą nad głową
+		czesc(m, "Ławka", Vector3.new(1.8, 0.5, 6), o * CFrame.new(0, 1.55, 0), k)
+		czesc(m, "Ławka obicie", Vector3.new(1.9, 0.2, 6.1), o * CFrame.new(0, 1.25, 0), CIEMNY)
+		for _, z in ipairs({ -2.4, 2.4 }) do
+			czesc(m, "Ławka noga", Vector3.new(1.4, 1.2, 0.4), o * CFrame.new(0, 0.6, z), CIEMNY)
+		end
+		for _, x in ipairs({ -1.9, 1.9 }) do
+			czesc(m, "Stojak", Vector3.new(0.35, 4.4, 0.35), o * CFrame.new(x, 2.2, 2.3), STAL)
+			czesc(m, "Stojak hak", Vector3.new(0.35, 0.35, 0.6), o * CFrame.new(x, 4.3, 2.1), STAL)
+		end
+		local g = grupa(m, "Sztanga", o * CFrame.new(0, 4.5, 2.1))
+		czesc(g, "Drążek", Vector3.new(6, 0.3, 0.3), o * CFrame.new(0, 4.5, 2.1), STAL)
+		for _, x in ipairs({ -2.6, 2.6 }) do
+			czesc(g, "Krążek", Vector3.new(0.45, 1.8, 1.8), o * CFrame.new(x, 4.5, 2.1), CIEMNY, Enum.PartType.Cylinder)
+			czesc(g, "Krążek mały", Vector3.new(0.3, 1.2, 1.2), o * CFrame.new(x + (if x > 0 then -0.38 else 0.38), 4.5, 2.1), k,
+				Enum.PartType.Cylinder)
+		end
+		bezKolizji(g)
+	end,
+	Zrecznosc = function(m, o, k)
+		-- bieżnia: pokład z taśmą (gracz biegnie w miejscu, patrząc w −Z), konsola z poręczami z przodu
+		czesc(m, "Bieżnia rama", Vector3.new(3.2, 0.7, 6.4), o * CFrame.new(0, 0.35, 0.2), CIEMNY)
+		czesc(m, "Bieżnia taśma", Vector3.new(2.4, 0.12, 5.8), o * CFrame.new(0, 0.76, 0.2), Color3.fromRGB(30, 30, 34))
+		for i = 1, 6 do
+			local p = czesc(m, "Tasma_" .. i, Vector3.new(2.3, 0.05, 0.22), o * CFrame.new(0, 0.84, -2.6 + (i - 1) * 1.0),
+				Color3.fromRGB(80, 80, 90))
+			p.CanCollide = false
+		end
+		czesc(m, "Rolka", Vector3.new(0.7, 0.7, 3.0), o * CFrame.new(0, 0.45, -3.0) * CFrame.Angles(0, math.rad(90), 0), STAL,
+			Enum.PartType.Cylinder)
+		for _, x in ipairs({ -1.45, 1.45 }) do
+			czesc(m, "Słupek", Vector3.new(0.3, 3.6, 0.3), o * CFrame.new(x, 2.4, -2.8), STAL)
+			czesc(m, "Poręcz", Vector3.new(0.25, 0.25, 2.6), o * CFrame.new(x, 3.6, -1.6), STAL)
+		end
+		czesc(m, "Konsola", Vector3.new(3.2, 1.2, 0.6), o * CFrame.new(0, 4.3, -2.9) * CFrame.Angles(math.rad(-25), 0, 0), k)
+		local ekran = czesc(m, "Ekran", Vector3.new(1.8, 0.6, 0.1), o * CFrame.new(0, 4.4, -2.58) * CFrame.Angles(math.rad(-25), 0, 0),
+			Color3.fromRGB(120, 255, 160), nil, Enum.Material.Neon)
+		ekran.CanCollide = false
+	end,
+	Inteligencja = function(m, o, k)
+		-- regał z książkami z boku (nie zasłania czytającego od strony placu) + otwarta książka do rąk
+		local r = o * CFrame.new(3.6, 0, -0.4) * CFrame.Angles(0, math.rad(90), 0)
+		czesc(m, "Regał", Vector3.new(4.6, 5, 1.2), r * CFrame.new(0, 2.5, 0), DREWNO)
+		local kolory = { CZERWONY, Color3.fromRGB(80, 130, 220), Color3.fromRGB(90, 180, 90), Color3.fromRGB(230, 190, 70), k }
+		for polka = 0, 2 do
+			for i = 0, 7 do
+				czesc(m, "Tom", Vector3.new(0.42, 1.1, 0.8), r * CFrame.new(-1.8 + i * 0.52, 0.9 + polka * 1.5, -0.35),
+					kolory[(i + polka) % #kolory + 1])
+			end
+		end
+		local g = grupa(m, "Ksiazka", o * CFrame.new(-3.2, 1.2, -1))
+		-- układ książki: grzbiet wzdłuż Z, strony otwarte w X, środek w Os
+		czesc(g, "Okładka L", Vector3.new(1.05, 0.12, 1.5), o * CFrame.new(-3.2 - 0.55, 1.2, -1), k)
+		czesc(g, "Okładka P", Vector3.new(1.05, 0.12, 1.5), o * CFrame.new(-3.2 + 0.55, 1.2, -1), k)
+		czesc(g, "Strony L", Vector3.new(0.95, 0.14, 1.36), o * CFrame.new(-3.2 - 0.52, 1.3, -1), Color3.fromRGB(250, 244, 226))
+		czesc(g, "Strony P", Vector3.new(0.95, 0.14, 1.36), o * CFrame.new(-3.2 + 0.52, 1.3, -1), Color3.fromRGB(250, 244, 226))
+		bezKolizji(g)
+		local kart = grupa(m, "Kartka", o * CFrame.new(-3.2, 1.38, -1))
+		czesc(kart, "Arkusz", Vector3.new(0.92, 0.03, 1.32), o * CFrame.new(-3.2 + 0.47, 1.38, -1), Color3.fromRGB(255, 250, 236))
+		bezKolizji(kart)
+		czesc(m, "Stolik", Vector3.new(1.6, 0.3, 1.6), o * CFrame.new(-3.2, 1.0, -1), DREWNO)
+		czesc(m, "Stolik noga", Vector3.new(0.4, 1.0, 0.4), o * CFrame.new(-3.2, 0.5, -1), DREWNO)
+	end,
+	Pancerz = function(m, o, k)
+		-- NPC z koszem pomidorów 11 st przed graczem (patrzy na gracza) + tarcza na stojaku obok maty
+		local n = o * CFrame.new(0, 0, -11) * CFrame.Angles(0, math.rad(180), 0)
+		local rz = Instance.new("Model")
+		rz.Name = "Rzucajacy"
+		local skora = Color3.fromRGB(236, 190, 150)
+		czesc(rz, "Noga", Vector3.new(0.9, 2, 0.9), n * CFrame.new(-0.5, 1, 0), Color3.fromRGB(70, 80, 120))
+		czesc(rz, "Noga", Vector3.new(0.9, 2, 0.9), n * CFrame.new(0.5, 1, 0), Color3.fromRGB(70, 80, 120))
+		czesc(rz, "Tułów", Vector3.new(2, 2, 1), n * CFrame.new(0, 3, 0), Color3.fromRGB(220, 150, 60))
+		czesc(rz, "Fartuch", Vector3.new(1.6, 1.6, 0.1), n * CFrame.new(0, 2.8, -0.55), Color3.new(1, 1, 1))
+		czesc(rz, "Głowa", Vector3.new(1.2, 1.2, 1.2), n * CFrame.new(0, 4.6, 0), skora)
+		czesc(rz, "Czapka", Vector3.new(1.3, 0.5, 1.3), n * CFrame.new(0, 5.4, 0), CZERWONY)
+		czesc(rz, "Oko", Vector3.new(0.18, 0.18, 0.05), n * CFrame.new(-0.25, 4.7, -0.61), CIEMNY)
+		czesc(rz, "Oko", Vector3.new(0.18, 0.18, 0.05), n * CFrame.new(0.25, 4.7, -0.61), CIEMNY)
+		czesc(rz, "Ręka L", Vector3.new(0.8, 2, 0.8), n * CFrame.new(-1.4, 3, 0), skora)
+		-- prawa ręka obraca się wokół barku (Os = bark)
+		local ramie = grupa(rz, "Rzucajacy_Ramie", n * CFrame.new(1.4, 3.9, 0))
+		czesc(ramie, "Ręka P", Vector3.new(0.8, 2, 0.8), n * CFrame.new(1.4, 3, 0), skora)
+		czesc(ramie, "Pomidor w ręce", Vector3.new(0.6, 0.6, 0.6), n * CFrame.new(1.4, 1.8, 0), CZERWONY, Enum.PartType.Ball)
+		czesc(rz, "Kosz", Vector3.new(1.6, 1, 1.6), n * CFrame.new(-2.4, 0.5, 0.4), DREWNO_J, Enum.PartType.Cylinder)
+		for i = 1, 4 do
+			czesc(rz, "Pomidor", Vector3.new(0.6, 0.6, 0.6), n * CFrame.new(-2.4 + (i % 2) * 0.4 - 0.2, 1.2, 0.4 + (i > 2 and 0.3 or -0.3)),
+				CZERWONY, Enum.PartType.Ball)
+		end
+		bezKolizji(rz)
+		rz.Parent = m
+		-- tarcza (klient przenosi ją do lewej dłoni)
+		local g = grupa(m, "Tarcza", o * CFrame.new(-3.2, 2, 0))
+		czesc(g, "Tarcza", Vector3.new(0.3, 2.6, 2.6), o * CFrame.new(-3.2, 2, 0), k, Enum.PartType.Cylinder)
+		czesc(g, "Tarcza rant", Vector3.new(0.25, 2.8, 2.8), o * CFrame.new(-3.25, 2, 0), STAL, Enum.PartType.Cylinder)
+		czesc(g, "Tarcza guz", Vector3.new(0.4, 0.7, 0.7), o * CFrame.new(-3.05, 2, 0), STAL, Enum.PartType.Ball)
+		bezKolizji(g)
+		czesc(m, "Stojak tarczy", Vector3.new(0.3, 1.2, 0.3), o * CFrame.new(-3.4, 0.6, 0), DREWNO)
+	end,
+	Szczescie = function(m, o, k)
+		-- stolik przed graczem, kubek do kości w dłoni, dwie kości
+		czesc(m, "Stolik", Vector3.new(3.6, 0.3, 2.4), o * CFrame.new(0, 2.6, -2.6), Color3.fromRGB(40, 120, 70))
+		czesc(m, "Stolik rant", Vector3.new(3.8, 0.4, 2.6), o * CFrame.new(0, 2.45, -2.6), DREWNO)
+		czesc(m, "Stolik noga", Vector3.new(0.6, 2.4, 0.6), o * CFrame.new(0, 1.2, -2.6), DREWNO)
+		local kub = grupa(m, "Kubek", o * CFrame.new(1.2, 3.1, -2.4))
+		czesc(kub, "Kubek", Vector3.new(0.9, 0.9, 0.9), o * CFrame.new(1.2, 3.1, -2.4), Color3.fromRGB(110, 70, 40), Enum.PartType.Cylinder)
+		bezKolizji(kub)
+		for i = 1, 2 do
+			local g = grupa(m, "Kosc_" .. i, o * CFrame.new(-0.6 + i * 0.6, 3.0, -2.6))
+			czesc(g, "Kość", Vector3.new(0.5, 0.5, 0.5), o * CFrame.new(-0.6 + i * 0.6, 3.0, -2.6), if i == 1 then Color3.new(1, 1, 1) else k)
+			bezKolizji(g)
+		end
 	end,
 }
 
+------------------------------------------------------------------ budowa
 local kontener: Folder
-local miejsca: { [string]: CFrame } = {}
+local miejsca: { [string]: CFrame } = {} -- środek maty (wysokość podłogi) i kierunek stanowiska
 
 local function zbuduj()
 	local stary = workspace:FindFirstChild("TreningAFK")
@@ -127,53 +246,66 @@ local function zbuduj()
 		local m = Instance.new("Model")
 		m.Name = s.id
 		m:SetAttribute("Atrybut", s.atrybut)
-		-- mata: gracz stoi na niej przodem do rekwizytu
 		local mata = czesc(m, "Mata", Vector3.new(4, 0.3, 4), o * CFrame.new(0, 0.15, 0), s.kolor)
 		czesc(m, "Mata rant", Vector3.new(4.4, 0.2, 4.4), o * CFrame.new(0, 0.1, 0), CIEMNY)
-		-- tabliczka z nazwą statystyki
-		local tab = czesc(m, "Tabliczka", Vector3.new(3.6, 1.2, 0.3), o * CFrame.new(-3.4, 3.6, -1.4), DREWNO)
-		czesc(m, "Tabliczka słup", Vector3.new(0.3, 3, 0.3), o * CFrame.new(-3.4, 1.5, -1.4), DREWNO)
-		local sg = Instance.new("SurfaceGui")
-		sg.Face = Enum.NormalId.Back
-		sg.PixelsPerStud = 60
-		sg.LightInfluence = 0
-		local t = Instance.new("TextLabel")
-		t.Size = UDim2.fromScale(1, 1)
-		t.BackgroundTransparency = 1
-		t.Text = s.nazwa
-		t.TextScaled = true
-		t.FontFace = Font.new("rbxasset://fonts/families/LuckiestGuy.json")
-		t.TextColor3 = Color3.new(1, 1, 1)
-		local st = Instance.new("UIStroke")
-		st.Thickness = 3
-		st.Parent = t
-		t.Parent = sg
-		sg.Parent = tab
+		-- tabliczka z nazwą statystyki (z przodu stanowiska, czytelna z placu)
+		local tab = czesc(m, "Tabliczka", Vector3.new(3.6, 1.2, 0.3), o * CFrame.new(-2.6, 3.6, 3.2), DREWNO)
+		czesc(m, "Tabliczka słup", Vector3.new(0.3, 3, 0.3), o * CFrame.new(-2.6, 1.5, 3.2), DREWNO)
+		for _, strona in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back }) do
+			local sg = Instance.new("SurfaceGui")
+			sg.Face = strona
+			sg.PixelsPerStud = 60
+			sg.LightInfluence = 0
+			local t = Instance.new("TextLabel")
+			t.Size = UDim2.fromScale(1, 1)
+			t.BackgroundTransparency = 1
+			t.Text = s.nazwa
+			t.TextScaled = true
+			t.FontFace = Font.new("rbxasset://fonts/families/LuckiestGuy.json")
+			t.TextColor3 = Color3.new(1, 1, 1)
+			local st = Instance.new("UIStroke")
+			st.Thickness = 3
+			st.Parent = t
+			t.Parent = sg
+			sg.Parent = tab
+		end
 		local rek = REKWIZYTY[s.id]
 		if rek then
 			rek(m, o, s.kolor)
 		end
-		-- podpowiedź E na macie
 		local pp = Instance.new("ProximityPrompt")
 		pp.ActionText = "Train " .. s.nazwa
 		pp.ObjectText = s.czynnosc
 		pp.KeyboardKeyCode = Enum.KeyCode.E
 		pp.HoldDuration = 0
-		pp.MaxActivationDistance = 9
+		pp.MaxActivationDistance = 10
 		pp.RequiresLineOfSight = false
 		pp.Parent = mata
 		m.PrimaryPart = mata
 		m.Parent = f
-		miejsca[s.id] = o * CFrame.new(0, 3, 0)
+		miejsca[s.id] = o
 	end
 	f.Parent = workspace
 	kontener = f
 end
 zbuduj()
 
+-- gdzie stoi (leży) korzeń postaci na stanowisku: w układzie o, wysokość z HipHeight awatara
+local function pozaKorzenia(id: string, hum: Humanoid, hrp: BasePart): CFrame
+	local o = miejsca[id]
+	local stoi = hum.HipHeight + hrp.Size.Y / 2
+	if id == "Kondycja" then
+		-- na plecach na ławce (wierzch ławki ~1,8), głowa w stronę +Z układu o, twarz do nieba
+		return o * CFrame.new(0, 1.8 + hrp.Size.Z / 2 + 0.25, 0.4) * CFrame.Angles(math.rad(90), 0, 0)
+	elseif id == "Zrecznosc" then
+		return o * CFrame.new(0, 0.82 + stoi, 0.4)
+	end
+	return o * CFrame.new(0, 0.3 + stoi, 0)
+end
+
 ------------------------------------------------------------------ stan treningu graczy (tylko w sesji)
 -- postep liczony w powtórzeniach (0 … D.powtorzenNaPasek); skill check: serwer losuje chwilę i numer,
--- klient odsyła numer; trafienie w oknie czasu = przyspieszenie (oszukać się nie da bez okna od serwera)
+-- klient odsyła numer; trafienie w oknie czasu = przyspieszenie
 type Trening = { id: string, postep: number, nastepnyCheck: number, check: number?, checkDo: number, szybkoDo: number }
 local trwa: { [Player]: Trening } = {}
 local postepy: { [Player]: { [string]: number } } = {} -- niepełny pasek stanowiska zostaje, gdy gracz odejdzie
@@ -194,7 +326,6 @@ local function dodajStatystyke(gracz: Player, s: any, ile: number)
 	local sy = tp and tp:FindFirstChild("Sygnaly")
 	local e = sy and sy:FindFirstChild("PrzyrostStatystyki")
 	if e and e:IsA("BindableEvent") and workspace:FindFirstChild("StanGracza") then
-		-- stan gracza Karola dopisuje do profilu (zapis) i do atrybutu
 		e:Fire(gracz, { atrybut = s.atrybut, przyrost = ile, zrodlo = "TreningAFK", gra = "afk_" .. s.id })
 	else
 		gracz:SetAttribute(s.atrybut, wartosc(gracz, s.atrybut) + ile)
@@ -203,6 +334,11 @@ end
 
 local function losujCheck(): number
 	return os.clock() + D.skillCheckCoMin + math.random() * (D.skillCheckCoMaks - D.skillCheckCoMin)
+end
+
+local function korzen(gracz: Player): (BasePart?, Humanoid?)
+	local char = gracz.Character
+	return char and char:FindFirstChild("HumanoidRootPart") :: BasePart?, char and char:FindFirstChildOfClass("Humanoid")
 end
 
 local function zakoncz(gracz: Player)
@@ -214,14 +350,20 @@ local function zakoncz(gracz: Player)
 	postepy[gracz][t.id] = t.postep
 	trwa[gracz] = nil
 	gracz:SetAttribute("TreningAFK", nil)
+	local hrp, hum = korzen(gracz)
+	if hrp and hum then
+		hrp.Anchored = false
+		-- zejście ze stanowiska: przed matę, na stojąco
+		local o = miejsca[t.id]
+		hrp.CFrame = o * CFrame.new(0, 0.3 + hum.HipHeight + hrp.Size.Y / 2, 3) * CFrame.Angles(0, math.rad(180), 0)
+	end
 	Z:FireClient(gracz, "koniec")
 end
 
 local function zacznij(gracz: Player, id: string)
 	local s = D.stanowisko(id)
-	local char = gracz.Character
-	local hrp = char and char:FindFirstChild("HumanoidRootPart") :: BasePart?
-	if not (s and hrp and miejsca[id]) then
+	local hrp, hum = korzen(gracz)
+	if not (s and hrp and hum and miejsca[id]) then
 		return
 	end
 	if trwa[gracz] then
@@ -232,7 +374,9 @@ local function zacznij(gracz: Player, id: string)
 			return -- ktoś już tu trenuje
 		end
 	end
-	hrp.CFrame = miejsca[id]
+	hrp.AssemblyLinearVelocity = Vector3.zero
+	hrp.CFrame = pozaKorzenia(id, hum, hrp)
+	hrp.Anchored = true
 	local p = (postepy[gracz] and postepy[gracz][id]) or 0
 	trwa[gracz] = { id = id, postep = p, nastepnyCheck = losujCheck(), check = nil, checkDo = 0, szybkoDo = 0 }
 	gracz:SetAttribute("TreningAFK", id)
@@ -283,12 +427,9 @@ RunService.Heartbeat:Connect(function(dt)
 	local teraz = os.clock()
 	for gracz, t in pairs(trwa) do
 		local s = D.stanowisko(t.id)
-		local char = gracz.Character
-		local hrp = char and char:FindFirstChild("HumanoidRootPart") :: BasePart?
-		local hum = char and char:FindFirstChildOfClass("Humanoid")
-		-- odległość w poziomie: skok nie przerywa treningu, odejście tak
-		local roznica = hrp and (hrp.Position - miejsca[t.id].Position) or Vector3.zero
-		if not (s and hrp and hum and hum.Health > 0) or Vector3.new(roznica.X, 0, roznica.Z).Magnitude > D.zasieg then
+		local hrp, hum = korzen(gracz)
+		if not (s and hrp and hum and hum.Health > 0 and hrp.Anchored) then
+			-- śmierć, odrodzenie albo ktoś odkotwiczył postać
 			zakoncz(gracz)
 			continue
 		end
@@ -302,7 +443,6 @@ RunService.Heartbeat:Connect(function(dt)
 		else
 			Z:FireClient(gracz, "postep", t.postep, tempo)
 		end
-		-- skill check
 		if t.check == nil and teraz >= t.nastepnyCheck then
 			licznikCheck += 1
 			t.check = licznikCheck
