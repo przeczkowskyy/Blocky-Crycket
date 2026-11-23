@@ -1,0 +1,20 @@
+{
+ "id": "r-20261123-101655-74a5",
+ "tytul": "Gra o smoku: seria logowań, zadania dzienne, ranking (retencja1)",
+ "opis_md": "Wersja „retencja1” gry o smoku (Dragon Lair Evolution) jest opublikowana prywatnie.\n\n**Co doszło**\n- **Seria logowań (7 dni):** nagrody rosną z każdym dniem: złoto, podwójny wzrost w dniach 3 i 5, losowanie odmiany w dniu 7. Opuszczony dzień zaczyna serię od nowa.\n- **Trzy zadania dzienne:** zmieniają się o północy UTC. Przy każdym wejściu pokazuje się ekran powitania z serią i zadaniami.\n- **Ranking:** stadium i liczba odrodzeń przy nazwie gracza oraz tablica TOP REBIRTHS na łące.\n- **Kolory linii:** boty i trofea na postumentach mają kolory swojej linii smoka (Ember, Frost, Storm, Shadow).\n- **Stopy pisklęcia** już się nie ślizgają. Przy okazji naprawiony błąd, przez który w części sesji tułów, szyja i ogon smoków nie miały animacji.\n- **Tempo:** stadium 5 po ok. 5:49, pierwsze odrodzenie po ok. 20 min.\n- **Wydarzenia** Dragon Rain i Golem Rampage idą według czasu UTC, więc wszystkie serwery mają ten sam rozkład.\n\n**Sprawdzone:** testy logiki 41/42 (1 pominięty), próba w Studio 53/53, telefon i tablet 9/9.\n\n**Do zrobienia przed wydaniem**\n- Zagrać na prawdziwym telefonie.\n- Zgoda na wgranie ikon i dźwięków.\n- Akceptacja opisu strony gry (szkic w notatce projektu).\n- Test z ludźmi.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-23T10:16:55+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/EwolucjaGra",
+   "etykieta": "Gra o smoku"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ]
+}
