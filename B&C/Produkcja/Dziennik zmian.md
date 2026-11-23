@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-24 · Claude Code u Pawła (kocie bronie w wyborze rasy; sala wyboru: miększa kreska i tekstury v2)
+- Bronie startowe w wersji dla kotów (Paweł: równe pomniejszenie robiło „mini kijek”): `bronie_startowe.kocia()` — krótsze wzdłuż rękojeści (×0,62), grubsze w poprzek (×1,1); `tools/studio/bronie_kot.py` buduje `WyborKlasyModele.Weapon_<klasa>_Kot`, `ClassSelectClient` daje je kotom ras (atrybut `BronDoGlowy`), czubek broni = czubek głowy kota (sprawdzone w Play liczbowo).
+- Sala wyboru: tusz ciemnobrązowy zamiast czarnego, obrysy sylwetek grup brązowe i półprzezroczyste; nowe tekstury v2 (miększy styl, cienka brązowa kreska) wgrane po „tak” Pawła jako nowe wersje `CsTex01`–`CsTex16` i podmienione w sali (4073 ściany). [[Tekstury sali wyboru klasy]], „Wersja 2”.
+
 ## 2026-11-24 · Claude Code u Pawła (koty ras: Kot-Demon i Kot-Człowiek w wyborze rasy; D-145)
 - Referencje 7 kocich ras (Higgsfield, po jednej wersji): [[Rasy jako koty — referencje]]; uwaga Pawła — elfy (i goblin) z jedną parą uszu.
 - Kot-Demon zbudowany na modelu Kota-Maga bez zmian proporcji: `swiat/postacie/kot_demon.py` (własna kopia `kot_mag` z inną paletą + rogi, żółte oczy, brwi, kieł, grot ogona; pełny strój i strój podstawowy) oraz Kot-Człowiek (rudy kot w koszulce i niebieskich spodenkach). Wszystkie klipy Kota-Maga (11). Budowa w Studio: `tools/studio/kot_demon_studio.py` → własny kontener `Workspace/KotDemonPodglad` na placu miasteczka (figury grają animacje w Play). Plik Karola `kot_mag.py` nietknięty.

@@ -1895,227 +1895,307 @@
     },
     "CsTex01": {
       "created_at": "2026-11-17T19:36:57+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "137880075131538",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex01_KamienMuru.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:26+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:52+00:00",
-      "approved_sha256": "0465f60d2f691552b7aeacefdd288423676232ee029868c7b21dc564e37bbe17",
-      "roblox_image": "137880075131538",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:19+00:00",
+      "approved_sha256": "1693e9703b399ed0de18ca2e2b55fe6c6c9e3d76297b3b73c21708439cb3ce06",
+      "roblox_image": "124850720793067",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex02": {
       "created_at": "2026-11-17T19:36:57+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "134437790908060",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex02_PlytyPodlogi.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:26+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:52+00:00",
-      "approved_sha256": "198ba195a5d50823ef7836abad575ba37d9e3b0d62af12ffff717a1284e9c96c",
-      "roblox_image": "134437790908060",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:19+00:00",
+      "approved_sha256": "df8e5c00f836c59a72dbf2375c77f121349ba21bb8c404bb0d2757b28a326835",
+      "roblox_image": "99730536392239",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex03": {
       "created_at": "2026-11-17T19:36:57+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "79725482520001",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex03_Tynk.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:26+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:52+00:00",
-      "approved_sha256": "2a160906b71a9256789d22f6b877b7b084a437922c8d6e80c20d0535abcc3a18",
-      "roblox_image": "79725482520001",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:20+00:00",
+      "approved_sha256": "9582d78ff16f64c83167fd91906471206c70b91f0e5359d05ffbabfef5b2cabb",
+      "roblox_image": "83860363530000",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex04": {
       "created_at": "2026-11-17T19:36:57+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "81345747170619",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex04_Cegla.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:26+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:52+00:00",
-      "approved_sha256": "33352bb46cf93ef36ba7787931bf02c4d57e8aa5642db153757c263240c722bb",
-      "roblox_image": "81345747170619",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:20+00:00",
+      "approved_sha256": "8f681195e4d07d1f8e5ce9c1308df8b7ae9548200081925501aba664859cc0ad",
+      "roblox_image": "85599806414499",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex05": {
       "created_at": "2026-11-17T19:36:58+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "118447380971659",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex05_BelkaDrewno.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:26+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:52+00:00",
-      "approved_sha256": "96b2c5676840966826cf50fe9b07580f110e80137f591704f34467fe89657609",
-      "roblox_image": "118447380971659",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:20+00:00",
+      "approved_sha256": "ee1d5be4473e2019b521880a7d000050554dc69f431acec1f7912fcfc8d7686c",
+      "roblox_image": "71241194302925",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex06": {
       "created_at": "2026-11-17T19:36:58+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "91769143068961",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex06_DeskiPolki.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:26+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:52+00:00",
-      "approved_sha256": "94547991bae4f937da93d61230fb731bcb3171fa0374d9e466d8dc4c15440832",
-      "roblox_image": "91769143068961",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:20+00:00",
+      "approved_sha256": "e7fc48bf864077c4f6b7fb71afec624de6c825d239b0afe2327830f89789caa1",
+      "roblox_image": "120082727765133",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex07": {
       "created_at": "2026-11-17T19:36:58+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "91428654681271",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex07_DeskiDachu.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:52+00:00",
-      "approved_sha256": "3bf8853d61d3e549e320329d44c932150ff3c06591d68ec7ab6a358719ae5325",
-      "roblox_image": "91428654681271",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:20+00:00",
+      "approved_sha256": "00fca3710a8cf5c3827021515da54fb06fd44b40adcdf0a60bfbe236ff7792e5",
+      "roblox_image": "114017817423852",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex08": {
       "created_at": "2026-11-17T19:36:58+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "74697520156973",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex08_Beczka.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:52+00:00",
-      "approved_sha256": "bfc13852ff595d82b52465d7a2c7a119cc66774fbc5f32932463557f67b57c0a",
-      "roblox_image": "74697520156973",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:21+00:00",
+      "approved_sha256": "49cb04f85e2732625b657396eb2003d58711c5f8f2f075c986b1a86f6d06fcc4",
+      "roblox_image": "120490710658267",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex09": {
       "created_at": "2026-11-17T19:36:58+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "71161134487822",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex09_KamienKominka.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:52+00:00",
-      "approved_sha256": "d06e9ed982307c304cc232b822fff3180a6ec01e26d0b19031a74e2123c73fad",
-      "roblox_image": "71161134487822",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:21+00:00",
+      "approved_sha256": "f141e78bfa12f55194ce05e2d06b07684da69d9d5621d02c4dee15b56cc8cb21",
+      "roblox_image": "140378080945883",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex10": {
       "created_at": "2026-11-17T19:36:58+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "122284750022263",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex10_Palenisko.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:53+00:00",
-      "approved_sha256": "01d35bdb94dbe969de9af2e4f5b30c907558b7643700660dfb7df8f4a73fe69e",
-      "roblox_image": "122284750022263",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:21+00:00",
+      "approved_sha256": "c8f38400120381c99c536adec90aaca1d438993c98dec6fdf5807eb391309d10",
+      "roblox_image": "98781324506885",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex11": {
       "created_at": "2026-11-17T19:36:58+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "121481792175782",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex11_KamienPodestu.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:53+00:00",
-      "approved_sha256": "b40b29ffc98203794eca0e99a17a79095e12cfad9071959d813b08e09b149db2",
-      "roblox_image": "121481792175782",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:21+00:00",
+      "approved_sha256": "fff524c7825fc9775e2a3c9b575308ebb9e5541a825d3599804be9ba322cc428",
+      "roblox_image": "108086274575703",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex12": {
       "created_at": "2026-11-17T19:36:59+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "79692923169468",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex12_Zloto.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:53+00:00",
-      "approved_sha256": "bd92cd79eb0d027abe5d28b6cfc8f52c458c02bddfaba86b7c5b5082aa5f3290",
-      "roblox_image": "79692923169468",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:22+00:00",
+      "approved_sha256": "9a4a24582a174a6fc1d30193389ffc4cdc236fd7f40dfc22c2f7f2bbd1a2aed2",
+      "roblox_image": "110124365896458",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex13": {
       "created_at": "2026-11-17T19:36:59+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "76069377231755",
+          "replaced_at": "2026-11-23T23:37:27+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex13_Dywan.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:27+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:53+00:00",
-      "approved_sha256": "b4ae16b0a3bfb1c4445aad07a009a1cb2a676661ec97bba14a44ae97c734c552",
-      "roblox_image": "76069377231755",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:22+00:00",
+      "approved_sha256": "ba56794bdcc3e5b8e36cb71a68ff4b1a5906625a41ed76e51260847c40f45566",
+      "roblox_image": "75936865759795",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex14": {
       "created_at": "2026-11-17T19:36:59+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "75416315816588",
+          "replaced_at": "2026-11-23T23:37:28+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex14_Tkanina.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:28+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:53+00:00",
-      "approved_sha256": "12830404031e4165a0305bef6f32ee8c9f86e182b1f8b493ec7168edae537593",
-      "roblox_image": "75416315816588",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:22+00:00",
+      "approved_sha256": "940c4ec4b6f13c41dbcb6a7af4614d359b82423eadcc776aa79f55c74e0ff607",
+      "roblox_image": "125087961136693",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex15": {
       "created_at": "2026-11-17T19:36:59+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "91060766847343",
+          "replaced_at": "2026-11-23T23:37:28+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex15_Zelazo.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:28+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:53+00:00",
-      "approved_sha256": "84e31de0a03427016a92587ddd3d26c37b13a77bc70e93422b705e675caa152e",
-      "roblox_image": "91060766847343",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:22+00:00",
+      "approved_sha256": "492ced65bde950d498b33cbc5daa1e4211b6f0e3cfe2839f3ca9685e4112ec0e",
+      "roblox_image": "119327815615605",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsTex16": {
       "created_at": "2026-11-17T19:36:59+00:00",
-      "history": [],
+      "history": [
+        {
+          "roblox_image": "92670295650616",
+          "replaced_at": "2026-11-23T23:37:28+00:00"
+        }
+      ],
       "category": "texture",
       "status": "in_roblox",
       "processed": "assets/processed/ClassSelectTextures/CsTex16_DeskiSkrzyni.png",
       "usage": "Tekstury sali wyboru klasy",
-      "updated_at": "2026-11-17T19:47:27+00:00",
+      "updated_at": "2026-11-23T23:37:28+00:00",
       "approved_by_user": true,
-      "approved_at": "2026-11-17T19:43:53+00:00",
-      "approved_sha256": "eb955d0be0696ce7fdffb1a2a9e396b24c80c42906fef70904feb97d3e56e3ec",
-      "roblox_image": "92670295650616",
-      "notes": "wgrane 2026-11-17 po tak Pawla"
+      "approved_at": "2026-11-23T23:34:22+00:00",
+      "approved_sha256": "c7db6cdfb496d0654d94bcf54314d6eac8641039e56d2ffe984cdac994a7eb92",
+      "roblox_image": "122070761203947",
+      "notes": "v2 24.11: miekszy styl kreskowki (Pawel: slabsza kreska), arkusz assets/raw/ClassSelectTextures/v2.png"
     },
     "CsProp01": {
       "created_at": "2026-11-17T19:55:15+00:00",
@@ -3258,5 +3338,5 @@
       "roblox_image": "117543226238584"
     }
   },
-  "updated_at": "2026-11-23T23:19:44+00:00"
+  "updated_at": "2026-11-23T23:37:28+00:00"
 }

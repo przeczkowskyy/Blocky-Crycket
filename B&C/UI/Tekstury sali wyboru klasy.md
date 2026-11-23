@@ -8,6 +8,11 @@ tags: [ui, klasy, tekstury, swiat]
 > [!info] W skrócie
 > Paczka 16 komiksowych tekstur (Glossy Ink) **dla sali ekranu wyboru bohatera** ([[Selektor bohatera]]). Wygenerował ją Paweł 16.11 jednym arkuszem w Higgsfield, a Claude pociął ją na osobne pliki. **Dla Karola:** do nałożenia na obiekty sali `Workspace/WyborKlasy` (generator `swiat/wybor_klasy/generuj.py`). Tylko do tego ekranu, nie na mapy gry. **Stan 17.11:** wgrane do Roblox po „tak” Pawła (ID w `assets/manifest.json`, `CsTex01`–`CsTex16`) i nałożone na salę. Potem na prośbę Pawła („tekstury na wszystko”) doszła reguła ogólna według materiału (kamień, drewno, deski, tynk, metal, złoto, tkanina) i beczki — razem 726 z 1160 widocznych części, 3881 ścian. Bez tekstur zostają tylko kreska (czarne obrysy i ciemna fuga, SmoothPlastic), drobne rekwizyty z SmoothPlastic (kufle, talerze, świece, księgi, eliksiry) i światła Neon. Reguły „co na co”: `swiat/wybor_klasy/tekstury.json`; nakłada `tools/studio/deploy_classselect.py` (po każdej przebudowie sali przez `tools/studio_buduj.py` trzeba uruchomić go ponownie).
 
+## Wersja 2 — miększa kreska (24.11)
+- Paweł 24.11: „żeby te kreski nie były aż takie bardzo mocne” i tekstury „troszkę bardziej kreskówkowe”. Nowy arkusz 4 × 4 (Higgsfield, Nano Banana 2.1, 4k, 1 wersja, referencje: arkusz v1 i key-art): te same materiały w tych samych kafelkach, cienka brązowa kreska zamiast grubego czarnego tuszu, bez pęknięć i rastra. Świadome odstępstwo od stałego początku promptu Glossy Ink („thick 4px black comic ink outlines”) — tylko dla tekstur tej sali.
+- Pocięte po szarym tle (tools/tex_sheet.py zakłada białe), wgrane po „tak” Pawła 24.11 jako nowe wersje `CsTex01`–`CsTex16` (manifest), w Studio podmienione ID na 4073 ścianach sali. Drobne rekwizyty (`CsProp`) bez zmian. Porównanie: `assets/processed/ClassSelectTextures/_arkusz_v2_porownanie.jpg`.
+- Do tego miększa kreska geometrii: tusz `4A3426` zamiast `1D1916` (`generuj.py`), obrysy sylwetek grup brązowe i półprzezroczyste (`deploy_classselect.py`).
+
 ## Pliki
 - Pocięte kafelki 1024 × 1024 px: `assets/processed/ClassSelectTextures/CsTex01_…png` – `CsTex16_…png`.
 - Podgląd całego arkusza: `assets/processed/ClassSelectTextures/_arkusz_v1.jpg`. Oryginał 4096 px leży lokalnie u Pawła w `assets/raw/ClassSelectTextures/v1.png` (folder `raw` nie trafia do gita).
