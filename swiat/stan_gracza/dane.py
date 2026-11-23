@@ -50,8 +50,10 @@ PAKIETY_WYDATKOW = ["PetyProba", "KowalProba"]                                # 
 # punkty statystyk za poziom (D-097 ✅ 17.11: „5 punktów do rozdania za poziom”). PUNKTY_SAMO_NA_POZIOM = ile
 # punktów na poziom rozdziela się SAMO rozkładem klasy: 5 = wariant b (odstępstwo przyjęte roboczo dla balansu — suma
 # 10 jak przy strojeniu potworów); 0 = czysty wariant a z D-097 (las ok. 61 zamiast 31 min — punkty_statystyk.py)
-PUNKTY_DO_ROZDANIA = 5
-PUNKTY_SAMO_NA_POZIOM = 5
+# D-140 (Paweł 23.11, gałąź pawel/diamenty-afk, czeka na Karola): awans NIE daje punktów statystyk — statystyki
+# z treningu AFK (D-141, src/server/TreningAFK.server.luau), przedmiotów i drzewka; za poziom Diamenty (niżej)
+PUNKTY_DO_ROZDANIA = 0
+PUNKTY_SAMO_NA_POZIOM = 0
 
 # Gemy bez płacenia (D-099 ✅ 17.11; liczby „do zmiany”, tools/walka/REBIRTH_1711.md część 1): za każdy awans i za
 # pierwsze pokonanie strażnika każdego biomu (gatunek zaczyna się od PREFIKS_STRAZNIKA); za co dziesiątą wygraną
@@ -67,7 +69,7 @@ ZAPIS_WLACZONY = True
 # poziomu 99–100%) — po D-096 w pierwszej zagrodzie chodzą slime'y 1.–3. poziomu (README, punkt 2b)
 SZCZESCIE_POCZATKUJACEGO = 1.75
 
-GEMY_ZA_POZIOM = 10
+GEMY_ZA_POZIOM = 25  # D-140: Diamenty za poziom idą na drzewko (było 10, D-099); liczba robocza
 GEMY_ZA_STRAZNIKA = 100
 PREFIKS_STRAZNIKA = "straznik_"
 

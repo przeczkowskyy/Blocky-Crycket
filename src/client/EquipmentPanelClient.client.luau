@@ -417,6 +417,14 @@ for _, card in ipairs(panel.Stats:GetChildren()) do
 			end
 			action:Fire("AddStat", stat)
 		end)
+		-- D-140 (Paweł 23.11, gałąź pawel/diamenty-afk): awans nie daje punktów do rozdania, statystyki rosną
+		-- z treningu AFK — „+” widać tylko, gdy stan gracza ma jeszcze punkty w puli (atrybut PunktyDoRozdania)
+		local function plusWidoczny()
+			local pula = player:GetAttribute("PunktyDoRozdania")
+			card.PlusButton.Visible = typeof(pula) == "number" and pula > 0
+		end
+		player:GetAttributeChangedSignal("PunktyDoRozdania"):Connect(plusWidoczny)
+		plusWidoczny()
 	end
 end
 

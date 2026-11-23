@@ -146,8 +146,8 @@ return {
 	},
 	pakiety = { wartosci_maks = 2000, glebokosc_maks = 8, napis_maks = 200, pakietow_maks = 32 },
 	punkty = {
-		na_poziom = 5,
-		auto_na_poziom = 5,
+		na_poziom = 0,
+		auto_na_poziom = 0,
 		atrybut = "PunktyDoRozdania",
 		atrybut_wylacznika = "PunktyStatystyk",
 		komunikat_brak = "Brak punktów — zdobądź poziom",
@@ -155,7 +155,7 @@ return {
 	},
 	poczatek = { procent = 1.75, zrodlo = "szczescie_poczatkujacego", atrybut_wylacznika = "SzczesciePoczatkujacego" },
 	gemy = {
-		za_poziom = 10,
+		za_poziom = 25,
 		za_straznika = 100,
 		prefiks_straznika = "straznik_",
 		komunikat_straznika = "+%d Gemów za pierwsze pokonanie strażnika!",
@@ -2218,13 +2218,13 @@ return {
 		pula_sama = {
 			{ poziom = 1, wl = true, wynik = 30 },
 			{ poziom = 1, wl = false, wynik = 30 },
-			{ poziom = 2, wl = true, wynik = 35 },
+			{ poziom = 2, wl = true, wynik = 30 },
 			{ poziom = 2, wl = false, wynik = 40 },
-			{ poziom = 5, wl = true, wynik = 50 },
+			{ poziom = 5, wl = true, wynik = 30 },
 			{ poziom = 5, wl = false, wynik = 70 },
-			{ poziom = 11, wl = true, wynik = 80 },
+			{ poziom = 11, wl = true, wynik = 30 },
 			{ poziom = 11, wl = false, wynik = 130 },
-			{ poziom = 999, wl = true, wynik = 5020 },
+			{ poziom = 999, wl = true, wynik = 30 },
 			{ poziom = 999, wl = false, wynik = 10010 },
 		},
 		zmiana = {
@@ -2242,5 +2242,5 @@ return {
 			{ znana = 9999, nowa = 10000, pula = 5, wynik = { 9999, 5, "ok" } },
 		},
 	},
-	skrot = "57a6e3cc7c3d",
+	skrot = "3e59f6477880",
 }
