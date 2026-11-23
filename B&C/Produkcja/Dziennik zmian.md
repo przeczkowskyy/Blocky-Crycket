@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Karola (gra o smoku: powody powrotu — wersja „retencja1”)
+- Agent budujący (Opus, ok. 450 tys. tokenów, 1 h 45 min) zrobił: stopy pisklęcia bez poślizgu (oraz naprawę rigu, przez którą w części sesji tułów, szyja i ogon smoków stały), serię logowań, trzy zadania dzienne z ekranem powitania, ranking odrodzeń, kolory linii na botach i trofeach, tempo (stadium 5 ok. 5:49) i zegary wydarzeń według UTC. Zapis gracza w wersji 2 z migracją.
+- Sesja główna sprawdziła testy (41/42, 1 pominięty) i dane modeli (0 uwag), przejrzała film, zapisała zmiany w repozytorium i opublikowała grę prywatnie (potwierdzone znacznikiem czasu wersji). Film demo wysłany Karolowi na telefon.
+- Stan i wady: [[Projekt próbki — Monster Evolution]]; zadania zaktualizowane.
+
 ## 2026-11-23 · Claude Code u Karola (rano: powody powrotu w budowie, szkic strony gry)
 - Karol rano: „Gra wygląda nieźle, ale będziemy jeszcze musieli inwestować. Pracuj dalej nad następnymi modułami… masz samowolkę”. Link do wersji prywatnej wysłany mu na telefon.
 - Agent budujący (Opus) zaczął krok „retencja1”: poprawka stóp pisklęcia, seria logowań, zadania dzienne, ranking, kolory linii, tempo, zegary wydarzeń według czasu UTC. Koniec ok. 11:45.

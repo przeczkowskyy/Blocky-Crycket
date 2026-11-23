@@ -135,7 +135,24 @@ Tytuł: „Dragon Lair Evolution”. Gra ma wyjść publicznie we wtorek–środ
 - **Stan gry rano 23.11 (opublikowana prywatnie, wersja „odrodzenie1”):** smoki z Blendera z 25 klipami w grze (rigi z części, klipy odtwarzane kodem, wersje uproszczone dla dalekich smoków); świat z propozycji mapy (łąka, las, wyspa z lawą, stawy, czaszka, posąg, brama, dwanaście legowisk, przeszkody, owce, światło i niebo ustawiane w grze); interfejs według wzorów (żywe portrety, przyciski z odliczaniem i blokadą, panel legowiska, moment ewolucji, tabela ikon z zastępstwami — prawdziwe ikony po wgraniu); odrodzenie z liniami Ember, Frost, Storm, Shadow i mnożnikiem ×1,25 (do ×3), wydarzenia Dragon Rain co 20 min i Golem Rampage co 45 min, dzienne jajo. Tempo z symulacji: pierwsze odrodzenie ok. 19:30. Testy logiki 38/39 (1 pominięty), próba w Studio 48/48, telefon i tablet 8/8, czas klatki 16,7 ms. Filmy demo: wyklucie i walka, świat, interfejs, odrodzenie.
 - **Znane wady przed wydaniem:** stopy pisklęcia ślizgają się (za krótki krok w danych klipu — poprawka w Blenderze); stadium 5 przychodzi po ok. 8:40 i najdłuższa przerwa bez nowości to 3:48; trofea na postumentach i boty zawsze w kolorach Ember; każda linia ma jedną paletę na osiem stadiów; zegary wydarzeń liczą od startu serwera; brak serii logowań i zadań dziennych, brak rankingu; nikt jeszcze nie grał na prawdziwym telefonie.
 - **Do decyzji ludzi:** uwagi do wyglądu smoków (oczy pisklęcia, kolory stadiów, ikona); folder z ikonami interfejsu do zatwierdzonych folderów wgrywania w Studio (bez tego ikon nie da się wgrać); dźwięki smoka (jedno wgranie arkusza — osobna zgoda).
-- **W budowie od 23.11 rano (krok „retencja1”, agent budujący, koniec ok. 11:45):** poprawka stóp pisklęcia w danych klipów, seria logowań (7 dni), trzy zadania dzienne, ranking (stadium i odrodzenia na serwerze, tablica najwięcej odrodzeń w świecie), kolory trofeów i botów według linii, tempo (stadium 5 do 7:00, przerwa bez nowości do 2:30), zegary wydarzeń według czasu UTC, wspólne dla wszystkich serwerów. Karol 23.11: „Gra wygląda nieźle, ale będziemy jeszcze musieli inwestować… pracuj dalej”.
+- **Krok „retencja1” (23.11 przed południem, opublikowany prywatnie):**
+  - Stopy pisklęcia już się nie ślizgają: chód i bieg mają próbkę co klatkę; przesuw stopy w podporze 0,01–0,03 studa przy celu poniżej 0,1. Przy okazji naprawiony błąd rigu: siedem kości o tych samych nazwach co widoczne części powodowało, że w części sesji tułów, szyja i ogon wszystkich smoków stały bez animacji.
+  - Seria logowań: 7 dni według doby UTC, przerwa zaczyna od dnia 1; nagrody to złoto, podwójny wzrost w dniach 3 i 5, losowanie odmiany w dniu 7.
+  - Trzy zadania dzienne z puli ośmiu, z nagrodą w złocie i wzroście; ekran powitania przy każdym wejściu.
+  - Ranking: stadium i odrodzenia przy nazwie gracza oraz tablica TOP REBIRTHS na łące, globalna, odświeżana co 2 min.
+  - Boty i trofea w kolorach swojej linii smoka.
+  - Wydarzenia według czasu UTC, wspólne dla wszystkich serwerów.
+  - Zapis gracza w wersji 2 z przeniesieniem starych zapisów.
+  - Tempo z 12 przebiegów symulacji: stadium 5 po ok. 5:49, pierwsze odrodzenie po ok. 20:11. Najdłuższa przerwa bez nowości to 3:08 przy celu 2:30, więc tego celu nie osiągnięto.
+  - Sprawdzenia: testy logiki 41/42 (1 pominięty), próba w Studio 53/53, telefon i tablet 9/9, czas klatki 16,7 ms. Koszt kroku według agenta ok. 450 tys. tokenów i 1 h 45 min.
+- **Znane wady po „retencja1”:**
+  - Ranking globalny i zdarzenia analityki działają tylko poza Studio, więc w prawdziwej grze nie były jeszcze sprawdzone.
+  - Tablica rankingu jest jedna, na łące.
+  - Ekran powitania zasłania grę do 20 s, choć nie blokuje sterowania.
+  - Najdłuższa przerwa bez nowości to 3:08.
+  - Każda linia ma jedną paletę na osiem stadiów.
+  - Gra jest bez dźwięku i bez prawdziwych ikon; oba wymagają zgody na wgranie.
+  - Nikt jeszcze nie grał na prawdziwym telefonie.
 
 ### Strona gry — szkic (propozycja agenta, do akceptacji przed wydaniem)
 - **Tytuł:** Dragon Lair Evolution (D-138).

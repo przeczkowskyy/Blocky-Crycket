@@ -9,7 +9,7 @@ tags: [produkcja, zadania]
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] Gra o smoku: zagrać z telefonu w wersję „odrodzenie1” (https://www.roblox.com/games/93704244631419) — co przeszkadza w sterowaniu, walce i interfejsie; wybrać pisklę (obecne czy łagodniejsze) · Karol, Paweł · #wysoki
 - [ ] Gra o smoku: zgoda na drogę wgrania 24 ikon interfejsu (folder w zatwierdzonych folderach Studio albo „tak, przez folder modeli”) oraz na jedno wgranie arkusza dźwięków smoka · Karol · #wysoki
-- [ ] Gra o smoku: przed wydaniem — poprawka stóp pisklęcia w klipach, seria logowań i zadania dzienne, ranking (liczba odrodzeń), kolory trofeów i botów według linii, opis i ustawienia strony gry, test z ludźmi · agent, Karol, Paweł · #wysoki
+- [ ] Gra o smoku: przed wydaniem — akceptacja opisu i ustawień strony gry (szkic w [[Projekt próbki — Monster Evolution]]), wgranie ikony i miniatur, test z ludźmi, sprawdzenie rankingu i analityki w prawdziwej grze · agent, Karol, Paweł · #wysoki
 - [ ] Gra o smoku (D-137): wydanie publiczne wt–śr 24–25.11 — tytuł, ikona i miniatury, opis, ustawienia gry; sprawdzenie „wydajemy / jeszcze dzień” we wtorek wieczorem · Karol, Paweł, agent · #wysoki
 - [ ] Slide a Ragdoll (pomysł Pawła z 22.11): sprawdzenie rynku po mechanice (kukła + obrażenia za monety + rozbudowa toru; ok. 0,2 mln tokenów) i poprawiona karta; ocena wstępna 17/30 bez tego sprawdzenia; start po poleceniu na czacie ([[Slide a Ragdoll]]) · #średni
 - [ ] Baseball for treasure: pełna ocena agenta — sprawdzenie rynku po mechanice (uderzenie piłki, kopanie skarbów; ok. 0,2 mln tokenów), karta 0–30 z krytyką, propozycja celownika, ograniczenia lotu na boki i tempa gry; prośba Karola i Pawła z sesji 22.11, start po poleceniu na czacie (propozycja D-134, [[Baseball for treasure]], [[Sesja główna 2026-11-22 — zapis ustaleń]]) · #wysoki
@@ -142,6 +142,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Gra o smoku: poprawka stóp pisklęcia, seria logowań i zadania dzienne, ranking odrodzeń, kolory trofeów i botów według linii, tempo, zegary wydarzeń według UTC · agent · 2026-11-23 (wersja prywatna „retencja1”)
 - [x] Gra o smoku (D-137): wpięcie nowych modeli i klipów do gry, interfejs, odblokowania przy wzroście, odrodzenie w nowej linii smoka, jedno wydarzenie z zegara — poniedziałek–wtorek · agent · #wysoki · zrobione 2026-11-23 (wersja prywatna „odrodzenie1”)
 - [x] Gra o smoku (D-137): przebudowa walki — jedno prawo życia i obrażeń, łańcuch ugryzień, dwie linie zdolności rosnące ze stadium, odczucie trafienia, balans z symulacji; zrobione w nocy 22/23.11 · agent · #wysoki · zrobione 2026-11-23 (wersja prywatna „odrodzenie1”)
 - [x] Gra o smoku (D-137): modele smoka z Blendera — własny styl, osiem stadiów, klipy animacji; arkusz stylu do oceny Karola; zrobione w nocy 22/23.11 · agent, Karol · #wysoki · zrobione 2026-11-23 (wersja prywatna „odrodzenie1”)
