@@ -57,6 +57,9 @@ local JOB = if game.JobId ~= "" then game.JobId else "studio"
 -- pomiar prób: anonimowe podsumowania sesji (osobny magazyn; w Studio i przy znaczniku — tylko w pamięci)
 local magazynProb = if wProbie then L.pamiec() else DataStoreService:GetDataStore(D.zapis.magazyn_prob)
 local zapisowProb = 0
+local magazynRank = if wProbie then nil else DataStoreService:GetOrderedDataStore(D.ranking.magazyn)
+local rankPamiec = {}
+local rankNazwy = {}
 local AnalyticsService = game:GetService("AnalyticsService")
 -- AnalyticsService: tylko serwer opublikowanej gry (w Studio wywołania są pomijane — nie wołamy ich wcale)
 local function analityka(metoda: string, ...)
@@ -183,6 +186,20 @@ local function atrybuty(plr: Player, g: Gracz)
 		li[tostring(l)] = { m = q.maxForma, w = w2, t = t2 }
 	end
 	ustawAtr(plr, g, "EW_Linie", HttpService:JSONEncode(li))
+	-- retencja1: seria, zadania dnia, przyspieszenie, leaderstats
+	ustawAtr(plr, g, "EW_Seria", (b.seria and b.seria.dni) or 0)
+	ustawAtr(plr, g, "EW_Boost", math.ceil(b.boostS or 0))
+	if b.zadania then
+		local zl = {}
+		for _, q in b.zadania.lista do
+			table.insert(zl, { id = q.id, p = q.postep, c = q.cel, g = q.gotowe })
+		end
+		ustawAtr(plr, g, "EW_Zadania", HttpService:JSONEncode(zl))
+	end
+	if g.ls then
+		g.ls.stage.Value = b.forma
+		g.ls.rebirths.Value = b.odrodzenia or 0
+	end
 end
 
 local function wczytajGracza(plr: Player, g: Gracz)
@@ -203,9 +220,17 @@ local function wczytajGracza(plr: Player, g: Gracz)
 	g.nowy = prof.ostatnio == 0
 	g.dni = math.floor((os.time() - g.byt.pierwszy) / 86400)
 	plr:SetAttribute("EW_Zapis", if zapisywalny then "ok" else ("bez zapisu: " .. tostring(powod)))
+	local pow = L.logowanie(D, g.byt, os.time() + (S.dzienPrzes or 0) * 86400, S.los())
 	atrybuty(plr, g)
 	if zarobek > 0 then
 		evZdarzenia:FireClient(plr, { { t = "powrot", ile = zarobek, sek = sek } })
+	end
+	evZdarzenia:FireClient(plr, { { t = "powitanie", dni = pow.dni, nagroda = pow.nagroda, wariant = pow.wariant, f = pow.f, lepszy = pow.lepszy,
+		zarobek = zarobek, nowy = g.nowy } })
+	if pow.nagroda then
+		analityka("LogCustomEvent", plr, "LoginStreakDay", pow.dni)
+		analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Source, "Gold", pow.nagroda.zloto or 0, math.floor(g.byt.zloto),
+			Enum.AnalyticsEconomyTransactionType.Gameplay.Name, "streak_day_" .. tostring(pow.dni))
 	end
 	licz("wczytano")
 end
@@ -270,6 +295,20 @@ local function dolacz(plr: Player)
 	gracze[plr] = g
 	poSlocie[slot] = plr
 	plr:SetAttribute("EW_Slot", slot)
+	-- retencja1: leaderstats (Stage, Rebirths) — lista graczy Roblox
+	local ls = plr:FindFirstChild("leaderstats") or Instance.new("Folder")
+	ls.Name = "leaderstats"
+	local function wartosc(n: string): IntValue
+		local v = ls:FindFirstChild(n)
+		if not (v and v:IsA("IntValue")) then
+			v = Instance.new("IntValue")
+			v.Name = n
+			v.Parent = ls
+		end
+		return v :: IntValue
+	end
+	g.ls = { stage = wartosc("Stage"), rebirths = wartosc("Rebirths") }
+	ls.Parent = plr
 	atrybuty(plr, g)
 	plr:SetAttribute("EW_Miary", miaryJSON(g))
 	plr.CharacterAdded:Connect(function(c)
@@ -483,7 +522,7 @@ local function migawka(): buffer
 		buffer.writef32(b, o + 5, e.x)
 		buffer.writef32(b, o + 9, e.z)
 		buffer.writei16(b, o + 13, math.clamp(math.floor(e.kier * 1000 + 0.5), -32000, 32000))
-		buffer.writeu8(b, o + 15, L.kodWariantu(if e.slot > 0 and e.wariantTeraz then (NR_WARIANTU[e.wariantTeraz] or 0) else 0, if e.slot > 0 then e.linia or 1 else 1))
+		buffer.writeu8(b, o + 15, L.kodWariantu(if e.slot > 0 and e.wariantTeraz then (NR_WARIANTU[e.wariantTeraz] or 0) else 0, e.linia or 1))
 		buffer.writeu8(b, o + 16, math.clamp(math.floor((e.hp or 0) / math.max(1, e.hpMaks or 1) * 255 + 0.5), 0, 255))
 		local ak = 0
 		if e.zamach then
@@ -516,7 +555,12 @@ local function poZdarzeniu(z)
 	if z.s and z.s > 0 and poSlocie[z.s] then
 		local plr = poSlocie[z.s]
 		local g = gracze[plr]
-		if z.t == "kulka" then
+		if z.t == "zadanie" then
+			g.miary.zad = (g.miary.zad or 0) + 1
+			analityka("LogCustomEvent", plr, "QuestCompleted", 1, { [Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = "Quest - " .. pole(z.zad) })
+			analityka("LogEconomyEvent", plr, Enum.AnalyticsEconomyFlowType.Source, "Gold", z.zloto, math.floor(g.byt.zloto),
+				Enum.AnalyticsEconomyTransactionType.Gameplay.Name, "quest_" .. pole(z.zad))
+		elseif z.t == "kulka" then
 			onboarding(plr, g, 2, "FirstOrb")
 		elseif z.t == "zebrano" then
 			g.miary.zb = (g.miary.zb or 0) + 1
@@ -580,6 +624,7 @@ RunService.Heartbeat:Connect(function(dt: number)
 	zb = math.min(zb + dt, D.ruch.krok_s * 4)
 	while zb >= D.ruch.krok_s do
 		zb -= D.ruch.krok_s
+		S.zegar = os.time() + (S.dzienPrzes or 0) * 86400 -- zegar UTC: wydarzenia, dzień zadań i serii
 		for _, z in L.krok(S, D.ruch.krok_s) do
 			table.insert(doWyslania, z)
 		end
@@ -621,9 +666,9 @@ RunService.Heartbeat:Connect(function(dt: number)
 		-- wydarzenia zegarowe: chwile w czasie serwera (workspace:GetServerTimeNow) dla odliczania u klientów
 		local E = L.wyd(S)
 		local tn = workspace:GetServerTimeNow()
-		kontener:SetAttribute("WydDeszczNast", tn + (E.deszczNast - S.czas))
+		kontener:SetAttribute("WydDeszczNast", if E.deszczNast < math.huge then tn + (E.deszczNast - S.czas) else 0)
 		kontener:SetAttribute("WydDeszczDo", if E.deszczDo then tn + (E.deszczDo - S.czas) else 0)
-		kontener:SetAttribute("WydRampNast", tn + (E.rampNast - S.czas))
+		kontener:SetAttribute("WydRampNast", if E.rampNast < math.huge then tn + (E.rampNast - S.czas) else 0)
 		kontener:SetAttribute("WydRampDo", if E.rampDo then tn + (E.rampDo - S.czas) else 0)
 		for plr, g in gracze do
 			atrybuty(plr, g)
@@ -647,6 +692,62 @@ RunService.Heartbeat:Connect(function(dt: number)
 		for plr, g in gracze do
 			task.spawn(zapiszGracza, plr, g, false)
 		end
+	end
+end)
+
+local function odswiezRanking()
+	local lista = {}
+	if wProbie then
+		for _, g in gracze do
+			rankPamiec["S" .. tostring(g.slot)] = { n = g.nazwa, r = g.byt.odrodzenia or 0 }
+		end
+		for _, e in rankPamiec do
+			table.insert(lista, e)
+		end
+	else
+		for plr, g in gracze do
+			local r = g.byt.odrodzenia or 0
+			if g.wczytany and g.rankZapis ~= r and r > 0 then
+				local ok = pcall(function()
+					magazynRank:SetAsync(tostring(plr.UserId), r)
+				end)
+				if ok then
+					g.rankZapis = r
+				end
+			end
+		end
+		local ok, strona = pcall(function()
+			return magazynRank:GetSortedAsync(false, D.ranking.ile):GetCurrentPage()
+		end)
+		if ok and type(strona) == "table" then
+			for _, e in strona do
+				local uid = tonumber(e.key)
+				local n = uid and rankNazwy[uid]
+				if uid and not n then
+					local ok2, nn = pcall(function()
+						return Players:GetNameFromUserIdAsync(uid)
+					end)
+					n = if ok2 then nn else "?"
+					rankNazwy[uid] = n
+				end
+				table.insert(lista, { n = n or "?", r = e.value })
+			end
+		end
+	end
+	table.sort(lista, function(a, b)
+		return a.r > b.r
+	end)
+	while #lista > D.ranking.ile do
+		table.remove(lista)
+	end
+	kontener:SetAttribute("Ranking", HttpService:JSONEncode(lista))
+	licz("ranking")
+end
+task.spawn(function()
+	task.wait(3)
+	while kontener.Parent do
+		odswiezRanking()
+		task.wait(D.ranking.odswiez_s)
 	end
 end)
 
@@ -716,6 +817,57 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			return zapiszProbe(plr :: Player, g)
 		end
 		return nil
+	elseif polecenie == "logowanie" then
+		-- próba: wejście jeszcze raz (seria, nagroda dnia, zadania) i ekran powitania
+		if byt and plr then
+			local pow = L.logowanie(D, byt, os.time() + (S.dzienPrzes or 0) * 86400, S.los())
+			atrybuty(plr, g)
+			evZdarzenia:FireClient(plr, { { t = "powitanie", dni = pow.dni, nagroda = pow.nagroda, wariant = pow.wariant, f = pow.f, lepszy = pow.lepszy,
+				zarobek = 0, nowy = false } })
+			return { dni = pow.dni, nagroda = pow.nagroda, zloto = byt.zloto }
+		end
+		return nil
+	elseif polecenie == "seria_ustaw" then
+		-- próba: ostatnie wejście a dni temu przy serii b
+		if byt then
+			byt.seria = { dzien = L.dzienUTC(os.time() + (S.dzienPrzes or 0) * 86400) - a, dni = b or 1 }
+		end
+		return true
+	elseif polecenie == "zadania_ustaw" then
+		-- próba: zadania na dziś z listy id (cel z puli albo c)
+		if byt then
+			local lista = {}
+			for _, id in a do
+				local Q = L.zadanieDef(D, id)
+				if Q then
+					table.insert(lista, { id = id, cel = c or Q.cel, postep = 0, gotowe = false })
+				end
+			end
+			byt.zadania = { dzien = L.dzienUTC(os.time() + (S.dzienPrzes or 0) * 86400), lista = lista }
+			if plr then
+				atrybuty(plr, g)
+			end
+		end
+		return true
+	elseif polecenie == "zadania" then
+		return byt and byt.zadania
+	elseif polecenie == "ranking_odswiez" then
+		odswiezRanking()
+		return HttpService:JSONDecode(kontener:GetAttribute("Ranking") or "[]")
+	elseif polecenie == "boty_stoj_wszystkie" then
+		-- próby pomiaru stóp: wszystkie boty stoją i nie gryzą przez a s (bez potrąceń na torze pomiaru)
+		for _, e in S.byty do
+			if e.slot == 0 and not e.boss then
+				e.wx, e.wz, e.vx, e.vz = 0, 0, 0, 0
+				e.myslDo = S.czas + (a or 5)
+				e.gryzGotowy = S.czas + (a or 5)
+			end
+		end
+		return true
+	elseif polecenie == "wydarzenia_zegar" then
+		-- próby: rozkład z zegara UTC włączony (true) albo wyłączony (false; zostają tylko wymuszone)
+		S.wydBezZegara = a == false
+		return true
 	elseif polecenie == "wymus_deszcz" then
 		L.wymusWydarzenie(S, "deszcz")
 		return true

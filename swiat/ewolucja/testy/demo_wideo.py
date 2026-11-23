@@ -529,6 +529,69 @@ def sceny_odrodzenie(p, f):
     f.stop()
 
 
+def sceny_retencja(p, f):
+    """retencja1: powitanie (seria, zadania) → pisklę biegnie z bliska → zadanie dnia wykonane → odrodzenie do FROST →
+    trofea FROST w legowisku → boty w kolorach linii → tablica TOP REBIRTHS."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    x0, z0 = PP.wolna_droga()
+    p.przycisk("powitanie_zamknij")
+    p.serwer('"boty_cisza", 200')
+    p.serwer('"forma_gracza", 1')
+    p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
+    p.serwer('"zadania_ustaw", {"kulki", "owce", "walki"}')
+    p.serwer('"seria_ustaw", 1, 3')
+    time.sleep(1.2)
+    f.nagrywaj("powitanie")
+    p.serwer('"logowanie"')
+    time.sleep(5.2)
+    p.przycisk("powitanie_zamknij")
+    time.sleep(0.6)
+    f.stop()
+    # pisklę z bliska (kamera niżej i bliżej): bieg przy prędkości gry, stopy stoją w podporze
+    p.ustaw("EW_TestZoom", "0.32")
+    p.ustaw("EW_TestKat", "24")
+    time.sleep(0.8)
+    f.nagrywaj("piskle")
+    p.ustaw("EW_TestSter", "Vector3.new(-1, 0, 6)")
+    time.sleep(5.6)
+    f.stop()
+    p.ustaw("EW_TestZoom", "nil")
+    p.ustaw("EW_TestKat", "nil")
+    # zadanie dnia: kulki do 3 (autopilot) → QUEST DONE
+    p.serwer('"zadania_ustaw", {"kulki", "owce", "walki"}, nil, 3')
+    time.sleep(0.6)
+    f.nagrywaj("zadanie")
+    p.ustaw("EW_TestAuto", "true")
+    time.sleep(6.0)
+    p.ustaw("EW_TestAuto", "false")
+    f.stop()
+    # odrodzenie do FROST i legowisko z trofeami FROST
+    p.serwer('"odrodzenie"')
+    time.sleep(D["odrodzenie"]["ceremonia_s"] + 2.5)
+    p.serwer('"forma_gracza", 3')
+    p.serwer('"do_legowiska"')
+    time.sleep(2.0)
+    f.nagrywaj("trofea_frost")
+    time.sleep(4.5)
+    f.stop()
+    # boty w kolorach linii na łące, tablica rankingu
+    p.serwer('"forma_gracza", 5')
+    p.serwer('"przenies", %d, 20, 20' % byt)
+    time.sleep(1.4)
+    f.nagrywaj("boty_linie")
+    p.ustaw("EW_TestSter", "Vector3.new(0.6, 0.8, 4)")
+    time.sleep(4.2)
+    f.stop()
+    R = D["ranking"]
+    p.serwer('"ranking_odswiez"')
+    p.serwer('"przenies", %d, %f, %f' % (byt, R["x"] + 2, R["z"] - 7))
+    time.sleep(1.6)
+    f.nagrywaj("ranking")
+    time.sleep(4.5)
+    f.stop()
+
+
 def sklej(klipy, wyj, kat, pasy=False):
     gotowe = []
     vf = (r"scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x1C162C,fps=30,format=yuv420p" if pasy
@@ -567,6 +630,7 @@ def main():
     ap.add_argument("--swiat", action="store_true", help="wycieczka po świecie (swiat1)")
     ap.add_argument("--interfejs", action="store_true", help="interfejs z makiet (interfejs1)")
     ap.add_argument("--odrodzenie", action="store_true", help="odrodzenie, wydarzenia, jajo dnia (odrodzenie1)")
+    ap.add_argument("--retencja", action="store_true", help="powitanie, zadania, pisklę z bliska, linie, ranking (retencja1)")
     a = ap.parse_args()
     wyj = os.path.abspath(a.wyj)
     if wyj.startswith(os.path.abspath(PP.REPO)):
@@ -583,11 +647,11 @@ def main():
             PP.czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
             p.luau(PP.BEZ_LISTY, "Client")
             time.sleep(1.0)
-            (sceny_odrodzenie if a.odrodzenie else sceny_interfejs if a.interfejs else sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
+            (sceny_retencja if a.retencja else sceny_odrodzenie if a.odrodzenie else sceny_interfejs if a.interfejs else sceny_swiat if a.swiat else sceny_blender if a.blender else sceny_walka if a.walka else sceny)(p, f)
         finally:
             log("Stop:", PP.play(a.studio, False)[-40:])
             PP.czekaj(lambda: "Current Studio Mode: Edit" in p.call("get_studio_state")["text"], 40, 0.5)
-    sklej(f.klipy, wyj, kat, pasy=a.interfejs or a.odrodzenie)
+    sklej(f.klipy, wyj, kat, pasy=a.interfejs or a.odrodzenie or a.retencja)
     pl = plansza(wyj)
     if not a.zostaw_klipy:
         shutil.rmtree(kat, ignore_errors=True)

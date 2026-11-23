@@ -53,6 +53,8 @@ function H.nowe(c)
 	self:zbudujPanel()
 	self:zbudujOdslone()
 	self:zbudujWydarzenia()
+	self:zbudujZadania()
+	self:zbudujPowitanie()
 	self.linia = 1
 	return self
 end
@@ -1127,6 +1129,195 @@ function H:wydarzenie(tekst: string?, kolor: Color3?, aktywne: boolean)
 		self.wydNapis.TextColor3 = if aktywne then self.S.zar_gora else self.S.tekst
 		self.wydObrys.Color = if aktywne then (kolor or self.S.zar) else self.S.obrys
 	end
+end
+
+-- ---------------------------------------------------------------- retencja1: pigułka zadań dnia i ekran powitania
+function H:zbudujZadania()
+	local S = self.S
+	local R = self.c.warstwa("Zadania", Vector2.new(0.5, 0), UDim2.new(0.5, -20, 0, 72), Vector2.new(230, 22))
+	local t = self:nowy("Frame", { Name = "Tlo", Size = UDim2.fromScale(1, 1), BackgroundColor3 = S.pas, BackgroundTransparency = 0.08 }, R)
+	self:rog(t)
+	self:obrys(t, 2)
+	local ik = self:nowy("Frame", { Name = "Ikona", Position = UDim2.fromOffset(3, 1), Size = UDim2.fromOffset(20, 20), BackgroundColor3 = S.zar, ZIndex = 4 }, t)
+	self:rog(ik)
+	self.zadIle = self:tekst(ik, "0", UDim2.fromScale(0.1, 0.1), UDim2.fromScale(0.8, 0.8), 11, S.tekst, self.fLiczby)
+	self.zadNapis = self:tekst(t, "", UDim2.fromOffset(28, 3), UDim2.new(1, -36, 1, -6), 10, S.tekst, self.fEtyk, Enum.TextXAlignment.Left)
+	self.ramkaZadan = R
+	R.Visible = false
+end
+
+-- zadania: [{ id, p, c, g }] → pigułka z pierwszym niegotowym zadaniem i liczbą gotowych
+function H:zadania(lista)
+	local UI = self.UI
+	if not lista or #lista == 0 then
+		self.ramkaZadan.Visible = false
+		return ""
+	end
+	local gotowe, pierwsze = 0, nil
+	for _, q in lista do
+		if q.g then
+			gotowe += 1
+		elseif not pierwsze then
+			pierwsze = q
+		end
+	end
+	self.ramkaZadan.Visible = true
+	self.zadIle.Text = string.format("%d/%d", gotowe, #lista)
+	if pierwsze then
+		local Q = self:zadanieDef(pierwsze.id)
+		local t = Q and string.gsub(Q.tekst, " ?%%d ?", " ") or pierwsze.id
+		self.zadNapis.Text = string.format(UI.zadania_pigulka, t, pierwsze.p, pierwsze.c)
+	else
+		self.zadNapis.Text = UI.zadania_wszystkie
+	end
+	return self.zadNapis.Text
+end
+
+function H:zadanieDef(id: string)
+	for _, q in self.D.zadania.pula do
+		if q.id == id then
+			return q
+		end
+	end
+	return nil
+end
+
+function H:zbudujPowitanie()
+	local c, S, UI = self.c, self.S, self.UI
+	local P = {}
+	self.pow = P
+	local R = self:nowy("Frame", { Name = "Powitanie", Size = UDim2.fromScale(1, 1), BackgroundColor3 = S.cien, BackgroundTransparency = 0.4, ZIndex = 50,
+		Visible = false, Active = false }, c.ekran)
+	P.ramka = R
+	local sr = self:nowy("Frame", { Name = "Srodek", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(620, 330),
+		BackgroundTransparency = 1, ZIndex = 50 }, R)
+	table.insert(c.skale, self:nowy("UIScale", { Scale = c.skalaEkranu() }, sr))
+	local tlo = self:plytka(sr, "Tlo", UDim2.fromOffset(0, 0), UDim2.fromScale(1, 1), S.panel, 16, 3)
+	tlo.ZIndex = 50
+	local pas = self:nowy("Frame", { Name = "Pas", Size = UDim2.new(1, 0, 0, 46), BackgroundColor3 = S.pas, ZIndex = 51 }, tlo)
+	self:rog(pas, 16)
+	self:nowy("Frame", { Position = UDim2.fromOffset(0, 30), Size = UDim2.new(1, 0, 0, 16), BackgroundColor3 = S.pas, BorderSizePixel = 0, ZIndex = 51 }, tlo)
+	self:nowy("Frame", { Position = UDim2.fromOffset(0, 46), Size = UDim2.new(1, 0, 0, 4), BackgroundColor3 = S.zar, BorderSizePixel = 0, ZIndex = 52 }, tlo)
+	P.tytul = self:tekst(tlo, UI.witaj, UDim2.fromOffset(18, 7), UDim2.fromOffset(300, 32), 22, S.tekst, self.fTytul, Enum.TextXAlignment.Left)
+	P.seria = self:tekst(tlo, "", UDim2.fromOffset(330, 11), UDim2.fromOffset(272, 24), 16, S.zar_gora, self.fTytul, Enum.TextXAlignment.Right)
+	P.tytul.ZIndex, P.seria.ZIndex = 53, 53
+	-- kalendarz 7 dni
+	P.dni = {}
+	for d = 1, 7 do
+		local N = self.D.seria.nagrody[d]
+		local k = self:nowy("Frame", { Name = "Dzien" .. d, Position = UDim2.fromOffset(16 + (d - 1) * 84, 60), Size = UDim2.fromOffset(78, 92), BackgroundColor3 = S.karta,
+			ZIndex = 51 }, tlo)
+		self:rog(k, 11)
+		local ob = self:obrys(k, 2)
+		local dz = self:tekst(k, string.format(UI.dzien, d), UDim2.fromOffset(4, 4), UDim2.new(1, -8, 0, 14), 10, S.tekst2, self.fEtyk)
+		local slot = self:nowy("Frame", { Name = "Ikona", Position = UDim2.fromOffset(21, 20), Size = UDim2.fromOffset(36, 36), BackgroundTransparency = 1, ZIndex = 52 }, k)
+		self:ikona(slot, if N.jajo then "korona" else "moneta")
+		local opis = (if N.zloto then "+" .. H.liczba(N.zloto) else "") .. (if N.boost_s then "\n" .. string.format(UI.boost, N.boost_s // 60) else "")
+			.. (if N.jajo then "\nEGG" else "")
+		local o = self:tekst(k, opis, UDim2.fromOffset(4, 58), UDim2.new(1, -8, 0, 30), 10, S.zloto, self.fLiczby)
+		for _, l in { dz, o } do
+			l.ZIndex = 53
+		end
+		local znak = self:tekst(k, "OK", UDim2.fromOffset(46, -6), UDim2.fromOffset(36, 18), 12, S.kup, self.fTytul)
+		znak.ZIndex = 54
+		P.dni[d] = { ramka = k, obrys = ob, znak = znak }
+	end
+	P.nagroda = self:tekst(tlo, "", UDim2.fromOffset(16, 158), UDim2.fromOffset(588, 18), 12, S.kup, self.fEtyk)
+	-- zadania dnia
+	P.zadTytul = self:tekst(tlo, UI.zadania_tytul, UDim2.fromOffset(16, 180), UDim2.fromOffset(300, 18), 13, S.tekst, self.fTytul, Enum.TextXAlignment.Left)
+	P.zad = {}
+	for i = 1, 3 do
+		local w = self:nowy("Frame", { Name = "Zadanie" .. i, Position = UDim2.fromOffset(16, 202 + (i - 1) * 30), Size = UDim2.fromOffset(588, 26),
+			BackgroundColor3 = S.karta, ZIndex = 51 }, tlo)
+		self:rog(w, 8)
+		local n = self:tekst(w, "", UDim2.fromOffset(10, 4), UDim2.fromOffset(330, 18), 12, S.tekst, self.fEtyk, Enum.TextXAlignment.Left)
+		local pt = self:nowy("Frame", { Position = UDim2.fromOffset(350, 9), Size = UDim2.fromOffset(120, 8), BackgroundColor3 = S.pas, ZIndex = 52 }, w)
+		self:rog(pt)
+		local pw = self:nowy("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = S.krysztal, BorderSizePixel = 0, ZIndex = 53 }, pt)
+		self:rog(pw)
+		local nag = self:tekst(w, "", UDim2.fromOffset(480, 4), UDim2.fromOffset(100, 18), 11, S.zloto, self.fLiczby, Enum.TextXAlignment.Right)
+		for _, l in { n, nag } do
+			l.ZIndex = 53
+		end
+		P.zad[i] = { ramka = w, napis = n, pasek = pw, nagroda = nag }
+	end
+	-- CONTINUE (pole dotyku 54 pt)
+	local b = self:nowy("TextButton", { Name = "Dalej", Position = UDim2.fromOffset(240, 290), Size = UDim2.fromOffset(140, 54), BackgroundTransparency = 1, Text = "",
+		AutoButtonColor = false, ZIndex = 55 }, tlo)
+	local bp = self:nowy("Frame", { Name = "Pigulka", Position = UDim2.fromOffset(0, 2), Size = UDim2.fromOffset(140, 32), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 55 }, b)
+	self:rog(bp)
+	self:obrys(bp, 2)
+	self:gradient(bp, S.zar_gora, S.zar)
+	local bl = self:tekst(bp, UI.dalej or "CONTINUE", UDim2.fromOffset(8, 4), UDim2.new(1, -16, 1, -8), 15, S.tekst, self.fTytul)
+	bl.ZIndex = 56
+	P.dalej = b
+	b.Activated:Connect(function()
+		self:powitanieKoniec()
+	end)
+end
+
+-- dane: { dni, nagroda, wariant, f, lepszy, zarobek, nowy }, zadania: [{ id, p, c, g }]
+function H:powitanie(dane, zadania)
+	local P, S, UI, D = self.pow, self.S, self.UI, self.D
+	P.ramka.Visible = true
+	P.t = 0
+	P.tytul.Text = if dane.nowy then UI.witaj_nowy else UI.witaj
+	P.seria.Text = string.format(UI.seria_dzien, dane.dni or 1)
+	for d, K in P.dni do
+		local dzis = d == dane.dni
+		K.ramka.BackgroundColor3 = if dzis then S.zar else (if d < (dane.dni or 1) then S.pas else S.karta)
+		K.obrys.Color = if dzis then S.zar_gora else S.obrys
+		K.obrys.Thickness = if dzis then 3 else 2
+		K.znak.Visible = d < (dane.dni or 1) or (dzis and dane.nagroda ~= nil)
+	end
+	local linie = {}
+	if dane.nagroda then
+		local N = dane.nagroda
+		table.insert(linie, string.format(UI.dzien, dane.dni) .. ":")
+		if N.zloto then
+			table.insert(linie, "+" .. H.liczba(N.zloto) .. " gold")
+		end
+		if N.boost_s then
+			table.insert(linie, string.format(UI.boost, N.boost_s // 60))
+		end
+		if dane.wariant then
+			local W = nil
+			for _, x in D.warianty do
+				if x.id == dane.wariant then
+					W = x
+				end
+			end
+			table.insert(linie, (if W then W.nazwa else dane.wariant) .. " " .. D.formy[dane.f or 1].nazwa .. (if dane.lepszy then "!" else ""))
+		end
+	end
+	if (dane.zarobek or 0) > 0 then
+		table.insert(linie, "  " .. string.format(UI.hoard_nieobecny, dane.zarobek))
+	end
+	P.nagroda.Text = table.concat(linie, "  ")
+	self:powitanieZadania(zadania)
+end
+
+function H:powitanieZadania(zadania)
+	local P = self.pow
+	for i, W in P.zad do
+		local q = zadania and zadania[i]
+		W.ramka.Visible = q ~= nil
+		if q then
+			local Q = self:zadanieDef(q.id)
+			W.napis.Text = (if Q then string.format(Q.tekst, q.c) else q.id) .. string.format("  %d/%d", q.p, q.c)
+			W.pasek.Size = UDim2.fromScale(math.clamp(q.p / math.max(1, q.c), 0, 1), 1)
+			W.pasek.BackgroundColor3 = if q.g then self.S.kup else self.S.krysztal
+			W.nagroda.Text = if Q then "+" .. H.liczba(Q.zloto) .. " gold" else ""
+		end
+	end
+end
+
+function H:powitanieKoniec()
+	self.pow.ramka.Visible = false
+end
+
+function H:powitanieAktywne(): boolean
+	return self.pow.ramka.Visible
 end
 
 function H:odslonaKoniec()

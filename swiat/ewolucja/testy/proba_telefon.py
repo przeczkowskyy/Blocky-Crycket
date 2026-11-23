@@ -75,6 +75,14 @@ def main():
             PP.log("Play:", PP.play(a.studio, True)[-40:])
             PP.czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
             p.luau(PP.BEZ_LISTY, "Client")
+            # T8 (retencja1): ekran powitania mieści się na ekranie, CONTINUE ≥ 44 pt; potem zamknięty
+            PP.czekaj(lambda: p.atr().get("EW_K_Powitanie"), 8, 0.3)
+            time.sleep(0.6)
+            u8 = uklad(p)
+            p.zrzut("46_telefon_powitanie%s.jpg" % a.przyrostek)
+            PP.wynik("T8 powitanie mieści się", u8 and "PowitanieSrodek" in u8["prostokaty"] and "PowitanieSrodek" not in u8["poza"] and not u8["male"],
+                     srodek=u8.get("prostokaty", {}).get("PowitanieSrodek"), okno=u8.get("okno"), male=u8.get("male"))
+            p.przycisk("powitanie_zamknij")
             p.ustaw("EW_TestAuto", "true")
             time.sleep(6)
             p.zrzut("06_telefon%s.jpg" % a.przyrostek)

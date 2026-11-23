@@ -286,6 +286,16 @@ da to samo. Do tego czasu **nie uruchamiać `dane` ani `wszystko`** — nadpisa�
 - Film: `…\smok_ewolucja\filmy\smok_<1|3|8>_bieg_16_studs_krata.mp4` (bieg przy 16 studs/s nad kratą jadącą z prędkością
   gry); pasek klatek `podglad/26_bieg_16_studs.jpg`.
 
+## Runda 6 (agent gry, 23.11.2026, za zgodą koordynatora): chód i bieg co klatkę
+- Podpora maluchów w biegu trwa 2 klatki, a dane miały próbkę co 2 klatki — między próbkami stopa przy ziemi jechała
+  z ciałem. Teraz klip może mieć własne pole **`krok`** (nadpisuje `krok` pliku): `chod` i `bieg` wszystkich stadiów
+  mają `krok` 1. Gra (`KlipyEwolucji.probka`) i `sprawdz_dane.py` czytają krok klipu.
+- Nowe pole klipu **`podpor`** (chod i bieg): `{"klatki": n, "start": [PL, PP, TL, TP], "stopy": ["NogaPL3", …]}` — okna
+  podporu z generatora; `sprawdz_dane.py` liczy w nich przesuw stopy (cel < 0,1 studa; wynik 0,000–0,060).
+- `generuj.py krok1` odtwarza `smok_<n>_klipy.json` z próbek Blendera ostatniego etapu (`_probki_etap.json`
+  w dane_robocze) bez uruchamiania Blendera; pozostałe klipy sprawdzane bajt w bajt z dane/ (bez różnic). Pliki
+  w dane_nastepne/ i dane/ (przeniesione przez agenta gry). Rozmiar klipów +2,5–5%.
+
 ## Co jest słabe (uczciwie)
 - Ruch (runda 5): kicanie maluchów jest zrywne (tułów staje nad łapami i skacze) — tak musi być przy 16–26 studs/s
   na łapach długości pół studa, ale to kwestia gustu; przy 26 studs/s (tempo 1,44) susy są bardzo szybkie.

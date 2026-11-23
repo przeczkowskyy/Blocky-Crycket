@@ -18,8 +18,9 @@ function K.przygotuj(J)
 		for z, kl in c.zdarzenia or {} do
 			zd[z] = kl / J.fps
 		end
+		-- runda 6: klip może mieć własny krok próbki (chód i bieg co klatkę) i okna podporu stóp
 		W.klipy[nazwa] = { nazwa = nazwa, dl = c.dl / J.fps, petla = c.petla == true, zdarzenia = zd, predkosc = c.predkosc, stawy = c.stawy,
-			przes = przes, probki = c.probki }
+			przes = przes, probki = c.probki, krok = c.krok or J.krok, klatki = c.dl, podpor = c.podpor }
 	end
 	return W
 end
@@ -50,7 +51,7 @@ end
 function K.probka(W, k, t: number, poza)
 	K.zeruj(poza, W.n)
 	t = K.czas(k, t)
-	local f = t * W.fps / W.krok
+	local f = t * W.fps / (k.krok or W.krok)
 	local a = math.floor(f)
 	local u = f - a
 	local np = #k.probki

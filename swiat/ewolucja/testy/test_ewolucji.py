@@ -809,7 +809,7 @@ class TestModele(unittest.TestCase):
             nazwy = set(K["klipy"])
             self.assertTrue(set(I["klipy_podstawowe"]) | set(I["klipy_dodatkowe"]) <= nazwy, S["id"])
             for n, c in K["klipy"].items():
-                self.assertEqual(len(c["probki"]), c["dl"] // K["krok"] + 1, n)
+                self.assertEqual(len(c["probki"]), c["dl"] // c.get("krok", K["krok"]) + 1, n)
                 self.assertTrue(all(len(w) == 3 * (len(c["stawy"]) + len(c["przes"])) for w in c["probki"]), n)
                 self.assertTrue(set(c["zdarzenia"]) <= set(I["zdarzenia"]), n)
                 self.assertTrue(all(0 <= k <= c["dl"] for k in c["zdarzenia"].values()), n)
@@ -844,6 +844,11 @@ class TestModele(unittest.TestCase):
             self.assertIn("koziolek_dlugi", K)
             self.assertIn("portret", K)
             self.assertEqual((K["chod"]["predkosc"], K["bieg"]["predkosc"]), (7.0, 18.0), S["id"])
+            # runda 6: chód i bieg co klatkę z oknami podporu (stopy NogaPL3, NogaPP3, NogaTL3, NogaTP3)
+            for x in ("chod", "bieg"):
+                self.assertEqual(K[x].get("krok"), 1, (S["id"], x))
+                self.assertEqual(len(K[x]["podpor"]["start"]), 4)
+                self.assertTrue(1 <= K[x]["podpor"]["klatki"] < K[x]["dl"])
         # serwer: zamach zdolności = zdarzenie w klipie stadium
         for i, F in enumerate(D["formy"]):
             K = DN.modele_wczytaj("smok_%d_klipy.json" % (i + 1))
@@ -862,7 +867,7 @@ class TestModele(unittest.TestCase):
             T_KL(self.KL, "probka", W, k, t, poza)
             p = LM.z_luau(poza, True)
             tt = t % (c["dl"] / 30)
-            f = tt * 30 / 2
+            f = tt * 30 / c.get("krok", J["krok"])
             a, u = int(math.floor(f)), f % 1
             A, B = c["probki"][min(a, len(c["probki"]) - 1)], c["probki"][min(a + 1, len(c["probki"]) - 1)]
             o = 0
@@ -1043,9 +1048,18 @@ class TestOdrodzenie(unittest.TestCase):
         W = D["wydarzenia"]
         gr = byt(S, 1, 3, 0, 0)
         bez_kulek(S)
-        zd = krok(S, int(W["deszcz"]["pierwszy_s"] / 2) + 2, 2.0)
+        # zegar UTC tuż przed oknem deszczu: start dokładnie raz, w tym samym miejscu rozkładu na każdym serwerze
+        Wd = W["deszcz"]
+        t0 = 20000 * 86400 + Wd["przesun_s"] + 5 * Wd["co_s"] - 30
+        S.set("zegar", float(t0))
+        self.assertEqual(wolaj("oknoWydarzenia", lu(Wd), t0)[:3], [False, 0, 30])
+        self.assertEqual(wolaj("oknoWydarzenia", lu(Wd), t0 + 40)[:2], [True, Wd["trwa_s"] - 10])
+        zd = []
+        for _ in range(25):
+            S.set("zegar", S.get("zegar") + 2.0)
+            zd += krok(S, 1, 2.0)
         start = [z for z in zd if z["t"] == "wydarzenie" and z["co"] == "deszcz" and z.get("start")]
-        self.assertEqual(len(start), 1, "deszcz po pierwszy_s")
+        self.assertEqual(len(start), 1, "deszcz z zegara UTC")
         E = LM.z_luau(S.get("wyd"))
         self.assertIsNotNone(E.get("deszczDo"))
         k = LM.z_luau(S.get("kulki"), True)
@@ -1059,9 +1073,13 @@ class TestOdrodzenie(unittest.TestCase):
         krok(S, 1)
         self.assertGreaterEqual(g(gr, "zloto"), W["deszcz"]["zloto"])
         self.assertGreater(g(gr, "wzrost"), 0)
-        zd = krok(S, int(W["deszcz"]["trwa_s"] / 2) + 2, 2.0)
+        zd = []
+        for _ in range(int(W["deszcz"]["trwa_s"] / 2) + 2):
+            S.set("zegar", S.get("zegar") + 2.0)
+            zd += krok(S, 1, 2.0)
         self.assertTrue([z for z in zd if z["t"] == "wydarzenie" and z["co"] == "deszcz" and z.get("koniec")])
-        self.assertAlmostEqual(LM.z_luau(S.get("wyd"))["deszczNast"], W["deszcz"]["pierwszy_s"] + W["deszcz"]["co_s"], delta=2.1)
+        E2 = LM.z_luau(S.get("wyd"))
+        self.assertAlmostEqual(E2["deszczNast"] - LM.z_luau(S.get("czas")), Wd["co_s"] - (S.get("zegar") - Wd["przesun_s"]) % Wd["co_s"], delta=0.01)
         # rampage wymuszony z jednym graczem: golem wychodzi z lasu, trafienie → dzielona skrzynia
         wolaj("dodajBossa", S)
         wolaj("wymusWydarzenie", S, "rampage")
@@ -1081,6 +1099,8 @@ class TestOdrodzenie(unittest.TestCase):
         zd = krok(S, 2)
         self.assertTrue([z for z in zd if z["t"] == "wydarzenie" and z["co"] == "rampage" and z.get("koniec")])
         self.assertEqual(g(boss, "strefa"), 2)
+        zd = krok(S, 20)
+        self.assertFalse([z for z in zd if z["t"] == "wydarzenie" and z["co"] == "rampage" and z.get("start")], "po pokonaniu bez wznowienia")
 
     def test_38_jajo_dnia(self):
         S = stan()
@@ -1132,6 +1152,106 @@ class TestOdrodzenie(unittest.TestCase):
         self.assertEqual(p3["linie"]["2"]["maxForma"], NF)
         self.assertEqual(p3["linie"]["2"]["warianty"][0], "")
         self.assertEqual(p3["linie"]["2"]["trofea"][0], len(D["legowisko"]["poziomy_x"]))
+
+
+class TestRetencja(unittest.TestCase):
+    """retencja1: seria logowań (7 dni), zadania dnia (pula, postęp ze zdarzeń, reset UTC), zapis w wersji 2."""
+
+    def test_40_seria_logowan(self):
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 2, 0, 0)
+        ustaw(gr, maxForma=5, zloto=0)
+        N = D["seria"]["nagrody"]
+        d0 = 20000 * 86400 + 5000
+        r = LM.z_luau(jeden("logowanie", DL, gr, d0, 0.1))
+        self.assertEqual((r["dni"], g(gr, "zloto")), (1, N[0]["zloto"]))
+        r = LM.z_luau(jeden("logowanie", DL, gr, d0 + 3600, 0.1))
+        self.assertEqual(r["dni"], 1)
+        self.assertIsNone(r.get("nagroda"), "ten sam dzień: bez drugiej nagrody")
+        zl = g(gr, "zloto")
+        for k in range(2, 8):
+            r = LM.z_luau(jeden("logowanie", DL, gr, d0 + (k - 1) * 86400, 0.01))
+            self.assertEqual(r["dni"], k)
+        self.assertEqual(g(gr, "zloto") - zl, sum(x.get("zloto", 0) for x in N[1:]))
+        self.assertEqual(g(gr, "boostS"), sum(x.get("boost_s", 0) for x in N))
+        self.assertEqual((r["wariant"], r["f"], r["lepszy"]), ("zloty", 5, True), "dzień 7: wariant najwyższego trofeum")
+        r = LM.z_luau(jeden("logowanie", DL, gr, d0 + 7 * 86400, 0.5))
+        self.assertEqual(r["dni"], 1, "po 7. dniu znów 1.")
+        r = LM.z_luau(jeden("logowanie", DL, gr, d0 + 9 * 86400, 0.5))
+        self.assertEqual(r["dni"], 1, "przerwa: od 1")
+        # przyspieszenie: wzrost × boost_x, maleje z czasem gry
+        ustaw(gr, wzrost=0, boostS=10)
+        wolaj("dodajWzrost", S, gr, 4)
+        self.assertAlmostEqual(g(gr, "wzrost"), 4 * D["seria"]["boost_x"], places=6)
+        krok(S, 5, 0.1)
+        self.assertAlmostEqual(g(gr, "boostS"), 9.5, places=6)
+
+    def test_41_zadania_dnia(self):
+        Z = D["zadania"]
+        a = LM.z_luau(jeden("losujZadania", DL, 20001, 77, 8))
+        b = LM.z_luau(jeden("losujZadania", DL, 20001, 77, 8))
+        c = LM.z_luau(jeden("losujZadania", DL, 20002, 77, 8))
+        self.assertEqual(a, b, "ten sam dzień i gracz: te same zadania")
+        self.assertEqual(len(a["lista"]), Z["ile"])
+        self.assertEqual(len({q["id"] for q in a["lista"]}), Z["ile"], "bez powtórzeń")
+        self.assertNotEqual([q["id"] for q in a["lista"]], [q["id"] for q in c["lista"]])
+        for d in range(20000, 20040):
+            l1 = LM.z_luau(jeden("losujZadania", DL, d, 5, 1))
+            self.assertFalse({q["id"] for q in l1["lista"]} & {"wyspa", "boss", "zdolnosci"}, "zadania od formy")
+        # postęp ze zdarzeń kroku: kulki i owce gracza, nagroda złoto + wzrost, zdarzenie „zadanie”
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 2, 0, 0)
+        ustaw(gr, maxForma=2, zloto=0, wzrost=0)
+        gr.set("zadania", lu({"dzien": 20001, "lista": [{"id": "kulki", "cel": 3, "postep": 0, "gotowe": False},
+                                                         {"id": "owce", "cel": 4, "postep": 0, "gotowe": False}]}))
+        zd = []
+        for i in range(3):
+            lista = LM.Tabela()
+            lista.set(1.0, lu({"t": "kulka", "i": i + 1, "id": g(gr, "id"), "s": 1}))
+            wolaj("krokZadan", S, 0.05, lista)
+            zd += LM.z_luau(lista, True)
+        gotowe = [z for z in zd if z["t"] == "zadanie"]
+        Q = next(q for q in Z["pula"] if q["id"] == "kulki")
+        self.assertEqual(len(gotowe), 1)
+        self.assertEqual((gotowe[0]["zad"], g(gr, "zloto")), ("kulki", Q["zloto"]))
+        self.assertAlmostEqual(g(gr, "wzrost"), Q["wzrost"] * D["formy"][1]["potrzeba"], places=6)
+        # nowy dzień UTC: nowe zadania, zdarzenie „zadania_nowe”
+        S.set("zegar", float(20002 * 86400 + 10))
+        lista = LM.Tabela()
+        wolaj("krokZadan", S, 0.05, lista)
+        self.assertTrue([z for z in LM.z_luau(lista, True) if z["t"] == "zadania_nowe"])
+        self.assertEqual(LM.z_luau(gr.get("zadania"))["dzien"], 20002)
+
+    def test_42_zapis_v2_i_migracja(self):
+        S = stan()
+        bez_kulek(S)
+        gr = byt(S, 1, 3, 0, 0)
+        ustaw(gr, maxForma=3, pierwszy=1700000000)
+        jeden("logowanie", DL, gr, 20003 * 86400 + 7, 0.3)
+        zad = gr.get("zadania").get("lista").get(1.0)
+        zad.set("postep", 1.0)
+        ustaw(gr, boostS=123.4)
+        P = LM.z_luau(jeden("doProfilu", DL, gr, 1000))
+        self.assertEqual((P["wersja"], P["seria"], P["boostS"]), (2, {"dzien": 20003, "dni": 1}, 123))
+        self.assertEqual(len(P["zadania"]["lista"]), D["zadania"]["ile"])
+        surowe = json.loads(json.dumps(P))
+        b2 = byt(S, 2, 1, 50, 50)
+        wolaj("zProfilu", DL, b2, jeden("profilZ", DL, lu(surowe)), 1000)
+        self.assertEqual(LM.z_luau(b2.get("seria")), {"dzien": 20003, "dni": 1})
+        self.assertEqual(LM.z_luau(b2.get("zadania"))["lista"][0]["postep"], 1)
+        self.assertEqual(g(b2, "ziarno"), 1700000000 % 100003)
+        # migracja: zapis w wersji 1 (bez nowych pól) → domyślne; zły wpis zadania odrzucony
+        v1 = {"wersja": 1, "zloto": 50, "maxForma": 4, "poziomy": {"szczeka": 2}}
+        p1 = LM.z_luau(jeden("profilZ", DL, lu(v1)))
+        self.assertEqual((p1["wersja"], p1["seria"], p1["boostS"], p1["zadania"]["dzien"], p1["zloto"]), (2, {"dzien": -1, "dni": 0}, 0, -1, 50))
+        zle = dict(surowe, seria={"dzien": "x", "dni": 99}, boostS=-5)
+        zle["zadania"] = {"dzien": 20003, "lista": [{"id": "hack", "postep": 5}, {"id": "kulki", "postep": 999, "gotowe": True}]}
+        p3 = LM.z_luau(jeden("profilZ", DL, lu(zle)))
+        self.assertEqual((p3["seria"]["dzien"], p3["seria"]["dni"], p3["boostS"]), (-1, len(D["seria"]["nagrody"]), 0))
+        self.assertEqual([q["id"] for q in p3["zadania"]["lista"]], ["kulki"])
+        self.assertEqual(p3["zadania"]["lista"][0]["postep"], next(q for q in D["zadania"]["pula"] if q["id"] == "kulki")["cel"])
 
 
 def T_KL(KL, n, *a):

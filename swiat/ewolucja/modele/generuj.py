@@ -201,6 +201,9 @@ def cmd_paski(nr="1", *klipy):
 
 # --------------------------------------------------------------------------- dane dla gry
 KROK = 2                              # próbka co 2 klatki (15 na sekundę); gra interpoluje liniowo
+# runda 6: chód i bieg co klatkę — podpora maluchów trwa 2 klatki i przy próbce co 2 klatki stopa jechała z ciałem
+# (pole „krok” w klipie nadpisuje „krok” pliku; gra i sprawdz_dane.py czytają je dla każdego klipu)
+KROK_KLIPU = {"chod": 1, "bieg": 1}
 WARIANTY = (("GOLD", {"cialo": "FFC83D", "brzuch": "FFF1B0", "blona": "FF9A2E", "kolce": "FFFFFF", "zar": "FFF6B0"}),
             ("CRYSTAL", {"cialo": "7FE9FF", "brzuch": "EAFBFF", "blona": "B9A6FF", "kolce": "FFFFFF", "zar": "FFFFFF"}),
             ("RUBY", {"cialo": "E8204E", "brzuch": "FFC2D0", "blona": "7A1038", "kolce": "FFE9A8", "zar": "FFB21F"}),
@@ -239,16 +242,19 @@ def rig_modelu(m):
     return r
 
 
-def klipy_modelu(m, r, pr):
-    """Próbki klipów (Blender, co KROK klatek) w układzie rigu Roblox: obrót w 0,1 stopnia, przesunięcie w 0,001 studa."""
+def klipy_modelu(m, r, pr, kroki=None):
+    """Próbki klipów (Blender, co KROK klatek albo co kroki[klip]) w układzie rigu Roblox: obrót w 0,1 stopnia,
+    przesunięcie w 0,001 studa."""
     nazwy = [k[0] for k in r["kosci"]]
     klipy = {}
+    kroki = KROK_KLIPU if kroki is None else kroki       # runda 6: chód i bieg co klatkę także w „dane” i „etap”
     for kl in m.klipy:
+        kk = kroki.get(kl.nazwa, KROK)
         p_ = pr[kl.nazwa]
         stawy = [n for n in nazwy if n in p_]
         zprzes = [n for n in stawy if any(abs(v) > 1e-4 for w in p_[n].get("przes", []) for v in w)]
         wiersze = []
-        for f in range(0, kl.dlugosc + 1, KROK):
+        for f in range(0, kl.dlugosc + 1, kk):
             w = []
             for n in stawy:
                 if n in zprzes:
@@ -262,6 +268,11 @@ def klipy_modelu(m, r, pr):
             dodatki = {"predkosc": round(kl.predkosc * m.skala, 2)}
         else:
             dodatki = {}
+        if kk != KROK:
+            dodatki["krok"] = kk
+        if hasattr(kl, "chod") and kk != KROK:
+            # okna podporu z generatora: stopa NOGI[j]+"3" stoi na ziemi od klatki start[j] przez „klatki” klatek (pętla)
+            dodatki["podpor"] = {"klatki": kl.chod["podpor"], "start": list(kl.chod["start"]), "stopy": [n + "3" for n in sk.NOGI]}
         klipy[kl.nazwa] = {"dl": kl.dlugosc, "petla": kl.petla, "zdarzenia": getattr(kl, "zdarzenia", {}), **dodatki,
                            "stawy": [nazwy.index(n) + 1 for n in stawy], "przes": [nazwy.index(n) + 1 for n in zprzes],
                            "probki": wiersze}
@@ -561,6 +572,27 @@ def cmd_etap():
     # Etap: zmienione i nowe pliki danych do dane_nastepne/ (folderu dane/ nie dotyka), film biegu nad krata
     from swiat.ewolucja.modele import etap
     etap.zrob(sys.modules[__name__])
+
+
+def cmd_krok1():
+    # Runda 6: klipy smoków z chodem i biegiem co klatkę do dane_nastepne/ — z próbek Blendera ostatniego etapu
+    # (_probki_etap.json w dane_robocze), bez ponownego uruchamiania Blendera; pozostałe klipy bez zmian (sprawdzane)
+    cel = os.path.join(TU, "dane_nastepne")
+    os.makedirs(cel, exist_ok=True)
+    with open(os.path.join(wyjscie("dane_robocze"), "_probki_etap.json"), encoding="utf-8") as f:
+        probki = json.load(f)
+    for m in modele_pelne(jajo=False):
+        r = rig_modelu(m)
+        nowe = klipy_modelu(m, r, probki[m.id], KROK_KLIPU)
+        stare_p = os.path.join(DANE, m.id + "_klipy.json")
+        with open(stare_p, encoding="utf-8") as f:
+            stare = json.load(f)
+        inne = [n for n, c in nowe["klipy"].items() if n not in KROK_KLIPU and c != stare["klipy"].get(n)]
+        if inne:
+            raise SystemExit("BŁĄD: %s — klipy inne niż w dane/ (model albo próbki się zmieniły): %s" % (m.id, inne[:6]))
+        rozm = _zapisz(nowe, os.path.join(cel, m.id + "_klipy.json"))
+        print("KROK1 | %-7s %s  %d B (było %d B)" % (m.id, " ".join("%s %d próbek" % (n, len(nowe["klipy"][n]["probki"])) for n in KROK_KLIPU),
+                                                    rozm, os.path.getsize(stare_p)))
 
 
 def cmd_obrazy():

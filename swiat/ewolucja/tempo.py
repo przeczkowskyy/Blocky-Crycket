@@ -45,6 +45,13 @@ class Swiat:
                     a = k * 2.1
                     self.owce.append({"x": sx + math.cos(a) * 4, "z": sz + math.sin(a) * 4, "do": 0.0})
         self.owce_wzrost = Ow["wzrost"] if Ow else 0
+        # retencja1: trzy zadania dnia gracza (typowe losowanie: kulki, owce, walki) — nagroda złoto + wzrost, liczone jako nowość
+        Z = D.get("zadania")
+        self.zadania = []
+        if Z:
+            for zid in ("kulki", "owce", "walki"):
+                q = next(x for x in Z["pula"] if x["id"] == zid)
+                self.zadania.append({"id": zid, "cel": q["cel"], "p": 0, "zloto": q["zloto"], "wzrost": q["wzrost"], "g": False})
         self.owce_powrot = Ow["powrot_s"] if Ow else 0
         self.strefy = []
         self.siatka = {}
@@ -299,6 +306,20 @@ class Swiat:
             return
         b["wzrost"] = min(self.potrzeba(b["forma"]) * self.D["ewolucja"]["pasek_maks"], b["wzrost"] + ile)
 
+    def zadanie(self, b, zid):
+        if not b["slot"]:
+            return
+        for q in self.zadania:
+            if q["id"] == zid and not q["g"]:
+                q["p"] += 1
+                if q["p"] >= q["cel"]:
+                    q["g"] = True
+                    b["zloto"] += q["zloto"]
+                    if b["forma"] < len(self.D["formy"]):
+                        p_ = self.potrzeba(b["forma"])
+                        b["wzrost"] = min(p_ * self.D["ewolucja"]["pasek_maks"], b["wzrost"] + q["wzrost"] * p_)
+                    self.zdarzenia.append(("zadanie", zid))
+
     def zjedz_kulke(self, b, i):
         J = self.D["jedzenie"]
         typ = self.D["kulkiPoz"][i][2]
@@ -307,6 +328,7 @@ class Swiat:
         self.kulki[i] = self.czas + (J["powrot_duza_s"] if typ >= 2 else J["powrot_mala_s"])
         if b["slot"]:
             self.wzrost(b, (J["wielka"] if typ == 3 else (J["duza"] if typ == 2 else J["mala"])) * self.apetyt(b))
+            self.zadanie(b, "kulki")
 
     def zgin(self, b):
         b["martwy"] = self.czas + (self.D["smierc"]["odrodzenie_s"] if b["slot"] else self.D["boty"]["odrodzenie_s"])
@@ -320,6 +342,7 @@ class Swiat:
     def zjedz(self, a, b):
         if a["slot"]:
             self.wzrost(a, self.wartosc(b) * self.apetyt(a))
+            self.zadanie(a, "walki")
         self.zgin(b)
 
     def przypadkiem(self, a, q):
@@ -746,6 +769,7 @@ def gracz_mysl(S, g, styl):
             d = dlug(o["x"] - g["x"], o["z"] - g["z"])
             if d < r + 1.6:
                 S.wzrost(g, S.owce_wzrost * S.apetyt(g))
+                S.zadanie(g, "owce")
                 o["do"] = S.czas + S.owce_powrot
                 continue
             if d < 34:
@@ -857,6 +881,8 @@ def przebieg(D, ziarno, minut, styl):
                 wyn["forma"][z[1]] = S.czas
             elif z[0] == "smierc":
                 wyn["smierci"] += 1
+            elif z[0] == "zadanie":
+                wyn.setdefault("zadania", []).append(S.czas)
             elif z[0] in ("las", "boss_rana", "boss_pokonany") and wyn[z[0]] is None:
                 wyn[z[0]] = S.czas
             elif z[0] == "boss_stopien":
@@ -866,9 +892,9 @@ def przebieg(D, ziarno, minut, styl):
         if g["forma"] == len(D["formy"]) and g["max"] == len(D["formy"]) and minut * 60 - S.czas > 60:
             pass
     wyn["boss_widziany"] = g.get("boss_widziany")
-    # najdłuższa przerwa bez czegoś nowego (forma, las, boss widziany, boss pokonany) w pierwszych 10 min
+    # najdłuższa przerwa bez czegoś nowego (forma, las, boss widziany, boss pokonany, zadanie dnia) w pierwszych 10 min
     nowe = sorted([0.0, 600.0] + [t for t in list(wyn["forma"].values()) + [wyn["las"], wyn["boss_widziany"], wyn["boss_pokonany"]]
-                                  + list(wyn.get("stopnie", {}).values()) if t is not None and t <= 600])
+                                  + list(wyn.get("stopnie", {}).values()) + wyn.get("zadania", []) if t is not None and t <= 600])
     wyn["przerwa"] = max(b - a for a, b in zip(nowe, nowe[1:]))
     wyn["koniec_forma"] = g["max"]
     wyn["zloto"] = round(g["zloto"])

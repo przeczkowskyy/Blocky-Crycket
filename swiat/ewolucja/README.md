@@ -333,6 +333,48 @@ testy offline), serwer i klient tylko wołają.
   `37_deszcz`, `38_rampage`, `39_legowisko_linie`, `40_jajo_dnia`; film `%TEMP%\ewolucja_demo\ewolucja_odrodzenie.mp4`
   (39 s, `demo_wideo.py --odrodzenie`). Próby: hak `boty_cisza` (boty bez ciosów na czas pomiarów HUD i poślizgu).
 
+## Retencja (retencja1, 23.11.2026)
+- **Stopy piskląt (dane, runda 6)**: `chod` i `bieg` wszystkich stadiów co klatkę (pole klipu `krok` 1 i okna podporu
+  `podpor`; `modele/README.md`, „Runda 6”; `generuj.py krok1` bez Blendera). Gra czyta krok klipu
+  (`KlipyEwolucji.probka`). Przesuw stopy w podporze: dane (`sprawdz_dane.py`) 0,000–0,060 studa; Play (P40, okna
+  podporu z danych, pozycja stopy z łańcucha stawów) — zob. wyniki niżej.
+- **Seria logowań** (`ustawienia.json → seria`): kalendarz 7 dni (dzień UTC); wejście dzień po dniu = następny dzień,
+  przerwa = od 1, po 7. znów 1. Nagrody od razu przy wejściu, tylko waluta gry: 100 / 200 / 150 + ×2 wzrostu 5 min /
+  400 / 250 + ×2 wzrostu 10 min / 800 / 1500 + losowanie wariantu najwyższego trofeum. Przyspieszenie liczone w czasie
+  gry i zapisywane.
+- **Zadania dnia** (`ustawienia.json → zadania`): 3 z puli 8 (owce, walki, zdolności, wyspa lawy, skarb legowiska,
+  kule, ewolucje, golem; część od zdobytej formy), losowanie stałe dla (dzień UTC, gracz), reset o 00:00 UTC. Postęp ze
+  zdarzeń kroku logiki (`L.krokZadan`), nagroda od razu: złoto + 15–20% potrzeby obecnego stadium. HUD: pigułka pod
+  paskiem życia z pierwszym niegotowym zadaniem i licznikiem; baner QUEST DONE!. AnalyticsService: `QuestCompleted`
+  (CustomField01 = id), `LoginStreakDay`, przepływy złota `quest_*` i `streak_day_*`.
+- **Ekran powitania** przy każdym wejściu: WELCOME BACK! / WELCOME, DRAGON!, „DAY n STREAK”, kalendarz 7 dni
+  (dzisiaj na pomarańczowo, odebrane „OK”), nagroda dnia i złoto skarbu z nieobecności, 3 zadania z paskami, CONTINUE
+  (zamyka się też sam po 20 s; telefon 620 × 330 pt × skala).
+- **Zapis w wersji 2**: `seria`, `zadania`, `boostS` w tym samym profilu; migracja z wersji 1 = wartości domyślne;
+  walidacja w `L.profilZ`. Blokada sesji bez zmian; w Studio i próbach magazyn w pamięci.
+- **Ranking**: leaderstats `Stage` i `Rebirths`; tablica TOP REBIRTHS w świecie na łące (−18, −96): globalny top 10
+  odrodzeń z OrderedDataStore `Ewolucja_Odrodzenia_v1` (zapis tylko przy zmianie liczby odrodzeń, odczyt co 120 s,
+  wszystko w pcall, nazwy z cache); w Studio i próbach z pamięci z nazwami „Player N”.
+- **Kolory linii**: boty w liniach EMBER / FROST / STORM / SHADOW (po kolei z numeru bytu), trofea na cokołach
+  w linii właściciela.
+- **Wydarzenia z zegara UTC**: DRAGON RAIN, gdy (czas UTC) mod 1200 s < 120 s; GOLEM RAMPAGE, gdy (czas UTC − 600)
+  mod 2700 s < 180 s (po pokonaniu golema spokój do końca cyklu) — ten sam rozkład na każdym serwerze. Próby Play
+  wyłączają rozkład hakiem `wydarzenia_zegar` (zostają wymuszone).
+- **Tempo** (`tempo.py` z owcami i zadaniami dnia jako nowością): `potrzeba` DRAKE 170 → 160, FIRE DRAKE 340 → 230,
+  WAR DRAGON 3400 → 4500, ELDER DRAGON 11500 → 17000; wzrost z zadań 15–20% potrzeby. 12 prób, 26 min: forma 5
+  **5:49** (cel ≤ 7:00), pierwszy ANCIENT = pierwsze odrodzenie **20:11** (10:58–22:40, 10/12; cel 18–22), najdłuższa
+  przerwa bez nowości w 0–10 min **3:08** (2:03–7:23; cel ≤ 2:30 — niespełniony, duży rozrzut prób).
+- **Błąd naprawiony przy okazji (ważny)**: w rigach z danych 7 kości smoka (Tulow, Szyja1–2, Ogon1–4) ma widoczną część
+  o tej samej nazwie; `RigiEwolucji` brał `FindFirstChild(nazwa)`, a kolejność dzieci po replikacji jest dowolna —
+  w części sesji tułów, szyja i ogon nie dostawały animacji (u wszystkich smoków, także cudzych i botów), stąd też
+  „losowy” poślizg stóp piskląt. Teraz kość = część z Motor6D (`Rigi.kosc`); to samo dla stożka ognia, owcy i golema.
+- Wyniki: testy offline 42 (41 OK + 1 pominięty; nowe `test_40` seria, `test_41` zadania, `test_42` zapis v2
+  i migracja; `test_29` i `test_37` rozszerzone); `sprawdz_dane.py` 0 uwag; Play P01–P52 (nowe P48 powitanie, P49 zadania,
+  P50 seria i zapis, P51 ranking i leaderstats, P52 kolory linii; P40 = przesuw stopy w podporze); telefon A06 9/9 i iPad
+  9/9 (nowe T8 powitanie); zrzuty `41_powitanie`–`46_telefon_powitanie`; film
+  `%TEMP%\ewolucja_demo\ewolucja_retencja.mp4` (30 s, `demo_wideo.py --retencja`; kamera z bliska: `EW_TestZoom`,
+  `EW_TestKat`).
+
 ## Pomiar prób z graczami (D-128, 22.11.2026)
 - **AnalyticsService** (tylko serwer opublikowanej gry; w Studio wywołania pomijamy):
   - lejek startu: Spawned → FirstOrb → FirstEvolve → HoardCollected → FirstUpgrade;

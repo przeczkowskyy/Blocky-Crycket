@@ -35,6 +35,18 @@
   "jajo_dnia": "DAILY EGG",
   "jajo_wynik": "%s %s!",
   "jajo_bez": "%s - %s already better",
+  "witaj": "WELCOME BACK!",
+  "witaj_nowy": "WELCOME, DRAGON!",
+  "seria_dzien": "DAY %d STREAK",
+  "dzien": "DAY %d",
+  "boost": "x2 GROWTH %d MIN",
+  "zadania_tytul": "DAILY QUESTS",
+  "zadanie_gotowe": "QUEST DONE!",
+  "zadanie_nagroda": "+%d gold",
+  "zadania_pigulka": "%s %d/%d",
+  "zadania_wszystkie": "ALL QUESTS DONE! New ones at 00:00 UTC",
+  "hoard_nieobecny": "+%d gold in your hoard while away",
+  "ranking_tytul": "TOP REBIRTHS",
   "kolory": {"tusz": "1B1424", "papier": "FFF6E0", "zloto": "FFC83D", "ty": "FFE14D", "zjesz": "5BFF7A", "zje_cie": "FF4040", "kulka_mala": "7FE9FF", "kulka_duza": "FF9A3D"},
   "gryz": "BITE",
   "zryw": "DASH",
@@ -149,7 +161,7 @@
  "zapis": {
   "opis": "Zapis gracza (klucz player_<UserId>, wersja w danych). W Studio i w każdej próbie magazyn w pamięci serwera (nigdy prawdziwy DataStore); poza Studio DataStore z blokadą sesji (UpdateAsync, job serwera, blokada_s). Zapis co co_s, przy wyjściu i przy zamknięciu serwera. Nieobecność liczona do nieobecnosc_maks_s.",
   "magazyn": "Ewolucja_Gracz_v1",
-  "wersja": 1,
+  "wersja": 2,
   "co_s": 60,
   "nieobecnosc_maks_s": 7200,
   "blokada_s": 600,
@@ -249,11 +261,11 @@
  "formy_smok": [
   {"nazwa": "HATCHLING", "chod": "skok", "r": 1.6, "v": 1.0, "potrzeba": 32, "trofeum": 1, "um": {"typ": "wsysanie", "nazwa": "NIBBLE", "r": 9, "odnowa_s": 6, "efekt": "pierscien"}, "smok": {"glowa": 1.75, "szyja": 1, "nogi": 0.7, "dlugosc": 0.7, "grubosc": 0.9, "ogon": 3, "skrzydla": 0.12, "kolce": 0, "rogi": 0.0, "kolor": "8FD86B", "brzuch": "E8F2B0", "blona": "FFB347", "rogi_kolor": "F2EBDD", "oczy": 1.6, "pysk": 0.45, "skorupka": true}, "podskok": 0.3, "pochyl": 0.1, "krok": 1.25},
   {"nazwa": "WHELP", "chod": "skok", "r": 2.2, "v": 1.0, "potrzeba": 70, "trofeum": 2, "um": {"typ": "ogluszenie", "nazwa": "TAIL WHIP", "r": 8, "s": 1.0, "odnowa_s": 6, "efekt": "fala"}, "smok": {"glowa": 1.5, "szyja": 1, "nogi": 0.85, "dlugosc": 0.9, "grubosc": 1.0, "ogon": 4, "skrzydla": 0.28, "kolce": 3, "rogi": 0.45, "kolor": "4FB89A", "brzuch": "D9F2D0", "blona": "FFD24D", "rogi_kolor": "F2EBDD", "oczy": 1.35, "pysk": 0.65}, "podskok": 0.24, "pochyl": 0.11, "krok": 1.2},
-  {"nazwa": "DRAKE", "chod": "klus", "r": 3.0, "v": 0.98, "potrzeba": 170, "trofeum": 4, "um": {"typ": "jezyk", "nazwa": "EMBER SPIT", "r": 14, "odnowa_s": 6, "efekt": "ogien_strzal"}, "smok": {"glowa": 1.15, "szyja": 2, "nogi": 0.95, "dlugosc": 1.0, "grubosc": 1.0, "ogon": 5, "skrzydla": 0.75, "kolce": 4, "rogi": 0.5, "kolor": "4F8FD8", "brzuch": "D0E4FF", "blona": "FF7A59", "rogi_kolor": "F2EBDD"}, "podskok": 0.12, "pochyl": 0.13, "krok": 1.3},
-  {"nazwa": "FIRE DRAKE", "chod": "klus", "r": 4.0, "v": 0.95, "potrzeba": 340, "trofeum": 7, "um": {"typ": "podmuch", "nazwa": "WING GUST", "r": 13, "sila": 14, "s": 0.5, "odnowa_s": 7, "efekt": "podmuch"}, "smok": {"glowa": 1.1, "szyja": 2, "nogi": 1.0, "dlugosc": 1.05, "grubosc": 1.05, "ogon": 5, "skrzydla": 0.85, "kolce": 6, "rogi": 0.6, "kolor": "E0553A", "brzuch": "FFD08A", "blona": "FFD24D", "rogi_kolor": "2A1A1A", "plomien": true, "zar": true}, "podskok": 0.11, "pochyl": 0.14, "krok": 1.25},
+  {"nazwa": "DRAKE", "chod": "klus", "r": 3.0, "v": 0.98, "potrzeba": 160, "trofeum": 4, "um": {"typ": "jezyk", "nazwa": "EMBER SPIT", "r": 14, "odnowa_s": 6, "efekt": "ogien_strzal"}, "smok": {"glowa": 1.15, "szyja": 2, "nogi": 0.95, "dlugosc": 1.0, "grubosc": 1.0, "ogon": 5, "skrzydla": 0.75, "kolce": 4, "rogi": 0.5, "kolor": "4F8FD8", "brzuch": "D0E4FF", "blona": "FF7A59", "rogi_kolor": "F2EBDD"}, "podskok": 0.12, "pochyl": 0.13, "krok": 1.3},
+  {"nazwa": "FIRE DRAKE", "chod": "klus", "r": 4.0, "v": 0.95, "potrzeba": 230, "trofeum": 7, "um": {"typ": "podmuch", "nazwa": "WING GUST", "r": 13, "sila": 14, "s": 0.5, "odnowa_s": 7, "efekt": "podmuch"}, "smok": {"glowa": 1.1, "szyja": 2, "nogi": 1.0, "dlugosc": 1.05, "grubosc": 1.05, "ogon": 5, "skrzydla": 0.85, "kolce": 6, "rogi": 0.6, "kolor": "E0553A", "brzuch": "FFD08A", "blona": "FFD24D", "rogi_kolor": "2A1A1A", "plomien": true, "zar": true}, "podskok": 0.11, "pochyl": 0.14, "krok": 1.25},
   {"nazwa": "DRAGON", "chod": "klus", "r": 5.2, "v": 0.93, "potrzeba": 1000, "trofeum": 12, "um": {"typ": "oddech", "nazwa": "FIRE BREATH", "r": 16, "kat_st": 70, "odnowa_s": 5, "efekt": "ogien"}, "smok": {"glowa": 1.05, "szyja": 2, "nogi": 1.05, "dlugosc": 1.15, "grubosc": 1.1, "ogon": 6, "skrzydla": 1.2, "kolce": 6, "rogi": 0.7, "kolor": "8A5AD8", "brzuch": "E6D0FF", "blona": "5BE8C0", "rogi_kolor": "F2EBDD"}, "podskok": 0.1, "pochyl": 0.13, "krok": 1.15},
-  {"nazwa": "WAR DRAGON", "chod": "klus", "r": 6.8, "v": 0.9, "potrzeba": 3400, "trofeum": 20, "um": {"typ": "ogluszenie", "nazwa": "ROAR", "r": 16, "s": 1.4, "odnowa_s": 8, "efekt": "ryk"}, "smok": {"glowa": 1.0, "szyja": 2, "nogi": 1.05, "dlugosc": 1.2, "grubosc": 1.2, "ogon": 6, "skrzydla": 1.25, "kolce": 8, "rogi": 0.8, "plyty": true, "kolor": "4A4E5E", "brzuch": "9A8070", "blona": "C0403A", "rogi_kolor": "E8E0C8", "plyty_kolor": "8A8EA0"}, "podskok": 0.08, "pochyl": 0.12, "krok": 1.05},
-  {"nazwa": "ELDER DRAGON", "chod": "klus", "r": 9.0, "v": 0.86, "potrzeba": 11500, "trofeum": 35, "um": {"typ": "skok", "nazwa": "WING GLIDE", "d": 30, "s": 0.8, "r": 4, "odnowa_s": 6, "efekt": "lot"}, "smok": {"glowa": 1.0, "szyja": 3, "nogi": 1.1, "dlugosc": 1.25, "grubosc": 1.15, "ogon": 7, "skrzydla": 1.35, "kolce": 7, "rogi": 1.4, "grzebien": true, "kolor": "E8E0C8", "brzuch": "FFF6E0", "blona": "4F8FD8", "rogi_kolor": "C89A3A"}, "podskok": 0.07, "pochyl": 0.11, "krok": 0.95},
+  {"nazwa": "WAR DRAGON", "chod": "klus", "r": 6.8, "v": 0.9, "potrzeba": 4500, "trofeum": 20, "um": {"typ": "ogluszenie", "nazwa": "ROAR", "r": 16, "s": 1.4, "odnowa_s": 8, "efekt": "ryk"}, "smok": {"glowa": 1.0, "szyja": 2, "nogi": 1.05, "dlugosc": 1.2, "grubosc": 1.2, "ogon": 6, "skrzydla": 1.25, "kolce": 8, "rogi": 0.8, "plyty": true, "kolor": "4A4E5E", "brzuch": "9A8070", "blona": "C0403A", "rogi_kolor": "E8E0C8", "plyty_kolor": "8A8EA0"}, "podskok": 0.08, "pochyl": 0.12, "krok": 1.05},
+  {"nazwa": "ELDER DRAGON", "chod": "klus", "r": 9.0, "v": 0.86, "potrzeba": 17000, "trofeum": 35, "um": {"typ": "skok", "nazwa": "WING GLIDE", "d": 30, "s": 0.8, "r": 4, "odnowa_s": 6, "efekt": "lot"}, "smok": {"glowa": 1.0, "szyja": 3, "nogi": 1.1, "dlugosc": 1.25, "grubosc": 1.15, "ogon": 7, "skrzydla": 1.35, "kolce": 7, "rogi": 1.4, "grzebien": true, "kolor": "E8E0C8", "brzuch": "FFF6E0", "blona": "4F8FD8", "rogi_kolor": "C89A3A"}, "podskok": 0.07, "pochyl": 0.11, "krok": 0.95},
   {"nazwa": "ANCIENT DRAGON", "chod": "klus", "r": 15.0, "v": 0.8, "potrzeba": 0, "trofeum": 60, "um": {"typ": "fala", "nazwa": "INFERNO", "r": 36, "s": 1.8, "odnowa_s": 6, "efekt": "inferno"}, "smok": {"glowa": 1.0, "szyja": 3, "nogi": 1.15, "dlugosc": 1.35, "grubosc": 1.3, "ogon": 8, "skrzydla": 1.5, "kolce": 9, "rogi": 1.6, "grzebien": true, "plyty": true, "swiecenie": true, "kolor": "2A2230", "brzuch": "4A3A5A", "blona": "FF4DD8", "rogi_kolor": "7FF8FF", "plyty_kolor": "3A3048"}, "podskok": 0.05, "pochyl": 0.09, "krok": 0.8}
  ],
  "ruch": {
@@ -307,9 +319,36 @@
   ]
  },
  "wydarzenia": {
-  "opis": "Wydarzenia zegarowe na cały serwer (działają z jednym graczem). DRAGON RAIN: co co_s na trwa_s wszystkie kule łąki od razu żywe i złote, wracają po powrot_s, wzrost × wzrost_x i +zloto złota. GOLEM RAMPAGE: co co_s KNIGHT GOLEM najwyższego stopnia osiągniętego na serwerze wychodzi bramą na łąkę (dom x, z), ściga graczy (widzi × widzi_x), życie × hp_x; kto trafił, dostaje równą część skrzyni × pula_x; koniec po trwa_s albo po pokonaniu. pierwszy_s: pierwsze wydarzenie od startu serwera.",
-  "deszcz": {"co_s": 1200, "pierwszy_s": 1200, "trwa_s": 120, "powrot_s": 2.5, "wzrost_x": 3, "zloto": 2},
-  "rampage": {"co_s": 2700, "pierwszy_s": 2700, "trwa_s": 180, "x": 0, "z": 55, "hp_x": 1.0, "pula_x": 2.0, "widzi_x": 1.6}
+  "opis": "Wydarzenia zegarowe na cały serwer (działają z jednym graczem). DRAGON RAIN: co co_s na trwa_s wszystkie kule łąki od razu żywe i złote, wracają po powrot_s, wzrost × wzrost_x i +zloto złota. GOLEM RAMPAGE: co co_s KNIGHT GOLEM najwyższego stopnia osiągniętego na serwerze wychodzi bramą na łąkę (dom x, z), ściga graczy (widzi × widzi_x), życie × hp_x; kto trafił, dostaje równą część skrzyni × pula_x; koniec po trwa_s albo po pokonaniu. retencja1: rozkład z zegara UTC (os.time) — aktywne, gdy (czas UTC − przesun_s) mod co_s < trwa_s; ten sam na każdym serwerze.",
+  "deszcz": {"co_s": 1200, "przesun_s": 0, "trwa_s": 120, "powrot_s": 2.5, "wzrost_x": 3, "zloto": 2},
+  "rampage": {"co_s": 2700, "przesun_s": 600, "trwa_s": 180, "x": 0, "z": 55, "hp_x": 1.0, "pula_x": 2.0, "widzi_x": 1.6}
+ },
+ "seria": {
+  "opis": "retencja1: seria logowań (dzień UTC). Wejście dzień po dniu = następny dzień kalendarza 7 dni (po 7. znów 1.), przerwa = od 1. Nagroda dnia od razu przy wejściu: złoto, przyspieszenie wzrostu (boost_s sekund gry × boost_x), w 7. dniu losowanie wariantu (wagi jajo_dnia) dla najwyższego trofeum obecnej linii. Tylko waluta gry.",
+  "boost_x": 2.0,
+  "nagrody": [{"zloto": 100}, {"zloto": 200}, {"zloto": 150, "boost_s": 300}, {"zloto": 400}, {"zloto": 250, "boost_s": 600}, {"zloto": 800},
+   {"zloto": 1500, "jajo": true}]
+ },
+ "zadania": {
+  "opis": "retencja1: trzy zadania dnia z puli (losowanie stałe dla dnia UTC i gracza; zadanie dostępne od od_formy zdobytej formy), reset o 00:00 UTC. Postęp ze zdarzeń gry; nagroda od razu: złoto + wzrost (ułamek potrzeby obecnego stadium).",
+  "ile": 3,
+  "pula": [
+   {"id": "owce", "tekst": "Eat %d sheep", "cel": 4, "zloto": 200, "wzrost": 0.2},
+   {"id": "walki", "tekst": "Win %d fights", "cel": 6, "zloto": 250, "wzrost": 0.2},
+   {"id": "zdolnosci", "tekst": "Use abilities %d times", "cel": 8, "zloto": 200, "wzrost": 0.2, "od_formy": 2},
+   {"id": "wyspa", "tekst": "Visit the lava island", "cel": 1, "zloto": 300, "wzrost": 0.15, "od_formy": 5},
+   {"id": "legowisko", "tekst": "Collect your hoard %d times", "cel": 2, "zloto": 150, "wzrost": 0.15},
+   {"id": "kulki", "tekst": "Eat %d orbs", "cel": 60, "zloto": 150, "wzrost": 0.15},
+   {"id": "ewolucja", "tekst": "Evolve %d times", "cel": 2, "zloto": 250, "wzrost": 0.0},
+   {"id": "boss", "tekst": "Hit the KNIGHT GOLEM %d times", "cel": 5, "zloto": 350, "wzrost": 0.2, "od_formy": 4}
+  ]
+ },
+ "ranking": {
+  "opis": "retencja1: leaderstats (Stage, Rebirths) i tablica w świecie: globalny top odrodzeń z OrderedDataStore (co odswiez_s, pcall); w Studio i próbach w pamięci, a w tablicy „Player N” zamiast nazw kont.",
+  "magazyn": "Ewolucja_Odrodzenia_v1",
+  "odswiez_s": 120,
+  "ile": 10,
+  "x": -18, "z": -96
  },
  "jajo_dnia": {
   "opis": "DAILY EGG: raz na dzień UTC w gnieździe własnego legowiska; wykluwa darmowe losowanie wariantu dla trofeum obecnego stadium (wariant zostaje tylko, jeśli lepszy). Wagi wariantów.",

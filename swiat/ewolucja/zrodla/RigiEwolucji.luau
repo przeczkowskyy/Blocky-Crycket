@@ -13,6 +13,23 @@ R.__index = R
 local PRZEJSCIE = 0.18
 local rad = math.rad
 
+-- kość po nazwie: w rigach z danych widoczna część bywa nazwana jak kość (Tulow, Szyja1–2, Ogon1–4, Rdzen, Klatka…),
+-- a kolejność dzieci po klonowaniu i replikacji jest dowolna — bierzemy część z Motor6D (retencja1: losowo
+-- znikające ruchy tułowia, szyi i ogona, przez co stopy piskląt ślizgały się w części sesji)
+local function kosc(model: Model, nazwa: string): BasePart?
+	local zapas = nil
+	for _, c in model:GetChildren() do
+		if c.Name == nazwa and c:IsA("BasePart") then
+			if c:FindFirstChildOfClass("Motor6D") then
+				return c
+			end
+			zapas = zapas or c
+		end
+	end
+	return zapas
+end
+R.kosc = kosc
+
 function R.nowy(model: Model, W, skala: number?)
 	local self = setmetatable({}, R)
 	self.model, self.W = model, W
@@ -22,8 +39,8 @@ function R.nowy(model: Model, W, skala: number?)
 	self.korzenOff = (if typeof(kp) == "Vector3" then kp else Vector3.zero) * (skala or 1)
 	self.motory = {}
 	for i, nazwa in W.stawy do
-		local kosc = model:FindFirstChild(nazwa)
-		self.motory[i] = kosc and kosc:FindFirstChildOfClass("Motor6D") or false
+		local k = kosc(model, nazwa)
+		self.motory[i] = k and k:FindFirstChildOfClass("Motor6D") or false
 	end
 	self.n = W.n
 	self.poza, self.tmp, self.pop = KL.nowaPoza(W.n), KL.nowaPoza(W.n), KL.nowaPoza(W.n)

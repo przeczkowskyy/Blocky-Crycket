@@ -224,7 +224,7 @@ WK.tabT, WK.tabU = HUD.panel.tabT, HUD.panel.tabU
 WK.trofea, WK.karty, WK.bZamknij = HUD.panel.trofea, HUD.panel.karty, HUD.panel.zamknij
 
 -- pasek bossa (pod górą ekranu, gdy boss blisko)
-local ramkaBossa = warstwa("Boss", Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, 74), Vector2.new(250, 34))
+local ramkaBossa = warstwa("Boss", Vector2.new(0.5, 0), UDim2.new(0.5, -20, 0, 100), Vector2.new(250, 34))
 local bossNazwa = napis(ramkaBossa, D.boss.nazwa, UDim2.fromOffset(0, 0), UDim2.new(1, 0, 0, 16), hex("FF9AD8"))
 local bossTlo = nowy("Frame", { Position = UDim2.fromOffset(6, 17), Size = UDim2.new(1, -12, 0, 14), BackgroundColor3 = tusz }, ramkaBossa)
 rog(bossTlo, 7)
@@ -1774,6 +1774,16 @@ local function odswiezHUD()
 	HUD:ustawLinie(gracz:GetAttribute("EW_Linia") or 1, gracz:GetAttribute("EW_Odrodzenia") or 0, gracz:GetAttribute("EW_Mnoznik") or 1)
 	WK.krokWyd()
 	WK.krokJajaDnia()
+	-- retencja1: pigułka zadań dnia, ekran powitania zamyka się sam po 20 s, tablica rankingu w świecie
+	local zl = HttpService:JSONDecode(gracz:GetAttribute("EW_Zadania") or "[]")
+	gracz:SetAttribute("EW_K_Zadania", HUD:zadania(zl))
+	if HUD:powitanieAktywne() then
+		HUD:powitanieZadania(zl)
+		if WK.powitanieDo and os.clock() > WK.powitanieDo then
+			HUD:powitanieKoniec()
+		end
+	end
+	WK.krokTablicy()
 	HUD:gora({ forma = wForma, wz = wz, pt = pt, maks = f >= NF, hp = hpJa, zloto = gracz:GetAttribute("EW_Zloto") or 0,
 		skarb = gracz:GetAttribute("EW_ZlotoLeg") or 0, naS = gracz:GetAttribute("EW_ZlotoNaS") or 0, wariant = wariantD(WK.csv("EW_Warianty")[wForma]) })
 	local teraz = os.clock()
@@ -2187,6 +2197,24 @@ evZdarzenia.OnClientEvent:Connect(function(lista)
 				WK.liczOdr = (WK.liczOdr or 0) + 1
 				gracz:SetAttribute("EW_K_Odr", "wyklute")
 				pokazBaner(string.format(UI.odrodzenie, z.n), hex(D.odrodzenie.linie[z.linia].kolor), 2)
+			end
+		elseif t == "powitanie" then
+			-- retencja1: ekran powitania (seria 7 dni, nagroda dnia, zadania)
+			WK.powitanieDo = os.clock() + 20
+			HUD:powitanie(z, HttpService:JSONDecode(gracz:GetAttribute("EW_Zadania") or "[]"))
+			gracz:SetAttribute("EW_K_Powitanie", z.dni)
+			dzwiek("monety", 1)
+		elseif t == "zadanie" then
+			if z.id == mojId then
+				pokazBaner(UI.zadanie_gotowe, hex(UI.styl.kup), 2)
+				toast(string.format(UI.zadanie_nagroda, z.zloto), 3)
+				dzwiek("krol", 1.2)
+				WK.liczZadan = (WK.liczZadan or 0) + 1
+				gracz:SetAttribute("EW_K_ZadaniaGotowe", WK.liczZadan)
+			end
+		elseif t == "zadania_nowe" then
+			if z.id == mojId then
+				toast(UI.zadania_tytul, 3)
 			end
 		elseif t == "wydarzenie" then
 			if z.start then
@@ -2667,6 +2695,57 @@ function WK.krokOdr(dt: number)
 	end
 end
 
+-- tablica TOP REBIRTHS w świecie (ranking z serwera: kontener „Ranking”; w Studio „Player N”)
+function WK.krokTablicy()
+	local R = D.ranking
+	if not R then
+		return
+	end
+	if not WK.tablica then
+		local p = Instance.new("Part")
+		p.Name = "TablicaRankingu"
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch = true, false, false, false
+		p.Size = Vector3.new(18, 11, 0.8)
+		p.Color = Color3.fromRGB(58, 48, 74)
+		p.Material = Enum.Material.Slate
+		-- przód tablicy (−Z) do kamery gry (kamera patrzy w +Z z góry): odchylona do tyłu o 38°
+		p.CFrame = CFrame.new(C + Vector3.new(R.x, 6.5, R.z)) * CFrame.Angles(math.rad(38), 0, 0)
+		p.Parent = lokalne
+		local nogi = p:Clone()
+		nogi.Name = "Noga"
+		nogi.Size = Vector3.new(1.2, 6, 1.2)
+		nogi.CFrame = CFrame.new(C + Vector3.new(R.x, 3, R.z + 2))
+		nogi.Parent = lokalne
+		local sg = Instance.new("SurfaceGui")
+		sg.Face = Enum.NormalId.Front
+		sg.CanvasSize = Vector2.new(540, 330)
+		sg.LightInfluence = 0
+		sg.Parent = p
+		local tyt = napis(sg, UI.ranking_tytul, UDim2.fromOffset(20, 10), UDim2.fromOffset(500, 54), hex(UI.styl.zar_gora))
+		local wiersze = {}
+		for i = 1, R.ile do
+			local l = napis(sg, "", UDim2.fromOffset(30 + ((i - 1) // 5) * 250, 70 + ((i - 1) % 5) * 50), UDim2.fromOffset(230, 42), papier, cyfry)
+			l.TextXAlignment = Enum.TextXAlignment.Left
+			wiersze[i] = l
+		end
+		WK.tablica = { p = p, wiersze = wiersze, tyt = tyt, ostatni = "" }
+	end
+	local js = kontener:GetAttribute("Ranking") or "[]"
+	if js ~= WK.tablica.ostatni then
+		WK.tablica.ostatni = js
+		local lista = HttpService:JSONDecode(js)
+		local tekst = {}
+		for i, l in WK.tablica.wiersze do
+			local e = lista[i]
+			l.Text = if e then string.format("%d. %s  R%d", i, tostring(e.n), e.r) else ""
+			if e then
+				table.insert(tekst, l.Text)
+			end
+		end
+		gracz:SetAttribute("EW_K_Ranking", table.concat(tekst, " | "))
+	end
+end
+
 local function zegar(sek: number): string
 	sek = math.max(0, math.floor(sek))
 	return string.format("%d:%02d", sek // 60, sek % 60)
@@ -2776,13 +2855,23 @@ function WK.krokPoslizgu()
 			end
 			P.stopy = {}
 		end
+		-- diagnostyka: przesunięcie tułowia w klipie (Transform stawu Tulow) i czy klip ma przesunięcie tułowia
+		local tul = SK.Rigi.kosc(w.model, "Tulow")
+		local tm = tul and tul:FindFirstChildOfClass("Motor6D")
+		if tm then
+			local zt = tm.Transform.Position.Z
+			P.tzMin, P.tzMax = math.min(P.tzMin or math.huge, zt), math.max(P.tzMax or -math.huge, zt)
+		end
+		P.przesTulow = w.R.loko.k.przes and w.R.loko.k.przes[1] == true
+		P.skalaR = w.R.skala
 		for n, K in P.kosci do
 			-- wysokość nad ziemią pod korzeniem (płaty łąki mają różną wysokość — pasmo podpory liczymy względem nich)
 			local p = (WK.cfKosci(K.b, 0) * K.off).Position
 			p = Vector3.new(p.X, p.Y - (if w.cfBase then w.cfBase.Position.Y else 0), p.Z)
 			P.stopy[n] = P.stopy[n] or {}
 			table.insert(P.stopy[n], { t = teraz, p = p, petla = w.R:petlaNazwa(), tempo = w.R.loko.tempo, v = w.v, gr = K.gr, lt = w.R.loko.t,
-				akcja = if w.R.akcja then w.R.akcja.k.nazwa .. string.format(":%.2f", w.R.akcja.w) else nil, pop = w.R.lokoPop ~= nil })
+				akcja = if w.R.akcja then w.R.akcja.k.nazwa .. string.format(":%.2f", w.R.akcja.w) else nil, pop = w.R.lokoPop ~= nil,
+				kl = w.R.loko.k, kier = w.kier, wx = w.x, wz = w.z })
 		end
 	end
 	if teraz < P.do_ then
@@ -2819,6 +2908,52 @@ function WK.krokPoslizgu()
 		end
 	end
 	table.sort(lista2)
+	-- runda 6: przesuw stopy w oknach podporu z danych (klip chod / bieg: start i liczba klatek podporu każdej stopy)
+	local podpory = {}
+	for nazwa, lista in P.stopy do
+		local p0, naj, wOknie = nil, 0, false
+		for _, q in lista do
+			local K = q.kl
+			local Pp = K and K.podpor
+			local j = nil
+			if Pp and not q.pop and not q.akcja then
+				for i, s in Pp.stopy do
+					if s == nazwa then
+						j = i
+					end
+				end
+			end
+			local okno = false
+			if j then
+				local f = (q.lt % K.dl) * 30
+				okno = ((f - Pp.start[j]) % K.klatki) <= Pp.klatki
+			end
+			if okno then
+				if not wOknie then
+					p0, naj = q.p, 0
+				end
+				naj = math.max(naj, Vector3.new(q.p.X - p0.X, 0, q.p.Z - p0.Z).Magnitude)
+			elseif wOknie then
+				table.insert(podpory, naj)
+			end
+			wOknie = okno
+		end
+	end
+	table.sort(podpory)
+	-- kierunek patrzenia a kierunek ruchu (stopa stawiana wzdłuż patrzenia; ruch w bok = pozorny poślizg)
+	local odch, nod = 0, 0
+	local l1 = P.stopy.NogaPL3
+	if l1 then
+		for i = 2, #l1 do
+			local dx, dz = l1[i].wx - l1[i - 1].wx, l1[i].wz - l1[i - 1].wz
+			if dx * dx + dz * dz > 0.0004 then
+				local ruch = math.atan2(dx, dz)
+				local d = math.abs((l1[i].kier - ruch + math.pi) % (2 * math.pi) - math.pi)
+				odch += math.deg(d)
+				nod += 1
+			end
+		end
+	end
 	if P.surowe and P.stopy.NogaPL3 then
 		local r = {}
 		for i, q in P.stopy.NogaPL3 do
@@ -2830,6 +2965,8 @@ function WK.krokPoslizgu()
 		gracz:SetAttribute("EW_K_PoslizgSurowe", HttpService:JSONEncode(r))
 	end
 	gracz:SetAttribute("EW_K_Poslizg", HttpService:JSONEncode({ stadium = w and w.forma, poslizg = if n > 0 then suma / n else -1, mediana = lista2[math.max(1, n // 2)] or -1,
+		podporow = #podpory, przesuw_mediana = podpory[math.max(1, #podpory // 2)] or -1, przesuw_maks = podpory[#podpory] or -1,
+		odchylenie_st = if nod > 0 then odch / nod else -1, tulow_z = { P.tzMin or 0, P.tzMax or 0 }, przes_tulow = P.przesTulow, skala_r = P.skalaR,
 		maks = maks, probek = n, v = if n > 0 then vs / n else 0, tempo = if n > 0 then ts / n else 0, petle = petle }))
 end
 
@@ -2838,7 +2975,8 @@ local function uklad(): string
 	local nazwy = { Boss = ramkaBossa, Wzrost = HUD.ramkaWzrostu, Zloto = HUD.ramkaZlota, Drabina = HUD.ramkaDrabiny, Gryz = HUD.gryz.ramka, Zryw = HUD.zryw.ramka,
 		Ogien = WK.zdOgien.ramka, Moc = WK.zdMoc.ramka, OgienNast = WK.nastOgien.ramka, MocNast = WK.nastMoc.ramka, Ewolucja = ramkaEwo, Podpowiedz = ramkaPodp,
 		Toast = ramkaToastu, Tabliczka = ramkaTabl, Panel = WK.panel, Odslona = HUD.odsl.ramka, Baner = ramkaBaneru,
-		OdslonaSrodek = HUD.odsl.ramka:FindFirstChild("Srodek"), Wydarzenie = HUD.ramkaWyd, JajoDnia = WK.ramkaJaja }
+		OdslonaSrodek = HUD.odsl.ramka:FindFirstChild("Srodek"), Wydarzenie = HUD.ramkaWyd, JajoDnia = WK.ramkaJaja, Zadania = HUD.ramkaZadan,
+		PowitanieSrodek = HUD.pow.ramka:FindFirstChild("Srodek") }
 	local pr = {}
 	local v = kamera.ViewportSize
 	local ins = GuiService:GetGuiInset() -- przy IgnoreGuiInset AbsolutePosition liczy się od dołu górnego paska
@@ -2854,7 +2992,8 @@ local function uklad(): string
 			table.insert(poza, a)
 		end
 		for b, B in pr do
-			if a < b and a ~= "Panel" and b ~= "Panel" and a ~= "Tabliczka" and b ~= "Tabliczka" and string.sub(a, 1, 7) ~= "Odslona" and string.sub(b, 1, 7) ~= "Odslona" and a ~= "Baner" and b ~= "Baner" then
+			if a < b and a ~= "Panel" and b ~= "Panel" and a ~= "Tabliczka" and b ~= "Tabliczka" and string.sub(a, 1, 7) ~= "Odslona" and string.sub(b, 1, 7) ~= "Odslona" and a ~= "Baner" and b ~= "Baner"
+				and string.sub(a, 1, 9) ~= "Powitanie" and string.sub(b, 1, 9) ~= "Powitanie" then
 				local w = math.min(A[3], B[3]) - math.max(A[1], B[1])
 				local h = math.min(A[4], B[4]) - math.max(A[2], B[2])
 				if w > 2 and h > 2 then
@@ -2864,7 +3003,7 @@ local function uklad(): string
 		end
 	end
 	local male = {}
-	local przyciski = { bGryz, bZryw, WK.zdOgien.b, WK.zdMoc.b, bEwo, bLegowisko, WK.bZamknij, HUD.odsl.dalej, WK.bJajo }
+	local przyciski = { bGryz, bZryw, WK.zdOgien.b, WK.zdMoc.b, bEwo, bLegowisko, WK.bZamknij, HUD.odsl.dalej, WK.bJajo, HUD.pow.dalej }
 	for _, d in WK.panel:GetDescendants() do
 		if d:IsA("TextButton") and d.Visible then
 			table.insert(przyciski, d)
@@ -2913,8 +3052,13 @@ local function celKamery(dt: number): CFrame?
 	if odslona then
 		d *= K.kokon_x
 	end
+	-- filmy i próby: zbliżenie (EW_TestZoom × odległość, EW_TestKat — nachylenie w stopniach)
+	local zoom = gracz:GetAttribute("EW_TestZoom")
+	if type(zoom) == "number" then
+		d *= zoom
+	end
 	odlKam = if odlKam == 0 then d else odlKam + (d - odlKam) * math.min(1, dt * (if odslona then 1.8 else 2.5))
-	local e = math.rad(K.nachylenie_st)
+	local e = math.rad(gracz:GetAttribute("EW_TestKat") or K.nachylenie_st)
 	local cel = C + Vector3.new(w.x, 0, w.z)
 	return CFrame.lookAt(cel + Vector3.new(0, odlKam * math.sin(e), -odlKam * math.cos(e)), cel)
 end
@@ -2954,6 +3098,8 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 			HUD:pokazZakladke("T")
 		elseif tp == "dalej" then
 			HUD:odslonaKoniec()
+		elseif tp == "powitanie_zamknij" then
+			HUD:powitanieKoniec()
 		elseif tp == "jajo_dnia" then
 			akcja("jajo_dnia")
 		elseif string.sub(tp, 1, 6) == "linia:" then
@@ -3123,6 +3269,17 @@ RunService.RenderStepped:Connect(function(dtPrawdziwe: number)
 		local jw = widoki[mojId]
 		gracz:SetAttribute("EW_K_LiniaModelu", if jw then jw.linia or 1 else 0)
 		gracz:SetAttribute("EW_K_Wydarzen", WK.liczWyd or 0)
+		local lb = {}
+		for _, q in widoki do
+			if q.slot == 0 and not q.boss and q.linia then
+				lb[q.linia] = true
+			end
+		end
+		local nlb = 0
+		for _ in lb do
+			nlb += 1
+		end
+		gracz:SetAttribute("EW_K_LinieBotow", nlb)
 		gracz:SetAttribute("EW_K_Przypalenia", if SK then SK.licznikPrzypalen or 0 else 0)
 		gracz:SetAttribute("EW_K_Korona", korona.Parent ~= nil)
 		gracz:SetAttribute("EW_K_KameraY", kamera.CFrame.Position.Y)

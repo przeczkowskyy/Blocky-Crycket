@@ -370,6 +370,8 @@ function L.dodajByt(S, slot: number, forma: number, x: number?, z: number?, stre
 		napastnik = 0, napastnikDo = 0, uciekaOd = 0, uciekaDo = 0 }
 	b.hpMaks = L.hpMaks(D, b)
 	b.hp = b.hpMaks
+	-- retencja1: boty w kolorach linii smoków (po kolei z numeru bytu, bez losowania), gracz zaczyna linią 1
+	b.linia = if slot == 0 and D.odrodzenie then (b.id % #D.odrodzenie.linie) + 1 else 1
 	S.nastId += 1
 	table.insert(S.byty, b)
 	if slot > 0 then
@@ -622,7 +624,7 @@ function L.dodajWzrost(S, b, ile: number)
 	end
 	local p = L.potrzeba(D, b.forma)
 	if b.slot > 0 then
-		ile *= L.mnoznikOdr(D, b)
+		ile *= L.mnoznikOdr(D, b) * (if (b.boostS or 0) > 0 and D.seria then D.seria.boost_x else 1)
 	end
 	b.wzrost = math.min(p * D.ewolucja.pasek_maks, b.wzrost + ile)
 end
@@ -1721,6 +1723,7 @@ function L.krok(S, dt: number)
 			S.kulki[i] = 0
 		end
 	end
+	L.krokZadan(S, dt, zd)
 	return zd
 end
 
@@ -1788,8 +1791,7 @@ end
 -- wydarzenia zegarowe na cały serwer (działają też z jednym graczem): DRAGON RAIN i GOLEM RAMPAGE
 local function wyd(S)
 	if not S.wyd then
-		local W = S.D.wydarzenia
-		S.wyd = { deszczNast = W.deszcz.pierwszy_s, rampNast = W.rampage.pierwszy_s }
+		S.wyd = { deszczNast = math.huge, rampNast = math.huge }
 	end
 	return S.wyd
 end
@@ -1806,11 +1808,24 @@ end
 
 function L.wymusWydarzenie(S, co: string)
 	local E = wyd(S)
+	local W = S.D.wydarzenia
 	if co == "deszcz" then
-		E.deszczNast = S.czas
+		E.deszczWym = S.czas + W.deszcz.trwa_s
 	elseif co == "rampage" then
-		E.rampNast = S.czas
+		E.rampWym = S.czas + W.rampage.trwa_s
 	end
+end
+
+-- retencja1: okno wydarzenia z zegara UTC (os.time) — każdy serwer ma ten sam rozkład, gracz może wrócić na wydarzenie.
+-- Aktywne, gdy (teraz − przesun_s) mod co_s < trwa_s. Zwraca: aktywne, s do końca, s do następnego startu, nr cyklu.
+function L.oknoWydarzenia(W, teraz: number): (boolean, number, number, number)
+	local t = teraz - (W.przesun_s or 0)
+	local f = t % W.co_s
+	local cykl = math.floor(t / W.co_s)
+	if f < W.trwa_s then
+		return true, W.trwa_s - f, W.co_s - f, cykl
+	end
+	return false, 0, W.co_s - f, cykl
 end
 
 -- najwyższy stopień golema osiągnięty na serwerze: obecny stopień serwera albo trofea bossa gracza + 1 (najwyżej 5)
@@ -1870,34 +1885,204 @@ function L.krokWydarzen(S, zd)
 	end
 	local W = D.wydarzenia
 	local E = wyd(S)
-	if E.deszczDo and S.czas >= E.deszczDo then
+	-- bez zegara UTC (testy logiki) albo z wyłączonym rozkładem (próby Play) tylko wydarzenia wymuszone
+	local teraz = if S.wydBezZegara then nil else S.zegar
+	-- DRAGON RAIN: z zegara UTC albo wymuszony (próby)
+	local akt, doK, doN = false, 0, math.huge
+	if teraz then
+		akt, doK, doN = L.oknoWydarzenia(W.deszcz, teraz)
+	end
+	if E.deszczWym then
+		if S.czas < E.deszczWym then
+			akt, doK = true, E.deszczWym - S.czas
+		else
+			E.deszczWym = nil
+		end
+	end
+	E.deszczNast = S.czas + doN
+	if E.deszczDo and (S.czas >= E.deszczDo or not akt) then
 		E.deszczDo = nil
 		table.insert(zd, { t = "wydarzenie", co = "deszcz", koniec = true })
 	end
-	if not E.deszczDo and S.czas >= E.deszczNast then
-		E.deszczDo = S.czas + W.deszcz.trwa_s
-		E.deszczNast = S.czas + W.deszcz.co_s
+	if akt and not E.deszczDo and doK > 0.5 then
+		E.deszczDo = S.czas + doK
 		-- złote kule spadają na całą łąkę: wszystkie kule łąki od razu żywe
 		for i in D.kulkiPoz do
 			if L.deszczNa(S, i) then
 				S.kulki[i] = 0
 			end
 		end
-		table.insert(zd, { t = "wydarzenie", co = "deszcz", start = true, czas = W.deszcz.trwa_s })
+		table.insert(zd, { t = "wydarzenie", co = "deszcz", start = true, czas = doK })
 	end
-	if E.rampDo and S.czas >= E.rampDo then
+	-- GOLEM RAMPAGE: z zegara UTC (po pokonaniu golema do końca cyklu spokój) albo wymuszony
+	local rakt, rdoK, rdoN, cykl = false, 0, math.huge, -1
+	if teraz then
+		rakt, rdoK, rdoN, cykl = L.oknoWydarzenia(W.rampage, teraz)
+	end
+	if E.rampKoniecCykl == cykl then
+		rakt = false
+	end
+	if E.rampWym then
+		if S.czas < E.rampWym then
+			rakt, rdoK = true, E.rampWym - S.czas
+		else
+			E.rampWym = nil
+		end
+	end
+	E.rampNast = S.czas + rdoN
+	if E.rampDo and (S.czas >= E.rampDo or not rakt) then
+		if S.czas >= E.rampDo and rakt then
+			-- koniec przez pokonanie golema: ten cykl zegara już się nie wznawia
+			E.rampKoniecCykl = cykl
+			E.rampWym = nil
+		end
 		E.rampDo = nil
 		rampageKoniec(S, zd)
-	end
-	if not E.rampDo and S.czas >= E.rampNast then
-		E.rampNast = S.czas + W.rampage.co_s
+	elseif rakt and not E.rampDo and rdoK > 0.5 and E.rampKoniecCykl ~= cykl then
 		if rampageStart(S, zd) then
-			E.rampDo = S.czas + W.rampage.trwa_s
+			E.rampDo = S.czas + rdoK
 		end
 	end
 end
 
 -- jajo dnia (raz na dzień UTC, w legowisku): darmowe losowanie wariantu trofeum obecnego stadium (tylko na lepsze)
+function L.wariantJaja(D, r: number): string
+	local J = D.jajo_dnia
+	local suma = 0
+	for _, w in J.wagi do
+		suma += w[2]
+	end
+	local x, id = r * suma, J.wagi[1][1]
+	for _, w in J.wagi do
+		if x < w[2] then
+			id = w[1]
+			break
+		end
+		x -= w[2]
+	end
+	return id
+end
+
+------------------------------------------------------------------ retencja1: seria logowań i zadania dnia (dzień UTC)
+function L.zadanieDef(D, id: string)
+	for _, q in D.zadania.pula do
+		if q.id == id then
+			return q
+		end
+	end
+	return nil
+end
+
+-- trzy zadania na dzień: losowanie stałe dla (dzień, ziarno gracza), tylko dostępne od zdobytej formy
+function L.losujZadania(D, dzien: number, ziarno: number, maxForma: number)
+	local pula = {}
+	for _, q in D.zadania.pula do
+		if (q.od_formy or 1) <= maxForma then
+			table.insert(pula, q)
+		end
+	end
+	local x = (dzien * 7919 + ziarno * 104729 + 1) % 2147483647
+	local lista = {}
+	for _ = 1, math.min(D.zadania.ile, #pula) do
+		x = (x * 48271) % 2147483647
+		local i = x % #pula + 1
+		local q = pula[i]
+		pula[i] = pula[#pula]
+		pula[#pula] = nil
+		table.insert(lista, { id = q.id, cel = q.cel, postep = 0, gotowe = false })
+	end
+	return { dzien = dzien, lista = lista }
+end
+
+-- wejście gracza: seria (dzień po dniu = dalej, przerwa = od 1), nagroda dnia od razu, zadania na dziś
+function L.logowanie(D, b, teraz: number, r: number)
+	local d = L.dzienUTC(teraz)
+	local s = b.seria or { dzien = -1, dni = 0 }
+	local nagroda, wariant, f, lepszy = nil, nil, nil, nil
+	if s.dzien ~= d then
+		s.dni = if s.dzien == d - 1 then s.dni % #D.seria.nagrody + 1 else 1
+		s.dzien = d
+		nagroda = D.seria.nagrody[s.dni]
+		b.zloto += nagroda.zloto or 0
+		b.boostS = (b.boostS or 0) + (nagroda.boost_s or 0)
+		if nagroda.jajo then
+			f = math.max(1, b.maxForma)
+			wariant = L.wariantJaja(D, r)
+			b.warianty = b.warianty or {}
+			lepszy = L.wariantX(D, wariant) > L.wariantX(D, b.warianty[f])
+			if lepszy then
+				b.warianty[f] = wariant
+			end
+		end
+	end
+	b.seria = s
+	if not b.zadania or b.zadania.dzien ~= d then
+		b.zadania = L.losujZadania(D, d, b.ziarno or 0, b.maxForma)
+	end
+	return { dni = s.dni, nagroda = nagroda, wariant = wariant, f = f, lepszy = lepszy }
+end
+
+function L.postepZadania(S, b, rodzaj: string, ile: number, zd)
+	if b.slot == 0 or not b.zadania then
+		return
+	end
+	local D = S.D
+	for _, q in b.zadania.lista do
+		if q.id == rodzaj and not q.gotowe then
+			q.postep = math.min(q.cel, q.postep + ile)
+			if q.postep >= q.cel then
+				q.gotowe = true
+				local Q = L.zadanieDef(D, rodzaj)
+				b.zloto += Q.zloto
+				local wz = 0
+				if b.forma < #D.formy then
+					wz = Q.wzrost * L.potrzeba(D, b.forma)
+					b.wzrost = math.min(L.potrzeba(D, b.forma) * D.ewolucja.pasek_maks, b.wzrost + wz)
+				end
+				table.insert(zd, { t = "zadanie", id = b.id, s = b.slot, zad = rodzaj, zloto = Q.zloto, wzrost = math.floor(wz) })
+			end
+		end
+	end
+end
+
+local ZADANIE_ZDARZENIA = { owca = "owce", zamach = "zdolnosci", zebrano = "legowisko", kulka = "kulki", ewolucja = "ewolucja" }
+
+-- co krok: postęp zadań ze zdarzeń tego kroku, wyspa, przyspieszenie, nowy dzień o 00:00 UTC
+function L.krokZadan(S, dt: number, zd)
+	local D = S.D
+	if not D.zadania then
+		return
+	end
+	local poSlocie = {}
+	for _, b in S.byty do
+		if b.slot > 0 then
+			poSlocie[b.slot] = b
+			if (b.boostS or 0) > 0 then
+				b.boostS = math.max(0, b.boostS - dt)
+			end
+			if S.zegar and b.zadania and L.dzienUTC(S.zegar) ~= b.zadania.dzien then
+				b.zadania = L.losujZadania(D, L.dzienUTC(S.zegar), b.ziarno or 0, b.maxForma)
+				table.insert(zd, { t = "zadania_nowe", id = b.id, s = b.slot })
+			end
+			if b.martwyDo == nil and L.naWyspie(D, b.x, b.z) then
+				L.postepZadania(S, b, "wyspa", 1, zd)
+			end
+		end
+	end
+	local n = #zd
+	for i = 1, n do
+		local z = zd[i]
+		local rodzaj = ZADANIE_ZDARZENIA[z.t]
+		if rodzaj and z.s and z.s > 0 and poSlocie[z.s] then
+			L.postepZadania(S, poSlocie[z.s], rodzaj, 1, zd)
+		elseif z.t == "zjedz" and (z.sa or 0) > 0 and poSlocie[z.sa] then
+			L.postepZadania(S, poSlocie[z.sa], "walki", 1, zd)
+		elseif z.t == "boss_rana" and (z.s or 0) > 0 and poSlocie[z.s] then
+			L.postepZadania(S, poSlocie[z.s], "boss", 1, zd)
+		end
+	end
+end
+
 function L.dzienUTC(t: number): number
 	return math.floor(t / 86400)
 end
@@ -1916,19 +2101,7 @@ function L.jajoDnia(S, b, teraz: number, r: number): (boolean, string?, boolean?
 	end
 	b.dzienJaja = L.dzienUTC(teraz)
 	local f = math.clamp(b.forma, 1, b.maxForma)
-	local J = D.jajo_dnia
-	local suma = 0
-	for _, w in J.wagi do
-		suma += w[2]
-	end
-	local x, id = r * suma, J.wagi[1][1]
-	for _, w in J.wagi do
-		if x < w[2] then
-			id = w[1]
-			break
-		end
-		x -= w[2]
-	end
+	local id = L.wariantJaja(D, r)
 	b.warianty = b.warianty or {}
 	local lepszy = L.wariantX(D, id) > L.wariantX(D, b.warianty[f])
 	if lepszy then
@@ -1979,7 +2152,8 @@ end
 
 function L.profilNowy(D)
 	return { wersja = D.zapis.wersja, zloto = 0, zlotoLeg = 0, poziomy = { szczeka = 1, szybkosc = 1, apetyt = 1 }, maxForma = 1,
-		warianty = {}, trofea = {}, bossTrofea = 0, ostatnio = 0, pierwszy = 0, odrodzenia = 0, linia = 1, linie = {}, dzienJaja = -1 }
+		warianty = {}, trofea = {}, bossTrofea = 0, ostatnio = 0, pierwszy = 0, odrodzenia = 0, linia = 1, linie = {}, dzienJaja = -1,
+		seria = { dzien = -1, dni = 0 }, zadania = { dzien = -1, lista = {} }, boostS = 0 }
 end
 
 -- dane z magazynu → profil (migracja wersji, uzgodnienie z szablonem, walidacja liczb i nazw)
@@ -2009,6 +2183,21 @@ function L.profilZ(D, dane: any)
 		end
 		local t = type(dane.trofea) == "table" and dane.trofea[f]
 		p.trofea[f] = math.floor(liczba(t, 1, #D.legowisko.poziomy_x, 1))
+	end
+	-- retencja1 (zapis w wersji 2; migracja z wersji 1 = wartości domyślne): seria logowań, zadania dnia, przyspieszenie
+	if type(dane.seria) == "table" then
+		p.seria.dzien = math.floor(liczba(dane.seria.dzien, -1, 1e7, -1))
+		p.seria.dni = math.floor(liczba(dane.seria.dni, 0, if D.seria then #D.seria.nagrody else 7, 0))
+	end
+	p.boostS = liczba(dane.boostS, 0, 86400, 0)
+	if type(dane.zadania) == "table" and type(dane.zadania.lista) == "table" and D.zadania then
+		p.zadania.dzien = math.floor(liczba(dane.zadania.dzien, -1, 1e7, -1))
+		for _, q in dane.zadania.lista do
+			local Q = type(q) == "table" and type(q.id) == "string" and L.zadanieDef(D, q.id)
+			if Q and #p.zadania.lista < D.zadania.ile then
+				table.insert(p.zadania.lista, { id = Q.id, postep = math.floor(liczba(q.postep, 0, Q.cel, 0)), gotowe = q.gotowe == true })
+			end
+		end
 	end
 	-- odrodzenie1: liczba odrodzeń, obecna linia, postęp pozostałych linii (klucze „1”–„4”), dzień jaja
 	local nl = if D.odrodzenie then #D.odrodzenie.linie else 1
@@ -2051,6 +2240,14 @@ function L.doProfilu(D, b, teraz: number)
 	p.odrodzenia = b.odrodzenia or 0
 	p.linia = b.linia or 1
 	p.dzienJaja = b.dzienJaja or -1
+	p.seria = { dzien = (b.seria and b.seria.dzien) or -1, dni = (b.seria and b.seria.dni) or 0 }
+	p.boostS = math.floor(b.boostS or 0)
+	if b.zadania then
+		p.zadania.dzien = b.zadania.dzien
+		for _, q in b.zadania.lista do
+			table.insert(p.zadania.lista, { id = q.id, postep = q.postep, gotowe = q.gotowe })
+		end
+	end
 	for l, z in b.linie or {} do
 		local q = { maxForma = z.maxForma, warianty = {}, trofea = {} }
 		for f = 1, #D.formy do
@@ -2078,6 +2275,18 @@ function L.zProfilu(D, b, p, teraz: number): (number, number)
 	b.odrodzenia = p.odrodzenia or 0
 	b.linia = p.linia or 1
 	b.dzienJaja = p.dzienJaja or -1
+	b.seria = { dzien = p.seria.dzien, dni = p.seria.dni }
+	b.boostS = p.boostS or 0
+	b.ziarno = math.floor(b.pierwszy or 0) % 100003
+	b.zadania = nil
+	if p.zadania and p.zadania.dzien >= 0 then
+		local lista = {}
+		for _, q in p.zadania.lista do
+			local Q = L.zadanieDef(D, q.id)
+			table.insert(lista, { id = q.id, cel = Q.cel, postep = q.postep, gotowe = q.gotowe })
+		end
+		b.zadania = { dzien = p.zadania.dzien, lista = lista }
+	end
 	b.linie = {}
 	for k, q in p.linie or {} do
 		local l = tonumber(k)

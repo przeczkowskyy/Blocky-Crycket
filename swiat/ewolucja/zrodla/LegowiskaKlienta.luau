@@ -99,6 +99,9 @@ function Lg:zbuduj(p: Player, slot: number, sig: string)
 	f0.Parent = c.lokalne
 	local moj = p == c.gracz
 	local mf = p:GetAttribute("EW_MaxForma") or 1
+	if moj then
+		c.gracz:SetAttribute("EW_K_TrofeaLinia", p:GetAttribute("EW_Linia") or 1)
+	end
 	local war, tro = lista(p, "EW_Warianty"), lista(p, "EW_Trofea")
 	local lx, lz = c.L.legowiskoPoz(D, slot)
 	local SK = c.SK
@@ -118,7 +121,7 @@ function Lg:zbuduj(p: Player, slot: number, sig: string)
 		end
 		if f <= mf or moj then
 			if F.rig and SK then
-				SK:trofeum(F, c.wariantD(war[f]), gora, 1.6, f0, f > mf)
+				SK:trofeum(F, c.wariantD(war[f]), gora, 1.6, f0, f > mf, p:GetAttribute("EW_Linia") or 1)
 			else
 				self:trofeumStare(F, c.wariantD(war[f]), gora, f > mf, f0)
 			end
@@ -207,6 +210,7 @@ function Lg:krok(dt: number, t: number)
 			local d = self.leg[slot]
 			if (lx - fx) ^ 2 + (lz - fz) ^ 2 < 170 * 170 then
 				local sig = table.concat({ tostring(p:GetAttribute("EW_MaxForma")), p:GetAttribute("EW_Warianty") or "", p:GetAttribute("EW_Trofea") or "",
+					tostring(p:GetAttribute("EW_Linia") or 1),
 					p.Name }, "|")
 				if not d or d.sig ~= sig then
 					if d then

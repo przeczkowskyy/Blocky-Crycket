@@ -53,6 +53,18 @@ return {
 		jajo_dnia = "DAILY EGG",
 		jajo_wynik = "%s %s!",
 		jajo_bez = "%s - %s already better",
+		witaj = "WELCOME BACK!",
+		witaj_nowy = "WELCOME, DRAGON!",
+		seria_dzien = "DAY %d STREAK",
+		dzien = "DAY %d",
+		boost = "x2 GROWTH %d MIN",
+		zadania_tytul = "DAILY QUESTS",
+		zadanie_gotowe = "QUEST DONE!",
+		zadanie_nagroda = "+%d gold",
+		zadania_pigulka = "%s %d/%d",
+		zadania_wszystkie = "ALL QUESTS DONE! New ones at 00:00 UTC",
+		hoard_nieobecny = "+%d gold in your hoard while away",
+		ranking_tytul = "TOP REBIRTHS",
 		kolory = {
 			tusz = "1B1424",
 			papier = "FFF6E0",
@@ -207,7 +219,7 @@ return {
 	wydarzenia = {
 		deszcz = {
 			co_s = 1200,
-			pierwszy_s = 1200,
+			przesun_s = 0,
 			trwa_s = 120,
 			powrot_s = 2.5,
 			wzrost_x = 3,
@@ -215,7 +227,7 @@ return {
 		},
 		rampage = {
 			co_s = 2700,
-			pierwszy_s = 2700,
+			przesun_s = 600,
 			trwa_s = 180,
 			x = 0,
 			z = 55,
@@ -231,6 +243,106 @@ return {
 			{ "rubin", 7 },
 			{ "tecza", 1 },
 		},
+	},
+	seria = {
+		boost_x = 2.0,
+		nagrody = {
+			{
+				zloto = 100,
+			},
+			{
+				zloto = 200,
+			},
+			{
+				zloto = 150,
+				boost_s = 300,
+			},
+			{
+				zloto = 400,
+			},
+			{
+				zloto = 250,
+				boost_s = 600,
+			},
+			{
+				zloto = 800,
+			},
+			{
+				zloto = 1500,
+				jajo = true,
+			},
+		},
+	},
+	zadania = {
+		ile = 3,
+		pula = {
+			{
+				id = "owce",
+				tekst = "Eat %d sheep",
+				cel = 4,
+				zloto = 200,
+				wzrost = 0.2,
+			},
+			{
+				id = "walki",
+				tekst = "Win %d fights",
+				cel = 6,
+				zloto = 250,
+				wzrost = 0.2,
+			},
+			{
+				id = "zdolnosci",
+				tekst = "Use abilities %d times",
+				cel = 8,
+				zloto = 200,
+				wzrost = 0.2,
+				od_formy = 2,
+			},
+			{
+				id = "wyspa",
+				tekst = "Visit the lava island",
+				cel = 1,
+				zloto = 300,
+				wzrost = 0.15,
+				od_formy = 5,
+			},
+			{
+				id = "legowisko",
+				tekst = "Collect your hoard %d times",
+				cel = 2,
+				zloto = 150,
+				wzrost = 0.15,
+			},
+			{
+				id = "kulki",
+				tekst = "Eat %d orbs",
+				cel = 60,
+				zloto = 150,
+				wzrost = 0.15,
+			},
+			{
+				id = "ewolucja",
+				tekst = "Evolve %d times",
+				cel = 2,
+				zloto = 250,
+				wzrost = 0.0,
+			},
+			{
+				id = "boss",
+				tekst = "Hit the KNIGHT GOLEM %d times",
+				cel = 5,
+				zloto = 350,
+				wzrost = 0.2,
+				od_formy = 4,
+			},
+		},
+	},
+	ranking = {
+		magazyn = "Ewolucja_Odrodzenia_v1",
+		odswiez_s = 120,
+		ile = 10,
+		x = -18,
+		z = -96,
 	},
 	pole = {
 		srodek = { 0, 0, -800 },
@@ -2522,7 +2634,7 @@ return {
 			chod = "klus",
 			r = 3.0,
 			v = 0.98,
-			potrzeba = 170,
+			potrzeba = 160,
 			trofeum = 4,
 			um = {
 				typ = "jezyk",
@@ -2555,7 +2667,7 @@ return {
 			chod = "klus",
 			r = 4.0,
 			v = 0.95,
-			potrzeba = 340,
+			potrzeba = 230,
 			trofeum = 7,
 			um = {
 				typ = "podmuch",
@@ -2624,7 +2736,7 @@ return {
 			chod = "klus",
 			r = 6.8,
 			v = 0.9,
-			potrzeba = 3400,
+			potrzeba = 4500,
 			trofeum = 20,
 			um = {
 				typ = "ogluszenie",
@@ -2658,7 +2770,7 @@ return {
 			chod = "klus",
 			r = 9.0,
 			v = 0.86,
-			potrzeba = 11500,
+			potrzeba = 17000,
 			trofeum = 35,
 			um = {
 				typ = "skok",
@@ -2827,7 +2939,7 @@ return {
 	},
 	zapis = {
 		magazyn = "Ewolucja_Gracz_v1",
-		wersja = 1,
+		wersja = 2,
 		co_s = 60,
 		nieobecnosc_maks_s = 7200,
 		blokada_s = 600,

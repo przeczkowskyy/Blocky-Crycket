@@ -122,6 +122,16 @@ def przebieg(p, zrzuty):
     time.sleep(1.0)
     a = p.atr()
     st = p.serwer('"stan"')
+    # P48 ekran powitania przy wejściu (seria, nagroda dnia, zadania), zamknięty przed resztą prób
+    pw, _ = czekaj(lambda: p.atr().get("EW_K_Powitanie"), 8, 0.3)
+    time.sleep(0.6)
+    if zrzuty:
+        p.zrzut("41_powitanie.jpg")
+    zl0 = json.loads(p.atr().get("EW_Zadania") or "[]")
+    wynik("P48 powitanie: seria i zadania", pw is not None and pw >= 1 and len(zl0) == D["zadania"]["ile"], seria=pw, zadania=[q["id"] for q in zl0])
+    p.przycisk("powitanie_zamknij")
+    time.sleep(0.3)
+    a = p.atr()
     wynik("P01 start", gotowe and a.get("EW_Forma") == 1 and "Scriptable" in a.get("kamera", "") and a.get("EW_K_Drabina") == "ZN?????C",
           forma=a.get("EW_Forma"), tarcza=st["tarcza"], drabina=a.get("EW_K_Drabina"), kamera=a.get("kamera"), gotowe_s=round(t, 1))
     if zrzuty:
@@ -309,6 +319,7 @@ def przebieg(p, zrzuty):
     walka(p, zrzuty)
     interfejs(p, zrzuty)
     odrodzenie_proby(p, zrzuty)
+    retencja_proby(p, zrzuty)
     a = p.atr()
     wynik("P12 klatka", (a.get("EW_K_Klatka") or 99) < 25, klatka_ms=round(a.get("EW_K_Klatka") or 0, 1), praca_skryptu_ms=round(a.get("EW_K_Praca") or 0, 2),
           czesci_smokow=a.get("EW_K_CzesciSmokow"), rigi=a.get("EW_K_Rigi"), widokow=a.get("EW_K_Widokow"),
@@ -330,6 +341,7 @@ def swiat(p, zrzuty):
                  'return n' % K, "Server")
     # wyjście: pisklę idzie z miejsca wyklucia prosto na środek łąki przez wejście legowiska (5 s)
     p.serwer('"laska_zeruj"')
+    p.serwer('"boty_cisza", 8')  # próba drogi wyjścia, nie bezpieczeństwa (to P02): boty bez ciosów na 8 s
     p.ustaw("EW_TestSter", "Vector3.new(%f, %f, 5)" % (lx / 126.0, -lz / 126.0))
     time.sleep(5.3)
     st2 = p.serwer('"stan"')
@@ -719,8 +731,8 @@ def walka(p, zrzuty):
           rany_w_swiecie=l.get("rana"), pociski=l.get("pocisk"), ogony=l.get("ogon"), oddechy=l.get("oddech"), zjedzenia=l.get("zjedz"))
 
 
-def wolna_droga(dl=60.0, zapas=4.0):
-    """Prosty odcinek na łące bez przeszkód (do pomiaru poślizgu): start i kierunek +X."""
+def wolna_droga(dl=60.0, zapas=4.0, inne=()):
+    """Prosty odcinek na łące bez przeszkód (do pomiaru poślizgu): start i kierunek +X. inne: dodatkowe koła (x, z, r)."""
     WY = D["wyspa"]
     for z0 in (-95, -80, 70, 60, -60, 20, 0, -20, 40):
         for x0 in (-110, -90, -70, -50, 0, 20):
@@ -732,7 +744,7 @@ def wolna_droga(dl=60.0, zapas=4.0):
                 if math.hypot(x - WY["x"], z0 - WY["z"]) < WY["r_zew"] + 8:
                     dobre = False
                     break
-                for o in D["przeszkody"]:
+                for o in list(D["przeszkody"]) + [{"x": a, "z": b, "r": c} for a, b, c in inne]:
                     if math.hypot(x - o["x"], z0 - o["z"]) < o["r"] + zapas + 3:
                         dobre = False
                         break
@@ -849,6 +861,10 @@ def interfejs(p, zrzuty):
     # kolejność 2, 3, 4, 1: pomiar stadium 2 tuż po stadium 1 bywał zawyżony (niewyjaśnione, patrz README)
     for f in (2, 3, 4, 1):
         for tryb, sila in (("bieg", 1.0), ("chod", 0.3)) if f == 2 else (("bieg", 1.0),):
+            # boty stoją (bez potrąceń „odbicie” na torze), tor omija stojące boty
+            p.serwer('"boty_stoj_wszystkie", 7')
+            stb = p.serwer('"stan"')
+            x0, z0 = wolna_droga(inne=[(b["x"], b["z"], D["formy"][b["forma"] - 1]["r"] + 6) for b in stb["byty"] if b["slot"] == 0 and not b["martwy"]])
             p.serwer('"forma_gracza", %d' % f)
             p.serwer('"przenies", %d, %f, %f' % (byt, x0, z0))
             p.serwer('"hp", nil, 5000')
@@ -860,13 +876,21 @@ def interfejs(p, zrzuty):
             time.sleep(2.0)
             m = json.loads(p.atr().get("EW_K_Poslizg") or "{}")
             p.ustaw("EW_TestPoslizg", "nil")
+            if m.get("przesuw_maks", 0) >= 0.1:
+                # zły odczyt: drugi pomiar z surowym śladem stopy (do analizy fazy)
+                p.ustaw("EW_TestSter", "Vector3.new(%f, 0, 3.2)" % -sila)
+                p.ustaw("EW_TestPoslizg", "-1.6")
+                time.sleep(2.0)
+                a2 = p.atr()
+                log("SUROWE %d_%s %s %s" % (f, tryb, a2.get("EW_K_Poslizg"), a2.get("EW_K_PoslizgSurowe")))
             pomiary["poslizg"]["%d_%s" % (f, tryb)] = {k: (round(v, 3) if isinstance(v, float) else v) for k, v in m.items()}
             p.luau('game:GetService("Players").LocalPlayer:SetAttribute("EW_K_Poslizg", nil) return "ok"', "Client")
     P = pomiary["poslizg"]
     # mediana prędkości stopy w podporze (pasmo 0,03 studa); próg dla biegu stadiów 2–4 (gra odtwarza dane). Stadium 1 (sus)
     # i chód mają w danych podporę krótszą niż próbka co 2 klatki — mierzone i zgłaszane, nie liczone (patrz README)
-    ok = all(P[k].get("mediana", 99) >= 0 and P[k].get("probek", 0) >= 6 and P[k]["mediana"] <= 2.0 for k in ("2_bieg", "3_bieg", "4_bieg"))
-    wynik("P40 poślizg stóp (bieg 2–4; 1 i chód zgłaszane)", ok, **P)
+    # runda 6: przesuw stopy w oknach podporu z danych (chód i bieg co klatkę), cel < 0,1 studa na stadiach 1–4
+    ok = all(P[k].get("podporow", 0) >= 4 and 0 <= P[k].get("przesuw_maks", 9) < 0.1 for k in P)
+    wynik("P40 stopy w podporze (stadia 1–4, < 0,1 studa)", ok, **{k: {x: P[k].get(x) for x in ("podporow", "przesuw_mediana", "przesuw_maks", "tempo", "v")} for k in P})
     # P41 ogień z rigu: FIRE BREATH (stadium 4) i INFERNO z przypaloną ziemią (stadium 7)
     p.serwer('"forma_gracza", 4')
     p.serwer('"zdolnosci_zeruj"')
@@ -1028,6 +1052,80 @@ def odrodzenie_proby(p, zrzuty):
           przed={k: przed[k] for k in ("odrodzenia", "linia", "maxForma", "linie")}, po={k: po[k] for k in ("odrodzenia", "linia", "maxForma", "linie")})
 
 
+def retencja_proby(p, zrzuty):
+    """retencja1: zadania dnia (postęp, nagroda), seria 7 dni (dalej, reset, dzień 7), wyjście i powrót, ranking
+    (leaderstats, tablica z „Player N”), kolory linii botów i trofeów."""
+    st = p.serwer('"stan"')
+    byt = st["byt"]
+    p.serwer('"boty_cisza", 120')
+    # P49 zadania dnia: kulki do 3 (autopilot), nagroda złoto + wzrost, pigułka w HUD
+    p.serwer('"forma_gracza", 2')
+    p.serwer('"przenies", %d, %f, %f' % ((byt,) + wolna_droga()))
+    p.serwer('"zadania_ustaw", {"kulki", "owce", "walki"}, nil, 3')
+    time.sleep(0.8)
+    a0 = p.atr()
+    zl0 = p.serwer('"stan"')["zloto"]
+    p.ustaw("EW_TestAuto", "true")
+    got, _ = czekaj(lambda: (p.atr().get("EW_K_ZadaniaGotowe") or 0) > (a0.get("EW_K_ZadaniaGotowe") or 0), 20, 0.4)
+    p.ustaw("EW_TestAuto", "false")
+    time.sleep(0.5)
+    a1 = p.atr()
+    zl1 = p.serwer('"stan"')["zloto"]
+    zad = json.loads(a1.get("EW_Zadania") or "[]")
+    Q = next(q for q in D["zadania"]["pula"] if q["id"] == "kulki")
+    wynik("P49 zadania dnia", got and any(q["id"] == "kulki" and q["g"] for q in zad) and zl1 - zl0 >= Q["zloto"] and "/" in (a1.get("EW_K_Zadania") or ""),
+          zadania=zad, pigulka=a1.get("EW_K_Zadania"), zloto=[round(zl0), round(zl1)])
+    if zrzuty:
+        p.zrzut("44_zadania.jpg")
+    # P50 seria: wczoraj dzień 2 → dziś 3 (przyspieszenie), przerwa → 1, dzień 6 → 7 (wariant); wyjście i powrót zachowuje serię i zadania
+    p.serwer('"seria_ustaw", 1, 2')
+    r3 = p.serwer('"logowanie"')
+    time.sleep(0.5)
+    b3 = p.atr().get("EW_Boost") or 0
+    p.przycisk("powitanie_zamknij")
+    p.serwer('"seria_ustaw", 3, 5')
+    r1 = p.serwer('"logowanie"')
+    p.serwer('"seria_ustaw", 1, 6')
+    r7 = p.serwer('"logowanie"')
+    time.sleep(0.6)
+    if zrzuty:
+        p.zrzut("45_seria_dzien7.jpg")
+    p.przycisk("powitanie_zamknij")
+    przed = p.atr()
+    ww = p.serwer('"wyjdz_wroc", 300')
+    time.sleep(1.2)
+    po = p.atr()
+    p.przycisk("powitanie_zamknij")
+    wynik("P50 seria 7 dni i zapis", r3 and r3["dni"] == 3 and b3 > 0 and r1["dni"] == 1 and r7["dni"] == 7 and (r7.get("nagroda") or {}).get("jajo")
+          and ww and ww.get("zapisano") and po.get("EW_Seria") == przed.get("EW_Seria")
+          and [(q["id"], q["p"], q["g"]) for q in json.loads(po.get("EW_Zadania") or "[]")] == [(q["id"], q["p"], q["g"]) for q in json.loads(przed.get("EW_Zadania") or "[]")],
+          dni=[r3 and r3["dni"], r1 and r1["dni"], r7 and r7["dni"]], boost=b3, seria=[przed.get("EW_Seria"), po.get("EW_Seria")])
+    # P51 ranking: leaderstats Stage i Rebirths, tablica w świecie z „Player N” (nigdy nazwa konta)
+    byt = p.serwer('"stan"')["byt"]  # po wyjściu i powrocie gracz ma nowy byt
+    rk = p.serwer('"ranking_odswiez"')
+    time.sleep(1.0)
+    ls = json.loads(p.luau('local HS = game:GetService("HttpService") local pl = game:GetService("Players").LocalPlayer local l = pl:FindFirstChild("leaderstats") '
+                           'local t = pl:GetAttribute("EW_K_Ranking") or "" return HS:JSONEncode({ stage = l and l:FindFirstChild("Stage") and l.Stage.Value, '
+                           'rebirths = l and l:FindFirstChild("Rebirths") and l.Rebirths.Value, bez_nazwy = string.find(t, pl.Name, 1, true) == nil '
+                           'and string.find(t, pl.DisplayName, 1, true) == nil, gracz_n = string.find(t, "Player ", 1, true) ~= nil })', "Client"))
+    st = p.serwer('"stan"')
+    RK = D["ranking"]
+    p.serwer('"przenies", %d, %f, %f' % (byt, RK["x"] + 2, RK["z"] - 7))
+    time.sleep(1.4)
+    if zrzuty:
+        p.zrzut("42_ranking.jpg")
+    wynik("P51 ranking i leaderstats", ls.get("stage") == st["forma"] and ls.get("rebirths") is not None and ls.get("bez_nazwy") and ls.get("gracz_n") and rk,
+          leaderstats={k: ls.get(k) for k in ("stage", "rebirths")}, bez_nazwy=ls.get("bez_nazwy"), wpisy=len(rk or []))
+    # P52 kolory linii: boty w różnych liniach, trofea legowiska w linii właściciela
+    p.serwer('"do_legowiska"')
+    time.sleep(2.0)
+    a = p.atr()
+    if zrzuty:
+        p.zrzut("43_linie_trofea.jpg")
+    wynik("P52 kolory linii (boty, trofea)", (a.get("EW_K_LinieBotow") or 0) >= 3 and a.get("EW_K_TrofeaLinia") == a.get("EW_Linia"),
+          linie_botow=a.get("EW_K_LinieBotow"), trofea=a.get("EW_K_TrofeaLinia"), linia=a.get("EW_Linia"))
+
+
 def pomiar(p):
     # P22 pomiar prób: podsumowanie sesji trafia tylko do magazynu w pamięci (nigdy do prawdziwego), bez danych osoby
     klucz = p.serwer('"zapisz_probe"')
@@ -1060,6 +1158,7 @@ def main():
     ap.add_argument("--bez-zrzutow", action="store_true")
     ap.add_argument("--tylko-interfejs", action="store_true", help="start i próby interfejsu (P01, P34–P41)")
     ap.add_argument("--tylko-odrodzenie", action="store_true", help="start i próby odrodzenia (P42–P47)")
+    ap.add_argument("--tylko-retencja", action="store_true", help="start, powitanie i próby retencji (P48–P52)")
     a = ap.parse_args()
     with StudioMCP(timeout=180) as s:
         p = P(s, a.studio)
@@ -1068,7 +1167,20 @@ def main():
             return 1
         log("Play:", play(a.studio, True)[-80:])
         try:
-            if a.tylko_odrodzenie:
+            # rozkład wydarzeń z zegara UTC wyłączony na czas prób (deszcz i rampage tylko wymuszone) — wyniki nie zależą od godziny
+            czekaj(lambda: p.serwer('"wydarzenia_zegar", false'), 30, 0.5)
+            if a.tylko_retencja:
+                czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
+                p.luau(BEZ_LISTY, "Client")
+                pw, _ = czekaj(lambda: p.atr().get("EW_K_Powitanie"), 8, 0.3)
+                time.sleep(0.6)
+                if not a.bez_zrzutow:
+                    p.zrzut("41_powitanie.jpg")
+                wynik("P48 powitanie: seria i zadania", pw is not None and pw >= 1, seria=pw)
+                p.przycisk("powitanie_zamknij")
+                odrodzenie_proby(p, not a.bez_zrzutow)
+                retencja_proby(p, not a.bez_zrzutow)
+            elif a.tylko_odrodzenie:
                 czekaj(lambda: p.atr().get("klient") and p.atr().get("EW_Byt"), 30, 0.5)
                 p.luau(BEZ_LISTY, "Client")
                 time.sleep(1.5)

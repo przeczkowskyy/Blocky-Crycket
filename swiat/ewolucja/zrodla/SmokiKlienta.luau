@@ -556,7 +556,7 @@ function S:przypalenie(E, poz: Vector3, r: number, czas: number): boolean
 end
 
 -- cokół trofeum z danych (rekwizyt) i trofeum: uproszczony rig w nieruchomej pozie „cokol”
-function S:trofeum(F, W0, cf: CFrame, rozmiar: number, rodzic: Instance, ciemny: boolean)
+function S:trofeum(F, W0, cf: CFrame, rozmiar: number, rodzic: Instance, ciemny: boolean, linia: number?)
 	local wz = self.c.wzorce and self.c.wzorce:FindFirstChild(F.wzorzecLod or F.wzorzec)
 	if not wz then
 		return nil
@@ -569,8 +569,14 @@ function S:trofeum(F, W0, cf: CFrame, rozmiar: number, rodzic: Instance, ciemny:
 				d.Material = Enum.Material.SmoothPlastic
 			end
 		end
-	elseif W0 then
-		S.przemaluj(m, W0.id, self.D.blender.warianty[W0.id])
+	else
+		-- retencja1: trofea w kolorach linii właściciela (EMBER, FROST, STORM, SHADOW), wariant na wierzchu
+		if linia and linia > 1 then
+			S.barwLinii(m, linia)
+		end
+		if W0 then
+			S.przemaluj(m, W0.id, self.D.blender.warianty[W0.id])
+		end
 	end
 	for _, d in m:GetDescendants() do
 		if d:IsA("BasePart") then
