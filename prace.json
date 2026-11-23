@@ -2,20 +2,6 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-23T11:49:38+01:00",
- "prace": [
-  {
-   "id": "smok-mapa2",
-   "tytul": "Gra o smoku: mapa v2 — rzeźba terenu, kryjówki, przejścia dla małych, sekrety (Blender)",
-   "stan": "w_toku",
-   "start": "2026-11-23T11:01:03+01:00",
-   "koniec_szacowany": "2026-11-23T14:30:00+01:00",
-   "aktualizacja": "2026-11-23T11:01:03+01:00",
-   "obszary": [
-    "swiat/ewolucja/modele/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  }
- ]
+ "aktualizacja": "2026-11-23T11:50:35+01:00",
+ "prace": []
 }
