@@ -9,11 +9,13 @@
 Źródła (tylko odczyt): ustawienia.json (jedyne źródło liczb pakietu), swiat/miasteczko_bazar/znaczniki.json (punkt
 trenera w bazarze — zapas, gdy w Studio nie ma kontenera bazaru), swiat/miasteczko_bazar_gra/miejsca.json (id miejsca
 i nazwa zdarzenia OknoMiejsca). Położenia w świecie liczy się tu (środek areny + układ lokalny stanowisk), więc w kodzie
-Luau nie ma żadnej liczby położenia. Przypadki wzorcowe liczy lustro logika_treningu.py.
+Luau nie ma żadnej liczby położenia. Przypadki wzorcowe liczy lustro logika_treningu.py. Od D-108 każde stanowisko stoi
+w swojej scenerii krainy (ustawienia „scenerie”), a w swiat.<gra>.trener_npc jest punkt trenera dla postaci NPC.
 """
 import copy
 import hashlib
 import json
+import math
 import os
 import random
 import re
@@ -60,8 +62,6 @@ NAZWY = {
     "runy": "Arena/Inteligencja/Runy",
     "kula_maga": "Arena/Inteligencja/Mag/Kula",
     "tory": "Arena/Szczescie/Tory",
-    "tablica_wyboru": "Arena/Lobby/TablicaWyboru/E",
-    "wyjscie": "Arena/Lobby/Wyjscie/E",
     "tablica_wejscia": "TablicaWejscia/E",
 }
 
@@ -235,6 +235,50 @@ def _sprawdz(K):
         if g not in K["gry"]:
             raise BladDanych("dzwieki_katalog: nieznana gra %s" % g)
     _sprawdz_wyglad(K)
+    _sprawdz_scenerie(K)
+
+
+KRAINY = ("las", "bagno", "dzungla")
+
+
+def _sprawdz_scenerie(K):
+    """Scenerie krain (D-108): każda gra ma scenerię, po dwie na krainę, podesty w środkach komórek pasa, punkt trenera
+    w każdej scenerii → BladDanych."""
+    A, SC = K["arena"], K["scenerie"]
+    kol = SC["kolejnosc"]
+    if sorted(kol) != sorted(K["gry"]):
+        raise BladDanych("scenerie.kolejnosc: każda gra dokładnie raz")
+    for g in kol:
+        if SC.get(g, {}).get("kraina") not in KRAINY or not SC[g].get("nazwa"):
+            raise BladDanych("scenerie.%s: kraina (%s) i nazwa" % (g, ", ".join(KRAINY)))
+    for kr in KRAINY:
+        if len([g for g in kol if SC[g]["kraina"] == kr]) != 2:
+            raise BladDanych("scenerie: po dwie gry na krainę (%s)" % kr)
+    km = A["komorka"]
+    if not (_w(km, 48, 120) and _w(A["polnoc"], -80, -30) and _w(A["poludnie"], 20, 60) and _w(A["woda_y"], -4, -0.5)):
+        raise BladDanych("arena: komorka 48–120, polnoc −80…−30, poludnie 20–60, woda_y −4…−0,5")
+    z0 = None
+    for i, g in enumerate(kol):
+        pd = K["stanowiska"][g]["podest"]
+        if abs(pd[0] - (i - (len(kol) - 1) / 2.0) * km) > 1e-6 or pd[1] != 0:
+            raise BladDanych("%s: podest ma stać w środku swojej komórki pasa (x = %g)" % (g, (i - (len(kol) - 1) / 2.0) * km))
+        z0 = pd[2] if z0 is None else z0
+        if pd[2] != z0:
+            raise BladDanych("%s: podesty w jednej linii (z = %g)" % (g, z0))
+        T = K["stanowiska"][g].get("trener_npc")
+        if T is None and "golem" in K["stanowiska"][g]:
+            continue  # Pancerz: golem gry jest przeciwnikiem i trenerem naraz — osobnego punktu trenera nie ma
+        if not (isinstance(T, dict) and _punkt(T.get("miejsce")) and _w(T.get("obrot_y"), -180, 180)
+                and isinstance(T.get("figura"), str) and re.fullmatch(r"Arena/\w+/\w+", T["figura"])):
+            raise BladDanych("%s: trener_npc — miejsce [x, y, z], obrot_y w stopniach, figura (ścieżka)" % g)
+        if max(abs(T["miejsce"][0]), abs(T["miejsce"][2])) > km / 2.0 - 6:
+            raise BladDanych("%s: trener_npc poza polaną scenerii" % g)
+    if len(kol) * km + 16 > A["rozmiar"][0] or z0 + A["poludnie"] > A["rozmiar"][1] / 2.0 or z0 + A["polnoc"] < -A["rozmiar"][1] / 2.0:
+        raise BladDanych("arena.rozmiar nie mieści pasa scenerii")
+    for g, klucz in (("sila", "miotacz"), ("inteligencja", "mag"), ("szczescie", "ogrodnik"), ("kondycja", "trener"),
+                     ("zrecznosc", "trener")):
+        if K["stanowiska"][g]["trener_npc"]["miejsce"] != K["stanowiska"][g][klucz]:
+            raise BladDanych("%s: trener_npc.miejsce = miejsce dzisiejszej figury (%s)" % (g, klucz))
 
 
 # nazwy wybuchów z modułu efektów walki (swiat/test_walki2/zrodla/Efekty3D.luau, tylko odczyt) — ui.efekty może
@@ -343,7 +387,7 @@ def _sprawdz_wyglad(K):
 def _swiat(K):
     """Położenia w świecie: środek areny + układ lokalny (Y w górę, gracz na stanowisku patrzy na −Z)."""
     c = K["arena"]["srodek"]
-    S = {"przybycie": _dodaj(c, K["arena"]["przybycie"]), "patrz_przybycie": _dodaj(c, K["arena"]["patrz_przybycie"])}
+    S = {}
     for gid, st in K["stanowiska"].items():
         p = _dodaj(c, st["podest"])
         kam = st["kamera"]
@@ -353,6 +397,14 @@ def _swiat(K):
              "oko": _dodaj(p, kam["oko"]), "cel": _dodaj(p, kam["cel"]), "kat": kam["kat"],
              "start": {"oko": _dodaj(p, kam["start"]["oko"]), "cel": _dodaj(p, kam["start"]["cel"]), "kat": kam["start"]["kat"]},
              "final": kam["final"], "napis": st["napis"]}
+        # punkt trenera dla postaci NPC (D-108/D-109): miejsce w świecie, obrót wokół Y (0 = twarzą na +z), punkt, na
+        # który patrzy, i ścieżka dzisiejszej figury z klocków do podmiany; Pancerz punktu nie ma (trenerem jest golem)
+        T = st.get("trener_npc")
+        if T:
+            m = _dodaj(p, T["miejsce"])
+            a = math.radians(T["obrot_y"])
+            w["trener_npc"] = {"miejsce": m, "obrot_y": T["obrot_y"], "patrz": _dodaj(m, [10 * math.sin(a), 0, 10 * math.cos(a)]),
+                               "figura": T["figura"]}
         if gid == "sila":
             w["miotacz"] = _dodaj(p, st["miotacz"])
             w["reka"] = _dodaj(w["miotacz"], st["reka"])
@@ -370,7 +422,7 @@ def _swiat(K):
             # nowe stanowiska: każdy punkt [x, y, z] (i słownik punktów) względem podestu → świat; liczby, słowniki
             # liczb i klucze *_rozmiar bez zmian
             for k, v in st.items():
-                if k in ("podest", "kamera", "patrz", "napis"):
+                if k in ("podest", "kamera", "patrz", "napis", "trener_npc"):
                     continue
                 if _punkt(v) and not k.endswith("_rozmiar"):
                     w[k] = _dodaj(p, v)
@@ -420,6 +472,8 @@ def wczytaj():
         "bazar": {"kontener": K["bazar"]["kontener"], "podpowiedz": K["bazar"]["podpowiedz"],
                   "punkt_zapasowy": z["podpowiedz"]},
         "arena": K["arena"],
+        "scenerie": {g: {"kraina": K["scenerie"][g]["kraina"], "nazwa": K["scenerie"][g]["nazwa"]} for g in K["scenerie"]["kolejnosc"]},
+        "kolejnosc_scenerii": K["scenerie"]["kolejnosc"],
         "statystyki": K["statystyki"],
         "runda": K["runda"],
         "przyrost": K["przyrost"],

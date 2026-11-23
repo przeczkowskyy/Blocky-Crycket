@@ -18,17 +18,17 @@
     "opis": "zasieg = MaxActivationDistance (sprawdzone w swiat/miasteczko_bazar/sprawdz.py: każda podpowiedź ≤ 10 st od głowy gracza na stoisku); serwer przyjmuje E z odległości ≤ zasieg + zapas_serwera; wysokosc_korzenia = środek HumanoidRootPart nad gruntem (R15: 2 + 1, jak LasTeleport 3,2)"
   },
   "miejsca": [
-    {"id": "karczma", "znacznik": "sklepy/karczma", "akcja": "okno", "hud": "Quests", "gui": null,
+    {"id": "karczma", "znacznik": "sklepy/karczma", "akcja": "okno", "hud": "Quests", "gui": null, "npc": "karczmarz",
      "obiekt": "Karczmarz", "akcja_tekst": "Zadania", "postac": "Karczmarz", "dymek": "Karczmarz: zadania będą tu już wkrótce."},
-    {"id": "mistrz_gier", "znacznik": "sklepy/mistrz_gier", "akcja": "okno", "hud": null, "gui": null,
+    {"id": "mistrz_gier", "znacznik": "sklepy/mistrz_gier", "akcja": "okno", "hud": null, "gui": null, "npc": "mistrz_gier",
      "obiekt": "Mistrz gier", "akcja_tekst": "Zagraj", "postac": "Mistrz gier", "dymek": "Mistrz gier: gra w kostkę ruszy wkrótce."},
-    {"id": "sklep_magiczny", "znacznik": "sklepy/sklep_magiczny", "akcja": "okno", "hud": "Shop", "gui": null,
+    {"id": "sklep_magiczny", "znacznik": "sklepy/sklep_magiczny", "akcja": "okno", "hud": "Shop", "gui": null, "npc": "mag",
      "obiekt": "Mag", "akcja_tekst": "Sklep", "postac": "Mag", "dymek": "Mag: sklep jeszcze zamknięty."},
-    {"id": "zbrojownia", "znacznik": "sklepy/zbrojownia", "akcja": "okno", "hud": "Shop", "gui": null,
+    {"id": "zbrojownia", "znacznik": "sklepy/zbrojownia", "akcja": "okno", "hud": "Shop", "gui": null, "npc": "zbrojmistrz",
      "obiekt": "Zbrojmistrz", "akcja_tekst": "Sklep", "postac": "Zbrojmistrz", "dymek": "Zbrojmistrz: broń i zbroje już wkrótce."},
-    {"id": "training_center", "znacznik": "training_center", "akcja": "okno", "hud": null, "gui": null,
+    {"id": "training_center", "znacznik": "training_center", "akcja": "okno", "hud": null, "gui": null, "npc": "trener",
      "obiekt": "Trener", "akcja_tekst": "Mini-gry", "postac": "Trener", "dymek": "Trener: mini-gry jeszcze nieczynne."},
-    {"id": "zagroda_petow", "znacznik": "zagroda/punkt_e", "akcja": "okno", "hud": "Pets", "gui": null,
+    {"id": "zagroda_petow", "znacznik": "zagroda/punkt_e", "akcja": "okno", "hud": "Pets", "gui": null, "npc": "opiekunka",
      "obiekt": "Opiekunka", "akcja_tekst": "Zagroda petów", "postac": "Opiekunka", "dymek": "Opiekunka: zagroda petów jeszcze zamknięta."},
     {"id": "tablica", "znacznik": "tablica/tablica", "akcja": "okno", "hud": null, "gui": null,
      "obiekt": "Tablica ogłoszeń", "akcja_tekst": "Ranking", "postac": "Tablica", "dymek": "Pełny ranking graczy pojawi się wkrótce."},
@@ -52,6 +52,7 @@
      "dymek": "Nowe miasteczko", "tabliczka": "NOWE MIASTECZKO  (E)", "zasieg": 8,
      "opis": "tymczasowe przejście w STARYM miasteczku przy miejscu startu; położenie wybiera zbuduj.py w Studio (sekcja „stare_miasteczko” niżej) i zapisuje w atrybutach kontenera"}
   ],
+  "npc_opis": "pole „npc” miejsca = id postaci niezależnej z pakietu swiat/npc_gra, która stoi w tym miejscu zamiast figury z klocków (D-109). Pole czyta tylko swiat/npc_gra/dane.py — do DaneBazaru.luau nie trafia, więc skrypty bazaru i ich skrót się nie zmieniają. Figura z mapy zostaje w Studio; klient pakietu NpcGra chowa ją u gracza, gdy stoi NPC, a bez NpcGra (albo przy wyłączniku NpcWGrze = false) figura jest widoczna jak dawniej.",
   "pominiete": {
     "studnia_pomnik": "punkt orientacyjny, nie sprzedawca ani przejście — bez E (zadanie wymienia 11 miejsc)",
     "zagroda_miejsce_1..6": "miejsca na odstawione pety — dla okna zagrody (Paweł), bez E",

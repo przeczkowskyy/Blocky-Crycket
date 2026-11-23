@@ -227,6 +227,7 @@ Blocky&Crycket/
 │   ├── Jak prowadzimy sejf.md zasady sejfu
 │   ├── Gra/ Postacie/ Styl/ UI/ Technika/ Produkcja/
 │   ├── Badania/               rozeznanie rynku, mechanik i narzędzi (propozycje ze źródłami)
+│   ├── Wytwórnia/             💡 Wytwórnia pomysłów (D-115): zasady hitu Roblox, karta oceny pomysłu, radar trendów, lekcje z prototypów, notatka na każdą grę i pomysł (`Pomysły/`)
 │   ├── Szablony/              szablony notatek i decyzji
 │   ├── Źródła/                oryginalna dokumentacja (tylko do odczytu)
 │   └── .obsidian/             ustawienia Obsidiana
@@ -260,6 +261,9 @@ Blocky&Crycket/
 │   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi
 │   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra)
 │   ├── teleport_chmury/       💡 przejście przez chmury zamiast okna mapy (Workspace/TeleportChmury)
+│   ├── bonk/                  💡 BONK (D-112): osobna, samowystarczalna prosta gra z naszych zasobów — bijesz potwory, odlatują; pałki, jajka i pety, Strażnicy, trzy krainy; wejście bramą przy starcie obecnej gry (Workspace/BonkGra), grafiki do sklepu w `grafika/`, kroki publikacji w README
+│   ├── pet_arena/             💡 Pet Arena (D-118): samowystarczalna gra we własnym miejscu Roblox — wrzucasz peta do dołu-areny, bitka o złoty środek, jajka i kolekcja, boss; kontener Workspace/PetArenaGra (BONK porzucony 20.11, D-117)
+│   ├── ewolucja/              💡 Monster Evolution (D-129): próbka gry o ewolucji potwora — jesz, rośniesz po drabinie ośmiu form do Olbrzyma, zdobyte formy zarabiają w legowisku; kontener Workspace/EwolucjaGra; etapy 1–3 i przeróbka na smoka (osiem stadiów z generatora klocków), wersja prywatna (22.11.2026)
 │   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio; od 18.11 modele ras z rzutów Pawła (D-104, `RASY.md`) i ich wystawa w Studio (`swiat/rasy_proba/`, `Workspace/RasyProba`)
 ├── tools/walka/               💡 silnik walki w Pythonie (od 17.11 wersja 3: mana, statusy, blok, pasywki): symulacja, testy, tabela balansu, model tempa, kalkulator progresji (`progresja.py`, wyniki `BALANS_1711.md`), zgodność z Luau
 ├── tools/ekran_zaciemnienie.py  czarne okno na wszystkie monitory na czas nocnej pracy w Studio (uśpiony ekran zatrzymuje rysowanie)
@@ -271,7 +275,7 @@ Blocky&Crycket/
 ├── tools/*.py                 narzędzia pipeline'u assetów (obróbka, upload, manifest)
 ├── assets/                    pipeline assetów: manifest.json, refs/, processed/, raw/ (poza Git); audio/ — 💡 muzyka i dźwięki z generatora (manifest_audio.json)
 ├── docs/                      instrukcja pipeline'u i wcześniejsze prompty (HUD, pasek ładowania)
-├── .claude/skills/            skille Claude Code (figma-to-roblox, asset)
+├── .claude/skills/            skille Claude Code (figma-to-roblox, asset, panel, skille Roblox; od 20.11 `krytyczne-myslenie` — prawo agenta do sprzeciwu, D-114 — i 28 metod myślenia `thinking-*`)
 ├── .mcp.json                  serwery MCP: Higgsfield (pipeline assetów) i Roblox Studio
 ├── requirements.txt           zależności Pythona pipeline'u
 ├── dashboard/                 ARCHIWUM: porzucona aplikacja „AI Development Studio”

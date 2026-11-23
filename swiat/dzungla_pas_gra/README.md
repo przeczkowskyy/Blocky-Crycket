@@ -34,6 +34,9 @@ całość da się cofnąć (`--usun`).*
 Razem ze strażnikiem: 8 / 11 / 14 potworów przy 1 / 8 / 20 graczach. W scalonych strefach poziomy są rozdawane po
 miejscach (`poziomyPoMiejscach`, jak w lesie i Bagnie). Wygrane klas wzorcowych: `python -B swiat/dzungla_pas_gra/przeciwnicy.py`.
 
+Wąż Stu Lian ma od 19.11 o 15% mniej życia (D-111, decyzja Karola: modyfikator życia 0,3 → 0,105, na poz. 23
+2852 → 2424; wzorcowi bez treningu o poziom wyżej wygrywają teraz 34 / 40 / 34% W / Z / M).
+
 ## Własne efekty umiejętności (18.11.2026, propozycja — wdrożone w Studio, próba w grze J15–J17 zielona)
 Potwory Dżungli używają umiejętności, które silnik zna z klas i z lasu (te same id, liczby i czasy — **dane walki bez
 zmian**). Dotąd pożyczały też ich wygląd. Teraz każda ma własny, podpięty danymi: tabela
@@ -160,3 +163,44 @@ python -B swiat/dzungla_pas_gra/testy/proba_widokow.py <folder poza repo> # bieg
   4,06 s**; przed bramą do Pustyni postać dochodzi tylko do v +15,8, bo stoi tam taras Świątyni Stu Lian (punkt
   orientacyjny areny strażnika) — to przeszkoda, nie węższe pole.
 - Walki odbyły się na scenie zastępczej prototypu (arena Dżungli w `Workspace/ArenyWalki` jeszcze nie stała).
+
+## D-107 — walka bez przestojów (19.11.2026; wdrożone w Studio i sprawdzone w grze)
+
+*Status: decyzja D-107 ma podpis Karola i czeka na potwierdzenie Pawła; liczby dobrał agent i są **propozycją do
+oceny**. Wdrożone w Studio 19.11.2026 i sprawdzone próbą w Play (jeden gracz, komputer, okno Studio na wierzchu).
+Liczby w rozdziałach wyżej (8 / 11 / 14 potworów, odrodzenie 12–18 s, strażnik 120 s, rzadki potwór 150 s) opisują
+stan sprzed D-107.*
+
+Dżungla używa tego samego kodu potworów i tego samego generatora co las, więc dostaje te same zasady z jednego
+miejsca (`GESTOSC_D107` w `swiat/las_pas_gra/generuj_dane.py`; plan mapy i wygląd bez zmian):
+
+| | Było | Jest |
+|---|---|---|
+| Zwykła strefa (Zwijogon, Gębokwiat, Kokosowy Siłacz), potworów przy 1 / 8 / 20 graczach | 2 / 3 / 4 | 4 / 7 / 8 |
+| Razem ze strażnikiem | 8 / 11 / 14 | 14 / 23 / 26 |
+| Odrodzenie zwykłych | 12 / 15 / 18 s (z tłumem najszybciej 10 s) | 2 s |
+| Rzadki potwór (Pancernik Ruin) | 150 s | 20 s |
+| Strażnik (Wąż Stu Lian) | 120 s | 30 s |
+| Odstęp potworów na pętli | 25 st | 12 st |
+| Czekanie po walce obejrzanej przy ×4 (także przegranej) | do końca czasu walki ×1 | brak (blokada ÷ 4 mija przed końcem pokazu) |
+| Potwór po przegranej zajęty | czas walki ×1 + 1 s | ÷ 4 + 1 s (rewanż od razu po obejrzeniu) |
+
+**Zmierzone w grze 19.11.2026** (`testy/proba_play.py`, punkty JD1–JD5 ze wspólnego
+`swiat/las_pas_gra/testy/pomoc_d107.py`):
+
+| Co | Wynik |
+|---|---|
+| Liczba potworów (JD1) | 14 przy jednym graczu; po „graczy = 20” 26 po 2,4 s |
+| Odradzanie (JD2) | zwykły 2,9 s (2 s + pętla odradzania co 1 s), rzadki 21,1 s, strażnik 31,2 s |
+| Koszt przy pełnym zestawie (JD3; 8 Kokosowych Siłaczy, 26 potworów) | klatka śr. 16,7 ms, p95 18,5 ms, maks. 20,5 ms; 12 widoków, 1336 brył (budżet 4000); pętla ruchu serwera śr. 0,20 ms |
+| Przegrana ze strażnikiem obejrzana przy ×4 (JD4) | pokaz 13,1 s; po zamknięciu wyniku bez blokady, strażnik wolny, rewanż ruszył 1,3 s po podejściu, bez odmowy |
+| Pominięta walka (JD5) | od E do przycisku POMIŃ 0,36 s, spacja → wynik 0,01 s, zamknięcie → pas 0,00 s (bez czasu reakcji człowieka) |
+| Reszta listy biomu | J00–J17: 18 × OK, J13 „?” (koszt ocenia człowiek: klatka śr. 16,7 ms w Gaju Kokosów), konsola bez błędów |
+
+Pełna lista zdjętych czekań, rachunek „samotny gracz nigdy nie czeka”, zmiany po próbach i **wybory do oceny** są w
+`swiat/las_pas_gra/README.md`, rozdz. „D-107 — walka bez przestojów”. Budżet brył klienta, który w lesie ograniczył
+liczbę wilków, tutaj nie przeszkadza (potwory Dżungli mają po 123–246 brył).
+
+Testy bez Studio: `python -B swiat/dzungla_pas_gra/testy/test_dzungli.py` (liczby D-107 w teście 1c) i
+`python -B swiat/las_pas_gra/testy/test_bez_przestojow.py` (trzy biomy naraz). Same punkty D-107 w grze (ok. 2,5 min):
+`python -B swiat/las_pas_gra/testy/proba_d107.py <folder poza repo> dzungla`.

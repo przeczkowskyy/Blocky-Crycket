@@ -1,0 +1,35 @@
+{
+ "id": "r-20261119-115911-aac7",
+ "tytul": "Sklep zbrojmistrza: 60 przedmiotów w trzech stopniach za Złoto",
+ "opis_md": "- W grze działa sklep zbrojmistrza: przy Radomirze w bazarze (E) otwiera się okno z przedmiotami klasy gracza w czterech stopniach — startowym, leśnym, bagiennym i Dżungli. Kupuje się za Złoto.\n- Jest 60 nowych przedmiotów dla trzech klas. Kupiony przedmiot widać na postaci w świecie i w walce, liczy się w walce i da się go ulepszać u kowala.\n- Okno jest tymczasowe i proste — docelowe okno 2D robi Paweł. Do oceny: wygląd stopni, nazwy, ceny i reguła zakładania.\n- Sprawa dla Pawła (pytanie 71): przy zbrojowni otwierała się też jego makieta okna „Shop”; sklep chowa ją u gracza, żeby nie było dwóch okien naraz.\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → Enter → TELEPORT → miasteczko → zbrojownia → E przy Radomirze. Złoto zdobywa się w walkach (las ok. 80 Złota za walkę).\n\n**Ceny kompletu i wymagane poziomy (propozycja, ok. 40% Złota zarabianego w krainie do Strażnika)**\n\n| Stopień | Poziomy | Komplet | Przykład Wojownika |\n|---|---|---:|---|\n| Startowy | 1 | 300 | hełm, rękawice, buty i pas po 75 |\n| Leśny | 2–7 | 1 400 | miecz-liść 350, zbroja 350, hełm z porożem 200 |\n| Bagienny | 10–15 | 3 300 | tasak 850, napierśnik z łusek 800, hełm 450 |\n| Dżungli | 17–22 | 5 200 | zębaty miecz 1 250, zbroja 1 250, hełm z pióropuszem 750 |\n\nMag ma cztery sloty (głowa, szata, szarfa, kostur), więc jego sztuki są droższe, a komplet kosztuje tyle samo.\n\n**Jak działa kupno:** serwer odmawia przy złej klasie, za niskim poziomie, braku Złota i gdy gracz przedmiot już ma (zdaniem po polsku, np. „Brakuje ci 150 Złota.”). Kupiony przedmiot zakłada się sam, gdy slot jest pusty albo założony ma niższy stopień; inaczej przyciskiem „Załóż” albo w przymierzalni.\n\n**Próby w grze (19.11, do 11:56)**\n- Sklep: 12 punktów w porządku — prawdziwe E i kliknięcie, siedem rodzajów odmowy, okno na ekranie telefonu 667 × 375, komplety trzech stopni na trzech klasach, prawdziwa walka w kupionym komplecie (statystyki przedmiotów liczą się w walce).\n- Kowal 13 punktów w porządku, przymierzalnia 10, bazar w całości (także dwa punkty przy zbrojowni, które rano nie przechodziły), cała droga gracza, bohater w świecie i walka 111 z 111.\n\n**Skąd były dwa błędy bazaru przy zbrojowni:** w miejscu gry stoi skrypt Pawła `ShopClient` z makietą okna „Shop”; zgłasza on zbrojownię jako miejsce z oknem, więc bazar nie pokazywał dymka. Skryptu nie ma w repozytorium — tylko w Studio.\n\n**Znane słabe miejsca:**\n- Polskie litery (ś, ę, ż, ń, ć) w oknie są blade przy małym tekście — czcionka nagłówków ich nie ma i Roblox bierze je z cieńszej.\n- Komplety stopni mają dłuższe ozdoby: łuk Zwiadowcy z Dżungli wchodzi w uniku 0,5 studa pod ziemię.\n- Modele mają cieńsze pióra i kolce niż na pierwszej planszy — bohater w świecie ma limit 220 brył.\n- Kliknięcie w samą figurę zbrojmistrza otwiera makietę Pawła; okno sklepu otwiera tylko E.\n- Niesprawdzone: prawdziwy telefon, dwóch graczy, zapis postępu (wyłączony — kupione przedmioty znikają po wyjściu z gry).\n\n**Do oceny (`swiat/postacie/SKLEP_PRZEDMIOTY.md`):** wygląd i nazwy przedmiotów; cena kompletu; czy łup z walk ma dawać też przedmioty stopnia krainy; czy ulepszenia przechodzą na nowy przedmiot; czy dorobić kotu rękawice i buty; pełniejsze pióra za cenę wyższego limitu brył.\n\nPliki: `swiat/sklep_proba/` (opis w `README.md`, zrzuty w `klatki/`), `swiat/postacie/stopnie.py`, `SKLEP_PRZEDMIOTY.md`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-19T11:59:11+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/SklepProba",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 71 (dla Pawła)"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/postacie/SKLEP_PRZEDMIOTY.md",
+   "etykieta": "Katalog, ceny i wybory do oceny"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}

@@ -1,0 +1,49 @@
+RAPORT — npc_golem
+GOLEM — kamienny trener Pancerza („Blok”) w Training Center (NPC, D-109: golem przy Pancerzu zostaje golemem).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/npc_golem.py · wygenerowano 19.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py npc_golem
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: npc_golem
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 5 plików, zgodnych 5
+- ostrzeżenia z raportu: 1; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Strój, zarost i ręce to sztywne bryły na kościach: przy dużych ruchach (machanie, gest) lekko się przenikają.
+- Klipy to szkice (1–2 s), nie gotowa animacja; obrót głowy ku graczowi dokłada dopiero gra (swiat/npc_gra).
+- Golem ma własne klocki ciała (nie „czlowiek”): przedmioty bohaterów na niego nie pasują.
+- Cios kończy się ok. 2,6 studa przed golemem na wysokości barku (skala 1); pole gry Pancerza trzeba dobrać do skali golema na stanowisku.
+
+MODEL npc_golem „Golem” (r15)
+  wymiary ciała: 6,83 × 5,59 × 2,56; z akcesoriami: 6,83 × 5,59 × 2,56
+  trójkąty: 1872 (siatek: 15)
+  budżety ciała R15: Head 348/4000, Torso 456/1750, LeftArm 220/1248, RightArm 320/1248, LeftLeg 264/1248, RightLeg 264/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, powitanie 48 kl. 1,60 s jednorazowy, gest 48 kl. 1,60 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  OSTRZEŻENIE: ciało Torso: szer 5.38 poza 0.05…4.00 studa (limit części ciała awatara)
+
+KONTROLA EKSPORTÓW
+- npc_golem.fbx: siatki 34, kości 17, trójkąty 2100, wzrost 5.59 st., akcje brak -> ZGODNE
+- npc_golem__spoczynek.fbx: siatki 34, kości 17, trójkąty 2100, wzrost 5.59 st., akcje npc_golem|Scene 1-61 -> ZGODNE
+- npc_golem__powitanie.fbx: siatki 34, kości 17, trójkąty 2100, wzrost 5.59 st., akcje npc_golem|Scene 1-49 -> ZGODNE
+- npc_golem__gest.fbx: siatki 34, kości 17, trójkąty 2100, wzrost 5.59 st., akcje npc_golem|Scene 1-49 -> ZGODNE
+- npc_golem.glb: siatki 34, kości 17, trójkąty 2100, wzrost 5.59 st., akcje gest 0-48, powitanie 0-48, spoczynek 0-60 -> ZGODNE
+
+PLIKI
+- npc_golem.blend
+- npc_golem.fbx
+- npc_golem.glb
+- npc_golem__gest.fbx
+- npc_golem__powitanie.fbx
+- npc_golem__spoczynek.fbx
+- npc_golem_bohater.jpg
+- npc_golem_ikona.png
+- npc_golem_plansza.jpg
+- npc_golem_tekstury/
+- raport.json
+- raport.txt

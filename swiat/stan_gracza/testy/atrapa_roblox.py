@@ -259,10 +259,13 @@ class Magazyn:
 
 
 def kontener_stanu(sw, zrodla, nazwy_inne):
-    """Workspace/StanGracza jak po zbuduj.py: moduły, zdalne, sygnały; skrypt serwera trzeba uruchomić osobno."""
+    """Workspace/StanGracza jak po zbuduj.py: moduły, zdalne, sygnały; skrypt serwera trzeba uruchomić osobno.
+    Zapis postępu wyłączony (ZapisPostepu = false) — jak w próbach gry: każdy test zaczyna od świeżego gracza bez
+    magazynu (od 19.11.2026 zapis jest domyślnie włączony, D-110); testy zapisu (test_zapisu.py) ustawiają go same."""
     k = Inst(sw, "StanGracza", "Folder", sw.workspace)
     k.ustaw("Wygenerowane", True)
     k.ustaw("StatystykiKlasy", True)
+    k.ustaw("ZapisPostepu", False)
     foldery = {n: Inst(sw, n, "Folder", k) for n in ("Moduly", "Zdalne", "Sygnaly")}
     sw.modul(foldery["Moduly"], "DaneStanu", zrodla["DaneStanu"])
     sw.modul(foldery["Moduly"], "LogikaStanu", zrodla["LogikaStanu"])

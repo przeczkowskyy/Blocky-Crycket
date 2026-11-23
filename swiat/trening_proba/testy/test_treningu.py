@@ -16,7 +16,8 @@
    (KameraTreningu.luau) = lustro kamera_treningu.py; miejsce i rozmiar napisu komiksowego (KomiksTreningu.luau).
 4. Scena: części, rozmiary, obrys, nazwy animowane, stanowiska widoczne z kamery (sześć), tory lotu i obrotu kłody bez
    przeszkód, ściany, miejsce gracza wolne; ujęcia w stylu walki (początek odliczania, zbliżenie po rundzie) poza
-   bryłami i z wolnym widokiem na postać.
+   bryłami i z wolnym widokiem na postać; scenerie krain (D-108): pola gry wolne, kadry niezasłonięte, tło kadrów
+   bez pustki (promienie na obrócone bryły), budżet części, punkty trenerów, scenerie.json aktualny.
 5. Telefon: przyciski ≥ 44 px i teksty ≥ 12 pt przy 667 × 375 i przy skali minimalnej; panele i przyciski sześciu
    gier mieszczą się i nie nachodzą na siebie; teksty bez napisów dla twórców; pole gry na czterech ekranach przy
    kamerze stanowiska (także przy największym zawężeniu kąta po trafieniu); postać nie zasłania pola gry; zbliżenie po
@@ -73,9 +74,9 @@ def czytaj(*czesci):
         return f.read().replace("\r\n", "\n")
 
 
-LICZBA_CZESCI = 1658  # cała arena z dekoracjami (zmiana sceny = świadoma zmiana tej liczby)
-LICZBA_CZESCI_GRY = 307  # bez dekoracji: sześć stanowisk z figurami trenerów, lobby, mury
-LICZBA_CZESCI_PRZED = 202  # arena sprzed wyglądu (18.11.2026) — od niej liczony jest budżet przyrostu
+LICZBA_CZESCI = 2797  # elementy gier + scenerie krain (zmiana sceny = świadoma zmiana tej liczby)
+LICZBA_CZESCI_GRY = 315  # bez scenerii: podłoże komórek, ściany pasa, sześć stanowisk z figurami trenerów
+LICZBA_SCENERII = {"szczescie": 377, "sila": 352, "kondycja": 458, "zrecznosc": 430, "pancerz": 461, "inteligencja": 404}  # części scenerii każdej gry
 SERWER = czytaj(ZR, "SerwerTreningu.server.luau")
 KLIENT = czytaj(ZR, "KlientTreningu.client.luau")
 LOGIKA = czytaj(ZR, "LogikaTreningu.luau")
@@ -246,6 +247,16 @@ class TestDanych(unittest.TestCase):
         zle(lambda k: k["ui"]["bohater"]["klipy"].pop("radosc"))
         zle(lambda k: k["teksty"]["trafienia"].append("ÄÖÜ!"))  # litera spoza czcionki komiksowej
         zle(lambda k: k["teksty"].update(bez_pudla="BEZ PUDŁA ★"))
+        # scenerie krain (D-108, 19.11.2026): po dwie gry na krainę, podest w środku komórki, punkt trenera w każdej
+        zle(lambda k: k["scenerie"]["sila"].update(kraina="pustynia"))
+        zle(lambda k: k["scenerie"]["sila"].update(kraina="bagno"))  # trzy gry na Bagnie
+        zle(lambda k: k["scenerie"]["kolejnosc"].pop())
+        zle(lambda k: k["stanowiska"]["sila"]["podest"].__setitem__(0, -100))
+        zle(lambda k: k["stanowiska"]["sila"].pop("trener_npc"))
+        zle(lambda k: k["stanowiska"]["zrecznosc"]["trener_npc"].update(obrot_y=400))
+        zle(lambda k: k["stanowiska"]["zrecznosc"]["trener_npc"].update(figura=None))
+        zle(lambda k: k["stanowiska"]["kondycja"]["trener_npc"].update(miejsce=[1, 0, 1]))  # figura stoi gdzie indziej
+        zle(lambda k: k["arena"].update(rozmiar=[300, 128]))
         DANE._sprawdz(DANE._czytaj_json(DANE.USTAWIENIA))  # prawdziwe ustawienia przechodzą
 
     def test_1d_szesc_statystyk_z_systemu_rpg(self):
@@ -262,7 +273,7 @@ class TestDanych(unittest.TestCase):
         # od 17.11.2026 (noc): wszystkie sześć mini-gier grywalne (D-074: każda statystyka ma mini-grę)
         self.assertEqual(sorted(s["id"] for s in D["statystyki"] if s["stan"] == "grywalna"), sorted(GRY))
         self.assertEqual(sorted(D["gry"]), sorted(GRY))
-        self.assertEqual(sorted(D["swiat"]), sorted(GRY + ("przybycie", "patrz_przybycie")))
+        self.assertEqual(sorted(D["swiat"]), sorted(GRY))  # od D-108 bez lobby: z okna wyboru prosto do scenerii
 
     def test_1e_styk_z_bazarem(self):
         m = DANE._czytaj_json(DANE.MIEJSCA_BAZARU)
@@ -1191,13 +1202,13 @@ class TestSceny(unittest.TestCase):
             self.assertGreaterEqual(mn[2], c[2] - A["rozmiar"][1] / 2 - 1.01, x["n"])
             self.assertLessEqual(mx[2], c[2] + A["rozmiar"][1] / 2 + 1.01, x["n"])
             self.assertTrue(x["r"].startswith("Arena/"))
-            self.assertIn(x.get("m", "SmoothPlastic"), ("SmoothPlastic", "Neon", "WoodPlanks", "Metal", "Slate", "Fabric"))
-            self.assertIn(x.get("k", "B"), ("B", "C", "K", "W"))
+            self.assertIn(x.get("m", "SmoothPlastic"), ("SmoothPlastic", "Neon", "WoodPlanks", "Wood", "Metal", "Slate", "Fabric"))
+            self.assertIn(x.get("k", "B"), ("B", "C", "K", "W", "N"))
+            self.assertLess(mx[1] - c[1], D["arena"]["wysokosc_wArenie"][1] + 6, x["n"])
 
     def test_4b_nazwy_animowane_i_podpowiedzi(self):
         sciezki = {c["r"] + "/" + c["n"] for c in self.cz}
-        for klucz in ("miotacz_ramie", "golem_piesc", "tablica_wyboru", "wyjscie", "beben", "palka", "kula_maga",
-                      "podest_klody"):
+        for klucz in ("miotacz_ramie", "golem_piesc", "beben", "palka", "kula_maga", "podest_klody"):
             self.assertIn(D["nazwy"][klucz], sciezki, klucz)
         rodzice = {c["r"] for c in self.cz}
         pasy = [c for c in self.cz if c["r"] == D["nazwy"]["tasma_pasy"] and c["n"].startswith("Pas")]
@@ -1215,9 +1226,10 @@ class TestSceny(unittest.TestCase):
             self.assertIn(n, sciezki)
         for k in D["gry"]["sila"]["akcje"]:
             self.assertIn(D["nazwy"]["strefy"] + "/" + k, sciezki)
-        for p in ZB.PODPOWIEDZI:
-            if not p[0].startswith("TablicaWejscia"):
-                self.assertIn(p[0], sciezki)
+        # od D-108 w arenie nie ma lobby: jedyna podpowiedź E pakietu to tablica wejścia przy starcie
+        self.assertEqual([p[0] for p in ZB.PODPOWIEDZI], ["TablicaWejscia/E"])
+        self.assertFalse([c for c in self.cz if c["r"].startswith("Arena/Lobby")])
+        self.assertNotIn("tablica_wyboru", D["nazwy"])
         self.assertEqual(D["nazwy"]["tablica_wejscia"], "TablicaWejscia/E")
 
     def _wolne(self, a, b, pomin=()):
@@ -1348,46 +1360,50 @@ class TestSceny(unittest.TestCase):
             self.assertIsNone(self._wolne([p[0], y0, p[2]], [p[0], p[1] + 5.5, p[2]]), "miejsce gracza wolne: %s" % gra)
 
     # ------------------------------------------------------------------------------------------ wygląd areny
-    def test_4g_pola_gry_wolne_od_dekoracji(self):
-        """Dekoracje nie stoją w polach gry, w kole Kłód ani w korytarzu lobby; płaski wzór podłogi jest bez kolizji;
-        stanowiska, punkt przybycia i części z podpowiedziami E stoją tam, gdzie stały."""
+    def test_4g_pola_gry_wolne_od_scenerii(self):
+        """Części scenerii nie stoją w polach gry ani w kole Kłód; wszystkie są bez kolizji; stanowiska stoją w środkach
+        komórek pasa (liczby wpisane wprost — zmiana ustawień ma tu wyjść)."""
         DEK = SCENA.DEK
         P = DEK.przeszkody(D, self.cz)
-        self.assertGreater(len(P), 600)
+        self.assertGreater(len(P), 1500)
         pola = DEK.pola_gry(D)
-        self.assertEqual(sorted(pola), sorted(list(GRY) + ["lobby"]))
+        self.assertEqual(sorted(pola), sorted(GRY))
         for nazwa, pole in pola.items():
             for sciezka, mn, mx in P:
                 self.assertFalse(DEK.w_polu(pole, mn, mx), "%s: %s stoi w polu gry" % (nazwa, sciezka))
             # wykrywacz działa: słupek na miejscu gracza byłby usterką
-            b = D["swiat"][nazwa]["podest"] if nazwa != "lobby" else D["swiat"]["przybycie"]
+            b = D["swiat"][nazwa]["podest"]
             self.assertTrue(DEK.w_polu(pole, [b[0] - 0.5, b[1] + 1, b[2] - 0.5], [b[0] + 0.5, b[1] + 3, b[2] + 0.5]), nazwa)
-        y0 = D["arena"]["srodek"][1]
-        plaskie = 0
         for c in self.cz:
             if DEK.dekoracja(c):
-                mn, mx = _pudlo(c)
-                if mx[1] - y0 <= DEK.PLASKIE + 1e-6:
-                    plaskie += 1
-                    self.assertIs(c.get("kol"), False, "wzór podłogi bez kolizji: " + c["n"])
-        self.assertGreater(plaskie, 150)
-        # położenia sprzed dekoracji (liczby wpisane wprost — zmiana ustawień stanowisk ma tu wyjść)
+                self.assertIs(c.get("kol"), False, "sceneria bez kolizji: " + c["n"])
         c0 = D["arena"]["srodek"]
         self.assertEqual(c0, [3000, 300, 3000])
-        for gra, x in (("zrecznosc", -104), ("kondycja", -64), ("sila", -24), ("pancerz", 24), ("inteligencja", 64),
-                       ("szczescie", 104)):
+        self.assertEqual(D["kolejnosc_scenerii"], ["szczescie", "sila", "kondycja", "zrecznosc", "pancerz", "inteligencja"])
+        for gra, x in (("szczescie", -180), ("sila", -108), ("kondycja", -36), ("zrecznosc", 36), ("pancerz", 108),
+                       ("inteligencja", 180)):
             self.assertEqual(D["swiat"][gra]["podest"], [c0[0] + x, c0[1], c0[2] + 8], gra)
+        self.assertEqual([D["scenerie"][g]["kraina"] for g in D["kolejnosc_scenerii"]], ["las", "las", "bagno", "bagno", "dzungla", "dzungla"])
         po = {x["r"] + "/" + x["n"]: x["p"] for x in self.cz}
-        self.assertEqual(po["Arena/Lobby/TablicaWyboru/E"], [3000, 303, 3006.7])
-        self.assertEqual(po["Arena/Lobby/Wyjscie/E"], [3000, 303, 3023.2])
-        self.assertEqual(po["Arena/Lobby/Przybycie"], [3000, 300.1, 3014])
-        self.assertEqual(po["Arena/Sila/Podest"], [2976, 300.1, 3008])
+        self.assertEqual(po["Arena/Sila/Podest"], [2892, 300.1, 3008])
         self.assertEqual(po["Arena/Pancerz/Golem/Piesc"], D["swiat"]["pancerz"]["piesc_spoczynek"])
+        # podłoże: jedna płyta z kolizją na komórkę; na Bagnie to tafla wody pod pomostami, a postać stoi na pomoście
+        plyty = {x["n"]: x for x in self.cz if x["r"] == "Arena/Podloga"}
+        self.assertEqual(sorted(plyty), sorted("Plyta_" + g for g in GRY))
+        for g in GRY:
+            pl = plyty["Plyta_" + g]
+            gora = pl["p"][1] + pl["s"][1] / 2 - c0[1]
+            self.assertTrue(pl.get("kol", True))
+            self.assertAlmostEqual(gora, D["arena"]["woda_y"] if D["scenerie"][g]["kraina"] == "bagno" else 0.0)
+            pd = D["swiat"][g]["podest"]
+            pod = [x for x in self.cz if x.get("kol", True) and x.get("t", 0) < 0.5 and not DEK.dekoracja(x)
+                   and all(abs(pd[i] - x["p"][i]) <= SCENA.rozmiar_osiowy(x)[i] / 2 for i in (0, 2))]
+            self.assertGreaterEqual(max(x["p"][1] + SCENA.rozmiar_osiowy(x)[1] / 2 for x in pod), c0[1] - 0.01, "%s: grunt pod graczem" % g)
 
     def test_4h_kadry_niezasloniete(self):
-        """Żadna dekoracja nie zasłania kadru żadnej z sześciu gier: promienie z oka kamery (gra z kołysaniem, początek
-        i droga odliczania, zbliżenie po rundzie dla każdego miejsca postaci) do pola gry i do postaci są wolne,
-        w przedpolu kadru (16:9, telefon 844 × 390, 4:3) nic nie stoi bliżej niż postać, a podpowiedzi E są odsłonięte."""
+        """Żadna część scenerii nie zasłania kadru żadnej z sześciu gier: promienie z oka kamery (gra z kołysaniem,
+        początek i droga odliczania, zbliżenie po rundzie dla każdego miejsca postaci) do pola gry i do postaci są wolne,
+        a w przedpolu kadru (16:9, telefon 844 × 390, 4:3) nic nie stoi bliżej niż postać."""
         DEK = SCENA.DEK
         self.assertEqual(DEK.kontrola(D, self.cz), [])
         for gra in GRY:
@@ -1401,27 +1417,56 @@ class TestSceny(unittest.TestCase):
             u = DEK.kontrola(D, [zla])
             self.assertTrue([x for x in u if x.startswith(gra) and "zasłania" in x], gra)
             self.assertTrue([x for x in u if x.startswith(gra) and "przedpolu" in x], gra)
-        e = [x for x in self.cz if x["n"] == "E" and x["r"] == "Arena/Lobby/TablicaWyboru"]
-        zla = {"n": "Proba", "r": "Arena/Dekoracje/Proba", "k": "B", "p": [3000, 302, 3009], "s": [2.0, 4.0, 1.0], "c": "FFFFFF"}
-        self.assertTrue([x for x in DEK.kontrola(D, e + [zla]) if x.startswith("podpowiedź")])
+            self.assertFalse([x for x in u if not x.startswith(gra) and not x.startswith("pole gry " + gra)], "usterka tylko tej gry")
+        # rachunek na tablicach = rachunek odcinek po odcinku (ten sam, którym liczy próba w Studio)
+        import numpy as np
+        rnd = random.Random(4)
+        A = [[rnd.uniform(-20, 20) for _ in range(3)] for _ in range(60)]
+        B = [[rnd.uniform(-20, 20) for _ in range(3)] for _ in range(60)]
+        MN = [[rnd.uniform(-15, 10) for _ in range(3)] for _ in range(25)]
+        MX = [[MN[j][i] + rnd.uniform(0.5, 9) for i in range(3)] for j in range(25)]
+        T = DEK.odcinki_w_pudlach(np, A, B, np.array(MN), np.array(MX))
+        for i in range(60):
+            for j in range(25):
+                self.assertEqual(bool(T[i][j]), DEK.odcinek_w_pudle(A[i], B[i], MN[j], MX[j]), (i, j))
+
+    def test_4l_tlo_kadrow_bez_pustki(self):
+        """Tło każdego kadru (gra, kołysanie, odliczanie, zbliżenie; trzy proporcje ekranu) jest zamknięte kulisami:
+        promień, który nie trafia w żadną część, idzie wyraźnie w górę (niebo nad koronami), nigdy poziomo ani w dół;
+        nieba w kadrze gry jest najwyżej tyle, ile dopuszcza budżet. Bez scenerii ta sama kontrola zgłasza pustkę."""
+        DEK = SCENA.DEK
+        usterki, stat = DEK.kontrola_tla(D, self.cz)
+        self.assertEqual(usterki, [])
+        self.assertEqual(sorted(stat), sorted(GRY))
+        for gra, s in stat.items():
+            self.assertEqual(s["pustka"], 0, gra)
+            self.assertLessEqual(s["niebo"], DEK.NIEBO_MAX, gra)
+            self.assertGreaterEqual(s["kadry"], 39, gra)
+        gole, _ = DEK.kontrola_tla(D, SCENA.czesci_gry(D))
+        for gra in GRY:
+            self.assertTrue([x for x in gole if x.startswith(gra) and "pustka" in x], "bez scenerii pustka w kadrze: " + gra)
 
     def test_4i_budzet_czesci(self):
-        """Budżet wyglądu: przyrost części, udział dekoracji bez kolizji, wszystko zakotwiczone, zero świateł, budowa
-        w paczkach."""
+        """Budżet scenerii: liczba części (razem i na scenerię), wszystko bez kolizji i zakotwiczone, zero świateł,
+        mało części Neon i napisów, budowa w paczkach."""
         DEK = SCENA.DEK
         B = DEK.budzet(self.cz)
         self.assertEqual(B["razem"], LICZBA_CZESCI)
         self.assertEqual(B["gra"], LICZBA_CZESCI_GRY)
-        self.assertLessEqual(B["razem"] - LICZBA_CZESCI_PRZED, DEK.PRZYROST_MAX)
+        self.assertEqual(len(SCENA.czesci_gry(D)), LICZBA_CZESCI_GRY)
+        self.assertLessEqual(B["razem"], DEK.CZESCI_MAX)
         self.assertGreaterEqual(B["bez_kolizji"] / B["dekoracje"], DEK.BEZ_KOLIZJI_MIN)
-        self.assertLessEqual(B["napisy"], 20, "SurfaceGui tylko na szyldach")
-        self.assertLessEqual(B["neon"], 40)
+        z_kolizja = [c for c in self.cz if c.get("kol", True)]
+        self.assertLessEqual(len(z_kolizja), 120, "kolizję mają tylko podłoże, pomosty, ściany pasa i bryły stanowisk")
+        self.assertLessEqual(B["napisy"], 6, "SurfaceGui tylko na sześciu szyldach gier")
+        self.assertLessEqual(B["neon"], DEK.NEON_MAX)
         self.assertEqual(B["swiatla"], 0)
         for zakaz in ("PointLight", "SpotLight", "SurfaceLight", "ParticleEmitter"):
             self.assertNotIn(zakaz, ZB.CZESC + ZB.ARENA)
         self.assertIn("p.Anchored = true", ZB.CZESC)
         self.assertIn('"WedgePart"', ZB.CZESC)
-        self.assertTrue(all(DEK.dekoracja(c) for c in self.cz if c.get("k") == "W"), "kliny tylko w dekoracjach")
+        self.assertIn('"CornerWedgePart"', ZB.CZESC)
+        self.assertTrue(all(DEK.dekoracja(c) for c in self.cz if c.get("k") in ("W", "N")), "kliny tylko w sceneriach")
         kody = ZB.kody_areny(D)
         self.assertEqual(len(kody), math.ceil(LICZBA_CZESCI / ZB.PACZKA_CZESCI))
         self.assertTrue(all(len(k) < 100000 for k in kody), [len(k) for k in kody])
@@ -1430,15 +1475,61 @@ class TestSceny(unittest.TestCase):
         self.assertIn("if not true then return", kody[-1])
         self.assertIn("if not false then return", kody[0])
         self.assertIn("if razem ~= %d then" % LICZBA_CZESCI, kody[-1])
-        # dekoracje nie wchodzą w nazwy, których szuka klient, i nie leżą w modelach stanowisk
+        # scenerie nie wchodzą w nazwy, których szuka klient, i nie leżą w modelach stanowisk
         for k, v in D["nazwy"].items():
             for sciezka in (v if isinstance(v, list) else [v]):
                 self.assertFalse(sciezka.startswith("Arena/Dekoracje"), k)
-        grupy = DEK.grupy(self.cz)
-        for st in ("Sila", "Pancerz", "Kondycja", "Zrecznosc", "Inteligencja", "Szczescie"):
-            self.assertGreaterEqual(sum(n for g, n in DEK.grupy(self.cz, 3).items() if g == "Arena/Dekoracje/" + st), 40, st)
-        for g in ("Podloga", "Pola", "Ogrodzenie", "Brama", "TablicaWynikow", "Zaplecze"):
-            self.assertIn("Arena/Dekoracje/" + g, grupy)
+        na_gre = DEK.grupy(self.cz, 3)
+        for gra, st in (("sila", "Sila"), ("pancerz", "Pancerz"), ("kondycja", "Kondycja"), ("zrecznosc", "Zrecznosc"),
+                        ("inteligencja", "Inteligencja"), ("szczescie", "Szczescie")):
+            self.assertEqual(na_gre["Arena/Dekoracje/" + st], LICZBA_SCENERII[gra], st)
+            self.assertTrue(250 <= LICZBA_SCENERII[gra] <= 520, st)
+            for g in ("Kulisy", "Tlo", "Drzewa", "Grunt"):
+                self.assertIn("Arena/Dekoracje/%s/%s" % (st, g), DEK.grupy(self.cz, 4), st)
+        self.assertEqual(sum(LICZBA_SCENERII.values()), B["dekoracje"])
+
+    def test_4k_scenerie_krain(self):
+        """scenerie.json jest aktualny (generator powtarzalny), obrót z biblioteki map przeliczony poprawnie, każda
+        sceneria ma swoje znaki krainy, a punkt trenera jest w danych każdej gry (z figurą albo pustym miejscem)."""
+        SC = _modul("scenerie", "scenerie.py")
+        ok, dane = SC.aktualny()
+        self.assertTrue(ok, "scenerie.json nieaktualny — uruchom python -B swiat/trening_proba/scenerie.py")
+        self.assertEqual(dane["liczby"], LICZBA_SCENERII)
+        rnd = random.Random(7)
+        for _ in range(40):  # Ry·Rx·Rz (biblioteka map) → Rx·Ry·Rz (części treningu): ta sama macierz obrotu
+            k = [rnd.uniform(-math.pi, math.pi), rnd.uniform(-math.pi, math.pi), rnd.uniform(-math.pi, math.pi)]
+            A = SC.macierz_obrotu(*[math.degrees(v) for v in k])
+            Bm = SCENA.macierz(SC.katy_xyz(*k))
+            for i in range(3):
+                for j in range(3):
+                    self.assertAlmostEqual(A[i][j], Bm[i][j], places=3)
+        nazwy = {}
+        for c in self.cz:
+            if SCENA.DEK.dekoracja(c):
+                nazwy.setdefault(c["r"].split("/")[2], set()).add(c["n"].rstrip("0123456789 "))
+        for st, znaki in (("Szczescie", ("Smuga światła", "Kwiat")), ("Sila", ("Olbrzym pień", "Dynia")),
+                          ("Kondycja", ("Kładka deski", "Chata ściana")), ("Zrecznosc", ("Kładka deski", "Pal")),
+                          ("Pancerz", ("Posadzka kręgu", "Menhir", "Brama filar")),
+                          ("Inteligencja", ("Świątynia schody", "Wodospad", "Kolumna trzon"))):
+            for z in znaki:
+                self.assertTrue([n for n in nazwy[st] if n.startswith(z)], "%s: brak „%s”" % (st, z))
+        # punkty trenerów: w danych gry (świat), figura stoi dokładnie tam i patrzy w zapisanym kierunku
+        po = {x["r"] + "/" + x["n"]: x for x in self.cz}
+        # Pancerz: golem gry jest przeciwnikiem i trenerem naraz — bez punktu trenera (pakiet NPC nie stawia drugiego golema)
+        self.assertNotIn("trener_npc", D["swiat"]["pancerz"])
+        self.assertNotIn("Arena/Pancerz/MiejsceTrenera", po)
+        for gra in GRY:
+            if gra == "pancerz":
+                continue
+            T = D["swiat"][gra]["trener_npc"]
+            pd = D["swiat"][gra]["podest"]
+            self.assertLess(math.dist(T["miejsce"], pd), 20, gra)
+            self.assertAlmostEqual(math.dist(T["patrz"], T["miejsce"]), 10, places=3)
+            tulow = po[T["figura"] + "/Tulow"]
+            self.assertAlmostEqual(tulow["p"][0], T["miejsce"][0], places=3)
+            self.assertAlmostEqual(tulow["p"][2], T["miejsce"][2], places=3)
+            self.assertEqual((tulow.get("o") or [0, 0, 0])[1], T["obrot_y"], gra)
+        self.assertIn("trener_npc = {", czytaj(ZR, DANE.PLIK_LUAU))
 
     def test_4j_figury_trenerow(self):
         """Figury trenerów mają twarz i strój, a części, które animuje klient, zostały jednym klockiem w starym miejscu."""
@@ -1849,8 +1940,27 @@ class TestStykow(unittest.TestCase):
         self.assertNotIn("DataStore", s + KLIENT + LOGIKA)
         self.assertIn("przyrostE:Fire(", s)
 
+    def test_6c2_zapis_postepu_przez_stan_gracza(self):
+        # D-110 (19.11.2026): W (atrybut sesyjny) i paski mini-gier idą do profilu StanGracza przez DanePakietu (pakiet
+        # „trening”); odczyt po wczytaniu profilu (StanGraczaWczytany), zapis dopiero po odczycie, przy nowym punkcie
+        # i na końcu rundy; przywrócenie tylko podnosi W (nigdy nie zmniejsza)
+        s = bez_komentarzy(SERWER)
+        for f in ('sygnal = "DanePakietu"', 'pakiet = "trening"', 'atrybut = "StanGraczaWczytany"', 'gotowy = "SerwerStanuGotowy"',
+                  'f:Invoke("czytaj", gracz, ZP.pakiet)', 'f:Invoke("zapisz", gracz, ZP.pakiet, { w = w, paski = paski })',
+                  "S.zProfilu = true", "not S.zProfilu", "gracz:GetAttribute(ZP.atrybut) == false",
+                  "n > (gracz:GetAttribute(st.atrybut_sesji) or 0)", "GetAttributeChangedSignal(ZP.atrybut)"):
+            self.assertIn(f, s)
+        # kolejność definicji (Luau w Studio nie widzi lokalnych funkcji zdefiniowanych niżej)
+        i_zap = s.index("local function zapiszTrening")
+        self.assertLess(s.index("local function wczytajTrening"), i_zap)
+        self.assertLess(i_zap, s.index("local function zakoncz"))
+        self.assertLess(i_zap, s.index("local function wynik"))
+        self.assertEqual(s.count("zapiszTrening(gracz)") - s.count("function zapiszTrening(gracz)"), 2,
+                         "zapis przy nowym punkcie i na końcu rundy")
+
     def test_6d_zakazy_i_dzwieki(self):
-        pliki = [os.path.join(PAKIET, n) for n in ("dane.py", "scena.py", "zbuduj.py", "logika_treningu.py")]
+        pliki = [os.path.join(PAKIET, n) for n in ("dane.py", "scena.py", "zbuduj.py", "logika_treningu.py", "scenerie.py",
+                                                   "dekoracje.py")]
         for plik in pliki + glob.glob(os.path.join(ZR, "*.luau")):
             tekst = czytaj(plik)
             if plik.endswith(".luau"):
@@ -1916,7 +2026,8 @@ class TestStykow(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stdout.decode("utf-8", "replace") + r.stderr.decode("utf-8", "replace"))
 
     def test_6h_podglad_stanowisk(self):
-        """podglad.py (render brył bez Studio) importuje się bez numpy na starcie i zna sześć gier i widok areny."""
+        """podglad.py (render brył bez Studio) importuje się bez numpy na starcie, zna sześć gier, widok każdej scenerii
+        z góry i cały pas scenerii."""
         tekst = czytaj(PAKIET, "podglad.py")
         self.assertNotIn("studio_mcp", tekst)
         for g in GRY:
@@ -1924,6 +2035,44 @@ class TestStykow(unittest.TestCase):
         r = subprocess.run([sys.executable, "-B", "-c", "import sys; sys.path.insert(0, %r); import podglad; "
                             "print('numpy' in sys.modules)" % PAKIET], capture_output=True)
         self.assertEqual(r.stdout.decode().strip(), "False", r.stderr.decode("utf-8", "replace"))
+        PG = _modul("podglad_treningu", "podglad.py")
+        self.assertEqual(sorted(PG.WIDOKI_ARENY), sorted([g + "_gora" for g in GRY] + ["pas"]))
+        for g in GRY:  # podgląd każdej gry z kamery gry i z góry leży w podglady/
+            for n in ("podglad_%s.jpg" % g, "podglad_%s_gora.jpg" % g):
+                self.assertTrue(os.path.isfile(os.path.join(PAKIET, "podglady", n)), n)
+
+    def test_6m_owoce_w_sile_to_sam_wyglad(self):
+        """Lecące cele Siły to owoce (D-108) — zmienił się tylko wygląd w kliencie: logika i serwer ich nie znają, tor
+        lotu, strefy i okno czasu liczą te same wyrażenia, a zasady i plan rundy Siły są takie jak przed zmianą (liczby
+        wpisane wprost z danych sprzed owoców). Gest trenera NPC jest osłonięty."""
+        k = bez_komentarzy(KLIENT)
+        for nazwa in ("Dynia", "Jablko", "Arbuz", "Gruszka"):
+            self.assertIn('nazwa = "%s"' % nazwa, k)
+        for stare in ("KOLORY_SKRZYN", '"Skrzynka"', '"Dzban"', '"Beczulka"'):
+            self.assertNotIn(stare, k)
+        for f in ("bezier(math.max(0, a), H, C, Z)", "v3(W.strefy[v.k])", "(t - start) / G.lot_s", "math.abs(t - ti) <= e.okno",
+                  "polowkiOwocu(v.obj.Position, v.owoc)", "d[1].CFrame = v.obj.CFrame * d[2]"):
+            self.assertIn(f, k)
+        for tekst in (LOGIKA, SERWER):
+            for s in ("OWOCE", "Dynia", "Arbuz", "polowki"):
+                self.assertNotIn(s, tekst)
+        G = D["gry"]["sila"]
+        self.assertEqual((G["typ"], G["lot_s"], G["rozrzut"], G["waga"]), ("kierunki", 1.1, 0.15, 1))
+        self.assertEqual([(q["od_s"], q["odstep_s"], q["okno_s"], q["kierunki"]) for q in G["poziomy"]],
+                         [(0, 1.25, 0.3, 3), (12, 1.05, 0.26, 4), (24, 0.9, 0.22, 4), (34, 0.78, 0.19, 4)])
+        self.assertEqual(K["stanowiska"]["sila"]["strefy"], {"gora": [0, 6.6, -1.6], "lewo": [-3.4, 3.4, -1.6], "prawo": [3.4, 3.4, -1.6],
+                                                             "dol": [0, 0.9, -3.2]})
+        for ziarno, n, suma, pierwsze in ((1, 45, 1113.018, [(1.0, "lewo"), (2.126, "lewo"), (3.482, "prawo")]),
+                                          (7, 45, 1101.324, [(1.0, "lewo"), (2.318, "prawo"), (3.43, "prawo")])):
+            pl = LT.plan(D, "sila", ziarno)
+            self.assertEqual(len(pl), n)
+            self.assertAlmostEqual(sum(e["t"] for e in pl), suma, places=3)
+            self.assertEqual([(e["t"], e["wartosc"]) for e in pl[:3]], pierwsze)
+        # gest trenera NPC: w chwili ruchu ręki miotacza i pałki trenera Bieżni, osłonięty, najwyżej jeden wątek czeka
+        self.assertRegex(KLIENT, r'machnij\(arena\.ramie, -2\.4, 0\.12, 0\.25\)\s+gestTrenera\("trening_sila"\)')
+        self.assertRegex(KLIENT, r'machnij\(arena\.palka, -1\.3, 0\.06, 0\.18\)\s+gestTrenera\("trening_kondycja"\)')
+        for f in ('workspace:FindFirstChild("NpcGra")', 'f:Invoke("graj", klucz, "akcja")', "if gestWToku then", "pcall(function()"):
+            self.assertIn(f, KLIENT)
 
     def test_6i_komiks_w_stylu_walki(self):
         """Napisy mini-gier mają styl napisów walki: liczby i kolory z ui.komiks są tymi z jej źródeł (tylko odczyt
@@ -2079,7 +2228,8 @@ class TestStykow(unittest.TestCase):
         self.assertEqual(B["sciezka"], "BohaterSwiat/Sygnaly/RuchBohatera")
         self.assertEqual(sorted(B["klipy"].values()), ["bieg", "padnij", "radosc", "rece_gora", "skok"])
         self.assertNotIn("padnij_w_dol", B)
-        self.assertEqual(len(re.findall(r"(?<!On)Invoke\b", k)), 1)  # jedno miejsce wywołania…
+        # dwa miejsca wywołania: haczyk bohatera i (od 19.11.2026) gest trenera NPC — oba osłonięte…
+        self.assertEqual(len(re.findall(r"(?<!On)Invoke\b", k)), 2)
         blok = k.split("local function wolajBohatera(polecenie, arg)")[1].split("local function bohaterAktywny()")[0]
         self.assertIn('sciezka(workspace, if type(gdzie) == "string" and gdzie ~= "" then gdzie else BH.sciezka)', blok)  # …przez FindFirstChild
         self.assertIn('f:IsA("BindableFunction")', blok)

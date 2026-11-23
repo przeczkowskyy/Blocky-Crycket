@@ -1,0 +1,5876 @@
+{
+ "opis": "Katalog sklepu z przedmiotami trzech klas: komplet startowy i trzy stopnie (las, Bagno, Dżungla). WYGENEROWANE przez swiat/postacie/sklep_katalog.py ze stopnie.py i sklep_liczby.json — nie edytować ręcznie. Status: propozycja do oceny (D-106).",
+ "status": "propozycja",
+ "wersja": 1,
+ "umowa": {
+  "id": "identyfikator przedmiotu (ten sam w przymierzalni, u kowala i w sklepie)",
+  "nazwa": "nazwa dla gracza",
+  "opis": "krótki opis wyglądu",
+  "klasa": "wojownik | zwiadowca | mag — tylko ta klasa może kupić i założyć",
+  "stopien": "start | las | bagno | dzungla",
+  "nr_stopnia": "0–3",
+  "slot": "Helmet | Chest | Gloves | Boots | Belt | Weapon | OffHand",
+  "sprzedawany": "false = część innego przedmiotu (nogawice, spodnie): gracz dostaje ją razem z przedmiotem z pola czesc_od, w sklepie nie ma osobnej pozycji",
+  "cena": "Złoto; 0 = gracz ma przedmiot od startu (zestaw podstawowy)",
+  "poziom": "wymagany poziom postaci",
+  "podstawowy": "true = zestaw podstawowy klasy (liczy się jak dzisiejszy wzór poziomu)",
+  "waga": "mnożnik kosztów ulepszeń u kowala (Mag 1,75 — ma cztery przedmioty)",
+  "baza": "statystyki przedmiotu przy ulepszeniu +0 (klucze jak u kowala; tarcza = ułamek bloku)",
+  "krok": "przyrost statystyk za każdy poziom ulepszenia u kowala",
+  "czesci": "segmenty modelu: kość, powłoka, zaczep (dane przymierzalni; geometria w stopnie.py i modułach bohaterów)",
+  "ikona": "plik ikony w repozytorium (po przebudowie w Blenderze)"
+ },
+ "statystyki": [
+  [
+   "bron",
+   "Broń"
+  ],
+  [
+   "pancerz",
+   "Pancerz"
+  ],
+  [
+   "tarcza",
+   "Blok tarczy"
+  ],
+  [
+   "Strength",
+   "Siła"
+  ],
+  [
+   "Constitution",
+   "Kondycja"
+  ],
+  [
+   "Intelligence",
+   "Inteligencja"
+  ],
+  [
+   "Dexterity",
+   "Zręczność"
+  ],
+  [
+   "Luck",
+   "Szczęście"
+  ]
+ ],
+ "sloty": {
+  "Helmet": "Nakrycie głowy",
+  "Chest": "Zbroja",
+  "Gloves": "Rękawice",
+  "Boots": "Buty",
+  "Belt": "Pas",
+  "Weapon": "Broń",
+  "OffHand": "Druga ręka"
+ },
+ "stopnie": [
+  {
+   "id": "start",
+   "nr": 0,
+   "nazwa": "Startowy",
+   "kraina": null,
+   "poziom": 1,
+   "poziom_do": 1,
+   "cena_kompletu": 300
+  },
+  {
+   "id": "las",
+   "nr": 1,
+   "nazwa": "Leśny",
+   "kraina": "las",
+   "poziom": 2,
+   "poziom_do": 7,
+   "cena_kompletu": 1400
+  },
+  {
+   "id": "bagno",
+   "nr": 2,
+   "nazwa": "Bagienny",
+   "kraina": "bagno",
+   "poziom": 10,
+   "poziom_do": 15,
+   "cena_kompletu": 3300
+  },
+  {
+   "id": "dzungla",
+   "nr": 3,
+   "nazwa": "Dżungli",
+   "kraina": "dzungla",
+   "poziom": 17,
+   "poziom_do": 22,
+   "cena_kompletu": 5200
+  }
+ ],
+ "klasy": {
+  "wojownik": {
+   "bohater": "rycerz",
+   "cialo": "czlowiek",
+   "komplety": {
+    "start": [
+     "rycerz_helm",
+     "rycerz_zbroja",
+     "rycerz_nogawice",
+     "rycerz_pas",
+     "rycerz_rekawice",
+     "rycerz_buty",
+     "rycerz_miecz",
+     "rycerz_tarcza"
+    ],
+    "las": [
+     "rycerz_las_helm",
+     "rycerz_las_zbroja",
+     "rycerz_las_nogawice",
+     "rycerz_las_pas",
+     "rycerz_las_rekawice",
+     "rycerz_las_buty",
+     "rycerz_las_miecz",
+     "rycerz_las_tarcza"
+    ],
+    "bagno": [
+     "rycerz_bagno_helm",
+     "rycerz_bagno_zbroja",
+     "rycerz_bagno_nogawice",
+     "rycerz_bagno_pas",
+     "rycerz_bagno_rekawice",
+     "rycerz_bagno_buty",
+     "rycerz_bagno_miecz",
+     "rycerz_bagno_tarcza"
+    ],
+    "dzungla": [
+     "rycerz_dzungla_helm",
+     "rycerz_dzungla_zbroja",
+     "rycerz_dzungla_nogawice",
+     "rycerz_dzungla_pas",
+     "rycerz_dzungla_rekawice",
+     "rycerz_dzungla_buty",
+     "rycerz_dzungla_miecz",
+     "rycerz_dzungla_tarcza"
+    ]
+   }
+  },
+  "zwiadowca": {
+   "bohater": "zwiadowca",
+   "cialo": "czlowiek",
+   "komplety": {
+    "start": [
+     "zwiadowca_kaptur",
+     "zwiadowca_kurtka",
+     "zwiadowca_spodnie",
+     "zwiadowca_pas",
+     "zwiadowca_rekawice",
+     "zwiadowca_buty",
+     "zwiadowca_luk",
+     "zwiadowca_sztylet"
+    ],
+    "las": [
+     "zwiadowca_las_kaptur",
+     "zwiadowca_las_kurtka",
+     "zwiadowca_las_spodnie",
+     "zwiadowca_las_pas",
+     "zwiadowca_las_rekawice",
+     "zwiadowca_las_buty",
+     "zwiadowca_las_luk",
+     "zwiadowca_las_sztylet"
+    ],
+    "bagno": [
+     "zwiadowca_bagno_kaptur",
+     "zwiadowca_bagno_kurtka",
+     "zwiadowca_bagno_spodnie",
+     "zwiadowca_bagno_pas",
+     "zwiadowca_bagno_rekawice",
+     "zwiadowca_bagno_buty",
+     "zwiadowca_bagno_luk",
+     "zwiadowca_bagno_sztylet"
+    ],
+    "dzungla": [
+     "zwiadowca_dzungla_kaptur",
+     "zwiadowca_dzungla_kurtka",
+     "zwiadowca_dzungla_spodnie",
+     "zwiadowca_dzungla_pas",
+     "zwiadowca_dzungla_rekawice",
+     "zwiadowca_dzungla_buty",
+     "zwiadowca_dzungla_luk",
+     "zwiadowca_dzungla_sztylet"
+    ]
+   }
+  },
+  "mag": {
+   "bohater": "kot_mag",
+   "cialo": "kot",
+   "komplety": {
+    "start": [
+     "kot_mag_kapelusz",
+     "kot_mag_szata",
+     "kot_mag_pas",
+     "kot_mag_kostur"
+    ],
+    "las": [
+     "kot_mag_las_kapelusz",
+     "kot_mag_las_szata",
+     "kot_mag_las_pas",
+     "kot_mag_las_kostur"
+    ],
+    "bagno": [
+     "kot_mag_bagno_kapelusz",
+     "kot_mag_bagno_szata",
+     "kot_mag_bagno_pas",
+     "kot_mag_bagno_kostur"
+    ],
+    "dzungla": [
+     "kot_mag_dzungla_kapelusz",
+     "kot_mag_dzungla_szata",
+     "kot_mag_dzungla_pas",
+     "kot_mag_dzungla_kostur"
+    ]
+   }
+  }
+ },
+ "przedmioty": [
+  {
+   "id": "rycerz_helm",
+   "nazwa": "Hełm Rycerza",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "wojownik",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 75,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 2,
+    "Constitution": 1
+   },
+   "krok": {
+    "Constitution": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_helm_glowa",
+     "kosc": "Head",
+     "zakrywa": false,
+     "zaczep": "EkwHeadAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/rycerz/ekwipunek/ikony/rycerz_helm_ikona.png"
+  },
+  {
+   "id": "rycerz_zbroja",
+   "nazwa": "Zbroja Rycerza z tabardem",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "wojownik",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "pancerz": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_zbroja_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_zbroja_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/rycerz/ekwipunek/ikony/rycerz_zbroja_ikona.png"
+  },
+  {
+   "id": "rycerz_nogawice",
+   "nazwa": "Nogawice Rycerza",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "wojownik",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Chest",
+   "sprzedawany": false,
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": "rycerz_zbroja",
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_nogawice_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_nogawice_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_nogawice_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/rycerz/ekwipunek/ikony/rycerz_nogawice_ikona.png"
+  },
+  {
+   "id": "rycerz_pas",
+   "nazwa": "Pas Rycerza",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "wojownik",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 75,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 1
+   },
+   "krok": {
+    "Constitution": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/rycerz/ekwipunek/ikony/rycerz_pas_ikona.png"
+  },
+  {
+   "id": "rycerz_rekawice",
+   "nazwa": "Rękawice Rycerza",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "wojownik",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Gloves",
+   "sprzedawany": true,
+   "cena": 75,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 2
+   },
+   "krok": {
+    "Strength": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/rycerz/ekwipunek/ikony/rycerz_rekawice_ikona.png"
+  },
+  {
+   "id": "rycerz_buty",
+   "nazwa": "Trzewiki z nagolennikami",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "wojownik",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Boots",
+   "sprzedawany": true,
+   "cena": 75,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 2
+   },
+   "krok": {
+    "Dexterity": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/rycerz/ekwipunek/ikony/rycerz_buty_ikona.png"
+  },
+  {
+   "id": "rycerz_miecz",
+   "nazwa": "Wielki miecz Rycerza",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "wojownik",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_miecz",
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "zaczep": "RightGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/rycerz/ikony/rycerz_miecz_ikona.png"
+  },
+  {
+   "id": "rycerz_tarcza",
+   "nazwa": "Tarcza Rycerza",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "wojownik",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "OffHand",
+   "sprzedawany": true,
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "tarcza": 0.01
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz",
+   "czesci": [
+    {
+     "id": "rycerz_tarcza",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/rycerz/ikony/rycerz_tarcza_ikona.png"
+  },
+  {
+   "id": "rycerz_las_helm",
+   "nazwa": "Hełm Leśnego Strażnika",
+   "opis": "skórzany hełm z jasnym porożem po bokach i futrem na karku",
+   "klasa": "wojownik",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 200,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 2,
+    "Constitution": 2
+   },
+   "krok": {
+    "Constitution": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ],
+   "zestaw": "rycerz_las",
+   "czesci": [
+    {
+     "id": "rycerz_las_helm_glowa",
+     "kosc": "Head",
+     "zakrywa": false,
+     "zaczep": "EkwHeadAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_las_helm_ikona.png"
+  },
+  {
+   "id": "rycerz_las_zbroja",
+   "nazwa": "Zbroja Leśnego Strażnika",
+   "opis": "utwardzana skóra, futrzany kołnierz, naramienniki z płatów kory, zielony tabard z drewnianą lamówką",
+   "klasa": "wojownik",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 350,
+   "poziom": 6,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 4
+   },
+   "krok": {
+    "pancerz": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_las",
+   "czesci": [
+    {
+     "id": "rycerz_las_zbroja_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_zbroja_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_zbroja_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_zbroja_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_zbroja_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_zbroja_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_las_zbroja_ikona.png"
+  },
+  {
+   "id": "rycerz_las_nogawice",
+   "nazwa": "Nogawice Leśnego Strażnika",
+   "opis": "skórzane uda z ciemną płytą, część zbroi",
+   "klasa": "wojownik",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Chest",
+   "sprzedawany": false,
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": "rycerz_las_zbroja",
+   "ukrywa": [],
+   "zestaw": "rycerz_las",
+   "czesci": [
+    {
+     "id": "rycerz_las_nogawice_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_nogawice_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_nogawice_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_las_nogawice_ikona.png"
+  },
+  {
+   "id": "rycerz_las_pas",
+   "nazwa": "Pas Leśnika z Sakiewką",
+   "opis": "szeroki ciemny pas z drewnianą klamrą i sakiewką przy biodrze",
+   "klasa": "wojownik",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 100,
+   "poziom": 2,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 2
+   },
+   "krok": {
+    "Constitution": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_las",
+   "czesci": [
+    {
+     "id": "rycerz_las_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_las_pas_ikona.png"
+  },
+  {
+   "id": "rycerz_las_rekawice",
+   "nazwa": "Rękawice z Futrem",
+   "opis": "skórzane rękawice z futrzanym mankietem",
+   "klasa": "wojownik",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Gloves",
+   "sprzedawany": true,
+   "cena": 100,
+   "poziom": 3,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 3
+   },
+   "krok": {
+    "Strength": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_las",
+   "czesci": [
+    {
+     "id": "rycerz_las_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_las_rekawice_ikona.png"
+  },
+  {
+   "id": "rycerz_las_buty",
+   "nazwa": "Buty Leśnika z Futrem",
+   "opis": "skórzane buty z futrzanym wywinięciem pod kolanem",
+   "klasa": "wojownik",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Boots",
+   "sprzedawany": true,
+   "cena": 100,
+   "poziom": 4,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 3
+   },
+   "krok": {
+    "Dexterity": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_las",
+   "czesci": [
+    {
+     "id": "rycerz_las_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_las_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_las_buty_ikona.png"
+  },
+  {
+   "id": "rycerz_las_miecz",
+   "nazwa": "Liściasty Miecz Gaju",
+   "opis": "żelazna klinga w kształcie liścia z zieloną żyłką, jelec z gałązek",
+   "klasa": "wojownik",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 350,
+   "poziom": 7,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 2
+   },
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_las",
+   "czesci": [
+    {
+     "id": "rycerz_las_miecz",
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "zaczep": "RightGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_las_miecz_ikona.png"
+  },
+  {
+   "id": "rycerz_las_tarcza",
+   "nazwa": "Dębowa Tarcza",
+   "opis": "okrągła tarcza z jasnych desek z ciemną obręczą, żelaznym umbem i listkiem",
+   "klasa": "wojownik",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "OffHand",
+   "sprzedawany": true,
+   "cena": 200,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 1,
+    "tarcza": 0.02
+   },
+   "krok": {
+    "tarcza": 0.01
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_las",
+   "czesci": [
+    {
+     "id": "rycerz_las_tarcza",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_las_tarcza_ikona.png"
+  },
+  {
+   "id": "rycerz_bagno_helm",
+   "nazwa": "Hełm Topielca",
+   "opis": "łuskowy hełm z kościanym grzebieniem i dwoma kłami przy policzkach",
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 450,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 4,
+    "Constitution": 4
+   },
+   "krok": {
+    "Constitution": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ],
+   "zestaw": "rycerz_bagno",
+   "czesci": [
+    {
+     "id": "rycerz_bagno_helm_glowa",
+     "kosc": "Head",
+     "zakrywa": false,
+     "zaczep": "EkwHeadAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_bagno_helm_ikona.png"
+  },
+  {
+   "id": "rycerz_bagno_zbroja",
+   "nazwa": "Łuskowa Zbroja Topieli",
+   "opis": "napierśnik z rombów łusek, kościane żebra i mostek, po trzy kolce na naramiennikach, mosiężne okucia",
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 800,
+   "poziom": 14,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 8
+   },
+   "krok": {
+    "pancerz": 4
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_bagno",
+   "czesci": [
+    {
+     "id": "rycerz_bagno_zbroja_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_zbroja_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_zbroja_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_zbroja_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_zbroja_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_zbroja_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_bagno_zbroja_ikona.png"
+  },
+  {
+   "id": "rycerz_bagno_nogawice",
+   "nazwa": "Łuskowe Nogawice Topieli",
+   "opis": "łuskowe uda z ciemniejszą płytą, część zbroi",
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Chest",
+   "sprzedawany": false,
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": "rycerz_bagno_zbroja",
+   "ukrywa": [],
+   "zestaw": "rycerz_bagno",
+   "czesci": [
+    {
+     "id": "rycerz_bagno_nogawice_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_nogawice_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_nogawice_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_bagno_nogawice_ikona.png"
+  },
+  {
+   "id": "rycerz_bagno_pas",
+   "nazwa": "Pas z Kłami",
+   "opis": "ciemny pas z mosiężną klamrą i dwoma wiszącymi kłami",
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 250,
+   "poziom": 10,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 4
+   },
+   "krok": {
+    "Constitution": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_bagno",
+   "czesci": [
+    {
+     "id": "rycerz_bagno_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_bagno_pas_ikona.png"
+  },
+  {
+   "id": "rycerz_bagno_rekawice",
+   "nazwa": "Kolczaste Rękawice Topieli",
+   "opis": "łuskowe rękawice z kościanymi kolcami na kostkach",
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Gloves",
+   "sprzedawany": true,
+   "cena": 250,
+   "poziom": 11,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 6
+   },
+   "krok": {
+    "Strength": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_bagno",
+   "czesci": [
+    {
+     "id": "rycerz_bagno_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_bagno_rekawice_ikona.png"
+  },
+  {
+   "id": "rycerz_bagno_buty",
+   "nazwa": "Łuskowe Buty z Kolcem",
+   "opis": "łuskowe buty z kościanym kolcem na kolanie",
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Boots",
+   "sprzedawany": true,
+   "cena": 250,
+   "poziom": 12,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 6
+   },
+   "krok": {
+    "Dexterity": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_bagno",
+   "czesci": [
+    {
+     "id": "rycerz_bagno_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_bagno_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_bagno_buty_ikona.png"
+  },
+  {
+   "id": "rycerz_bagno_miecz",
+   "nazwa": "Kościany Tasak Topieli",
+   "opis": "szeroki tasak rozszerzający się ku górze, zęby z kości na ostrzu, mosiężny jelec",
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 850,
+   "poziom": 15,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 4
+   },
+   "krok": {
+    "bron": 2
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_bagno",
+   "czesci": [
+    {
+     "id": "rycerz_bagno_miecz",
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "zaczep": "RightGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_bagno_miecz_ikona.png"
+  },
+  {
+   "id": "rycerz_bagno_tarcza",
+   "nazwa": "Tarcza ze Skorupy",
+   "opis": "owalna skorupa z płytkami, mosiężny brzeg, cztery kościane kolce i guz",
+   "klasa": "wojownik",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "OffHand",
+   "sprzedawany": true,
+   "cena": 450,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 2,
+    "tarcza": 0.04
+   },
+   "krok": {
+    "tarcza": 0.01
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_bagno",
+   "czesci": [
+    {
+     "id": "rycerz_bagno_tarcza",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_bagno_tarcza_ikona.png"
+  },
+  {
+   "id": "rycerz_dzungla_helm",
+   "nazwa": "Hełm Słońca z Pióropuszem",
+   "opis": "złoty hełm z wachlarzem pięciu piór i słonecznym dyskiem na czole",
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 750,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 6,
+    "Constitution": 6
+   },
+   "krok": {
+    "Constitution": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ],
+   "zestaw": "rycerz_dzungla",
+   "czesci": [
+    {
+     "id": "rycerz_dzungla_helm_glowa",
+     "kosc": "Head",
+     "zakrywa": false,
+     "zaczep": "EkwHeadAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_dzungla_helm_ikona.png"
+  },
+  {
+   "id": "rycerz_dzungla_zbroja",
+   "nazwa": "Złota Zbroja Słońca",
+   "opis": "złoty napierśnik z jadeitowym dyskiem i promieniami, uniesione skrzydła naramienników, trzy pióra na plecach",
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 1250,
+   "poziom": 21,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 12
+   },
+   "krok": {
+    "pancerz": 5
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_dzungla",
+   "czesci": [
+    {
+     "id": "rycerz_dzungla_zbroja_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_zbroja_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_zbroja_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_zbroja_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_zbroja_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_zbroja_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_dzungla_zbroja_ikona.png"
+  },
+  {
+   "id": "rycerz_dzungla_nogawice",
+   "nazwa": "Złote Nogawice Słońca",
+   "opis": "złote uda z płytą, część zbroi",
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Chest",
+   "sprzedawany": false,
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": "rycerz_dzungla_zbroja",
+   "ukrywa": [],
+   "zestaw": "rycerz_dzungla",
+   "czesci": [
+    {
+     "id": "rycerz_dzungla_nogawice_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_nogawice_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_nogawice_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_dzungla_nogawice_ikona.png"
+  },
+  {
+   "id": "rycerz_dzungla_pas",
+   "nazwa": "Pas z Jadeitowym Dyskiem",
+   "opis": "ciemnozłoty pas z jadeitowym dyskiem i piórami przy biodrach",
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 400,
+   "poziom": 17,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 6
+   },
+   "krok": {
+    "Constitution": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_dzungla",
+   "czesci": [
+    {
+     "id": "rycerz_dzungla_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_dzungla_pas_ikona.png"
+  },
+  {
+   "id": "rycerz_dzungla_rekawice",
+   "nazwa": "Rękawice z Jadeitem",
+   "opis": "złote rękawice z jadeitową bransoletą",
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Gloves",
+   "sprzedawany": true,
+   "cena": 400,
+   "poziom": 18,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 9
+   },
+   "krok": {
+    "Strength": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_dzungla",
+   "czesci": [
+    {
+     "id": "rycerz_dzungla_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_dzungla_rekawice_ikona.png"
+  },
+  {
+   "id": "rycerz_dzungla_buty",
+   "nazwa": "Złote Buty z Jadeitem",
+   "opis": "złote buty z jadeitowym dyskiem na kolanie i opaską z piór przy kostce",
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Boots",
+   "sprzedawany": true,
+   "cena": 400,
+   "poziom": 19,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 9
+   },
+   "krok": {
+    "Dexterity": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_dzungla",
+   "czesci": [
+    {
+     "id": "rycerz_dzungla_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "rycerz_dzungla_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_dzungla_buty_ikona.png"
+  },
+  {
+   "id": "rycerz_dzungla_miecz",
+   "nazwa": "Zębaty Miecz Słońca",
+   "opis": "płaska złota klinga z jadeitowymi zębami po obu stronach, dysk słońca zamiast jelca, pióra przy głowicy",
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 1250,
+   "poziom": 22,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 6
+   },
+   "krok": {
+    "bron": 3
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_dzungla",
+   "czesci": [
+    {
+     "id": "rycerz_dzungla_miecz",
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "zaczep": "RightGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_dzungla_miecz_ikona.png"
+  },
+  {
+   "id": "rycerz_dzungla_tarcza",
+   "nazwa": "Tarcza Słońca",
+   "opis": "złoty dysk z jadeitowym pierścieniem, promienie u góry i pióra u dołu",
+   "klasa": "wojownik",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "OffHand",
+   "sprzedawany": true,
+   "cena": 750,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 3,
+    "tarcza": 0.06
+   },
+   "krok": {
+    "tarcza": 0.01
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "rycerz_dzungla",
+   "czesci": [
+    {
+     "id": "rycerz_dzungla_tarcza",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_wojownik/ikony/rycerz_dzungla_tarcza_ikona.png"
+  },
+  {
+   "id": "zwiadowca_kaptur",
+   "nazwa": "Kaptur z peleryną",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 2,
+    "Dexterity": 1
+   },
+   "krok": {
+    "Luck": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ],
+   "zestaw": "zwiadowca",
+   "czesci": [
+    {
+     "id": "zwiadowca_kaptur_glowa",
+     "kosc": "Head",
+     "zakrywa": false,
+     "zaczep": "EkwHeadAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_kaptur_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_kaptur_ikona.png"
+  },
+  {
+   "id": "zwiadowca_kurtka",
+   "nazwa": "Skórzany kirys z tuniką",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "pancerz": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca",
+   "czesci": [
+    {
+     "id": "zwiadowca_kurtka_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_kurtka_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_kurtka_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_kurtka_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_kurtka_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_kurtka_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": false,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_kurtka_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": false,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_kurtka_ikona.png"
+  },
+  {
+   "id": "zwiadowca_spodnie",
+   "nazwa": "Spodnie Zwiadowcy",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Chest",
+   "sprzedawany": false,
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": "zwiadowca_kurtka",
+   "ukrywa": [],
+   "zestaw": "zwiadowca",
+   "czesci": [
+    {
+     "id": "zwiadowca_spodnie_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_spodnie_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_spodnie_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_spodnie_ikona.png"
+  },
+  {
+   "id": "zwiadowca_pas",
+   "nazwa": "Pas z sakwą",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 1
+   },
+   "krok": {
+    "Constitution": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca",
+   "czesci": [
+    {
+     "id": "zwiadowca_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_pas_ikona.png"
+  },
+  {
+   "id": "zwiadowca_rekawice",
+   "nazwa": "Rękawice bez palców",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Gloves",
+   "sprzedawany": true,
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 1
+   },
+   "krok": {
+    "Strength": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca",
+   "czesci": [
+    {
+     "id": "zwiadowca_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_rekawice_ikona.png"
+  },
+  {
+   "id": "zwiadowca_buty",
+   "nazwa": "Buty z wywiniętą cholewą",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Boots",
+   "sprzedawany": true,
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 2
+   },
+   "krok": {
+    "Dexterity": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca",
+   "czesci": [
+    {
+     "id": "zwiadowca_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_buty_ikona.png"
+  },
+  {
+   "id": "zwiadowca_luk",
+   "nazwa": "Łuk z kołczanem",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "OffHand",
+   "sprzedawany": true,
+   "cena": 60,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Luck": 2
+   },
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca",
+   "czesci": [
+    {
+     "id": "zwiadowca_luk_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_luk",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/zwiadowca/ekwipunek/ikony/zwiadowca_luk_ikona.png"
+  },
+  {
+   "id": "zwiadowca_sztylet",
+   "nazwa": "Sztylet Zwiadowcy",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "zwiadowca",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1,
+   "baza": {},
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca",
+   "czesci": [
+    {
+     "id": "zwiadowca_sztylet",
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "zaczep": "RightGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/zwiadowca/ikony/zwiadowca_sztylet_ikona.png"
+  },
+  {
+   "id": "zwiadowca_las_kaptur",
+   "nazwa": "Kaptur Tropiciela z Futrem",
+   "opis": "brązowy skórzany kaptur z rudym piórem i futrem na barkach",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 200,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 2,
+    "Dexterity": 3
+   },
+   "krok": {
+    "Luck": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ],
+   "zestaw": "zwiadowca_las",
+   "czesci": [
+    {
+     "id": "zwiadowca_las_kaptur_glowa",
+     "kosc": "Head",
+     "zakrywa": false,
+     "zaczep": "EkwHeadAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_kaptur_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_las_kaptur_ikona.png"
+  },
+  {
+   "id": "zwiadowca_las_kurtka",
+   "nazwa": "Kirys Tropiciela",
+   "opis": "ciemnozielony kirys na brązowej tunice, drewniane płytki na ramionach, jasnozielona chusta",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 350,
+   "poziom": 6,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 4
+   },
+   "krok": {
+    "pancerz": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_las",
+   "czesci": [
+    {
+     "id": "zwiadowca_las_kurtka_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_kurtka_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_kurtka_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_kurtka_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_kurtka_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_kurtka_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": false,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_kurtka_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": false,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_las_kurtka_ikona.png"
+  },
+  {
+   "id": "zwiadowca_las_spodnie",
+   "nazwa": "Spodnie Tropiciela",
+   "opis": "ciemnobrązowe spodnie, część kirysu",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Chest",
+   "sprzedawany": false,
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": "zwiadowca_las_kurtka",
+   "ukrywa": [],
+   "zestaw": "zwiadowca_las",
+   "czesci": [
+    {
+     "id": "zwiadowca_las_spodnie_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_spodnie_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_spodnie_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_las_spodnie_ikona.png"
+  },
+  {
+   "id": "zwiadowca_las_pas",
+   "nazwa": "Pas Tropiciela",
+   "opis": "ciemny pas z drewnianą klamrą i sakwą",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 100,
+   "poziom": 2,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 2
+   },
+   "krok": {
+    "Constitution": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_las",
+   "czesci": [
+    {
+     "id": "zwiadowca_las_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_las_pas_ikona.png"
+  },
+  {
+   "id": "zwiadowca_las_rekawice",
+   "nazwa": "Rękawice Tropiciela",
+   "opis": "rękawice bez palców z futrzanym mankietem",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Gloves",
+   "sprzedawany": true,
+   "cena": 100,
+   "poziom": 3,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 3
+   },
+   "krok": {
+    "Strength": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_las",
+   "czesci": [
+    {
+     "id": "zwiadowca_las_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_las_rekawice_ikona.png"
+  },
+  {
+   "id": "zwiadowca_las_buty",
+   "nazwa": "Buty Tropiciela",
+   "opis": "buty z futrzanym wywinięciem",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Boots",
+   "sprzedawany": true,
+   "cena": 100,
+   "poziom": 4,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 3
+   },
+   "krok": {
+    "Dexterity": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_las",
+   "czesci": [
+    {
+     "id": "zwiadowca_las_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_las_buty_ikona.png"
+  },
+  {
+   "id": "zwiadowca_las_luk",
+   "nazwa": "Łuk Gaju z Kołczanem",
+   "opis": "ciemny drewniany łuk z listkami na końcach, zielone lotki",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "OffHand",
+   "sprzedawany": true,
+   "cena": 200,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 2,
+    "Luck": 2
+   },
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_las",
+   "czesci": [
+    {
+     "id": "zwiadowca_las_luk_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_las_luk",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_las_luk_ikona.png"
+  },
+  {
+   "id": "zwiadowca_las_sztylet",
+   "nazwa": "Nóż Myśliwski",
+   "opis": "szeroki nóż ze ściętym czubkiem i ząbkami na grzbiecie, rękojeść z poroża",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 350,
+   "poziom": 7,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 2
+   },
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_las",
+   "czesci": [
+    {
+     "id": "zwiadowca_las_sztylet",
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "zaczep": "RightGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_las_sztylet_ikona.png"
+  },
+  {
+   "id": "zwiadowca_bagno_kaptur",
+   "nazwa": "Kaptur z Wężowej Łuski",
+   "opis": "ciemny kaptur z kościanymi kolcami na grzbiecie, kłami nad czołem i kolcami na barkach",
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 450,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 4,
+    "Dexterity": 6
+   },
+   "krok": {
+    "Luck": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ],
+   "zestaw": "zwiadowca_bagno",
+   "czesci": [
+    {
+     "id": "zwiadowca_bagno_kaptur_glowa",
+     "kosc": "Head",
+     "zakrywa": false,
+     "zaczep": "EkwHeadAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_kaptur_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_bagno_kaptur_ikona.png"
+  },
+  {
+   "id": "zwiadowca_bagno_kurtka",
+   "nazwa": "Łuskowy Kirys Topieli",
+   "opis": "łuskowy kirys z rombami łusek, kościane kolce na ramionach, kościana chusta",
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 800,
+   "poziom": 14,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 8
+   },
+   "krok": {
+    "pancerz": 4
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_bagno",
+   "czesci": [
+    {
+     "id": "zwiadowca_bagno_kurtka_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_kurtka_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_kurtka_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_kurtka_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_kurtka_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_kurtka_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": false,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_kurtka_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": false,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_bagno_kurtka_ikona.png"
+  },
+  {
+   "id": "zwiadowca_bagno_spodnie",
+   "nazwa": "Spodnie z Wężowej Skóry",
+   "opis": "ciemne spodnie, część kirysu",
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Chest",
+   "sprzedawany": false,
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": "zwiadowca_bagno_kurtka",
+   "ukrywa": [],
+   "zestaw": "zwiadowca_bagno",
+   "czesci": [
+    {
+     "id": "zwiadowca_bagno_spodnie_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_spodnie_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_spodnie_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_bagno_spodnie_ikona.png"
+  },
+  {
+   "id": "zwiadowca_bagno_pas",
+   "nazwa": "Pas z Mosiężną Klamrą",
+   "opis": "łuskowy pas z mosiężną klamrą i sakwą",
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 250,
+   "poziom": 10,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 4
+   },
+   "krok": {
+    "Constitution": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_bagno",
+   "czesci": [
+    {
+     "id": "zwiadowca_bagno_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_bagno_pas_ikona.png"
+  },
+  {
+   "id": "zwiadowca_bagno_rekawice",
+   "nazwa": "Rękawice z Kolcami",
+   "opis": "rękawice bez palców z kościanymi kolcami na kostkach",
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Gloves",
+   "sprzedawany": true,
+   "cena": 250,
+   "poziom": 11,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 6
+   },
+   "krok": {
+    "Strength": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_bagno",
+   "czesci": [
+    {
+     "id": "zwiadowca_bagno_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_bagno_rekawice_ikona.png"
+  },
+  {
+   "id": "zwiadowca_bagno_buty",
+   "nazwa": "Buty Brodzące",
+   "opis": "łuskowe buty z mosiężnym wywinięciem i kolcem na kolanie",
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Boots",
+   "sprzedawany": true,
+   "cena": 250,
+   "poziom": 12,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 6
+   },
+   "krok": {
+    "Dexterity": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_bagno",
+   "czesci": [
+    {
+     "id": "zwiadowca_bagno_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_bagno_buty_ikona.png"
+  },
+  {
+   "id": "zwiadowca_bagno_luk",
+   "nazwa": "Kościany Łuk z Kołczanem",
+   "opis": "łuk z kości z rogowymi końcami, kościane lotki",
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "OffHand",
+   "sprzedawany": true,
+   "cena": 450,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 4,
+    "Luck": 4
+   },
+   "krok": {
+    "bron": 2
+   },
+   "kategoria": "Weapons",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_bagno",
+   "czesci": [
+    {
+     "id": "zwiadowca_bagno_luk_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_bagno_luk",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_bagno_luk_ikona.png"
+  },
+  {
+   "id": "zwiadowca_bagno_sztylet",
+   "nazwa": "Kieł Topielca",
+   "opis": "zakrzywiony kościany kieł na mosiężnym jelcu",
+   "klasa": "zwiadowca",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 850,
+   "poziom": 15,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 4
+   },
+   "krok": {
+    "bron": 2
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_bagno",
+   "czesci": [
+    {
+     "id": "zwiadowca_bagno_sztylet",
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "zaczep": "RightGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_bagno_sztylet_ikona.png"
+  },
+  {
+   "id": "zwiadowca_dzungla_kaptur",
+   "nazwa": "Pióropusz Jaguara",
+   "opis": "jadeitowy kaptur bez szpica, złota opaska z klejnotem i wachlarz pięciu piór z tyłu głowy",
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 750,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 6,
+    "Dexterity": 9
+   },
+   "krok": {
+    "Luck": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Wlosy"
+   ],
+   "zestaw": "zwiadowca_dzungla",
+   "czesci": [
+    {
+     "id": "zwiadowca_dzungla_kaptur_glowa",
+     "kosc": "Head",
+     "zakrywa": false,
+     "zaczep": "EkwHeadAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_kaptur_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_dzungla_kaptur_ikona.png"
+  },
+  {
+   "id": "zwiadowca_dzungla_kurtka",
+   "nazwa": "Kirys ze Złotym Pektorałem",
+   "opis": "złoty kirys na jadeitowej tunice, szeroki pektorał z klejnotem, pióra na ramionach",
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 1250,
+   "poziom": 21,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "pancerz": 12
+   },
+   "krok": {
+    "pancerz": 5
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_dzungla",
+   "czesci": [
+    {
+     "id": "zwiadowca_dzungla_kurtka_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_kurtka_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_kurtka_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_kurtka_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_kurtka_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_kurtka_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": false,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_kurtka_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": false,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_dzungla_kurtka_ikona.png"
+  },
+  {
+   "id": "zwiadowca_dzungla_spodnie",
+   "nazwa": "Jadeitowe Spodnie",
+   "opis": "ciemnojadeitowe spodnie, część kirysu",
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Chest",
+   "sprzedawany": false,
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": "zwiadowca_dzungla_kurtka",
+   "ukrywa": [],
+   "zestaw": "zwiadowca_dzungla",
+   "czesci": [
+    {
+     "id": "zwiadowca_dzungla_spodnie_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_spodnie_udo_l",
+     "kosc": "LeftUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_spodnie_udo_p",
+     "kosc": "RightUpperLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_dzungla_spodnie_ikona.png"
+  },
+  {
+   "id": "zwiadowca_dzungla_pas",
+   "nazwa": "Pas Jaguara",
+   "opis": "złoty pas z jadeitową klamrą i sakwą",
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 400,
+   "poziom": 17,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Constitution": 6
+   },
+   "krok": {
+    "Constitution": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_dzungla",
+   "czesci": [
+    {
+     "id": "zwiadowca_dzungla_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_dzungla_pas_ikona.png"
+  },
+  {
+   "id": "zwiadowca_dzungla_rekawice",
+   "nazwa": "Rękawice z Jadeitową Bransoletą",
+   "opis": "rękawice bez palców z jadeitową bransoletą",
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Gloves",
+   "sprzedawany": true,
+   "cena": 400,
+   "poziom": 18,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Strength": 9
+   },
+   "krok": {
+    "Strength": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_dzungla",
+   "czesci": [
+    {
+     "id": "zwiadowca_dzungla_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_dzungla_rekawice_ikona.png"
+  },
+  {
+   "id": "zwiadowca_dzungla_buty",
+   "nazwa": "Złote Buty Jaguara",
+   "opis": "złote buty z jadeitowym dyskiem na kolanie i piórami przy kostce",
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Boots",
+   "sprzedawany": true,
+   "cena": 400,
+   "poziom": 19,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "Dexterity": 9
+   },
+   "krok": {
+    "Dexterity": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_dzungla",
+   "czesci": [
+    {
+     "id": "zwiadowca_dzungla_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_dzungla_buty_ikona.png"
+  },
+  {
+   "id": "zwiadowca_dzungla_luk",
+   "nazwa": "Łuk Słońca z Kołczanem",
+   "opis": "złoty łuk z piórami na końcach, czerwone lotki",
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "OffHand",
+   "sprzedawany": true,
+   "cena": 750,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 6,
+    "Luck": 6
+   },
+   "krok": {
+    "bron": 3
+   },
+   "kategoria": "Weapons",
+   "cialo": "czlowiek",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_dzungla",
+   "czesci": [
+    {
+     "id": "zwiadowca_dzungla_luk_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "zwiadowca_dzungla_luk",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_dzungla_luk_ikona.png"
+  },
+  {
+   "id": "zwiadowca_dzungla_sztylet",
+   "nazwa": "Jadeitowy Sierp",
+   "opis": "szerokie jadeitowe ostrze z zagiętym czubkiem, złote skrzydełka jelca, czerwony klejnot w głowicy",
+   "klasa": "zwiadowca",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 1250,
+   "poziom": 22,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 6
+   },
+   "krok": {
+    "bron": 3
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "zwiadowca_dzungla",
+   "czesci": [
+    {
+     "id": "zwiadowca_dzungla_sztylet",
+     "kosc": "RightHand",
+     "zakrywa": false,
+     "zaczep": "RightGripAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_zwiadowca/ikony/zwiadowca_dzungla_sztylet_ikona.png"
+  },
+  {
+   "id": "kot_mag_kapelusz",
+   "nazwa": "Kapelusz Kota-Maga",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "mag",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 150,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 2,
+    "Intelligence": 2
+   },
+   "krok": {
+    "Constitution": 1,
+    "Intelligence": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag",
+   "czesci": [
+    {
+     "id": "kot_mag_kapelusz",
+     "kosc": "HatPivot",
+     "zakrywa": false,
+     "zaczep": "KapeluszAttachment",
+     "pos": [
+      0,
+      0.02,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/kot_mag/ikony/kot_mag_kapelusz_ikona.png"
+  },
+  {
+   "id": "kot_mag_szata",
+   "nazwa": "Szata Kota-Maga",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "mag",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1.75,
+   "baza": {},
+   "krok": {
+    "pancerz": 3,
+    "Constitution": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag",
+   "czesci": [
+    {
+     "id": "kot_mag_szata_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_szata_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_szata_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_szata_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_szata_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_szata_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/kot_mag/ekwipunek/ikony/kot_mag_szata_ikona.png"
+  },
+  {
+   "id": "kot_mag_pas",
+   "nazwa": "Szarfa z klamrą",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "mag",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 150,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 2,
+    "Strength": 1
+   },
+   "krok": {
+    "Constitution": 1,
+    "Strength": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag",
+   "czesci": [
+    {
+     "id": "kot_mag_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/kot_mag/ekwipunek/ikony/kot_mag_pas_ikona.png"
+  },
+  {
+   "id": "kot_mag_kostur",
+   "nazwa": "Kostur Kota-Maga",
+   "opis": "dzisiejszy przedmiot bohatera",
+   "klasa": "mag",
+   "stopien": "start",
+   "nr_stopnia": 0,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 0,
+   "poziom": 1,
+   "podstawowy": true,
+   "waga": 1.75,
+   "baza": {},
+   "krok": {
+    "bron": 1,
+    "Intelligence": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag",
+   "czesci": [
+    {
+     "id": "kot_mag_kostur",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0,
+      0
+     ],
+     "rot": [
+      -90,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/kot_mag/ikony/kot_mag_kostur_ikona.png"
+  },
+  {
+   "id": "kot_mag_las_kapelusz",
+   "nazwa": "Kapelusz Zielarza",
+   "opis": "szeroki skórzany kapelusz z płaską główką, zieloną wstążką, grzybkiem na rondzie i piórem",
+   "klasa": "mag",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 300,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 2,
+    "Intelligence": 3
+   },
+   "krok": {
+    "Constitution": 1,
+    "Intelligence": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_las",
+   "czesci": [
+    {
+     "id": "kot_mag_las_kapelusz",
+     "kosc": "HatPivot",
+     "zakrywa": false,
+     "zaczep": "KapeluszAttachment",
+     "pos": [
+      0,
+      0.02,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_las_kapelusz_ikona.png"
+  },
+  {
+   "id": "kot_mag_las_szata",
+   "nazwa": "Szata z Liści",
+   "opis": "brązowa szata z zielonymi obszyciami i peleryną z liści na ramionach",
+   "klasa": "mag",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 400,
+   "poziom": 6,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "pancerz": 5,
+    "Constitution": 2
+   },
+   "krok": {
+    "pancerz": 3,
+    "Constitution": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_las",
+   "czesci": [
+    {
+     "id": "kot_mag_las_szata_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_las_szata_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_las_szata_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_las_szata_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_las_szata_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_las_szata_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_las_szata_ikona.png"
+  },
+  {
+   "id": "kot_mag_las_pas",
+   "nazwa": "Szarfa Zielarza",
+   "opis": "zielona szarfa z drewnianą klamrą i sakiewką",
+   "klasa": "mag",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 200,
+   "poziom": 2,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 2,
+    "Strength": 2
+   },
+   "krok": {
+    "Constitution": 1,
+    "Strength": 1
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_las",
+   "czesci": [
+    {
+     "id": "kot_mag_las_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_las_pas_ikona.png"
+  },
+  {
+   "id": "kot_mag_las_kostur",
+   "nazwa": "Kostur z Korzenia",
+   "opis": "ciemny kostur zakręcony u góry jak pastorał, w zakręcie świecący kryształ",
+   "klasa": "mag",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 500,
+   "poziom": 7,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 2,
+    "Intelligence": 2
+   },
+   "krok": {
+    "bron": 1,
+    "Intelligence": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_las",
+   "czesci": [
+    {
+     "id": "kot_mag_las_kostur",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0,
+      0
+     ],
+     "rot": [
+      -90,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_las_kostur_ikona.png"
+  },
+  {
+   "id": "kot_mag_bagno_kapelusz",
+   "nazwa": "Rogaty Czepiec Szamana",
+   "opis": "łuskowy czepiec bez ronda z dwoma rogami, kościaną czaszką nad czołem i grzebieniem",
+   "klasa": "mag",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 650,
+   "poziom": 13,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 4,
+    "Intelligence": 6
+   },
+   "krok": {
+    "Constitution": 2,
+    "Intelligence": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_bagno",
+   "czesci": [
+    {
+     "id": "kot_mag_bagno_kapelusz",
+     "kosc": "HatPivot",
+     "zakrywa": false,
+     "zaczep": "KapeluszAttachment",
+     "pos": [
+      0,
+      0.02,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_bagno_kapelusz_ikona.png"
+  },
+  {
+   "id": "kot_mag_bagno_szata",
+   "nazwa": "Szata Szamana Topieli",
+   "opis": "łuskowa szata z kapturem, naramienniki z kolcami i naszyjnik z kłów",
+   "klasa": "mag",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 1000,
+   "poziom": 14,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "pancerz": 10,
+    "Constitution": 4
+   },
+   "krok": {
+    "pancerz": 4,
+    "Constitution": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_bagno",
+   "czesci": [
+    {
+     "id": "kot_mag_bagno_szata_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_bagno_szata_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_bagno_szata_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_bagno_szata_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_bagno_szata_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_bagno_szata_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_bagno_szata_ikona.png"
+  },
+  {
+   "id": "kot_mag_bagno_pas",
+   "nazwa": "Szarfa z Kłem",
+   "opis": "ciemna szarfa z mosiężną klamrą i kłem",
+   "klasa": "mag",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 550,
+   "poziom": 10,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 4,
+    "Strength": 4
+   },
+   "krok": {
+    "Constitution": 2,
+    "Strength": 2
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_bagno",
+   "czesci": [
+    {
+     "id": "kot_mag_bagno_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_bagno_pas_ikona.png"
+  },
+  {
+   "id": "kot_mag_bagno_kostur",
+   "nazwa": "Kostur z Czaszką",
+   "opis": "kościany kostur z rogatą czaszką o świecących oczach i mosiężnymi obręczami",
+   "klasa": "mag",
+   "stopien": "bagno",
+   "nr_stopnia": 2,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 1100,
+   "poziom": 15,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 4,
+    "Intelligence": 4
+   },
+   "krok": {
+    "bron": 2,
+    "Intelligence": 2
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_bagno",
+   "czesci": [
+    {
+     "id": "kot_mag_bagno_kostur",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0,
+      0
+     ],
+     "rot": [
+      -90,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_bagno_kostur_ikona.png"
+  },
+  {
+   "id": "kot_mag_dzungla_kapelusz",
+   "nazwa": "Tiara Słońca",
+   "opis": "złota tiara z jadeitowym klejnotem, dyskiem słońca i wachlarzem piór",
+   "klasa": "mag",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Helmet",
+   "sprzedawany": true,
+   "cena": 1050,
+   "poziom": 20,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 6,
+    "Intelligence": 9
+   },
+   "krok": {
+    "Constitution": 3,
+    "Intelligence": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_dzungla",
+   "czesci": [
+    {
+     "id": "kot_mag_dzungla_kapelusz",
+     "kosc": "HatPivot",
+     "zakrywa": false,
+     "zaczep": "KapeluszAttachment",
+     "pos": [
+      0,
+      0.02,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_dzungla_kapelusz_ikona.png"
+  },
+  {
+   "id": "kot_mag_dzungla_szata",
+   "nazwa": "Szata Kapłana Słońca",
+   "opis": "jadeitowa szata ze złotym pektorałem, wachlarze piór na ramionach i dysk słońca na plecach",
+   "klasa": "mag",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Chest",
+   "sprzedawany": true,
+   "cena": 1550,
+   "poziom": 21,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "pancerz": 15,
+    "Constitution": 6
+   },
+   "krok": {
+    "pancerz": 5,
+    "Constitution": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_dzungla",
+   "czesci": [
+    {
+     "id": "kot_mag_dzungla_szata_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_dzungla_szata_ramie_l",
+     "kosc": "LeftUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_dzungla_szata_przedramie_l",
+     "kosc": "LeftLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwLeftLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_dzungla_szata_ramie_p",
+     "kosc": "RightUpperArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightUpperArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_dzungla_szata_przedramie_p",
+     "kosc": "RightLowerArm",
+     "zakrywa": true,
+     "zaczep": "EkwRightLowerArmAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "id": "kot_mag_dzungla_szata_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_dzungla_szata_ikona.png"
+  },
+  {
+   "id": "kot_mag_dzungla_pas",
+   "nazwa": "Szarfa z Jadeitem",
+   "opis": "jadeitowa szarfa ze złotą klamrą i dyskiem",
+   "klasa": "mag",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Belt",
+   "sprzedawany": true,
+   "cena": 850,
+   "poziom": 17,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "Constitution": 6,
+    "Strength": 6
+   },
+   "krok": {
+    "Constitution": 3,
+    "Strength": 3
+   },
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_dzungla",
+   "czesci": [
+    {
+     "id": "kot_mag_dzungla_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_dzungla_pas_ikona.png"
+  },
+  {
+   "id": "kot_mag_dzungla_kostur",
+   "nazwa": "Berło Słońca",
+   "opis": "złote berło z dyskiem słońca, promieniami, jadeitowym klejnotem i piórami",
+   "klasa": "mag",
+   "stopien": "dzungla",
+   "nr_stopnia": 3,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 1750,
+   "poziom": 22,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 6,
+    "Intelligence": 6
+   },
+   "krok": {
+    "bron": 3,
+    "Intelligence": 3
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_dzungla",
+   "czesci": [
+    {
+     "id": "kot_mag_dzungla_kostur",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0,
+      0
+     ],
+     "rot": [
+      -90,
+      0,
+      0
+     ]
+    }
+   ],
+   "ikona": "wynik/stopnie_mag/ikony/kot_mag_dzungla_kostur_ikona.png"
+  }
+ ]
+}

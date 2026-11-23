@@ -796,6 +796,28 @@ class TestSerweraOffline(unittest.TestCase):
         self.sw.krok(60)
         self.assertEqual((self.atr("Gold"), self.atr("Gems")), (5, 991), "łup pokazany tylko raz")
 
+    def test_8c2_szybkie_pominiecie_lup_od_razu(self):
+        """D-107: walka pominięta zaraz po starcie — "pokaz" przychodzi, zanim łup ma min_s. Łup pokazuje się sam,
+        gdy dojrzeje (najwyżej min_s po przyjęciu), bez następnego "pokaz" i bez czekania na czas walki + zapas;
+        łup następnej walki (przyjęty po zgłoszeniu) dalej czeka na swój koniec."""
+        self.uruchom()
+        ev = self.inne["ZdarzeniaStanu"]
+        min_s = D["publikacja"]["min_s"]
+        self.assertEqual(self.lup(czas=40.0, zloto=5, doswiadczenie=3), {"ok": True})
+        self.sw.krok(0.4)
+        ev.na_serwer.odpal(self.g.t, "pokaz")          # pominięcie 0,4 s po starcie walki
+        self.assertEqual(self.atr("Gold"), 0)
+        self.sw.krok(0.3)
+        self.assertEqual(self.lup(czas=40.0, zloto=7, doswiadczenie=1), {"ok": True})   # następna walka już trwa
+        self.sw.krok(min_s - 0.7 - 0.05)
+        self.assertEqual(self.atr("Gold"), 0, "przed min_s jeszcze nic")
+        self.sw.krok(0.2)
+        self.assertEqual((self.atr("Gold"), self.atr("XP")), (5, 3), "łup pominiętej walki najwyżej min_s po przyjęciu")
+        self.sw.krok(min_s + 5)
+        self.assertEqual(self.atr("Gold"), 5, "łup następnej walki nie pokazał się w jej trakcie")
+        self.sw.krok(40 + D["publikacja"]["zapas_s"])
+        self.assertEqual((self.atr("Gold"), self.atr("XP")), (12, 4))
+
     def test_8d_przegrana_i_kilka_awansow(self):
         self.uruchom()
         self.lup(czas=0.0, wynik="przegrana", zloto=0, tokeny_krainy=0, doswiadczenie=2)

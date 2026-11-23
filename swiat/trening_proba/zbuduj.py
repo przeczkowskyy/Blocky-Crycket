@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Buduje w Roblox Studio kontener Workspace/TreningProba — próba Training Center: arena z prostych części w powietrzu
-z dala od map (sześć grywalnych stanowisk w jednym rzędzie: Kłody, Bieżnia, Rozbijanie, lobby, Blok, Runy, Koniczyny), tablica
-wejścia przy miejscu startu gracza, skrypty serwera i klienta.
+"""Buduje w Roblox Studio kontener Workspace/TreningProba — próba Training Center: sześć mini-gier w sceneriach krain
+(D-108; pas z prostych części w powietrzu z dala od map: Łąka pod dębem i Polana drwali w Lesie, Grobla i Pomost nad
+topielą na Bagnie, Krąg strażnika i Świątynia run w Dżungli), tablica wejścia przy miejscu startu gracza, skrypty
+serwera i klienta. Gracz przechodzi z okna wyboru prosto do scenerii wybranej gry (dawnego lobby areny nie ma).
 
     python -B swiat/trening_proba/zbuduj.py --sucho      # bez Studio: dane, kontrola Luau, strażniki, plan budowy
     python -B swiat/trening_proba/zbuduj.py              # buduje / odbudowuje kontener (Studio w trybie Edit)
@@ -19,7 +20,7 @@ SpawnLocation, MiasteczkoBazarGra i LasTeleport tylko czyta):
   Sygnaly/PrzyrostStatystyki                       BindableEvent — przyrost statystyki dla przyszłego modułu statystyk
   Sygnaly/SterowanieSerwera, SterowanieKlienta     BindableFunction — haczyki testowe
   Sygnaly/WybierzGre                               BindableFunction (klient) — uchwyt dla docelowego okna 2D Pawła
-  Arena (Model, ModelStreamingMode Persistent)     ok. 200 części z scena.py, podpowiedzi E: wybór i wyjście
+  Arena (Model, ModelStreamingMode Persistent)     elementy gier (scena.py) i scenerie krain (scenerie.json), ok. 2800 części
   TablicaWejscia (Model, Persistent)               tablica z podpowiedzią E przy pierwszym SpawnLocation (wybór w Studio)
 Atrybuty kontenera: Wygenerowane, Zrodlo, Zbudowano, Skrot, WyborTymczasowy (true; false = okno Pawła zamiast
 tymczasowego wyboru), PunktTablicy. Atrybuty ustawione ręcznie w Edit (WyborTymczasowy, RecznyPunktTablicy — Vector3
@@ -73,8 +74,6 @@ INNE = [
 ATRYBUTY_TESTOWE = ["WyborTymczasowy", "RecznyPunktTablicy"]
 # podpowiedzi E: (ścieżka części w kontenerze, Akcja, Zrodlo, napis akcji, obiekt)
 PODPOWIEDZI = [
-    ("Arena/Lobby/TablicaWyboru/E", "wybor", "arena", "Wybierz", "Mini-gry"),
-    ("Arena/Lobby/Wyjscie/E", "wyjscie", "", "Wyjdź", "Training Center"),
     ("TablicaWejscia/E", "wybor", "tablica", "Mini-gry", "Training Center"),
 ]
 
@@ -178,10 +177,10 @@ local function grupa(korzen, sciezka)
 	return o
 end
 local function czesc(korzen, c)
-	local p = Instance.new(if c.k == "W" then "WedgePart" else "Part")
+	local p = Instance.new(if c.k == "W" then "WedgePart" elseif c.k == "N" then "CornerWedgePart" else "Part")
 	p.Name = c.n
 	p.Anchored = true
-	if c.k ~= "W" then
+	if c.k ~= "W" and c.k ~= "N" then
 		p.Shape = if c.k == "C" then Enum.PartType.Cylinder elseif c.k == "K" then Enum.PartType.Ball else Enum.PartType.Block
 	end
 	p.Size = Vector3.new(c.s[1], c.s[2], c.s[3])
@@ -194,7 +193,7 @@ local function czesc(korzen, c)
 	p.CanCollide = c.kol ~= false
 	p.CanQuery = c.kol ~= false
 	p.CanTouch = false
-	p.CastShadow = (c.t or 0) < 0.5
+	p.CastShadow = (c.t or 0) < 0.5 and c.bc ~= true
 	p.TopSurface = Enum.SurfaceType.Smooth
 	p.BottomSurface = Enum.SurfaceType.Smooth
 	if c.napis then
@@ -275,7 +274,7 @@ for _, w in __PODPOWIEDZI_ARENY__ do
 		pp += 1
 	end
 end
-m.PrimaryPart = m:FindFirstChild("Podloga") and m.Podloga:FindFirstChild("Plyta")
+m.PrimaryPart = m:FindFirstChild("Podloga") and m.Podloga:FindFirstChildWhichIsA("BasePart")
 return "OK (części areny: " .. n .. ", podpowiedzi: " .. pp .. ")"
 '''
 
@@ -504,7 +503,7 @@ def _czesc(D):
     return CZESC.replace("__CZCIONKA__", D["ui"]["czcionka"]).replace("__WAGA__", D["ui"]["waga_czcionki"])
 
 
-PACZKA_CZESCI = 300  # części areny w jednym wywołaniu Studio (arena z dekoracjami to ok. 1700 części)
+PACZKA_CZESCI = 300  # części areny w jednym wywołaniu Studio (elementy gier i scenerie to ok. 2800 części)
 
 
 def kody_areny(D):

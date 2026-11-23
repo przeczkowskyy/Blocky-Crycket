@@ -120,7 +120,19 @@ class TestDanych(unittest.TestCase):
         for st in DP["strefy"]:
             c = [1, 1, 1] if st["straznik"] else [Lg.cel(st["naraz"], st["max"], G) for G in (1, 8, 20)]
             cele = [x + y for x, y in zip(cele, c)]
-        self.assertEqual(cele, [8, 11, 14])                        # krótki pas (D-096), jedna scalona strefa na przegrodę
+        # D-107 (walka bez przestojów): 4 / 7 / 8 na zwykłą strefę + rzadki + strażnik (było 8 / 11 / 14, D-096)
+        self.assertEqual(cele, [14, 23, 26])
+        ge = GEN.GEN.GESTOSC_D107
+        self.assertEqual(GEN.KONFIG["gestosc"], ge)
+        for st in DP["strefy"]:
+            self.assertTrue(st["odrodzenieStale"], st["id"])
+            if not st["straznik"] and not st["rzadki"]:
+                self.assertEqual((st["naraz"], st["max"], st["odrodzenieS"]),
+                                 (ge["zwykla"]["naraz"], ge["zwykla"]["max"], ge["zwykla"]["odrodzenie_s"]))
+                potrzeba = st["grupy"] * ((st["miejsc"] - 1) * st["odstepWGrupie"] + DP["zasady"]["odstep"])
+                self.assertLessEqual(potrzeba + DP["zasady"]["odstep"], st["trasa"]["L"] + 1e-9)
+        self.assertEqual(STREFY["straznik"]["odrodzenieS"], ge["straznik"]["odrodzenie_s"])
+        self.assertEqual((DP["zasady"]["odstep"], DP["zasady"]["blokadaDomu"]), (ge["odstep"], ge["blokada_domu"]))
         for sid, (p1, p2) in GEN.POZIOMY_STREF.items():
             self.assertEqual(STREFY[sid]["poziomy"], [p1, p2])
         self.assertEqual(STREFY["straznik"]["poziomy"], [GEN.POZIOM_STRAZNIKA] * 2)
@@ -132,8 +144,8 @@ class TestDanych(unittest.TestCase):
         self.assertEqual(kolejno[0][0], max(s["poziomy"][1] for s in DP_LASU["strefy"]) + 1)
         # scalone strefy: poziomy rozdawane po miejscach (SerwerPotworow, poziomNaMiejsce)
         self.assertEqual({s["id"] for s in DP["strefy"] if s.get("poziomyPoMiejscach")}, {"z1", "g1", "o1"})
-        self.assertEqual(STREFY["t1"]["odrodzenieS"], 150)
-        self.assertTrue(STREFY["t1"]["odrodzenieStale"])
+        self.assertEqual(STREFY["t1"]["odrodzenieS"], GEN.GEN.GESTOSC_D107["rzadki"]["odrodzenie_s"])
+        self.assertTrue(STREFY["t1"]["odrodzenieStale"] and STREFY["t1"]["rzadki"])
 
 
 # ============================================================================================== 2. przegrody

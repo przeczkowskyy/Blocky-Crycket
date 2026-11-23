@@ -1,6 +1,7 @@
 --[[
-	DaneStrojow — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót 943ba32a2c47.
-	Źródła: swiat/postacie/przedmioty.json, moduły bohaterów (cialo(), przedmioty()), ustawienia.json.
+	DaneStrojow — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót 7a3275db36ae.
+	Źródła: swiat/postacie/przedmioty.json, moduły bohaterów (cialo(), przedmioty()), ustawienia.json;
+	przedmioty stopni (swiat/postacie/stopnie.py, sklep_przedmioty.json) w modułach DaneStrojowLas, DaneStrojowBagno, DaneStrojowDzungla — scalane na końcu.
 	Bryła = { kształt (0 klocek, 1 kula, 2 walec, 3 klin, 4 narożnik), nazwa, x, y, z, rx, ry, rz, sx, sy, sz,
 	          kolor, materiał (indeks w materialy), siatka ("" albo SpecialMesh) } — w układzie środka
 	          części kości (kąty w radianach dla CFrame.fromOrientation).
@@ -12,7 +13,7 @@ end
 
 local D = {}
 D.wersja = 1
-D.skrot = "943ba32a2c47"
+D.skrot = "7a3275db36ae"
 D.kontener = "StrojeProba"
 D.atrybut = "StrojProba_"
 D.dobor = "klasa"
@@ -114,6 +115,8 @@ D.teksty = {
 }
 D.materialy = { { "SmoothPlastic", 0 }, { "SmoothPlastic", 0.14 }, { "SmoothPlastic", 0 }, { "Metal", 0 }, { "Neon", 0 } }
 D.kolejnoscKlas = { "wojownik", "zwiadowca", "mag" }
+D.modulyStopni = { { id = "las", modul = "DaneStrojowLas" }, { id = "bagno", modul = "DaneStrojowBagno" }, { id = "dzungla", modul = "DaneStrojowDzungla" } }
+D.brakStopni = {}
 D.klasy = {}
 D.klasy["wojownik"] = {
 	klucz = "wojownik",
@@ -141,10 +144,96 @@ D.klasy["wojownik"] = {
 			nazwa = "komplet (wygląd z walki)",
 			przedmioty = { "rycerz_helm", "rycerz_zbroja", "rycerz_nogawice", "rycerz_pas", "rycerz_rekawice", "rycerz_buty", "rycerz_miecz", "rycerz_tarcza" },
 		},
+		{
+			id = "las",
+			nazwa = "komplet leśny",
+			przedmioty = {
+				"rycerz_las_helm",
+				"rycerz_las_zbroja",
+				"rycerz_las_nogawice",
+				"rycerz_las_pas",
+				"rycerz_las_rekawice",
+				"rycerz_las_buty",
+				"rycerz_las_miecz",
+				"rycerz_las_tarcza",
+			},
+		},
+		{
+			id = "bagno",
+			nazwa = "komplet bagienny",
+			przedmioty = {
+				"rycerz_bagno_helm",
+				"rycerz_bagno_zbroja",
+				"rycerz_bagno_nogawice",
+				"rycerz_bagno_pas",
+				"rycerz_bagno_rekawice",
+				"rycerz_bagno_buty",
+				"rycerz_bagno_miecz",
+				"rycerz_bagno_tarcza",
+			},
+		},
+		{
+			id = "dzungla",
+			nazwa = "komplet Dżungli",
+			przedmioty = {
+				"rycerz_dzungla_helm",
+				"rycerz_dzungla_zbroja",
+				"rycerz_dzungla_nogawice",
+				"rycerz_dzungla_pas",
+				"rycerz_dzungla_rekawice",
+				"rycerz_dzungla_buty",
+				"rycerz_dzungla_miecz",
+				"rycerz_dzungla_tarcza",
+			},
+		},
 	},
 	wysokosc = 5.71,
 	szerokosc = 4.972,
 	hrp = { 0, 1.9, 0 },
+	stopnie = {
+		{
+			id = "las",
+			nazwa = "leśny",
+			przedmioty = {
+				"rycerz_las_helm",
+				"rycerz_las_zbroja",
+				"rycerz_las_nogawice",
+				"rycerz_las_pas",
+				"rycerz_las_rekawice",
+				"rycerz_las_buty",
+				"rycerz_las_miecz",
+				"rycerz_las_tarcza",
+			},
+		},
+		{
+			id = "bagno",
+			nazwa = "bagienny",
+			przedmioty = {
+				"rycerz_bagno_helm",
+				"rycerz_bagno_zbroja",
+				"rycerz_bagno_nogawice",
+				"rycerz_bagno_pas",
+				"rycerz_bagno_rekawice",
+				"rycerz_bagno_buty",
+				"rycerz_bagno_miecz",
+				"rycerz_bagno_tarcza",
+			},
+		},
+		{
+			id = "dzungla",
+			nazwa = "Dżungli",
+			przedmioty = {
+				"rycerz_dzungla_helm",
+				"rycerz_dzungla_zbroja",
+				"rycerz_dzungla_nogawice",
+				"rycerz_dzungla_pas",
+				"rycerz_dzungla_rekawice",
+				"rycerz_dzungla_buty",
+				"rycerz_dzungla_miecz",
+				"rycerz_dzungla_tarcza",
+			},
+		},
+	},
 }
 D.klasy["wojownik"].kosci = {
 	{"LowerTorso",0,0,1.9,0,0,2.1,0,2.2,0.4,1.2,"Root"},
@@ -355,10 +444,96 @@ D.klasy["zwiadowca"] = {
 				"zwiadowca_sztylet",
 			},
 		},
+		{
+			id = "las",
+			nazwa = "komplet leśny",
+			przedmioty = {
+				"zwiadowca_las_kaptur",
+				"zwiadowca_las_kurtka",
+				"zwiadowca_las_spodnie",
+				"zwiadowca_las_pas",
+				"zwiadowca_las_rekawice",
+				"zwiadowca_las_buty",
+				"zwiadowca_las_luk",
+				"zwiadowca_las_sztylet",
+			},
+		},
+		{
+			id = "bagno",
+			nazwa = "komplet bagienny",
+			przedmioty = {
+				"zwiadowca_bagno_kaptur",
+				"zwiadowca_bagno_kurtka",
+				"zwiadowca_bagno_spodnie",
+				"zwiadowca_bagno_pas",
+				"zwiadowca_bagno_rekawice",
+				"zwiadowca_bagno_buty",
+				"zwiadowca_bagno_luk",
+				"zwiadowca_bagno_sztylet",
+			},
+		},
+		{
+			id = "dzungla",
+			nazwa = "komplet Dżungli",
+			przedmioty = {
+				"zwiadowca_dzungla_kaptur",
+				"zwiadowca_dzungla_kurtka",
+				"zwiadowca_dzungla_spodnie",
+				"zwiadowca_dzungla_pas",
+				"zwiadowca_dzungla_rekawice",
+				"zwiadowca_dzungla_buty",
+				"zwiadowca_dzungla_luk",
+				"zwiadowca_dzungla_sztylet",
+			},
+		},
 	},
 	wysokosc = 5.947,
 	szerokosc = 4.247,
 	hrp = { 0, 1.9, 0 },
+	stopnie = {
+		{
+			id = "las",
+			nazwa = "leśny",
+			przedmioty = {
+				"zwiadowca_las_kaptur",
+				"zwiadowca_las_kurtka",
+				"zwiadowca_las_spodnie",
+				"zwiadowca_las_pas",
+				"zwiadowca_las_rekawice",
+				"zwiadowca_las_buty",
+				"zwiadowca_las_luk",
+				"zwiadowca_las_sztylet",
+			},
+		},
+		{
+			id = "bagno",
+			nazwa = "bagienny",
+			przedmioty = {
+				"zwiadowca_bagno_kaptur",
+				"zwiadowca_bagno_kurtka",
+				"zwiadowca_bagno_spodnie",
+				"zwiadowca_bagno_pas",
+				"zwiadowca_bagno_rekawice",
+				"zwiadowca_bagno_buty",
+				"zwiadowca_bagno_luk",
+				"zwiadowca_bagno_sztylet",
+			},
+		},
+		{
+			id = "dzungla",
+			nazwa = "Dżungli",
+			przedmioty = {
+				"zwiadowca_dzungla_kaptur",
+				"zwiadowca_dzungla_kurtka",
+				"zwiadowca_dzungla_spodnie",
+				"zwiadowca_dzungla_pas",
+				"zwiadowca_dzungla_rekawice",
+				"zwiadowca_dzungla_buty",
+				"zwiadowca_dzungla_luk",
+				"zwiadowca_dzungla_sztylet",
+			},
+		},
+	},
 }
 D.klasy["zwiadowca"].kosci = {
 	{"LowerTorso",0,0,1.9,0,0,2.1,0,2.2,0.4,1.2,"Root"},
@@ -556,10 +731,30 @@ D.klasy["mag"] = {
 		{ id = "kapelusz_i_kostur", nazwa = "sam kapelusz i kostur", przedmioty = { "kot_mag_kapelusz", "kot_mag_kostur" } },
 		{ id = "sama_szata", nazwa = "sama szata z szarfą", przedmioty = { "kot_mag_szata", "kot_mag_pas" } },
 		{ id = "komplet", nazwa = "komplet (wygląd z walki)", przedmioty = { "kot_mag_kapelusz", "kot_mag_szata", "kot_mag_pas", "kot_mag_kostur" } },
+		{ id = "las", nazwa = "komplet leśny", przedmioty = { "kot_mag_las_kapelusz", "kot_mag_las_szata", "kot_mag_las_pas", "kot_mag_las_kostur" } },
+		{
+			id = "bagno",
+			nazwa = "komplet bagienny",
+			przedmioty = { "kot_mag_bagno_kapelusz", "kot_mag_bagno_szata", "kot_mag_bagno_pas", "kot_mag_bagno_kostur" },
+		},
+		{
+			id = "dzungla",
+			nazwa = "komplet Dżungli",
+			przedmioty = { "kot_mag_dzungla_kapelusz", "kot_mag_dzungla_szata", "kot_mag_dzungla_pas", "kot_mag_dzungla_kostur" },
+		},
 	},
 	wysokosc = 5.164,
 	szerokosc = 2.643,
 	hrp = { 0, 0.75, 0 },
+	stopnie = {
+		{ id = "las", nazwa = "leśny", przedmioty = { "kot_mag_las_kapelusz", "kot_mag_las_szata", "kot_mag_las_pas", "kot_mag_las_kostur" } },
+		{ id = "bagno", nazwa = "bagienny", przedmioty = { "kot_mag_bagno_kapelusz", "kot_mag_bagno_szata", "kot_mag_bagno_pas", "kot_mag_bagno_kostur" } },
+		{
+			id = "dzungla",
+			nazwa = "Dżungli",
+			przedmioty = { "kot_mag_dzungla_kapelusz", "kot_mag_dzungla_szata", "kot_mag_dzungla_pas", "kot_mag_dzungla_kostur" },
+		},
+	},
 }
 D.klasy["mag"].kosci = {
 	{"LowerTorso",0,0,0.75,0,0,0.875,0,1.3,0.25,0.95,"Root"},
@@ -1335,4 +1530,43 @@ D.przedmioty["kot_mag_kostur"].segmenty = {
 		{0,"Odlamek",0.44,2.14,0,0,-2.35619,-0.34907,0.1,0.16,0.1,"9B4DFF",5,""},
 	} },
 }
+-- Przedmioty stopni (D-106) leżą w osobnych modułach obok (granica długości jednego modułu). Scalenie jest TUTAJ, więc
+-- każdy czytelnik dalej bierze jedno D. Moduł szukany obok tego modułu, a gdy go tam nie ma — w
+-- Workspace/<kontener>/Moduly. Gdy modułu stopnia nie ma wcale (np. test wczytujący sam ten plik), stopnia po prostu
+-- nie ma w danych: znika z list klas i z zestawów, a jego nazwa trafia do D.brakStopni.
+local function modulStopnia(nazwa)
+	local obok = script and script.Parent
+	local m = obok and obok:FindFirstChild(nazwa)
+	if m == nil then
+		local kontener = workspace and workspace:FindFirstChild(D.kontener)
+		local folder = kontener and kontener:FindFirstChild("Moduly")
+		m = folder and folder:WaitForChild(nazwa, 5)
+	end
+	return m
+end
+
+local function bezStopnia(lista, stopien)
+	local wynik = {}
+	for _, x in lista do
+		if x.id ~= stopien then
+			table.insert(wynik, x)
+		end
+	end
+	return wynik
+end
+
+for _, s in D.modulyStopni do
+	local m = modulStopnia(s.modul)
+	if m ~= nil then
+		for id, P in require(m) do
+			D.przedmioty[id] = P
+		end
+	else
+		table.insert(D.brakStopni, s.id)
+		for _, K in D.klasy do
+			K.stopnie = bezStopnia(K.stopnie, s.id)
+			K.zestawy = bezStopnia(K.zestawy, s.id)
+		end
+	end
+end
 return D

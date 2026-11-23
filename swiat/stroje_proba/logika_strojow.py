@@ -8,7 +8,8 @@ Zasady (PROJEKT.md, „przyjęte, do zmiany”):
 - spodnie (`czesc_od`): przy D.spodnie == "czesc_zbroi" są częścią zbroi — nie wybiera się ich osobno, zakładają się
   i zdejmują razem z nią; przy "osobny_slot" mają własny slot okna „Legs”;
 - w jednym slocie okna najwyżej jeden przedmiot; dwie powłoki na jednej kości = błąd (EKWIPUNEK.md pkt 4);
-- wynik zawsze w kolejności K.przedmioty (strój odniesienia walki, potem reszta).
+- wynik zawsze w kolejności K.przedmioty (strój odniesienia walki, potem reszta), a po nich przedmioty stopni
+  (K.stopnie: las, bagno, dzungla — D-106); przedmioty różnych stopni można mieszać, slot po slocie.
 Funkcje zwracają (ok, wynik) — wynik albo powód odmowy (napis z POWODY).
 """
 
@@ -41,13 +42,21 @@ def wybieralny(D, klasa, i):
     return not (D["przedmioty"][i]["czescOd"] and D["spodnie"] == "czesc_zbroi")
 
 
-def _kolejnosc(D, klasa):
+def przedmioty_klasy(D, klasa):
+    """Wszystkie przedmioty klasy: dzisiejsze (K.przedmioty), potem stopnie po kolei (K.stopnie, D-106)."""
     K = D["klasy"][klasa]
     lista = list(K["przedmioty"])
+    for st in K.get("stopnie") or []:
+        lista += list(st["przedmioty"])
+    return lista
+
+
+def _kolejnosc(D, klasa):
+    lista = przedmioty_klasy(D, klasa)
     if D["dobor"] == "cialo":
         for k in D["kolejnoscKlas"]:
             if k != klasa:
-                lista += list(D["klasy"][k]["przedmioty"])
+                lista += przedmioty_klasy(D, k)
     return lista
 
 

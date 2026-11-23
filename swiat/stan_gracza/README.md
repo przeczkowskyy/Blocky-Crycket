@@ -23,8 +23,8 @@ nie jest zmieniony**.
 - **Jeden właściciel stanu:** skrypt `SerwerStanu` w kontenerze. Inne pakiety rozmawiają z nim przez
   `Workspace/StanGracza/Sygnaly` (BindableFunction, tylko serwer), zawsze przez `FindFirstChild` + `pcall`:
   bez kontenera wszystko działa jak przed pakietem.
-- **Profil:** jedna tabela na gracza z polem `wersja` (pod przyszły zapis), dziś tylko w pamięci serwera — znika
-  przy wyjściu gracza, tak jak atrybuty.
+- **Profil:** jedna tabela na gracza z polem `wersja`; od 19.11.2026 zapisywana między sesjami (D-110, rozdział
+  „Zapis postępu”).
 - **Łup po walce:** serwer lasu przyznaje łup przy przyjęciu walki (wynik znany z dziennika), stan gracza trzyma go
   w profilu i wpisuje do atrybutów, gdy HUD znów widać (klient zgłasza `"pokaz"` — koniec ekranu walki) albo
   najpóźniej po czasie walki + 6 s. Zgłoszenie klienta może tylko przyspieszyć pokazanie, nigdy nic nie zmienia.
@@ -126,7 +126,8 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
 - **Gemy (D-099):** `GEMY_ZA_POZIOM` (10) i `GEMY_ZA_STRAZNIKA` (100) w `dane.py`; 0 wyłącza.
 - **„Szczęście początkującego” (18.11.2026):** `SZCZESCIE_POCZATKUJACEGO` w `dane.py` (1,75, czyli ×2,75; 0 = wyłączone) albo atrybut
   kontenera `SzczesciePoczatkujacego = false`.
-- **Zapis postępu:** domyślnie wyłączony — rozdział „Zapis postępu”.
+- **Zapis postępu:** włączony od 19.11.2026 (D-110); atrybut kontenera `ZapisPostepu = false` wyłącza, kasowanie własnego
+  zapisu `zbuduj.py --kasuj-zapis --tak` — rozdział „Zapis postępu”.
 - **Tryb testowy lasu:** atrybut kontenera lasu `TestBohater = true` (`Workspace/LasPotwory` albo `Workspace/LasPasGra`)
   — reguła testowa T1 jak dawniej (klasa i poziom z panelu), walki bez łupu. Ustawiają go próby w Play
   (`swiat/las_potwory/testy/proba_play.py`, `kontrola_play.py`, `swiat/las_pas_gra/testy/proba_play.py`,
@@ -294,9 +295,55 @@ liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyK
 12. **Pety (17.11.2026):** premia peta do łupu poza silnikiem walki (D-059 mówi o mnożniku statystyk — następny krok),
     pierwszy kupiony pet od razu aktywny, jedna kwota wydatku najwyżej 1 000 000 Złota.
 
-## Zapis postępu (status: propozycja, DOMYŚLNIE WYŁĄCZONY — 18.11.2026)
-Kod zapisu jest gotowy i przetestowany offline. Włączenie to jedna decyzja ludzi. Zasady: skill projektu
-`roblox-data` (DataStore, blokada sesji, `UpdateAsync`, migracja, cykl życia zapisu).
+## Zapis postępu (WŁĄCZONY 19.11.2026 decyzją D-110 — podpis Karola, czeka na potwierdzenie Pawła)
+Kod zapisu powstał 18.11.2026 i był sprawdzony na atrapie; 19.11.2026 jest włączony domyślnie (`ZAPIS_WLACZONY = True`
+w `dane.py`). Działa tylko w Studio (prototypy gry żyją w Studio) i pisze do magazynu Studio `BC_StanGracza_v1_Studio`,
+nie do magazynu opublikowanej gry. Zasady: skill projektu `roblox-data` (DataStore, blokada sesji, `UpdateAsync`,
+migracja, cykl życia zapisu).
+
+**Stan na 19.11.2026 — skrót dla człowieka:**
+- Wchodzisz do gry (Play) → wraca poziom, doświadczenie, Złoto, Gemy, punkty, klasa, przedmioty (także ze sklepu)
+  z ulepszeniami i strojem, pety, trening, pokonani Strażnicy i otwarte bramy, obejrzane przeloty. Zapis co ok. 2 min,
+  przy wyjściu i przy Stop.
+- **Zacząć od zera:** w trybie Edit `python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis` (podgląd: co jest zapisane),
+  potem `python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis --tak` (kasuje zapis gracza zalogowanego w Studio, tylko
+  w magazynie Studio; przy świeżej sesji — gra trwa — odmawia). Następne Play zaczyna nowego gracza. Rekord przez 30 dni
+  da się odzyskać z wersji magazynu.
+- **Wyłączyć:** atrybut kontenera `StanGracza.ZapisPostepu = false` w trybie Edit (działa od następnego Play, przechodzi
+  na odbudowany kontener) albo `ZAPIS_WLACZONY = False` w `dane.py` + `dane.py` + `zbuduj.py --skrypty`.
+- **Próby gry (agenci) zaczynają od świeżego gracza i nie dotykają zapisu człowieka** (niżej: „Próby gry a zapis”).
+- Nie zapisuje się jeszcze: drzewko umiejętności i przedmioty z okna ekwipunku (pliki Pawła — lista niżej),
+  `PoznaneGatunki` (POMIŃ przy znanym gatunku walki). Wybór klasy pokaże się powracającemu graczowi jeszcze raz (Paweł).
+
+**Jak sprawdzić, że zapis działa (Studio, tryb Edit — robi człowiek):**
+1. Pierwsze wejście: Play. Na kontenerze `Workspace/StanGracza` (podczas gry, widok Server) `ZapisStan` = „włączony”,
+   a u gracza `StanGraczaZapis` = „aktywny”. Pierwszy raz zaczynasz od nowego gracza (poziom 1, 0 Złota, 0 Gemów).
+2. Zagraj chwilę: walka, kupno u zbrojmistrza, jajko, mini-gra. Zapamiętaj poziom i Złoto z HUD.
+3. Stop. Odczekaj kilka sekund (zapis wyjścia kończy się po powrocie Studio do Edit).
+4. Podgląd bez gry: `python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis` — pokazuje zapisany poziom, Złoto, Gemy i klasę.
+5. Play jeszcze raz: HUD ma ten sam poziom i Złoto, przedmioty i pet wracają. Ekran wyboru klasy jeszcze się pokaże
+   (poprawka po stronie Pawła) — wybierz tę samą klasę, bo inna zostałaby zapisana. Od zera: Stop, potem
+   `zbuduj.py --kasuj-zapis --tak`.
+
+**Wynik próby w Studio 19.11.2026 (14:32–14:34, `testy/proba_zapisu.py`, magazyn próby): Z00–Z08 OK.**
+- Z00: zwykła próba gry — „wyłączony (próba gry)”, bez wczytywania. Z01: nowy gracz w magazynie próby, wczytanie ok. 1 s.
+- Z02: klasa Wojownik, łup → poziom 6, „+” ×2 (Szczęście), kupno w sklepie przedmiotu stopnia leśnego („Pas Leśnika
+  z Sakiewką”, 100 Złota, od razu założony), ulepszenie u kowala do poziomu 1, przymierzalnia (zdjęta broń), jajko leśne
+  (pet aktywny), mini-gra Siły (autogra: 4 punkty), Strażnik Gaju (+100 Gemów, brama), przelot lasu.
+- Z03–Z04: po Stop i ponownym Play wróciło wszystko co do wartości: poziom 6, XP 33/206, Złoto 3501, Gemy 150, klasa
+  Warrior, punkty do rozdania 23 (rozdane 2 w Szczęście), statystyki, pet aktywny i 1 kopia, kupione jajka i licznik
+  wydatków, przedmioty kowala z ulepszeniem i 49 materiałami, strój, trening (4 punkty Siły i pasek 80,25), Strażnik i
+  brama, przelot; czas wczytania 0,9–1,6 s. Kupiony pas po powrocie: posiadany, „założone” w sklepie, w stroju i na
+  bohaterze walki u klienta (Z04b).
+- Z05: 2 błędy usługi przy zapisie wyjścia — ponowienie się udało (Złoto 3512 w rekordzie).
+- Z06: usługa pada cały czas — po ok. 7 s „bez_zapisu”, gra w pamięci (łup dochodzi), rekord po Stop identyczny.
+- Z07: rekord próby skasowany, znaczniki zdjęte. Z08: bez błędów skryptów w konsoli.
+- Prawdziwy zapis człowieka: podgląd `--kasuj-zapis` rozpoznaje gracza zalogowanego w Studio i pokazuje „brak zapisu”
+  przed próbami i po nich (19.11, przed pierwszym wejściem człowieka); nic nie skasowane ani nadpisane.
+- Regresja 19.11 (14:35–15:08, `regresja_calosci.py` „proba dymna, stan gracza, kowal, pety, trening, sklep, stroje,
+  cutscenka, zapis”): każda próba z wierszem `ZapisStan = wyłączony (próba gry)` w dzienniku (próba zapisu: 1× ten,
+  3× „włączony (magazyn próby)”); bez błędów poza próbą dymną: D02 (kamera po przelocie została „Scriptable”) i zależne
+  od niego D12, D05 — powtórka 15:09 14 z 14, więc jednorazowe. Po regresji znaczników nie ma.
 
 **Jak działa.** `Moduly/ZapisStanu` + `SerwerStanu`:
 - **Wczytanie przy wejściu, zanim cokolwiek wpisze atrybuty:**
@@ -335,9 +382,30 @@ Kod zapisu jest gotowy i przetestowany offline. Włączenie to jedna decyzja lud
 - **Studio bez dostępu do usług danych** (to ustawienie gry, którego nie zmieniamy):
   - Pierwsze wywołanie to wykrywa i zapis wyłącza się do końca sesji serwera.
   - Gra działa w pamięci, a w dzienniku jest jeden wpis.
-  - Atrybuty kontenera: `ZapisAktywny`, `ZapisStan` oraz liczniki `LicznikWczytan`, `LicznikZapisow`,
-    `LicznikBledowZapisu`, `LicznikBezZapisu`.
+  - Atrybuty kontenera: `ZapisAktywny`, `ZapisStan`, `ZapisMagazyn` (nazwa magazynu, 19.11) oraz liczniki
+    `LicznikWczytan`, `LicznikZapisow`, `LicznikBledowZapisu`, `LicznikBezZapisu`. Atrybuty gracza: `StanGraczaWczytany`,
+    `StanGraczaZapis` („aktywny” / „bez_zapisu”), `StanGraczaWczytanieMs` (czas wczytania, 19.11).
 - **Magazyn:** `BC_StanGracza_v1`, a w Studio `BC_StanGracza_v1_Studio`, więc zapisy ze Studio nie trafiają do gry.
+
+**Próby gry a zapis (19.11.2026, D-110).** Każda próba w Play (`proba_play.py` wszystkich pakietów, `SesjaPlay`,
+`swiat/przejscie_gry/regresja_calosci.py`) włącza Play przez `tools/studio_mcp.py`, a ten każde `start_stop_play`
+przepuszcza przez `tools/zapis_prob.py`:
+- przed Play (tryb Edit) stawia na kontenerze znacznik `ZapisProbaDo` = `os.time()` + 900 s (`D.zapis.proba`);
+- serwer stanu czyta znacznik tylko przy starcie: przy znaczniku **nie otwiera magazynu** — gracz jest świeży i w pamięci,
+  dokładnie jak przed D-110 (`ZapisStan` = „wyłączony (próba gry)”); zaraz po Play `zapis_prob` odczytuje `ZapisStan`
+  z serwera i wypisuje go do dziennika próby (`[zapis_prob] Play ze znacznikiem próby: ZapisStan = …`);
+- po Stop znacznik jest zdejmowany. Gdy próba padnie przed Stop, znacznik sam wygasa po kwadransie (do tego czasu Play
+  człowieka też idzie bez zapisu — nic nie ginie, tylko nie wczytuje się postęp);
+- kontener jest, a znacznika nie da się ustawić → Play nie startuje (próba kończy się błędem, zapis nietknięty);
+- jedyny wyjątek: próba zapisu (`testy/proba_zapisu.py`) dokłada `ZapisProbaMagazyn = true` → serwer pracuje na osobnym
+  magazynie `BC_StanGracza_v1_Studio_Proba` (tylko tam działa atrapa błędów usługi `ZapisProbaBledy`). Ten znacznik bez
+  `ZapisProbaDo` nic nie znaczy.
+- Agent, który włącza Play narzędziem MCP sesji (z pominięciem `tools/studio_mcp.py`), stawia znacznik ręcznie:
+  `python -B tools/zapis_prob.py start`, a po Stop `python -B tools/zapis_prob.py koniec` (`stan` — podgląd).
+- Uwaga Team Create: znacznik jest atrybutem miejsca, więc w czasie próby (do 15 min) Play drugiej osoby też idzie bez
+  zapisu. Ctrl+Z tuż po próbie może przywrócić świeży znacznik (punktów historii nie stawiamy) — wygasa sam.
+Dowód bez Studio: `test_zapisu.py` z12–z14 (próba nawet nie otwiera magazynu, prawdziwy rekord nietknięty; znacznik
+z `tools/zapis_prob.py` przeniesiony z „Edit” do serwera; kolejność wywołań MCP).
 
 **Co obejmuje (profil wersja 4):**
 - Z profilu: poziom, doświadczenie, Złoto, Gemy, shardy, tokeny krain, klasa (atrybut `Class`), trening
@@ -351,38 +419,56 @@ Kod zapisu jest gotowy i przetestowany offline. Włączenie to jedna decyzja lud
 - `PamiecGracza` lasu-pasa (ta sama kopia kodu w Bagnie i Dżungli) przy aktywnym zapisie czyta stan z tych atrybutów.
   Przy wyłączonym zapisie działa dokładnie jak dawniej.
 
+**Pakiety → co trafia do zapisu (spis 19.11.2026):**
+
+| Pakiet | Co się zapisuje (i gdzie w profilu) | Domknięte 19.11.2026 |
+|---|---|---|
+| stan gracza | poziom, XP, Złoto, Gemy, shardy, tokeny krain, klasa (`idKlasy`), punkty do rozdania (pula, rozdane), walki, awanse, wytrenowane punkty statystyk | — |
+| kowal + sklep (`swiat/kowal_proba`, `swiat/sklep_proba`) | posiadane przedmioty (także kupione w sklepie) z poziomem ulepszenia, zapasy, materiały — `pakiety.kowal`; założone = strój z przymierzalni | kowal czekał na `StanGraczaWczytany` tylko teoretycznie: brał gracza za nowego w trakcie wczytywania i pierwsza zmiana nadpisywała zapisane przedmioty. Teraz odkłada stan do końca wczytania i wtedy czyta profil |
+| przymierzalnia (`swiat/stroje_proba`) | atrybuty `StrojProba_<klasa>` | — |
+| pety (`swiat/pety_proba`) | kopie, aktywny pet, premia, kupione jajka (`pety`, `wydatki`) | skill aktywnego peta (Modyfikatory) i ceny jajek ustawiały się w trakcie wczytywania (odmowa) — teraz po wczytaniu |
+| mini-gry (`swiat/trening_proba`) | wytrenowane punkty (`wytrenowane`) oraz punkty mini-gier `Trening…` i pasek malejącego zysku — `pakiety.trening` | pasek i punkty sesji ginęły przy wyjściu (malejący zysk wracał do zera) — teraz przez `DanePakietu`, odczyt po wczytaniu, zapis przy nowym punkcie i po rundzie |
+| biomy (las-pas, Bagno, Dżungla) | `PokonalStraznika…` (brama, odblokowanie krainy w teleporcie), `WidzialPrzelot…`, pokonani strażnicy (`straznicy`, Gemy za pierwsze pokonanie) | — |
+| cutscenka biomu | `WidzialPrzelot…` (ten sam atrybut co biom) | — |
+| poza listą | `PoznaneGatunki` (pamięć walk TestWalki2: POMIŃ przy znanym gatunku) — nie zapisuje się; wybór klasy i drzewko — pliki Pawła (niżej) | — |
+
 **Czego NIE obejmuje i dlaczego:**
 - **Drzewko umiejętności Pawła** (atrybut `SkillTree` z zakupami w JSON oraz `ST_*`): to jego plik, a JSON może
   przekroczyć limit napisu w profilu. **Bez tego przy włączonym zapisie Gemy wydane na drzewko przepadną razem
-  z drzewkiem.** Drzewko musi trafić do zapisu przed włączeniem (lista niżej).
+  z drzewkiem.** Do czasu zmiany po stronie Pawła drzewko się nie zapisuje (D-110).
 - **Przedmioty z okna ekwipunku:** dziś istnieją tylko po stronie klienta.
-- **Pasek treningu** (malejący zysk w `swiat/trening_proba`) i własne dane innych pakietów, dopóki nie użyją `DanePakietu`.
+- **`PoznaneGatunki`** (TestWalki2) i własne dane innych pakietów, dopóki nie użyją `DanePakietu`.
 - **Stan sprzed nagłego padu serwera bez `BindToClose`:** łup walki, który jeszcze nie trafił do profilu, i zmiany od
   ostatniego zapisu (najwyżej ok. 2,5 min).
 - **Modyfikatory** z `Sygnaly/Modyfikatory`: z założenia żyją w pamięci serwera. Pakiety odtwarzają je ze swoich
-  danych po wejściu gracza.
+  danych po wczytaniu profilu (kowal, pety — 19.11.2026).
 
-**Jak włączyć:**
-1. W `dane.py` ustaw `ZAPIS_WLACZONY = True` (dla wszystkich) albo w trybie Edit ustaw atrybut kontenera
-   `StanGracza.ZapisPostepu = true` (przechodzi na odbudowany kontener). Atrybut działa przy starcie serwera, nie w trakcie
-   gry.
-2. W Studio włącz w ustawieniach gry: Security → „Enable Studio Access to API Services”. Robią to ludzie, nie agent.
+**Jak włączyć / wyłączyć:**
+1. Włączony od 19.11.2026: `ZAPIS_WLACZONY = True` w `dane.py`. Wyłączyć: `False` (dla wszystkich) albo w trybie Edit
+   atrybut kontenera `StanGracza.ZapisPostepu = false` (przechodzi na odbudowany kontener). Atrybut działa przy starcie
+   serwera, nie w trakcie gry.
+2. Studio ma dostęp do usług danych gry (Security → „Enable Studio Access to API Services”; ustawiają ludzie).
 3. Wartości startowe nowego gracza są w `D.zapis.start` (dziś 0 Gemów i 0 Złota).
    - Testowe 1000 Gemów z `PlayerStatsDefaults` nie utrwalą się po cichu: dla nowego gracza serwer stanu nadpisuje je
      wartościami startowymi.
    - Do decyzji: ile Gemów na start (D-099).
+4. Pakiety, które trzymają dane w profilu, czekają na `StanGraczaWczytany ~= false` i po zmianie na `true` czytają profil
+   jeszcze raz (kowal, pety, trening — wzór dla nowych pakietów).
 
 **Jak sprawdzić:**
-- **Offline:** `python -B swiat/stan_gracza/testy/test_zapisu.py` — 11 scenariuszy na atrapie DataStore.
-- **W Studio** (gdy ludzie włączą dostęp do usług danych):
-  1. Play.
-  2. Zagraj: walka, awans, „+”, jajko, przymierzalnia, Strażnik.
-  3. Stop (zapisuje `BindToClose`).
-  4. Play jeszcze raz: stan wraca, `ZapisStan` = „włączony”, `LicznikWczytan` = 1.
-  5. Blokada: dwa okna Studio (Team Create, ten sam gracz). Drugie okno gra bez zapisu (`StanGraczaZapis` =
-     „bez_zapisu”).
+- **Offline:** `python -B swiat/stan_gracza/testy/test_zapisu.py` — 14 scenariuszy na atrapie DataStore (z12–z14: próby
+  gry i magazyn próby).
+- **W Studio, na magazynie próby:** `python -B swiat/stan_gracza/testy/proba_zapisu.py <folder poza repo>` — Z00–Z08
+  (zwykła próba bez zapisu; nowy gracz; gra: klasa, łup i awans, „+”, sklep, ulepszenie, przymierzalnia, pet, mini-gra,
+  Strażnik, przelot; Stop; Play: stan wrócił co do wartości, czas wczytania; błąd przy zapisie wyjścia; usługa padająca
+  cały czas — gra w pamięci, rekord nietknięty; sprzątanie; konsola). Jest też w `regresja_calosci.py` („zapis”).
+- **Ręcznie w Studio:** Play → zagraj → Stop → Play: stan wraca, `ZapisStan` = „włączony”, `LicznikWczytan` = 1.
+  Blokada: dwa okna Studio (Team Create, ten sam gracz) — drugie gra bez zapisu (`StanGraczaZapis` = „bez_zapisu”).
 - **Na testowym serwerze dziś się nie da:** kontener `StanGracza` działa tylko w Studio. Strażnik `IsStudio` na początku
   skryptów usuwa go poza Studio, jak w pozostałych prototypach. Przeniesienie do gry to osobna decyzja.
+
+*19.11.2026: zapis jest włączony bez tych zmian (D-110). Do czasu ich wdrożenia powracający gracz może zobaczyć ekran
+klasy i ją zmienić, a drzewko umiejętności się nie zapisuje. Lista bez zmian:*
 
 **Do włączenia potrzebne po stronie Pawła (co, w którym pliku, po co):**
 1. **`src/client/ClassSelectClient`:** czekać na `StanGraczaWczytany ~= false`, zanim pokaże wybór klasy, i nie
@@ -400,10 +486,10 @@ Kod zapisu jest gotowy i przetestowany offline. Włączenie to jedna decyzja lud
 6. **(później) Okno ekwipunku:** przedmioty po stronie serwera — dopiero wtedy da się je zapisać.
 
 **Decyzje ludzi:**
-- czy i kiedy włączyć zapis;
-- dostęp Studio do usług danych;
+- ~~czy i kiedy włączyć zapis~~ — włączony 19.11.2026 (D-110, podpis Karola; czeka na Pawła);
+- ~~dostęp Studio do usług danych~~ — włączony (19.11.2026);
 - Gemy i Złoto na start;
-- czy zapis drzewka (punkt 3) jest warunkiem włączenia — rekomendacja: tak;
+- czy zapis drzewka (punkt 3) jest warunkiem włączenia — D-110: nie; do zmiany Pawła drzewko się nie zapisuje;
 - przeniesienie pakietu ze Studio do gry (test na serwerze).
 
 ## Co zgłosić Pawłowi
@@ -425,7 +511,8 @@ Bez Studio (wszystko pojedynczo, bez wielu procesów):
 ```
 python -B swiat/stan_gracza/dane.py --sprawdz          # DaneStanu.luau aktualny
 python -B swiat/stan_gracza/testy/test_stanu.py        # 56 testów, w tym SerwerStanu i KlientStanu w luau_mini
-python -B swiat/stan_gracza/testy/test_zapisu.py       # 11 scenariuszy zapisu postępu na atrapie DataStore
+python -B swiat/stan_gracza/testy/test_zapisu.py       # 14 scenariuszy zapisu postępu na atrapie DataStore
+python -B swiat/stan_gracza/testy/proba_zapisu.py --sprawdz   # bez Studio: kawałki Luau próby zapisu
 python -B swiat/stan_gracza/sprawdz_luau_stanu.py      # kontrola statyczna Luau
 python -B swiat/stan_gracza/zbuduj.py --sucho          # plan budowy
 python -B swiat/stan_gracza/symulacja_lasu.py          # szanse w przegrodach lasu-pasa i czas do Strażnika
@@ -474,7 +561,8 @@ z ok. 8 przegranymi po drodze. Cel planu rosnącego z `tools/walka/tempo.py`: ok
 - `dane.py` → `zrodla/DaneStanu.luau` (wygenerowany; liczby z `tools/walka/wzorcowe.py`, `tempo.py`,
   `src/server/Walka/Statystyki.luau`), `logika_stanu.py` (lustro `zrodla/LogikaStanu.luau`).
 - `zrodla/SerwerStanu.server.luau`, `zrodla/KlientStanu.client.luau`, `zrodla/LogikaStanu.luau`, `zrodla/ZapisStanu.luau`
-  (zapis postępu, domyślnie wyłączony), `testy/test_zapisu.py`.
+  (zapis postępu, włączony 19.11.2026), `testy/test_zapisu.py`, `testy/proba_zapisu.py` (próba w Studio na magazynie
+  próby); znacznik prób gry: `tools/zapis_prob.py` (woła go `tools/studio_mcp.py` przy każdym `start_stop_play`).
 - `zbuduj.py`, `sprawdz_luau_stanu.py`, `symulacja_lasu.py`, `kara_przegranej.py` (warianty kary; gracze z
   `swiat/pety_proba/ekonomia_jajek.py`, tylko uruchamiany), `porownaj_profile.py` (pytanie 56), `punkty_statystyk.py` (D-097), `testy/test_stanu.py`,
   `testy/atrapa_roblox.py`.
@@ -482,3 +570,21 @@ z ok. 8 przegranymi po drodze. Cel planu rosnącego z `tools/walka/tempo.py`: ok
   `SerwerPotworow.server.luau` (`sygnalStanu`, `bohaterZeStanu`, `nagrodaZaWalke` + dwa wywołania w kontroli 7
   i po przyjęciu walki), `KlientPotworow.client.luau` (`trybTestowyBohatera`, `poziomGracza`,
   `zsynchronizujBohatera`, napis panelu). Las-pas używa tych samych źródeł.
+
+## Łup po szybko pominiętej walce — od razu (19.11.2026, D-107)
+
+*Mała zmiana przy decyzji D-107 (walka bez przestojów; podpis Karola, czeka na potwierdzenie Pawła). Wdrożona w Studio
+19.11.2026 (`zbuduj.py --skrypty`).*
+
+Łup walki pokazuje się graczowi (atrybuty Gold, XP…), gdy klient zgłosi koniec ekranu walki („pokaz”), ale tylko łupy
+starsze niż `publikacja.min_s` (1,5 s) — żeby spóźnione zgłoszenie nie pokazało łupu następnej walki w jej trakcie.
+Pominięta walka kończy się u klienta w ok. 0,5 s (pomiar w Play 19.11), więc zgłoszenie przychodzi, zanim łup
+„dojrzeje” — według kodu gracz widziałby wtedy Złoto i doświadczenie dopiero przy końcu następnej walki albo po
+czasie walki + 6 s (samego opóźnienia w grze nie mierzyłem).
+
+Teraz: gdy przy zgłoszeniu zostaje łup młodszy niż `min_s`, serwer sam pokazuje go, gdy tylko dojrzeje (najwyżej 1,5 s
+po przyjęciu walki) — tylko łupy przyjęte przed tym zgłoszeniem; łup następnej walki dalej czeka na jej koniec.
+Kod: `zrodla/SerwerStanu.server.luau` (obsługa „pokaz”, `publikuj(…, doCzasu)`), test `test_8c2` w `testy/test_stanu.py`.
+Sprawdzone testem bez Studio na prawdziwym skrypcie serwera; próba „stan gracza” w Play 19.11 przeszła, ale tego
+przypadku osobno nie mierzy.
+Do oceny: skrócić `min_s` (np. do 0,5 s), jeśli 1,5 s opóźnienia po bardzo szybkim pominięciu ma zniknąć całkiem.

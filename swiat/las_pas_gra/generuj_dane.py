@@ -30,7 +30,8 @@ Odczytania planu (najprostsze; opisane też w README):
   • „podbiom” strefy = id przegrody (jak w planie); „pod” = kojec / polanka; pole strefy w świecie jako {x1, x2, z1, z2};
   • zasiegGraczy (promień liczenia graczy do skracania odrodzenia) = pół przekątnej pola strefy + 4 st — stary las miał
     r + 50, ale tu kojce stoją co 64 st i r + 50 liczyłoby graczy z sąsiedniego kojca;
-  • Leśny Troll ma odrodzenie stałe 150 s (pole odrodzenieStale = true; serwer potworów traktuje je jak u Strażnika),
+  • Leśny Troll ma w planie odrodzenie stałe 150 s (pole odrodzenieStale = true; serwer potworów traktuje je jak u
+    Strażnika); od D-107 czasy i liczby potworów są z GESTOSC_D107 (niżej): stały czas mają wszystkie strefy,
     ale dom i blokadę domu 12 jak zwykła strefa; Strażnik jak w starym lesie: strefa „straznik” z jednym punktem;
   • Strażnik stoi na posadzce kręgu (y ze znaczników, gdy są), twarzą do wejścia: yaw = Logika.yaw(−1, 0) = π/2.
 """
@@ -100,6 +101,28 @@ PRZED_BRAMA_U = 10             # cofnięcie: 10 st przed bramą, twarzą do bram
 ZA_BRAMA_U = 12                # uprawniony ratowany za bramą: 12 st za nią
 RATUNEK_Y = -30                # niżej = spadł z mapy
 
+# D-107 (19.11.2026, walka bez przestojów): więcej potworów i odradzanie „praktycznie cały czas”. To liczby GRY, nie
+# mapy — plan pasa (wygląd i rozmiar) zostaje nietknięty, a generator nadpisuje nimi liczby stref z planu. Jedno
+# miejsce dla lasu, Bagna i Dżungli (ich generatory kopiują KONFIG). None w KONFIG["gestosc"] = liczby z planu
+# (stan sprzed D-107). Rachunek i tabela „było / jest”: README, rozdz. „D-107”.
+GESTOSC_D107 = {
+    # odstęp czoło–ogon na pętli (plan: 25 st): 8 grup × 12 = 96 st na pętli 121 st — zostaje 25 st luzu na wejścia
+    "odstep": 12,
+    # dom wolny, gdy żaden gracz nie stoi bliżej (plan: 12 st). 0 = potwór wraca także wtedy, gdy gracz stoi przy
+    # domu: strefa ma dwa domy i gracze czekający przy obu zatrzymywali odradzanie całkiem (test_bez_przestojow.py)
+    "blokada_domu": 0,
+    # zwykła strefa: cel = 4 / 7 / 8 potworów przy 1 / 8 / 20 graczach (Logika.cel), odrodzenie stałe. 2 s (było 4 s
+    # do próby w Play 19.11): pominięta walka trwa u klienta 0,45 s, więc gracze zabijają szybciej, niż zakładałem
+    "zwykla": {"naraz": 7, "max": 8, "odrodzenie_s": 2},
+    # wyjątki stref (id strefy): wilki lasu mają po 544 bryły, a klient ma budżet 4000 brył widoków — 8 wilków się
+    # w nim nie mieści (próba w Play 19.11). 3 / 6 / 7 wilków: przy 8 graczach zostaje miejsce na trolla obok
+    "strefy": {"w1": {"naraz": 6, "max": 7}},
+    # rzadki potwór (strefa z odrodzenie_stale w planie — troll, ropucha, pancernik): jeden, wraca po 20 s (było 150)
+    "rzadki": {"odrodzenie_s": 20},
+    # strażnik biomu: wraca po 30 s (było 120)
+    "straznik": {"odrodzenie_s": 30},
+}
+
 
 class Blad(Exception):
     pass
@@ -124,8 +147,11 @@ def wczytaj(bez_mapy=False, k=None):
     return m
 
 
-def skrot(m):
-    tekst = json.dumps([zrodlo_mapy.wejscie_dla_skrotu(m), m["przeciwnicy"], m["aktorzy"]], sort_keys=True,
+def skrot(m, k=None):
+    wejscie = [zrodlo_mapy.wejscie_dla_skrotu(m), m["przeciwnicy"], m["aktorzy"]]
+    if k and k.get("gestosc"):
+        wejscie.append(k["gestosc"])   # D-107: liczby gry zmieniają skrót (budowa w Studio widzi nową wersję)
+    tekst = json.dumps(wejscie, sort_keys=True,
                        ensure_ascii=False, separators=(",", ":"))
     return hashlib.sha1(tekst.encode("utf-8")).hexdigest()[:12]
 
@@ -155,12 +181,15 @@ def gatunki(plan, k=None):
     return wynik
 
 
-def zasady(plan):
+def zasady(plan, k=None):
+    k = k or KONFIG
+    g = k.get("gestosc")
     z = plan["zasady"]
     for pole, wzor in (("walke_zaczyna", "promieniu 8"), ("skracanie", "najmniej 10 s"), ("skracanie", "0,15")):
         if wzor not in z.get(pole, ""):
             raise Blad("zasady.%s nie zawiera „%s” — sprawdź, czy liczba się nie zmieniła" % (pole, wzor))
-    return {"odstep": z["odstep_min"], "smycz": z["smycz"], "blokadaDomu": z["blokada_domu"],
+    return {"odstep": g["odstep"] if g else z["odstep_min"], "smycz": z["smycz"],
+            "blokadaDomu": g["blokada_domu"] if g else z["blokada_domu"],
             "zasiegE": 8, "minOdrodzenia": 10, "skracanie": 0.15}
 
 
@@ -198,6 +227,13 @@ def strefa(m, st, gat, zas, k=None):
         raise Blad("strefa %s: poziomy %s poza %d–%d" % (sid, [p1, p2], lo, hi))
     if st.get("wariant"):
         raise Blad("strefa %s: odmiany (wariant) w pasie nie są obsługiwane" % sid)
+    # D-107: liczby gry (ile potworów, jak szybko wracają) z konfiguracji, nie z planu mapy
+    rzadki = bool(st.get("odrodzenie_stale"))
+    naraz, maks, odrodzenie, stale = st["naraz"], st["max"], st["odrodzenie_s"], rzadki
+    if k.get("gestosc"):
+        ge = dict(k["gestosc"]["rzadki" if rzadki else "zwykla"])
+        ge.update((k["gestosc"].get("strefy") or {}).get(sid) or {})
+        naraz, maks, odrodzenie, stale = ge.get("naraz", naraz), ge.get("max", maks), ge["odrodzenie_s"], True
     y = float(st["y"])
     u_od, u_do, przeg = _odcinek_strefy(plan, st)
     pu1, pu2, pv1, pv2 = st["pole"]
@@ -211,9 +247,9 @@ def strefa(m, st, gat, zas, k=None):
     grupa = st.get("grupa") or {}
     watahy = grupa.get("watahy", 0) or 0
     if watahy > 0:
-        grupy, miejsc = watahy, math.ceil(st["max"] / watahy)
+        grupy, miejsc = watahy, math.ceil(maks / watahy)
     else:
-        grupy, miejsc = st["max"], 1
+        grupy, miejsc = maks, 1
     odstep_w = g["odstepWGrupie"]
     potrzeba = grupy * ((miejsc - 1) * odstep_w + zas["odstep"])
     if potrzeba > L + 1e-9:
@@ -239,12 +275,14 @@ def strefa(m, st, gat, zas, k=None):
     x2, _, z2 = sw(m, pu2, y, pv2)
     return {
         "id": sid, "podbiom": st["podbiom"], "gatunek": gid, "wariant": False,
-        "poziomy": [p1, p2], "naraz": st["naraz"], "max": st["max"],
+        "poziomy": [p1, p2], "naraz": naraz, "max": maks,
         "srodek": sw(m, su, y, sv), "r": st["r"], "zasiegGraczy": k3(round(zasieg, 1)),
         "grupy": grupy, "miejsc": miejsc, "odstepWGrupie": odstep_w, "watahy": watahy > 0,
-        "odrodzenieS": st["odrodzenie_s"], "straznik": False,
+        "odrodzenieS": odrodzenie, "straznik": False,
         "trasa": trasa, "domy": domy,
-        "odrodzenieStale": bool(st.get("odrodzenie_stale")),
+        # odrodzenieStale: czas bez skracania i bez dolnej granicy 10 s (D-107: wszystkie strefy); rzadki: jeden
+        # potwór przegrody z planu (troll, ropucha, pancernik) — do rachunków i wskazówek
+        "odrodzenieStale": stale, "rzadki": rzadki,
         # D-096: strefa scalona z kilku kojców — poziomy rozdane po miejscach (SerwerPotworow: poziomNaMiejsce)
         "poziomyPoMiejscach": bool(st.get("scalone_z")) and p2 > p1,
         "pod": st.get("pod") or "", "pole": {"x1": x1, "x2": x2, "z1": z1, "z2": z2},
@@ -270,7 +308,7 @@ def strefa_straznika(m, k=None):
         "poziomy": [poz, poz], "naraz": 1, "max": 1,
         "srodek": [x, y, z], "r": r, "zasiegGraczy": 0,
         "grupy": 1, "miejsc": 1, "odstepWGrupie": 0, "watahy": False,
-        "odrodzenieS": s["odrodzenie_s"], "straznik": True,
+        "odrodzenieS": k["gestosc"]["straznik"]["odrodzenie_s"] if k.get("gestosc") else s["odrodzenie_s"], "straznik": True,
         "trasa": {"x": [x], "y": [y], "z": [z], "dl": [0], "L": 0, "zamknieta": True, "yaw": k3(kierunek)},
         "domy": [{"x": x, "y": y, "z": z, "wejscie": [x, z], "wezel": 1, "s": [0]}],
         "odrodzenieStale": True, "pod": "", "pole": {"x1": k2(x - r), "x2": k2(x + r), "z1": k2(z - r), "z2": k2(z + r)},
@@ -287,7 +325,7 @@ def dane_potworow(m, k=None):
         if gid not in aktorzy:
             raise Blad("gatunek %s nie ma aktora w swiat/test_walki2/aktorzy.py (szablon modelu dla klienta)" % gid)
     gat = gatunki(plan, k)
-    zas = zasady(plan)
+    zas = zasady(plan, k)
     strefy = [strefa(m, st, gat, zas, k) for st in plan["strefy"]]
     strefy.append(strefa_straznika(m, k))
     spokoj_pr = []
@@ -305,7 +343,7 @@ def dane_potworow(m, k=None):
         plyta = False
     return {
         "wersja": 1,
-        "skrot": skrot(m),
+        "skrot": skrot(m, k),
         "biom": {"nazwa": m["kontener"], "srodek": [k2(m["X0"]), 0, k2(m["Z0"])], "obrotY": 0, "plyta": plyta},
         "zasady": zas,
         "gatunki": gat,
@@ -411,8 +449,10 @@ NAGLOWEK_POTWOROW = """--[[
 \tFormat jak swiat/las_potwory/zrodla/DanePotworow.luau (PROJEKT.md tam, rozdz. 2.4) — w Studio ten moduł to
 \tWorkspace/LasPasGra/Moduly/DanePotworow, a czytają go te same SerwerPotworow i KlientPotworow co w starym lesie.
 \tWspółrzędne są już w układzie ŚWIATA (świat = (1100 + u; y; −700 + v), bez obrotu). Pola dodatkowe pasa:
-\todrodzenieStale (Leśny Troll: 150 s bez skracania), pod (kojec / polanka), pole (prostokąt strefy w świecie),
+\todrodzenieStale (stały czas odrodzenia, bez skracania), pod (kojec / polanka), pole (prostokąt strefy w świecie),
 \tspokojProstokaty (strefy spokoju), zrodloMapy ("znaczniki" albo "plan").
+\tD-107 (walka bez przestojów): naraz, max, odrodzenieS, odrodzenieStale (stały czas — wszystkie strefy), rzadki
+\t(Leśny Troll), zasady.odstep i zasady.blokadaDomu to liczby GRY z GESTOSC_D107 w generatorze (plan mapy bez zmian).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 \treturn {}
@@ -459,6 +499,7 @@ KONFIG = {
     "poziomy": (1, 10),
     "poziomy_stref": None,                           # None = poziomy z planu
     "poziom_straznika": None,
+    "gestosc": GESTOSC_D107,                         # D-107; None = liczby z planu
     "punkty_strumienia_u": PUNKTY_STRUMIENIA_U,
     "mgla_cel": MGLA_CEL,
     "wejscie_u": None,

@@ -172,9 +172,11 @@ class TestDanych(unittest.TestCase):
         sp = sprawdz_plan()
         _, sumy = sp.tabela_potworow(PLAN)
         nasze = [sum(1 if s["straznik"] else Lg.cel(s["naraz"], s["max"], G) for s in DP["strefy"]) for G in (1, 8, 20)]
-        self.assertEqual(nasze, sumy)
-        # D-096 (krótki pas): 8 / 12 / 16 (projekt długiego pasa: 20 / 36 / 46)
-        self.assertEqual(nasze, [8, 12, 16])
+        # plan mapy bez zmian (D-096, krótki pas: 8 / 12 / 16; projekt długiego pasa: 20 / 36 / 46)
+        self.assertEqual(sumy, [8, 12, 16])
+        # D-107 (walka bez przestojów): liczby gry z GEN.GESTOSC_D107 — 4 / 7 / 8 na zwykłą strefę + rzadki + Strażnik
+        self.assertEqual(nasze, [13, 22, 25])       # wilki 3 / 6 / 7 (budżet brył klienta)
+        self.assertGreater(nasze, sumy)
         self.assertEqual(len(DP["strefy"]), len(PLAN["strefy"]) + 1)
         self.assertEqual(DP["strefy"][-1]["id"], "straznik")
 
@@ -204,10 +206,24 @@ class TestPrzegrod(unittest.TestCase):
                 self.assertEqual(st["podbiom"], st_plan["podbiom"])
                 self.assertEqual(GEN.GATUNKI[sp.GATUNEK[st["podbiom"]]], st["gatunek"])
                 self.assertEqual(st["poziomy"], st_plan["poziomy"])
-                self.assertEqual((st["naraz"], st["max"], st["odrodzenieS"]), (st_plan["naraz"], st_plan["max"], st_plan["odrodzenie_s"]))
-                self.assertEqual(st["odrodzenieStale"], st["id"] == "t1")
+                # D-107: ile potworów i jak szybko wracają — liczby gry (GESTOSC_D107), nie planu mapy
+                ge = dict(GEN.GESTOSC_D107["rzadki" if st_plan.get("odrodzenie_stale") else "zwykla"])
+                ge.update(GEN.GESTOSC_D107["strefy"].get(st["id"], {}))
+                self.assertEqual((st["naraz"], st["max"], st["odrodzenieS"]),
+                                 (ge.get("naraz", st_plan["naraz"]), ge.get("max", st_plan["max"]), ge["odrodzenie_s"]))
+                self.assertLess(st["odrodzenieS"], st_plan["odrodzenie_s"])
+                self.assertGreaterEqual(st["max"], st_plan["max"])
+                self.assertGreater(Lg.cel(st["naraz"], st["max"], 1), Lg.cel(st_plan["naraz"], st_plan["max"], 1) - (1 if st["rzadki"] else 0))
+                self.assertTrue(st["odrodzenieStale"])            # stały czas, bez dolnej granicy 10 s
+                self.assertEqual(st["rzadki"], st["id"] == "t1")
+                # potwory mieszczą się na pętli z zapasem na wejście nowego (odstęp z danych)
+                potrzeba = st["grupy"] * ((st["miejsc"] - 1) * st["odstepWGrupie"] + DP["zasady"]["odstep"])
+                self.assertLessEqual(potrzeba + DP["zasady"]["odstep"], st["trasa"]["L"] + 1e-9)
         s = STREFY["straznik"]
-        self.assertEqual((s["gatunek"], s["poziomy"], s["odrodzenieS"], s["trasa"]["L"]), ("straznik_lasu", [10, 10], 120, 0))
+        self.assertEqual((s["gatunek"], s["poziomy"], s["odrodzenieS"], s["trasa"]["L"]),
+                         ("straznik_lasu", [10, 10], GEN.GESTOSC_D107["straznik"]["odrodzenie_s"], 0))
+        self.assertEqual((DP["zasady"]["odstep"], DP["zasady"]["blokadaDomu"]),
+                         (GEN.GESTOSC_D107["odstep"], GEN.GESTOSC_D107["blokada_domu"]))
         self.assertAlmostEqual(s["trasa"]["yaw"], math.pi / 2, delta=0.001)
         mu, mv = PLAN["straznik"]["miejsce"]
         self.assertEqual(s["srodek"], [round(M["X0"] + mu, 2), 0, round(M["Z0"] + mv, 2)])
@@ -281,7 +297,7 @@ class TestPrzegrod(unittest.TestCase):
                                      "po 120 s bez walk ktoś nie jest na pętli")
                     self.assertEqual(len(sym.potwory) + len(sym.kolejka), st["max"])
 
-    def test_2d_troll_stale_150_s_slime_skrocony(self):
+    def test_2d_odrodzenie_stale_bez_czekania_d107(self):
         def odrodzenie(sid, gracze):
             st = STREFY[sid]
             sym = TL.Symulacja(st, DP["zasady"], 0, 1, random.Random(1))
@@ -291,9 +307,12 @@ class TestPrzegrod(unittest.TestCase):
             sym.odradzaj(1.0, gracze=gracze)
             return sym.kolejka[0] - 1.0
         tlum = [[1850, -700]] * 5   # 5 graczy w leżu (daleko od domu trolla pod ścianą: 34+ st)
-        self.assertAlmostEqual(odrodzenie("t1", tlum), 150.0, delta=1e-9)
+        # D-107: czasy stałe z GESTOSC_D107 — bez skracania i bez dolnej granicy 10 s (Logika.czasOdrodzenia pominięta)
+        self.assertAlmostEqual(odrodzenie("t1", tlum), GEN.GESTOSC_D107["rzadki"]["odrodzenie_s"], delta=1e-9)
         kojec = [[1208, -700]] * 5
-        self.assertAlmostEqual(odrodzenie("s1", kojec), max(10, 12 / (1 + 0.15 * 4)), delta=1e-9)
+        self.assertAlmostEqual(odrodzenie("s1", kojec), GEN.GESTOSC_D107["zwykla"]["odrodzenie_s"], delta=1e-9)
+        self.assertAlmostEqual(odrodzenie("s1", []), GEN.GESTOSC_D107["zwykla"]["odrodzenie_s"], delta=1e-9)
+        self.assertLessEqual(GEN.GESTOSC_D107["zwykla"]["odrodzenie_s"], 5)
 
     def test_2e_zasieg_graczy_nie_siega_dalszych_kojcow(self):
         # D-096: jedna strefa na przegrodę — zasięg liczenia graczy nie sięga środka następnej strefy

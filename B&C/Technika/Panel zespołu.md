@@ -141,6 +141,17 @@ Zakładka **Sesja** (dodana 13.11.2026 na prośbę Karola, czeka na zgodę jak c
 - **Prywatność**: pełny zapis bieżącej rozmowy i notatki zostają tylko na komputerze z panelem (nie w repozytorium); widzą je osoby w pokoju. Dawne sesje widzi i pobiera tylko osoba przy komputerze. Gdy głos nie połączy się bezpośrednio, można rozmawiać przez Discord — nagrywanie i transkrypcja działają dalej.
 - Kroki dla dwóch osób: `panel/INSTALACJA.md` (część „Sesja”), szczegóły techniczne: `panel/README.md`.
 
+## Wytwórnia: gry i pomysły (od 20.11.2026, D-115)
+Zakładka **Wytwórnia** (na telefonie w „Więcej”) czyta folder [[00 Wytwórnia pomysłów]]:
+- **Portfel gier** — gry na etapie prototyp / test / publiczna z liczbami D1, D7, sesja, gracze naraz (pola `d1`, `d7`, `sesja_min`, `ccu` w notatce gry; puste = „brak danych”) i przyciskiem **Pulpit gry**: notatka, liczby, link do gry na Roblox (pole `miejsce`) oraz raporty, zadania i decyzje tej gry. Dopasowanie: raport, którego tytuł zaczyna się od nazwy gry; zadanie albo decyzja, która wspomina nazwę gry (pole `gra`, nazwa notatki albo `aliases`). Na Pulpicie jest też karta „Gry”.
+- **Lejek pomysłów** — kolumny pomysł → ocena → prototyp → test → publiczna, werdykt agenta w kolorze (buduj / popraw / odrzuć), paski ocen Agenta, Karola i Pawła; wstrzymane i porzucone zwinięte.
+- **Karta pomysłu** — 10 kryteriów [[Karta oceny pomysłu]] z kolumnami Agent / Karol / Paweł, „Krytyka agenta”, komentarze. **Oceń** wpisuje tylko własną kolumnę w tabeli notatki i sumę (`ocena_karol` / `ocena_pawel`); **Zmień etap** zmienia pole `etap`. Gość panelu nie ocenia i nie zmienia etapu.
+- **Dodaj pomysł** — nowa notatka z szablonu „Pomysł gry” w `Wytwórnia/Pomysły/` (może też gość), wpis w Dzienniku jak przy innych zmianach z panelu.
+- **Radar trendów** — tabela z [[Radar trendów]] z datą aktualizacji.
+Szczegóły techniczne i API: `panel/README.md`.
+
+**Temat sesji (od 20.11.2026):** w zakładce Sesja lista „Temat sesji” — Wytwórnia (nowe pomysły na gry), gra z portfela, pomysł z lejka, Pytania do odpowiedzi albo Inne (z tekstem). Wybiera Karol albo Paweł, widzą wszyscy w rozmowie; temat zapisuje się przy sesji, a agent sesji czyta pod niego notatki (Wytwórnia, notatka gry, karta pomysłu) i z niego proponuje agendę.
+
 ## Wejście z telefonu spoza domu (tunel)
 Sprawdzone naprawdę 13.11.2026: przenośny `cloudflared` (bez instalatora i uprawnień administratora) wystawia panel pod losowym adresem https, a wejście wymaga kodu dostępu. Gość z tunelu nie dostaje uprawnień osoby przy komputerze — nie uruchomi agenta, gita ani nowej migawki — nawet jeśli zna klucz lokalny. Przed udostępnieniem adresu drugiej osobie trzeba wyjąć z konfiguracji lokalnej prywatne sejfy podpięte do panelu. Kroki: `panel/INSTALACJA.md`.
 

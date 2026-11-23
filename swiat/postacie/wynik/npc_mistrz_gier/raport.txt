@@ -1,0 +1,50 @@
+RAPORT — npc_mistrz_gier
+MISTRZ GIER — prowadzi grę w kostkę przy stole w karczmie (NPC, D-109; miejsce bazaru „mistrz_gier”, D-053).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/npc_mistrz_gier.py · wygenerowano 19.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py npc_mistrz_gier
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: npc_mistrz_gier
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 5 plików, zgodnych 5
+- ostrzeżenia z raportu: 1; uwagi podglądu: 0
+
+ZNANE SŁABOŚCI
+- Rekwizyt to bryły na kościach dłoni (nie osobne akcesorium) — w FBX postaci jest częścią dłoni.
+- Strój, zarost i ręce to sztywne bryły na kościach: przy dużych ruchach (machanie, gest) lekko się przenikają.
+- Klipy to szkice (1–2 s), nie gotowa animacja; obrót głowy ku graczowi dokłada dopiero gra (swiat/npc_gra).
+- Siedzi: uda w poziomie, łydki zwisają — wysokość bioder nad stołkiem ustawia gra (swiat/npc_gra, przesunięcie stanowiska); w Blenderze i na planszy siedzi w powietrzu.
+- Kostka zostaje w dłoni także po rzucie (bryła na kości dłoni).
+
+MODEL npc_mistrz_gier „Mistrz gier” (r15)
+  wymiary ciała: 4,24 × 6,06 × 2,02; z akcesoriami: 4,24 × 6,06 × 2,02
+  trójkąty: 2392 (siatek: 15)
+  budżety ciała R15: Head 1008/4000, Torso 280/1750, LeftArm 264/1248, RightArm 400/1248, LeftLeg 220/1248, RightLeg 220/1248
+  kości (17): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot
+  klipy: spoczynek 60 kl. 2,00 s pętla, powitanie 48 kl. 1,60 s jednorazowy, gest 54 kl. 1,80 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment
+  OSTRZEŻENIE: ciało Head: wys 2.56 poza 0.50…2.00 studa (limit części ciała awatara)
+
+KONTROLA EKSPORTÓW
+- npc_mistrz_gier.fbx: siatki 34, kości 17, trójkąty 2620, wzrost 6.06 st., akcje brak -> ZGODNE
+- npc_mistrz_gier__spoczynek.fbx: siatki 34, kości 17, trójkąty 2620, wzrost 6.06 st., akcje npc_mistrz_gier|Scene 1-61 -> ZGODNE
+- npc_mistrz_gier__powitanie.fbx: siatki 34, kości 17, trójkąty 2620, wzrost 6.06 st., akcje npc_mistrz_gier|Scene 1-49 -> ZGODNE
+- npc_mistrz_gier__gest.fbx: siatki 34, kości 17, trójkąty 2620, wzrost 6.06 st., akcje npc_mistrz_gier|Scene 1-55 -> ZGODNE
+- npc_mistrz_gier.glb: siatki 34, kości 17, trójkąty 2620, wzrost 6.06 st., akcje gest 0-54, powitanie 0-48, spoczynek 0-60 -> ZGODNE
+
+PLIKI
+- npc_mistrz_gier.blend
+- npc_mistrz_gier.fbx
+- npc_mistrz_gier.glb
+- npc_mistrz_gier__gest.fbx
+- npc_mistrz_gier__powitanie.fbx
+- npc_mistrz_gier__spoczynek.fbx
+- npc_mistrz_gier_bohater.jpg
+- npc_mistrz_gier_ikona.png
+- npc_mistrz_gier_plansza.jpg
+- npc_mistrz_gier_tekstury/
+- raport.json
+- raport.txt

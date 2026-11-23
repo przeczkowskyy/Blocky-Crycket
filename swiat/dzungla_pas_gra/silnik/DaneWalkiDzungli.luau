@@ -901,7 +901,7 @@ return {
 				odpornosc = -0.3,
 				pancerz = 0.05,
 				unik = 0.05,
-				zycie = 0.3,
+				zycie = 0.105,
 				zysk_many = 0.25,
 			},
 			nazwa = "Wąż Stu Lian",

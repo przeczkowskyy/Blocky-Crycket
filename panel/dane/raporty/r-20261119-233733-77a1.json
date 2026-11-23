@@ -1,0 +1,17 @@
+{
+ "id": "r-20261119-233733-77a1",
+ "tytul": "BONK etap 1: rdzeń gry w Studio — 17/17",
+ "opis_md": "- BONK (D-112), etap 1 gotowy: od wejścia do bicia potworów w trzech krainach. Próba w Studio 17/17, płynnie (śr. 16,7 ms na klatkę, pętla BONK 1,6 ms).\n- Uderzasz najbliższego potwora (przycisk na telefonie, klik albo E na komputerze), ostatni cios wystrzeliwuje go łukiem; od 120 st. „HOME RUN!” i monety ×2. Rzadki złoty potwór (2,5%).\n- Moc otwiera bramy: Bagno od 2.4K, Dżungla od 55K. Tempo z rachunku: pierwszy BONK po ok. 5 s, brama lasu ok. 9 min, Bagna ok. 22 min.\n- Wejście bramą „BONK” obok płyty startu obecnej gry, wyjście bramą EXIT. Obecna gra nietknięta; własny zapis BONK.\n\nSzczegóły:\n\nPakiet `swiat/bonk/` jest samowystarczalny (mapa z naszych pasów, 12 potworów, własny interfejs po angielsku, dźwięki z arkusza). W próbach zapis idzie do osobnego magazynu prób. Teraz etap 2 (do ok. 05:00): jajka i pety z Księgą, sklep pałek, Strażnicy bici wspólnie, Moc nad głową, tablice, komunikaty, dzienny prezent. Etap 3 (do ok. 07:30): dopracowanie, telefon i pad, ikona i miniatury, próba całości. Publikacja zostaje decyzją ludzi.\n\nOpis gry: notatka „BONK — projekt prototypu”. Instrukcja budowy i wyniki próby: `swiat/bonk/README.md`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-19T23:37:33+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ]
+}

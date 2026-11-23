@@ -1,0 +1,22 @@
+{
+ "id": "r-20261119-212223-a288",
+ "tytul": "Czy gra może być hitem: diagnoza po filmie twórcy Build a Base and Steal",
+ "opis_md": "- Szczery werdykt: w obecnym kształcie gra nie ma realnej szansy na viral. Nie przez jakość pracy, tylko przez kształt — to RPG z kilkunastoma systemami, a hity na Roblox to jedna prosta czynność z dużą głębią.\n- Film twórcy hitu („Build a Base and Steal”) mówi to samo, co nasza diagnoza z 13.11: jedno zdanie, jedna czynność z natychmiastowym skutkiem, moment do nagrania, pokazanie się przed innymi, telefon najpierw, szybko do prawdziwych graczy i poprawki pod dane.\n- Propozycja: przyciąć grę do rdzenia „bij potwory, rośnij w siłę, zbieraj pety, idź dalej”, zamrozić resztę bez kasowania i jak najszybciej wypuścić wersję testową.\n- Do decyzji (pytanie 72): wariant (a) szybki grinder, (b) BONK albo (c) obecny kształt.\n\nSzczegóły:\n\n**Nasza gra wobec zasad z filmu**\n\n| Zasada | U nas | Ocena |\n|---|---|---|\n| Gra w jednym zdaniu | cztery gatunki, brak czasownika | ❌ |\n| Jedna prosta mechanika | ok. 18 systemów, 5–6 walut | ❌ |\n| Przyczyna i skutek | naciskam E — oglądam walkę, w której nic nie robię | ⚠️ |\n| Fantazja | ogólne fantasy; mocny styl i maskotki | ⚠️ |\n| Powód powrotu | jajka, biomy, sprzęt, zapis | ✅ |\n| Pokazanie się | sprzęt i pet na postaci; nic, co inni widzą, że robisz | ⚠️ |\n| Moment do nagrania | komiksowe efekty, ale oglądane w pojedynkę | ⚠️ |\n| Telefon i pad | nigdy na prawdziwym telefonie, pad nigdy | ❌ |\n| Dane | 0 graczy, gra tylko w Studio, bez telemetrii | ❌ |\n\n**Rdzeń po przycięciu (propozycja):**\n- Naciskam jeden duży przycisk — potwór od razu dostaje, odlatuje albo rozpada się na klocki, wypada Złoto. Pełna walka tylko przy Strażnikach.\n- Jedna liczba „Moc” nad głową zamiast sześciu statystyk.\n- Głębia z petów (jawne szanse, efektowne wyklucie), stopni sprzętu na postaci i coraz silniejszych zagród.\n- Komunikat dla całego serwera przy Strażniku i rzadkim pecie; ranking; dzienny prezent bez kary za opuszczony dzień.\n- Start: od razu w świecie, pierwsza walka w 30 sekund; wybór klasy później.\n\n**Zamrażamy, nie kasujemy:** karczma z zadaniami, Twierdza, drzewka umiejętności, rasy i Półbóg, plansza z kostką, dungeony, arena i gildie, dodatkowe waluty. Mini-gry: zostają 2–3 najlepsze.\n\n**Przed jakimkolwiek wypuszczeniem:** próba na prawdziwym telefonie, przeniesienie gry z prób w Studio do prawdziwej gry (największa niewiadoma czasu), telemetria. Potem: wersja testowa, pomiar, poprawki codziennie. Bramka: powroty następnego dnia 15–20%; poniżej zmieniamy rdzeń, nie dokładamy systemów.\n\n**Czy praca się zmarnuje:** nie. Modele, biomy, pety, NPC, efekty, zapis, symulator i próby wchodzą do przyciętej gry. Marnotrawstwem byłoby dalsze dokładanie systemów bez graczy. Nasza przewaga to tempo agentów — skierowane na poprawki pod dane daje dokładnie to, czego wymaga film.\n\n**Uczciwie o szansach:** po przycięciu jest szansa, ale bez gwarancji — autor filmu miał cztery porażki przed hitem. Szansę podnosi tylko wiele szybkich prób na prawdziwych graczach.\n\nPełna analiza, wariant (b) i lista konfliktów z zatwierdzonymi decyzjami: notatka „Diagnoza 2026-11-19 — prostota i szansa na hit”.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-19T21:22:23+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Badania/Diagnoza 2026-11-19 — prostota i szansa na hit.md",
+   "etykieta": "Pełna diagnoza"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytanie 72"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Który wariant rdzenia: (a) szybki grinder, (b) BONK czy (c) obecny kształt? I kiedy pierwsza publiczna wersja testowa?"
+}

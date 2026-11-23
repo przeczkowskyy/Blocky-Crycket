@@ -11,7 +11,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "27f04979a4a4",
+	skrot = "e69e1fa74ed6",
 	mapa = {
 		nazwa = "BagnoPas",
 		zrodlo = "znaczniki",

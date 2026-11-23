@@ -163,3 +163,38 @@ Uwagi z próby:
   (arena leży ponad 2000 studów od lasu i wypada ze streamingu).
 - Zrzuty i filmy wymagają włączonego ekranu: przy wygaszonym monitorze Studio nie rysuje obrazu i `screen_capture`
   wisi. `testy/proba_play.py` budzi ekran przed każdym zrzutem (`swiat/test_walki2/testy/czuwanie.py`).
+
+## D-107 — walka bez przestojów (19.11.2026; część A: bez Studio)
+
+*Status: decyzja D-107 ma podpis Karola i czeka na potwierdzenie Pawła. Sprawdzone tylko testami bez Studio — w grze
+jeszcze nie wdrożone (część B).*
+
+Zmiana we wspólnym kodzie (działa w każdym kontenerze potworów: `LasPasGra`, `BagnoPasGra`, `DzunglaPasGra` i stary
+`LasPotwory`):
+
+| | Było | Jest |
+|---|---|---|
+| Blokada sesji gracza po przyjęciu walki (`walkaDo`) | `walka.czas − ZAPAS_SESJI` (pełny czas ×1) | `walka.czas / TEMPO_POKAZU_MAKS − ZAPAS_SESJI` (najkrótszy pokaz, ÷ 4) |
+| Zajętość potwora | `walka.czas + ZAPAS_ZAJETOSCI` | `walka.czas / TEMPO_POKAZU_MAKS + ZAPAS_ZAJETOSCI` |
+| `koniec` w sygnale `WynikWalki` (pamięć pomijania prototypu) | koniec zajętości | bez zmian w wartości: koniec pokazu ×1 |
+| Komunikaty `walka_trwa`, `odpoczynek` | „Odpoczywasz po walce…” | „Poprzednia walka jeszcze trwa…” (widać tylko po przerwanym pokazie) |
+| Podpis banera po Strażniku | „Wróci za 2 min” | „Wróci za chwilę” |
+
+- `Stale.TEMPO_POKAZU_MAKS = 4` — najszybsze tempo odtwarzacza. `1` (także atrybutem kontenera
+  `Stale_TEMPO_POKAZU_MAKS`) przywraca dawne zachowanie. Stałą czyta też symulacja `swiat/przejscie_gry`.
+- Zostaje ochrona przed podwójnym startem: `ODSTEP_PROSB` 1 s, blokada na czas najkrótszego pokazu, zajętość potwora
+  dla innych graczy. Pominięcie (`ZwolnijPoPominieciu`) zwalnia od razu, jak dotąd. Silnik walki i łup bez zmian.
+- Dane starego lasu (`zrodla/DanePotworow.luau`) bez zmian: liczby potworów i odradzanie jak dotąd — D-107 mówi o
+  pasach. Liczby pasów, rachunek i wybory do oceny: `swiat/las_pas_gra/README.md`, rozdz. „D-107”.
+- Nowe pole danych pasów `rzadki` (rzadki potwór przegrody); `odrodzenieStale` mają teraz wszystkie strefy pasów
+  (stały czas, bez dolnej granicy 10 s z `Logika.czasOdrodzenia`). `Logika` i jej 70 przypadków bez zmian.
+
+### D-107, część B (19.11.2026): najbliższy potwór ma pierwszeństwo w budżecie brył
+
+Próba w Play 19.11 przy pełnym zestawie lasu-pasa: 8 wilków w strefie, a widoki miało 6 — budżet 4000 brył
+(`Stale.BUDZET_CZESCI`) zajmowały widoki muchomorników zbudowane wcześniej (dalsze, ale wciąż w promieniu 135 st),
+więc dwa wilki tuż przy graczu były niewidoczne (z podpowiedzią E w pustym miejscu). Zmiana w
+`zrodla/KlientPotworow.client.luau` (`zbudujKolejny`): gdy potwór z kolejki budowy nie mieści się w budżecie, klient
+zwalnia najdalsze widoki — tylko dalsze od niego — i buduje bliższego. Budżet (koszt klienta) zostaje ten sam, nic nie
+miga (zwolniony widok nie wyprze potem bliższego). Wynik w próbie: 7 wilków = 7 widoków wilków (3965 brył z jednym
+muchomornikiem). Liczbę wilków w lesie zmniejszono do 3 / 6 / 7 (8 wilków to 4352 bryły — ponad budżet).

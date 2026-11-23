@@ -28,6 +28,8 @@ Markdown (`<sejf>/Produkcja/*.md`), których używa Obsidian i agenci, małymi z
   (`dodaj_sluchacza`) i wysyła alerty w tle.
 
 Pliki biorą się z konfiguracji sejfów (`sejf.pliki_planu()`), nie ze sztywnej ścieżki — testy i próby działają na kopii.
+Notatki spoza Produkcji (Wytwórnia pomysłów, bc/wytwornia.py) zmienia i tworzy `wykonaj_plik` / `utworz_plik` tą samą
+drogą (blokada, wersja, zapis atomowy, Dziennik, ślad dla „Wyślij”), tylko w folderach `FOLDERY_ZAPISU`.
 
 Uprawnienia: odpowiedzi i zadania — każdy z dostępem do panelu (także gość z kodem dostępu przez tunel; goście mają
 limit zapisów). Statusy decyzji (decyzja z 13.11.2026: Karol i Paweł mają równe prawa, wystarcza decyzja jednego,
@@ -509,15 +511,17 @@ def _klucz_stanu(sciezka):
     return os.path.normcase(os.path.realpath(sciezka))
 
 
-def _zapamietaj(sciezka, przed, po, opis):
-    """Zapisuje w danych lokalnych, że panel zmienił ten plik (dla przycisku „Wyślij”)."""
+def _zapamietaj(sciezka, przed, po, opis, nowy=False):
+    """Zapisuje w danych lokalnych, że panel zmienił ten plik (dla przycisku „Wyślij”). `nowy=True` — panel utworzył
+    plik (np. notatkę pomysłu w Wytwórni): `baza` = None, czyli w HEAD go jeszcze nie ma."""
     with _stan_blokada:
         stan = rdzen.czytaj_json(_plik_stanu(), {}) or {}
         pliki = stan.setdefault("pliki", {})
         k = _klucz_stanu(sciezka)
         wpis = pliki.get(k)
         if wpis is None:
-            wpis = {"sciezka": os.path.realpath(sciezka), "baza": _skrot_normalny(przed), "opisy": [], "obce": False}
+            wpis = {"sciezka": os.path.realpath(sciezka), "baza": None if nowy else _skrot_normalny(przed),
+                    "opisy": [], "obce": False}
         elif wpis.get("ostatni") != sejf.wersja_bajtow(przed):
             wpis["obce"] = True                                # ktoś zmienił plik poza panelem między zapisami panelu
         wpis["ostatni"] = sejf.wersja_bajtow(po)
@@ -555,8 +559,9 @@ def do_wyslania(repo, git):
     """Pliki sejfu zmienione przez panel, które można bezpiecznie wysłać przyciskiem „Wyślij”.
 
     Plik idzie do commita tylko wtedy, gdy: leży w repozytorium, jest jednym z plików, które zmienia panel (pytania,
-    zadania, decyzje, dziennik i agenda sesji głównych „Sesje główne.md”), jego treść jest dokładnie tą, którą zapisał panel, a wersja w HEAD
-    jest tą, od której panel zaczynał — czyli w pliku nie ma cudzych, niezatwierdzonych zmian.
+    zadania, decyzje, dziennik i agenda sesji głównych „Sesje główne.md”) albo notatką Wytwórni (`<sejf>/Wytwórnia/**.md`,
+    bc/wytwornia.py), jego treść jest dokładnie tą, którą zapisał panel, a wersja w HEAD jest tą, od której panel
+    zaczynał (notatka utworzona przez panel: w HEAD jej nie ma) — czyli w pliku nie ma cudzych, niezatwierdzonych zmian.
     Zwraca (ścieżki względem repo, opisy zmian, uwagi dla człowieka). `git(argumenty, repo)` = gitsync.git.
     """
     with _stan_blokada:
@@ -568,6 +573,10 @@ def do_wyslania(repo, git):
             dozwolone[_klucz_stanu(p)] = p
     except (KeyError, BladHTTP):
         return [], [], []
+    for k, wpis in (stan.get("pliki") or {}).items():          # notatki Wytwórni zmienione albo utworzone w panelu
+        p = (wpis or {}).get("sciezka") or ""
+        if k not in dozwolone and p and _klucz_stanu(p) == k and w_folderze_zapisu(p):
+            dozwolone[k] = p
     sciezki, opisy, uwagi, do_usuniecia = [], [], [], []
     for k, wpis in sorted((stan.get("pliki") or {}).items()):
         if k not in dozwolone:
@@ -678,6 +687,102 @@ def _wykonaj(klucz, wersja, zmiana, kto, znacznik=None):
         sejf.uniewaznij()
         _blokada.release()
     wynik = {"ok": True, "opis": opis, "plik": pokaz, "wersja": nowa, "plan": sejf.plan()}
+    if uwaga:
+        wynik["uwaga"] = uwaga
+    return wynik
+
+
+# --------------------------------------------------------------------------- notatki spoza Produkcji (Wytwórnia)
+# Foldery sejfu B&C, w których panel zmienia i tworzy notatki (bc/wytwornia.py: pomysły gier). Ta sama droga zapisu
+# co pliki planu: blokada sejfu, kontrola wersji, zapis atomowy, ślad w Dzienniku zmian i dla „Wyślij” (do_wyslania).
+FOLDERY_ZAPISU = ("Wytwórnia",)
+
+
+def w_folderze_zapisu(sciezka):
+    """Czy plik .md leży w jednym z folderów FOLDERY_ZAPISU sejfu B&C (po rozwiązaniu dowiązań, bez wielkości liter)."""
+    s = sejf._sejf_planu()
+    if not s or not str(sciezka or "").lower().endswith(".md"):
+        return False
+    p = _klucz_stanu(sciezka)
+    for folder in FOLDERY_ZAPISU:
+        baza = _klucz_stanu(os.path.join(s[2], folder))
+        if p.startswith(baza + os.sep):
+            return True
+    return False
+
+
+def _po_zapisie_notatki(sciezka, pokaz, notatka, przed, po, opis, kto, znacznik, nowy):
+    """Wspólny ogon zapisu notatki: ślad dla „Wyślij”, Dziennik zmian, log. Zwraca uwagę albo None."""
+    try:
+        _zapamietaj(sciezka, przed, po, opis, nowy=nowy)
+    except OSError as e:
+        rdzen.log("zapis: nie udało się zapamiętać zmiany %s: %r" % (pokaz, e))
+    kto_dz = _kto_w_dzienniku(kto, znacznik)
+    uwaga = None
+    try:
+        _dopisz_do_dziennika(kto_dz, opis, notatka)
+    except (BladHTTP, OSError) as e:
+        uwaga = "Zapisano, ale nie udało się dopisać śladu do Dziennika zmian: %s" % getattr(e, "komunikat", e)
+        rdzen.log("zapis: dziennik: %s" % uwaga)
+    rdzen.log("Sejf: %s — %s (%s)" % (pokaz, opis, kto_dz))
+    return uwaga
+
+
+def wykonaj_plik(sciezka, pokaz, notatka, wersja, zmiana, kto, znacznik=None):
+    """Zmiana istniejącej notatki z FOLDERY_ZAPISU (np. ocena albo etap pomysłu). `zmiana(dok)` zwraca opis do
+    dziennika; `notatka` = nazwa do wikilinku w Dzienniku. Zwraca {ok, opis, plik, wersja, uwaga?}."""
+    if not w_folderze_zapisu(sciezka):
+        raise BladHTTP(403, "Panel zmienia tylko notatki z folderów: %s." % ", ".join(FOLDERY_ZAPISU))
+    if not _blokada.acquire(timeout=15):
+        raise BladHTTP(409, "Trwa inny zapis do sejfu. Spróbuj za chwilę.")
+    try:
+        _sprzataj_tymczasowe(os.path.dirname(sciezka))
+        przed = _czytaj_bajty(sciezka, pokaz)
+        _sprawdz_wersje(przed, wersja, pokaz)
+        dok = Dokument(przed)
+        _sprawdz_tresc(przed, dok, pokaz)
+        opis = zmiana(dok)
+        po = dok.bajty()
+        if po == przed:
+            raise BladHTTP(409, "Nic się nie zmieniło.")
+        _zapisz(sciezka, po, przed)
+        uwaga = _po_zapisie_notatki(sciezka, pokaz, notatka, przed, po, opis, kto, znacznik, False)
+        nowa = sejf.wersja_bajtow(po)
+    finally:
+        sejf.uniewaznij()
+        _blokada.release()
+    wynik = {"ok": True, "opis": opis, "plik": pokaz, "wersja": nowa}
+    if uwaga:
+        wynik["uwaga"] = uwaga
+    return wynik
+
+
+def utworz_plik(sciezka, pokaz, notatka, bajty, opis, kto, znacznik=None):
+    """Nowa notatka w FOLDERY_ZAPISU (np. pomysł z formularza „Dodaj pomysł”). Istniejący plik = 409 `juz_istnieje`
+    (nic nie jest nadpisywane, także gdy ktoś utworzył go w tej samej chwili)."""
+    if not w_folderze_zapisu(sciezka):
+        raise BladHTTP(403, "Panel tworzy notatki tylko w folderach: %s." % ", ".join(FOLDERY_ZAPISU))
+    if not _blokada.acquire(timeout=15):
+        raise BladHTTP(409, "Trwa inny zapis do sejfu. Spróbuj za chwilę.")
+    try:
+        if os.path.exists(sciezka):
+            raise BladHTTP(409, "Notatka %s już jest w sejfie — wybierz inną nazwę." % os.path.basename(sciezka),
+                           kod="juz_istnieje")
+        folder = os.path.dirname(sciezka)
+        os.makedirs(folder, exist_ok=True)
+        _sprzataj_tymczasowe(folder)
+        try:
+            _zapisz(sciezka, bajty, b"")                       # b"": plik nie może się pojawić w międzyczasie
+        except BladHTTP as e:
+            if e.status == 409:
+                raise BladHTTP(409, "Ktoś utworzył notatkę %s w tej samej chwili." % os.path.basename(sciezka),
+                               kod="juz_istnieje")
+            raise
+        uwaga = _po_zapisie_notatki(sciezka, pokaz, notatka, b"", bajty, opis, kto, znacznik, True)
+    finally:
+        sejf.uniewaznij()
+        _blokada.release()
+    wynik = {"ok": True, "opis": opis, "plik": pokaz, "wersja": sejf.wersja_bajtow(bajty)}
     if uwaga:
         wynik["uwaga"] = uwaga
     return wynik

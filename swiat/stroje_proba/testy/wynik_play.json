@@ -1,11 +1,11 @@
 {
- "czas": "2026-11-18 17:33",
- "skrot": "943ba32a2c47",
+ "czas": "2026-11-19 14:50",
+ "skrot": "7a3275db36ae",
  "wyniki": [
   {
    "punkt": "S01",
    "wynik": "OK",
-   "opis": "klient True, serwer True, podpowiedzi 1, skrót 943ba32a2c47 (lokalnie 943ba32a2c47), haczyk w Aktorzy True; tryb z kowalem (nadano 15)"
+   "opis": "klient True, serwer True, podpowiedzi 1, skrót 7a3275db36ae (lokalnie 7a3275db36ae), haczyk w Aktorzy True; tryb z kowalem (nadano 69)"
   },
   {
    "punkt": "S02",
@@ -15,7 +15,7 @@
   {
    "punkt": "S03",
    "wynik": "OK",
-   "opis": "„>” przy hełmie: atrybut 'rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_rekawice,rycerz_buty,rycerz_miecz,rycerz_tarcza', podgląd 'rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_rekawice,rycerz_buty,rycerz_miecz,rycerz_tarcza' (oczekiwane 'rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_rekawice,rycerz_buty,rycerz_miecz,rycerz_tarcza')"
+   "opis": "„>” przy hełmie: atrybut 'rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_rekawice,rycerz_buty,rycerz_miecz,rycerz_tarcza,rycerz_las_helm', podgląd 'rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_rekawice,rycerz_buty,rycerz_miecz,rycerz_tarcza,rycerz_las_helm' (oczekiwane 'rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_rekawice,rycerz_buty,rycerz_miecz,rycerz_tarcza,rycerz_las_helm')"
   },
   {
    "punkt": "S04",
@@ -25,12 +25,12 @@
   {
    "punkt": "S05",
    "wynik": "OK",
-   "opis": "9 strojów w podglądzie = dane (bryły, atrybut Stroj, cały podgląd nad oknem)"
+   "opis": "18 strojów w podglądzie = dane (bryły, atrybut Stroj, cały podgląd nad oknem; z kompletami stopni)"
   },
   {
    "punkt": "S06",
    "wynik": "OK",
-   "opis": "93 klipów × strojów klatka po klatce; zawis ciała po upadku: {'wojownik/komplet/upadek': 0.0, 'wojownik/golas/upadek': 0.247, 'wojownik/mieszany/upadek': 0.049, 'zwiadowca/komplet/upadek': 0.0, 'zwiadowca/golas/upadek': -0.025, 'zwiadowca/mieszany/upadek': 0.0, 'mag/komplet/upadek': 0.0, 'mag/golas/upadek': 0.198, 'mag/mieszany/upadek': 0.198}"
+   "opis": "186 klipów × strojów klatka po klatce; zawis ciała po upadku: {'wojownik/komplet/upadek': 0.0, 'wojownik/golas/upadek': 0.247, 'wojownik/mieszany/upadek': 0.049, 'wojownik/las/upadek': -0.025, 'wojownik/bagno/upadek': 0.0, 'wojownik/dzungla/upadek': 0.0, 'zwiadowca/komplet/upadek': 0.0, 'zwiadowca/golas/upadek': -0.025, 'zwiadowca/mieszany/upadek': 0.0, 'zwiadowca/las/upadek': -0.053, 'zwiadowca/bagno/upadek': 0.0, 'zwiadowca/dzungla/upadek': -0.059, 'mag/komplet/upadek': 0.0, 'mag/golas/upadek': 0.198, 'mag/mieszany/upadek': 0.198, 'mag/las/upadek': 0.0, 'mag/bagno/upadek': 0.0, 'mag/dzungla/upadek': 0.0}"
   },
   {
    "punkt": "S11",
@@ -62,23 +62,77 @@
   "tryb": {
    "kowal": true,
    "nadane": [
+    "kot_mag_bagno_kapelusz",
+    "kot_mag_bagno_kostur",
+    "kot_mag_bagno_pas",
+    "kot_mag_bagno_szata",
+    "kot_mag_dzungla_kapelusz",
+    "kot_mag_dzungla_kostur",
+    "kot_mag_dzungla_pas",
+    "kot_mag_dzungla_szata",
     "kot_mag_kapelusz",
     "kot_mag_kostur",
+    "kot_mag_las_kapelusz",
+    "kot_mag_las_kostur",
+    "kot_mag_las_pas",
+    "kot_mag_las_szata",
     "kot_mag_pas",
     "kot_mag_szata",
+    "rycerz_bagno_buty",
+    "rycerz_bagno_helm",
+    "rycerz_bagno_miecz",
+    "rycerz_bagno_pas",
+    "rycerz_bagno_rekawice",
+    "rycerz_bagno_tarcza",
+    "rycerz_bagno_zbroja",
     "rycerz_buty",
+    "rycerz_dzungla_buty",
+    "rycerz_dzungla_helm",
+    "rycerz_dzungla_miecz",
+    "rycerz_dzungla_pas",
+    "rycerz_dzungla_rekawice",
+    "rycerz_dzungla_tarcza",
+    "rycerz_dzungla_zbroja",
     "rycerz_helm",
+    "rycerz_las_buty",
+    "rycerz_las_helm",
+    "rycerz_las_miecz",
+    "rycerz_las_pas",
+    "rycerz_las_rekawice",
+    "rycerz_las_tarcza",
+    "rycerz_las_zbroja",
     "rycerz_pas",
     "rycerz_rekawice",
+    "zwiadowca_bagno_buty",
+    "zwiadowca_bagno_kaptur",
+    "zwiadowca_bagno_kurtka",
+    "zwiadowca_bagno_luk",
+    "zwiadowca_bagno_pas",
+    "zwiadowca_bagno_rekawice",
+    "zwiadowca_bagno_sztylet",
     "zwiadowca_buty",
+    "zwiadowca_dzungla_buty",
+    "zwiadowca_dzungla_kaptur",
+    "zwiadowca_dzungla_kurtka",
+    "zwiadowca_dzungla_luk",
+    "zwiadowca_dzungla_pas",
+    "zwiadowca_dzungla_rekawice",
+    "zwiadowca_dzungla_sztylet",
     "zwiadowca_kaptur",
     "zwiadowca_kurtka",
+    "zwiadowca_las_buty",
+    "zwiadowca_las_kaptur",
+    "zwiadowca_las_kurtka",
+    "zwiadowca_las_luk",
+    "zwiadowca_las_pas",
+    "zwiadowca_las_rekawice",
+    "zwiadowca_las_sztylet",
     "zwiadowca_luk",
     "zwiadowca_pas",
     "zwiadowca_rekawice",
     "zwiadowca_sztylet"
    ],
-   "dostepne": "rycerz_miecz,rycerz_tarcza,rycerz_zbroja,rycerz_helm,rycerz_rekawice,rycerz_buty,rycerz_pas,zwiadowca_sztylet,zwiadowca_luk,zwiadowca_kurtka,zwiadowca_kaptur,zwiadowca_rekawice,zwiadowca_buty,zwiadowca_pas,kot_mag_kostur,kot_mag_szata,kot_mag_kapelusz,kot_mag_pas"
+   "dostepne": "rycerz_miecz,rycerz_tarcza,rycerz_zbroja,rycerz_helm,rycerz_rekawice,rycerz_buty,rycerz_pas,rycerz_las_miecz,rycerz_las_tarcza,rycerz_las_zbroja,rycerz_las_helm,rycerz_las_rekawice,rycerz_las_buty,rycerz_las_pas,rycerz_bagno_miecz,rycerz_bagno_tarcza,rycerz_bagno_zbroja,rycerz_bagno_helm,rycerz_bagno_rekawice,rycerz_bagno_buty,rycerz_bagno_pas,rycerz_dzungla_miecz,rycerz_dzungla_tarcza,rycerz_dzungla_zbroja,rycerz_dzungla_helm,rycerz_dzungla_rekawice,rycerz_dzungla_buty,rycerz_dzungla_pas,zwiadowca_sztylet,zwiadowca_luk,zwiadowca_kurtka,zwiadowca_kaptur,zwiadowca_rekawice,zwiadowca_buty,zwiadowca_pas,zwiadowca_las_sztylet,zwiadowca_las_luk,zwiadowca_las_kurtka,zwiadowca_las_kaptur,zwiadowca_las_rekawice,zwiadowca_las_buty,zwiadowca_las_pas,zwiadowca_bagno_sztylet,zwiadowca_bagno_luk,zwiadowca_bagno_kurtka,zwiadowca_bagno_kaptur,zwiadowca_bagno_rekawice,zwiadowca_bagno_buty,zwiadowca_bagno_pas,zwiadowca_dzungla_sztylet,zwiadowca_dzungla_luk,zwiadowca_dzungla_kurtka,zwiadowca_dzungla_kaptur,zwiadowca_dzungla_rekawice,zwiadowca_dzungla_buty,zwiadowca_dzungla_pas,kot_mag_kostur,kot_mag_szata,kot_mag_kapelusz,kot_mag_pas,kot_mag_las_kostur,kot_mag_las_szata,kot_mag_las_kapelusz,kot_mag_las_pas,kot_mag_bagno_kostur,kot_mag_bagno_szata,kot_mag_bagno_kapelusz,kot_mag_bagno_pas,kot_mag_dzungla_kostur,kot_mag_dzungla_szata,kot_mag_dzungla_kapelusz,kot_mag_dzungla_pas"
   },
   "S05": {
    "wojownik_golas": {
@@ -140,6 +194,69 @@
      ],
      "fov": 50,
      "y0": 0.007,
+     "y1": 0.349,
+     "oknoPrawo": 0.71
+    }
+   },
+   "wojownik_las": {
+    "bryly": 144,
+    "oczekiwane": 144,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.432,
+     "x1": 0.58,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.012,
+     "y1": 0.349,
+     "oknoPrawo": 0.71
+    }
+   },
+   "wojownik_bagno": {
+    "bryly": 213,
+    "oczekiwane": 213,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.433,
+     "x1": 0.583,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.015,
+     "y1": 0.349,
+     "oknoPrawo": 0.71
+    }
+   },
+   "wojownik_dzungla": {
+    "bryly": 181,
+    "oczekiwane": 181,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.428,
+     "x1": 0.579,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.01,
      "y1": 0.349,
      "oknoPrawo": 0.71
     }
@@ -207,6 +324,69 @@
      "oknoPrawo": 0.71
     }
    },
+   "zwiadowca_las": {
+    "bryly": 187,
+    "oczekiwane": 187,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.432,
+     "x1": 0.572,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.063,
+     "y1": 0.35,
+     "oknoPrawo": 0.71
+    }
+   },
+   "zwiadowca_bagno": {
+    "bryly": 216,
+    "oczekiwane": 216,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.432,
+     "x1": 0.573,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.061,
+     "y1": 0.35,
+     "oknoPrawo": 0.71
+    }
+   },
+   "zwiadowca_dzungla": {
+    "bryly": 210,
+    "oczekiwane": 210,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.521,
+     "x0": 0.431,
+     "x1": 0.57,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.038,
+     "y1": 0.35,
+     "oknoPrawo": 0.71
+    }
+   },
    "mag_golas": {
     "bryly": 107,
     "oczekiwane": 107,
@@ -267,6 +447,69 @@
      "fov": 50,
      "y0": 0.07,
      "y1": 0.343,
+     "oknoPrawo": 0.71
+    }
+   },
+   "mag_las": {
+    "bryly": 173,
+    "oczekiwane": 173,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.644,
+     "x0": 0.428,
+     "x1": 0.54,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.114,
+     "y1": 0.344,
+     "oknoPrawo": 0.71
+    }
+   },
+   "mag_bagno": {
+    "bryly": 182,
+    "oczekiwane": 182,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.644,
+     "x0": 0.437,
+     "x1": 0.54,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.113,
+     "y1": 0.342,
+     "oknoPrawo": 0.71
+    }
+   },
+   "mag_dzungla": {
+    "bryly": 171,
+    "oczekiwane": 171,
+    "zRuchem": true,
+    "kadr": {
+     "ok": true,
+     "oknoGora": 0.644,
+     "x0": 0.433,
+     "x1": 0.54,
+     "tekst": 22,
+     "oknoLewo": 0.289,
+     "ekran": [
+      2041,
+      1153
+     ],
+     "fov": 50,
+     "y0": 0.09,
+     "y1": 0.342,
      "oknoPrawo": 0.71
     }
    }
@@ -591,6 +834,336 @@
      "rycerz_tarcza": 1.354
     }
    },
+   "wojownik/las/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 1.404,
+     "rycerz_las_miecz": 1.882
+    }
+   },
+   "wojownik/las/ruch": {
+    "klatki": 25,
+    "najnizej": -0.064,
+    "odejscie": 0,
+    "koniec_cialo": 0.14,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 1.491,
+     "rycerz_las_miecz": 1.924
+    }
+   },
+   "wojownik/las/atak": {
+    "klatki": 33,
+    "najnizej": -0.141,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 1.395,
+     "rycerz_las_miecz": 1.865
+    }
+   },
+   "wojownik/las/blok": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 1.404,
+     "rycerz_las_miecz": 1.882
+    }
+   },
+   "wojownik/las/unik": {
+    "klatki": 31,
+    "najnizej": -0.007,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 1.404,
+     "rycerz_las_miecz": 1.882
+    }
+   },
+   "wojownik/las/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 1.404,
+     "rycerz_las_miecz": 1.882
+    }
+   },
+   "wojownik/las/upadek": {
+    "klatki": 61,
+    "najnizej": -0.071,
+    "odejscie": 0,
+    "koniec_cialo": -0.025,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 0.043,
+     "rycerz_las_miecz": -0.071
+    }
+   },
+   "wojownik/las/radosc": {
+    "klatki": 37,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 3.035,
+     "rycerz_las_miecz": 3.912
+    }
+   },
+   "wojownik/las/ciecie": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 1.404,
+     "rycerz_las_miecz": 1.882
+    }
+   },
+   "wojownik/las/kamienna_skora": {
+    "klatki": 45,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 1.404,
+     "rycerz_las_miecz": 1.882
+    }
+   },
+   "wojownik/las/miazdzacy_cios": {
+    "klatki": 51,
+    "najnizej": -0.035,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_las_tarcza": 1.404,
+     "rycerz_las_miecz": 1.882
+    }
+   },
+   "wojownik/bagno/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 1.64,
+     "rycerz_bagno_tarcza": 1.267
+    }
+   },
+   "wojownik/bagno/ruch": {
+    "klatki": 25,
+    "najnizej": -0.064,
+    "odejscie": 0,
+    "koniec_cialo": 0.14,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 1.706,
+     "rycerz_bagno_tarcza": 1.342
+    }
+   },
+   "wojownik/bagno/atak": {
+    "klatki": 33,
+    "najnizej": -0.141,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 1.632,
+     "rycerz_bagno_tarcza": 1.145
+    }
+   },
+   "wojownik/bagno/blok": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 1.64,
+     "rycerz_bagno_tarcza": 1.267
+    }
+   },
+   "wojownik/bagno/unik": {
+    "klatki": 31,
+    "najnizej": -0.007,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 1.64,
+     "rycerz_bagno_tarcza": 1.267
+    }
+   },
+   "wojownik/bagno/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 1.64,
+     "rycerz_bagno_tarcza": 1.267
+    }
+   },
+   "wojownik/bagno/upadek": {
+    "klatki": 61,
+    "najnizej": -0.175,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": -0.175,
+     "rycerz_bagno_tarcza": -0.106
+    }
+   },
+   "wojownik/bagno/radosc": {
+    "klatki": 37,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 3.721,
+     "rycerz_bagno_tarcza": 2.984
+    }
+   },
+   "wojownik/bagno/ciecie": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 1.64,
+     "rycerz_bagno_tarcza": 1.267
+    }
+   },
+   "wojownik/bagno/kamienna_skora": {
+    "klatki": 45,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 1.64,
+     "rycerz_bagno_tarcza": 1.267
+    }
+   },
+   "wojownik/bagno/miazdzacy_cios": {
+    "klatki": 51,
+    "najnizej": -0.037,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_bagno_miecz": 1.64,
+     "rycerz_bagno_tarcza": 1.267
+    }
+   },
+   "wojownik/dzungla/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 1.378,
+     "rycerz_dzungla_tarcza": 1.297
+    }
+   },
+   "wojownik/dzungla/ruch": {
+    "klatki": 25,
+    "najnizej": -0.064,
+    "odejscie": 0,
+    "koniec_cialo": 0.14,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 1.457,
+     "rycerz_dzungla_tarcza": 1.372
+    }
+   },
+   "wojownik/dzungla/atak": {
+    "klatki": 33,
+    "najnizej": -0.141,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 1.374,
+     "rycerz_dzungla_tarcza": 1.175
+    }
+   },
+   "wojownik/dzungla/blok": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 1.378,
+     "rycerz_dzungla_tarcza": 1.297
+    }
+   },
+   "wojownik/dzungla/unik": {
+    "klatki": 31,
+    "najnizej": -0.015,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 1.378,
+     "rycerz_dzungla_tarcza": 1.297
+    }
+   },
+   "wojownik/dzungla/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 1.378,
+     "rycerz_dzungla_tarcza": 1.297
+    }
+   },
+   "wojownik/dzungla/upadek": {
+    "klatki": 61,
+    "najnizej": -0.032,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 0.039,
+     "rycerz_dzungla_tarcza": 0.07
+    }
+   },
+   "wojownik/dzungla/radosc": {
+    "klatki": 37,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 3.485,
+     "rycerz_dzungla_tarcza": 3.212
+    }
+   },
+   "wojownik/dzungla/ciecie": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 1.378,
+     "rycerz_dzungla_tarcza": 1.297
+    }
+   },
+   "wojownik/dzungla/kamienna_skora": {
+    "klatki": 45,
+    "najnizej": -0.016,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 1.378,
+     "rycerz_dzungla_tarcza": 1.297
+    }
+   },
+   "wojownik/dzungla/miazdzacy_cios": {
+    "klatki": 51,
+    "najnizej": -0.048,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "rycerz_dzungla_miecz": 1.378,
+     "rycerz_dzungla_tarcza": 1.297
+    }
+   },
    "zwiadowca/komplet/spoczynek": {
     "klatki": 61,
     "najnizej": -0.0,
@@ -871,6 +1444,306 @@
      "zwiadowca_luk": 1.261
     }
    },
+   "zwiadowca/las/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 1.033,
+     "zwiadowca_las_sztylet": 1.638
+    }
+   },
+   "zwiadowca/las/ruch": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 1.793,
+     "zwiadowca_las_sztylet": 2.066
+    }
+   },
+   "zwiadowca/las/atak": {
+    "klatki": 29,
+    "najnizej": -0.008,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 1.033,
+     "zwiadowca_las_sztylet": 1.638
+    }
+   },
+   "zwiadowca/las/unik": {
+    "klatki": 41,
+    "najnizej": -0.098,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 1.033,
+     "zwiadowca_las_sztylet": 1.638
+    }
+   },
+   "zwiadowca/las/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 1.033,
+     "zwiadowca_las_sztylet": 1.638
+    }
+   },
+   "zwiadowca/las/upadek": {
+    "klatki": 61,
+    "najnizej": -0.056,
+    "odejscie": 0,
+    "koniec_cialo": -0.053,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 0.0,
+     "zwiadowca_las_sztylet": -0.004
+    }
+   },
+   "zwiadowca/las/radosc": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 1.695,
+     "zwiadowca_las_sztylet": 2.197
+    }
+   },
+   "zwiadowca/las/skupienie": {
+    "klatki": 45,
+    "najnizej": -0.509,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 1.033,
+     "zwiadowca_las_sztylet": 1.638
+    }
+   },
+   "zwiadowca/las/uderzenie_z_gory": {
+    "klatki": 47,
+    "najnizej": -0.015,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 1.033,
+     "zwiadowca_las_sztylet": 1.638
+    }
+   },
+   "zwiadowca/las/zatruta_strzala": {
+    "klatki": 55,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_las_luk": 1.033,
+     "zwiadowca_las_sztylet": 1.638
+    }
+   },
+   "zwiadowca/bagno/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 1.585,
+     "zwiadowca_bagno_luk": 1.055
+    }
+   },
+   "zwiadowca/bagno/ruch": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 2.009,
+     "zwiadowca_bagno_luk": 1.793
+    }
+   },
+   "zwiadowca/bagno/atak": {
+    "klatki": 29,
+    "najnizej": -0.008,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 1.585,
+     "zwiadowca_bagno_luk": 1.055
+    }
+   },
+   "zwiadowca/bagno/unik": {
+    "klatki": 41,
+    "najnizej": -0.063,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 1.585,
+     "zwiadowca_bagno_luk": 1.055
+    }
+   },
+   "zwiadowca/bagno/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 1.585,
+     "zwiadowca_bagno_luk": 1.055
+    }
+   },
+   "zwiadowca/bagno/upadek": {
+    "klatki": 61,
+    "najnizej": -0.212,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 0.112,
+     "zwiadowca_bagno_luk": -0.049
+    }
+   },
+   "zwiadowca/bagno/radosc": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 2.149,
+     "zwiadowca_bagno_luk": 1.75
+    }
+   },
+   "zwiadowca/bagno/skupienie": {
+    "klatki": 45,
+    "najnizej": -0.509,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 1.585,
+     "zwiadowca_bagno_luk": 1.055
+    }
+   },
+   "zwiadowca/bagno/uderzenie_z_gory": {
+    "klatki": 47,
+    "najnizej": -0.069,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 1.585,
+     "zwiadowca_bagno_luk": 1.055
+    }
+   },
+   "zwiadowca/bagno/zatruta_strzala": {
+    "klatki": 55,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_bagno_sztylet": 1.585,
+     "zwiadowca_bagno_luk": 1.055
+    }
+   },
+   "zwiadowca/dzungla/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": 1.023,
+     "zwiadowca_dzungla_sztylet": 1.576
+    }
+   },
+   "zwiadowca/dzungla/ruch": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": 1.793,
+     "zwiadowca_dzungla_sztylet": 1.984
+    }
+   },
+   "zwiadowca/dzungla/atak": {
+    "klatki": 29,
+    "najnizej": -0.05,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": 1.023,
+     "zwiadowca_dzungla_sztylet": 1.576
+    }
+   },
+   "zwiadowca/dzungla/unik": {
+    "klatki": 41,
+    "najnizej": -0.046,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": 1.023,
+     "zwiadowca_dzungla_sztylet": 1.576
+    }
+   },
+   "zwiadowca/dzungla/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": 1.023,
+     "zwiadowca_dzungla_sztylet": 1.576
+    }
+   },
+   "zwiadowca/dzungla/upadek": {
+    "klatki": 61,
+    "najnizej": -0.101,
+    "odejscie": 0,
+    "koniec_cialo": -0.059,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": -0.101,
+     "zwiadowca_dzungla_sztylet": 0.004
+    }
+   },
+   "zwiadowca/dzungla/radosc": {
+    "klatki": 49,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": 1.719,
+     "zwiadowca_dzungla_sztylet": 2.14
+    }
+   },
+   "zwiadowca/dzungla/skupienie": {
+    "klatki": 45,
+    "najnizej": -0.509,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": 1.024,
+     "zwiadowca_dzungla_sztylet": 1.576
+    }
+   },
+   "zwiadowca/dzungla/uderzenie_z_gory": {
+    "klatki": 47,
+    "najnizej": -0.051,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": 1.023,
+     "zwiadowca_dzungla_sztylet": 1.576
+    }
+   },
+   "zwiadowca/dzungla/zatruta_strzala": {
+    "klatki": 55,
+    "najnizej": -0.009,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "zwiadowca_dzungla_luk": 1.023,
+     "zwiadowca_dzungla_sztylet": 1.576
+    }
+   },
    "mag/komplet/spoczynek": {
     "klatki": 61,
     "najnizej": 0,
@@ -1140,13 +2013,313 @@
      "kot_mag_kapelusz": 3.038,
      "kot_mag_kostur": 0.2
     }
+   },
+   "mag/las/spoczynek": {
+    "klatki": 61,
+    "najnizej": 0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": 3.024,
+     "kot_mag_las_kostur": 0.198
+    }
+   },
+   "mag/las/ruch": {
+    "klatki": 21,
+    "najnizej": -0.221,
+    "odejscie": 0,
+    "koniec_cialo": -0.194,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": 2.978,
+     "kot_mag_las_kostur": 0.204
+    }
+   },
+   "mag/las/atak": {
+    "klatki": 27,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": 3.024,
+     "kot_mag_las_kostur": 0.198
+    }
+   },
+   "mag/las/unik": {
+    "klatki": 29,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": 3.024,
+     "kot_mag_las_kostur": 0.198
+    }
+   },
+   "mag/las/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": 3.024,
+     "kot_mag_las_kostur": 0.198
+    }
+   },
+   "mag/las/upadek": {
+    "klatki": 61,
+    "najnizej": -0.026,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": -0.026,
+     "kot_mag_las_kostur": 0.099
+    }
+   },
+   "mag/las/radosc": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": 2.933,
+     "kot_mag_las_kostur": 0.466
+    }
+   },
+   "mag/las/bariera": {
+    "klatki": 43,
+    "najnizej": -0.012,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": 3.024,
+     "kot_mag_las_kostur": 0.198
+    }
+   },
+   "mag/las/kula_ognia": {
+    "klatki": 55,
+    "najnizej": -0.002,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": 3.024,
+     "kot_mag_las_kostur": 0.198
+    }
+   },
+   "mag/las/lodowy_pocisk": {
+    "klatki": 47,
+    "najnizej": -0.011,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_las_kapelusz": 3.024,
+     "kot_mag_las_kostur": 0.198
+    }
+   },
+   "mag/bagno/spoczynek": {
+    "klatki": 61,
+    "najnizej": -0.004,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": -0.004,
+     "kot_mag_bagno_kapelusz": 3.03
+    }
+   },
+   "mag/bagno/ruch": {
+    "klatki": 21,
+    "najnizej": -0.221,
+    "odejscie": 0,
+    "koniec_cialo": -0.194,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": 0.003,
+     "kot_mag_bagno_kapelusz": 3.005
+    }
+   },
+   "mag/bagno/atak": {
+    "klatki": 27,
+    "najnizej": -0.004,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": -0.004,
+     "kot_mag_bagno_kapelusz": 3.03
+    }
+   },
+   "mag/bagno/unik": {
+    "klatki": 29,
+    "najnizej": -0.004,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": -0.004,
+     "kot_mag_bagno_kapelusz": 3.03
+    }
+   },
+   "mag/bagno/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.004,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": -0.004,
+     "kot_mag_bagno_kapelusz": 3.03
+    }
+   },
+   "mag/bagno/upadek": {
+    "klatki": 61,
+    "najnizej": -0.004,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": 0.027,
+     "kot_mag_bagno_kapelusz": 0.005
+    }
+   },
+   "mag/bagno/radosc": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": 0.267,
+     "kot_mag_bagno_kapelusz": 3.017
+    }
+   },
+   "mag/bagno/bariera": {
+    "klatki": 43,
+    "najnizej": -0.012,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": -0.004,
+     "kot_mag_bagno_kapelusz": 3.03
+    }
+   },
+   "mag/bagno/kula_ognia": {
+    "klatki": 55,
+    "najnizej": -0.004,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": -0.004,
+     "kot_mag_bagno_kapelusz": 3.03
+    }
+   },
+   "mag/bagno/lodowy_pocisk": {
+    "klatki": 47,
+    "najnizej": -0.011,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_bagno_kostur": -0.004,
+     "kot_mag_bagno_kapelusz": 3.03
+    }
+   },
+   "mag/dzungla/spoczynek": {
+    "klatki": 61,
+    "najnizej": 0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 3.041,
+     "kot_mag_dzungla_kostur": 0.198
+    }
+   },
+   "mag/dzungla/ruch": {
+    "klatki": 21,
+    "najnizej": -0.221,
+    "odejscie": 0,
+    "koniec_cialo": -0.194,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 2.965,
+     "kot_mag_dzungla_kostur": 0.204
+    }
+   },
+   "mag/dzungla/atak": {
+    "klatki": 27,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 3.041,
+     "kot_mag_dzungla_kostur": 0.198
+    }
+   },
+   "mag/dzungla/unik": {
+    "klatki": 29,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 3.041,
+     "kot_mag_dzungla_kostur": 0.198
+    }
+   },
+   "mag/dzungla/trafienie": {
+    "klatki": 21,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 3.041,
+     "kot_mag_dzungla_kostur": 0.198
+    }
+   },
+   "mag/dzungla/upadek": {
+    "klatki": 61,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": 0.0,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 0.029,
+     "kot_mag_dzungla_kostur": 0.162
+    }
+   },
+   "mag/dzungla/radosc": {
+    "klatki": 31,
+    "najnizej": -0.0,
+    "odejscie": 0,
+    "koniec_cialo": -0.0,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 3.043,
+     "kot_mag_dzungla_kostur": 0.466
+    }
+   },
+   "mag/dzungla/bariera": {
+    "klatki": 43,
+    "najnizej": -0.012,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 3.041,
+     "kot_mag_dzungla_kostur": 0.198
+    }
+   },
+   "mag/dzungla/kula_ognia": {
+    "klatki": 55,
+    "najnizej": -0.002,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 3.041,
+     "kot_mag_dzungla_kostur": 0.198
+    }
+   },
+   "mag/dzungla/lodowy_pocisk": {
+    "klatki": 47,
+    "najnizej": -0.011,
+    "odejscie": 0,
+    "koniec_cialo": 0,
+    "koniec_grupy": {
+     "kot_mag_dzungla_kapelusz": 3.041,
+     "kot_mag_dzungla_kostur": 0.198
+    }
    }
   },
   "S11": {
    "ok": true,
    "oknoGora": 0.4032527662212706,
-   "x0": 0.4332240103273518,
-   "x1": 0.5793020425036747,
+   "x0": 0.42828339236089846,
+   "x1": 0.5783140564712457,
    "tekst": 12,
    "oknoLewo": 0.23988006606749143,
    "ekran": [
@@ -1154,8 +2327,8 @@
     1153
    ],
    "fov": 50,
-   "y0": 0.00715582947677255,
-   "y1": 0.34941459715314666,
+   "y0": 0.010131253641993711,
+   "y1": 0.34945771348858956,
    "oknoPrawo": 0.758620699967081
   },
   "S07": {

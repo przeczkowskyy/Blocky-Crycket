@@ -1,0 +1,30 @@
+{
+ "id": "r-20261119-101631-8391",
+ "tytul": "NPC w bazarze: karczmarz, mistrz gier, mag, zbrojmistrz, trener, opiekunka",
+ "opis_md": "- W bazarze stoją prawdziwe postacie zamiast figur z klocków: karczmarz Bolko, mistrz gier Pionek, mag Zefir, zbrojmistrz Radomir, trener Tymon i opiekunka petów Jagoda; kowal Krzesimir dostał tabliczkę.\n- Każda postać ma szkielet i animację: stoi w spoczynku, co kilkanaście sekund robi gest swojej roli, obraca głowę i tułów do gracza i wita go, gdy podejdzie.\n- Podpowiedzi E i okna działają jak dotąd. Dawne figury są tylko schowane — jednym przełącznikiem wracają, więc da się porównać stare z nowym.\n- Do oceny: imiona, wygląd i gesty. Sześciu trenerów mini-gier stanie w nowych sceneriach, gdy te trafią do gry.\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → Enter → TELEPORT → miasteczko (bazar) → podejdź do karczmy, zbrojowni, sklepu magicznego, Training Center, zagrody petów. Porównanie ze starymi figurami: atrybut `NpcWGrze = false` na `Workspace/NpcGra`.\n\n**Próba w grze (19.11, ostatni przebieg 10:11): 15 punktów w porządku, 0 błędów**\n\n| Co sprawdzone | Wynik |\n|---|---|\n| Sześć NPC bazaru | zbudowane, stopy na posadzce, bez kolizji z graczem; figury z klocków schowane |\n| Tabliczki | imię i rola nad każdą postacią, także nad kowalem |\n| Powitanie i wzrok | powitanie raz po podejściu, głowa i tułów skręcają do gracza |\n| Gest roli | trwa ok. 2 s i wraca do spoczynku |\n| Podpowiedź E karczmy | działa w tym samym miejscu |\n| Przełącznik | wyłączenie przywraca figury |\n| Koszt | pętla klienta 0,04 ms na klatkę przy czterech NPC w ruchu; czas klatki 16,7 ms |\n\nCała droga gracza z NPC w bazarze: 13 z 13.\n\n**Obsada (propozycje imion i wyglądu):** Bolko — karczmarz z chochlą; Pionek — mistrz gier, siedzi na stołku przy planszy; Zefir — mag ze spiczastym kapeluszem i kosturem; Radomir — zbrojmistrz z mieczem; Tymon — trener; Jagoda — opiekunka petów z wiadrem; Krzesimir — kowal. Trenerzy mini-gier: Borys (Siła), Iskra (Kondycja), Wiór (Zręczność), Runa (Inteligencja), Fart (Szczęście); przy Pancerzu trenerem jest golem gry.\n\n**Poprawione po zrzutach:** tabliczka maga niżej (niższy kapelusz); tabliczka kowala przed daszkiem kuźni, bo nad głową była zasłonięta; tabliczka znika na czas dymka bazaru, żeby się nie nakładały.\n\n**Znane sprawy:**\n- W próbie bazaru dwa punkty przy zbrojowni nie przeszły: po E nie pokazuje się dawny dymek zastępczy. Przyczyna do ustalenia przy wdrożeniu sklepu, który ten dymek zastępuje oknem.\n- Wnętrza zbrojowni i karczmy są ciemne; lampa sklepu magicznego zasłania część tabliczki maga.\n- Niesprawdzone: telefon, dwóch graczy naraz.\n\nPliki: `swiat/npc_gra/` (opis w `README.md`, zrzuty w `klatki/`, plansza `podglady/npc_razem.jpg`), postacie `swiat/postacie/npc_*.py`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-19T10:16:31+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/NpcGra",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/npc_gra/README.md",
+   "etykieta": "Opis i wybory do oceny"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ]
+}

@@ -1,0 +1,20 @@
+{
+ "id": "r-20261120-012725-5e5e",
+ "tytul": "BONK gotowy w całości — publikujemy do pomiaru?",
+ "opis_md": "- BONK (D-112) zbudowany w całości w nocy: trzy etapy, próba w Studio 33/33, testy 37 OK, płynnie (16,7 ms na klatkę). Obecna gra działa jak przedtem (próba dymna 14/14, zapis 10/10, bohater i stan gracza bez nowych błędów).\n- Etap 3: zamach ręką z pałką widoczny dla wszystkich, pałka na ramieniu, pety podskakują i latają, jajko się kołysze, Strażnik tupie (odpycha, bez obrażeń), napisy u góry w jednym stosie bez nakładania, pad, przyciski co najmniej 44 pt na telefonie i tablecie.\n- Grafiki do strony gry: ikona „BONK!” i trzy miniatury z hasłami (szkice z Higgsfield, napisy dodane u nas). Nic nie wgrane do Roblox.\n- Do decyzji: czy publikujemy BONK jako osobną grę do pomiaru (pytanie 74). Kroki publikacji są w README pakietu.\n\nSzczegóły:\n\nKrótkie demo wideo (ok. 43 s) poszło do Karola na telefon; tu plansza klatek z niego. Sterowanie: komputer — klik albo E; telefon — duży przycisk BONK; pad — X/R2 BONK, B zamyka okno, LB pety, RB Księga, Y sklep i wyklucie, krzyżak w górę prezent.\n\nZnane braki: pad i telefon sprawdzone w emulacji, nie na prawdziwym urządzeniu; próba z dwiema osobami (Team Test) jeszcze nie zrobiona; dźwięki z naszego arkusza (własne dźwięki BONK wymagałyby wgrania audio — limit miesięczny prawie wykorzystany); liczby tempa z rachunku, nie z graczy.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-20T01:27:25+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ],
+ "pytanie": "Publikujemy BONK jako osobną grę w grupie, żeby zmierzyć powroty graczy?"
+}

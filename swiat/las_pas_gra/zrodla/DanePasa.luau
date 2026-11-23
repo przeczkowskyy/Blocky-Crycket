@@ -10,7 +10,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "508a950d46cf",
+	skrot = "509bc60fd049",
 	mapa = {
 		nazwa = "LasPas",
 		zrodlo = "znaczniki",

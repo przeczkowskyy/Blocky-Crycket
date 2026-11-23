@@ -161,9 +161,16 @@ return {
 		komunikat_straznika = "+%d Gemów za pierwsze pokonanie strażnika!",
 	},
 	zapis = {
-		wlaczony = false,
+		wlaczony = true,
 		atrybut = "ZapisPostepu",
 		magazyn = "BC_StanGracza_v1",
+		proba = {
+			atrybut_do = "ZapisProbaDo",
+			atrybut_magazynu = "ZapisProbaMagazyn",
+			atrybut_bledow = "ZapisProbaBledy",
+			przyrostek = "_Proba",
+			czas_s = 900,
+		},
 		przyrostek_studio = "_Studio",
 		klucz = "player_",
 		pola = {
@@ -2235,5 +2242,5 @@ return {
 			{ znana = 9999, nowa = 10000, pula = 5, wynik = { 9999, 5, "ok" } },
 		},
 	},
-	skrot = "2eea2269ad06",
+	skrot = "57a6e3cc7c3d",
 }

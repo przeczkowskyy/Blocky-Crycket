@@ -1,0 +1,206 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Sprawdzian danych gry BEZ Studio: odtwarza klipy z dane/*.json tak, jak zrobi to gra (Motor6D: C0 · Transform · C1⁻¹),
+i sprawdza zdrowy rozsądek: komplet stawów i klipów, zdarzenia w zakresie, pysk idzie do przodu przy ugryzieniu,
+stopy nie wchodzą głęboko pod ziemię w chodzie, pętle się domykają.
+
+    python -B swiat/ewolucja/modele/sprawdz_dane.py
+"""
+import json
+import math
+import os
+import sys
+
+TU = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(TU)))
+if REPO not in sys.path:
+    sys.path.insert(0, REPO)
+
+from swiat.postacie.biblioteka.postac import macierz_obrotu, mnoz, razy_wektor, I3  # noqa: E402
+from swiat.ewolucja.modele import smok_klipy as sk, smok_model as sm  # noqa: E402
+
+DANE = os.path.join(TU, "dane")
+ETAP = os.path.join(TU, "dane_nastepne")       # pliki czekające na przeniesienie do dane/
+
+
+def wczytaj(nazwa):
+    """Plik danych: z folderu etapu, jeśli tam jest, inaczej z dane/."""
+    sciezka = os.path.join(ETAP, nazwa)
+    if not os.path.isfile(sciezka):
+        sciezka = os.path.join(DANE, nazwa)
+    with open(sciezka, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def poslizg(rig, kl, klip):
+    """Największa prędkość stopy względem ziemi (studs/s), gdy smok jedzie z prędkością `predkosc` klipu:
+    liczona na odcinkach, na których kostka leży przy ziemi."""
+    k = kl["klipy"][klip]
+    v, dt = k["predkosc"], k.get("krok", kl["krok"]) / 30.0
+    stopy = [i for i, x in enumerate(rig["kosci"], 1) if x[0].startswith("Noga") and x[0].endswith("3")]
+    pozy = [poza(rig, k, i) for i in range(len(k["probki"]))]
+    najw = 0.0
+    for i in stopy:
+        y0 = min(pz[i][1][1] for pz in pozy)
+        for a, b in zip(pozy, pozy[1:]):
+            if a[i][1][1] < y0 + 0.02 * v / 18.0 + 0.03 and b[i][1][1] < y0 + 0.02 * v / 18.0 + 0.03:
+                najw = max(najw, abs((b[i][1][2] - a[i][1][2]) / dt - v))    # przód to −Z: stopa w podporze jedzie w +Z z prędkością v
+    return najw
+
+
+def przesuw_w_podporze(rig, kl, klip):
+    """Największy przesuw stopy po ziemi (study) w jednym podporze: stopa przy ziemi przez kolejne próbki, smok jedzie
+    z prędkością `predkosc`. Cel rundy 6: poniżej 0,1 studa."""
+    k = kl["klipy"][klip]
+    kk = k.get("krok", kl["krok"])
+    v, dt = k["predkosc"], kk / 30.0
+    stopy = [i for i, x in enumerate(rig["kosci"], 1) if x[0].startswith("Noga") and x[0].endswith("3")]
+    pozy = [poza(rig, k, i) for i in range(len(k["probki"]))]
+    najw = 0.0
+    P = k.get("podpor")
+    if P:
+        # okna podporu z danych: przesuw stopy względem pierwszej klatki podporu (korzeń jedzie z prędkością v)
+        imie = {x[0]: i for i, x in enumerate(rig["kosci"], 1)}
+        n = k["dl"]
+        for st, nazwa in zip(P["start"], P["stopy"]):
+            i = imie[nazwa]
+            for c in range(P["klatki"] + 1):
+                f = (st + c) % n
+                f0 = st % n
+                dz = (pozy[f // kk][i][1][2] - pozy[f0 // kk][i][1][2]) - v * c / 30.0
+                dx = pozy[f // kk][i][1][0] - pozy[f0 // kk][i][1][0]
+                najw = max(najw, math.hypot(dx, dz))
+        return najw
+    for i in stopy:
+        y0 = min(pz[i][1][1] for pz in pozy)
+        pod = [pz[i][1][1] < y0 + 0.03 for pz in pozy]
+        przes = 0.0
+        for j in range(1, len(pozy)):
+            if pod[j] and pod[j - 1]:
+                przes += (pozy[j][i][1][2] - pozy[j - 1][i][1][2]) - v * dt      # stopa w podporze jedzie w +Z z prędkością v
+                najw = max(najw, abs(przes))
+            else:
+                przes = 0.0
+    return najw
+
+
+def poza(rig, klip, nr_probki):
+    """{indeks kości: (R, t)} — układ części kości w świecie dla próbki klipu (None = spoczynek)."""
+    tr = {}
+    if klip is not None:
+        w, o = klip["probki"][nr_probki], 0
+        for i in klip["stawy"]:
+            p = (0.0, 0.0, 0.0)
+            if i in klip["przes"]:
+                p = tuple(v / 1000.0 for v in w[o:o + 3])
+                o += 3
+            r = [v / 10.0 for v in w[o:o + 3]]
+            o += 3
+            tr[i] = (macierz_obrotu(*r), p)                    # fromOrientation = Ry · Rx · Rz, jak macierz_obrotu
+        assert o == len(w), "długość wiersza próbki nie pasuje do listy stawów"
+    swiat = {0: (I3, tuple(rig["hrp"]))}
+    for i, k in enumerate(rig["kosci"], 1):
+        Rp, tp = swiat[k[1]]
+        srodek_rodzica = tuple(rig["hrp"]) if k[1] == 0 else tuple(rig["kosci"][k[1] - 1][5:8])
+        staw, srodek = k[2:5], k[5:8]
+        c0 = tuple(staw[j] - srodek_rodzica[j] for j in range(3))
+        c1 = tuple(staw[j] - srodek[j] for j in range(3))
+        R, p = tr.get(i, (I3, (0.0, 0.0, 0.0)))
+        Rw = mnoz(Rp, R)
+        a = razy_wektor(Rp, tuple(c0[j] + p[j] for j in range(3)))
+        b = razy_wektor(Rw, c1)
+        swiat[i] = (Rw, tuple(tp[j] + a[j] - b[j] for j in range(3)))
+    return swiat
+
+
+def punkt_zaczepu(rig, swiat, nazwa):
+    z = next(x for x in rig["zaczepy"] if x[0] == nazwa)
+    R, t = swiat[z[1]]
+    v = razy_wektor(R, z[2:5])
+    return tuple(t[j] + v[j] for j in range(3))
+
+
+def najnizszy(rig, swiat):
+    """Najniższy punkt części nóg (przybliżenie: środek części minus pół przekątnej pionowej)."""
+    nogi = {i for i, k in enumerate(rig["kosci"], 1) if k[0].startswith("Noga")}
+    srodki = {i: tuple(k[5:8]) for i, k in enumerate(rig["kosci"], 1)}
+    y = 1e9
+    for c in rig["czesci"]:
+        if c[0] in nogi:
+            R, t = swiat[c[0]]
+            v = razy_wektor(R, tuple(c[3 + j] - srodki[c[0]][j] for j in range(3)))
+            y = min(y, t[1] + v[1] - c[10] / 2.0)
+    return y
+
+
+def main():
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+    indeks = wczytaj("indeks.json")
+    klipy_wszystkie = set(sk.KLIPY_PODSTAWOWE) | set(sk.KLIPY_DODATKOWE)
+    bledy = 0
+    for s in indeks["stadia"]:
+        if not s["id"].startswith("smok_") or s["id"] == "smok_jajo":
+            continue
+        rig, kl = wczytaj(s["id"] + "_rig.json"), wczytaj(s["id"] + "_klipy.json")
+        uwagi = []
+        if [k[0] for k in rig["kosci"]] != list(sm.KOSCI):
+            uwagi.append("stawy inne niż KOSCI")
+        if not klipy_wszystkie <= set(kl["klipy"]):
+            uwagi.append("brak klipów: %s" % sorted(klipy_wszystkie - set(kl["klipy"])))
+        if {z[0] for z in rig["zaczepy"]} != set(sm.ZACZEPY):
+            uwagi.append("zaczepy inne niż ZACZEPY")
+        for n, k in kl["klipy"].items():
+            if len(k["probki"]) != k["dl"] // k.get("krok", kl["krok"]) + 1:
+                uwagi.append("%s: liczba próbek" % n)
+            if any(not 0 <= f <= k["dl"] for f in k["zdarzenia"].values()):
+                uwagi.append("%s: zdarzenie poza klipem" % n)
+            if k["petla"] and max(abs(a - b) for a, b in zip(k["probki"][0], k["probki"][-1])) > 2:
+                uwagi.append("%s: pętla się nie domyka" % n)
+        lod = wczytaj(s["id"] + "_lod_rig.json")
+        if [k[0] for k in lod["kosci"]] != list(sm.KOSCI) or {z[0] for z in lod["zaczepy"]} != set(sm.ZACZEPY):
+            uwagi.append("wersja uproszczona: inne stawy albo zaczepy")
+        if lod["liczba_czesci"] > 36:
+            uwagi.append("wersja uproszczona: %d części" % lod["liczba_czesci"])
+        spocz = poza(rig, None, 0)
+        pysk0 = punkt_zaczepu(rig, spocz, "PyskAttachment")
+        g = kl["klipy"]["gryz3"]
+        pysk1 = punkt_zaczepu(rig, poza(rig, g, g["zdarzenia"]["ugryzienie"] // g.get("krok", kl["krok"])), "PyskAttachment")
+        wypad = pysk0[2] - pysk1[2]                              # przód to −Z
+        if wypad < 0.15 * s["promien_gry"]:
+            uwagi.append("gryz3: pysk nie idzie do przodu (%.2f)" % wypad)
+        ch = kl["klipy"]["chod"]
+        dol = min(najnizszy(rig, poza(rig, ch, i)) for i in range(len(ch["probki"])))
+        if dol < -0.12 * s["promien_gry"] - 0.15:
+            uwagi.append("chod: stopy %.2f pod ziemią" % -dol)
+        z = kl["klipy"]["ogon_zamach"]
+        konce = [punkt_zaczepu(rig, poza(rig, z, i), "OgonKoniecAttachment") for i in range(len(z["probki"]))]
+        zasieg = max(math.hypot(p[0], p[2]) for p in konce)
+        pr = {x: kl["klipy"][x].get("predkosc") for x in ("chod", "bieg")}
+        if pr["chod"] and pr["bieg"]:
+            slizg = {x: poslizg(rig, kl, x) for x in pr}
+            przesuw = {x: przesuw_w_podporze(rig, kl, x) for x in pr}
+            if any(kl["klipy"][x].get("krok", kl["krok"]) == 1 for x in pr) and max(przesuw.values()) >= 0.1:
+                uwagi.append("przesuw stopy w podporze %.3f / %.3f studa (cel < 0,1)" % (przesuw["chod"], przesuw["bieg"]))
+            if not (6 <= pr["chod"] <= 8 and 16 <= pr["bieg"] <= 20):
+                uwagi.append("prędkości poza celem: %s" % pr)
+            if max(slizg.values()) > 1.5:
+                uwagi.append("poślizg stóp %.1f / %.1f studs/s" % (slizg["chod"], slizg["bieg"]))
+            if kl["klipy"]["koziolek"]["dl"] != 14 or "portret" not in kl["klipy"]:
+                uwagi.append("brak krótkiego koziołka albo pozy portret")
+            print("           chód %.1f studs/s (poślizg %.2f, przesuw w podporze %.3f st.), bieg %.1f studs/s (poślizg %.2f, przesuw %.3f st.), "
+                  "koziołek %d kl." % (pr["chod"], slizg["chod"], przesuw["chod"], pr["bieg"], slizg["bieg"], przesuw["bieg"],
+                                       kl["klipy"]["koziolek"]["dl"]))
+        print("%-10s części %3d  klipy %2d  wypad pyska %.2f  stopy min %.2f  zasięg ogona %.1f  (promień gry %.1f)%s" % (
+            s["id"], rig["liczba_czesci"], len(kl["klipy"]), wypad, dol, zasieg, s["promien_gry"],
+            ("  UWAGI: " + "; ".join(uwagi)) if uwagi else "  OK"))
+        bledy += len(uwagi)
+    print("RAZEM uwag: %d" % bledy)
+    return 1 if bledy else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

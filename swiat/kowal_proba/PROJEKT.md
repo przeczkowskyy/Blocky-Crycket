@@ -272,3 +272,21 @@ przed i po ulepszeniu oraz diagnoza walki w K06.
 - Mag ma 4 przedmioty — postęp grubszy (różnica klas przy +5: 3,9 pp); pełna równość po dorobieniu rękawic i butów kota.
 - Kuźnia stoi blisko Bramy Leśnej i kryształów Wrót lochów — do oceny na zrzutach z części B.
 - Liczby z symulacji, nie z gry ludzi; jajka i premia petów w kalkulatorze tylko jako wariant „połowa Złota”.
+
+## Sklep (D-106) — kowal zna przedmioty do kupienia (19.11.2026, część bez Studio)
+Status: propozycja; kontener w Studio jeszcze nieprzebudowany. Opis całości: `swiat/sklep_proba/README.md`.
+- **Dane:** `dane.py` składa `przedmioty` z dzisiejszych 18 wpisów `ustawienia.json` (bez zmian) i 54 nowych wpisów
+  wprost z katalogu `swiat/postacie/sklep_przedmioty.json` (`podstawowy`, `waga`, `baza`, `krok`); wszystkie 72 mają
+  też `cena`, `poziom`, `stopien`, `nrStopnia` z katalogu. Dzisiejsze wpisy muszą zgadzać się z katalogiem (inaczej
+  błąd danych). `klasy[k].przedmioty` = lista startowa (łup, okno kowala), `klasy[k].wszystkie` = wszystkie stopnie.
+- **Bez zmian:** łup losuje tylko z listy startowej klasy, podstawowy zestaw, rozbiórka, ulepszenia; okno kowala
+  gracza, który nic nie kupił, wygląda jak dotąd. Kupiony przedmiot ulepsza się jak każdy inny.
+- **Logika:** `kup`, `oferta`, `stacNa`, `czyZalozyc`, `strojZPrzedmiotem` (Luau + lustro + przypadki wzorcowe);
+  `zalozone` pilnuje jednego przedmiotu na slot (bez przymierzalni — najwyższy stopień w slocie).
+- **Serwer:** wejście `Sygnaly/Sklep` (`oferta`, `kup`, `zaloz`), płatność `WydajZloto` (źródło `KowalProba`, cel
+  `zakup_przedmiotu`), atrybut gracza `SklepStacNa`, licznik `LicznikKupna`, atrybut kontenera `WejscieSklepu`.
+- **Reguła zakładania** (kupno i łup): sam zakłada się tylko w pusty slot albo w miejsce przedmiotu niższego stopnia.
+- **Budowa:** nowy obiekt `Sygnaly/Sklep` powstaje przy pełnym `zbuduj.py` (samo `--skrypty` go nie doda).
+- **Do zmiany / ryzyka:** okno kowala pokazuje najwyżej 8 wierszy (kupione założone idą na początek, reszta może się
+  nie zmieścić); moduł `DaneKowala` ma ok. 148 tys. znaków przy granicy 200 tys. — kolejne przypadki wzorcowe trzeba
+  dopisywać oszczędnie; napis łupu „Założony” pokazuje się także wtedy, gdy reguła zostawiła lepszy przedmiot.

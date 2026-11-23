@@ -7,6 +7,9 @@ tags: [badania, rynek, konkurencja, monetyzacja]
 > [!info] W skrócie
 > Roblox jest ogromny (138 mln DAU w Q3 2026), ale pierwszy raz w historii kurczy się rok do roku, a z każdego wydanego Robuxa twórcy zostaje ok. 1/4. Wygrywają symulacje z liczbami „$/s”, jajkami i kradzieżą. Po szczycie popularności takie gry tracą jednak 95–97% graczy w ciągu kilku miesięcy. Tezę z rozmowy „RPG się nie sprzedają” trzeba doprecyzować: dobrze idą RPG-grindery z szybką walką i rosnącymi liczbami, słabo klasyczne RPG z czekaniem i czytaniem. Na Robloxie nie znalazłem gry w stylu Shakes & Fidget. To raczej ostrzeżenie (pętla oparta na czekaniu nie pasuje do tej publiczności) niż wolna nisza. Ocena potencjału: **4/10**. Szansę daje wąskie MVP jednej pętli, nie połączenie czterech gatunków.
 
+> [!note] Nowsza migawka
+> Stan rynku z 19.11.2026 (najpopularniejsze i najszybciej rosnące gry, zasady polecania od czerwca 2026, minimalny budżet reklamy): rozdział „Rynek 19.11.2026 i decyzja biznesowa” w [[Diagnoza 2026-11-19 — prostota i szansa na hit]].
+
 ## 1. Platforma 2025–2026
 
 | Wskaźnik | Wartość | Źródło |

@@ -250,6 +250,7 @@ Rozstrzyga: D-037
 - Grę da się przenieść do grupy w Creator Hub (sprostowanie niżej).
 Szczegóły: Na sesji 14.11 ustalono kierunek: jedna gra w grupie Roblox, repozytorium prywatne (D-044). Nie padło: (1) kto zakłada grupę i jest jej właścicielem — właściciel ma ostatnie słowo nad grą i ustawieniami wypłat; (2) podział wypłat między Karola i Pawła (Roblox pozwala ustawić procentowy podział przychodów grupy między członków); (3) kto tworzy klucz Open Cloud — przy grupie klucz wydaje się na grupę, więc może to zrobić każdy z odpowiednim uprawnieniem; (4) istniejącej gry Pawła nie da się „przenieść” — publikuje się ją z Roblox Studio jako nową grę grupy, więc gra dostaje nowe ID, a animacje i grafiki wgrane na konta prywatne trzeba wgrać ponownie w imieniu grupy (do potwierdzenia przy spisywaniu kroków). Agent spisze kroki po odpowiedzi ([[Zadania]]). Zob. [[Sesja główna 2026-11-14 — zapis ustaleń]], [[Pipeline assetów]].
 Sprostowanie Claude Code z 2026-11-14 do punktu (4): Roblox ma przeniesienie własności gry z konta na grupę. W Creator Hub: Creations → gra → Configure → Settings → Initiate ownership transfer → wybór grupy, w której ma się prawo publikowania; właściciel grupy akceptuje prośbę. Po akceptacji gra na czas przenoszenia staje się prywatna i zamykane są jej serwery, a zmiany zrobione w trakcie nie przechodzą, więc najpierw zapis w Studio. Co dzieje się z animacjami i grafikami wgranymi na konta prywatne, pokazuje okno „Transfer Details” — tego nie sprawdzano. Źródło: create.roblox.com/docs/projects/experience-ownership-transfer.
+Dopisek z 2026-11-20: przy publikacji BONK (D-113) lista twórców na koncie Karola miała tylko „Ja” — grupy nie ma albo Karol nie ma w niej prawa tworzenia. Prywatną wersję testową BONK opublikowano więc na konto Karola. Przed publicznym startem: przeniesienie własności do grupy (Creator Hub → Configure → Settings → Initiate ownership transfer); dźwięki BONK są na koncie Karola, więc po przeniesieniu trzeba dać grze dostęp do nich albo wgrać je w imieniu grupy.
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): Paweł stworzy grupe
 
@@ -515,6 +516,8 @@ Szczegóły: Sesja główna 17.11, 20:57 ([[Sesja główna 2026-11-17 — zapis 
 
 Szczegóły: Jedna liczba w `swiat/stan_gracza/dane.py` (`PUNKTY_SAMO_NA_POZIOM`, 0 = sam wariant z D-097); tabela wariantów w `swiat/stan_gracza/README.md`. Potwory były strojone pod 10 punktów na poziom. Zob. D-097, D-057, pytanie 55.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 59. Szczęście początkującego: premia do pierwszej wygranej?
 - Po skróceniu pasa (D-096) nowy gracz przegrywał pierwszą walkę w ok. co czwartej próbie (73–79% wygranych zależnie od klasy).
@@ -524,6 +527,8 @@ Szczegóły: Jedna liczba w `swiat/stan_gracza/dane.py` (`PUNKTY_SAMO_NA_POZIOM`
 Szczegóły: Jedna liczba (`SZCZESCIE_POCZATKUJACEGO` w `swiat/stan_gracza/dane.py`, 0 = wyłączone) albo atrybut kontenera `SzczesciePoczatkujacego`. Jeśli gracz trafi pierwszy na slime'a 2. poziomu, wygrywa w 73–88% prób. Premia nie dotyczy kolejnych walk, więc nie zmienia tempa lasu. Zob. pytanie 56 (profil klas).
 Dopisek z 2026-11-18 (po regresji końcowej): przy ×1,75 pierwsza walka została w próbach dymnych przegrana 2 razy na 7 — gracz podchodzi do najbliższego slime'a, a ten bywa na 2. albo 3. poziomie (ze slime'em 3. poziomu było 58–72% wygranych). Mnożnik podniesiony do ×2,75: slime 1. i 2. poziomu 99–100%, 3. poziomu 95–96%. Nadużyć się tego praktycznie nie da: gracz bez wygranej pokona trolla w 2–4% prób, Strażnika Gaju w 0%. Dalej jedna liczba z wyłącznikiem; opcje (a)–(c) bez zmian.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 60. Zapis postępu gracza: kiedy włączamy?
 - Kod zapisu jest gotowy w pakiecie stanu gracza i domyślnie wyłączony; sprawdzony tylko bez Studio, na atrapie usługi danych.
@@ -532,7 +537,11 @@ Dopisek z 2026-11-18 (po regresji końcowej): przy ×1,75 pierwsza walka został
 - Do wyboru: (a) włączyć po zmianach po stronie Pawła (lista niżej); (b) włączyć już teraz na próbę tylko w Studio; (c) zostawić wyłączony do czasu przeniesienia pakietu do `src/`.
 
 Szczegóły: Włączenie wymaga dostępu Studio do usług danych (ustawienie gry, zmienia właściciel) i zmian w plikach Pawła: ekran wyboru klasy czeka na wczytanie profilu; klasa wybierana tylko raz (D-081); zakupy drzewka zapisywane razem z profilem; wartości testowe (1000 Gemów) usunięte. Nowy gracz przy włączonym zapisie zaczyna z 0 Złota i 0 Gemów. Dziś pakiet działa tylko w Studio, więc na serwerze gry zapisu sprawdzić się nie da. Pełny opis: `swiat/stan_gracza/README.md`, rozdział „Zapis postępu”. Zob. pytanie 53.
+Dopisek z 2026-11-19: po decyzji D-106 (gra do przejścia od startu do bramy Pustyni) to pytanie blokuje grę na więcej niż jedno posiedzenie — bez zapisu poziom, Złoto i przedmioty znikają po wyjściu. Włączenie wymaga zgody jednej z osób i dostępu Studio do usług danych w ustawieniach gry (robi właściciel gry).
 **Odpowiedź:**
+- Karol (2026-11-19): Tak. Daj zapis postępu.
+Rozstrzyga: D-110
+
 
 ## 61. Kowal: czy robocze zasady z próby zostają?
 - Kowal na próbę stoi w Studio (D-102): łup przedmiotów z walk, rozbieranie zapasów na materiały, ulepszenia +1…+5.
@@ -543,6 +552,8 @@ Szczegóły: Włączenie wymaga dostępu Studio do usług danych (ustawienie gry
 Szczegóły: Projekt i tabele: `swiat/kowal_proba/PROJEKT.md`; raport w panelu „Kowal w bazarze: rozbieranie i ulepszanie przedmiotów (D-102)”. Koszty: 150 / 300 / 450 / 650 / 900 Złota i 1 / 2 / 3 / 4 / 6 materiałów; w symulacji pierwsze ulepszenie po ok. 8 minutach lasu, las się nie skraca, Bagno skraca się o ok. 13%. Okno jest tymczasowe; docelowe robi Paweł (pytanie 57). Bez tierów przedmiotów (D-051: „nie teraz”).
 Dopisek z 2026-11-18: przy działającym kowalu przymierzalnia strojów (D-071) pokazuje i zakłada tylko posiadane przedmioty, a „Dawnego wyglądu” nie ma — nieposiadane po prostu znikają z listy, bez wyjaśnienia. Do wyboru przy okazji: przymierzalnia pozwala przymierzyć wszystko na podglądzie, a do walki liczą się tylko posiadane; albo zostają tylko posiadane z napisem „Resztę przedmiotów zdobędziesz w walkach”.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 62. Dżungla: czy potwory, nazwy i trudność z próby zostają?
 - Dżungla stoi w Studio jako trzeci biom; jej potwory to propozycje agenta na podstawie zarysu biomów.
@@ -553,6 +564,8 @@ Dopisek z 2026-11-18: przy działającym kowalu przymierzalnia strojów (D-071) 
 Szczegóły: Potwory i liczby: raport „Dżungla stoi w Studio: trzeci biom do przejścia”; modele: raport „Dżungla: pięć potworów z Blendera do oceny”. Poziomy potworów 17–23 z kalkulatora tempa. Zarys: `swiat/biomy/PLAN_BIOMOW.md` (propozycja). Karol 17.11 o Bagnie: „Strażnik Topieli musi być trudny” — tę samą miarę agent przyjął dla Dżungli.
 Dopisek z 2026-11-18 (własne efekty umiejętności): do oceny doszły (1) napisy na banerach inne niż nazwy w silniku — „Usypiający pyłek”, „Plunięcie jadem”, „Ukąszenie”, „Kokosy z góry”, „Kamuflaż”; (2) kły Węża mało kontrastowe na jasnej posadzce areny; (3) płyty Pancernika szare jak on sam; (4) czy Wąż ma mieć własną ozdobę trucizny; (5) fala na ziemi przy kokosach; (6) dźwięki: pyłek gra „zarodniki”, jad „plusk galarety” — do odsłuchu. Raport: „Dżungla: własne efekty umiejętności potworów”.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 63. Postać gracza w świecie: bohater klasy zamiast awatara?
 - Dziś po świecie chodzi zwykły awatar Roblox, a bohater klasy (Wojownik, Zwiadowca, Mag) pojawia się tylko w walce.
@@ -563,6 +576,8 @@ Szczegóły: Próba powstaje w `swiat/bohater_swiat/` (kontener `Workspace/Bohat
 Dopisek z 2026-11-18 (po próbie w Studio): bohater chodzi po świecie w stroju gracza u wszystkich trzech klas; raport w panelu „Bohater klasy chodzi po świecie zamiast awatara” ze zrzutami i modelami 3D. Wyłącznik bez przebudowy: atrybut `BohaterWSwiecie = false` na `Workspace/BohaterSwiat`. Na komputerze 60 klatek na sekundę także z dwunastoma bohaterami naraz; telefon niesprawdzony. Drugi wybór przy okazji: bieg liczony przez kod (jest dziś) czy ręcznie zrobiony klip biegu w modelach postaci.
 Dopisek z 2026-11-18 (wieczór): bieg liczony przez kod został poprawiony — prostsze kolana, praca rąk, poły stroju i szata kota w ruchu, brak ślizgu stopy przy przeszkodzie. Paski klatek trzech klas są w raporcie „Bohater w świecie: nowy bieg trzech klas”. Wybór „bieg z kodu czy ręczny klip w modelach” zostaje otwarty.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 64. Mini-gry w stylu walki: co zostaje, co zmienić?
 - Karol 18.11 zlecił mini-gry „pod takimi kątami i w takich efektach jak walki”; próba stoi w Studio (`Workspace/TreningProba`).
@@ -570,7 +585,10 @@ Dopisek z 2026-11-18 (wieczór): bieg liczony przez kod został poprawiony — p
 - Osobno do oceny: wielkość napisów na telefonie, kadr Siły i Run, kiedy sypie się konfetti.
 
 Szczegóły: Kamera stoi nisko i z ukosa (kąt 44–51° zamiast 70°), dojeżdża w odliczaniu i robi zbliżenie na postać po rundzie; przy trafieniach wyskakują komiksowe napisy, po rundzie z punktem statystyki sypie się konfetti; ćwiczy bohater klasy (zależy od pytania 63). Zasady gier, przyrosty i dźwięki są bez zmian. Drobne wybory: (1) duże słowa — „SERIA 5!” zajmuje ok. ćwierci szerokości ekranu 667 × 375 — zmniejszyć na telefonie czy zostawić; (2) Siła: bohater stoi półprzezroczysty przed kamerą, a kule stref zostają w kadrze zbliżenia po rundzie — chować je jak miecz; (3) Runy: kadr zza ramienia przycina bohatera przy lewej krawędzi; (4) konfetti za punkt statystyki (dziś), po każdej ukończonej rundzie albo tylko po rundzie bez pudła; (5) słowa Siły „PAF!”, „ŁUP!”, „TRACH!”, „BAM!”, „POW!” zamiast pochwał; (6) postać obraca się do kamery po rundzie; (7) radość kota-Maga jest mało widoczna (klip z pakietu bohatera). Zrzuty i wynik próby: raport w panelu „Mini-gry Training Center w stylu walki: kamera, napisy, konfetti”; opis wyborów 14–17 w `swiat/trening_proba/PROJEKT.md`.
+Dopisek z 2026-11-19: Karol zdecydował o otoczeniu (D-108) — mini-gry w sceneriach krain zamiast areny w murach; kamera, napisy i konfetti zostają do oceny jak wyżej.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 65. Stare zadania z 12–17.11: zamknąć te dziewięć?
 - Przy przeglądzie listy zadań dziewięć pozycji wygląda na nieaktualne, ale to nie agent o tym decyduje.
@@ -578,6 +596,8 @@ Szczegóły: Kamera stoi nisko i z ukosa (kąt 44–51° zamiast 70°), dojeżd�
 
 Szczegóły: (1) obejrzeć walkę v2 i raport „Walka v2 na ekranie” z decyzją o obrysie postaci — walkę zastąpił silnik v3; (2) spisać błędy z 13.11 w `Workspace/TestWalki` — to stary prototyp; (3) mapa teleportacji jako grafika z ramką i pinami (Backlog) — działa teleport przez chmury (D-075, D-076); (4) porównanie Krzywego Miasteczka w Blenderze i w Roblox, prośba Pawła z 14.11 — decyzja o Blenderze zapadła (D-029); (5) obejrzeć demo `Workspace/DemoLesnaBaza` z 12.11; (6) Krzywe Miasteczko: kolorystyka i czytelność budynków (pytanie 33) — miasteczko jest dziś bazarem (D-084); (7) „odpowiedzieć na pytania 50 i 51” oraz „na pytanie 52” — pytania mają odpowiedzi, zostały tylko wybory z raportu „Kalkulator balansu” i dopiski pod pytaniami 6, 8, 9, 32 i 38; (8) Paweł: `git pull`, panel, imię w Ustawieniach, pytanie 27 — pytanie zdjęte 16.11, Paweł korzysta z panelu i Telegrama; (9) zadania dla agenta osoby (D-072) — decyzja zatwierdzona, nie wiadomo, czy część Pawła jest zrobiona.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — Karol 20.11: większość starych spraw jest nieaktualna — dziewięć zadań z listy zamknięte jak w wariancie (a) (przeniesione do „Zrobione” jako zdjęte).
+
 
 ## 66. Nowa muzyka: które z pięciu utworów zostają?
 - Karol 18.11 zlecił „zaprojektuj pozostałe muzyki”; powstało pięć utworów po 90 s: walka, walka ze Strażnikiem, mini-gry, drugi utwór Bagna, drugi utwór Dżungli.
@@ -587,6 +607,8 @@ Szczegóły: (1) obejrzeć walkę v2 i raport „Walka v2 na ekranie” z decyzj
 Szczegóły: Utwory są z tego samego generatora i w tej samej palecie instrumentów co pierwsza partia (ElevenLabs Music v2.5 przez Higgsfield, 65,4 kredytu, zostało 139,6). Nikt ich jeszcze nie słyszał — pliki poszły do Karola na telefon, gotowe wersje trafią do `assets/audio/muzyka/`. Do Roblox wejdą jako jeden plik z pięcioma utworami (gra odtwarza odcinki), żeby zużyć jedno wgranie zamiast pięciu: konto ma 10 wgrań audio na miesiąc, 6 zużytych, 2 pójdą na muzykę Bagna i Dżungli z pierwszej partii. Wgranie dopiero po odsłuchu i wyraźnej zgodzie. Kto wybiera: Karol (dźwięk i muzyka, D-093); Paweł może zgłosić uwagi.
 Dopisek z 2026-11-18 (po obróbce i próbie w Studio): gotowe wersje są w `assets/audio/muzyka/` (pełne `.mp3` do odsłuchu, `_petla.ogg` do gry), a wspólny plik na jedno wgranie to `assets/audio/arkusz/muzyka_arkusz_b.ogg` (6 min 35 s). Gra już przełącza muzykę na walkę, Strażnika i mini-grę — w próbie z dźwiękiem zastępczym, bo nic z tej partii nie jest wgrane. Uwaga do odsłuchu: utwór mini-gier ma w pełnej wersji cichszy wstęp (ok. 7,5 s), którego w grze nie będzie. Raport w panelu: „Muzyka: Bagno i Dżungla wgrane, pięć nowych utworów, muzyka walki i mini-gier w grze”.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — muzyka do B&C czeka razem z całą grą (D-115); limit wgrań audio w tym miesiącu prawie wykorzystany. Pliki zostają w `assets/audio/muzyka/`; wybór utworów wraca przy publikacji B&C.
+
 
 ## 67. Rasy: te same klocki co człowiek czy własne proporcje?
 - Pilotaż (elf, ork) stoi na klockach Rycerza: każdy przedmiot człowieka pasuje od razu, klipy klas działają bez zmian.
@@ -597,6 +619,8 @@ Szczegóły: To pytanie z sekcji „Do ustalenia” notatki [[Rasy — rzuty dla
 Dopisek z 2026-11-18: komplet sześciu ras stoi na tym założeniu — plansza zbiorcza obok człowieka w raporcie „Sześć ras z rzutów Pawła: komplet modeli do oceny”. Najdalej od rzutu jest goblin (na rysunku duża głowa i cienkie ręce) i ork (masywne ciało).
 Dopisek z 2026-11-18 (Paweł w rozmowie z Claude Code, do potwierdzenia w panelu): „w momencie wybierania rasy (…) wyświetli się zamiast ludzika bazowego model, który zrobił Karol, zależnie od rasy, z bazowym ubraniem” — ekran wyboru pokazuje już figury z `Workspace/RasyProba` (dzisiejsze klocki i skale, wariant a).
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 68. Rasa a klasa Mag: Mag jest kotem
 - Mag to kot z własnym ciałem; rasy są ciałem człowieka, więc szata i kapelusz Maga na nie nie pasują.
@@ -606,6 +630,8 @@ Dopisek z 2026-11-18 (Paweł w rozmowie z Claude Code, do potwierdzenia w panelu
 Szczegóły: Wyszło przy budowie modeli ras (D-104): przedmioty mają typ ciała (`czlowiek` albo `kot`, D-071) i założenie szaty kota na ciało człowieka kończy się błędem. Dotyczy też logiki ras, którą robi sesja Pawła (D-079), i ekranu wyboru (D-081). Opis: `swiat/postacie/RASY.md` pkt 9.
 Dopisek z 2026-11-18 (Paweł w rozmowie z Claude Code, do potwierdzenia w panelu): „po wyborze ten model ma być na graczu (…) gracz wybierze demona i chodzi demonem; dziś są modele rycerza, łucznika i kotka, a chciałbym, żeby ten model był zamiast tego” — czyli rasa zamiast modelu klasy także u Maga (bliżej wariantu a: Mag na ciele rasy; brakuje przedmiotów i klipów Maga dla ciała człowieka).
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
+
 
 ## 69. Rasy: drobne wybory wyglądu
 - Przy modelach ras wyszło kilka małych wyborów; pilotaż przyjął robocze odpowiedzi.
@@ -615,4 +641,210 @@ Dopisek z 2026-11-18 (Paweł w rozmowie z Claude Code, do potwierdzenia w panelu
 Szczegóły: (1) Hełm i kaptur dziś chowają włosy w całości, a uszy przechodzą przez ściankę — zostawić, chować też uszy czy robić hełmy z wycięciami na uszy i rogi; (2) spodenki orka: w zamówieniu rzutu brązowe, na rysunku wielokolorowe, model ma brązowe (zlewają się z butami); (3) goblin: pierwszy rzut czy „wariant 2” (większa głowa, cieńsze ręce) — w budowie jest pierwszy; (4) buty: rasy mają brązowe buty jako część ciała, goły Rycerz i Zwiadowca są boso — ujednolicić?; (5) rękawice bez palców mają dłoń w kolorze skóry człowieka, więc ork dostaje ludzkie dłonie — przedmioty mają brać kolor skóry rasy?; (6) spoczynek rasy na ekranie wyboru: klipy są skopiowane z Rycerza (ręka jak do miecza) — zrobić neutralny?; (7) demon: ikona wyboru ma spiczaste uszy, rzut ich nie ma — model będzie bez uszu; (8) Półbóg: czy aureola i świecące oczy zostają pod hełmem (wygląd zależy też od pytania 47). Opis i liczby: `swiat/postacie/RASY.md` pkt 8 i 9.
 Dopisek z 2026-11-18 (po komplecie sześciu ras): doszły trzy punkty. (9) Rogi demona: połowa siedzi w hełmie i kapturze, wystają ok. 0,4 studa nad nie — te same trzy możliwości co przy uszach. (10) Ogon demona jest sztywny na biodrach; ruchomy ogon wymagałby własnych kości, a wtedy demon nie dzieli klipów z człowiekiem. (11) Uszy goblina wystają przez hełm najbardziej (ok. 0,7 studa), uszy orka są prawie całe schowane. Raport: „Sześć ras z rzutów Pawła: komplet modeli do oceny”.
 **Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
 
+
+## 70. Strażnicy Bagna i Dżungli: zdjąć im 30% życia?
+- Symulacja przejścia gry: z samym bohaterem gracz wygrywa ze Strażnikiem Topieli i Wężem Stu Lian 12–28% walk i co siódmy–ósmy gracz odbija się od nich pięć razy lub więcej.
+- Propozycja: obu Strażnikom −30% życia (ostrożniej −15%) i potworom Dżungli +25% doświadczenia; utyka wtedy 2–3% graczy, a gra skraca się tylko z 75 do 66 minut.
+- Do wyboru: (a) −30% i +25%; (b) −15% i +25%; (c) bez zmian — Strażnicy mają być trudni, gracz ma sięgać po mini-gry, pety i przedmioty.
+
+Szczegóły: Karol 17.11 ustalił na czacie, że Strażnik Topieli ma być trudny — dlatego to pytanie, a nie zmiana. Z mini-grami, petami i kowalem utyka dziś 0–4% graczy, więc trudność Strażników wymusza korzystanie z dodatków; bez dodatków boli (niecierpliwy gracz utyka w 21–42% przypadków). Osobna sprawa z tego samego rachunku: kara za przegraną zabiera graczowi, który nie wydaje, 27% zarobionego Złota (niecierpliwemu 42%) — do rozstrzygnięcia razem z propozycjami D-097–D-100. Liczby i założenia: `swiat/przejscie_gry/PRZEJSCIE_W_LICZBACH.md`; raport w panelu „Przejście gry w liczbach…”.
+**Odpowiedź:**
+- Karol (2026-11-19): Nie wiem czy 30% to nie za dużo. Gracz słusznie ma się pomęczyć. Może jakieś 15%?
+Rozstrzyga: D-111 (życie −15%); doświadczenie z potworów Dżungli +25% zostaje otwarte
+
+
+## 71. Paweł: makieta okna „Shop” a sklep zbrojmistrza
+- W Studio stoi skrypt Pawła `ShopClient` z makietą okna „Shop”; przy zbrojowni otwierał się razem z tymczasowym oknem sklepu Karola.
+- Sklep chowa dziś makietę u gracza przy zbrojowni (tylko w grze, niczego nie zmienia w miejscu); wyłącznik: atrybut `ChowajOknoShop = false` na `Workspace/SklepProba`.
+- Do wyboru: (a) tak zostaje do czasu docelowego okna Pawła; (b) wyłączyć chowanie; (c) Paweł podpina swoje okno pod kupno i tymczasowe okno znika.
+
+Szczegóły: Skryptu `ShopClient` nie ma w repozytorium ani w `src/` — jest tylko w miejscu gry, więc narzędzia go nie widzą; prośba do Pawła o dodanie go do repo razem z nowymi oknami (Kowal, Mag, sklepy). Umowa dla okna sklepu (pola przedmiotu, prośba `kup <id>`, odmowy) jest opisana w `swiat/sklep_proba/README.md` i `swiat/postacie/SKLEP_PRZEDMIOTY.md`. Kliknięcie w samą figurę zbrojmistrza otwiera dziś makietę Pawła, a E — okno sklepu. To pytanie do Pawła (jego okna, D-093).
+**Odpowiedź:**
+- Karol Balucki (2026-11-21): a
+
+## 72. Przyciąć grę do jednego rdzenia: który wariant?
+- Film twórcy hitu i nasza diagnoza z 13.11 mówią to samo: jedna prosta czynność, jedna liczba, moment do nagrania, telefon najpierw, szybko do prawdziwych graczy.
+- (a) Szybki grinder: walka rozstrzyga się w 1–2 s w świecie, potwór odlatuje, pełna walka tylko przy Strażnikach; gracz widzi jedną liczbę „Moc”; karczma, Twierdza, drzewka, rasy, plansza, dungeony, arena i gildie zamrożone do czasu danych.
+- (b) BONK: gracz sam uderza potwory w czasie rzeczywistym — więcej pracy, mocniejszy moment do nagrania. (c) Zostaje obecny kształt, tylko dopieszczamy.
+- Osobno: kiedy pierwsza publiczna wersja testowa i czy wydajemy Robuxy na reklamę.
+
+Szczegóły: Pełna analiza, tabela zasad i lista konfliktów z zatwierdzonymi decyzjami: [[Diagnoza 2026-11-19 — prostota i szansa na hit]]. Rekomendacja agenta: (a) jako najszybsza droga do graczy, (b) jeśli pomiar pokaże, że rdzeń jest za bierny. Zamrożenie nie kasuje kodu — systemy wracają, gdy gracze zostają (bramka z [[Ocena potencjału gry]]: powroty następnego dnia 15–20%). Przycięcie dotyka plików i decyzji Pawła (wybór klasy, drzewko, okna) — potrzebne zdanie obu osób. Przed jakimkolwiek wypuszczeniem i tak trzeba: sprawdzić grę na prawdziwym telefonie, przenieść ją z prób w Studio do prawdziwej gry i włączyć telemetrię (D-023).
+Dopisek z 2026-11-19 (wieczór, po przeglądzie rynku): rekomendacja agenta zmienia się na (b) BONK z fizyką — trendy listopada to ragdoll i rzucanie (Hyper Realistic Ragdoll, Throw Food For Animals), jajka i pety oraz urocze zwierzęta (Cat Battles), a algorytm od czerwca nagradza powroty w oknie 28 dni i grę ze znajomymi. Proponowana decyzja biznesowa: jedna gra naraz, publiczna wersja testowa w ok. 3 tygodnie, progi z góry (co najmniej 30% powrotów następnego dnia → reklama ok. 35 tys. Robux i aktualizacje co tydzień; 15–30% → poprawki rdzenia; poniżej 15% → inny rdzeń z tych samych zasobów), bez klonu „Steal an Egg”. Szczegóły: rozdział „Rynek 19.11.2026 i decyzja biznesowa” w [[Diagnoza 2026-11-19 — prostota i szansa na hit]].
+**Odpowiedź:**
+- Karol (2026-11-19): Okej. Może to zrobimy. Podczas nocy na Opusie zrób tę grę w całości. To jest prosta gra, wedle twojego opisu. Zezwalam na wszystko w tej gestii oraz na korzystanie z Higgsfield.
+Rozstrzyga: D-112
+
+## 73. Ring Potworów jako druga gra: kiedy budujemy?
+- Karol i Paweł 19.11: druga gra — jajka, potwory z Księgi, trening AFK, wspólny ring serwera, na którym kilka potworów bije się do ostatniego.
+- Ocena agenta: mocny pomysł, w pokazaniu się i momencie do nagrania mocniejszy od BONK; używa najwięcej z tego, co mamy (silnik walki, modele potworów, jajka, areny).
+- Do wyboru: (a) po pomiarze BONK jako druga próba; (b) zaraz po nocnej budowie BONK, równolegle; (c) Ring zamiast BONK.
+
+Szczegóły: Opis, ocena wobec zasad z filmu i sześć poprawek agenta (przycisk dopingu w walce, rundy po ligach Mocy, nagroda dla każdego uczestnika, rytm rund, bez skojarzeń z walkami zwierząt i hazardem, Siła trenera bez utraty postępu): [[Ring Potworów — pomysł]]. Nocna budowa BONK tworzy wspólne klocki (jajka, pety, zapis, efekty, mapy), które Ring też wykorzysta.
+**Odpowiedź:**
+- Claude Code na polecenie Karola (2026-11-20): nieaktualne — zastąpione oceną w Wytwórni pomysłów (D-115): Ring Potworów jest pomysłem w lejku (`Wytwórnia/Pomysły/Ring Potworów`), a kolejność budowy ustala sesja według karty oceny i najtańszego testu (pytanie 75).
+
+
+## 74. BONK: publikujemy jako osobną grę do pomiaru?
+- BONK zbudowany w nocy 19/20.11: trzy krainy, pałki, pety, Strażnicy; próba w Studio 33/33, ikona i trzy miniatury gotowe.
+- Publikacja to decyzja ludzi (D-112): nowe miejsce w grupie (D-044), kroki w `swiat/bonk/README.md`.
+- Do wyboru: (a) publikujemy po próbie we dwóch; (b) najpierw poprawki po waszym graniu, potem publikacja; (c) nie publikujemy, wracamy do B&C.
+
+Szczegóły: Cel pomiaru i progi z propozycji decyzji biznesowej (co najmniej 30% powrotów następnego dnia → reklama i aktualizacje co tydzień; 15–30% → poprawki rdzenia; poniżej 15% → inny rdzeń) w [[Diagnoza 2026-11-19 — prostota i szansa na hit]]. Opis gry i stan budowy: [[BONK — projekt prototypu]]. Raport w panelu ze zrzutami i planszą klatek demo.
+**Odpowiedź:**
+- Karol (2026-11-20): A — publikujemy po próbie we dwóch.
+Rozstrzyga: D-113
+
+## 75. Wytwórnia: który pomysł idzie do najtańszego testu?
+- Na karcie oceny (agent, 20.11): Monster Evolution 26/30, Sleeping Giant Heist 25, Ring Potworów 23, Smash Tower 23, BONK naprawiony (Chain Reaction) 22, BONK dziś 19, B&C 13.
+- Każdy pomysł ma w notatce najtańszy test na 2–3 dni; buduje się jeden naraz.
+- Do wyboru: jeden z pomysłów do testu albo inny — oceńcie kartą w panelu (Wytwórnia).
+
+Szczegóły: Notatki i oceny: [[00 Wytwórnia pomysłów]] (lejek, krytyka agenta, pre-mortem). Oceny agenta to szacunek, nie dane od graczy — spór rozstrzygnie test z ludźmi. Badanie rynku i zasady twórcy, którego ogląda Karol: [[Radar trendów]], [[Mózg — zasady hitu Roblox]].
+Dopisek z 2026-11-20 (sesja główna 18:59): Karol i Paweł przedstawili po jednym nowym pomyśle — pet-arenę Karola i „Super Kitty Brawlers” Pawła (propozycja D-116: karty do lejka). Karol: oba trzeba jeszcze ocenić kartą i krytyką agenta; wyboru do najtańszego testu nie było. Zapis: [[Sesja główna 2026-11-20 — zapis ustaleń]].
+**Odpowiedź:**
+- Karol (2026-11-20): do budowy idzie Pet Arena (pomysł z sesji 20.11; agent 27/30, Karol 28/30).
+Rozstrzyga: D-118
+
+
+
+## 76. BONK: porzucić czy dokończyć próbę i pomiar?
+- Karol na sesji 20.11 zaproponował porzucić BONK i budować nowe gry na jego zasobach, ale zastrzegł, że to nie jest ostateczna decyzja i czeka na opinię agenta.
+- D-113 (podpis Karola) mówi co innego: próba we dwóch, publikacja jako osobna gra i pomiar powrotów.
+- Do wyboru: (a) porzucamy, zasoby idą do nowych gier; (b) kończymy próbę i pomiar, potem decyzja według progów; (c) poprawiamy BONK (wariant Chain Reaction, 22/30) i traktujemy go jako jeden z testów obok nowych pomysłów.
+Rozstrzyga: D-117
+
+Szczegóły: Źródło: [[Sesja główna 2026-11-20 — zapis ustaleń]] (18:52 propozycja, 18:58 zastrzeżenie). Stan faktyczny: BONK ma prywatną wersję testową (D-113), w Wytwórni 19/30 z werdyktem „popraw” ([[BONK]]), a Karol po zagraniu napisał, że znudził mu się po paru minutach ([[Lekcje z prototypów]]). Uwaga agenta (D-114, nie z rozmowy): porzucenie bez pomiaru kłóci się z zasadą wytwórni „prawdziwi gracze rozstrzygają spory” ([[00 Wytwórnia pomysłów]]), a pomiar jest tani, bo gra już stoi; z drugiej strony czas jednej gry naraz jest ograniczony. Pełna opinia po krytycznym myśleniu jest zadaniem w [[Zadania]].
+**Odpowiedź:**
+- Karol (2026-11-20): (a) porzucamy BONK, zasoby i wiedza idą do Pet Areny — „to nie tak, że czas i tokeny były stracone”. Opinia agenta (zgodna): BONK nudzi nawet nas, naprawa i tak wymienia rdzeń, a pomiar słabej gry nie powie nic o rynku; prywatna wersja testowa zostaje.
+
+## 77. Pet Arena: wystawić prywatną wersję testową dla Was dwóch?
+- Prototyp stoi w Studio w pliku lokalnym (próba 28/28); żeby zagrać we dwóch i z telefonu, trzeba go opublikować jako prywatną grę, jak BONK 20.11.
+- Do wyboru: (a) tak — agent publikuje prywatnie na koncie Karola i zaprasza Pawła; (b) najpierw Karol gra sam w Studio i mówi, co poprawić; (c) nie teraz.
+- Publicznie nic nie idzie bez osobnej decyzji.
+
+Szczegóły: Publikacja prywatna sprawdza też prawdziwy zapis postępu i telefon. Kroki są w `swiat/pet_arena/README.md`. Projekt i lista rzeczy do strojenia: [[Pet Arena — projekt prototypu]]; karta: [[Pet Arena]]. Przeniesienie do grupy przed startem publicznym — pytanie 31.
+Dopisek z 2026-11-21: po notatce [[Nowa era Roblox 2026 — pięć zmian]] agent poleca (a) zaraz po przebudowie z 21.11 — okno trendu trwa tygodnie, a dopracowywanie gry, zanim zagra w nią ktoś spoza zespołu, to błąd, przed którym film ostrzega.
+Dopisek z 2026-11-21 (po analizie trendu): okno jest krótkie — prywatny test z ludźmi spoza zespołu do ok. 28.11 (Roblox pozwala zaprosić do 10 testerów; najlepiej osoby 16+, bo tacy będą pierwszymi publicznymi graczami), publiczny test najpóźniej ok. 5.12. Szczegóły: [[Pet Arena — ocena wobec trendu 2026-11-21]].
+**Odpowiedź:**
+- Karol (2026-11-21): (a) tak — zgoda na prywatną wersję testową („zgadzam się na wszystko”); publicznie nic bez osobnej decyzji.
+
+- Karol Balucki (2026-11-21): tak
+
+## 78. Pet Arena: loch czy jaskrawa, zamknięta arena?
+- Karol na sesji 21.11 myślał o lochu albo więzieniu, ale w grę będą grać też dzieci, a one wolą jaskrawe kolory; nie wybrał.
+- Pewne jest tylko, że arena ma być zamkniętą przestrzenią.
+- Do wyboru: (a) loch albo więzienie; (b) zamknięta arena w jaskrawych kolorach, np. stadion albo koloseum z zabawek; (c) agent pokazuje po jednym zrzucie obu wersji i wtedy wybór.
+
+Szczegóły: [[Sesja główna 2026-11-21 — zapis ustaleń]] (18:28–18:29). Karol dodał, że liczy się tu z cudzym zdaniem — z zapisu nie wynika, czy mówił do agenta, czy do Pawła. Zdanie agenta (D-114): (b) — gra ma być dla każdej grupy wiekowej (D-022), a ciemna klatka z bijącymi się zwierzakami budzi skojarzenie z walkami zwierząt, którego mieliśmy unikać ([[Ring Potworów]]); zmienię zdanie, jeśli dzieci znajomych wybiorą ciemną wersję ze zrzutów. Od odpowiedzi zależy przebudowa sceny (propozycja D-119).
+**Odpowiedź:**
+
+## 79. Pet Arena: czy Karol decyduje o niej sam?
+- Karol 21.11, sam na sesji: agent może wykonywać jego polecenia o Pet Arenie bez wiedzy Pawła, bo to jego pomysł i projekt.
+- D-043, ustalona przez obu 14.11, mówi: jedna osoba decyduje, druga potwierdza.
+- Do wyboru: (a) wyjątek — przy Pet Arenie wystarcza podpis Karola; (b) bez zmian — Karol prowadzi grę, a Paweł potwierdza albo cofa jak dotąd.
+
+Szczegóły: [[Sesja główna 2026-11-21 — zapis ustaleń]] (18:31). Pawła nie było na sesji; D-118 (budowa Pet Areny) dalej czeka na jego potwierdzenie, a 20.11 miał wątpliwość co do pomysłu. Dla pracy agenta oba warianty znaczą to samo: zlecenia Karola wykonuje od razu, na roboczych ustaleniach z jednym podpisem. Różnica jest tylko taka, czy Paweł może decyzję o Pet Arenie cofnąć. Zasadę podpisów zmieniają obaj, więc najlepiej, żeby odpowiedział tu Paweł.
+Rozstrzyga: D-124
+**Odpowiedź:**
+
+## 80. Konto klipów z wirtualnymi streamerami: w jakiej wersji?
+- Pomysł Karola (21.11): konto na Instagramie i TikToku, streamerzy z Higgsfield reagują na gry Roblox, w tym naszą.
+- Agent pomoże w wersji jawnej: postacie oznaczone jako AI, nasza gra oznaczona jako nasza; w wersji udającej prawdziwych streamerów i ukrywającej promocję — nie (zasady platform, prawo o ukrytej reklamie, widzowie-dzieci).
+- Do wyboru: (a) wersja jawna, próba 15 klipów; (b) odłożyć, aż gra będzie miała dobre powroty; (c) inaczej — jak.
+Rozstrzyga: D-126
+
+Szczegóły: Ocena, zasady i progi próby: [[Konto klipów z wirtualnymi streamerami — pomysł]]; zasady marketingu: [[00 Marketing]]. Koszt klipu w kredytach Higgsfield do wyceny w sesji marketingowej.
+**Odpowiedź:**
+
+## 81. Po Pet Arenie: wieczór trzech zabawek?
+- Karol po graniu (21.11): Pet Arena jest mało wciągająca, „to chyba nie ten pomysł”. Agent zaleca zakończyć ją w tym kształcie.
+- Propozycja agenta: zamiast kolejnej całej gry — trzy małe zabawki (sama czynność, 2 minuty grania na telefonie każda), wybór tej, przy której chce się „jeszcze raz”.
+- Zabawki: (1) jesteś potworem i spychasz innych (drążek i szarża), (2) armata potworów — celujesz i burzysz zamki z klocków, (3) legowisko olbrzyma — skradasz się po jajka, hałas go budzi.
+- Do wyboru: (a) wszystkie trzy (ok. 0,45 mln tokenów, jedna noc); (b) tylko wskazane; (c) inny pomysł Karola albo Pawła; (d) przerwa i rozmowa we dwóch.
+
+Szczegóły: Dlaczego zabawki, a nie gra: [[Lekcje z prototypów]] (wpis o Pet Arenie) i bramka „próba zabawki” w [[Karta oceny pomysłu]]. Zabawki stanęłyby w obecnym prywatnym miejscu testowym jako trzy wejścia; używają tego, co mamy (sterowanie potworem i wybicia z Pet Areny, generator klocków, Strażnicy i jajka).
+Dopisek z 2026-11-21 (po prośbie Karola o lepsze pomysły wyprowadzone z rynku): zamiast trzech zabawek z pierwszej wersji — cztery kierunki z danych tygodnia w [[Kierunki z rynku 2026-11-21]]; agent poleca dwie zabawki na jedną noc: „Eat & Evolve” (jesteś potworem, jesz i rośniesz) i „Lure a Monster” (rzut przynęty, zwabianie potworów).
+**Odpowiedź:**
+- Karol (2026-11-21): „Ok, puść je” — dwie zabawki polecone przez agenta („Eat & Evolve” i „Lure a Monster”). Wybór po graniu na telefonie.
+
+## 82. Następna gra: zagrać w trzy gry i wybrać kierunek
+- Analiza z 22.11 poleca pomysł „Zdąż przed nocą” (w dzień wyprowadzasz potwory z nor do obozu, o zmierzchu Olbrzym zabiera to, co nie zdążyło za bramę); pewność niska do średniej.
+- Zanim cokolwiek zbudujemy: Karol gra po 10 minut w Stay the Night, Steal An Egg i Clean The Ballpit! (pół godziny, bez kosztu).
+- Do wyboru: (a) wciąga Stay the Night — próbka „Zdąż przed nocą” (3–4 wieczory); (b) wciąga Ballpit — próbka „Odkop potwora” (2–3 wieczory); (c) nic nie wciąga — nie budujemy; (d) inny kierunek.
+
+Szczegóły: [[Następna gra — rekomendacja 2026-11-22]] (jedna strona), pełne opisy: [[Trzy pomysły na następną grę (2026-11-22)]], karta pomysłu: [[Bring Monsters Home Before Dark]]. Ważny wniosek analizy: sam pomysł to mniejsza część wyniku — gra-wzór była mała przez pięć tygodni i wybiła się cotygodniowymi aktualizacjami.
+Dopisek z 2026-11-22 (po walidacji wybranego kierunku): pierwotny kształt „Zdąż przed nocą” jest słabszy, niż wyglądał — zob. [[Walidacja kierunku noc i Olbrzym (2026-11-22)]]. Agent proponuje zmieniony kształt „Guard Your Monsters From the Giant” ([[Projekt próbki — Guard Your Monsters From the Giant]]): budowa próbki 3–4 wieczory, bramka po pierwszym wieczorze (sama scena nocy pokazana dwóm–trzem osobom), potem próba z 8–12 osobami spoza zespołu. Do decyzji Karola (i Pawła): budujemy próbkę / rozmowa we dwóch / inny kierunek.
+Dopisek z 2026-11-22 (południe, po odrzuceniu porwania przez Karola): do ustalenia, jak wygląda noc. (a) oblężenie — Olbrzym uderza w płot, „czy wytrzymał” (zaleca agent, pewność niska); (b) kradzież między graczami (największe liczby na rynku, fala ma cztery miesiące i dziesiątki kopii); (c) fale i potwory-wieżyczki (pomysł Karola; walidacja: ta odmiana gaśnie); (d) inny kierunek. Szczegóły: [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]].
+Dopisek z 2026-11-22 (po porzuceniu pomysłu z Olbrzymem): nowa krótka lista z fal rosnących — (A) jesteś potworem, każda ewolucja to losowanie; (B) armia potworów, która idzie za tobą i walczy; (C) odsłoń potwora własnymi rękami, zmywając bryłę; rezerwowo jazda na potworze i wspólne skradanie. Najpierw weto ludzi (które odpadają od razu), potem agent szuka przegranych dla reszty. Szczegóły: [[Kierunki z rynku 2026-11-22]].
+Dopisek z 2026-11-22 (wybór z liczb): Karol nie chce rozstrzygać gustem; agent wskazał kierunek A („jesteś potworem”) i go sprawdził — przechodzi minimum, z niskim sufitem ([[Walidacja kierunku jesteś potworem (2026-11-22)]]). Budowa próbki: [[Projekt próbki — Monster Evolution]].
+**Odpowiedź:**
+- Karol (2026-11-22): wybiera pomysł drugi, „Zdąż przed nocą” („najlepiej brzmi”); nie chce testu własnego gustu — „nie ma znaczenia, co mnie pociąga, tylko co obecnie pociąga internet”. Budowy jeszcze nie zlecił; agent pogłębia analizę tego kierunku (przegrane próby, rozbiór najbliższych gier, dowody z filmów w sieci, projekt próbki).
+- Karol (2026-11-22, południe): „Bez sensu jest ta kradzież. Może zrobilibyśmy jakieś fale do przejścia, a zwierzaki będą wieżyczkami i atakować fale potworów. Nie wiem” — porwanie przez Olbrzyma odrzucone; fale to luźna propozycja, nie decyzja. Agent: po walidacji fal nie poleca, zaleca oblężenie; czeka na wybór.
+- Karol (2026-11-22, po walidacji fal): „W takim razie nie przywiązujmy się do tego pomysłu i lećmy gdzie indziej. Podchodźmy do problemu optymalnie. Jeżeli jakiś pomysł ma być porażką, to po co w niego inwestować. Znajdźmy ten wschodzący trend i dodajmy nasz wyjątkowy faktor” — pomysł z Olbrzymem porzucony; kierunek następnej gry nadal otwarty.
+- Karol (2026-11-22): „Co sam uważasz, że ma największy potencjał? Jakie znaczenie ma moje zdanie, skoro będzie ono subiektywne, a nie obiektywne? Liczą się liczby i statystyki”, a po wskazaniu kierunku A: „Okej. Zgoda. Zdajemy się na realne liczby i statystykę. Daj mi tu link do Ant Evolution i rozpocznij budowę”.
+
+Rozstrzyga: D-129 (budowa próbki Monster Evolution); zasada wyboru: D-128.
+
+## 83. Monster Evolution: animacje chodu potworów
+- Żaden z ośmiu modeli nie ma szkieletu; w próbce ruszają się proceduralnie (podskok, ściskanie, pochylenie).
+- Lider fali wygrywa wykonaniem: Karol wskazał u niego grafikę, responsywność i animacje chodzenia.
+- Do wyboru: (a) zostajemy przy ruchu proceduralnym do próby z graczami; (b) Karol robi szkielety i chód dla ośmiu form w Blenderze przed próbą; (c) tylko dla dwóch–trzech pierwszych form, które widzi każdy gracz.
+
+Szczegóły: [[Projekt próbki — Monster Evolution]], sekcja „Po etapie 1”. Agent zaleca (c): pierwsze minuty decydują o pierwszym wrażeniu, a osiem pełnych animacji to dni pracy w oknie 2–4 tygodni.
+Dopisek z 2026-11-22: jedno dwunożne zwierzę na standardowym szkielecie postaci Roblox rozwiązałoby animacje bez pracy w Blenderze — zob. pytanie 84.
+Dopisek z 2026-11-22 (po próbie technicznej): gotowe animacje postaci Roblox działają na dwunożnym modelu w skali 0,5–6 razy; od Karola potrzebne byłyby najwyżej części ciała w stylu klocków, bez szkieletu i bez animacji. Chód jest ludzki, wyprostowany.
+**Odpowiedź:**
+- Karol (2026-11-22): zgoda na wgrywanie modeli smoka („masz pełne zgody”). Animacje robi agent w Blenderze jako klipy z biblioteki postaci; smok czworonożny, bez standardowego szkieletu postaci.
+
+## 84. Monster Evolution: jedno zwierzę — które?
+- Karol zapytał, czy nie robić jednego zwierzęcia; dane to popierają (jeden rozpoznawalny stwór w tytule, jeden szkielet na osiem form).
+- Sama zamiana zwierzęcia nie robi hitu: klony lidera z innym zwierzęciem mają 27–427 graczy.
+- Do wyboru: (a) małpka → goryl → olbrzymi goryl — zaleca agent; (b) jaszczurka → smok chodzący, wymaga szkieletu z Blendera, tytuł zajęty; (c) wilk; (d) zostaje osiem różnych potworów.
+- Agent przerobi drabinę na (a) po etapie 2, jeśli nikt nie wybierze inaczej; zmiana jest odwracalna (formy są w tabeli danych).
+
+Szczegóły: [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]]; uzasadnienie i ryzyka także w [[Projekt próbki — Monster Evolution]].
+Dopisek z 2026-11-22 (po próbie technicznej): wariant (a) jest wykonalny bez Blendera — zob. [[Projekt próbki — Monster Evolution]], „Próba techniczna”. Próbny model małpy jest surowy; przeróbka całej gry to 150–200 tys. tokenów i czeka na wybór zwierzęcia.
+**Odpowiedź:**
+- Karol (2026-11-22): „Nie wiem, może smok? Ale jeśli sugerujesz małpę, to może być, ale więcej zdolności uda nam się zrobić na smokach”. Agent zmienia zalecenie na smoka: w tej mechanice klon ze smokiem ma ok. cztery razy więcej graczy niż klon z małpą, pięć nowych gier ze smokami ma razem 27,5 tys. graczy, smok daje najwięcej zdolności i najlepszą ostatnią formę, a legowisko ze skarbem to naturalny motyw smoka; próba techniczna pokazała też, że przewaga małpy (gotowy chód) jest mniejsza, niż zakładał. Ustalenie robocze: smok chodzący, bez swobodnego latania (krótki ślizg jako zdolność późnych form); tytuł „Dragon Evolution” jest zajęty — wolne w wyszukiwarce 22.11: „Dragon Lair Evolution”, „Evolve a Dragon”, „Baby Dragon Evolution”. Przeróbka po etapie 3; modelu smoka nie mamy — na start złoży go agent z klocków, docelowy model w naszym stylu to praca Karola.
+- Karol (2026-11-22): „Tak. Masz pełne zgody, tytuł jest dobry.” — tytuł „Dragon Lair Evolution”; styl smoka: kierunek „Żarołuska” z arkusza stylu (zalecenie agenta, bez sprzeciwu Karola).
+
+Rozstrzyga: D-138 (tytuł); zwierzę — smok, w D-137.
+
+## 85. Baseball for treasure: skąd gracz bierze siłę?
+- Na sesji 22.11 padły trzy wersje i żadna nie wygrała.
+- (a) hantla, którą postać podnosi sama (Paweł); (b) podciąganie albo pompki, jak drążek we wzorze (Karol); (c) bez osobnego treningu — siłę dają kij i ulepszenia (Karol pod koniec, zdanie urwane).
+- Karol zostawił to zdaniu agenta; Paweł do (c) się nie odniósł.
+
+Szczegóły: [[Sesja główna 2026-11-22 — zapis ustaleń]] (18:56–18:57, 19:00). Łączy się z propozycją D-132: kij roboczo daje mnożnik siły. Zdanie agenta (D-114): zostawić trening, czyli (a) albo (b) — różnica między nimi to tylko wygląd, a hantla odróżnia nas od drążka ze wzoru. Wariant (c) zabiera grze powód, żeby zostawić ją włączoną i wrócić następnego dnia, oraz jeden z trzech wydatków złota: we wzorze drążek robi powtórzenie co pół sekundy także pod nieobecność gracza, a drążków do kupienia jest 46 ([[Rozbiór wzoru — Throw Food For Animals]]). Zmienię zdanie, jeśli próbka bez treningu trzyma graczy tak samo długo. Karta: [[Baseball for treasure]].
+**Odpowiedź:**
+
+## 86. Baseball, ameba czy smok: co budujemy dalej?
+- Na sesji 22.11 Paweł przedstawił Baseball for treasure, a Karol rozbudowę gry o smoku: od ameby, z osobnymi serwerami na poziomy.
+- Karol: gra o smoku może zostać przerobiona, jeśli agent uzna nowe pomysły za lepsze; obaj czekają na ocenę.
+- Do wyboru po ocenie: (a) smok bez zmian idzie do próby z graczami, baseball jako następna próbka; (b) baseball od razu, smok wstrzymany; (c) smok rozbudowany od ameby; (d) żadne — szukamy dalej.
+
+Szczegóły: [[Sesja główna 2026-11-22 — zapis ustaleń]] (18:57–18:59, 19:01); propozycje D-133 (ameba) i D-134 (najpierw ocena). Pełnej oceny jeszcze nie ma — to zadanie w [[Zadania]] (sprawdzenie rynku po mechanice baseballu ok. 0,2 mln tokenów; start po poleceniu na czacie). Wstępne zdanie agenta (D-114, hipoteza): (a) z dopiskiem. Gra o smoku stoi, jest opublikowana prywatnie i czeka na graczy, nie na budowę, więc przerabianie jej przed pomiarem znów rozstrzygałoby gustem (D-128). Próbka jednej pętli baseballu może powstać równolegle, jeśli pomysł przejdzie sprawdzenie rynku — okno fali liczymy do ok. 6.12 ([[Baseball for treasure]], „Krytyka agenta”). Ameby w kształcie z sesji nie polecam: najbliższa gra o ewolucji komórki spadła z 11,5 tys. graczy do 62 ([[Walidacja kierunku jesteś potworem (2026-11-22)]]).
+Dopisek z 2026-11-22 (sesja główna 19:39): na drugiej, minutowej sesji Karol wrócił do tego pytania, ale nie wybrał żadnej z dróg. Poprosił agenta o odmiany baseballu łatające słabe punkty z oceny (jego przykład: potworek zamiast skarbu — propozycja D-136) i o pokrewne gry tego typu; uznał też, że kryterium „Inni gracze” nie powinno obniżać oceny (D-135). Paweł nie zabrał głosu. Zapis: [[Sesja główna 2026-11-22 (2) — zapis ustaleń]].
+Dopisek z 2026-11-22 (wieczór; Karol: „Co powinniśmy teraz zrobić… Musimy na czymś definitywnie przystanąć”; agent, D-114): zalecenie — stajemy na metodzie z datą, nie na guście: (1) gra o smoku zamrożona bez zmian i idzie do graczy w tym tygodniu; (2) baseball dostaje sprawdzenie rynku po mechanice (ok. 0,2 mln tokenów), a jeśli przejdzie — próbkę jednej pętli w dwa wieczory na kodzie smoka (zapis, gablota jak legowisko, ulepszenia, pomiar), z warstwą ragdolla (piłka przewraca postacie na trasie lotu); (3) ci sami gracze grają w obie, ok. 30.11 wybór jednej gry z liczb, zwycięzca dostaje cztery tygodnie cotygodniowych aktualizacji, przegrany idzie do szuflady; do tego czasu żadnych nowych budów. Ameba z serwerami poziomów — nie (gra o ewolucji komórki: 11,5 tys. → 62 graczy; trzy różne budowy ciała to trzy razy więcej modeli; osobne serwery rozbijają małą grę na puste serwery). Ragdoll jako czysta piaskownica — nie (ponad sto gier od października, pierwsza fala traci 25–45% tygodniowo); jako warstwa w grze — tak.
+Dopisek z 2026-11-22 (21:00, po sprawdzeniu baseballu): agent ok. 20:30 polecił baseball pod warunkiem, że sprawdzenie nie znajdzie cmentarza — znalazło ([[Walidacja Baseball for treasure (2026-11-22)]]). Zgodnie z tym warunkiem zalecenie zmienia się na: **gra o smoku, wydana publicznie w tym tygodniu** — dane z fali rzutu mówią, że wygrywały tylko kopie wydane w dwa tygodnie po wybiciu lidera; lider fali ewolucji jest na listach od 14–15.11, więc okno smoka liczymy do ok. 29.11. Przed wydaniem jeden wieczór poprawek pierwszego wrażenia (pisklę i skrzydła, miniatura z czarną sylwetką i znakiem zapytania — cecha 4 z 9 wygranych kopii i 0 z 9 przegranych). Publiczne wydanie wymaga osobnej zgody ludzi.
+**Odpowiedź:**
+- Karol (2026-11-22, wieczór): „Zgadzam się z tą wizją. Lecimy ze smokami” — gra o smoku do końca, wydanie we wtorek–środę 24–25.11; baseball wstrzymany, ameba z serwerami poziomów nie wchodzi.
+
+Rozstrzyga: D-137.
+
+## 87. Sklep w grze o smoku: ceny i łączenie mnożników
+- Kod sklepu jest w grze, ale wyłączony. Produkty i przepustki w Roblox założymy dopiero po Waszym „tak”, bo ceny to decyzja ludzi.
+- Propozycja agenta, bez płatnych losowań:
+  - przepustki: 2x GROWTH za 199 R$ i VIP LAIR (złoto legowiska ×1,5, złoty sztandar) za 249 R$;
+  - złoto: 1000 za 25 R$, 6000 za 99 R$, 25 000 za 299 R$;
+  - podwójny wzrost na 15 min za 39 R$.
+- Do wyboru: (a) te ceny; (b) inne ceny; (c) sklep dopiero po pierwszym tygodniu.
+- Drugie pytanie: czy 15-minutowy podwójny wzrost łączy się z przepustką, dając ×4?
+
+Szczegóły: kod, sprawdzenia i uzasadnienie każdej ceny opisuje sekcja „Odczucie walki, krótkie powitanie, tempo, sklep (odczucie1)” w `swiat/ewolucja/README.md`, stan gry jest w [[Projekt próbki — Monster Evolution]].
+- ProcessReceipt sprawdzono na udawanym sklepie: nagroda zapisuje się przed potwierdzeniem i nie da się jej dostać dwa razy.
+- Zdanie agenta (D-114): (a) oraz łączenie do ×4. Pierwsza fala graczy po wydaniu to największa szansa na przychód, więc sklep powinien być od pierwszego dnia. Łączenie mnożników to w grach o wzroście norma, a gracze się go spodziewają.
+- Zmienię zdanie, jeśli próba z ludźmi pokaże, że ×4 przeskakuje stadia tak szybko, że gra traci cel. Wtedy zostaje (a) bez łączenia.
+**Odpowiedź:**

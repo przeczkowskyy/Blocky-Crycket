@@ -1,0 +1,26 @@
+{
+ "id": "r-20261122-165815-69fb",
+ "tytul": "Gra o ewolucji: wersja ze smokiem opublikowana prywatnie",
+ "opis_md": "**Gra o ewolucji — wersja ze smokiem opublikowana prywatnie: https://www.roblox.com/games/93704244631419**\n\n## Co się zmieniło\n- Osiem form to teraz osiem stadiów jednego smoka: od pisklęcia (HATCHLING) do pradawnego smoka (ANCIENT DRAGON). Model powstaje z klocków, nogi, ogon, szczęka i skrzydła ruszają się osobno.\n- Zdolności smoka: ugryzienie, uderzenie ogonem, iskra, podmuch skrzydeł, ogień, ryk, krótki ślizg, pożoga. Swobodnego latania nie ma.\n- Odmiany (złota, kryształowa, rubinowa, tęczowa) widać teraz także u innych graczy.\n- Kulki stoją tuż przy wyjściu z legowiska, więc pierwsza jest w zasięgu od razu.\n- Napis na łące: „DRAGON LAIR EVOLUTION” (tytuł roboczy).\n\n## Sprawdzone\n- Testy logiki 23/23, próba w Studio 21/21 bez błędów, układ na telefonie 7/7.\n- Dwa cele tempa wypadają za wcześnie (druga forma po 0:17, piąta po 5:12); reszta w normie.\n\n## Słabe miejsca\n- Wygląd wystarcza do próby, ale nie na ikonę: dwa pierwsze stadia przypominają małe jaszczurki, a skrzydeł z kamery od góry prawie nie widać.\n- Nadal nikt nie sprawdził gry na prawdziwym telefonie.\n\n## Do ludzi\n- Zagrać z telefonu i zapisać, czy gra startuje, w której minucie chciało się wyjść i co nie działało w sterowaniu.\n- Wybrać tytuł ze słowem „Dragon” i zdecydować o docelowym modelu smoka.\n- Zebrać 8–12 graczy spoza zespołu do próby.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-22T16:58:15+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "EwolucjaGra",
+   "etykieta": "Kontener w Studio"
+  },
+  {
+   "typ": "notatka",
+   "cel": "Projekt próbki — Monster Evolution",
+   "etykieta": "Projekt próbki — Monster Evolution"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ]
+}

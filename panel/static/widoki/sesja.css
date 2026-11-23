@@ -200,3 +200,14 @@
   .sesja-miernik { flex: none; width: 80px; }
   .sesja-osoby { flex: 1 1 auto; }
 }
+
+/* temat sesji (20.11): lista wyboru pod nagłówkiem, widzą ją wszyscy */
+.sesja-temat { display: flex; flex-direction: column; gap: 6px; padding: 10px 14px; }
+.sesja-temat[hidden], .sesja-temat-inne[hidden] { display: none; }
+.sesja-temat-etykieta { margin: 0; }
+.sesja-temat-rzad { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.sesja-temat-lista { flex: 1 1 220px; min-width: 0; max-width: 560px; min-height: 44px; }
+.sesja-temat-nazwa { overflow-wrap: anywhere; }
+.sesja-temat-inne { display: flex; gap: 8px; align-items: center; }
+.sesja-temat-tekst { flex: 1; min-width: 0; min-height: 44px; }
+.sesja-temat p { margin: 0; }

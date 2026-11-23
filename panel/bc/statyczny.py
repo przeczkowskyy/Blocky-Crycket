@@ -210,6 +210,13 @@ def eksportuj(app, folder, czas=None):
     # 3) sejf
     trasa("/api/sejf/plan")
     trasa("/api/sesje/agenda")
+    # Wytwórnia (bc/wytwornia.py): lejek, karty pomysłów i pulpity gier — klucze jak w widoku (encodeURIComponent)
+    wyt = trasa("/api/wytwornia") or {}
+    for p in wyt.get("pomysly") or []:
+        if isinstance(p, dict) and p.get("id"):
+            trasa("/api/wytwornia/pomysly/%s" % enc(p["id"]))
+            if p["id"] in (wyt.get("gry") or []):
+                trasa("/api/wytwornia/gry/%s" % enc(p["id"]))
     try:
         siec = _tylko_repo(_wywolaj(app, "/api/sejf/siec")[0] or {})
     except Exception as e:

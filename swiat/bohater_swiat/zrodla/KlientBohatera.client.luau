@@ -745,7 +745,8 @@ local function uzgodnij()
 			table.insert(kandydaci, { id = wlasciciel, odl = odl, lokalny = lokalny })
 		end
 		for _, p in Players:GetPlayers() do
-			local klasa = L.klasa(D, p:GetAttribute(D.atrybut_klasy))
+			-- BezBohatera (gra BONK, swiat/bonk, 19.11.2026): gracz gra własnym awatarem, bez bohatera klasy
+			local klasa = if p:GetAttribute("BezBohatera") == true then nil else L.klasa(D, p:GetAttribute(D.atrybut_klasy))
 			local napis = nil
 			if klasa ~= nil then
 				local atrybut = atrybutyStroju[klasa]

@@ -1,27 +1,31 @@
 # -*- coding: utf-8 -*-
-"""Testy zapisu postępu (18.11.2026, propozycja; zapis DOMYŚLNIE WYŁĄCZONY) — bez Studio, bez sieci.
+"""Testy zapisu postępu (18.11.2026; włączony 19.11.2026 decyzją D-110) — bez Studio, bez sieci.
 
     python -B swiat/stan_gracza/testy/test_zapisu.py
 
 PRAWDZIWY SerwerStanu.server.luau + Moduly/ZapisStanu w luau_mini, z atrapą DataStore (testy/atrapa_roblox.Magazyn)
 wspólną dla kilku serwerów: zapis i odczyt między sesjami, migracja, dwa serwery naraz (blokada sesji), błąd usługi
 przy wczytaniu, zapisie i zamknięciu serwera, zepsuty i przyszły profil, limit rozmiaru, wyjście gracza w trakcie
-zapisu i wczytywania, liczba zapytań w czasie, Studio bez dostępu do usług danych, zapis domyślnie wyłączony,
-pamięć biomu (PamiecGracza) z zapisu. Lustro logiki (migracja, sprawdzanie profilu) jest w test_stanu.py (przypadki).
+zapisu i wczytywania, liczba zapytań w czasie, Studio bez dostępu do usług danych, zapis domyślnie włączony i wyłącznik
+atrybutem, pamięć biomu (PamiecGracza) z zapisu, dane treningu w profilu; 19.11.2026 (D-110): próby gry ze znacznikiem
+tools/zapis_prob.py nie otwierają magazynu (prawdziwy rekord nietknięty), magazyn próby zapisu i atrapa błędów usługi,
+znacznik z „trybu Edit” do serwera i kolejność wywołań MCP (StudioMCP.call → zapis_prob). Lustro logiki (migracja, sprawdzanie profilu) jest w test_stanu.py (przypadki).
 """
 import os
 import sys
 import unittest
 
 TU = os.path.dirname(os.path.abspath(__file__))
-if TU not in sys.path:
-    sys.path.insert(0, TU)
+for _s in (TU, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(TU))), "tools")):
+    if _s not in sys.path:
+        sys.path.insert(0, _s)
 import test_stanu as T  # noqa: E402
 import atrapa_roblox as AR  # noqa: E402
 
 LM, D, LS, ZB = T.LM, T.D, T.LS, T.ZB
 ZAPIS = T.czytaj(T.ZR, "ZapisStanu.luau")
 G = D["zapis"]
+PR = G["proba"]  # znacznik próby gry (19.11.2026, D-110; tools/zapis_prob.py)
 PAWEL = dict(T.TestSerweraOffline.PAWEL)
 LUP = dict(T.TestSerweraOffline.LUP)
 
@@ -29,15 +33,18 @@ LUP = dict(T.TestSerweraOffline.LUP)
 class Serwer:
     """Jeden serwer z kontenerem StanGracza i wspólnym magazynem."""
 
-    def __init__(self, magazyn, wlaczony=True):
+    def __init__(self, magazyn, wlaczony=True, atrybuty=None):
+        """wlaczony: True / False = atrybut kontenera ZapisPostepu, None = bez atrybutu (domyślnie z DaneStanu);
+        atrybuty: inne atrybuty kontenera przed startem serwera (np. znacznik próby — jak skopiowany z trybu Edit)."""
         sw = AR.Swiat()
         if magazyn is not None:
             magazyn.dodaj_do(sw)
         k, inne = AR.kontener_stanu(sw, {"DaneStanu": T.czytaj(T.ZR, "DaneStanu.luau"), "LogikaStanu": T.LOGIKA,
                                          "ZapisStanu": ZAPIS}, ZB.INNE)
         k.ustaw(D["poczatek"]["atrybut_wylacznika"], False)
-        if wlaczony:
-            k.ustaw(G["atrybut"], True)
+        k.ustaw(G["atrybut"], wlaczony)
+        for n, v in (atrybuty or {}).items():
+            k.ustaw(n, v)
         shared = AR.Inst(sw, "Shared", "Folder", sw.replicated)
         sw.modul(shared, "ClassData", wartosc=LM.do_luau({"Classes": [{"id": i, "stats": s} for i, s in T.klasy_pawla()]}))
         sw.it.wykonaj(T.SERWER, "SerwerStanu.server.luau")
@@ -84,18 +91,29 @@ def klucz(uid):
 
 @unittest.skipIf(LM is None, "brak tools/walka/luau_mini.py")
 class TestZapisu(unittest.TestCase):
-    def test_z1_domyslnie_wylaczony(self):
-        self.assertFalse(D["zapis"]["wlaczony"], "zapis ma być domyślnie wyłączony (decyzja ludzi)")
+    def test_z1_domyslnie_wlaczony_wylacznik_atrybutem(self):
+        self.assertTrue(D["zapis"]["wlaczony"], "zapis włączony decyzją D-110 (19.11.2026)")
+        # bez atrybutu kontenera: domyślnie z DaneStanu — włączony, magazyn Studio
+        m0 = AR.Magazyn()
+        s0 = Serwer(m0, wlaczony=None)
+        g0 = s0.dolacz()
+        self.assertEqual((s0.k.atrybuty["ZapisAktywny"], s0.k.atrybuty["ZapisStan"], s0.k.atrybuty["ZapisMagazyn"]),
+                         (True, "włączony", G["magazyn"] + G["przyrostek_studio"]))
+        self.assertEqual((s0.atr(g0, "StanGraczaWczytany"), s0.atr(g0, "StanGraczaZapis")), (True, "aktywny"))
+        self.assertEqual(m0.nazwy, [G["magazyn"] + G["przyrostek_studio"]])
+        self.assertIsInstance(s0.atr(g0, "StanGraczaWczytanieMs"), int, "czas wczytania dla próby zapisu")
+        # wyłącznik: ZapisPostepu = false — jak przed zapisem, magazyn nietknięty
         m = AR.Magazyn()
         s = Serwer(m, wlaczony=False)
         g = s.dolacz()
         self.assertEqual((s.k.atrybuty["ZapisAktywny"], s.k.atrybuty["ZapisStan"]), (False, "wyłączony"))
+        self.assertIsNone(s.k.atrybuty.get("ZapisMagazyn"))
         self.assertIsNone(g.atrybuty.get("StanGraczaWczytany"), "bez zapisu nic się nie zmienia")
         self.assertEqual(s.atr(g, "Gems"), 1000)
         s.lup(g)
         s.wyjdz(g)
         s.zamknij()
-        self.assertEqual((m.wywolania, m.rekordy), ([], {}))
+        self.assertEqual((m.wywolania, m.rekordy, m.nazwy), ([], {}, []))
         self.assertEqual(s.ostrzezenia(), [])
 
     def test_z2_zapis_i_odczyt_miedzy_sesjami(self):
@@ -114,6 +132,9 @@ class TestZapisu(unittest.TestCase):
         kup = {"ile": 300, "zrodlo": "PetyProba", "cel": "jajko_lesne", "pet": "zoledziak", "premia": {"zloto": 0.05}}
         self.assertTrue(a.wywolaj("Pety", "kup", g.t, kup)["ok"])
         self.assertEqual(a.wywolaj("DanePakietu", "zapisz", g.t, "kowal", {"plus": {"miecz": 2}}), {"ok": True})
+        # 19.11.2026: trening (pasek malejącego zysku) przez DanePakietu — pakiet „trening” (SerwerTreningu)
+        TR = {"w": {"TreningSila": 7}, "paski": {"sila": 2.5}}
+        self.assertEqual(a.wywolaj("DanePakietu", "zapisz", g.t, "trening", TR), {"ok": True})
         g.ustaw("StrojProba_mag", "mag_kaptur,mag_szata")
         g.ustaw("PokonalStraznikaLasu", True)
         g.ustaw("Haker", 5)  # obcy atrybut — nie trafia do zapisu
@@ -135,6 +156,7 @@ class TestZapisu(unittest.TestCase):
         self.assertEqual((b.atr(g2, "StrojProba_mag"), b.atr(g2, "PokonalStraznikaLasu")), ("mag_kaptur,mag_szata", True))
         self.assertIsNone(g2.atrybuty.get("Haker"))
         self.assertEqual(b.wywolaj("DanePakietu", "czytaj", g2.t, "kowal"), {"plus": {"miecz": 2}})
+        self.assertEqual(b.wywolaj("DanePakietu", "czytaj", g2.t, "trening"), TR)
         stan = b.wywolaj("Pety", "stan", g2.t)
         self.assertEqual((stan["kopie"], stan["aktywny"], stan["wydatki"]), ({"zoledziak": 1}, "zoledziak", {"jajko_lesne": 1}))
         self.assertEqual((a.ostrzezenia(), b.ostrzezenia()), ([], []))
@@ -331,6 +353,156 @@ class TestZapisu(unittest.TestCase):
         self.assertFalse(sw.wolaj(czytaj, g.t, "widzialPrzelotLasu")[0])
         sw.wolaj(modul.get("ustaw"), g.t, "widzialPrzelotLasu", True)
         self.assertTrue(sw.wolaj(czytaj, g.t, "widzialPrzelotLasu")[0])
+
+    # ---------------------------------------------------------------- próby gry bez prawdziwego zapisu (19.11.2026, D-110)
+    def prawdziwy_rekord(self):
+        """Magazyn z prawdziwym zapisem człowieka (gracz 101: 3. poziom, 500 Złota, Strażnik Lasu) po zwykłej sesji."""
+        m = AR.Magazyn()
+        s = Serwer(m, wlaczony=None)
+        g = s.dolacz()
+        s.lup(g, zloto=500, doswiadczenie=47)
+        g.ustaw("PokonalStraznikaLasu", True)
+        s.wyjdz(g)
+        s.zamknij()
+        self.assertEqual(m.rekordy[klucz(101)]["profil"]["poziom"], 3)
+        return m, LM.z_luau(LM.do_luau(m.rekordy))
+
+    def test_z12_proba_gry_nie_czyta_i_nie_pisze_prawdziwego_zapisu(self):
+        m, kopia = self.prawdziwy_rekord()
+        m.wywolania, m.nazwy = [], []
+        teraz = AR.Swiat().czas
+        s = Serwer(m, wlaczony=None, atrybuty={PR["atrybut_do"]: teraz + PR["czas_s"]})
+        self.assertEqual((s.k.atrybuty["ZapisAktywny"], s.k.atrybuty["ZapisStan"]), (False, "wyłączony (próba gry)"))
+        self.assertIsNone(s.k.atrybuty.get("ZapisMagazyn"))
+        g = s.dolacz(101)
+        self.assertIsNone(g.atrybuty.get("StanGraczaWczytany"), "próba: gracz od razu, bez wczytywania")
+        self.assertEqual((s.atr(g, "Level"), s.atr(g, "Gems"), g.atrybuty.get("PokonalStraznikaLasu")), (1, 1000, None),
+                         "świeży gracz jak przed D-110 (wartości testowe Pawła), nie zapis człowieka")
+        s.lup(g, zloto=999, doswiadczenie=500)
+        s.sw.krok(3 * (G["co_s"] + G["rozrzut_s"]))
+        s.wyjdz(g)
+        s.zamknij()
+        self.assertEqual((m.wywolania, m.nazwy), ([], []), "próba nawet nie otworzyła magazynu")
+        self.assertEqual(m.rekordy, kopia, "prawdziwy zapis nietknięty")
+        self.assertEqual(s.ostrzezenia(), [])
+        # znacznik przeterminowany (próba padła przed Stop, minął kwadrans): zwykła gra człowieka — zapis wraca
+        s2 = Serwer(m, wlaczony=None, atrybuty={PR["atrybut_do"]: teraz - 1})
+        g2 = s2.dolacz(101)
+        self.assertEqual((s2.atr(g2, "Level"), s2.atr(g2, "Gold"), s2.atr(g2, "PokonalStraznikaLasu")), (3, 500, True))
+        self.assertEqual(m.nazwy, [G["magazyn"] + G["przyrostek_studio"]])
+        # sam „magazyn próby” bez znacznika nic nie zmienia (stary atrybut po padniętej próbie zapisu)
+        m.nazwy = []
+        s2.wyjdz(g2)
+        s3 = Serwer(m, wlaczony=None, atrybuty={PR["atrybut_magazynu"]: True, PR["atrybut_bledow"]: 50})
+        g3 = s3.dolacz(101)
+        self.assertEqual((m.nazwy, s3.atr(g3, "Level"), s3.atr(g3, "StanGraczaZapis")),
+                         ([G["magazyn"] + G["przyrostek_studio"]], 3, "aktywny"))
+        self.assertEqual(s3.k.atrybuty.get(PR["atrybut_bledow"]), 50, "atrapa błędów działa tylko w magazynie próby")
+
+    def test_z13_magazyn_proby_zapisu_i_bledy(self):
+        m, kopia = self.prawdziwy_rekord()
+        teraz = AR.Swiat().czas
+        nazwa = G["magazyn"] + G["przyrostek_studio"] + PR["przyrostek"]
+        znacznik = {PR["atrybut_do"]: teraz + PR["czas_s"], PR["atrybut_magazynu"]: True}
+        # magazyn próby: osobna nazwa (atrapa trzyma rekordy po kluczu, więc nazwę sprawdzamy wprost)
+        mp = AR.Magazyn()
+        s = Serwer(mp, wlaczony=False, atrybuty=znacznik)  # ZapisPostepu = false człowieka nie blokuje próby zapisu
+        self.assertEqual((s.k.atrybuty["ZapisStan"], s.k.atrybuty["ZapisMagazyn"]), ("włączony (magazyn próby)", nazwa))
+        g = s.dolacz(101)
+        self.assertEqual((s.atr(g, "StanGraczaZapis"), s.atr(g, "Gold"), s.atr(g, "Gems")), ("aktywny", 0, G["start"]["gemy"]))
+        s.lup(g, zloto=40)
+        s.wyjdz(g)
+        self.assertEqual(mp.nazwy, [nazwa])
+        self.assertEqual(mp.rekordy[klucz(101)]["profil"]["zloto"], 40)
+        # błąd usługi przy wczytaniu: 2 wywołania padają — wczytanie po ponowieniach
+        s2 = Serwer(mp, wlaczony=None, atrybuty=dict(znacznik, **{PR["atrybut_bledow"]: 2}))
+        g2 = s2.dolacz(101)
+        s2.sw.krok(10)
+        self.assertEqual((s2.atr(g2, "StanGraczaZapis"), s2.atr(g2, "Gold")), ("aktywny", 40))
+        self.assertEqual(s2.k.atrybuty[PR["atrybut_bledow"]], 0)
+        s2.wyjdz(g2)
+        zapisano = mp.rekordy[klucz(101)]["zapisano"]
+        # usługa pada cały czas: gra w pamięci, rekord NIE nadpisany pustym profilem
+        s3 = Serwer(mp, wlaczony=None, atrybuty=dict(znacznik, **{PR["atrybut_bledow"]: 1000}))
+        g3 = s3.dolacz(101)
+        s3.sw.krok(60)
+        self.assertEqual((s3.atr(g3, "StanGraczaWczytany"), s3.atr(g3, "StanGraczaZapis")), (True, "bez_zapisu"))
+        zl0 = s3.atr(g3, "Gold")
+        s3.lup(g3, zloto=7)
+        self.assertEqual(s3.atr(g3, "Gold"), zl0 + 7, "gra działa w pamięci")
+        s3.wyjdz(g3)
+        s3.zamknij()
+        self.assertEqual((mp.rekordy[klucz(101)]["profil"]["zloto"], mp.rekordy[klucz(101)]["zapisano"]), (40, zapisano))
+        self.assertTrue(any("nie powiodło się" in o for o in s3.ostrzezenia()))
+
+    def test_z14_znacznik_z_tools_zapis_prob(self):
+        """Całość jak w Studio: tools/zapis_prob.py ustawia znacznik w „trybie Edit”, Play kopiuje atrybuty kontenera,
+        serwer stanu nie dotyka prawdziwego zapisu; po Stop znacznik zdjęty — i kolejność wywołań MCP."""
+        import zapis_prob as ZP
+        self.assertEqual((ZP.ATR_DO, ZP.ATR_MAGAZYNU, ZP.ATR_BLEDOW, ZP.CZAS_S, ZP.KONTENER),
+                         (PR["atrybut_do"], PR["atrybut_magazynu"], PR["atrybut_bledow"], PR["czas_s"], D["kontener"]))
+        self.assertIn(PR["atrybut_do"], ZB.ATRYBUTY_TESTOWE, "znacznik przechodzi na odbudowany kontener")
+        # „Edit”: kontener jak po zbuduj.py
+        edit = AR.Swiat()
+        edit.uslugi["RunService"].t.set("IsRunning", lambda _s: False)
+        k, _ = AR.kontener_stanu(edit, {"DaneStanu": "", "LogikaStanu": ""}, [])
+        k.ustaw("ZapisPostepu", None)
+        w = edit.it.wykonaj(ZP.LUAU_START, "start")[0]
+        self.assertTrue(w.startswith("OK"), w)
+        self.assertEqual(k.atrybuty[PR["atrybut_do"]], int(edit.czas) + PR["czas_s"])
+        # Play: kopia atrybutów kontenera z Edit → serwer
+        m, kopia = self.prawdziwy_rekord()
+        m.wywolania, m.nazwy = [], []
+        s = Serwer(m, wlaczony=None, atrybuty={n: v for n, v in k.atrybuty.items() if n.startswith("Zapis")})
+        g = s.dolacz(101)
+        s.lup(g, zloto=5)
+        s.wyjdz(g)
+        s.zamknij()
+        self.assertEqual((m.wywolania, m.nazwy, m.rekordy), ([], [], kopia))
+        # próba zapisu: magazyn próby (kod_magazynu) — i Stop zdejmuje wszystkie trzy znaczniki
+        self.assertEqual(edit.it.wykonaj(ZP.kod_magazynu(3), "magazyn")[0], "OK")
+        self.assertEqual((k.atrybuty[PR["atrybut_magazynu"]], k.atrybuty[PR["atrybut_bledow"]]), (True, 3))
+        self.assertEqual(edit.it.wykonaj(ZP.LUAU_KONIEC, "koniec")[0], "OK")
+        self.assertFalse(any(n.startswith("ZapisProba") for n in k.atrybuty), k.atrybuty)
+        # bez kontenera: nic do zrobienia; w trybie Play: STOP
+        k.usun()
+        self.assertEqual(edit.it.wykonaj(ZP.LUAU_START, "start")[0], "BRAK")
+        edit.uslugi["RunService"].t.set("IsRunning", lambda _s: True)
+        self.assertTrue(edit.it.wykonaj(ZP.LUAU_START, "start")[0].startswith("STOP"))
+
+        # kolejność wywołań MCP (atrapa mostka): znacznik → Play; Stop → zdjęcie; błąd znacznika → Play NIE startuje
+        def mostek(odpowiedzi):
+            log = []
+
+            def wywolaj(n, a, t=None):
+                log.append((n, a.get("datamodel_type"), a.get("is_start"), a.get("studio_id")))
+                return odpowiedzi(n, a)
+            return log, wywolaj
+        log, wyw = mostek(lambda n, a: {"text": "OK 1" if n == "execute_luau" else "ok", "is_error": False})
+        ZP.play(wyw, {"is_start": True, "studio_id": "S1"})
+        ZP.play(wyw, {"is_start": False, "studio_id": "S1"})
+        self.assertEqual([(n, dm, sid) for n, dm, _, sid in log],
+                         [("execute_luau", "Edit", "S1"), ("start_stop_play", None, "S1"), ("execute_luau", "Server", "S1"),
+                          ("start_stop_play", None, "S1"), ("execute_luau", "Edit", "S1")])
+        log, wyw = mostek(lambda n, a: {"text": "STOP: znacznik próby się nie ustawił", "is_error": False}
+                          if n == "execute_luau" else {"text": "ok", "is_error": False})
+        with self.assertRaises(RuntimeError):
+            ZP.play(wyw, {"is_start": True})
+        self.assertEqual([n for n, *_ in log], ["execute_luau"], "bez znacznika Play nie startuje")
+        log, wyw = mostek(lambda n, a: {"text": "Studio nie odpowiada", "is_error": True}
+                          if n == "execute_luau" else {"text": "ok", "is_error": False})
+        with self.assertRaises(RuntimeError):
+            ZP.play(wyw, {"is_start": True})
+        self.assertEqual([n for n, *_ in log], ["execute_luau"])
+        # StudioMCP.call kieruje start_stop_play przez zapis_prob (bez mostka: podmieniamy _call)
+        import studio_mcp as SM
+        klient = SM.StudioMCP()
+        log, wyw = mostek(lambda n, a: {"text": "OK 1" if n == "execute_luau" else "ok", "is_error": False})
+        klient._call = wyw
+        klient.call("start_stop_play", {"is_start": True})
+        klient.call("get_studio_state", {})
+        self.assertEqual([n for n, *_ in log], ["execute_luau", "start_stop_play", "execute_luau", "get_studio_state"],
+                         "znacznik → Play → odczyt ZapisStan z serwera do dziennika → dalej bez opakowania")
 
 
 if __name__ == "__main__":

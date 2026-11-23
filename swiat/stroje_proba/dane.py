@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Generator zrodla/DaneStrojow.luau — gołe ciała bohaterów i przedmioty z katalogu jako części Roblox (D-071, próba).
+"""Generator zrodla/DaneStrojow*.luau — gołe ciała bohaterów i przedmioty z katalogu jako części Roblox (D-071, próba;
+od 19.11.2026 także 60 przedmiotów do kupienia w trzech stopniach — D-106).
 
-    python -B swiat/stroje_proba/dane.py               # zapisuje zrodla/DaneStrojow.luau
-    python -B swiat/stroje_proba/dane.py --sprawdz     # kod 1, gdy plik w zrodla/ jest nieaktualny albo dane się nie zgadzają
+    python -B swiat/stroje_proba/dane.py               # zapisuje zrodla/DaneStrojow.luau i moduły stopni
+    python -B swiat/stroje_proba/dane.py --sprawdz     # kod 1, gdy pliki w zrodla/ są nieaktualne albo dane się nie zgadzają
     python -B swiat/stroje_proba/dane.py --wyjscie DIR # zapis do innego folderu (test powtarzalności)
+
+Pliki wynikowe (jeden moduł Roblox ma granicę ok. 200 000 znaków Source, więc dane są w kilku):
+  DaneStrojow.luau          ustawienia, klasy (szkielet, gołe ciało), 20 dzisiejszych przedmiotów i SCALENIE modułów
+                            stopni — każdy czytelnik (Ubieranie, serwer, klient, kowal, sklep) dalej bierze jedno D;
+  DaneStrojow<Stopien>.luau przedmioty jednego stopnia (Las, Bagno, Dzungla) wszystkich klas: { [id] = przedmiot }.
 
 Źródła (tylko odczyt, nic tam nie zmieniamy):
   swiat/postacie/przedmioty.json        katalog: id, nazwa, slot, klasy, typ ciała, czesc_od, ukrywa, segmenty;
+  swiat/postacie/sklep_przedmioty.json  katalog sklepu: te same pola dla przedmiotów stopni (klasa, stopień);
+  swiat/postacie/stopnie.py             geometria przedmiotów stopni: przedmioty(klasa, stopień), komplet(…);
   swiat/postacie/<bohater>.py           geometria: cialo() (gołe ciało z włosami), przedmioty() (segmenty), ubierz();
   swiat/test_walki2/aktorzy.py          który moduł gra którą klasę i w jakim stroju (postać odniesienia walki);
   swiat/test_walki2/dane/<klasa>.json   szablon walki: kości, zaczepy i bryły — sprawdzamy, że strój odniesienia
@@ -33,8 +41,10 @@ for _s in (REPO, os.path.join(REPO, "tools"), os.path.join(REPO, "swiat", "test_
 
 USTAWIENIA = os.path.join(TU, "ustawienia.json")
 KATALOG = os.path.join(REPO, "swiat", "postacie", "przedmioty.json")
+KATALOG_SKLEPU = os.path.join(REPO, "swiat", "postacie", "sklep_przedmioty.json")
 ZRODLA = os.path.join(TU, "zrodla")
 PLIK_LUAU = "DaneStrojow.luau"
+LIMIT_MODULU = 199000        # znaków w jednym module (Roblox: Source do 200 000)
 STRAZNIK = 'if not game:GetService("RunService"):IsStudio() then\n\treturn {}\nend\n'
 SLOTY_GRY = {"Helmet", "Chest", "Gloves", "Boots", "Amulet", "Belt", "Ring", "Trinket", "Weapon"}  # src/shared/Items.luau
 
@@ -51,6 +61,21 @@ def _czytaj_json(sciezka):
 def _r(x, n=4):
     v = round(float(x), n)
     return 0.0 if v == 0 else v
+
+
+def modul_stopnia(stopien):
+    """Nazwa modułu Roblox z przedmiotami stopnia (las → DaneStrojowLas)."""
+    return "DaneStrojow" + stopien[:1].upper() + stopien[1:]
+
+
+def plik_stopnia(stopien):
+    return modul_stopnia(stopien) + ".luau"
+
+
+def pliki_luau():
+    """Wszystkie wygenerowane pliki pakietu (moduł główny pierwszy)."""
+    from swiat.postacie import stopnie as ST
+    return [PLIK_LUAU] + [plik_stopnia(st) for st in ST.STOPNIE]
 
 
 # --------------------------------------------------------------------------------------------- ustawienia
@@ -163,13 +188,8 @@ def _klasa(klucz, U, katalog, mat, uwagi):
                           "czesci": gr[a["kosc"]]})
 
     # --- przedmioty: każdy osobno zakładany na gołe ciało (ubierz z korektami chwytu bohatera)
-    przedmioty = collections.OrderedDict()
-    po_katalogu = {p["id"]: p for p in katalog["przedmioty"]}
-    for p in prz:
-        if p.id not in po_katalogu:
-            raise BladDanych("przedmiot %s (moduł %s) nie ma wpisu w swiat/postacie/przedmioty.json — "
-                             "uruchom zestawienie.py --tylko json" % (p.id, wpis["model"]))
-        kat = po_katalogu[p.id]
+    def opisz(p, kat):
+        """Jeden przedmiot (dzisiejszy albo stopnia) jako wpis danych: pola katalogu + segmenty w układzie kości."""
         opis = p.opis(korekty)
         for pole in ("slot", "cialo", "klasy", "czesc_od", "ukrywa"):
             if kat.get(pole) != opis.get(pole):
@@ -210,9 +230,18 @@ def _klasa(klucz, U, katalog, mat, uwagi):
                     raise BladDanych("przedmiot %s: akcesorium na kościach %s" % (p.id, list(gr)))
                 segmenty.append({"id": s["akc"].id, "kosc": a["kosc"], "zakrywa": False, "grupa": a["id"],
                                  "zaczep": a["zaczep"], "czesci": gr[a["kosc"]]})
-        przedmioty[p.id] = {"nazwa": kat["nazwa"], "slot": kat["slot"], "kategoria": kat["kategoria"],
-                            "cialo": kat["cialo"], "klasy": list(kat["klasy"]), "czescOd": kat["czesc_od"],
-                            "ukrywa": list(kat["ukrywa"]), "zestaw": kat["zestaw"], "segmenty": segmenty}
+        return collections.OrderedDict([
+            ("nazwa", kat["nazwa"]), ("slot", kat["slot"]), ("kategoria", kat["kategoria"]), ("cialo", kat["cialo"]),
+            ("klasy", list(kat["klasy"])), ("czescOd", kat["czesc_od"]), ("ukrywa", list(kat["ukrywa"])),
+            ("zestaw", kat["zestaw"]), ("segmenty", segmenty)])
+
+    przedmioty = collections.OrderedDict()
+    po_katalogu = {p["id"]: p for p in katalog["przedmioty"]}
+    for p in prz:
+        if p.id not in po_katalogu:
+            raise BladDanych("przedmiot %s (moduł %s) nie ma wpisu w swiat/postacie/przedmioty.json — "
+                             "uruchom zestawienie.py --tylko json" % (p.id, wpis["model"]))
+        przedmioty[p.id] = opisz(p, po_katalogu[p.id])
 
     # kolejność przedmiotów: najpierw strój odniesienia (jak w szablonie walki), potem reszta jak w module
     kolejnosc = odniesienie + [p.id for p in prz if p.id not in odniesienie]
@@ -231,14 +260,53 @@ def _klasa(klucz, U, katalog, mat, uwagi):
          "kosci": [[k[0], k[1]] + [_r(v) for v in k[2:11]] + [k[11]] for k in kosci],
          "zaczepy": [[z[0], z[1]] + [_r(v) for v in z[2:5]] + [_r(v, 5) for v in z[5:8]] for z in r0["zaczepy"]],
          "golas": golas, "akcesoria": akcesoria}
-    return K, przedmioty, {"wpis": wpis, "mod": mod, "cialo": cialo, "przedmioty": prz, "korekty": korekty, "rig0": r0}
+    return K, przedmioty, {"wpis": wpis, "mod": mod, "cialo": cialo, "przedmioty": prz, "korekty": korekty, "rig0": r0,
+                           "opisz": opisz}
+
+
+def _stopnie_klasy(klucz, K, pom, sklep):
+    """Przedmioty trzech stopni klasy (swiat/postacie/stopnie.py, wpisy z sklep_przedmioty.json) — te same kontrole
+    pól i ten sam zapis brył co dzisiejsze. Wołane PO wszystkich klasach, żeby materiały dzisiejszych brył zachowały
+    swoje numery. Dopisuje do K: stopnie (lista {id, nazwa, przedmioty}) i zestawy kompletów stopni."""
+    from swiat.postacie import stopnie as ST
+    if ST.BOHATER.get(klucz) != pom["wpis"]["model"]:
+        raise BladDanych("klasa %s: stopnie.py ma dla niej inny moduł bohatera niż aktor walki" % klucz)
+    po_sklepie = {p["id"]: p for p in sklep["przedmioty"]}
+    wynik = collections.OrderedDict()
+    K["stopnie"] = []
+    zajete = {z["id"] for z in K["zestawy"]}
+    for st in ST.STOPNIE:
+        prz = ST.przedmioty(klucz, st)
+        ids = [p.id for p in prz]
+        komplet = list(ST.komplet(klucz, st))
+        if set(komplet) - set(ids) or len(set(ids)) != len(ids):
+            raise BladDanych("klasa %s, stopień %s: komplet ≠ przedmioty stopnia" % (klucz, st))
+        for p in prz:
+            kat = po_sklepie.get(p.id)
+            if kat is None:
+                raise BladDanych("przedmiot %s (stopnie.py) nie ma wpisu w swiat/postacie/sklep_przedmioty.json" % p.id)
+            if kat.get("klasa") != klucz or kat.get("stopien") != st:
+                raise BladDanych("przedmiot %s: katalog sklepu ma klasę %r i stopień %r, a stopnie.py %s / %s"
+                                 % (p.id, kat.get("klasa"), kat.get("stopien"), klucz, st))
+            P = pom["opisz"](p, kat)
+            P["stopien"] = st
+            wynik[p.id] = P
+        if st in zajete:
+            raise BladDanych("klasa %s: zestaw o nazwie stopnia %s już istnieje" % (klucz, st))
+        kolejnosc = komplet + [i for i in ids if i not in komplet]
+        K["stopnie"].append({"id": st, "nazwa": ST.NAZWY_STOPNI[st], "przedmioty": kolejnosc})
+        K["zestawy"].append({"id": st, "nazwa": "komplet %s" % ST.NAZWY_STOPNI[st], "przedmioty": komplet})
+        pom.setdefault("stopnie", {})[st] = prz
+    return wynik
 
 
 # --------------------------------------------------------------------------------------------- całość
 def zbierz():
     """Słownik danych pakietu (to, co trafia do DaneStrojow.luau) + pomocnicze obiekty Pythona (do testów)."""
+    from swiat.postacie import stopnie as ST
     U = ustawienia()
     katalog = _czytaj_json(KATALOG)
+    sklep = _czytaj_json(KATALOG_SKLEPU)
     mat = _Materialy()
     uwagi = []
     klasy, przedmioty, py = collections.OrderedDict(), collections.OrderedDict(), {}
@@ -250,6 +318,13 @@ def zbierz():
         klasy[klucz] = K
         przedmioty.update(P)
         py[klucz] = pom
+    # przedmioty stopni (D-106) — po dzisiejszych, żeby dzisiejsze bryły i numery ich materiałów zostały bez zmian
+    for klucz in klasy:
+        P = _stopnie_klasy(klucz, klasy[klucz], py[klucz], sklep)
+        for i in P:
+            if i in przedmioty:
+                raise BladDanych("przedmiot stopnia %s powtarza istniejący (%s)" % (i, klucz))
+        przedmioty.update(P)
     for z in U["zestawy_okna"]:
         for klucz, K in klasy.items():
             if z not in [x["id"] for x in K["zestawy"]]:
@@ -278,6 +353,8 @@ def zbierz():
     D["teksty"] = U["teksty"]
     D["materialy"] = mat.roblox()
     D["kolejnoscKlas"] = list(klasy)
+    D["modulyStopni"] = [{"id": st, "modul": modul_stopnia(st)} for st in ST.STOPNIE]
+    D["brakStopni"] = []
     D["klasy"] = klasy
     D["przedmioty"] = przedmioty
     D["uwagi"] = uwagi
@@ -403,18 +480,76 @@ def _bryly_luau(lista, wciecie):
     return "{\n" + "".join(tab + "{" + ",".join(_luau(x) for x in c) + "},\n" for c in lista) + "\t" * (wciecie - 1) + "}"
 
 
-def luau_tekst(D):
-    """Moduł Luau: dane bez brył zwykłym zapisem, bryły jedna w wierszu."""
+def _przedmiot_luau(tab, i, P):
+    """Dwie instrukcje Luau jednego przedmiotu: pola i segmenty (bryły jedna w wierszu). tab = „D.przedmioty” | „P”."""
+    meta = collections.OrderedDict((k, v) for k, v in P.items() if k != "segmenty")
+    segs = []
+    for s in P["segmenty"]:
+        pola = "id = %s, kosc = %s, zakrywa = %s" % (_napis(s["id"]), _napis(s["kosc"]), _luau(s["zakrywa"]))
+        if s["grupa"]:
+            pola += ", grupa = %s, zaczep = %s" % (_napis(s["grupa"]), _napis(s["zaczep"]))
+        segs.append("\t{ %s, czesci = %s }" % (pola, _bryly_luau(s["czesci"], 2)))
+    return ["%s[%s] = %s" % (tab, _napis(i), _luau(meta, 1)),
+            "%s[%s].segmenty = {\n%s,\n}" % (tab, _napis(i), ",\n".join(segs))]
+
+
+SCALENIE = """-- Przedmioty stopni (D-106) leżą w osobnych modułach obok (granica długości jednego modułu). Scalenie jest TUTAJ, więc
+-- każdy czytelnik dalej bierze jedno D. Moduł szukany obok tego modułu, a gdy go tam nie ma — w
+-- Workspace/<kontener>/Moduly. Gdy modułu stopnia nie ma wcale (np. test wczytujący sam ten plik), stopnia po prostu
+-- nie ma w danych: znika z list klas i z zestawów, a jego nazwa trafia do D.brakStopni.
+local function modulStopnia(nazwa)
+	local obok = script and script.Parent
+	local m = obok and obok:FindFirstChild(nazwa)
+	if m == nil then
+		local kontener = workspace and workspace:FindFirstChild(D.kontener)
+		local folder = kontener and kontener:FindFirstChild("Moduly")
+		m = folder and folder:WaitForChild(nazwa, 5)
+	end
+	return m
+end
+
+local function bezStopnia(lista, stopien)
+	local wynik = {}
+	for _, x in lista do
+		if x.id ~= stopien then
+			table.insert(wynik, x)
+		end
+	end
+	return wynik
+end
+
+for _, s in D.modulyStopni do
+	local m = modulStopnia(s.modul)
+	if m ~= nil then
+		for id, P in require(m) do
+			D.przedmioty[id] = P
+		end
+	else
+		table.insert(D.brakStopni, s.id)
+		for _, K in D.klasy do
+			K.stopnie = bezStopnia(K.stopnie, s.id)
+			K.zestawy = bezStopnia(K.zestawy, s.id)
+		end
+	end
+end
+"""
+
+
+def luau_teksty(D):
+    """{plik: tekst} — moduł główny (dane bez brył zwykłym zapisem, bryły jedna w wierszu, dzisiejsze przedmioty,
+    scalenie) i po jednym module na stopień (same przedmioty stopnia)."""
     glowa = ("--[[\n\tDaneStrojow — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót %s.\n"
-             "\tŹródła: swiat/postacie/przedmioty.json, moduły bohaterów (cialo(), przedmioty()), ustawienia.json.\n"
+             "\tŹródła: swiat/postacie/przedmioty.json, moduły bohaterów (cialo(), przedmioty()), ustawienia.json;\n"
+             "\tprzedmioty stopni (swiat/postacie/stopnie.py, sklep_przedmioty.json) w modułach %s — scalane na końcu.\n"
              "\tBryła = { kształt (0 klocek, 1 kula, 2 walec, 3 klin, 4 narożnik), nazwa, x, y, z, rx, ry, rz, sx, sy, sz,\n"
              "\t          kolor, materiał (indeks w materialy), siatka (\"\" albo SpecialMesh) } — w układzie środka\n"
              "\t          części kości (kąty w radianach dla CFrame.fromOrientation).\n"
              "\tKość = { nazwa, rodzic (0 = HumanoidRootPart), staw xyz, środek xyz, rozmiar xyz, nazwa stawu Motor6D }.\n"
-             "]]\n" % D["skrot"])
+             "]]\n" % (D["skrot"], ", ".join(s["modul"] for s in D["modulyStopni"])))
     linie = [glowa + STRAZNIK, "local D = {}"]
     for k in ("wersja", "skrot", "kontener", "atrybut", "dobor", "spodnie", "sloty", "slotyGry", "zestawyOkna", "limit",
-              "klipyPodgladu", "nazwyRuchow", "stojak", "kamera", "ui", "teksty", "materialy", "kolejnoscKlas"):
+              "klipyPodgladu", "nazwyRuchow", "stojak", "kamera", "ui", "teksty", "materialy", "kolejnoscKlas",
+              "modulyStopni", "brakStopni"):
         linie.append("D.%s = %s" % (k, _luau(D[k], 1)))
     linie.append("D.klasy = {}")
     for klucz, K in D["klasy"].items():
@@ -430,34 +565,59 @@ def luau_tekst(D):
         linie.append("D.klasy[%s].akcesoria = {%s}" % (_napis(klucz), ("\n" + a + ",\n") if a else ""))
     linie.append("D.przedmioty = {}")
     for i, P in D["przedmioty"].items():
-        meta = collections.OrderedDict((k, v) for k, v in P.items() if k != "segmenty")
-        linie.append("D.przedmioty[%s] = %s" % (_napis(i), _luau(meta, 1)))
-        segs = []
-        for s in P["segmenty"]:
-            pola = "id = %s, kosc = %s, zakrywa = %s" % (_napis(s["id"]), _napis(s["kosc"]), _luau(s["zakrywa"]))
-            if s["grupa"]:
-                pola += ", grupa = %s, zaczep = %s" % (_napis(s["grupa"]), _napis(s["zaczep"]))
-            segs.append("\t{ %s, czesci = %s }" % (pola, _bryly_luau(s["czesci"], 2)))
-        linie.append("D.przedmioty[%s].segmenty = {\n%s,\n}" % (_napis(i), ",\n".join(segs)))
-    linie.append("return D\n")
-    return "\n".join(linie)
+        if not P.get("stopien"):
+            linie += _przedmiot_luau("D.przedmioty", i, P)
+    linie.append(SCALENIE + "return D\n")
+    teksty = collections.OrderedDict()
+    teksty[PLIK_LUAU] = "\n".join(linie)
+    for s in D["modulyStopni"]:
+        ids = [i for i, P in D["przedmioty"].items() if P.get("stopien") == s["id"]]
+        gl = ("--[[\n\t%s — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót %s.\n"
+              "\tPrzedmioty stopnia „%s” (D-106, swiat/postacie/stopnie.py): %d sztuk, zapis jak w DaneStrojow.\n"
+              "\tNie czytaj tego modułu wprost — scala go DaneStrojow (materiały brył to indeksy w jego D.materialy).\n"
+              "]]\n" % (s["modul"], D["skrot"], s["id"], len(ids)))
+        l2 = [gl + STRAZNIK, "local P = {}"]
+        for i in ids:
+            l2 += _przedmiot_luau("P", i, D["przedmioty"][i])
+        l2.append("return P\n")
+        teksty[s["modul"] + ".luau"] = "\n".join(l2)
+    for plik, tekst in teksty.items():
+        if len(tekst) > LIMIT_MODULU:
+            raise BladDanych("%s ma %d znaków — ponad granicę %d (podziel dane na więcej modułów)"
+                             % (plik, len(tekst), LIMIT_MODULU))
+    return teksty
+
+
+def luau_tekst(D):
+    """Tekst modułu głównego (DaneStrojow.luau)."""
+    return luau_teksty(D)[PLIK_LUAU]
 
 
 def zapisz(folder):
+    """Zapisuje wszystkie moduły danych jednym przebiegiem (najpierw moduły stopni, na końcu moduł główny)."""
     D, _ = zbierz()
+    teksty = luau_teksty(D)
     os.makedirs(folder, exist_ok=True)
-    with open(os.path.join(folder, PLIK_LUAU), "w", encoding="utf-8", newline="\n") as f:
-        f.write(luau_tekst(D))
+    for plik in list(teksty)[1:] + [PLIK_LUAU]:
+        with open(os.path.join(folder, plik), "w", encoding="utf-8", newline="\n") as f:
+            f.write(teksty[plik])
     return D
 
 
 def aktualny():
     D, py = zbierz()
-    sciezka = os.path.join(ZRODLA, PLIK_LUAU)
-    if not os.path.isfile(sciezka):
-        return False, D
-    with open(sciezka, encoding="utf-8") as f:
-        return f.read() == luau_tekst(D), D
+    for plik, tekst in luau_teksty(D).items():
+        sciezka = os.path.join(ZRODLA, plik)
+        if not os.path.isfile(sciezka):
+            return False, D
+        with open(sciezka, encoding="utf-8") as f:
+            if f.read() != tekst:
+                return False, D
+    return True, D
+
+
+def rozmiary(D):
+    return ", ".join("%s %d" % (plik, len(tekst)) for plik, tekst in luau_teksty(D).items())
 
 
 def podsumowanie(D):
@@ -469,6 +629,9 @@ def podsumowanie(D):
         linie.append("  %-10s %-10s ciało %-8s kości %2d · gołe bryły %3d (+%d akcesoria ciała) · przedmioty %d (%d brył)"
                      " · odniesienie: %s" % (klucz, K["model"], K["cialo"], len(K["kosci"]), n_g, n_a,
                                               len(K["przedmioty"]), n_p, ", ".join(K["odniesienie"])))
+        for st in K.get("stopnie", []):
+            n_s = sum(len(s["czesci"]) for i in st["przedmioty"] for s in D["przedmioty"][i]["segmenty"])
+            linie.append("  %-10s stopień %-8s przedmioty %d (%d brył)" % ("", st["id"], len(st["przedmioty"]), n_s))
     return linie
 
 
@@ -479,15 +642,16 @@ def main(argv):
     try:
         if "--sprawdz" in argv:
             ok, D = aktualny()
-            print("DaneStrojow.luau: %s (skrót %s, %d znaków)" % ("aktualny" if ok else "NIEAKTUALNY", D["skrot"],
-                                                                len(luau_tekst(D))))
+            print("DaneStrojow*.luau: %s (skrót %s, %d przedmiotów; znaków: %s)"
+                  % ("aktualny" if ok else "NIEAKTUALNY", D["skrot"], len(D["przedmioty"]), rozmiary(D)))
             for linia in podsumowanie(D):
                 print(linia)
             return 0 if ok else 1
         folder = argv[argv.index("--wyjscie") + 1] if "--wyjscie" in argv else ZRODLA
         D = zapisz(folder)
-        print("zapisano %s (skrót %s, %d znaków)" % (os.path.join(os.path.relpath(folder, REPO) if folder == ZRODLA
-                                                                   else folder, PLIK_LUAU), D["skrot"], len(luau_tekst(D))))
+        print("zapisano w %s (skrót %s, %d przedmiotów; znaków: %s)"
+              % (os.path.relpath(folder, REPO) if folder == ZRODLA else folder, D["skrot"], len(D["przedmioty"]),
+                 rozmiary(D)))
         for linia in podsumowanie(D):
             print(linia)
         for u in D["uwagi"]:

@@ -69,7 +69,8 @@ def przegrody():
     for s in d["strefy"]:
         w.append({"id": s["id"], "gatunek": s["gatunek"], "od": s["poziomy"][0], "do": s["poziomy"][1],
                   "x": s["srodek"][0], "straznik": s["straznik"] is True, "odrodzenie": s["odrodzenieS"],
-                  "stale": s.get("odrodzenieStale") is True, "naraz": s["naraz"]})
+                  # D-107: odrodzenieStale mają wszystkie strefy — rzadkiego potwora (troll) wskazuje pole „rzadki”
+                  "stale": (s["rzadki"] if "rzadki" in s else s.get("odrodzenieStale")) is True, "naraz": s["naraz"]})
     return w
 
 

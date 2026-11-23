@@ -24,6 +24,13 @@
  "atrybuty_gracza": {"dostepne": "KowalDostepne", "materialy": "KowalMaterialy", "zapasy": "KowalZapasy",
                      "ulepsz": "KowalMoznaUlepszyc", "ulepszen": "KowalUlepszen"},
  "wersja_danych": 1,
+ "sklep": {
+  "opis": "Kupno przedmiotów (D-106): wpisy 54 nowych przedmiotów (stopnie las, bagno, dzungla) oraz ceny, wymagane poziomy i stopnie wszystkich 72 dane.py bierze z katalogu swiat/postacie/sklep_przedmioty.json — tutaj ich nie przepisujemy. Płatność idzie z serwera kowala (źródło wydatku jak ulepszenia), wejście dla pakietu sklepu to Sygnaly/<sygnal>.",
+  "sygnal": "Sklep",
+  "cel_wydatku": "zakup_przedmiotu",
+  "atrybut_poziomu": "Level",
+  "atrybut_stac_na": "SklepStacNa"
+ },
  "ulepszenie": {
   "maks": 5,
   "zloto": [150, 300, 450, 650, 900],

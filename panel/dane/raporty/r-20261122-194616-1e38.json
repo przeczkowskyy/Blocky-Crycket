@@ -1,0 +1,22 @@
+{
+ "id": "r-20261122-194616-1e38",
+ "tytul": "Sesja główna 2026-11-22 (2) — do zatwierdzenia",
+ "opis_md": "Druga sesja z 22.11 (19:39–19:41, ok. minuty). Mówił tylko Karol; Paweł nie zabrał głosu. Temat: **Baseball for treasure** po ocenie agenta 17/30 („popraw”). Nic nie jest zatwierdzone.\n\n## Propozycje do zatwierdzenia\n- **D-135 — karta oceny: „Inni gracze” nie obniża oceny gier solo.** Karol: są gry, w których inni gracze nie są istotni, a mają się bardzo dobrze. Agent: zgoda z poprawką — lider tej fali to gra solo obok siebie. Kryterium nie liczy się tylko wtedy, gdy wzór fali sam jest grą solo; „Pokazanie się” zostaje. Baseball ma wtedy ok. 19/30, dalej „popraw”.\n- **D-136 — odmiana baseballu: z ziemi wykopuje się potworka, nie skarb.** Luźny przykład Karola („albo coś”). Agent: zgoda z poprawką — żywy stwór to mocniejsza odsłona, ale sześć gier „wykop stwora i trzymaj w bazie” nie ma graczy, więc sam potworek nie wystarczy. Najtaniej sprawdzi to próbka jednej pętli z dwiema odsłonami. Pomysł jest Pawła — potrzebne jego zdanie.\n\n## Pytania\n- Nowych pytań nie ma.\n- **Pod żadnym pytaniem nie dopisałem odpowiedzi** — żadna nie padła. Pod pytaniem 86 (baseball, ameba czy smok) jest tylko dopisek: Karol wrócił do pytania, ale nie wybrał.\n- Pytanie 85 (skąd gracz bierze siłę) dalej czeka.\n\n## Zadania (start po poleceniu na czacie)\n- Agent: 2–3 odmiany baseballu łatające słabe punkty oceny (głębia, trend, pokazanie się, odsłona) i pokrewne gry tego typu.\n- Panel: po wyborze tematu sesji agenda i pytania dostosowują się do tej gry.\n\n## Uwaga o notatce\nNotatka z pierwszej sesji tego dnia (18:53–19:02) już istniała, więc ta ma w nazwie „(2)”: „Sesja główna 2026-11-22 (2) — zapis ustaleń”. Pierwszej nie nadpisałem.",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-22T19:46:16+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-22 (2) — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Wytwórnia/Pomysły/Baseball for treasure.md",
+   "etykieta": "Karta pomysłu"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy zatwierdzacie D-135 (karta oceny) i D-136 (potworek zamiast skarbu)?"
+}

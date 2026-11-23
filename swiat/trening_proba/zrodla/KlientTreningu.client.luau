@@ -1331,20 +1331,80 @@ local function usunWizualne()
 	wizualne = {}
 end
 
-local KOLORY_SKRZYN = { "B07A45", "D9822B", "8C5A3C" }
+-- Lecące cele Siły to owoce (D-108: „przecinanie owoców w lesie”) — SAM WYGLĄD: tor lotu, strefy, okna czasu i werdykty
+-- liczy ta sama logika co dotąd. Owoc = kula w barwie skórki + dodatki (ogonek, listek, pasek), które jadą za nią;
+-- przy trafieniu rozpada się na dwie połówki w barwie miąższu i cząstki skórki.
+local OWOCE = {
+	{ nazwa = "Dynia", sr = 1.7, skorka = "F08A24", miazsz = "FFC25A" },
+	{ nazwa = "Jablko", sr = 1.5, skorka = "E5392B", miazsz = "FFF1C9" },
+	{ nazwa = "Arbuz", sr = 1.9, skorka = "2E8B3D", miazsz = "FF5A6E" },
+	{ nazwa = "Gruszka", sr = 1.4, skorka = "C9D64A", miazsz = "FFF6C9" },
+}
 local function nowyPrzedmiot(nr)
-	local rodzaj = nr % 3 + 1
-	local obj
-	if rodzaj == 2 then
-		obj = czesc("Dzban", Vector3.new(1.7, 1.7, 1.7), KOLORY_SKRZYN[rodzaj], nil, Enum.PartType.Ball)
-	elseif rodzaj == 3 then
-		obj = czesc("Beczulka", Vector3.new(1.9, 1.5, 1.5), KOLORY_SKRZYN[rodzaj], Enum.Material.WoodPlanks, Enum.PartType.Cylinder)
+	local o = OWOCE[nr % #OWOCE + 1]
+	local obj = czesc(o.nazwa, Vector3.one * o.sr, o.skorka, nil, Enum.PartType.Ball)
+	local dodatki = {}
+	local function dodatek(nazwa, rozmiar, h, przes, ksztalt)
+		local d = czesc(nazwa, rozmiar, h, nil, ksztalt)
+		d.Parent = obj
+		table.insert(dodatki, { d, przes })
+	end
+	local r = o.sr / 2
+	if o.nazwa == "Dynia" then
+		dodatek("Ogonek", Vector3.new(0.32, 0.45, 0.32), "3F8F35", CFrame.new(0, r + 0.12, 0))
+	elseif o.nazwa == "Jablko" then
+		dodatek("Ogonek", Vector3.new(0.14, 0.4, 0.14), "6B4A2F", CFrame.new(0, r + 0.12, 0))
+		dodatek("Listek", Vector3.new(0.55, 0.1, 0.3), "3F8F35", CFrame.new(0.3, r + 0.2, 0) * CFrame.Angles(0, 0, math.rad(-20)))
+	elseif o.nazwa == "Arbuz" then
+		dodatek("Pasek", Vector3.new(0.5, o.sr + 0.04, o.sr + 0.04), "7CCB5A", CFrame.new(), Enum.PartType.Cylinder)
 	else
-		obj = czesc("Skrzynka", Vector3.new(1.6, 1.6, 1.6), KOLORY_SKRZYN[rodzaj], Enum.Material.WoodPlanks)
+		dodatek("Czubek", Vector3.one * 0.95, o.skorka, CFrame.new(0, r + 0.2, 0), Enum.PartType.Ball)
+		dodatek("Ogonek", Vector3.new(0.14, 0.4, 0.14), "6B4A2F", CFrame.new(0, r + 0.85, 0))
 	end
 	obrysModelu(obj)
 	obj.Parent = efekty
-	return obj
+	return obj, dodatki, o
+end
+
+local function polowkiOwocu(pozycja, o)
+	odlamki(pozycja, o.skorka, 5, 3.5)
+	odlamki(pozycja, o.miazsz, 4, 3.0)
+	for _, znak in { -1, 1 } do
+		local obj = czesc("Polowka", Vector3.one * o.sr * 0.62, o.miazsz, nil, Enum.PartType.Ball)
+		obj.CFrame = CFrame.new(pozycja + Vector3.new(znak * 0.4, 0, 0))
+		obj.Parent = efekty
+		TweenService:Create(obj, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			CFrame = CFrame.new(pozycja + Vector3.new(znak * 2.6, 1.2, 0)) * CFrame.Angles(znak * 2, 1, 0),
+			Transparency = 1,
+		}):Play()
+		task.delay(0.55, function()
+			obj:Destroy()
+		end)
+	end
+end
+
+-- Gest trenera NPC (pakiet swiat/npc_gra, gdy stoi w miejscu): w chwili ruchu ręki figury z klocków wołamy krótki klip
+-- „akcja” postaci (rzut miotacza trwa u nas 0,41 s, uderzenie pałką trenera Bieżni 0,28 s),
+-- która ją zastępuje. Osłonięte i w osobnym wątku — bez pakietu NPC nic się nie zmienia; dopóki poprzednie wywołanie nie
+-- wróciło (funkcja bez obsługi czekałaby bez końca), kolejnych nie wysyłamy, więc wisieć może najwyżej jeden wątek.
+local gestWToku = false
+local function gestTrenera(klucz)
+	if gestWToku then
+		return
+	end
+	local npc = workspace:FindFirstChild("NpcGra")
+	local s = npc and npc:FindFirstChild("Sygnaly")
+	local f = s and s:FindFirstChild("Polecenie")
+	if not (f and f:IsA("BindableFunction")) then
+		return
+	end
+	gestWToku = true
+	task.spawn(function()
+		pcall(function()
+			f:Invoke("graj", klucz, "akcja")
+		end)
+		gestWToku = false
+	end)
 end
 
 local function machnij(w, kat, wznies, opusc)
@@ -1438,7 +1498,11 @@ GRY.sila = {
 		if w.trafienie then
 			local v = wizualne[w.nr]
 			if v and v.obj then
-				odlamki(v.obj.Position, v.obj.Color:ToHex(), 9, 3.5)
+				if v.owoc then
+					polowkiOwocu(v.obj.Position, v.owoc)
+				else
+					odlamki(v.obj.Position, v.obj.Color:ToHex(), 9, 3.5)
+				end
 				local obj = v.obj
 				v.obj = nil
 				obj:Destroy()
@@ -1476,9 +1540,11 @@ GRY.sila = {
 			local start = ti - G.lot_s
 			local v = wizualne[e.nr]
 			if v == nil and t >= start and t < ti + 0.5 then
-				v = { obj = nowyPrzedmiot(e.nr), k = e.wartosc }
+				local obj, dodatki, owoc = nowyPrzedmiot(e.nr)
+				v = { obj = obj, dodatki = dodatki, owoc = owoc, k = e.wartosc }
 				wizualne[e.nr] = v
 				machnij(arena.ramie, -2.4, 0.12, 0.25)
+				gestTrenera("trening_sila")
 			end
 			if v and v.obj then
 				local a = (t - start) / G.lot_s
@@ -1486,6 +1552,9 @@ GRY.sila = {
 				local C = (H + Z) / 2 + v3(W.luki[v.k])
 				local p = if a <= 1 then bezier(math.max(0, a), H, C, Z) else Z + (Z - C) * (2 * (a - 1))
 				v.obj.CFrame = CFrame.new(p) * CFrame.Angles(a * 5, a * 3, 0)
+				for _, d in v.dodatki or {} do
+					d[1].CFrame = v.obj.CFrame * d[2]
+				end
 				if a > 1.8 then
 					local obj = v.obj
 					v.obj = nil
@@ -1689,6 +1758,7 @@ GRY.kondycja = {
 			stan.beben = beben
 			graj("beben")
 			machnij(arena.palka, -1.3, 0.06, 0.18)
+			gestTrenera("trening_kondycja")
 			if arena.beben then
 				swiec(arena.beben, KOL.zloto, 0, true)
 				task.delay(0.1, function()
@@ -2339,7 +2409,8 @@ end
 local function zbudujObrazek(gra, P)
 	local kol = KOLOR_GRY[gra]
 	if gra == "sila" then
-		local s = ramka(P, "Skrzynka", 46, 34, 28, 28, KOLORY_SKRZYN[1])
+		local s = ramka(P, "Owoc", 46, 34, 28, 28, OWOCE[1].skorka)
+		zaokraglij(s, 999)
 		obrysuj(s, 2)
 		local z = ramka(P, "Strefa", 92, 52, 30, 30, KOL.krem, 1)
 		zaokraglij(z, 999)

@@ -83,7 +83,8 @@ PRZEPISY = [
         "wyglad": "Ogromny wąż spleciony z lian i pnączy, z wielkim czerwono-żółtym kwiatem na głowie jak kaptur, zwinięty "
                   "w spiralę.",
         "umiejetnosci": ["zatruta_strzala", "rozszarpanie"],
-        "modyfikatory": {"unik": 0.05, "zysk_many": 0.25, "zycie": 0.3},
+        # życie: D-111 (Karol 19.11) −15% — było 0,3 (2852 na poz. 23), jest (1 + 0,3) × 0,85 − 1 = 0,105 (2424)
+        "modyfikatory": {"unik": 0.05, "zysk_many": 0.25, "zycie": 0.105},
         "cecha": "jad (trucizna) i ukąszenie (krwawienie) na zmianę, częsty unik; Strażnik Gaju unieruchamia korzeniami, "
                  "Strażnik Topieli ogłusza",
     },

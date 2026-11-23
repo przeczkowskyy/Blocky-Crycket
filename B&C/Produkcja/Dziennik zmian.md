@@ -6,6 +6,378 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-23 · Claude Code u Karola (gra o smoku: mapa v2 na płaskiej ziemi — wersja „mapa2a”)
+- Agent budujący (ok. 0,4–0,45 mln tokenów, ok. 1 h) wpiął etap A mapy v2. Sesja główna sprawdziła testy (44/45, 1 pominięty) i film, zapisała zmiany i opublikowała grę prywatnie, co potwierdza znacznik czasu wersji. Film jest na telefonie Karola.
+- Zaczął się etap B: najpierw pomiar i strojenie tempa na nowej mapie, potem teren z wysokościami za przełącznikiem `teren_v2`. Szczegóły: [[Projekt próbki — Monster Evolution]].
+
+## 2026-11-23 · Claude Code u Karola (gra o smoku: mapa v2 z Blendera, plan wpięcia)
+- Agent mapy (Opus) w ok. 50 min zrobił mapę v2 jako propozycję w `swiat/ewolucja/modele/dane_nastepne/`: rzeźbę terenu, nowe strefy, bramy rozmiaru, kryjówki, rzeczy do rozbicia, prądy wznoszące i 14 sekretów, razem 5244 części. Zapisana w repozytorium. Rendery poszły do Karola na telefon.
+- Agent zgłosił zastrzeżenie, a sesja główna je przyjęła: teren z wysokościami nie wchodzi na siłę przed wydaniem. Etap A jest płaski i idzie do wydania, etap B to wysokości za przełącznikiem. Szczegóły: [[Projekt próbki — Monster Evolution]].
+- Agent budujący zaczął etap A.
+
+## 2026-11-23 · Claude Code u Karola (gra o smoku: odczucie walki — wersja „odczucie1”; mapa v2 w budowie)
+- Agent budujący (Opus, ok. 0,5–0,6 mln tokenów według jego szacunku) zrobił:
+  - odczucie walki i wzrostu;
+  - miejsca na dźwięki;
+  - krótsze powitanie i baner połowy stadium;
+  - tempo: najdłuższa przerwa 2:00;
+  - kod sklepu wyłączony do decyzji: bez produktów w Roblox, bez płatnych losowań.
+- Sesja główna sprawdziła testy (42/43, 1 pominięty) i film. Zapisała zmiany i opublikowała grę prywatnie, co potwierdza znacznik czasu wersji. Film demo jest na telefonie Karola.
+- Nowe pytanie #87 o ceny sklepu i łączenie mnożników, z propozycją cen.
+- Karol: „Skupmy się również na lepszym i taktyczniejszym 3D enviromentem…”. Agent przyjął to z poprawką: najpierw teren, który zmienia grę i nagradza odkrywanie, a ozdoby potem. Nowy agent w Blenderze (Opus) projektuje mapę v2.
+- Stan: [[Projekt próbki — Monster Evolution]]. Zadania zaktualizowane.
+
+## 2026-11-23 · Claude Code u Karola (gra o smoku: powody powrotu — wersja „retencja1”)
+- Agent budujący (Opus, ok. 450 tys. tokenów, 1 h 45 min) zrobił: stopy pisklęcia bez poślizgu (oraz naprawę rigu, przez którą w części sesji tułów, szyja i ogon smoków stały), serię logowań, trzy zadania dzienne z ekranem powitania, ranking odrodzeń, kolory linii na botach i trofeach, tempo (stadium 5 ok. 5:49) i zegary wydarzeń według UTC. Zapis gracza w wersji 2 z migracją.
+- Sesja główna sprawdziła testy (41/42, 1 pominięty) i dane modeli (0 uwag), przejrzała film, zapisała zmiany w repozytorium i opublikowała grę prywatnie (potwierdzone znacznikiem czasu wersji). Film demo wysłany Karolowi na telefon.
+- Stan i wady: [[Projekt próbki — Monster Evolution]]; zadania zaktualizowane.
+
+## 2026-11-23 · Claude Code u Karola (rano: powody powrotu w budowie, szkic strony gry)
+- Karol rano: „Gra wygląda nieźle, ale będziemy jeszcze musieli inwestować. Pracuj dalej nad następnymi modułami… masz samowolkę”. Link do wersji prywatnej wysłany mu na telefon.
+- Agent budujący (Opus) zaczął krok „retencja1”: poprawka stóp pisklęcia, seria logowań, zadania dzienne, ranking, kolory linii, tempo, zegary wydarzeń według czasu UTC. Koniec ok. 11:45.
+- W [[Projekt próbki — Monster Evolution]] dopisany szkic strony gry (opis po angielsku, ustawienia, grafiki) jako propozycja do akceptacji przed wydaniem.
+
+## 2026-11-23 · Claude Code u Karola (noc: smoki z Blendera w grze, świat, interfejs, odrodzenie — cztery wersje prywatne)
+- Sesja główna na Opus 5.5 (Karol 22.11: „wracamy na Opus na chwilę”). Agent budujący (Opus) w czterech krokach: smoki i klipy z Blendera w grze („smok-blender1”), świat z mapy z przeszkodami, owcami, światłem i niebem („swiat1”), interfejs według wzorów i dane modeli w wersji 3 („interfejs1”), odrodzenie z czterema liniami, wydarzenia i dzienne jajo („odrodzenie1”). Każda wersja opublikowana prywatnie i potwierdzona znacznikiem czasu wersji; publicznie nic.
+- Wyjątek w kontroli kodu pakietu: moduł `SwiatKlienta` może ustawiać oświetlenie i niebo w trakcie gry po stronie klienta (nigdy w trybie Edit ani na serwerze) — część zlecenia na wygląd świata; do cofnięcia na prośbę ludzi.
+- Przy jednej publikacji automat kliknął w okno przeglądarki zamiast w Studio (otworzyło się tylko menu, nic więcej); dodano sprawdzanie, czy punkt kliknięcia leży w oknie na wierzchu.
+- Stan, wady i lista decyzji: [[Projekt próbki — Monster Evolution]], sekcja „Droga do wydania”. Zadania zaktualizowane.
+
+## 2026-11-22/23 · Claude Code u Karola (noc: modele smoka z Blendera, walka, świat, interfejs)
+- **Modele** (agent na Fable, cztery rundy, ok. 0,83 mln tokenów): styl „Żarołuska”, osiem stadiów z 23 klipami animacji, wersje uproszczone, jajo, owca, rycerz-golem, rekwizyty; 42 elementy świata z propozycją mapy i oświetlenia; ikona i miniatury; 24 ikony interfejsu, portrety stadiów i trzy wzory ekranów. Wszystko skryptami w Blenderze, bez wgrywania i bez Studio; kod i dane w `swiat/ewolucja/modele/`, duże pliki poza repozytorium.
+- **Walka** (agent budujący na Opus): jedno prawo życia i obrażeń, łańcuch ugryzień, linie FIRE i POWER, wyspa dla ślizgu, symulacja balansu; testy 28/28, w Studio 28 z 29 (czas klatki zawyżony, bo Studio zwalniało przy grającym właścicielu).
+- **W toku:** wpięcie nowych smoków i klipów do gry (pierwsze sprawdzenie modeli w Studio). Stan i lista spraw do ludzi: [[Projekt próbki — Monster Evolution]], sekcja „Droga do wydania”.
+- Monitory przygaszone do 07:30; miejsce testowe w Studio otwarte ponownie po tym, jak było zamknięte.
+
+## 2026-11-22 · Claude Code w panelu, okno Ogólny (pomysł Pawła: Slide a Ragdoll)
+- Paweł na czacie panelu opisał pomysł gry i poprosił o dodanie do Wytwórni oraz ocenę kartą. **Nowa notatka:** [[Slide a Ragdoll]] (status propozycja, etap „ocena”) — opis Pawła, karta agenta 17/30, werdykt „popraw”, krytyka (argument za, pre-mortem, pięć poprawek, co zmieni ocenę).
+- Ocena jest wstępna: rynku po mechanice agent nie sprawdzał (to okno nie szuka w sieci) — sprawdzenie jest nowym zadaniem w [[Zadania]], start po poleceniu na czacie. Odnośnik dopisany w [[00 Wytwórnia pomysłów]]. Nic nie zatwierdzone, kolumny Karola i Pawła puste.
+
+## 2026-11-22 · Claude Code u Karola (tytuł, styl smoka, zgoda na wgrywanie modeli)
+- **Decyzja Karola D-138** (czeka na Pawła): tytuł gry „Dragon Lair Evolution”. Ta sama wiadomość („masz pełne zgody”) rozszerza zgodę z 14.11 na wgrywanie modeli smoka na konto Roblox do tej gry; audio, płatne generatory i przełączenie gry na publiczną agent potwierdza osobno.
+- **Styl smoka:** arkusz z trzema kierunkami z Blendera wysłany Karolowi; agent idzie kierunkiem „Żarołuska” (pasy ciemnych łusek, żar w szczelinach rosnący z wiekiem, kryształowe rogi), podgląd w `swiat/ewolucja/modele/podglad/`. Pytania 83 i 84 z odpowiedziami.
+
+## 2026-11-22 · Claude Code u Karola (decyzja: gra o smoku do końca, wydanie 24–25.11)
+- **Decyzja Karola D-137** (czeka na Pawła): trzymamy się gry o smoku, wydanie publiczne we wtorek–środę 24–25.11; priorytety — modele z Blendera we własnym stylu, walka, interfejs, responsywność, utrzymanie gracza, miejsce na aktualizacje. Pytanie 86 rozstrzygnięte. Sesja główna wróciła na Fable (Karol odnowił pulę).
+- **Ruszyły dwie prace:** modele smoka w Blenderze (osobny agent, bez Studio i bez wgrywania czegokolwiek; biblioteka postaci z `swiat/postacie/biblioteka` tylko do odczytu) oraz przebudowa walki (agent budujący). Miejsce testowe w Studio było zamknięte — otwarte ponownie.
+- Nowe zadania na górze listy.
+
+## 2026-11-22 · Claude Code u Karola (baseball sprawdzony: cmentarz; zalecenie — smok publicznie w tym tygodniu)
+- Karol: „Czyli jaka decyzja — co robimy… musimy się czegoś trzymać”. Agent polecił baseball pod jednym warunkiem: sprawdzenie rynku po mechanice nie znajdzie cmentarza. Sprawdzenie (agent na Opus, ok. 190 tys. tokenów) znalazło: [[Walidacja Baseball for treasure (2026-11-22)]].
+- Karta [[Baseball for treasure]]: etap „wstrzymana”, werdykt agenta „odrzuć w tej fali”. Dopisek pod pytaniem 86: zalecenie — gra o smoku, wydana publicznie w tym tygodniu (okno do ok. 29.11), po wieczorze poprawek pierwszego wrażenia; publiczne wydanie po osobnej zgodzie. Lekcja w [[Lekcje z prototypów]]: termin wejścia waży więcej niż zwrot.
+
+## 2026-11-22 · Claude Code u Karola (na czym stajemy)
+- Karol: „Co powinniśmy teraz zrobić… Musimy na czymś definitywnie przystanąć”. Agent zaleca wybór z datą: smok zamrożony idzie do graczy, baseball dostaje sprawdzenie rynku i (jeśli przejdzie) próbkę jednej pętli, ok. 30.11 jedna gra z liczb; ocena ragdolla i ameby — dopisek pod pytaniem 86 (pytanie 87 dublowało 86 i zostało scalone).
+
+## 2026-11-22 · Claude Code u Karola (ustalenia z drugiej sesji głównej: Baseball for treasure)
+- **Nowa notatka:** [[Sesja główna 2026-11-22 (2) — zapis ustaleń]] (status propozycja) — druga sesja tego dnia, 19:39–19:41, mówił tylko Karol; temat: pomysł [[Baseball for treasure]] po ocenie agenta 17/30. Notatka z pierwszej sesji (18:53–19:02) została bez zmian poza odnośnikiem do drugiej. Zapis rozmowy zostaje lokalnie u gospodarza panelu.
+- **Rejestr decyzji:** propozycje D-135 (karta oceny: „Inni gracze” nie obniża oceny gier solo) i D-136 (odmiana baseballu: potworek zamiast skarbu), obie ze zdaniem agenta (D-114: zgoda z poprawką). Nic nie zatwierdzone.
+- **Pytania otwarte:** bez nowych pytań; dopisek pod pytaniem 86 (Karol wrócił do pytania, nie wybrał). Pod żadnym otwartym pytaniem (78, 79, 80, 83, 85, 86) nie dopisano odpowiedzi — żadna nie padła.
+- **Zadania:** odmiany baseballu łatające słabe punkty oceny i pokrewne gry; panel — agenda i pytania pod temat sesji. Prośby z nagrania nie uruchomiły pracy — start po poleceniu na czacie.
+- **Sesje główne:** temat w „Omówione”; wybór po ocenie (pytanie 86) dalej w „Do omówienia”.
+- Dopiski w [[Baseball for treasure]], [[Karta oceny pomysłu]] (propozycja zmiany, karta działa bez zmian) i [[00 Wytwórnia pomysłów]]. Raport w panelu: „Sesja główna 2026-11-22 (2) — do zatwierdzenia”.
+
+## 2026-11-22 · Claude Code u Karola (odświeżenie ocen całego lejka pomysłów)
+- **Karol:** „Odśwież cały lejek pomysłów, bo wiele z tych ocen jest już nieaktualne”. Agent (Opus, ok. 275 tys. tokenów) ocenił 15 kart na danych z 22.11 i graniu właściciela; zmienione tylko: kolumna Agent, werdykt agenta, etap i nowy blok na górze „Krytyki agenta”. Kolumny Karola i Pawła bez zmian. Zestawienie: [[Lejek pomysłów — ocena 2026-11-22]].
+  - Monster Evolution: 26 → 21, popraw → popraw
+  - Smash Tower: 23 → 20, popraw → popraw
+  - Sleeping Giant Heist: 25 → 19, buduj → popraw
+  - Monster Fishing: 22 → 19, odrzuć → odrzuć
+  - Baseball for treasure: — → 17, — → popraw, etap pomysł → ocena
+  - Super Kitty Brawlers: 21 → 17, popraw → popraw
+  - BONK Chain Reaction: 22 → 16, buduj → popraw
+  - Monster Fusion Lab: 21 → 16, popraw → popraw
+  - Climb the Titan: 17 → 15, odrzuć → odrzuć
+  - Bring Monsters Home Before Dark: — → 15, odrzuć → odrzuć
+  - BONK: 19 → 15, popraw → odrzuć
+  - Cats Brawlers: — → 15, — → odrzuć, etap pomysł → ocena
+  - Pet Arena: 21 → 14, odrzuć → odrzuć, etap test → porzucona
+  - Ring Potworów: 22 → 14, buduj → odrzuć
+  - Blocky & Crycket: 13 → 12, popraw → odrzuć, etap prototyp → wstrzymana
+- Etapy: Pet Arena „porzucona” na prośbę Karola o odświeżenie (po jego ocenie z grania 21.11; da się cofnąć w panelu); Blocky & Crycket „wstrzymana” (zadania stoją do decyzji o kierunku); pomysły Pawła „ocena”; Ring Potworów zostaje „wstrzymana” (agent proponował „porzucona”, brak decyzji ludzi).
+- Jeden odczyt na żywo (22.11, 18:10 UTC): lider fali ewolucji (Ant Evolution) 36,4 tys. graczy wobec 41,5–42,2 tys. rano, gdy większość rosnących gier miała o tej porze 1,1–1,7 razy więcej niż rano — możliwy początek spadku; warunek z rynku dla gry o smoku sprawdzamy 29.11.
+
+## 2026-11-22 · Claude Code u Karola (ustalenia z sesji głównej: Baseball for treasure)
+- **Nowa notatka:** [[Sesja główna 2026-11-22 — zapis ustaleń]] (status propozycja) — sesja Karola i Pawła 18:53–19:02, temat: pomysł [[Baseball for treasure]]; Karol dorzucił rozbudowę gry o smoku od ameby. Zapis rozmowy zostaje lokalnie u gospodarza panelu.
+- **Rejestr decyzji:** propozycje D-130 (pętla gry), D-131 (gracz wybiera siłę i kierunek), D-132 (złoto tylko z gabloty; piłki i kije), D-133 (ewolucja od ameby z serwerami poziomów), D-134 (najpierw ocena agenta, gra o smoku bez zmian do próby z graczami). Nic nie zatwierdzone.
+- **Pytania otwarte:** nowe 85 (skąd gracz bierze siłę) i 86 (baseball, ameba czy smok). Pod starszymi otwartymi pytaniami (78, 79, 80, 83) nic nie dopisano — na sesji o nich nie mówiono.
+- **Zadania:** pełna ocena baseballu, ocena pomysłu z amebą i porównanie, ocena kartą przez Karola i Pawła. Prośba o ocenę z nagrania nie uruchomiła pracy — start po poleceniu na czacie.
+- **Sesje główne:** temat w „Omówione”; do agendy — wybór po ocenie agenta.
+- Dopiski z sesji w kartach [[Baseball for treasure]] i [[Monster Evolution]] oraz w [[00 Wytwórnia pomysłów]]. Raport w panelu: „Sesja główna 2026-11-22 — do zatwierdzenia”.
+
+## 2026-11-22 · Claude Code u Karola (pierwsza ocena pomysłów Pawła z panelu)
+- Paweł dodał w panelu dwa pomysły: [[Baseball for treasure]] i [[Cats Brawlers]]. Agent wpisał w kartach pierwszą ocenę (sekcja „Krytyka agenta”, bez sprawdzenia rynku po mechanice, bez oceny liczbowej): baseball — pętla najmocniejszej fali z zwrotem w locie piłki, ale okno do ok. 6.12 i słabe precedensy kopania; koty — kolekcja i armia rosną, ale „jeden przycisk, walczą same” powtarza to, co odpadło w Pet Arenie.
+- Paweł zgłosił, że nie może sam prowadzić sesji: w panelu jest gościem (link z samym kodem dostępu). Potrzebny link z kluczem zatwierdzania — przygotowuje go Karol (agentowi odmówiono odczytu klucza; nie obchodzone).
+
+## 2026-11-22 · Panel (ludzie)
+- Paweł (gość panelu): nowy pomysł w Wytwórni: Baseball for treasure ([[Baseball for treasure]])
+- Paweł (gość panelu): nowy pomysł w Wytwórni: Cats Brawlers ([[Cats Brawlers]])
+
+## 2026-11-22 · Claude Code u Karola (gra o ewolucji: pomiar do próby z graczami)
+- Sesja główna przeszła z Fable na Opus 5.5 (Karol: „Fable nam się na razie skończył”).
+- **Pomiar** (ten sam agent budujący, ok. 70 tys. tokenów): analityka Roblox (lejki, gospodarka, zdarzenia) i własny anonimowy zapis podsumowania każdej sesji, z odczytem tabeli progów D-128. Ograniczenie panelu twórcy przy małej liczbie graczy i ustawienie potrzebne do odczytu: [[Projekt próbki — Monster Evolution]], „Pomiar do próby z graczami”. Testy logiki 25/25, próba w Studio 22/22. Opublikowane prywatnie; publicznie nic.
+
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: smok gotowy i opublikowany prywatnie)
+- **Przeróbka na smoka** (ten sam agent na Opus; łącznie na etapy 1–3, próbę i przeróbkę ok. 0,9 mln tokenów): osiem stadiów jednego smoka z generatora klocków, zdolności smoka, odmiany widoczne u innych graczy, kulki przy wyjściu z legowiska, dawny zestaw potworów pod ustawieniem. Testy logiki 23/23, próba w Studio 21/21, układ telefonu 7/7. Stan, ocena wyglądu i wymagania dla ręcznie zrobionego modelu: [[Projekt próbki — Monster Evolution]].
+- **Prywatna publikacja** wersji ze smokiem (zgoda Karola z 22.11), potwierdzona zmianą znacznika czasu wersji. Publicznie nic.
+- Karta [[Monster Evolution]]: nowe zdanie i roboczy tytuł „Dragon Lair Evolution” jako alias. `DOKUMENTACJA.md` zaktualizowana. Budowa wstrzymana do czasu grania ludzi z telefonu, wyboru tytułu i zebrania graczy do próby (D-128).
+
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: etap 3 gotowy i opublikowany prywatnie; start przeróbki na smoka)
+- **Etap 3 próbki** (ten sam agent na Opus): legowisko w świecie ze skarbem i strefą bezpieczną, poziomy trofeów, odmiany przy ewolucji z jawnymi szansami, zapis postępu z blokadą sesji i zarobkiem pod nieobecność do 2 godzin, boss w pięciu stopniach, Olbrzym jako boss serwera. Testy logiki 21/21, próba w Studio 21/21 (z wyjściem i powrotem gracza), układ telefonu 7/7. Stan, liczby i wady: [[Projekt próbki — Monster Evolution]]. `tools/zapis_prob.py`: kontener gry dopisany do listy znacznika próby.
+- **Prywatność:** agent budujący złapał zrzut z prawdziwą nazwą konta w ogłoszeniu o bossie, usunął go i zrobił na nowo; w Studio ogłoszenia mówią teraz „Player N”. Do repozytorium nic takiego nie trafiło.
+- **Prywatna publikacja** etapu 3 (zgoda Karola z 22.11), potwierdzona zmianą znacznika czasu wersji. Publicznie nic.
+- **Przeróbka na smoka** ruszyła po ustaleniu roboczym pod pytaniem 84. Zadania zaktualizowane; raport ze zrzutami w panelu, film demo wysłany Karolowi.
+
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: zwierzę — smok)
+- Karol skłania się ku smokowi („więcej zdolności uda nam się zrobić na smokach”), agent zmienił zalecenie z małpy na smoka; zapis pod pytaniem 84 jako ustalenie robocze (bez numeru decyzji). Smok chodzący, bez swobodnego latania; tytuł do wyboru spośród wolnych; przeróbka po etapie 3.
+
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: próba „jedno zwierzę na standardowym szkielecie”)
+- **Próba techniczna** (ten sam agent, ok. 45–75 tys. tokenów): jedna dwunożna małpa na standardowym szkielecie postaci Roblox odtwarza gotowe animacje w skali 0,5–6 razy, także jako boty. Ograniczenia i zalecenie (małpa jako model po stronie klienta, ruch zostaje nasz): [[Projekt próbki — Monster Evolution]], sekcja „Próba techniczna”. Dopiski pod pytaniami 83 i 84. Opublikowana wersja nietknięta; pliki próby w `swiat/ewolucja/`.
+
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: etap 2 gotowy i opublikowany prywatnie)
+- **Etap 2 próbki** (ten sam agent na Opus): strefa Deep Woods od formy 4, mały boss, ładniejsze pole, wspólny system ruchu stworów, odczucie jedzenia i ewolucji, późniejszy pierwszy pościg, skrypt filmu demo. Testy logiki 15/15, próba w Studio 15/15, układ telefonu 6/6; jeden cel tempa niespełniony (przerwa bez nowości 3:02 wobec 2:30). Stan i liczby: [[Projekt próbki — Monster Evolution]].
+- **Prywatna publikacja** za zgodą Karola z 22.11 („Tak puścimy”): wersja bez strażnika Studio, zabawki i Pet Arena wyłączone, publikacja potwierdzona zmianą znacznika czasu wersji miejsca. Link w zadaniach. Publicznie nic.
+- **Zadania:** etap 2 i zgoda odhaczone; nowe — granie z telefonu, wybór zwierzęcia i animacji (pytania 83–84), etap 3. Raport z filmem demo wysłany Karolowi; raport ze zrzutami w panelu.
+
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: jedno zwierzę — wybór z liczb)
+- **Karol** zapytał, czy nie zrobić jednego zwierzęcia zamiast ośmiu różnych potworów. Agent się zgodził (dowody w [[Projekt próbki — Monster Evolution]]) i sprawdził ok. 25 kandydatów (agent na Opus, ok. 185 tys. tokenów): [[Wybór zwierzęcia do gry o ewolucji (2026-11-22)]]. Wniosek: zwierzę podnosi sufit, ale hitu nie robi; propozycja — małpka → goryl → olbrzymi goryl na standardowym szkielecie postaci Roblox.
+- Pytanie 84 (które zwierzę) i dopisek pod pytaniem 83 (animacje). Etap 2 próbki idzie bez zmian, bo nie zależy od zwierzęcia.
+
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: etap 1 gotowy, etap 2 w budowie)
+- **Etap 1 próbki** (agent na Opus, ok. 415 tys. tokenów): pełna pętla w najmniejszej postaci — pole, kulki, 25 botów, drabina ośmiu form z odsłoną, panel legowiska ze złotem i trzema ulepszeniami, łagodna strata. Testy logiki 12/12, próba w Studio 13/13, układ telefonu 6/6, tempo zgodne z celami. Kod `swiat/ewolucja/`, kontener `EwolucjaGra`; pakiet zabawek dostał wyłącznik. Nic nie opublikowano.
+- **Luka wobec lidera:** modele nie mają szkieletów (ruch proceduralny), pole jest proste. Po uwadze Karola o Ant Evolution (grafika, responsywność, animacje) etap 2 dostał nowy zakres „pierwsze dziesięć minut”, a legowisko w świecie przeszło do etapu 3: [[Projekt próbki — Monster Evolution]]. Pytanie 83 o prawdziwe animacje.
+- **Zadania:** etap 1 odhaczony; nowe — etap 2, zagranie w etap 1 w Studio, zgoda na prywatną publikację. Raport ze zrzutami w panelu. `DOKUMENTACJA.md`: nowy pakiet `swiat/ewolucja/`.
+
+## 2026-11-22 · Claude Code u Karola (Monster Evolution: wybór z liczb, sprawdzenie, start budowy)
+- **Decyzje Karola (czekają na Pawła):** D-128 — o próbkach rozstrzygają liczby od prawdziwych graczy, nie gust; D-129 — budowa próbki Monster Evolution. Pytanie 82 rozstrzygnięte.
+- **Sprawdzenie kierunku** (agent na Opus, ok. 215 tys. tokenów): [[Walidacja kierunku jesteś potworem (2026-11-22)]] — fala w środkowej lub późnej fazie, realnie 0,5–5 tys. graczy naraz, okno 2–4 tygodnie; lider ma już loterię mutacji, więc projekt zmieniony na stałą drabinę form z legowiskiem jako wyróżnikiem.
+- **Projekt próbki:** [[Projekt próbki — Monster Evolution]] (cztery etapy, progi u graczy, warunek z rynku na 29.11). Karta [[Monster Evolution]]: etap „prototyp”. Budowa etapu 1 ruszyła (kod `swiat/ewolucja/`, kontener `EwolucjaGra`).
+- **Zadania:** nowe na górze listy (etap 1, gracze do próby, potwierdzenie Pawła); zadanie o zabawkach odhaczone.
+
+## 2026-11-22 · Claude Code u Karola (pomysł z Olbrzymem porzucony, nowa krótka lista)
+- **Karol** porzucił pomysł „Guard Your Monsters From the Giant” po trzeciej analizie („lećmy gdzie indziej… znajdźmy wschodzący trend i dodajmy nasz wyjątkowy faktor”). Karta [[Bring Monsters Home Before Dark]]: etap „porzucona”, z listą tego, co zabieramy. Nic nie było budowane.
+- **Nowa krótka lista** z porannego pomiaru rynku, bez nowych kosztów: [[Kierunki z rynku 2026-11-22]] — jesteś potworem (fala Ant Evolution), armia potworów (Summon a Pet Army), odsłoń własnymi rękami (fala sprzątania), dwa kierunki rezerwowe. Żaden nie przeszedł jeszcze szukania przegranych.
+- **Zmieniona kolejność pracy (propozycja agenta):** weto ludzi na jednym zdaniu przed płatnym szukaniem; wąskie gardło to gracze do próby. Dopisek i odpowiedź Karola pod pytaniem 82.
+
+## 2026-11-22 · Claude Code u Karola (noc w grze o Olbrzymie: porwanie odpada, fale sprawdzone)
+- **Karol** po wyjaśnieniu gry odrzucił porwanie potwora przez Olbrzyma („bez sensu jest ta kradzież”) i luźno zaproponował fale, przed którymi bronią zebrane potwory jak wieżyczki. Zapis pod pytaniem 82 i w karcie [[Bring Monsters Home Before Dark]].
+- **Walidacja po mechanice** (agent na Opus, ok. 190 tys. tokenów): [[Walidacja wariantu nocne fale i potwory-obrońcy (2026-11-22)]]. Odmiana „zebrane stwory bronią bazy” gaśnie; rosną tylko pełne gry tower defense z losowaniem jednostek i cotygodniową aktualizacją; „przetrwałem 100 fal” nie ma widzów. Agent zmienił własną ocenę z „zgadzam się z poprawką” na „nie polecam” — lekcja w [[Lekcje z prototypów]].
+- **Otwarte:** jak wygląda noc (oblężenie / kradzież między graczami / fale mimo danych / inny kierunek) — dopisek pod pytaniem 82. Nic nie jest budowane.
+
+## 2026-11-22 · Claude Code u Karola (walidacja kierunku „noc i Olbrzym”)
+- **Walidacja** wybranego przez Karola pomysłu (analityk na Fable, szukanie po mechanice: 105 haseł, ok. 2,5 tys. gier): [[Walidacja kierunku noc i Olbrzym (2026-11-22)]]. „Pusto wokół” było błędem szukania — to dwuletnia rodzina gier (typowo 7–20 tys. graczy w szczycie i szybki spadek); „przynieś zwierzęta do domu” to cmentarz; internet nagrywa cel z liczbą („przetrwałem 100 nocy”), wielkie widoczne zagrożenie i „coś weszło nocą do mojego domu”, a nie zmierzch; twórcy przychodzą po wejściu gry na listy Roblox, nie przed.
+- **Zmieniony pomysł i projekt próbki:** [[Projekt próbki — Guard Your Monsters From the Giant]] — Olbrzym co noc przychodzi do obozu i zabiera potwora, którego widać ponad płotem; licznik nocy; miary sukcesu u prawdziwych graczy; plan czterech sobotnich aktualizacji. Odświeżone: [[Następna gra — rekomendacja 2026-11-22]], [[Fale na Roblox 2026 i gdzie jest otwarcie]], [[Trzy pomysły na następną grę (2026-11-22)]]; karta [[Bring Monsters Home Before Dark]] ze zmianą na górze; dopisek pod pytaniem 82. Pewność: niska do średniej; nic nie jest budowane.
+
+## 2026-11-22 · Claude Code u Karola (wybór kierunku: „Zdąż przed nocą”)
+- **Karol:** „Tutaj za bardzo nie ma znaczenia, co mnie pociąga, tylko co obecnie pociąga internet. Ale z tych pozycji akurat najlepsza druga — najlepiej brzmi.” Odpowiedź pod pytaniem 82; karta [[Bring Monsters Home Before Dark]] przechodzi do etapu oceny. Budowa nie jest zlecona.
+- W toku (analityk na Fable): walidacja tego kierunku pod kątem sieci — gry, które próbowały tego samego i przegrały, rozbiór najbliższych rosnących gier, filmy i krótkie formy wokół tej fantazji, poprawiony pomysł, projekt najmniejszej próbki z miarami sukcesu u prawdziwych graczy i planem czterech cotygodniowych aktualizacji.
+
+## 2026-11-22 · Claude Code u Karola (analiza następnej gry na Fable)
+- **Analiza** (agent na Fable, ok. 0,3 mln tokenów; własny spis ok. 3 tys. gier): [[Następna gra — rekomendacja 2026-11-22]], [[Anatomia pętli, która trzyma (2026-11-22)]], [[Fale na Roblox 2026 i gdzie jest otwarcie]], [[Wschodzące trendy 2026-11-22]], [[Trzy pomysły na następną grę (2026-11-22)]]. Wnioski: przepis Karola (czynność, wzrost bohatera, potworki dające złoto) to wejściówka, którą mają także kopie bez graczy — gry różnią się miejscem, w którym siedzi emocja; kopia tej samej czynności ma sens ok. 2 tygodnie, wariant z własną odsłoną ok. 6; gra-wzór wybiła się dopiero w piątym tygodniu dzięki cotygodniowym aktualizacjom.
+- **Trzy pomysły** (żaden nie jest kopią): „Odkop potwora”, „Zdąż przed nocą”, „Oswój i dosiądź”. Rekomendacja: „Zdąż przed nocą” ([[Bring Monsters Home Before Dark]]) z pewnością niską do średniej — analityk zmienił wybór po znalezieniu sześciu gier „wykop stwora” bez graczy. Następny krok bez kosztu: Karol gra po 10 minut w trzy istniejące gry (pytanie 82). Nic nie jest budowane.
+
+## 2026-11-22 · Claude Code u Karola (rozbiór gry-wzoru; analiza następnego kierunku w toku)
+- **Karol:** grałby w Throw Food For Animals „praktycznie cały czas” — ciekawość następnej krainy i jej potworów, wydarzenia; emocja w scence podejścia (rozmiar i kolor otoczki zdradzają rzadkość, tożsamość nieznana do końca). „Nie kopiuj tej gry 1:1. Chcę jedynie analizę i pomysł na kolejny hit, który wstrzeli się we wschodzący trend.” Analiza może iść na Fable — „bardzo ważna jest ta wiedza”.
+- **Rozbiór** (agent badawczy): [[Rozbiór wzoru — Throw Food For Animals]], [[Kopie pętli rzutu — listopad 2026]], [[Zasady pętli z odsłonięciem]]; zasady 33–39 w [[Mózg — zasady hitu Roblox]]. Najważniejsze fakty: gra wydana 18.09, przez ponad 5 tygodni mała, wystrzeliła po aktualizacji z 25.10; szczyt 2,5 mln graczy naraz 21.11; serwer na 5 osób; 19 krain odblokowywanych tylko odległością rzutu; nowa kraina w każdą sobotę; odsłona w kilku krokach; kopie ze zmienioną skórką mają po kilkaset graczy.
+- W toku: analiza na Fable — anatomia pętli, fale i otwarcie na rynku, wschodzące trendy, trzy własne pomysły i rekomendacja. Budowy nie ma, dopóki Karol nie wybierze.
+
+## 2026-11-22 · Claude Code u Karola (zabawki odrzucone, kierunek: pętla jak w grze-wzorze)
+- **Karol po graniu w obie zabawki:** „bardzo słabe i nudne… nie mają głębi… nie ma elementów zaskoczenia… nie ma emocji, tak jak to robi rzucanie jedzeniem i scenka, gdy potwór podchodzi. Czynność, ulepszanie bohatera (siła, szybkość) i zasób w postaci potworków, które dają złoto na sekundę — to jest chyba teraz trendujące.”
+- **Agent:** zgoda i poprawka własnej metody — zabawka bez pętli testowała nie to ([[Lekcje z prototypów]]; bramka w [[Karta oceny pomysłu]] zmieniona na „próbkę pętli”). Kierunek 2 z [[Kierunki z rynku 2026-11-21]] w pełnej postaci. W toku: rozbiór gry-wzoru i jej kopii (agent badawczy), potem budowa.
+
+## 2026-11-22 · Claude Code u Karola (dwie zabawki w wersji testowej)
+- **Karol (21.11 wieczór):** „Ok, puść je” — zgoda na dwie zabawki z [[Kierunki z rynku 2026-11-21]]. Odpowiedź pod pytaniem 81.
+- **Zabawki** (pakiet `swiat/zabawki/`, kontener `ZabawkiGra` w prywatnym miejscu testowym): „Eat & Evolve” — gracz od razu jest potworem, zjada kulki i mniejszych, ucieka przed większymi, sześć form, zryw, 20 botów; „Lure a Monster” — proca z przynętą, ruchome cele, zwabione potwory w zagrodzie. Bez warstw (złota, jajek, zapisu). Ekran wyboru na wejściu; Pet Arena wyłączona wyłącznikiem, kontener został. Próba w Studio 18/18, testy 7 OK, układ sprawdzony na emulacji telefonu (poprawione: przycisk MENU, zasłanianie łąki, wysokość kamery).
+- **Publikacja** aktualizacji potwierdzona znacznikiem czasu wersji (po dodaniu znacznika wydania do kontenera). Klipy i zrzuty wysłane Karolowi. Czeka na granie ludzi.
+
+## 2026-11-21 · Claude Code u Karola (kierunki z rynku zamiast pomysłów z głowy)
+- **Karol:** „Postaraj się z lepszymi pomysłami i lepszą ich strukturą. Przed pomysłem wychodzimy z analizą rynku… musimy działać szybko.”
+- Nowa notatka [[Kierunki z rynku 2026-11-21]]: cztery kierunki z danych tygodnia w jednej strukturze (fala → czynność w każdej sekundzie → nasz zwrot → dlaczego my → powód powrotu → ryzyko i zabawka → okno); rekomendacja: dwie zabawki („Eat & Evolve”, „Lure a Monster”). [[00 Wytwórnia pomysłów]]: kolejność „rynek → czynność → zabawka → gra”; szablon „Pomysł gry” zaczyna się od fali na rynku; dopisek pod pytaniem 81.
+
+## 2026-11-21 · Claude Code u Karola (Pet Arena po graniu: zalecenie zakończenia, propozycja zabawek)
+- **Karol po graniu na telefonie** (wersja testowa działa po naprawie): „bardzo mało wciągająca… cały czas to samo… zero dynamiki… to chyba nie ten pomysł. Chyba że masz inną wizję.”
+- **Agent:** warunek wyjścia spełniony — zaleca zakończyć Pet Arenę w tym kształcie (karta: werdykt „odrzuć”; decyzja o etapie zostaje u ludzi). Wspólny błąd trzech gier: czynność gracza sama nie bawi. [[Lekcje z prototypów]] — wpis i zmiana sposobu pracy; [[Karta oceny pomysłu]] — bramka „próba zabawki” (propozycja); [[Pytania otwarte]] — pytanie 81 o wieczór trzech zabawek.
+
+## 2026-11-21 · Claude Code u Karola (naprawa wersji testowej Pet Areny)
+- **Karol:** „Aplikacja na telefonie nie działa.” Przyczyna — błąd agenta: prywatna wersja „Throw & Catch Monsters” została opublikowana z budowy do prób, w której skrypty mają blokadę „tylko w Studio” (poza Studio serwer usuwa grę). Naprawa: skrypty zbudowane w trybie publikacji (`zbuduj.py --publikacja`, atrybut `Publikacja = true`), aktualizacja opublikowana ze Studio i potwierdzona znacznikiem czasu wersji (21:33). Wcześniejsza „aktualizacja v3” najpewniej w ogóle nie doszła. Do potwierdzenia przez Karola z telefonu.
+- Zasada na przyszłość zapisana w `swiat/pet_arena/README.md` (rozdział o publikacji) — każda publikacja i aktualizacja tylko z budowy w trybie publikacji.
+
+## 2026-11-21 · Claude Code u Karola (Pet Arena v3 „Throw & Catch Monsters”)
+- **Etap v3** (D-127): „Wybijesz, to zabierasz” — cios kończący na dzikim potworze losuje złapanie (jawne szanse, licznik litości, pierwsze złapanie pewne), odmiany BIG / GOLDEN / GIANT, ALPHA co 5 minut; „Jutro na arenie” — zegar wydarzeń o stałych porach z panelem „NEXT”, wylęgarnia licząca czas poza grą, dzienny prezent, zapowiedź nowego potwora. Próba w Studio 41/41, testy 41 OK. Demo wideo wysłane Karolowi.
+- **Wersja testowa:** aktualizacja wysłana ze Studio (Plik → Opublikuj); Studio nie pokazało potwierdzenia, a uprawnienie Open Cloud do publikacji miejsc nie jest nadane, więc do potwierdzenia w grze. Ocena agenta budującego: pętla „rzuć → wybij → złap” daje haczyk, ale złapanie gracz raczej dostaje, niż zdobywa — propozycje na po graniu w [[Pet Arena — projekt prototypu]].
+
+## 2026-11-21 · Claude Code u Karola (Pet Arena v2 i prywatna wersja testowa)
+- **Pet Arena v2** (D-127): arena o promieniu 40, najwyżej 6 petów, wielkość według wagi, zderzenia z przekazaniem pędu, wybicia w powietrze ponad trybuny, wzgórze króla z tronem dla jednego i lecącymi monetami, jasne koloseum, sterowanie petem z autopilotem (domyślnie bez drążka), kamera za petem i widok całości, nowe wyklucie, złoty boss. Próba w Studio 34/34, testy 33 OK, 60 klatek na sekundę na emulacji telefonu. Demo wideo i zrzuty wysłane Karolowi.
+- **Prywatna wersja testowa** (zgoda Karola, pytanie 77): agent opublikował grę w Studio jako prywatne doświadczenie „Throw & Catch Monsters” (placeId 93704244631419; komputer, telefon, tablet, konsola) na koncie Karola i zaprosił Pawła jako testera wczesnej wersji. Nic nie jest publiczne. Przy zaproszeniu lista znajomych zmieniła kolejność i na chwilę zaznaczyła się inna osoba — odznaczona przed wysłaniem, zaproszenie poszło tylko do Pawła.
+- W nocy: etap v3 („Wybijesz, to zabierasz”, „Jutro na arenie”). Stan w [[Pet Arena — projekt prototypu]], karta [[Pet Arena]] (etap: test), [[Zadania]].
+
+## 2026-11-21 · Claude Code u Karola (zgoda Karola: kierunek Pet Areny i prywatny test)
+- **Karol:** „Zgadzam się na wszystko, ale jestem otwarty na zmiany koncepcji. Jeżeli będzie kosztować nas to czas i zasoby, a i tak wiem, że nie wyjdzie, to nie ma co testować.” [[Rejestr decyzji]]: D-127 zatwierdzona podpisem Karola (czeka na Pawła); [[Pytania otwarte]]: odpowiedź pod 77 — zgoda na prywatną wersję testową.
+- [[Pet Arena — projekt prototypu]]: tytuł roboczy „Throw & Catch Monsters”, środek ciężkości przesunięty na „rzucaj i łap potwory”, zapisany pułap nakładów i warunek wyjścia (koniec gry, jeśli w prywatnym teście ludzie przestają rzucać po kilku minutach albo nie wracają następnego dnia).
+
+## 2026-11-21 · Claude Code u Karola (analiza trendu, nowa ocena Pet Areny 21/30)
+- **Karol, wieczór:** gracz po rzucie ma sterować petem; 10 petów to za dużo; „przyspieszamy tempo, żeby wstrzelić się w trend. Zrób ponowną analizę trendu i porównaj z naszą grą… porównajmy jeszcze raz ocenę”; decyzję o kształcie zostawił agentowi.
+- **Badanie agenta (trackery, API Roblox, DevForum):** [[Trend 2026-11-21 — co rośnie w tym tygodniu]], [[Algorytm Roblox 2026 — weryfikacja w źródłach]], [[Pet Arena — ocena wobec trendu 2026-11-21]]. Wynik: Pet Arena trafia w trend częściowo — nie ma dziś nowej, rosnącej gry z petami graczy na arenie, a trzy poprzednie miały skok i zgasły w 4–8 tygodni; rosną sąsiedzi (pety walczące za gracza, „wypchnij z mapy”, rzucanie dla zwierząt). **Nowa ocena kartą: 21/30 ze sterowaniem, 20/30 z oglądaniem; poprzednie 28 było zawyżone** (karta w [[Pet Arena]]). Zasady algorytmu w większości potwierdzone; próg dla graczy poniżej 16 lat to od 19.11 100 mocno zaangażowanych graczy 16+.
+- **Kierunek** (propozycja D-127, [[Pet Arena — projekt prototypu]]): sterowanie z autopilotem, 6 petów i jeden tron, zwroty „Wybijesz, to zabierasz” i „Jutro na arenie” przed testem, okno: prywatny test do ok. 28.11, publiczny ok. 5.12; dalszy połysk wstrzymany. Dopisek pod pytaniem 77, nowe zadania.
+
+## 2026-11-21 · Claude Code u Karola (uwagi do Pet Areny, rynek i algorytm 2026, marketing)
+- **Pet Arena:** Karol po obejrzeniu demo jest niezadowolony z wyglądu i skali (sesja głosowa 18:26, temat Pet Arena). Zlecona przebudowa: arena ok. 4 razy większa i do 10 petów, pety różnej wielkości według wagi, przepychanie ciał i wybicia w powietrze ponad trybuny, obszar złota od nowa (wzgórze króla), wyklucie z naciskiem na emocje, złoty boss; interfejs zostaje atrapą (docelowy zrobi Paweł). Styl — decyzja projektanta zostawiona przez Karola: jasne, zamknięte koloseum zamiast lochu. Kamera: widok całości przy celowaniu, zbliżenie na własnego peta w walce. Karol: krótkie demo wideo ma być standardem raportu.
+- **Rynek i algorytm (dwa zapisy filmów wklejone przez Karola; pliki źródłowe zostają lokalnie):** [[Algorytm Roblox 2026 — nowe zasady]] (28 dni w trzech oknach, ikona = pierwsze 30 sekund, wideo z rozgrywki na kafelku, próg zaangażowanych graczy dla osób poniżej 16 lat) i [[Nowa era Roblox 2026 — pięć zmian]] (budowa tania, wyróżnienie drogie; połowa dużych gier ma mniej niż 3 miesiące; okno trendu trwa tygodnie; starsi gracze rosną najszybciej; gra jako marka). Zasady 21–32 w [[Mózg — zasady hitu Roblox]]. Wniosek agenta: tempo ważniejsze od połysku — po przebudowie prywatny test i granie ludzi, dopisek pod pytaniem 77.
+- **Marketing:** nowy folder [[00 Marketing]] i notatka [[Konto klipów z wirtualnymi streamerami — pomysł]] z oceną agenta (zgoda na format, sprzeciw wobec udawania prawdziwych streamerów i ukrytej promocji; wersja jawna jako propozycja D-126, pytanie 80). Skill `marketing` do osobnej sesji.
+- Uwaga Karola o wyłączaniu komputera: nie wyłączać komendą w trakcie aktualizacji systemu (po nocy 20/21.11 system nie wstał bez naprawy).
+
+## 2026-11-21 · Claude Code (spisanie sesji głównej: Pet Arena)
+- **Sesja 18:26–18:31, sam Karol** (Pawła nie było), temat: Pet Arena po pierwszym podglądzie prototypu. Zapis kompletny. Notatka ustaleń ze statusem propozycja: [[Sesja główna 2026-11-21 — zapis ustaleń]] (prywatny zapis rozmowy zostaje lokalnie, poza repozytorium).
+- [[Rejestr decyzji]]: siedem 💡 propozycji — D-119 (arena ok. 4 razy większa i zamknięta), D-120 (wielkość peta według wagi), D-121 (krytyk wybija w powietrze, statusy, złoty boss), D-122 (wyklucie jako mocna nagroda), D-123 (interfejs robi Paweł, agent stawia zaślepki), D-124 (Karol decyduje o Pet Arenie sam — sprzeczne z D-043), D-125 (krótki film jako standard raportów). Niczego nie zatwierdzono.
+- [[Pytania otwarte]]: nowe pytania 78 (styl sceny: loch czy jaskrawe kolory) i 79 (kto decyduje o Pet Arenie, rozstrzyga D-124). Żadnej odpowiedzi pod pytaniami nie dopisano — wszystkie wcześniejsze pytania mają już odpowiedź.
+- [[Zadania]]: poprawki prototypu Pet Areny i interfejs po stronie Pawła („Teraz”), podgląd wybranej gry w panelu (Backlog). Bez pola agenta — nikt wprost nie wskazał, czyj Claude ma je zrobić; prośba „popraw grę” z nagrania nie uruchamia pracy.
+- [[Sesje główne]]: temat „Gra: Pet Arena” w „Omówione”; do „Do omówienia” doszła Pet Arena z Pawłem (styl i kto decyduje).
+- Uwagi Karola i zdanie agenta (D-114) dopisane w [[Pet Arena — projekt prototypu]] („Uwagi Karola po pierwszym podglądzie”) i w karcie [[Pet Arena]]. Raport w panelu: „Sesja główna 2026-11-21 — do zatwierdzenia”.
+
+## 2026-11-21 · Panel (ludzie)
+- Karol Balucki: odpowiedź na pytanie 77 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 71 ([[Pytania otwarte]])
+
+## 2026-11-20 · Claude Code u Karola (Pet Arena: prototyp gotowy do zagrania)
+- **Pet Arena (D-118)** zbudowana w nowym miejscu Roblox (plik lokalny, kontener `PetArenaGra`), pakiet `swiat/pet_arena/`. Etap 1 (20:30–21:30): rdzeń — rzut peta w wybrane miejsce, walka o złoty środek liczona na serwerze, odrzut rosnący z ubytkiem życia, RING OUT i KO, nagroda za głowę, 12 petów z umiejętnościami, dzikie pety. Etap 2 (21:35–22:30): większe pety i czytelny ekran, jajka i gwiazdki, drużyna i Księga, boss i złoty pet, tarcza słabszego, trener, tablice, zapis, pad, demo wideo. Próba w Studio 28/28, testy 28 OK, 60 klatek na sekundę.
+- **Zmiana względem słów Karola:** odpoczynek peta 30 s zamiast ok. minuty (przy 60 s ok. 40% czasu bez peta do rzucenia) — zapisane w „Do strojenia po graniu” w [[Pet Arena — projekt prototypu]].
+- [[Pytania otwarte]]: nowe pytanie 77 (prywatna wersja testowa). [[Zadania]]: zagrać i powiedzieć, co poprawić. Raport w panelu ze zrzutami; demo wideo i zrzuty wysłane Karolowi. Nic nie opublikowano.
+
+## 2026-11-20 · Claude Code u Karola (po sesji: BONK porzucony, Pet Arena do budowy)
+- **Karol po sesji głównej, na czacie:** „OK, akceptuję te rzeczy… Porzucamy BONK, tak jak mówiłeś, ale wyciągamy z niego wiedzę… Robimy Pet Arenę.” [[Rejestr decyzji]]: D-116 i D-117 zatwierdzone podpisem Karola, nowa **D-118** (Pet Arena: budujemy prototyp) — wszystkie czekają na Pawła (D-043; Paweł na sesji miał wątpliwość co do pomysłu).
+- [[Pytania otwarte]]: odpowiedzi pod 75 (Pet Arena) i 76 (porzucamy BONK). [[Zadania]]: zadania BONK zdjęte, nowe zadanie Pet Arena, ocena kartą po stronie Pawła.
+- Wytwórnia: [[Pet Arena]] — etap prototyp, ocena agenta 28/30 po odpowiedzi Karola (złoto za środek, decyzje gracza, odrzut rosnący z ubytkiem życia), z dopiskami agenta (nagroda za głowę, tarcza słabszego, dwa pety na start); [[BONK]] porzucony, [[Ring Potworów]] wstrzymany jako rozwinięty w Pet Arenę; [[Lekcje z prototypów]] — co zabieramy z BONK. Nowa notatka projektu: [[Pet Arena — projekt prototypu]].
+- Budowa: nowe miejsce Roblox w pliku lokalnym, pakiet `swiat/pet_arena/`, agent na Opusie (sesja główna na Fable projektuje i sprawdza).
+
+## 2026-11-20 · Panel (ludzie)
+- Karol Balucki: ocena pomysłu Pet Arena (Karol): 28/30 ([[Pet Arena]])
+
+## 2026-11-20 · Claude Code (spisanie sesji głównej: Wytwórnia — nowe pomysły na gry)
+- **Sesja Karola i Pawła 18:52–19:08** o nowych pomysłach: pet-arena Karola i „Super Kitty Brawlers” Pawła. Zapis kompletny. Notatka ustaleń ze statusem propozycja: [[Sesja główna 2026-11-20 — zapis ustaleń]] (prywatny zapis rozmowy zostaje lokalnie, poza repozytorium).
+- [[Rejestr decyzji]]: dwie 💡 propozycje — D-116 (oba pomysły do lejka z kartą oceny), D-117 (BONK: porzucić — Karol sam zastrzegł, że to nie decyzja; w sprzeczności z D-112 i D-113). Niczego nie zatwierdzono.
+- [[Pytania otwarte]]: dopisek pod pytaniem 75 (wyboru do testu nie było); nowe pytanie 76 (BONK, rozstrzyga D-117). Żadnej odpowiedzi pod pytaniami nie dopisano — padła tylko prośba o ocenę kartą i opinię agenta. Pytanie 71 (do Pawła) nie padło.
+- [[Zadania]]: trzy zadania (karty pomysłów z oceną agenta, opinia o BONK, ocena Karola i Pawła w panelu). Bez przypisania do konkretnego agenta — nikt wprost nie wskazał, czyj Claude ma je zrobić.
+- [[Sesje główne]]: temat wytwórni przeniesiony do „Omówione”; do „Do omówienia” wróciły wybór pomysłu do testu oraz marketing i workflow do mózgu.
+
+## 2026-11-20 · Claude Code u Karola (panel: poprawki Wytwórni, temat sesji)
+- **Karol (zrzuty):** „Popraw UI tej Wytwórni i dodaj w pozycji sesji wybór z listy, o jakim temacie sesja będzie”. Lejek i karta pomysłu: przyczyną była stara wersja widoku w karcie przeglądarki (zderzenie klasy CSS i „null” — poprawione w kodzie z 18:19); przy okazji Markdown w radarze, opisy kryteriów z prawdziwej [[Karta oceny pomysłu]], testy na kopiach prawdziwych notatek.
+- **Temat sesji** w zakładce Sesja (opis w [[Panel zespołu]]). 662 testy panelu OK; panel uruchomiony ponownie o 18:41 (nikt nie był wtedy w rozmowie). Link do panelu dla Pawła wysłany Karolowi.
+
+## 2026-11-20 · Claude Code u Karola (panel: zakładka Wytwórnia)
+- **Panel (D-115):** zakładka „Wytwórnia” — portfel gier z liczbami i pulpitem każdej gry, lejek pomysłów z werdyktem agenta i ocenami ludzi, karta pomysłu (ocena Karola i Pawła, zmiana etapu), dodawanie pomysłu z szablonu, radar trendów; karta „Gry” na Pulpicie. 652 testy panelu OK, próba w przeglądarce 30/30 (telefon i komputer). Panel uruchomiony ponownie na nowym kodzie; link przez tunel bez zmian.
+- Notatka [[Blocky & Crycket]] w Wytwórni ma aliasy (B&C, Blocky&Crycket) do dopasowania raportów i zadań. Opis w [[Panel zespołu]].
+
+## 2026-11-20 · Claude Code u Karola (badanie: TizzyRBLX, rynek, osiem pomysłów)
+- **Badanie agenta** (26 wyszukiwań, źródła w notatkach): [[TizzyRBLX — zasady twórcy]] (to on mówi w zapisie z 19.11; 31 zasad z oznaczeniem fakt/opinia; jego hity żyją krótko), [[Rozbiór hitów — listopad 2026]], nowy [[Radar trendów]] (20.11: fizyka i ragdoll rosną najszybciej, klony „Steal a…”, ogrody i „uderzaj dla liczby” spadają; platforma −9% graczy dziennie r/r w III kw.).
+- „Viral na bonki przeminął” — w połowie prawda: format „uderzaj dla liczby” umarł, „uderz i zobacz, co się stanie” rośnie (wniosek w notatce [[BONK]]).
+- Wytwórnia: siedem nowych pomysłów z kartą i pre-mortem — [[Monster Evolution]] 26/30, [[Sleeping Giant Heist]] 25, [[Smash Tower]] 23, [[BONK Chain Reaction]] 22, [[Monster Fishing]] 22, [[Monster Fusion Lab]] 21, [[Climb the Titan]] 17; [[Mózg — zasady hitu Roblox]] uzupełniony o zasady 15–20 i Tizzy'ego. Rekomendacja agenta w [[00 Wytwórnia pomysłów]]; wybór — pytanie 75.
+
+## 2026-11-20 · Claude Code u Karola (porządki: pytania i zadania)
+- **Karol:** „Zaktualizuj dashboard i listę pytań, bo większość jest już zupełnie nieaktualna.”
+- [[Pytania otwarte]]: pytania 58, 59, 61–64, 67–69 oznaczone jako nieaktualne (szczegóły B&C wstrzymane do decyzji o kierunku, D-115; robocze ustawienia zostają w grze), 65 (dziewięć starych zadań zamkniętych), 66 (muzyka czeka z B&C), 73 (zastąpione oceną w Wytwórni). Otwarte zostaje 71 (pytanie do Pawła). Nowe pytanie 75: który pomysł idzie do najtańszego testu.
+- [[Zadania]]: w „Teraz” zostały bieżące sprawy (Wytwórnia, BONK, potwierdzenia Pawła, prywatne repo, grupa Roblox); zadania B&C przeniesione bez kasowania do sekcji „Wstrzymane: B&C do decyzji o kierunku”; jedenaście starych zdjętych jako nieaktualne (wpis w „Zrobione”).
+
+## 2026-11-20 · Claude Code u Karola (krytyczne myślenie i Wytwórnia pomysłów)
+- **Karol po zagraniu w BONK:** „to nie jest to… znudziła mi się po paru minutach… jajka bez value, linie potworów bez sensu, brakuje bossów, głębi i haka”. Zapisane w [[Lekcje z prototypów]] z wnioskiem agenta; krytyka i propozycja „BONK 2.0” w notatce [[BONK]] w Wytwórni.
+- **D-114 — prawo agenta do sprzeciwu:** 28 skilli metod myślenia z repozytorium tjboudreaux/cc-thinking-skills (MIT, przeczytane przed kopiowaniem, bez skryptów; `.claude/skills/thinking-*`, licencja w `.claude/skills/LICENCJE-OBCE.md`), skill projektu `krytyczne-myslenie` i sekcja w `CLAUDE.md`. Ostatnie słowo zostaje przy ludziach („mimo to rób”).
+- **D-115 — Wytwórnia pomysłów:** nowy folder [[00 Wytwórnia pomysłów]]: [[Mózg — zasady hitu Roblox]], [[Karta oceny pomysłu]], [[Radar trendów]], [[Lekcje z prototypów]], notatki gier [[BONK]], [[Ring Potworów]], [[Blocky & Crycket]]; szablon „Pomysł gry”; link w [[00 Start]]. Panel: zakładka „Wytwórnia” w budowie (agent), badanie TizzyRBLX i trendów w toku.
+- [[Rejestr decyzji]]: D-114, D-115 (podpis Karola, czekają na Pawła). [[Zadania]]: ocena pomysłów na sesji, potwierdzenie Pawła.
+
+## 2026-11-20 · Claude Code u Karola (BONK: prywatna wersja testowa)
+- **Karol:** „Nie ma mnie — wykonaj to za mnie”. Agent sterował Studio na komputerze Karola: nowe miejsce, budowa BONK w trybie publikacji (`zbuduj.py --publikacja`, kontrola zgodna, próba w Play bez błędów), publikacja jako **prywatne** doświadczenie „BONK!” (komputer, telefon, tablet, konsola), zaproszenie Pawła jako testera wczesnej wersji. Nic nie jest publiczne.
+- **Rozbieżność z D-044 / D-113:** w wyborze twórcy było tylko konto Karola (brak grupy), więc wersja testowa jest na koncie Karola. Dopisek pod pytaniem 31 w [[Pytania otwarte]] — przed publicznym startem przeniesienie do grupy. Dźwięki BONK są na koncie Karola, więc w wersji testowej grają.
+- Ikona i miniatury: w Studio nie ma już ich wgrywania (odsyła do Creator Hub) — zostają na przed publicznym startem. Stan w [[BONK — projekt prototypu]], [[Zadania]].
+- Rano Studio straciło połączenie z miejscem B&C (błąd połączenia z serwerem) i stało na stronie startowej; miejsce B&C nie jest teraz otwarte.
+
+## 2026-11-20 · Claude Code u Karola (BONK: decyzja o publikacji)
+- **Karol, rano:** odpowiedź „A” na pytanie 74 → **D-113**: BONK publikujemy jako osobną grę w grupie po próbie we dwóch (podpis Karola, czeka na Pawła — D-043). Odpowiedź pod pytaniem 74 w [[Pytania otwarte]].
+- [[Zadania]]: pozycja BONK rozbita na próbę we dwóch i publikację.
+
+## 2026-11-20 · Claude Code u Karola (BONK gotowy w całości)
+- **BONK (D-112), etap 3:** zamach ręką z pałką widoczny dla wszystkich, ruch petów i jajek, tupot Strażnika, napisy u góry w jednym stosie, pad, przyciski na telefon i tablet. Próba w Studio 33/33, testy 37 OK; obecna gra bez nowych błędów (próba dymna 14/14, zapis 10/10, bohater i stan gracza bez nowych błędów).
+- **Grafiki:** ikona „BONK!” i trzy miniatury z hasłami po angielsku (szkice z Higgsfield, 8 kredytów; napisy dodane u nas), w `swiat/bonk/grafika/`. Nic nie wgrane do Roblox. Krótkie demo wideo (ok. 43 s) dla Karola, poza repo.
+- **Do decyzji:** nowe pytanie 74 w [[Pytania otwarte]] — publikacja BONK jako osobnej gry do pomiaru. [[Zadania]]: prototyp odhaczony, nowa pozycja „zagrać we dwóch i zdecydować o publikacji”. Stan w [[BONK — projekt prototypu]]; `DOKUMENTACJA.md` — pakiet `swiat/bonk/` w strukturze repo.
+
+## 2026-11-20 · Claude Code u Karola (BONK, etap 2 w nocy)
+- **BONK (D-112), etap 2:** pałki, jajka i pety z Księgą, Strażnicy bici wspólnie, Moc nad głową, korona, tablice, komunikaty serwera, dzienny prezent bez kary, zapis w wersji 2 z przeniesieniem postępu. Próba w Studio 27/27, testy bez Studio 34/34, 16,7 ms na klatkę. Jajka tylko za monety z gry, szanse jawne (D-086, D-015, D-105). Wszystkie liczby to propozycja.
+- Pakiet `swiat/bonk/`, raport w panelu z 8 zrzutami, stan w [[BONK — projekt prototypu]]. Szkice ikony i trzech miniatur z Higgsfield (8 kredytów) czekają na etap 3. Etap 3 w toku.
+
+## 2026-11-19 · Claude Code u Karola (BONK, etap 1 w Studio)
+- **BONK (D-112), etap 1:** rdzeń gry zbudowany w Studio we własnym kontenerze `BonkGra` i sprawdzony w Play — 17/17 prób, śr. 16,7 ms na klatkę. Uderzasz potwory, odlatują łukiem, HOME RUN od 120 st., monety i Moc, bramy krain otwiera Moc. Obecna gra nietknięta (wejście bramą obok płyty startu).
+- Pakiet `swiat/bonk/` (kod, testy, zrzuty `klatki/`), raport w panelu ze zrzutami trzech krain i telefonu. Stan budowy w [[BONK — projekt prototypu]]. Etap 2 i 3 w toku (praca „bonk-noc”, do ok. 07:30).
+
+## 2026-11-19 · Claude Code u Karola (BONK na noc; pomysł Ring Potworów)
+- **Karol, wieczór:** zgoda na budowę prostej gry z propozycji (wariant b) w nocy, na Opusie, „w całości”, z Higgsfield. Zapisane jako **D-112** (podpis Karola, czeka na Pawła); odpowiedź pod pytaniem 72. Projekt: [[BONK — projekt prototypu]] — osobny, samowystarczalny pakiet `swiat/bonk/`; B&C nietknięte; publikacja zostaje decyzją ludzi.
+- **Pomysł Karola i Pawła — druga gra:** jajka, potwory z Księgi, trening AFK, wspólny ring serwera do ostatniego potwora. Ocena agenta i sześć poprawek w [[Ring Potworów — pomysł]]; kolejność budowy — nowe pytanie 73.
+- [[Zadania]]: dwie nowe pozycje na górze listy.
+
+## 2026-11-19 · Claude Code u Karola (rynek 19.11 i propozycja decyzji biznesowej)
+- **Karol, wieczór:** „Co realnie powinniśmy zrobić? Chcemy, żeby gra była viralem… Jaka powinna być decyzja biznesowa?”
+- **Przegląd rynku** (trackery z 18–19.11, dokumentacja Roblox o polecaniu, poradniki o reklamie): na szczycie jajka i pety z kradzieżą (fala się starzeje), fizyka i ragdoll, prosta czynność z uroczymi zwierzętami, horror ze znajomymi, „+1”; nowe RPG prawie nie wchodzą. Algorytm od czerwca 2026 patrzy na 28 dni powrotów i grę ze znajomymi; gracze z reklam nie liczą się do rankingu. Reklama ma sens od ok. 30% powrotów następnego dnia, minimum ok. 35 tys. Robux na tydzień.
+- **Propozycja decyzji biznesowej** (dopisana do [[Diagnoza 2026-11-19 — prostota i szansa na hit]]): cel to gra, którą algorytm sam rozdaje, a nie „viral” na zamówienie; jedna gra naraz, publiczna wersja testowa w ok. 3 tygodnie; rdzeń BONK z fizyką, jajka i pety, kot-mag jako twarz gry (rekomendacja zmieniona z (a) na (b)); progi z góry; bez klonu „Steal an Egg”. Dopisek pod pytaniem 72 w [[Pytania otwarte]]; wskaźnik w [[Rynek Roblox i konkurencja]]. Żadna decyzja nie zmieniła statusu.
+
+## 2026-11-19 · Claude Code u Karola (diagnoza po filmie twórcy hitu: prostota i szansa na viral)
+- **Karol, ok. 15:30:** przekazał transkrypcję filmu współwłaściciela gry „Build a Base and Steal” i poprosił o szczerą ocenę, czy gra może być viralem, oraz propozycję zmian w całej logice („Będziemy musieli ukrócić bardzo wiele logik”). Transkrypcja zostaje lokalnie, poza repozytorium (cudzy materiał).
+- **Nowa notatka** [[Diagnoza 2026-11-19 — prostota i szansa na hit]] (propozycja): jedenaście zasad z filmu, tabela „nasza gra wobec zasad”, szczery werdykt (dziś — nie; po przycięciu — szansa, bez gwarancji), propozycja przycięcia do jednego rdzenia („bij potwory, rośnij w siłę, zbieraj pety, idź dalej”), lista systemów do zamrożenia i konfliktów z zatwierdzonymi decyzjami. Wnioski pokrywają się z [[Diagnoza pomysłu 2026-11-13]].
+- **Nowe pytanie 72** w [[Pytania otwarte]]: wariant (a) szybki grinder, (b) BONK albo (c) obecny kształt; termin pierwszej publicznej wersji testowej. Żadna decyzja nie zmieniła statusu.
+
+## 2026-11-19 · Claude Code u Karola (zapis postępu włączony — sprawdzony w Studio)
+- **D-110 wdrożona** (`swiat/stan_gracza/`, `tools/zapis_prob.py`): zapis postępu jest włączony domyślnie (wyłącznik atrybutem `ZapisPostepu` jak dotąd). Zapisuje się poziom, doświadczenie, Złoto, Gemy, punkty statystyk, trening z mini-gier z paskiem malejącego zysku, przedmioty posiadane i założone (także ze sklepu) z ulepszeniami, pety, pokonani Strażnicy i bramy, obejrzane przeloty, strój. Działa w Studio, na magazynie z końcówką `_Studio`.
+- **Poprawione przed włączeniem:** kowal, pety i mini-gry czekają na wczytanie profilu — wcześniej kowal brał gracza za nowego w trakcie wczytywania i pierwszy łup albo zakup nadpisałby zapisane przedmioty; skill aktywnego peta nie działał po powrocie; pasek treningu ginął przy wyjściu.
+- **Próby gry nie dotykają zapisu ludzi:** każde włączenie Play przez `tools/studio_mcp.py` stawia znacznik próby i serwer stanu nie otwiera magazynu (świeży gracz jak dotąd). Uwaga dla agentów: Play włączony innym narzędziem omija znacznik. Próba zapisu pracuje na osobnym magazynie `_Studio_Proba`.
+- **Próba zapisu w grze (14:32 i 15:06):** 9 punktów w porządku — po ponownym wejściu zero różnic (poziom 6, Złoto 3501, Gemy 150, pas leśny +1 posiadany i założony, pet, trening, brama lasu); czas wczytania 0,9–1,9 s; przy błędach usługi rekord zostaje nietknięty. Próby stanu gracza, petów, kowala, przymierzalni, mini-gier, przelotu i sklepu przeszły. W próbie całej drogi gracza raz kamera została zablokowana na 30 s po przylocie do lasu (powtórka 14 z 14) — do obserwacji.
+- **Nowe polecenie:** `python -B swiat/stan_gracza/zbuduj.py --kasuj-zapis` (podgląd) i `--kasuj-zapis --tak` (kasuje zapis osoby zalogowanej w Studio, tylko magazyn Studio).
+- **Zostaje po stronie Pawła** (zadanie na liście): jednorazowy wybór klasy czekający na wczytanie, zapis drzewka umiejętności. Raport w panelu: „Zapis postępu włączony: stan wraca po ponownym wejściu”. Notatki: [[Zadania]].
+
+## 2026-11-19 · Claude Code u Karola (Strażnicy Bagna i Dżungli −15% życia — w grze)
+- **D-111 wdrożona** (`swiat/bagno_pas_gra/przeciwnicy.py`, `swiat/dzungla_pas_gra/przeciwnicy.py`): Strażnik Topieli 2528 → 2149 życia na swoim poziomie, Wąż Stu Lian 2852 → 2424; inne cechy i inne potwory bez zmian, Strażnik Gaju bez zmian. Próby Bagna i Dżungli w Studio (13:47–14:03) i walka 111 z 111 bez błędów; silnik zgodny z portem (592 walki kontrolne).
+- **Symulacja przejścia po zmianie:** sam bohater na poziomie Strażnika wygrywa 24–30% walk z Topielą (było 12–20%) i 30–35% z Wężem (było 19–28%); przy samych walkach utyka 3–4% graczy (było 11–12%), niecierpliwy 16–18% (było 37–41%); koniec gry 72 minuty zamiast 75.
+- **Uwaga do liczby z decyzji:** poranny wariant „−15%” w symulacji odejmował mniej życia (ok. 9–12%), stąd zapowiadane „ok. 6% utyka”. W grze jest równe −15%, zgodnie ze słowami Karola, więc wyszło trochę łatwiej (3–4%).
+- Druga część pytania 70 (doświadczenie z potworów Dżungli +25%) zostaje otwarta. Notatki: [[Zadania]].
+
+## 2026-11-19 · Claude Code u Karola (decyzje Karola: zapis postępu, Strażnicy −15%)
+- **Karol, ok. 13:30 na czacie:** „Tak. Daj zapis postępu. Nie wiem czy 30% to nie za dużo. Gracz słusznie ma się pomęczyć. Może jakieś 15%?” Zapisane jako **D-110** (zapis postępu włączony; rozstrzyga pytanie 60) i **D-111** (Strażnik Topieli i Wąż Stu Lian −15% życia; rozstrzyga pierwszą część pytania 70). Obie mają podpis Karola i czekają na Pawła.
+- Sprawdzone przed startem: Studio ma dostęp do usług danych gry (odczyt z magazynu działa w trybie Edit), więc zapis da się włączyć bez zmiany ustawień gry. Zapis ze Studio idzie do osobnego magazynu.
+- [[Zadania]]: trzy nowe pozycje (zapis, Strażnicy, lista dla Pawła po włączeniu zapisu). [[Pytania otwarte]]: odpowiedzi pod 60 i 70; druga część pytania 70 (doświadczenie w Dżungli +25%) zostaje otwarta.
+
+## 2026-11-19 · Claude Code u Karola (próba całej gry — stan końcowy dnia)
+- **Próba całej gry, 23 próby (12:00–13:23):** bez nowych błędów. Przeszły: cała droga gracza, las, Bagno, Dżungla (z walką bez przestojów), stary las, stan gracza, pety trzech krain, kowal 13 punktów, przymierzalnia 10, Training Center w sceneriach krain, bohater w świecie 20, wystawa ras, przelot przez biom 15, NPC 14, sklep 12, bazar, chmury, dźwięk, walka 111 z 111 i 27 z 27. Jedyny błąd jest znany: za małe napisy w wyborze próby walki na ekranie telefonu (44 z 46). Do listy prób doszły próby przelotu przez biom, NPC i sklepu (`swiat/przejscie_gry/regresja_calosci.py`).
+- **Symulacja przejścia puszczona ponownie** na liczbach z końca dnia (walka bez przestojów, sklep): czasy zmieniły się o najwyżej minutę, wnioski bez zmian — gra do przejścia w ok. 1 godz. 20 min, gracz utyka na Strażniku Topieli i Wężu Stu Lian (pytanie 70).
+- Studio na koniec w trybie Edit; wszystkie prace dnia zamknięte w „Pracach w toku”.
+
+## 2026-11-19 · Claude Code u Karola (sklep zbrojmistrza i przedmioty — w Studio)
+- **Sklep zbrojmistrza** (`Workspace/SklepProba`, `swiat/sklep_proba/`; propozycja, D-106): przy zbrojmistrzu w bazarze (E) tymczasowe okno z przedmiotami klasy gracza w czterech stopniach; kupno za Złoto przez serwer kowala (klasa, poziom, Złoto, posiadanie), przedmiot zakłada się sam, gdy slot jest pusty albo założony ma niższy stopień. 60 nowych przedmiotów (`swiat/postacie/stopnie.py`) widać na postaci w świecie i w walce, liczą się w walce i da się je ulepszać. Ceny kompletu 1 400 / 3 300 / 5 200 Złota (ok. 40% Złota krainy do Strażnika) — propozycja.
+- **Próby w grze (do 11:56):** sklep 12 punktów w porządku (w tym prawdziwa walka w kupionym komplecie), kowal 13, przymierzalnia 10, bazar w całości, cała droga gracza, bohater w świecie, walka 111 z 111.
+- **Wyjaśnione dwa poranne błędy bazaru przy zbrojowni:** w miejscu gry stoi skrypt Pawła `ShopClient` z makietą okna „Shop” (nie ma go w repo); zgłasza zbrojownię jako miejsce z oknem. Sklep chowa tę makietę u gracza przy zbrojowni, żeby nie otwierały się dwa okna — z wyłącznikiem; sprawa dla Pawła w nowym pytaniu 71. Zmieniona tylko próba bazaru, nie jego kod.
+- **Słabe miejsca:** blade polskie litery w oknie przy małym tekście, łuk Zwiadowcy z Dżungli 0,5 studa pod ziemią w uniku, modele uproszczone do limitu 220 brył bohatera w świecie; zapis postępu wyłączony (pytanie 60).
+- Raport w panelu: „Sklep zbrojmistrza: 60 przedmiotów w trzech stopniach za Złoto”. Notatki: [[Zadania]], [[Pytania otwarte]] (nowe 71).
+
+## 2026-11-19 · Claude Code u Karola (NPC w bazarze i mini-gry w sceneriach krain — w Studio)
+- **NPC (D-109)** (`Workspace/NpcGra`, `swiat/npc_gra/`; propozycja): w bazarze stoi sześć animowanych postaci zamiast figur z klocków — Bolko (karczmarz), Pionek (mistrz gier), Zefir (mag), Radomir (zbrojmistrz), Tymon (trener), Jagoda (opiekunka petów); kowal dostał tabliczkę. Rig składa klient, animacja idzie z danych pakietu postaci; spoczynek, gest roli, powitanie, obrót do gracza. Stare figury są schowane u gracza i wracają przełącznikiem. Próba 15 punktów w porządku, pętla klienta 0,04 ms. W próbie bazaru dwa punkty przy zbrojowni nie przeszły (brak dawnego dymka) — do ustalenia przy wdrożeniu sklepu.
+- **Mini-gry w sceneriach krain (D-108)** (`Workspace/TreningProba`, `swiat/trening_proba/scenerie.py`; propozycja): sześć scenerii zamiast areny w murach, po dwie gry na krainę; wejście prosto do scenerii wybranej gry; w Rozbijaniu owoce i dynie zamiast skrzynek (sam wygląd). 2797 części, czas klatki 16,7 ms jak wcześniej; próba 31 punktów w porządku, logika 118 na 118. Pięciu trenerów NPC stoi przy grach; przy Pancerzu trenerem jest golem gry.
+- **Do poprawki:** tabliczka trenerki pod panelem rundy w Bieżni, kula maga nad księgą trenerki Run, strefa ciosu na tle twarzy trenera Siły.
+- **Karol (ok. 10:35, na czacie):** „Zejdź z modelu na Opus 5.5, za dużo leci” — od tej chwili nowi agenci pracują na tańszym modelu, po jednej pracy naraz; wdrożenie sklepu idzie już tak.
+- Raporty w panelu: „NPC w bazarze: karczmarz, mistrz gier, mag, zbrojmistrz, trener, opiekunka” i „Mini-gry w sceneriach krain: las, Bagno, Dżungla”. Notatki: [[Zadania]].
+
+## 2026-11-19 · Claude Code u Karola (walka bez przestojów w Studio; NPC, scenerie mini-gier i przedmioty — części bez Studio)
+- **Walka bez przestojów (D-107) w Studio** (`swiat/las_potwory/`, pakiety trzech biomów, `swiat/stan_gracza/`): zdjęte czekanie po walce i po przegranej (także rewanż ze Strażnikiem), potworów 13–14 na biom dla jednego gracza i 25–26 przy dwudziestu (było 8 i 16), odradzanie zwykłych ok. 3 s (było 12–18 s), rzadkiego 21 s (150 s), Strażnika 31 s (120 s); łup po szybko pominiętej walce pokazuje się od razu; najbliższy potwór ma pierwszeństwo przy rysowaniu. Wilków w lesie o jednego mniej niż w rachunku — osiem nie mieściło się w budżecie brył klienta. Silnik walki bez zmian (592 walki kontrolne identyczne).
+- **Próby w grze (9:08–9:42):** las 27 punktów w porządku, Bagno 20, Dżungla 23, cała droga gracza 13 z 13, stary las, stan gracza, pety, chmury, walka 111 z 111; czas klatki 16,7 ms. Próba kowala nie ruszyła, bo jego pakiet jest w trakcie zmian pod sklep.
+- **Liczby to propozycja agenta** (D-107 zostawia ich dobór agentowi): wybory do oceny w `swiat/las_pas_gra/README.md`. Najważniejszy skutek: przy pomijaniu walk do ok. 240 walk w 10 minut, czyli szybsze poziomy niż w rachunku balansu.
+- **Części bez Studio w repo:** trzynaście postaci NPC z klipami i pakiet `swiat/npc_gra/` (D-109); sześć scenerii mini-gier zamiast areny w murach (D-108, `swiat/trening_proba/scenerie.py`); 60 przedmiotów do kupienia w trzech stopniach dla trzech klas z cenami i statystykami (D-106, `swiat/postacie/stopnie.py`, `SKLEP_PRZEDMIOTY.md`). Wszystko to propozycje do oceny; wdrożenia w Studio idą po kolei.
+- Raport w panelu: „Walka bez przestojów: bez czekania, więcej potworów, szybkie odradzanie”. Notatki: [[Zadania]].
+
+## 2026-11-19 · Claude Code u Karola (przejście gry w liczbach)
+- **Symulator przejścia gry** (`swiat/przejscie_gry/symulacja_przejscia.py`, raport `PRZEJSCIE_W_LICZBACH.md`; rachunek, nie decyzja): 100 graczy każdej klasy od poziomu 1 do pokonania Węża Stu Lian, wynik walk z prawdziwego silnika, nagrody i wymagania z plików gry. Każda klasa kończy grę; zwykła gra trwa ok. 1 godz. 20 min (niecierpliwy 45 min, oglądający wszystko ok. 2 godz.); poziom przy bramach 11–12, 17–19, 23–25.
+- **Wnioski:** gracz utyka na Strażniku Topieli i Wężu Stu Lian (sam bohater wygrywa 12–28% walk), nudzi się pod koniec Bagna i Dżungli (20–28 walk z rzędu z jednym potworem); najtrudniej ma Mag na Strażniku Topieli; żadna klasa nie jest wymagana. Propozycje zmian liczb są w nowym pytaniu 70 — w grze nic nie zmienione.
+- **Walka bez przestojów (D-107), część bez Studio** jest w repo: bez czekania po walce i przegranej, 14 / 23 / 26 potworów na biom przy 1 / 8 / 20 graczach (było 8 / 12 / 16), odradzanie 4 s (rzadki 20 s, Strażnik 30 s); wdrożenie w Studio w toku.
+- Raport w panelu: „Przejście gry w liczbach: da się przejść w 1 godz. 20 min, gracz utyka na dwóch Strażnikach”. Notatki: [[Zadania]], [[Pytania otwarte]] (nowe 70).
+
+## 2026-11-19 · Claude Code u Karola (kierunek dnia: grywalność trzech biomów)
+- **Karol, wiadomość głosowa ok. 7:55:** nie budujemy Pustyni; stabilizujemy las, Bagno i Dżunglę oraz resztę gry, żeby dało się ją przejść od włączenia do bramy Pustyni, kupując przedmioty i rozwijając postać w Training Center. Zapisane jako decyzje z podpisem Karola (czekają na Pawła): **D-106** (zakres i kolejność), **D-107** (bez kary czasowej po przegranej, więcej potworów, szybsze odradzanie — uwaga Pawła z testów przekazana przez Karola), **D-108** (mini-gry w sceneriach krain zamiast areny w murach), **D-109** (karczmarz, sprzedawcy, mistrz gier i trenerzy jako prawdziwi NPC).
+- **Paweł** ma wypchnąć nowe okna 2D (Kowal, Mag, sklepy) i poprawki interfejsu — zapowiedź przekazana przez Karola.
+- [[Zadania]]: siedem nowych pozycji na górze listy; Pustynia wstrzymana. [[Pytania otwarte]]: dopiski pod 60 (zapis postępu blokuje grę na więcej niż jedno posiedzenie) i 64 (otoczenie mini-gier rozstrzygnięte przez D-108).
+- Po nocnym wyłączeniu komputera uruchomione panel i tunel; Karol dostał plik z nowym linkiem dla Pawła.
+
 ## 2026-11-18 · Claude Code u Pawła (sloty broni według klasy, slot tarczy, pasek doświadczenia)
 - **Arkusz sylwetek** (Higgsfield Nano Banana 2.1, 3 warianty, 6 kredytów; Paweł wybrał wariant 3): miecz, tarcza, kostur, proca w stylu wypalonych sylwetek ekwipunku (referencja: wycinek obecnych slotów) → `assets/raw/SlotPlaceholders/`.
 - **Cięcie i składanie** `tools/slot_placeholders.py`: sylwetki przekolorowane na odcień z tła; pusty slot z prawdziwego wycinka ramki (wymazany miecz). Po uwagach Pawła (zasłonka `Cover` wyglądała na źle wyciętą; tarcza ma mieć osobny slot; para ma stać na środku) Wojownik ma parę slotów — broń przesunięta w lewo, tarcza obok, w miejscu starego slotu odtworzona ściana z desek. Figma: strona „Equipment Panel”, ramka „Weapon slot placeholders” (43:74).

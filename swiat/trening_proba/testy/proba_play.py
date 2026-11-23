@@ -3,7 +3,9 @@
 14 × OK), T15–T22: Kondycja „Bieżnia”, Zręczność „Kłody”, Inteligencja „Runy”, Szczęście „Koniczyny” (18.11.2026,
 22 × OK), T23–T27: wygląd jak w walce — kamery, komiksowe napisy, efekty 3D, konfetti, bohater klasy (18.11.2026,
 przygotowane bez Studio), T28–T31: wygląd areny — części, pola gry, kadry, czas klatki (18.11.2026 wieczorem, w Studio:
-31 × OK).
+31 × OK). Od 19.11.2026 (D-108) mini-gry stoją w sceneriach krain: T28–T31 sprawdzają scenerie (części jak w danych,
+pola gry, kadry, czas klatki w scenerii), T01 liczy jedną podpowiedź E (tablica wejścia), T11 nie ma już bramy lobby —
+dostosowane bez Studio, do uruchomienia po budowie scenerii.
 
     python -B swiat/trening_proba/testy/proba_play.py <folder wyjściowy poza repo> [--studio <studio_id>]
            [--bez-zrzutow] [--tylko T01,T05,…] [--nowe] [--walka] [--arena]
@@ -19,7 +21,7 @@ testu, życie postaci w T20) i używa haczyków pakietu; niczego nie zapisuje w 
 Nazwa konta w zapisach zamieniana na <gracz> (repo jest publiczne).
 
 LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
-  T01 gotowość: SerwerTreninguGotowy, ZgodnoscLogikiTreningu „OK n/n”, Podpowiedzi = 3, KlientTreninguGotowy,
+  T01 gotowość: SerwerTreninguGotowy, ZgodnoscLogikiTreningu „OK n/n”, Podpowiedzi = 1, KlientTreninguGotowy,
       6 kafelków wyboru (6 grywalnych), zdarzenie OknoMiejsca podpięte
   T02 tablica wejścia, prawdziwe E: postać przed TablicaWejscia twarzą do niej → tymczasowy wybór na ekranie
       (zrodlo = "tablica"), dymek bazaru nie jest potrzebny
@@ -39,8 +41,7 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       TreningPancerz = suma rundy
   T10 podsumowanie i JESZCZE RAZ: po rundzie panel podsumowania; prawdziwa spacja startuje nową rundę
   T11 wyjście przyciskiem WYJDŹ (prawdziwe kliknięcie): postać ≤ 1,5 st od punktu sprzed wejścia, kamera Custom,
-      sterowanie dotykowe przywrócone, klawisz W znów porusza postacią; brama WYJŚCIE (E) w arenie bez punktu powrotu
-      → miejsce startu
+      sterowanie dotykowe przywrócone, klawisz W znów porusza postacią (lobby z bramą WYJŚCIE nie ma od D-108)
   T12 telefon: przyciski ≥ 44 px i teksty ≥ 12 pt przy 667 × 375 i 568 × 320 (skala z logiki), najmniejszy przycisk
       na obecnym ekranie
   T13 czas klatki: RenderStepped 6 s w rundzie Siły (średnio, p95) — przy zaciemnionym oknie Studio „?”
@@ -77,14 +78,16 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       awatara nietknięte; gdy go nie ma — zastępczy haczyk we własnym kontenerze (atrybut HaczykBohatera): bez obsługi
       (Invoke czeka) nie zawiesza gry i zostaje awatar; z obsługą dostaje klipy skok / padnij / radosc, „padnij” bez
       przesunięcia w dół, stawy awatara nietknięte
-  --- wygląd areny (18.11.2026) ---
-  T28 części areny: liczba części Areny i dekoracji (Arena/Dekoracje) jak w scena.py, wszystkie zakotwiczone, świateł 0,
-      liczba klinów i dekoracji z kolizją jak w danych
-  T29 pola gry: w pudłach pól gry (dekoracje.POLA_GRY, kwadrat wpisany w koło Kłód, korytarz lobby) nie ma dekoracji
-      wyższej niż wzór podłogi ani żadnej dekoracji z kolizją (rachunek z CFrame i Size części w miejscu)
+  --- scenerie krain (D-108, 19.11.2026; dawniej wygląd areny w murach) ---
+  T28 części scenerii: liczba części Areny i scenerii (Arena/Dekoracje) jak w scena.py — razem i na każdą scenerię,
+      wszystkie zakotwiczone, świateł 0, liczba klinów, klinów narożnych i części scenerii z kolizją jak w danych,
+      sumy położeń części zgodne z danymi (budowa = dane, więc kontrola tła kadrów liczona bez Studio dotyczy miejsca)
+  T29 pola gry: w pudłach pól gry (dekoracje.POLA_GRY, kwadrat wpisany w koło Kłód) nie ma części scenerii wyższej niż
+      wzór podłoża ani żadnej części scenerii z kolizją (rachunek z CFrame i Size części w miejscu)
   T30 kadry: odcinki oko kamery → pole gry i postać (te same ujęcia co test 4h: gra z kołysaniem, start, odliczanie,
-      zbliżenie) nie przecinają żadnej dekoracji — liczone z prawdziwych, obróconych brył w miejscu
-  T31 czas klatki w lobby areny (cała arena w kadrze): śr. i p95, zrzuty 28_arena_lobby i 29_arena_brama
+      zbliżenie) nie przecinają żadnej części scenerii — liczone z prawdziwych, obróconych brył w miejscu
+  T31 czas klatki w każdej z sześciu scenerii (kamera stanowiska): śr. i p95, zrzuty 28_sceneria_kondycja
+      i 29_sceneria_pancerz (scenerie z największą liczbą części)
   (ręcznie, poza skryptem: dźwięki na słuch; dwóch graczy (Test → Clients and Servers, 2); pad)
 
 ZRZUTY (w <wyj>): 01_wybor_tymczasowy, 02_stanowisko_sila, 03_runda_sila, 04_runda_pancerz, 05_podsumowanie,
@@ -152,13 +155,16 @@ KOD = {
                'table.sort(t) local s = 0 for _, x in t do s += x end k:SetAttribute("%sSr", s / #t * 1000) '
                'k:SetAttribute("%sP95", t[math.max(1, math.floor(#t * 0.95))] * 1000) end) return "ok"',
                (4.0, 6.0, "ProbaKlatka", "ProbaKlatka")),
-    "brama": ('local e = k.Arena.Lobby.Wyjscie.E return H:JSONEncode({ p = J(e.Position) })', ()),
-    # --- wygląd areny (T28–T31) ---
+    # --- scenerie krain (T28–T31) ---
     "arena_czesci": ('local a = k.Arena local d = a:FindFirstChild("Dekoracje") '
-                     'local o = { czesci = 0, dekoracje = 0, luzne = 0, swiatla = 0, kliny = 0, kolizje = 0, napisy = 0 } '
+                     'local o = { czesci = 0, dekoracje = 0, luzne = 0, swiatla = 0, kliny = 0, narozniki = 0, kolizje = 0, '
+                     'napisy = 0, sx = 0, sy = 0, sz = 0, scenerie = {} } '
                      'for _, x in a:GetDescendants() do if x:IsA("BasePart") then o.czesci += 1 '
+                     'o.sx += x.Position.X o.sy += x.Position.Y o.sz += x.Position.Z '
                      'if not x.Anchored then o.luzne += 1 end if x:IsA("WedgePart") then o.kliny += 1 end '
-                     'if d and x:IsDescendantOf(d) then o.dekoracje += 1 if x.CanCollide then o.kolizje += 1 end end '
+                     'if x:IsA("CornerWedgePart") then o.narozniki += 1 end '
+                     'if d and x:IsDescendantOf(d) then o.dekoracje += 1 if x.CanCollide then o.kolizje += 1 end '
+                     'local s = x while s.Parent ~= d do s = s.Parent end o.scenerie[s.Name] = (o.scenerie[s.Name] or 0) + 1 end '
                      'elseif x:IsA("Light") then o.swiatla += 1 elseif x:IsA("SurfaceGui") then o.napisy += 1 end end '
                      'return H:JSONEncode(o)', ()),
     "arena_pola": (PUDLO + 'local d = k.Arena:FindFirstChild("Dekoracje") local pola = %s local prog = %r local o = {} '
@@ -546,7 +552,7 @@ def main():
             klg = atrybuty(["KlientTreninguGotowy"], "Client")
             zapisz("T01", {"serwer": at, "klient": kl, "klient_atr": klg})
             ok = (at.get("SerwerTreninguGotowy") is True and str(at.get("ZgodnoscLogikiTreningu", "")).startswith("OK")
-                  and at.get("Podpowiedzi") == 3 and klg.get("KlientTreninguGotowy") is True
+                  and at.get("Podpowiedzi") == 1 and klg.get("KlientTreninguGotowy") is True
                   and kl.get("kafelki") == 6 and kl.get("grywalne") == 6 and (kl.get("zdarzeniaOkien") or 0) >= 1)
             punkt("T01", ok, "%s, podpowiedzi %s, kafelki %s/%s, zdarzeń OknoMiejsca %s, arkusz dźwięku %s" % (
                 at.get("ZgodnoscLogikiTreningu"), at.get("Podpowiedzi"), kl.get("grywalne"), kl.get("kafelki"),
@@ -1226,7 +1232,7 @@ def main():
                 zapisz("T27", {"prawdziwy_haczyk": prawdziwy, "opisy": opisy})
                 punkt("T27", ok27, "; ".join(opisy))
 
-            # ================================================================ wygląd areny (T28–T31)
+            # ================================================================ scenerie krain (T28–T31)
             if chce("T28") or chce("T29") or chce("T30"):
                 import scena as SCENA  # noqa: E402
                 DEK = SCENA.DEK
@@ -1237,13 +1243,20 @@ def main():
             if chce("T28"):
                 a = js(kod("arena_czesci"), "Server")
                 z_kolizja = len([c for c in cz_areny if DEK.dekoracja(c) and c.get("kol") is not False])
+                na_scenerie = {g.split("/")[-1]: n for g, n in DEK.grupy(cz_areny, 3).items() if g.startswith("Arena/Dekoracje/")}
+                sumy = [sum(c["p"][i] for c in cz_areny) for i in range(3)]
+                odchylka = max(abs((a.get(k_) or 0) - sumy[i]) for i, k_ in enumerate(("sx", "sy", "sz")))
                 ok28 = (a.get("czesci") == BU["razem"] and a.get("dekoracje") == BU["dekoracje"] and a.get("luzne") == 0
-                        and a.get("swiatla") == 0 and a.get("kliny") == BU["kliny"] and a.get("kolizje") == z_kolizja)
-                zapisz("T28", {"miejsce": a, "dane": BU, "dekoracje_z_kolizja": z_kolizja})
-                punkt("T28", ok28, "części %s (dane %s), dekoracje %s (dane %s), niezakotwiczone %s, światła %s, kliny %s (dane %s), "
-                      "dekoracje z kolizją %s (dane %s), napisy %s" % (
-                          a.get("czesci"), BU["razem"], a.get("dekoracje"), BU["dekoracje"], a.get("luzne"), a.get("swiatla"),
-                          a.get("kliny"), BU["kliny"], a.get("kolizje"), z_kolizja, a.get("napisy")))
+                        and a.get("swiatla") == 0 and a.get("kliny") == BU["kliny"] and a.get("narozniki") == BU["narozniki"]
+                        and a.get("kolizje") == z_kolizja and a.get("scenerie") == na_scenerie and odchylka < 2.0)
+                zapisz("T28", {"miejsce": a, "dane": BU, "dekoracje_z_kolizja": z_kolizja, "scenerie": na_scenerie, "sumy": sumy})
+                punkt("T28", ok28, "części %s (dane %s), scenerie %s (dane %s), na scenerię %s, niezakotwiczone %s, światła %s, "
+                      "kliny %s (dane %s), kliny narożne %s (dane %s), scenerie z kolizją %s (dane %s), napisy %s, "
+                      "odchyłka sum położeń %.2f st" % (
+                          a.get("czesci"), BU["razem"], a.get("dekoracje"), BU["dekoracje"],
+                          "jak w danych" if a.get("scenerie") == na_scenerie else a.get("scenerie"), a.get("luzne"),
+                          a.get("swiatla"), a.get("kliny"), BU["kliny"], a.get("narozniki"), BU["narozniki"], a.get("kolizje"),
+                          z_kolizja, a.get("napisy"), odchylka))
 
             # ---------------------------------------------------------------- T29 pola gry wolne
             if chce("T29"):
@@ -1282,32 +1295,28 @@ def main():
                     g, w.get("promienie"), w.get("zasloniete"), w.get("czesci"),
                     (" (" + str(w.get("przyklad")) + ")") if w.get("zasloniete") else "") for g, w in w30.items()))
 
-            # ---------------------------------------------------------------- T31 czas klatki w lobby areny + zrzuty
+            # ---------------------------------------------------------------- T31 czas klatki w sceneriach + zrzuty
             if chce("T31"):
-                if serwer_gracza().get("gra") is not None:
-                    hak("wyjdz", dm="Client")
-                    czekaj_na(lambda: not serwer_gracza().get("gra"), 8, 0.5)
-                pr, pp = D["swiat"]["przybycie"], D["swiat"]["patrz_przybycie"]
-                przestaw([pr[0], pr[1] + 3.5, pr[2] + 7], pp)
-                time.sleep(1.5)
-                kamera_za()
-                time.sleep(0.8)
-                zrzut("28_arena_lobby")
-                luau(kod("klatka", 0.5, 6.0, "ProbaKlatkaArena", "ProbaKlatkaArena"), "Client")
-                time.sleep(8.5)
-                a = atrybuty(["ProbaKlatkaArenaSr", "ProbaKlatkaArenaP95"], "Client")
-                sr, p95 = a.get("ProbaKlatkaArenaSr"), a.get("ProbaKlatkaArenaP95")
-                przestaw([pr[0], pr[1] + 3.5, pr[2] - 8], [pr[0], pr[1], pr[2] + 20])
-                time.sleep(1.2)
-                kamera_za()
-                time.sleep(0.8)
-                zrzut("29_arena_brama")
-                zapisz("T31", {"sr": sr, "p95": p95})
+                pomiary = {}
+                for gra_sc in D["kolejnosc_scenerii"]:  # każda sceneria z kamery swojego stanowiska
+                    wejdz_do(gra_sc)
+                    time.sleep(2.0)
+                    if gra_sc in ("kondycja", "pancerz"):  # zrzuty scenerii z największą liczbą części
+                        zrzut("%d_sceneria_%s" % (28 if gra_sc == "kondycja" else 29, gra_sc))
+                    luau(kod("klatka", 0.5, 6.0, "ProbaKlatkaArena", "ProbaKlatkaArena"), "Client")
+                    time.sleep(8.5)
+                    a = atrybuty(["ProbaKlatkaArenaSr", "ProbaKlatkaArenaP95"], "Client")
+                    pomiary[gra_sc] = {"sr": a.get("ProbaKlatkaArenaSr"), "p95": a.get("ProbaKlatkaArenaP95")}
+                sr = max([v["sr"] for v in pomiary.values() if v["sr"] is not None] or [None], key=lambda x: x or 0)
+                p95 = max([v["p95"] for v in pomiary.values() if v["p95"] is not None] or [None], key=lambda x: x or 0)
+                zapisz("T31", pomiary)
                 punkt("T31", None if (sr is None or sr > 50) else (p95 or 99) < 33.4,
-                      "klatka w lobby areny śr. %s ms, p95 %s ms%s" % (sr and round(sr, 1), p95 and round(p95, 1),
-                                                                      " (okno Studio zaciemnione?)" if (sr or 0) > 50 else ""))
+                      "klatka w sceneriach śr. / p95 [ms]: %s; najgorsza: śr. %s ms, p95 %s ms%s" % (
+                          ", ".join("%s %s / %s" % (g, v["sr"] and round(v["sr"], 1), v["p95"] and round(v["p95"], 1))
+                                    for g, v in pomiary.items()), sr and round(sr, 1), p95 and round(p95, 1),
+                          " (okno Studio zaciemnione?)" if (sr or 0) > 50 else ""))
 
-            # ---------------------------------------------------------------- T11 wyjście (kliknięcie WYJDŹ, brama w arenie)
+            # ---------------------------------------------------------------- T11 wyjście (kliknięcie WYJDŹ)
             if chce("T11"):
                 if serwer_gracza().get("gra") is None:
                     wejdz_do("sila")
@@ -1330,22 +1339,13 @@ def main():
                 time.sleep(0.5)
                 p2 = poz() or p
                 od_p0 = odl_xz(p, P0) if P0 else None
-                # brama WYJŚCIE (E) w arenie bez punktu powrotu → miejsce startu
-                br = js(kod("brama"), "Server")
-                przestaw([br["p"][0], br["p"][1] + 0.5, br["p"][2] - 4], br["p"])
-                time.sleep(1.2)
-                kamera_za()
-                time.sleep(0.4)
-                klawisz("E")
-                time.sleep(1.5)
-                p3 = poz() or [0, 0, 0]
-                w_arenie = LT.w_arenie(D, p3[0], p3[1], p3[2])
-                zapisz("T11", {"po_wyjsciu": p, "P0": P0, "klient": kl, "po_W": p2, "po_bramie": p3})
+                w_arenie = LT.w_arenie(D, p2[0], p2[1], p2[2])
+                zapisz("T11", {"po_wyjsciu": p, "P0": P0, "klient": kl, "po_W": p2})
                 punkt("T11", (od_p0 is None or od_p0 <= 1.5) and kl.get("kamera") == "Custom" and kl.get("ekran") == "brak"
                       and odl_xz(p, p2) > 1.0 and not w_arenie,
-                      "od P0 %s st, kamera %s, dotyk %s, W przesuwa o %.1f st, brama → %s" % (
+                      "od P0 %s st, kamera %s, dotyk %s, W przesuwa o %.1f st, po wyjściu %s" % (
                           od_p0 and round(od_p0, 2), kl.get("kamera"), kl.get("dotyk"), odl_xz(p, p2),
-                          "poza areną" if not w_arenie else "NADAL W ARENIE"))
+                          "poza pasem scenerii" if not w_arenie else "NADAL W PASIE SCENERII"))
 
             # ---------------------------------------------------------------- T12 telefon (rozmiary)
             if chce("T12"):

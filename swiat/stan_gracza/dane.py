@@ -56,8 +56,10 @@ PUNKTY_SAMO_NA_POZIOM = 5
 # Gemy bez płacenia (D-099 ✅ 17.11; liczby „do zmiany”, tools/walka/REBIRTH_1711.md część 1): za każdy awans i za
 # pierwsze pokonanie strażnika każdego biomu (gatunek zaczyna się od PREFIKS_STRAZNIKA); za co dziesiątą wygraną
 # i z kopalni — jeszcze nie (README)
-# zapis postępu między sesjami (18.11.2026): DOMYŚLNIE WYŁĄCZONY — włączenie to decyzja ludzi (README „Zapis postępu”)
-ZAPIS_WLACZONY = False
+# zapis postępu między sesjami (18.11.2026; WŁĄCZONY 19.11.2026 decyzją D-110 Karola, czeka na potwierdzenie Pawła):
+# False = wyłączony dla wszystkich; atrybut kontenera ZapisPostepu = false wyłącza go w jednym miejscu (README „Zapis
+# postępu”). Próby gry w Play zaczynają od świeżego gracza bez zapisu (znacznik próby, tools/zapis_prob.py).
+ZAPIS_WLACZONY = True
 
 # „szczęście początkującego” (18.11.2026): dopóki gracz nie ma żadnej wygranej, jego sześć statystyk w walce ×(1 + tyle)
 # (pole silnika pet przez źródło w Modyfikatory); 0 = wyłączone. 1,75 (×2,75) = najmniejszy mnożnik, przy którym
@@ -239,9 +241,16 @@ def podstawa():
                      "atrybut_wylacznika": "SzczesciePoczatkujacego"},
         "gemy": {"za_poziom": GEMY_ZA_POZIOM, "za_straznika": GEMY_ZA_STRAZNIKA, "prefiks_straznika": PREFIKS_STRAZNIKA,
                  "komunikat_straznika": "+%d Gemów za pierwsze pokonanie strażnika!"},
-        # zapis postępu między sesjami (18.11.2026, propozycja; DOMYŚLNIE WYŁĄCZONY — ZAPIS_WLACZONY albo atrybut kontenera
-        # `atrybut` = true): DataStore z blokadą sesji (zapisywana w rekordzie), UpdateAsync z ponawianiem; README
+        # zapis postępu między sesjami (18.11.2026; włączony 19.11.2026, D-110 — ZAPIS_WLACZONY; atrybut kontenera
+        # `atrybut` = false wyłącza): DataStore z blokadą sesji (zapisywana w rekordzie), UpdateAsync z ponawianiem; README.
+        # `proba` (19.11.2026): znacznik próby gry w Play — atrybut kontenera `atrybut_do` = os.time(), do którego trwa
+        # (ustawia go tools/zapis_prob.py w trybie Edit tuż przed Play, zdejmuje po Stop; najwyżej `czas_s` naprzód, sam
+        # wygasa). Przy znaczniku serwer NIE czyta i NIE pisze prawdziwego zapisu (gracz jak dawniej: świeży, w pamięci),
+        # a z `atrybut_magazynu` = true pracuje na osobnym magazynie próby (magazyn + przyrostek_studio + `przyrostek`) —
+        # tylko tam działa atrapa błędów usługi (`atrybut_bledow` = ile kolejnych wywołań ma paść)
         "zapis": {"wlaczony": ZAPIS_WLACZONY, "atrybut": "ZapisPostepu", "magazyn": "BC_StanGracza_v1",
+                  "proba": {"atrybut_do": "ZapisProbaDo", "atrybut_magazynu": "ZapisProbaMagazyn",
+                            "atrybut_bledow": "ZapisProbaBledy", "przyrostek": "_Proba", "czas_s": 900},
                   "przyrostek_studio": "_Studio", "klucz": "player_",
                   "pola": ["wersja", "klasa", "idKlasy", "poziom", "xp", "zloto", "gemy", "tokeny", "shardy", "wytrenowane",
                            "walki", "awanse", "pety", "wydatki", "pakiety", "punkty", "straznicy", "atrybuty"],

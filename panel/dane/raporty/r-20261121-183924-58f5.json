@@ -1,0 +1,22 @@
+{
+ "id": "r-20261121-183924-58f5",
+ "tytul": "Sesja główna 2026-11-21 — do zatwierdzenia",
+ "opis_md": "**Sesja 21.11, 18:26–18:31 — sam Karol, temat: Pet Arena.** Zapis kompletny. Spisałem ustalenia jako propozycje; nic nie jest zatwierdzone. Pawła nie było, więc jego zdanie jest potrzebne przy każdej pozycji.\n\nKarol po pierwszym podglądzie prototypu: „bardzo niezadowolony” z wyglądu.\n\n## Propozycje do zatwierdzenia (Pytania → „Czy zatwierdzamy…?”)\n- **D-119** — arena ok. 4 razy większa i zamknięta; strefa złota do poprawy. *Agent: zgoda z poprawką — sprawdzić dwie wielkości, bo przy całej arenie na ekranie telefonu pety wyjdą mniejsze, a wybicia rzadsze.*\n- **D-120** — wielkość peta wyraźnie zależy od wagi (duży pet duży, mały mały).\n- **D-121** — krytyczny cios wybija peta w powietrze jak w BONK; więcej statusów; boss cały złoty.\n- **D-122** — wyklucie jajka jako mocna nagroda: gładsze jajka, konfetti, efektowne umiejętności.\n- **D-123** — interfejs Pet Areny robi Paweł (Higgsfield, Figma), agent stawia zaślepki. *Potrzebne „tak” Pawła.*\n- **D-124** — Karol decyduje o Pet Arenie sam, bez potwierdzenia Pawła. *Sprzeczne z zasadą dwóch podpisów (D-043) — patrz pytanie 79. Agent: wyjątek nie jest potrzebny, bo i tak pracuję od razu na decyzjach Karola.*\n- **D-125** — krótki film z gry jako standard raportów. *Agent: jeden film 20–40 s przy większym wdrożeniu, przy drobnych poprawkach zrzuty.*\n\n## Nowe pytania\n- **78** — styl sceny: loch czy jaskrawa, zamknięta arena? *Agent poleca jaskrawą (gra też dla dzieci).*\n- **79** — czy Karol decyduje o Pet Arenie sam? (rozstrzyga D-124; najlepiej, żeby odpowiedział Paweł)\n\n## Odpowiedzi dopisane pod pytaniami\nŻadnej — wszystkie wcześniejsze pytania miały już odpowiedź.\n\n## Zadania\n- Poprawki prototypu Pet Areny według D-119–D-123 (styl po pytaniu 78).\n- Paweł: przyciski i interfejs Pet Areny.\n- Panel: podgląd tylko wybranej gry (Backlog, „nieistotne teraz”).\n\nProśba „popraw grę” z nagrania jest zapisana jako zadanie i **nie ruszyła sama** — żeby zacząć, napisz to na czacie. Na sesję z Pawłem dopisałem temat: styl Pet Areny i kto o niej decyduje.\n\nPełny zapis: notatka „Sesja główna 2026-11-21 — zapis ustaleń”.",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-21T18:39:24+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-21 — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń z sesji"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Gra/Pet Arena — projekt prototypu.md",
+   "etykieta": "Projekt Pet Areny"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy zapis sesji o Pet Arenie zgadza się z tym, co mówiłeś?"
+}

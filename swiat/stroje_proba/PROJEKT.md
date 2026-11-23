@@ -14,6 +14,9 @@ Kontrakt ciała i przedmiotów: `swiat/postacie/EKWIPUNEK.md`; katalog: `swiat/p
    gołe ciało (bryły z `cialo()` modułu bohatera, włosy jako akcesorium ze znacznikiem `Wlosy`) i 20 przedmiotów
    z katalogu (`przedmioty()` modułu), każda bryła **w układzie środka części kości rigu Roblox**. Nazwy, sloty,
    klasy, `czesc_od`, `ukrywa` i segmenty bierzemy z katalogu i sprawdzamy z modułem (rozjazd = błąd danych).
+   Od 19.11.2026 (D-106) dochodzi 60 przedmiotów trzech stopni (`swiat/postacie/stopnie.py`, katalog
+   `sklep_przedmioty.json`) w trzech osobnych modułach `DaneStrojow<Stopien>.luau`, które moduł główny scala w jedno
+   `D` (granica długości modułu); w klasie pole `stopnie`, zestawy `las` / `bagno` / `dzungla` — szczegóły w `README.md`.
 2. **Szkielet** = szablon aktora próby walki (`Workspace/TestWalki2/Aktorzy/<klasa>`: HumanoidRootPart, części kości,
    Motor6D, zaczepy, punkty `Punkt_*`). `Ubieranie.zbuduj` kopiuje szablon, **zdejmuje jego bryły** i dokłada bryły
    stroju: gołe bryły kości bez powłoki, akcesoria ciała bez schowanych znaczników, segmenty założonych przedmiotów.
@@ -96,7 +99,8 @@ nie używa i niczego nie wgrywa).
 | Plik | Co to |
 |---|---|
 | `ustawienia.json` | jedyne źródło liczb i tekstów pakietu (sloty okna, stojak, kamera, okno, przełączniki z pkt 4) |
-| `dane.py` | generator `zrodla/DaneStrojow.luau` (`--sprawdz`: aktualność + zgodność z szablonem walki) |
+| `dane.py` | generator `zrodla/DaneStrojow.luau` i modułów stopni `zrodla/DaneStrojow<Stopien>.luau` (`--sprawdz`: aktualność + zgodność z szablonem walki) |
+| `zrodla/DaneStrojowLas.luau`, `…Bagno.luau`, `…Dzungla.luau` | przedmioty do kupienia jednego stopnia (D-106, 19.11.2026), scalane przez `DaneStrojow` — opis w `README.md` |
 | `logika_strojow.py` | lustro `LogikaStrojow.luau` w Pythonie (testy) |
 | `zrodla/LogikaStrojow.luau` | czysta logika stroju (wykonywana też przez `luau_mini`) |
 | `zrodla/Ubieranie.luau` | składanie modelu z ciała i przedmiotów (walka i podgląd) |

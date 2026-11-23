@@ -1,0 +1,24 @@
+{
+ "id": "r-20261119-094925-86c5",
+ "tytul": "Walka bez przestojów: bez czekania, więcej potworów, szybkie odradzanie",
+ "opis_md": "- Walka bez przestojów (D-107) działa w grze w lesie, Bagnie i Dżungli: po walce i po przegranej można walczyć od razu, także w rewanżu ze Strażnikiem.\n- Potworów jest więcej: 13–14 na biom dla jednego gracza (było 8), do 25–26 przy dwudziestu graczach. Zwykły potwór wraca po ok. 3 s, rzadki po 21 s, Strażnik po 31 s.\n- Samotny gracz, który pomija znane walki, nie czeka już na potwora (wcześniej stał bez niego ponad połowę czasu). Łup po pominiętej walce pokazuje się od razu.\n- Do oceny: tempo poziomów — przy pomijaniu walk gracz może zrobić ok. 240 walk w 10 minut zamiast 64–93.\n\nSzczegóły:\n\n**Jak sprawdzić w Studio:** Play → TELEPORT → Las → walka z potworem; po wygranej albo przegranej od razu kolejna (E). Druga walka z tym samym gatunkiem ma POMIŃ.\n\n**Było → jest (zmierzone w grze 19.11)**\n\n| | Było | Jest |\n|---|---|---|\n| Potwory na biom przy 1 / 8 / 20 graczach | 8 / 12 / 16 | las 13 / 22 / 25; Bagno i Dżungla 14 / 23 / 26 |\n| Odradzanie zwykłego potwora | 12–18 s | ok. 3 s |\n| Odradzanie rzadkiego potwora | 150 s | ok. 21 s |\n| Odradzanie Strażnika | 120 s | ok. 31 s |\n| Czekanie po walce obejrzanej szybciej | do pełnego czasu walki | brak |\n| Rewanż po przegranej ze Strażnikiem | po kilkudziesięciu sekundach | 1,3 s po podejściu |\n| Pominięta walka: od E do powrotu na pas | — | ok. 0,5 s |\n\n**Próby w grze (9:08–9:42):** las 27 punktów w porządku, Bagno 20, Dżungla 23, cała droga gracza 13 z 13, stary las, stan gracza, pety, chmury i walka (111 z 111) bez błędów. Czas klatki przy pełnym zestawie potworów: 16,7 ms średnio, najgorsze 5% 17,9–18,6 ms.\n\n**Zmienione po pierwszej próbie:**\n- Wilków w lesie jest 3 / 6 / 7 zamiast 4 / 7 / 8 — osiem wilków nie mieściło się w budżecie brył klienta i dwa były niewidoczne.\n- Najbliższy potwór ma teraz pierwszeństwo przy rysowaniu, więc potwór tuż przy graczu jest zawsze widoczny.\n- Odradzanie zwykłych 2 s w ustawieniach zamiast 4 s — przy tak szybkim pomijaniu 4 s dawały czekanie przy dwudziestu graczach.\n\n**Co zostało jako ochrona:** 1 s między prośbami o walkę, potwór zajęty przez innego gracza, pierwsza walka z gatunkiem bez pomijania (D-078). Kara w Złocie za przegraną bez zmian.\n\n**Niesprawdzone:** kilku graczy naraz (kolejka do Strażnika, tłok — tylko rachunek), telefon, wygląd gęstszych stref na oko. Próba kowala nie ruszyła z innego powodu (jego pakiet jest w trakcie zmian pod sklep) — wróci po wdrożeniu przedmiotów.\n\n**Wybory do oceny (lista w `swiat/las_pas_gra/README.md`):** liczba potworów na strefę; czas odradzania zwykłych; czy rzadki potwór ma zostać naprawdę rzadki (np. 60 s); Strażnik po 31 s daje dużo doświadczenia — krócej robi z niego najlepszą farmę; kolejka do Strażnika przy wielu graczach; tempo doświadczenia.\n\nPliki: `swiat/las_potwory/`, `swiat/las_pas_gra/`, `swiat/bagno_pas_gra/`, `swiat/dzungla_pas_gra/`, `swiat/stan_gracza/`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-19T09:49:25+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/LasPasGra",
+   "etykieta": "Las w Studio"
+  },
+  {
+   "typ": "plik",
+   "cel": "swiat/las_pas_gra/README.md",
+   "etykieta": "Liczby i wybory do oceny"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ]
+}

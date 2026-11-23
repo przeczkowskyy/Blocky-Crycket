@@ -119,12 +119,16 @@ def na_napis(ids):
 def zalozone(D, klasa, dane, napis):
     """Przedmioty, które liczą się w walce: posiadane całe przedmioty klasy założone w przymierzalni (atrybut
     StrojProba_<klasa> = napis); napis None (brak przymierzalni albo stroju) = wszystkie posiadane przedmioty klasy
-    (każda klasa ma najwyżej jeden przedmiot na slot)."""
-    lista = D["klasy"][klasa]["przedmioty"]
-    if napis is None:
-        return [pid for pid in lista if posiada(dane, pid)]
-    zb = set(z_napisu(napis) or [])
-    return [pid for pid in lista if pid in zb and posiada(dane, pid)]
+    — w każdym slocie ten najwyższego stopnia. Zawsze najwyżej jeden przedmiot na slot (przy dwóch w napisie
+    wygrywa wyższy stopień)."""
+    lista = D["klasy"][klasa]["wszystkie"]
+    zb = None if napis is None else set(z_napisu(napis) or [])
+    # jeden przedmiot na slot: lista idzie stopniami w górę, więc w slocie zostaje przedmiot najwyższego stopnia
+    w_slocie = {}
+    for pid in lista:
+        if posiada(dane, pid) and (zb is None or pid in zb):
+            w_slocie[D["przedmioty"][pid]["slot"]] = pid
+    return [pid for pid in lista if w_slocie.get(D["przedmioty"][pid]["slot"]) == pid]
 
 
 def mod(D, klasa, dane, zal):
@@ -183,7 +187,7 @@ def stroj_do_ustawienia(D, klasa, dane, napis):
             zle = True
     if not zle:
         return None
-    return na_napis([pid for pid in D["klasy"][klasa]["przedmioty"] if pid in set(dobre)])
+    return na_napis([pid for pid in D["klasy"][klasa]["wszystkie"] if pid in set(dobre)])
 
 
 def _przedmiot_klasy(D, klasa, pid):
@@ -230,7 +234,7 @@ def ulepsz(D, dane, pid, k):
 def mozna_ulepszyc(D, klasa, dane, zloto):
     """Czy gracz ma Złoto i materiały na ulepszenie któregoś posiadanego przedmiotu klasy (atrybut KowalMoznaUlepszyc —
     wskazówka celu „kowal”)."""
-    for pid in D["klasy"][klasa]["przedmioty"]:
+    for pid in D["klasy"][klasa]["wszystkie"]:
         if posiada(dane, pid):
             k = koszt(D, pid, dane["przedmioty"][pid]["poziom"])
             if k is not None and dane["materialy"] >= k["materialy"] and zloto >= k["zloto"]:
@@ -273,6 +277,110 @@ def lup(D, dane, klasa, rg, los1, los2):
         return w, {"id": pid, "nowy": False}
     w["przedmioty"][pid] = {"poziom": 0, "zapas": 0}
     return w, {"id": pid, "nowy": True}
+
+
+# ------------------------------------------------------------------------------------------------ sklep (D-106)
+def poziom_gracza(v):
+    """Atrybut Level gracza → liczba całkowita ≥ 1 (brak albo śmieci = 1)."""
+    if isinstance(v, bool) or not isinstance(v, (int, float)) or v != v or v < 1:
+        return 1
+    return int(math.floor(v))
+
+
+def kup(D, dane, klasa, poziom, zloto, pid):
+    """Kupno przedmiotu za Złoto — samo sprawdzenie i nowe dane; Złoto wydaje serwer przez StanGracza.
+    → (True, nowe dane, {"id", "cena", "czesc"?}) albo (False, powód, brakuje). Powody: nieznany_przedmiot,
+    czesc_zbroi (nogawice / spodnie idą za zbroją), inna_klasa, masz, za_niski_poziom (brakuje = ile poziomów),
+    za_malo_zlota (brakuje = ile Złota). Część zbroi nie ma własnego wpisu w posiadanych — należy do swojej zbroi."""
+    if not isinstance(pid, str):
+        return False, "nieznany_przedmiot", 0
+    if pid in D["czesci"]:
+        return False, "czesc_zbroi", 0
+    P = D["przedmioty"].get(pid)
+    if P is None:
+        return False, "nieznany_przedmiot", 0
+    if P["klasa"] != klasa:
+        return False, "inna_klasa", 0
+    if posiada(dane, pid):
+        return False, "masz", 0
+    if poziom < P["poziom"]:
+        return False, "za_niski_poziom", P["poziom"] - poziom
+    if zloto < P["cena"]:
+        return False, "za_malo_zlota", P["cena"] - zloto
+    w = copy.deepcopy(dane)
+    w["przedmioty"][pid] = {"poziom": 0, "zapas": 0}
+    info = {"id": pid, "cena": P["cena"]}
+    if pid in D["czescCalosci"]:
+        info["czesc"] = D["czescCalosci"][pid]
+    return True, w, info
+
+
+def stan_oferty(D, dane, poziom, zloto, zal, pid):
+    """Stan pozycji w sklepie → (stan, brakuje): zalozone | masz | za_niski_poziom | za_drogie | kup."""
+    P = D["przedmioty"][pid]
+    if pid in zal:
+        return "zalozone", 0
+    if posiada(dane, pid):
+        return "masz", 0
+    if poziom < P["poziom"]:
+        return "za_niski_poziom", P["poziom"] - poziom
+    if zloto < P["cena"]:
+        return "za_drogie", P["cena"] - zloto
+    return "kup", 0
+
+
+def oferta(D, dane, klasa, poziom, zloto, zal):
+    """Oferta sklepu dla klasy gracza: wszystkie przedmioty klasy po stopniach i slotach ze stanem i statystykami
+    (posiadany — na swoim poziomie ulepszenia, pozostałe na +0)."""
+    w = []
+    for pid in D["klasy"][klasa]["wszystkie"]:
+        P = D["przedmioty"][pid]
+        stan, brakuje = stan_oferty(D, dane, poziom, zloto, zal, pid)
+        ulepszenie = dane["przedmioty"][pid]["poziom"] if posiada(dane, pid) else 0
+        w.append({"id": pid, "nazwa": P["nazwa"], "slot": P["slot"], "slotNazwa": D["sloty"][P["slot"]],
+                  "stopien": P["stopien"], "nrStopnia": P["nrStopnia"], "cena": P["cena"], "poziom": P["poziom"],
+                  "stan": stan, "brakuje": brakuje, "ulepszenie": ulepszenie,
+                  "staty": tekst_stat_lista(D, statystyki(D, pid, ulepszenie))})
+    return w
+
+
+def skrot_oferty(oferta_):
+    """Zwięzły zapis oferty do przypadków wzorcowych: „stan:brakuje:ulepszenie” wiersz po wierszu."""
+    return "|".join("%s:%d:%d" % (w["stan"], w["brakuje"], w["ulepszenie"]) for w in oferta_)
+
+
+def stac_na(D, dane, klasa, poziom, zloto):
+    """Ile przedmiotów gracz może teraz kupić (atrybut SklepStacNa — wskazówka „stać cię na nowy przedmiot”)."""
+    n = 0
+    for pid in D["klasy"][klasa]["wszystkie"]:
+        P = D["przedmioty"][pid]
+        if not posiada(dane, pid) and poziom >= P["poziom"] and zloto >= P["cena"]:
+            n += 1
+    return n
+
+
+def czy_zalozyc(D, zal, pid):
+    """Reguła zakładania po kupnie (i po łupie): przedmiot zakłada się sam, gdy jego slot jest pusty albo założony
+    w nim przedmiot ma niższy stopień; przy tym samym lub wyższym stopniu zostaje dotychczasowy."""
+    P = D["przedmioty"][pid]
+    for z in zal:
+        Z = D["przedmioty"][z]
+        if z != pid and Z["slot"] == P["slot"]:
+            return Z["nrStopnia"] < P["nrStopnia"]
+    return True
+
+
+def stroj_z_przedmiotem(D, napis, pid):
+    """Napis stroju z przedmiotem założonym w jego slocie: wypada dotychczasowy przedmiot tego slotu (i jego część
+    zbroi), reszta zostaje, nowy idzie na koniec (część nowej zbroi dokłada przymierzalnia)."""
+    P = D["przedmioty"][pid]
+    w = []
+    for x in z_napisu(napis) or []:
+        Y = D["przedmioty"].get(D["czesci"].get(x, x))
+        if x != pid and not (Y is not None and Y["slot"] == P["slot"]):
+            w.append(x)
+    w.append(pid)
+    return na_napis(w)
 
 
 # ------------------------------------------------------------------------------------------------ teksty okna
@@ -355,12 +463,22 @@ def wiersz(D, dane, klasa, pid, zal, zloto):
     return w
 
 
+def lista_okna(D, dane, klasa):
+    """Przedmioty w oknie kowala: dzisiejsza lista klasy (stopień startowy, także nieposiadane — wypadają z walk)
+    i posiadane przedmioty kupione w sklepie. Gracz, który nic nie kupił, widzi listę jak dawniej."""
+    return [pid for pid in D["klasy"][klasa]["wszystkie"]
+            if D["przedmioty"][pid]["nrStopnia"] == 0 or posiada(dane, pid)]
+
+
 def widok(D, dane, klasa, zal, zloto, bohater):
     """Całe okno: nagłówek, materiały, Złoto, opis bohatera (z Sygnaly/Bohater, tekst gotowy) i wiersze przedmiotów
-    klasy (najpierw posiadane, w kolejności danych)."""
+    klasy (najpierw założone przedmioty kupione w sklepie, potem pozostałe posiadane w kolejności danych, na końcu
+    nieposiadane ze stopnia startowego)."""
     T = D["teksty"]
-    lista = D["klasy"][klasa]["przedmioty"]
-    kol = [pid for pid in lista if posiada(dane, pid)] + [pid for pid in lista if not posiada(dane, pid)]
+    lista = lista_okna(D, dane, klasa)
+    kupione_zalozone = [pid for pid in lista if D["przedmioty"][pid]["nrStopnia"] > 0 and pid in zal]
+    kol = (kupione_zalozone + [pid for pid in lista if posiada(dane, pid) and pid not in kupione_zalozone]
+           + [pid for pid in lista if not posiada(dane, pid)])
     uwaga = ""
     if D["klasy"][klasa]["tarcza"] and not any(D["przedmioty"][p]["slot"] == "OffHand" for p in zal):
         uwaga = T["bez_tarczy"]

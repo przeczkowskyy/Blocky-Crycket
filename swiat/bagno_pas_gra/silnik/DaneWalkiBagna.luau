@@ -900,7 +900,7 @@ return {
 				cios = 0.1102,
 				odpornosc = 0.3,
 				pancerz = 0.05,
-				zycie = 0.6,
+				zycie = 0.36,
 				zysk_many = 0.25,
 			},
 			nazwa = "Strażnik Topieli",

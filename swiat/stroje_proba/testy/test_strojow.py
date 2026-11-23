@@ -17,6 +17,11 @@
    „do ustalenia”) wypisany i nie większy niż znany (Rycerz 0,25, kot 0,20, Zwiadowca 0).
 4. Kod: kontrola Luau pakietu; haczyk w swiat/test_walki2/zrodla/Aktorzy.luau (zapas: dawny szablon); zbuduj.py
    --sucho; kod wysyłany do Studio parsuje się.
+5. Przedmioty stopni (D-106, 19.11.2026): 60 przedmiotów z swiat/postacie/stopnie.py i sklep_przedmioty.json jest w
+   danych (osobne moduły DaneStrojow<Stopien>, scalane w DaneStrojow); komplety trzech stopni każdej klasy, pojedyncze
+   przedmioty i stroje mieszane składają się jak biblioteczne ubierz(); logika i lustro Luau na pełnych danych;
+   przedmiot stopnia innej klasy odrzucony; część zbroi stopnia idzie za swoją zbroją; brak modułu stopnia = stopnia
+   nie ma (dzisiejsze przedmioty działają dalej).
 """
 import collections
 import copy
@@ -46,6 +51,10 @@ LM = SLS.luau_mini()
 ZR = os.path.join(PAKIET, "zrodla")
 D, PY = DN.zbierz()
 KATALOG = json.load(open(DN.KATALOG, encoding="utf-8"))
+SKLEP = json.load(open(DN.KATALOG_SKLEPU, encoding="utf-8"))
+from swiat.postacie import stopnie as ST  # noqa: E402
+STOPNIE = list(ST.STOPNIE)
+DZIS = [i for i, P in D["przedmioty"].items() if not P.get("stopien")]      # 20 dzisiejszych przedmiotów
 
 
 def czytaj(plik):
@@ -70,19 +79,33 @@ def wszystkie_stroje(klasa, D_=None):
 class TestDane(unittest.TestCase):
     def test_1a_plik_aktualny_i_powtarzalny(self):
         ok, _ = DN.aktualny()
-        self.assertTrue(ok, "zrodla/DaneStrojow.luau nieaktualny — python -B swiat/stroje_proba/dane.py")
+        self.assertTrue(ok, "zrodla/DaneStrojow*.luau nieaktualne — python -B swiat/stroje_proba/dane.py")
+        pliki = DN.pliki_luau()
+        self.assertEqual(pliki, ["DaneStrojow.luau", "DaneStrojowLas.luau", "DaneStrojowBagno.luau",
+                                 "DaneStrojowDzungla.luau"])
         with tempfile.TemporaryDirectory() as tmp:
             DN.zapisz(tmp)
-            with open(os.path.join(tmp, DN.PLIK_LUAU), encoding="utf-8") as f:
-                self.assertEqual(f.read(), czytaj(DN.PLIK_LUAU))
-        self.assertLess(len(czytaj(DN.PLIK_LUAU)), 199000)
+            self.assertEqual(sorted(os.listdir(tmp)), sorted(pliki))
+            for plik in pliki:
+                with open(os.path.join(tmp, plik), encoding="utf-8") as f:
+                    self.assertEqual(f.read(), czytaj(plik), plik)
+        # każdy moduł mieści się w granicy Source (200 000 znaków); razem dane są większe — stąd podział
+        for plik in pliki:
+            self.assertLess(len(czytaj(plik)), 199000, plik)
+        self.assertGreater(sum(len(czytaj(plik)) for plik in pliki), 200000)
+        self.assertEqual(list(DN.luau_teksty(D)), pliki)
 
     def test_1b_przedmioty_z_katalogu(self):
         bohaterowie = {"rycerz", "zwiadowca", "kot_mag"}
         z_katalogu = {p["id"]: p for p in KATALOG["przedmioty"] if p.get("zestaw") in bohaterowie}
-        self.assertEqual(set(z_katalogu), set(D["przedmioty"]))
-        self.assertEqual(len(D["przedmioty"]), 20)
-        for i, P in D["przedmioty"].items():
+        self.assertEqual(set(z_katalogu), set(DZIS))
+        self.assertEqual(len(DZIS), 20)
+        self.assertEqual(list(D["przedmioty"])[:20], DZIS)            # dzisiejsze na początku, w dawnej kolejności
+        self.assertEqual([len(K["przedmioty"]) for K in D["klasy"].values()], [8, 8, 4])
+        for K in D["klasy"].values():
+            self.assertTrue(set(K["przedmioty"]) <= set(DZIS))
+        for i in DZIS:
+            P = D["przedmioty"][i]
             k = z_katalogu[i]
             self.assertEqual((P["nazwa"], P["slot"], P["kategoria"], P["cialo"], P["klasy"], P["czescOd"], P["ukrywa"]),
                              (k["nazwa"], k["slot"], k["kategoria"], k["cialo"], k["klasy"], k["czesc_od"], k["ukrywa"]), i)
@@ -137,7 +160,7 @@ class TestDane(unittest.TestCase):
     def test_1f_segmenty_na_kosciach_szkieletu(self):
         for klasa, K in D["klasy"].items():
             kosci = {k[0] for k in K["kosci"]}
-            for i in K["przedmioty"]:
+            for i in L.przedmioty_klasy(D, klasa):
                 for s in D["przedmioty"][i]["segmenty"]:
                     self.assertIn(s["kosc"], kosci, (i, s["id"]))
                     self.assertTrue(s["czesci"], (i, s["id"]))
@@ -148,6 +171,93 @@ class TestDane(unittest.TestCase):
         self.assertEqual(seg["rycerz_miecz"][0]["kosc"], "RightHand")
         self.assertEqual(seg["rycerz_tarcza"][0]["kosc"], "LeftHand")
         self.assertEqual([s["kosc"] for s in seg["zwiadowca_luk"]], ["UpperTorso", "LeftHand"])
+        # przedmioty stopni trzymają się tych samych kości co ich dzisiejsze odpowiedniki (te same klipy)
+        for klasa in D["klasy"]:
+            for st in STOPNIE:
+                for stary, nowy in zip(ST.komplet(klasa, "start"), ST.komplet(klasa, st)):
+                    self.assertEqual([s["kosc"] for s in seg[nowy]], [s["kosc"] for s in seg[stary]], nowy)
+                    self.assertEqual([s["zakrywa"] for s in seg[nowy]], [s["zakrywa"] for s in seg[stary]], nowy)
+
+    def test_1g_przedmioty_stopni_z_katalogu_sklepu(self):
+        nowe = {p["id"]: p for p in SKLEP["przedmioty"] if p["stopien"] != "start"}
+        w_danych = {i: P for i, P in D["przedmioty"].items() if P.get("stopien")}
+        self.assertEqual(len(nowe), 60)
+        self.assertEqual(set(nowe), set(w_danych))
+        self.assertEqual(len(D["przedmioty"]), 80)
+        self.assertEqual({p["id"] for p in SKLEP["przedmioty"]}, set(D["przedmioty"]))
+        for i, P in w_danych.items():
+            k = nowe[i]
+            self.assertEqual((P["nazwa"], P["slot"], P["kategoria"], P["cialo"], P["klasy"], P["czescOd"], P["ukrywa"],
+                              P["zestaw"], P["stopien"]),
+                             (k["nazwa"], k["slot"], k["kategoria"], k["cialo"], k["klasy"], k["czesc_od"], k["ukrywa"],
+                              k["zestaw"], k["stopien"]), i)
+            self.assertEqual([s["id"] for s in P["segmenty"]], [c["id"] for c in k["czesci"]], i)
+            self.assertEqual(P["klasy"], [k["klasa"]], i)
+            self.assertTrue(all(s["czesci"] for s in P["segmenty"]), i)
+        for klasa, K in D["klasy"].items():
+            self.assertEqual([s["id"] for s in K["stopnie"]], STOPNIE)
+            for s in K["stopnie"]:
+                self.assertEqual(set(s["przedmioty"]), {i for i, k in nowe.items()
+                                                        if k["klasa"] == klasa and k["stopien"] == s["id"]})
+                self.assertEqual(s["przedmioty"][:len(ST.komplet(klasa, s["id"]))], list(ST.komplet(klasa, s["id"])))
+                z = next(z for z in K["zestawy"] if z["id"] == s["id"])
+                self.assertEqual(z["przedmioty"], list(ST.komplet(klasa, s["id"])))
+            self.assertEqual(len(L.przedmioty_klasy(D, klasa)), 4 * len(K["przedmioty"]))
+        self.assertEqual([m["modul"] for m in D["modulyStopni"]], ["DaneStrojowLas", "DaneStrojowBagno", "DaneStrojowDzungla"])
+        self.assertEqual(D["brakStopni"], [])
+        self.assertEqual(D["zestawyOkna"], ["golas", "komplet"])     # okno bez zmian; zestawy stopni są w danych
+
+    def _biblioteczne(self, klasa, plan):
+        from swiat.postacie.biblioteka import roblox_klocki as RK
+        from swiat.postacie.ekwipunek import ubierz
+        pom = PY[klasa]
+        po_id = {p.id: p for p in pom["przedmioty"]}
+        for prz in pom["stopnie"].values():
+            po_id.update((p.id, p) for p in prz)
+        lib = RK.rig(ubierz(pom["cialo"], [po_id[i] for i in plan["przedmioty"]], korekty=pom["korekty"]))
+        lw = [list(c[:13]) + [tuple(lib["materialy"][c[13]]), lib["grupy"][c[14]], c[15]] for c in lib["czesci"]]
+        self.assertEqual(collections.Counter(DN.klucz_bryly(w) for w in DN.zloz(D, klasa, plan)),
+                         collections.Counter(DN.klucz_bryly(w) for w in lw), (klasa, plan["przedmioty"]))
+
+    def test_1h_komplety_stopni_rowne_bibliotecznemu_ubierz(self):
+        razem = 0
+        for klasa, K in D["klasy"].items():
+            for st in STOPNIE:
+                ok, stroj = L.zestaw(D, klasa, st)
+                self.assertTrue(ok, (klasa, st, stroj))
+                self.assertEqual(stroj, list(ST.komplet(klasa, st)))
+                ok, plan = L.plan(D, klasa, stroj)
+                self.assertTrue(ok)
+                self._biblioteczne(klasa, plan)
+                razem += 1
+                # każdy przedmiot stopnia sam na gołym ciele (część zbroi razem ze zbroją)
+                for i in stroj:
+                    if L.wybieralny(D, klasa, i):
+                        ok, plan = L.plan(D, klasa, L.zaloz(D, klasa, [], i)[1])
+                        self.assertTrue(ok, i)
+                        self._biblioteczne(klasa, plan)
+                        razem += 1
+        print("\n  komplety i pojedyncze przedmioty stopni złożone jak biblioteczne ubierz(): %d strojów" % razem)
+        # na stopień: komplet + przedmioty z własnym wyborem (Wojownik i Zwiadowca 7 — spodnie idą ze zbroją, Mag 4)
+        self.assertEqual(razem, 3 * (8 + 8 + 5))
+
+    def test_1i_stroje_mieszane_rowne_bibliotecznemu_ubierz(self):
+        # mieszanie stopni slot po slocie (dzisiejszy hełm, leśna zbroja, bagienny miecz…) — losowo, ze stałym ziarnem
+        rnd = random.Random(106)
+        for klasa in D["klasy"]:
+            pula = [i for i in L.przedmioty_klasy(D, klasa) if L.wybieralny(D, klasa, i)]
+            rozne = set()
+            for _ in range(8):
+                stroj = []
+                for i in rnd.sample(pula, 9):
+                    ok, stroj = L.zaloz(D, klasa, stroj, i)
+                    self.assertTrue(ok, (klasa, i, stroj))
+                ok, plan = L.plan(D, klasa, stroj)
+                self.assertTrue(ok)
+                self.assertLessEqual(len(stroj), len(D["klasy"][klasa]["przedmioty"]))
+                self._biblioteczne(klasa, plan)
+                rozne.add(tuple(stroj))
+            self.assertGreater(len(rozne), 5, klasa)
 
 
 # ============================================================================================== 2. logika
@@ -191,6 +301,45 @@ class TestLogika(unittest.TestCase):
         Dp["przedmioty"]["rycerz_pas"]["segmenty"][0]["zakrywa"] = True
         self.assertEqual(L.normalizuj(Dp, "wojownik", ["rycerz_zbroja", "rycerz_pas"]), (False, "dwie_powloki"))
 
+    def test_2a2_przedmioty_stopni(self):
+        # część zbroi stopnia idzie za swoją zbroją: zakładanie, wymiana na inny stopień, zdjęcie
+        ok, st = L.zaloz(D, "wojownik", ["rycerz_helm"], "rycerz_las_zbroja")
+        self.assertEqual((ok, st), (True, ["rycerz_helm", "rycerz_las_zbroja", "rycerz_las_nogawice"]))
+        ok, st = L.zaloz(D, "wojownik", st, "rycerz_bagno_zbroja")
+        self.assertEqual(st, ["rycerz_helm", "rycerz_bagno_zbroja", "rycerz_bagno_nogawice"])
+        ok, st = L.zaloz(D, "wojownik", st, "rycerz_zbroja")
+        self.assertEqual(st, ["rycerz_helm", "rycerz_zbroja", "rycerz_nogawice"])
+        ok, st = L.zaloz(D, "zwiadowca", [], "zwiadowca_dzungla_kurtka")
+        self.assertEqual(st, ["zwiadowca_dzungla_kurtka", "zwiadowca_dzungla_spodnie"])
+        self.assertEqual(L.zdejmij(D, "zwiadowca", st, "Chest"), (True, []))
+        self.assertEqual(L.zaloz(D, "wojownik", [], "rycerz_las_nogawice"), (False, "czesc_zbroi"))
+        self.assertEqual(L.normalizuj(D, "wojownik", ["rycerz_las_nogawice"]), (False, "czesc_bez_calosci"))
+        self.assertEqual(L.normalizuj(D, "wojownik", ["rycerz_zbroja", "rycerz_las_nogawice"]), (False, "czesc_bez_calosci"))
+        # wymiana w slocie między stopniami; dwa stopnie w jednym slocie = błąd
+        self.assertEqual(L.zaloz(D, "wojownik", ["rycerz_helm"], "rycerz_dzungla_helm"), (True, ["rycerz_dzungla_helm"]))
+        self.assertEqual(L.normalizuj(D, "wojownik", ["rycerz_helm", "rycerz_las_helm"]), (False, "dwa_w_slocie"))
+        self.assertEqual(L.normalizuj(D, "wojownik", ["rycerz_las_zbroja", "rycerz_bagno_zbroja"]), (False, "dwa_w_slocie"))
+        # przedmiot stopnia innej klasy odrzucony (każda para klas, każdy stopień)
+        for klasa in D["klasy"]:
+            for inna in D["klasy"]:
+                for s in STOPNIE:
+                    for i in ST.komplet(inna, s):
+                        if inna != klasa:
+                            self.assertFalse(L.dostepny(D, klasa, i))
+                            self.assertEqual(L.normalizuj(D, klasa, [i]), (False, "przedmiot_innej_klasy"), (klasa, i))
+                            if L.wybieralny(D, inna, i):
+                                self.assertEqual(L.zaloz(D, klasa, [], i), (False, "przedmiot_innej_klasy"), (klasa, i))
+        # zestawy stopni i kolejność: dzisiejsze, potem las, bagno, dżungla
+        for klasa in D["klasy"]:
+            for s in STOPNIE:
+                self.assertEqual(L.zestaw(D, klasa, s), (True, list(ST.komplet(klasa, s))))
+        ok, st = L.normalizuj(D, "mag", ["kot_mag_dzungla_kostur", "kot_mag_las_kapelusz", "kot_mag_pas"])
+        self.assertEqual(st, ["kot_mag_pas", "kot_mag_las_kapelusz", "kot_mag_dzungla_kostur"])
+        # dobór po ciele: przedmiot stopnia innej klasy o tym samym ciele pasuje, kota — nie
+        Dc = wariant(dobor="cialo")
+        self.assertTrue(L.zaloz(Dc, "wojownik", [], "zwiadowca_las_kaptur")[0])
+        self.assertEqual(L.zaloz(Dc, "wojownik", [], "kot_mag_las_szata"), (False, "przedmiot_innej_klasy"))
+
     def test_2b_oferta_okna(self):
         sloty = {k: [o["slot"] for o in L.oferta(D, k)] for k in D["klasy"]}
         self.assertEqual(sloty["wojownik"], ["Helmet", "Chest", "Gloves", "Boots", "Belt", "Weapon", "OffHand"])
@@ -203,6 +352,12 @@ class TestLogika(unittest.TestCase):
         ok, st = L.zdejmij(Ds, "wojownik", ["rycerz_zbroja", "rycerz_nogawice"], "Chest")
         self.assertEqual(st, ["rycerz_nogawice"])
         self.assertEqual(L.oferta(D, "nie_ma"), [])
+        # w każdym slocie cztery przedmioty: dzisiejszy i trzy stopnie (w tej kolejności)
+        for k in D["klasy"]:
+            for o in L.oferta(D, k):
+                self.assertEqual(len(o["przedmioty"]), 4, (k, o["slot"]))
+                self.assertIn(o["przedmioty"][0], DZIS)
+                self.assertEqual([D["przedmioty"][i]["stopien"] for i in o["przedmioty"][1:]], STOPNIE)
 
     def test_2c_napis(self):
         self.assertIsNone(L.z_napisu(None))
@@ -211,14 +366,35 @@ class TestLogika(unittest.TestCase):
         self.assertEqual(L.na_napis(["a", "b"]), "a,b")
 
 
-def _luau_dane_i_logika(D_=None):
-    it = LM.Interpreter()
+def _luau_dane(it, bez=(), obok=True):
+    """DaneStrojow.luau w interpreterze razem z modułami stopni (tak jak w Studio: moduły obok, require scala).
+    bez = nazwy modułów stopni, których ma nie być; obok=False — bez `script` (wczytany sam plik główny)."""
     rs = LM.Tabela()
     rs.set("IsStudio", lambda _self: True)
     game = LM.Tabela()
     game.set("GetService", lambda _self, _n: rs)
     it.globalne.z["game"] = game
-    Dl = it.wykonaj(czytaj(DN.PLIK_LUAU), DN.PLIK_LUAU)[0]
+    moduly = {}
+    for plik in DN.pliki_luau()[1:]:
+        nazwa = plik[:-len(".luau")]
+        if nazwa not in bez:
+            m = LM.Tabela()
+            m.set("Name", nazwa)
+            moduly[nazwa] = m
+    folder = LM.Tabela()
+    folder.set("FindFirstChild", lambda _s, n, *_: moduly.get(n))
+    folder.set("WaitForChild", lambda _s, n, *_: moduly.get(n))
+    if obok:
+        skrypt = LM.Tabela()
+        skrypt.set("Parent", folder)
+        it.globalne.z["script"] = skrypt
+    it.globalne.z["require"] = lambda m: it.wykonaj(czytaj(m.get("Name") + ".luau"), m.get("Name"))[0]
+    return it.wykonaj(czytaj(DN.PLIK_LUAU), DN.PLIK_LUAU)[0]
+
+
+def _luau_dane_i_logika(D_=None):
+    it = LM.Interpreter()
+    Dl = _luau_dane(it)
     if D_ is not None:
         Dl.set("spodnie", D_["spodnie"])
         Dl.set("dobor", D_["dobor"])
@@ -253,7 +429,7 @@ class TestLuau(unittest.TestCase):
         zle = 0
         for _ in range(n):
             klasa = rnd.choice(klasy)
-            pula = D_["klasy"][klasa]["przedmioty"] if klasa in D_["klasy"] and rnd.random() < 0.7 else wszystkie
+            pula = L.przedmioty_klasy(D_, klasa) if klasa in D_["klasy"] and rnd.random() < 0.7 else wszystkie
             stroj = [rnd.choice(pula) for _ in range(rnd.randint(0, 6))]
             lstroj = LM.do_luau(stroj)
             co = rnd.choice(["normalizuj", "zaloz", "zdejmij", "zestaw", "plan", "oferta", "napis"])
@@ -297,6 +473,66 @@ class TestLuau(unittest.TestCase):
                     py = L.plan(D, klasa, list(sub))
                     lu = self.wolaj(it, Ll, "plan", Dl, klasa, LM.do_luau(list(sub)))
                     self.assertEqual(_norm(list(py)), _norm(lu), (klasa, sub))
+            # stopnie: komplet, każdy jego początek i każdy przedmiot osobno — plan z Luau = plan z lustra
+            self.assertEqual(self.wolaj(it, Ll, "przedmiotyKlasy", Dl, klasa), [L.przedmioty_klasy(D, klasa)])
+            for st in STOPNIE:
+                komplet = list(ST.komplet(klasa, st))
+                for sub in [komplet[:n] for n in range(1, len(komplet) + 1)] + [[i] for i in komplet]:
+                    py = L.plan(D, klasa, sub)
+                    lu = self.wolaj(it, Ll, "plan", Dl, klasa, LM.do_luau(sub))
+                    self.assertEqual(_norm(list(py)), _norm(lu), (klasa, sub))
+                self.assertEqual(_norm(list(L.zestaw(D, klasa, st))), _norm(self.wolaj(it, Ll, "zestaw", Dl, klasa, st)))
+
+    def test_2g_dane_luau_scalone_z_modulow_stopni(self):
+        # D z Luau (moduł główny + trzy moduły stopni) = dane Pythona: te same przedmioty, segmenty i bryły
+        it = LM.Interpreter()
+        Dl = LM.z_luau(_luau_dane(it))
+        self.assertEqual(set(Dl["przedmioty"]), set(D["przedmioty"]))
+        self.assertEqual(len(Dl["przedmioty"]), 80)
+        self.assertFalse(Dl.get("brakStopni"))
+        for i, P in D["przedmioty"].items():
+            Pl = Dl["przedmioty"][i]
+            self.assertEqual((Pl["slot"], Pl.get("czescOd"), Pl.get("stopien")), (P["slot"], P["czescOd"], P.get("stopien")), i)
+            self.assertEqual([(s["id"], s["kosc"], s["zakrywa"], len(s["czesci"])) for s in Pl["segmenty"]],
+                             [(s["id"], s["kosc"], s["zakrywa"], len(s["czesci"])) for s in P["segmenty"]], i)
+            for sl, sp in zip(Pl["segmenty"], P["segmenty"]):
+                for cl, cp in zip(sl["czesci"], sp["czesci"]):
+                    self.assertEqual(len(cl), len(cp))
+                    for a, b in zip(cl, cp):
+                        if isinstance(b, str):
+                            self.assertEqual(a, b, i)
+                        else:
+                            self.assertAlmostEqual(float(a), float(b), places=4, msg=i)
+        for klasa, K in D["klasy"].items():
+            Kl = Dl["klasy"][klasa]
+            self.assertEqual([(s["id"], list(s["przedmioty"])) for s in Kl["stopnie"]],
+                             [(s["id"], s["przedmioty"]) for s in K["stopnie"]])
+            self.assertEqual([z["id"] for z in Kl["zestawy"]], [z["id"] for z in K["zestawy"]])
+
+    def test_2h_brak_modulu_stopnia(self):
+        # bez modułu jednego stopnia: jego przedmiotów nie ma, reszta działa (zestaw stopnia nieznany)
+        it = LM.Interpreter()
+        Dl = _luau_dane(it, bez={"DaneStrojowBagno"})
+        Ll = it.wykonaj(czytaj("LogikaStrojow.luau"), "LogikaStrojow.luau")[0]
+        Dp = LM.z_luau(Dl)
+        self.assertEqual(list(Dp["brakStopni"]), ["bagno"])
+        self.assertEqual(len(Dp["przedmioty"]), 60)
+        self.assertEqual([s["id"] for s in Dp["klasy"]["wojownik"]["stopnie"]], ["las", "dzungla"])
+        self.assertEqual(self.wolaj(it, Ll, "zestaw", Dl, "wojownik", "bagno"), [False, "nieznany_zestaw"])
+        self.assertEqual(self.wolaj(it, Ll, "normalizuj", Dl, "wojownik", LM.do_luau(["rycerz_bagno_helm"])),
+                         [False, "nieznany_przedmiot"])
+        self.assertEqual(self.wolaj(it, Ll, "zestaw", Dl, "wojownik", "las"), [True, list(ST.komplet("wojownik", "las"))])
+        # sam plik główny (bez `script` i bez kontenera — tak wczytują go starsze testy innych pakietów): 20 dzisiejszych
+        it = LM.Interpreter()
+        it.globalne.z["workspace"] = None
+        Dl = _luau_dane(it, obok=False)
+        Ll = it.wykonaj(czytaj("LogikaStrojow.luau"), "LogikaStrojow.luau")[0]
+        Dp = LM.z_luau(Dl)
+        self.assertEqual(list(Dp["brakStopni"]), STOPNIE)
+        self.assertEqual(set(Dp["przedmioty"]), set(DZIS))
+        for klasa, K in D["klasy"].items():
+            self.assertEqual(self.wolaj(it, Ll, "zestaw", Dl, klasa, "komplet"), [True, K["odniesienie"]])
+            self.assertEqual(self.wolaj(it, Ll, "przedmiotyKlasy", Dl, klasa), [K["przedmioty"]])
 
     def test_2f_zepsuta_logika_wykryta(self):
         zepsute = [
@@ -343,6 +579,16 @@ def _najnizej_brył(d):
     return wynik
 
 
+# o ile głębiej pod ziemię niż strój odniesienia może zejść komplet stopnia (stud) — stan z 19.11.2026 z zapasem
+# (zmierzone: Wojownik 0,071 / 0,175 / 0,016; Zwiadowca 0,152 / 0,212 / 0,535 — unik, klatka 14; Mag 0,026 / 0,004 / 0)
+GRANICA_STOPNI = {"wojownik": {"las": 0.09, "bagno": 0.19, "dzungla": 0.03},
+                  "zwiadowca": {"las": 0.17, "bagno": 0.23, "dzungla": 0.55},
+                  "mag": {"las": 0.04, "bagno": 0.02, "dzungla": 0.02}}
+# najniższy punkt kapelusza / kosturu stopnia w ostatniej klatce upadku (od, do); dzisiejsze: −0,06…0,05, kostur
+# leśny wisi 0,10, a kostur Dżungli 0,16 nad ziemią (do poprawy w stopnie.py)
+GRANICA_UPADKU = (-0.06, 0.17)
+
+
 class TestKlipy(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -354,7 +600,7 @@ class TestKlipy(unittest.TestCase):
             K = D["klasy"][klasa]
             wszystko = {"zakryte": set(), "ukryte": set(), "przedmioty": []}
             unia = DN.zloz(D, klasa, wszystko)
-            for i in K["przedmioty"]:
+            for i in L.przedmioty_klasy(D, klasa):
                 unia += DN.zloz(D, klasa, {"zakryte": {k[0] for k in K["kosci"]}, "ukryte": {"Wlosy"}, "przedmioty": [i]})
             indeks = {}
             for w in unia:
@@ -410,6 +656,33 @@ class TestKlipy(unittest.TestCase):
             print("\n  %s: największy zawis ciała w ostatniej klatce upadku: %.3f studa (%s)"
                   % (klasa, najwiekszy[0], ", ".join(najwiekszy[1]) if najwiekszy[1] is not None else "-"))
             self.assertLessEqual(najwiekszy[0], zawis_maks[klasa], klasa)
+
+    def test_3d_komplety_stopni_w_klipach(self):
+        # komplety stopni na tych samych klipach: jak głęboko pod ziemię schodzą względem stroju odniesienia (wypisane;
+        # granica = stan z 19.11.2026 z zapasem — poprawki geometrii w swiat/postacie/stopnie.py, nie tutaj) i czy
+        # w ostatniej klatce upadku kapelusz i kostur kota leżą na ziemi
+        spadajace = {"HatPivot", "StaffPivot"}
+        for klasa, K in D["klasy"].items():
+            d, indeks, tab, jedne = self.dane[klasa]
+            kosci = [k[0] for k in K["kosci"]]
+            ost = ("upadek", next(k["dl"] for k in d["klipy"] if k["n"] == "upadek"))
+            ok, ref = L.plan(D, klasa, K["odniesienie"])
+            ref_n, _ = self.nizej(klasa, ref)
+            for st in STOPNIE:
+                ok, plan = L.plan(D, klasa, list(ST.komplet(klasa, st)))
+                self.assertTrue(ok)
+                n, idx = self.nizej(klasa, plan)
+                roznica, gdzie = max((ref_n[k] - v, k) for k, v in n.items())
+                print("\n  %s, komplet %s: najgłębiej niż odniesienie o %.3f (%s, klatka %d); najniższy punkt %.3f"
+                      % (klasa, st, roznica, gdzie[0], gdzie[1], min(n.values())))
+                self.assertLessEqual(roznica, GRANICA_STOPNI[klasa][st], (klasa, st))
+                for i in plan["przedmioty"]:
+                    for s in D["przedmioty"][i]["segmenty"]:
+                        if s["kosc"] in spadajace:
+                            ys = [tab[ost][j] for j in idx if kosci[jedne[j][0] - 1] == s["kosc"]]
+                            print("  %s: %s w ostatniej klatce upadku najniżej %.3f" % (klasa, i, min(ys)))
+                            self.assertLessEqual(min(ys), GRANICA_UPADKU[1], (klasa, i))
+                            self.assertGreaterEqual(min(ys), GRANICA_UPADKU[0], (klasa, i))
 
     def test_3c_klipy_ruszaja_tylko_koscmi_szkieletu(self):
         for klasa, K in D["klasy"].items():

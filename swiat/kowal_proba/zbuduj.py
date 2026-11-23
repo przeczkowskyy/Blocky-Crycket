@@ -16,6 +16,7 @@ miejsce kuźni sprawdza dane.py na danych mapy bazaru):
   SerwerKowala (RunContext = Server), KlientKowala (RunContext = Client)
   Zdalne/Kuznia (RemoteFunction), Zdalne/ZdarzeniaKowala (RemoteEvent)
   Sygnaly/SterowanieSerwera, Sygnaly/SterowanieKlienta   BindableFunction — haczyki testowe
+  Sygnaly/Sklep                                          BindableFunction — wejście dla sklepu (D-106, swiat/sklep_proba)
   Kuznia (Model „Persistent”): części z kuznia/czesci.json w podgrupach (Podloga, Palenisko, Miech, Kowadlo, Kadz,
   Stojak, Daszek), światło i ogień w żarze, iskry nad sztabą, napis na szyldzie (SurfaceGui), Kowal (rig z klocków
   w pozie zamachu), E (niewidzialna część z ProximityPrompt „Podpowiedz”, Enabled = false w Edit — włącza serwer w Play)
@@ -64,6 +65,7 @@ INNE = [
     ("RemoteEvent", "Zdalne/ZdarzeniaKowala"),
     ("BindableFunction", "Sygnaly/SterowanieSerwera"),
     ("BindableFunction", "Sygnaly/SterowanieKlienta"),
+    ("BindableFunction", "Sygnaly/Sklep"),
 ]
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'

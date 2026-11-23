@@ -143,6 +143,14 @@ _sp = _ilu.spec_from_file_location("cutscenka_pomoc_prob", os.path.join(REPO, "s
 PP = _ilu.module_from_spec(_sp)
 _sp.loader.exec_module(PP)
 
+# D-107 (19.11.2026, walka bez przestojów): liczby potworów i czasy odradzania z DANYCH GRY (generator), nie z planu
+# mapy; wspólne punkty prób D1–D4 trzech biomów: swiat/las_pas_gra/testy/pomoc_d107.py
+_spd = _ilu.spec_from_file_location("pomoc_d107", os.path.join(REPO, "swiat", "las_pas_gra", "testy", "pomoc_d107.py"))
+D107 = _ilu.module_from_spec(_spd)
+_spd.loader.exec_module(D107)
+G["d107"] = D107.wczytaj_liczby(REPO, "dzungla_pas_gra")
+G["potworow_1"] = G["d107"]["razem1"]
+
 
 def tp(t):
     """Chwila zrzutu z projektu (lot 10,5 s, postój od 10,5) → ta sama chwila krótkiego przelotu."""
@@ -959,6 +967,10 @@ def main():
             punkt("J13", None, "Gaj Kokosów: klatka śr. %.1f ms, p95 %.1f, maks. %.1f (%d klatek); widoki %s, bryły widoków %s" % (
                 kl13.get("sr", 0), kl13.get("p95", 0), kl13.get("maks", 0), kl13.get("n", 0), kp13.get("widoki"),
                 kp13.get("czesciWidokow")))
+
+            # D-107 (walka bez przestojów): JD1 liczba potworów (1 i 20 graczy), JD2 odradzanie w zadanym czasie,
+            # JD3 czas klatki przy pełnym zestawie, JD4 przegrana ze strażnikiem przy ×4 bez blokady i rewanż od razu, D5 czas pominiętej walki
+            D107.punkty("J", "DzunglaPasGra", G["d107"], luau, punkt, zapisz, przestaw, nacisnij, czekaj_na, klient_potworow, odtw)
 
             # ================================================================ J14 konsola
             kons = call("get_console_output", {}, timeout=60)["text"]

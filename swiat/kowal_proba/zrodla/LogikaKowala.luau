@@ -16,6 +16,10 @@
 	L.ulepsz(D, dane, id, koszt) → dane · L.ranga(D, przyrostTokenow) → ranga | nil
 	L.lup(D, dane, klasa, ranga, los1, los2) → dane, { id, nowy } | nil
 	L.widok(D, dane, klasa, zalozone, zloto, opisBohatera) → okno (teksty i liczby; klient tylko pokazuje)
+	Sklep (D-106): L.kup(D, dane, klasa, poziom, zloto, id) → true, dane, { id, cena, czesc? } | false, powod, brakuje
+	L.oferta(D, dane, klasa, poziom, zloto, zalozone) → { { id, nazwa, slot, stopien, cena, poziom, stan, staty… } }
+	L.stacNa(D, dane, klasa, poziom, zloto) → n · L.czyZalozyc(D, zalozone, id) · L.strojZPrzedmiotem(D, napis, id)
+	D.klasy[k].przedmioty = lista startowa (łup, okno kowala), D.klasy[k].wszystkie = z przedmiotami do kupienia.
 	L.opisBohatera(D, opis) · L.komunikat(D, powod, ile) · L.zNapisu / L.naNapis · L.sprawdzPrzypadki(D) → ok, n, zle
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -153,22 +157,24 @@ function L.naNapis(ids)
 end
 
 function L.zalozone(D, klasa, dane, napis)
-	local lista = D.klasy[klasa].przedmioty
-	local w = {}
-	if napis == nil then
-		for _, id in lista do
-			if L.posiada(dane, id) then
-				table.insert(w, id)
-			end
+	local lista = D.klasy[klasa].wszystkie
+	local zb = nil
+	if napis ~= nil then
+		zb = {}
+		for _, id in L.zNapisu(napis) or {} do
+			zb[id] = true
 		end
-		return w
 	end
-	local zb = {}
-	for _, id in L.zNapisu(napis) or {} do
-		zb[id] = true
-	end
+	-- jeden przedmiot na slot: lista idzie stopniami w górę, więc w slocie zostaje przedmiot najwyższego stopnia
+	local wSlocie = {}
 	for _, id in lista do
-		if zb[id] and L.posiada(dane, id) then
+		if L.posiada(dane, id) and (zb == nil or zb[id]) then
+			wSlocie[D.przedmioty[id].slot] = id
+		end
+	end
+	local w = {}
+	for _, id in lista do
+		if wSlocie[D.przedmioty[id].slot] == id then
 			table.insert(w, id)
 		end
 	end
@@ -260,7 +266,7 @@ function L.strojDoUstawienia(D, klasa, dane, napis)
 		return nil
 	end
 	local w = {}
-	for _, id in D.klasy[klasa].przedmioty do
+	for _, id in D.klasy[klasa].wszystkie do
 		if dobre[id] then
 			table.insert(w, id)
 		end
@@ -315,7 +321,7 @@ end
 
 -- wskazówka celu „kowal”: Złoto i materiały na ulepszenie któregoś posiadanego przedmiotu klasy
 function L.moznaUlepszyc(D, klasa, dane, zloto)
-	for _, id in D.klasy[klasa].przedmioty do
+	for _, id in D.klasy[klasa].wszystkie do
 		if L.posiada(dane, id) then
 			local k = L.koszt(D, id, dane.przedmioty[id].poziom)
 			if k ~= nil and dane.materialy >= k.materialy and zloto >= k.zloto then
@@ -364,6 +370,119 @@ function L.lup(D, dane, klasa, ranga, los1, los2)
 	end
 	w.przedmioty[id] = { poziom = 0, zapas = 0 }
 	return w, { id = id, nowy = true }
+end
+
+------------------------------------------------------------------ sklep (D-106): kupno za Złoto
+function L.poziomGracza(v)
+	if type(v) ~= "number" or v ~= v or v < 1 then
+		return 1
+	end
+	return math.floor(v)
+end
+
+-- samo sprawdzenie i nowe dane; Złoto wydaje serwer przez StanGracza. Część zbroi należy do swojej zbroi.
+function L.kup(D, dane, klasa, poziom, zloto, id)
+	if type(id) ~= "string" then
+		return false, "nieznany_przedmiot", 0
+	end
+	if D.czesci[id] ~= nil then
+		return false, "czesc_zbroi", 0
+	end
+	local P = D.przedmioty[id]
+	if P == nil then
+		return false, "nieznany_przedmiot", 0
+	end
+	if P.klasa ~= klasa then
+		return false, "inna_klasa", 0
+	end
+	if L.posiada(dane, id) then
+		return false, "masz", 0
+	end
+	if poziom < P.poziom then
+		return false, "za_niski_poziom", P.poziom - poziom
+	end
+	if zloto < P.cena then
+		return false, "za_malo_zlota", P.cena - zloto
+	end
+	local w = kopia(dane)
+	w.przedmioty[id] = { poziom = 0, zapas = 0 }
+	return true, w, { id = id, cena = P.cena, czesc = D.czescCalosci[id] }
+end
+
+function L.stanOferty(D, dane, poziom, zloto, zal, id)
+	local P = D.przedmioty[id]
+	if table.find(zal, id) ~= nil then
+		return "zalozone", 0
+	end
+	if L.posiada(dane, id) then
+		return "masz", 0
+	end
+	if poziom < P.poziom then
+		return "za_niski_poziom", P.poziom - poziom
+	end
+	if zloto < P.cena then
+		return "za_drogie", P.cena - zloto
+	end
+	return "kup", 0
+end
+
+function L.oferta(D, dane, klasa, poziom, zloto, zal)
+	local w = {}
+	for _, id in D.klasy[klasa].wszystkie do
+		local P = D.przedmioty[id]
+		local stan, brakuje = L.stanOferty(D, dane, poziom, zloto, zal, id)
+		local ulepszenie = if L.posiada(dane, id) then dane.przedmioty[id].poziom else 0
+		table.insert(w, { id = id, nazwa = P.nazwa, slot = P.slot, slotNazwa = D.sloty[P.slot], stopien = P.stopien,
+			nrStopnia = P.nrStopnia, cena = P.cena, poziom = P.poziom, stan = stan, brakuje = brakuje,
+			ulepszenie = ulepszenie, staty = L.tekstStatLista(D, L.statystyki(D, id, ulepszenie)) })
+	end
+	return w
+end
+
+function L.skrotOferty(oferta)
+	local w = {}
+	for _, o in oferta do
+		table.insert(w, string.format("%s:%d:%d", o.stan, o.brakuje, o.ulepszenie))
+	end
+	return table.concat(w, "|")
+end
+
+-- atrybut SklepStacNa: ile przedmiotów gracz może teraz kupić
+function L.stacNa(D, dane, klasa, poziom, zloto)
+	local n = 0
+	for _, id in D.klasy[klasa].wszystkie do
+		local P = D.przedmioty[id]
+		if not L.posiada(dane, id) and poziom >= P.poziom and zloto >= P.cena then
+			n += 1
+		end
+	end
+	return n
+end
+
+-- reguła zakładania po kupnie (i po łupie): pusty slot albo założony przedmiot niższego stopnia
+function L.czyZalozyc(D, zal, id)
+	local P = D.przedmioty[id]
+	for _, z in zal do
+		local Z = D.przedmioty[z]
+		if z ~= id and Z.slot == P.slot then
+			return Z.nrStopnia < P.nrStopnia
+		end
+	end
+	return true
+end
+
+-- napis stroju z przedmiotem w jego slocie: wypada dotychczasowy przedmiot slotu i jego część zbroi
+function L.strojZPrzedmiotem(D, napis, id)
+	local P = D.przedmioty[id]
+	local w = {}
+	for _, x in L.zNapisu(napis) or {} do
+		local Y = D.przedmioty[D.czesci[x] or x]
+		if x ~= id and not (Y ~= nil and Y.slot == P.slot) then
+			table.insert(w, x)
+		end
+	end
+	table.insert(w, id)
+	return L.naNapis(w)
 end
 
 ------------------------------------------------------------------ teksty okna
@@ -461,10 +580,23 @@ end
 
 function L.widok(D, dane, klasa, zal, zloto, bohater)
 	local T = D.teksty
-	local lista = D.klasy[klasa].przedmioty
+	-- dzisiejsza lista klasy (stopień startowy) + posiadane przedmioty kupione w sklepie; założone kupione na początku
+	local lista = {}
+	for _, id in D.klasy[klasa].wszystkie do
+		if D.przedmioty[id].nrStopnia == 0 or L.posiada(dane, id) then
+			table.insert(lista, id)
+		end
+	end
 	local wiersze = {}
+	local pierwsze = {}
 	for _, id in lista do
-		if L.posiada(dane, id) then
+		if D.przedmioty[id].nrStopnia > 0 and table.find(zal, id) ~= nil then
+			pierwsze[id] = true
+			table.insert(wiersze, L.wiersz(D, dane, klasa, id, zal, zloto))
+		end
+	end
+	for _, id in lista do
+		if L.posiada(dane, id) and not pierwsze[id] then
 			table.insert(wiersze, L.wiersz(D, dane, klasa, id, zal, zloto))
 		end
 	end
@@ -598,6 +730,32 @@ function L.sprawdzPrzypadki(D)
 	end
 	for i, p in P.mozna do
 		sprawdz("mozna", i, { p.wynik, p.suma }, { L.moznaUlepszyc(D, p.klasa, p.dane, p.zloto), L.sumaPoziomow(p.dane) })
+	end
+	for i, p in P.kup do
+		local dane = P.sklepDane[p.klasa][p.nr]
+		local ok, w, info = L.kup(D, dane, p.klasa, p.poziom, p.zloto, p.id)
+		if ok then
+			sprawdz("kup", i, { true, "", p.ile, p.czesc, 0 }, { ok, "", info.cena, info.czesc or "", w.przedmioty[p.id].poziom })
+		else
+			sprawdz("kup", i, { p.ok, p.powod, p.ile }, { ok, w, info })
+		end
+	end
+	for i, p in P.oferta do
+		local dane = P.sklepDane[p.klasa][p.nr]
+		local zal = L.zalozone(D, p.klasa, dane, arg(p.napis))
+		sprawdz("oferta_zalozone", i, p.zalozone, L.naNapis(zal))
+		sprawdz("oferta", i, p.skrot, L.skrotOferty(L.oferta(D, dane, p.klasa, p.poziom, p.zloto, zal)))
+		sprawdz("stac", i, p.stac, L.stacNa(D, dane, p.klasa, p.poziom, p.zloto))
+	end
+	for i, p in P.ofertaPelna do
+		local dane = P.sklepDane[p.klasa][p.nr]
+		sprawdz("oferta_pelna", i, p.wynik, L.oferta(D, dane, p.klasa, p.poziom, p.zloto,
+			L.zalozone(D, p.klasa, dane, nil)))
+	end
+	for i, p in P.zaloz do
+		local dane = P.sklepDane[p.klasa][p.nr]
+		local zal = L.zalozone(D, p.klasa, dane, arg(p.napis))
+		sprawdz("zaloz", i, { p.czy, p.stroj }, { L.czyZalozyc(D, zal, p.id), L.strojZPrzedmiotem(D, arg(p.napis), p.id) })
 	end
 	for i, p in P.odmiana do
 		sprawdz("odmiana", i, { p.mianownik, p.dopelniacz }, { L.ileMaterialow(D, p.n), L.ileMaterialowDop(D, p.n) })

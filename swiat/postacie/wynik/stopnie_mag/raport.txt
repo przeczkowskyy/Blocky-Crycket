@@ -1,0 +1,208 @@
+RAPORT — stopnie_mag
+STOPNIE EKWIPUNKU — Kot-Mag Crycket w komplecie startowym i w trzech kompletach do kupienia: las, Bagno, Dżungla (D-106).
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/stopnie_mag.py · wygenerowano 19.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py stopnie_mag
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: stopnie_mag_start, stopnie_mag_las, stopnie_mag_bagno, stopnie_mag_dzungla
+- przedmioty (akcesoria): 12
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 36 plików, zgodnych 36
+- ostrzeżenia z raportu: 4; uwagi podglądu: 4
+
+ZNANE SŁABOŚCI
+- Przedmioty stopni to propozycja wyglądu; statystyki i ceny są w sklep_przedmioty.json (też propozycja).
+- Zbroje stopni to dzisiejsze bryły w nowych materiałach z dołożonymi ozdobami — pod spodem ta sama bryła hełmu, napierśnika i butów; całkiem nowe są broń, tarcze, nakrycia głowy kota i kostury.
+- Kontrola przenikania stopni obejmuje pozę spoczynku (test_stopnie.py); klipy walki w nowych kompletach nie były liczone klatka po klatce — poroże, pióropusze i skrzydła naramienników mogą wchodzić w ręce uniesione nad głowę.
+- Kot ma w każdym stopniu cztery przedmioty (nakrycie głowy, szata, szarfa, kostur) — tyle slotów ma dziś.
+- W Roblox Studio nic z tego nie było budowane ani oglądane.
+
+MODEL stopnie_mag_start „Kot-Mag Crycket — komplet startowy” (r15)
+  wymiary ciała: 2,51 × 3,82 × 2,30; z akcesoriami: 2,64 × 4,94 × 2,47
+  trójkąty: 3286 (siatek: 21)
+  budżety ciała R15: Head 680/4000, Torso 580/1750, LeftArm 232/1248, RightArm 232/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_mag_kapelusz na KapeluszAttachment (tylko podgląd, bez eksportu), kot_mag_kostur na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL stopnie_mag_las „Kot-Mag Crycket — komplet leśny” (r15)
+  wymiary ciała: 2,51 × 3,82 × 2,30; z akcesoriami: 3,01 × 4,33 × 2,59
+  trójkąty: 3448 (siatek: 21)
+  budżety ciała R15: Head 680/4000, Torso 676/1750, LeftArm 232/1248, RightArm 232/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_mag_las_kapelusz na KapeluszAttachment (tylko podgląd, bez eksportu), kot_mag_las_kostur na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL stopnie_mag_bagno „Kot-Mag Crycket — komplet bagienny” (r15)
+  wymiary ciała: 2,51 × 3,82 × 2,30; z akcesoriami: 2,63 × 4,52 × 2,30
+  trójkąty: 3454 (siatek: 21)
+  budżety ciała R15: Head 680/4000, Torso 688/1750, LeftArm 232/1248, RightArm 232/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_mag_bagno_kapelusz na KapeluszAttachment (tylko podgląd, bez eksportu), kot_mag_bagno_kostur na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL stopnie_mag_dzungla „Kot-Mag Crycket — komplet Dżungli” (r15)
+  wymiary ciała: 2,68 × 3,82 × 2,30; z akcesoriami: 2,75 × 4,82 × 2,30
+  trójkąty: 3476 (siatek: 21)
+  budżety ciała R15: Head 680/4000, Torso 744/1750, LeftArm 232/1248, RightArm 232/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_mag_dzungla_kapelusz na KapeluszAttachment (tylko podgląd, bez eksportu), kot_mag_dzungla_kostur na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+kot_mag_las_kapelusz   HatAttachment              Hat          300  2,50 × 1,18 × 2,30   (-0,00; -0,57; -0,00) 
+kot_mag_las_szata      EkwUpperTorsoAttachment    Inne         832  2,51 × 1,93 × 2,30   (-0,00; -0,97; 0,29)  
+kot_mag_las_pas        EkwLowerTorsoAttachment    Inne         132  1,44 × 0,33 × 1,22   (-0,00; -0,82; -0,06) 
+kot_mag_las_kostur     RightGripAttachment        Bron         408  0,99 × 3,10 × 0,34   (0,33; -0,66; -0,00)  
+kot_mag_bagno_kapelusz HatAttachment              Hat          320  2,58 × 1,25 × 1,64   (-0,00; -0,58; -0,02) 
+kot_mag_bagno_szata    EkwUpperTorsoAttachment    Inne         872  2,51 × 2,33 × 2,30   (-0,00; -1,18; 0,29)  
+kot_mag_bagno_pas      EkwLowerTorsoAttachment    Inne         104  1,44 × 0,37 × 1,19   (-0,00; -0,81; -0,04) 
+kot_mag_bagno_kostur   RightGripAttachment        Bron         382  0,79 × 3,64 × 0,51   (-0,00; -0,72; -0,01) 
+kot_mag_dzungla_kapelusz HatAttachment              Hat          224  1,99 × 1,72 × 1,59   (-0,00; -0,79; -0,01) 
+kot_mag_dzungla_szata  EkwUpperTorsoAttachment    Inne         916  2,68 × 2,34 × 2,30   (-0,00; -1,18; 0,29)  
+kot_mag_dzungla_pas    EkwLowerTorsoAttachment    Inne         116  1,44 × 0,30 × 1,18   (-0,00; -0,85; -0,04) 
+kot_mag_dzungla_kostur RightGripAttachment        Bron         444  0,95 × 4,06 × 0,27   (-0,00; -1,14; -0,00) 
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+UWAGI PODGLĄDU
+- stopnie_mag_bagno: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- stopnie_mag_dzungla: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- stopnie_mag_las: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- stopnie_mag_start: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+
+KONTROLA EKSPORTÓW
+- stopnie_mag_start.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje brak -> ZGODNE
+- stopnie_mag_start__idle.fbx: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje stopnie_mag_start|Scene 1-61 -> ZGODNE
+- stopnie_mag_start.glb: siatki 40, kości 23, trójkąty 2896, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- stopnie_mag_las.fbx: siatki 40, kości 23, trójkąty 2992, wzrost 3.82 st., akcje brak -> ZGODNE
+- stopnie_mag_las__idle.fbx: siatki 40, kości 23, trójkąty 2992, wzrost 3.82 st., akcje stopnie_mag_las|Scene 1-61 -> ZGODNE
+- stopnie_mag_las.glb: siatki 40, kości 23, trójkąty 2992, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- stopnie_mag_bagno.fbx: siatki 40, kości 23, trójkąty 3004, wzrost 3.82 st., akcje brak -> ZGODNE
+- stopnie_mag_bagno__idle.fbx: siatki 40, kości 23, trójkąty 3004, wzrost 3.82 st., akcje stopnie_mag_bagno|Scene 1-61 -> ZGODNE
+- stopnie_mag_bagno.glb: siatki 40, kości 23, trójkąty 3004, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- stopnie_mag_dzungla.fbx: siatki 40, kości 23, trójkąty 3060, wzrost 3.82 st., akcje brak -> ZGODNE
+- stopnie_mag_dzungla__idle.fbx: siatki 40, kości 23, trójkąty 3060, wzrost 3.82 st., akcje stopnie_mag_dzungla|Scene 1-61 -> ZGODNE
+- stopnie_mag_dzungla.glb: siatki 40, kości 23, trójkąty 3060, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- kot_mag_las_kapelusz.fbx: siatki 1, kości 0, trójkąty 300, wzrost 1.18 st., akcje brak -> ZGODNE
+- kot_mag_las_kapelusz.glb: siatki 1, kości 0, trójkąty 300, wzrost 1.18 st., akcje brak -> ZGODNE
+- kot_mag_las_szata.fbx: siatki 1, kości 0, trójkąty 832, wzrost 1.93 st., akcje brak -> ZGODNE
+- kot_mag_las_szata.glb: siatki 1, kości 0, trójkąty 832, wzrost 1.93 st., akcje brak -> ZGODNE
+- kot_mag_las_pas.fbx: siatki 1, kości 0, trójkąty 132, wzrost 0.33 st., akcje brak -> ZGODNE
+- kot_mag_las_pas.glb: siatki 1, kości 0, trójkąty 132, wzrost 0.33 st., akcje brak -> ZGODNE
+- kot_mag_las_kostur.fbx: siatki 1, kości 0, trójkąty 408, wzrost 3.10 st., akcje brak -> ZGODNE
+- kot_mag_las_kostur.glb: siatki 1, kości 0, trójkąty 408, wzrost 3.10 st., akcje brak -> ZGODNE
+- kot_mag_bagno_kapelusz.fbx: siatki 1, kości 0, trójkąty 320, wzrost 1.25 st., akcje brak -> ZGODNE
+- kot_mag_bagno_kapelusz.glb: siatki 1, kości 0, trójkąty 320, wzrost 1.25 st., akcje brak -> ZGODNE
+- kot_mag_bagno_szata.fbx: siatki 1, kości 0, trójkąty 872, wzrost 2.33 st., akcje brak -> ZGODNE
+- kot_mag_bagno_szata.glb: siatki 1, kości 0, trójkąty 872, wzrost 2.33 st., akcje brak -> ZGODNE
+- kot_mag_bagno_pas.fbx: siatki 1, kości 0, trójkąty 104, wzrost 0.37 st., akcje brak -> ZGODNE
+- kot_mag_bagno_pas.glb: siatki 1, kości 0, trójkąty 104, wzrost 0.37 st., akcje brak -> ZGODNE
+- kot_mag_bagno_kostur.fbx: siatki 1, kości 0, trójkąty 382, wzrost 3.64 st., akcje brak -> ZGODNE
+- kot_mag_bagno_kostur.glb: siatki 1, kości 0, trójkąty 382, wzrost 3.64 st., akcje brak -> ZGODNE
+- kot_mag_dzungla_kapelusz.fbx: siatki 1, kości 0, trójkąty 224, wzrost 1.72 st., akcje brak -> ZGODNE
+- kot_mag_dzungla_kapelusz.glb: siatki 1, kości 0, trójkąty 224, wzrost 1.72 st., akcje brak -> ZGODNE
+- kot_mag_dzungla_szata.fbx: siatki 1, kości 0, trójkąty 916, wzrost 2.34 st., akcje brak -> ZGODNE
+- kot_mag_dzungla_szata.glb: siatki 1, kości 0, trójkąty 916, wzrost 2.34 st., akcje brak -> ZGODNE
+- kot_mag_dzungla_pas.fbx: siatki 1, kości 0, trójkąty 116, wzrost 0.30 st., akcje brak -> ZGODNE
+- kot_mag_dzungla_pas.glb: siatki 1, kości 0, trójkąty 116, wzrost 0.30 st., akcje brak -> ZGODNE
+- kot_mag_dzungla_kostur.fbx: siatki 1, kości 0, trójkąty 444, wzrost 4.06 st., akcje brak -> ZGODNE
+- kot_mag_dzungla_kostur.glb: siatki 1, kości 0, trójkąty 444, wzrost 4.06 st., akcje brak -> ZGODNE
+
+PLIKI
+- stopnie_mag_start.blend
+- stopnie_mag_start.fbx
+- stopnie_mag_start.glb
+- stopnie_mag_start__idle.fbx
+- stopnie_mag_start_bohater.jpg
+- stopnie_mag_start_ikona.png
+- stopnie_mag_start_plansza.jpg
+- stopnie_mag_start_tekstury/
+- stopnie_mag_las.blend
+- stopnie_mag_las.fbx
+- stopnie_mag_las.glb
+- stopnie_mag_las__idle.fbx
+- stopnie_mag_las_bohater.jpg
+- stopnie_mag_las_ikona.png
+- stopnie_mag_las_plansza.jpg
+- stopnie_mag_las_tekstury/
+- stopnie_mag_bagno.blend
+- stopnie_mag_bagno.fbx
+- stopnie_mag_bagno.glb
+- stopnie_mag_bagno__idle.fbx
+- stopnie_mag_bagno_bohater.jpg
+- stopnie_mag_bagno_ikona.png
+- stopnie_mag_bagno_plansza.jpg
+- stopnie_mag_bagno_tekstury/
+- stopnie_mag_dzungla.blend
+- stopnie_mag_dzungla.fbx
+- stopnie_mag_dzungla.glb
+- stopnie_mag_dzungla__idle.fbx
+- stopnie_mag_dzungla_bohater.jpg
+- stopnie_mag_dzungla_ikona.png
+- stopnie_mag_dzungla_plansza.jpg
+- stopnie_mag_dzungla_tekstury/
+- przedmioty/kot_mag_las_kapelusz.fbx
+- przedmioty/kot_mag_las_kapelusz.glb
+- przedmioty/kot_mag_las_kapelusz_tekstury/
+- ikony/kot_mag_las_kapelusz_ikona.png
+- przedmioty/kot_mag_las_szata.fbx
+- przedmioty/kot_mag_las_szata.glb
+- przedmioty/kot_mag_las_szata_tekstury/
+- ikony/kot_mag_las_szata_ikona.png
+- przedmioty/kot_mag_las_pas.fbx
+- przedmioty/kot_mag_las_pas.glb
+- przedmioty/kot_mag_las_pas_tekstury/
+- ikony/kot_mag_las_pas_ikona.png
+- przedmioty/kot_mag_las_kostur.fbx
+- przedmioty/kot_mag_las_kostur.glb
+- przedmioty/kot_mag_las_kostur_tekstury/
+- ikony/kot_mag_las_kostur_ikona.png
+- przedmioty/kot_mag_bagno_kapelusz.fbx
+- przedmioty/kot_mag_bagno_kapelusz.glb
+- przedmioty/kot_mag_bagno_kapelusz_tekstury/
+- ikony/kot_mag_bagno_kapelusz_ikona.png
+- przedmioty/kot_mag_bagno_szata.fbx
+- przedmioty/kot_mag_bagno_szata.glb
+- przedmioty/kot_mag_bagno_szata_tekstury/
+- ikony/kot_mag_bagno_szata_ikona.png
+- przedmioty/kot_mag_bagno_pas.fbx
+- przedmioty/kot_mag_bagno_pas.glb
+- przedmioty/kot_mag_bagno_pas_tekstury/
+- ikony/kot_mag_bagno_pas_ikona.png
+- przedmioty/kot_mag_bagno_kostur.fbx
+- przedmioty/kot_mag_bagno_kostur.glb
+- przedmioty/kot_mag_bagno_kostur_tekstury/
+- ikony/kot_mag_bagno_kostur_ikona.png
+- przedmioty/kot_mag_dzungla_kapelusz.fbx
+- przedmioty/kot_mag_dzungla_kapelusz.glb
+- przedmioty/kot_mag_dzungla_kapelusz_tekstury/
+- ikony/kot_mag_dzungla_kapelusz_ikona.png
+- przedmioty/kot_mag_dzungla_szata.fbx
+- przedmioty/kot_mag_dzungla_szata.glb
+- przedmioty/kot_mag_dzungla_szata_tekstury/
+- ikony/kot_mag_dzungla_szata_ikona.png
+- przedmioty/kot_mag_dzungla_pas.fbx
+- przedmioty/kot_mag_dzungla_pas.glb
+- przedmioty/kot_mag_dzungla_pas_tekstury/
+- ikony/kot_mag_dzungla_pas_ikona.png
+- przedmioty/kot_mag_dzungla_kostur.fbx
+- przedmioty/kot_mag_dzungla_kostur.glb
+- przedmioty/kot_mag_dzungla_kostur_tekstury/
+- ikony/kot_mag_dzungla_kostur_ikona.png
+- stopnie_mag_ikony_arkusz.jpg
+- stopnie_mag_cztery_stopnie.jpg
+- raport.json
+- raport.txt

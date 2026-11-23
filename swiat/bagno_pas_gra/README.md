@@ -52,7 +52,10 @@ Wygrane: postacie wzorcowe bez treningu, 400 walk na parę (`przeciwnicy.py`).
 | Bulgotnik | b1–b3 · 12–14 | Mag (Muchomornik) | Bariera, Chmura zarodników | osłania się bańką (tarcza procentowa) i truje | 74 / 75 / 74% (poz. 12) |
 | Kłodokłap | k1–k3 · 14–16 | Wojownik (Leśny Troll) | Miażdżący cios | blokuje korą (szansa bloku 15%), Pancerz +20%, zero uniku; kłapnięcie zdziera pancerz | 75 / 77 / 83% (poz. 14) |
 | Ropucha z Chatką (rzadka) | t1 · 16 | Mag (Leśny Troll, Int ↑) | Chmura zarodników, Uderzenie z góry | rzadki Mag z dwiema umiejętnościami: dym z komina truje, ciężki sus | 52 / 55 / 56% (gracz 17) |
-| Strażnik Topieli | arena · 16 | strażnik (Strażnik Gaju) | Ogłuszające uderzenie | fizyczne uderzenie w taflę (60% ogłuszenia), zysk many +25%, odporność na magię +30% | 20 / 36 / 20% (gracz 17) |
+| Strażnik Topieli | arena · 16 | strażnik (Strażnik Gaju) | Ogłuszające uderzenie | fizyczne uderzenie w taflę (60% ogłuszenia), zysk many +25%, odporność na magię +30% | 34 / 42 / 30% (gracz 17) |
+
+Strażnik Topieli ma od 19.11 o 15% mniej życia (D-111, decyzja Karola: modyfikator życia 0,6 → 0,36, na poz. 16
+2528 → 2149); przed zmianą wzorcowi wygrywali o poziom wyżej 20 / 36 / 20%.
 
 Dla porównania las (gracz 10): Wilk 85%, Troll (poz. 9) 68%, Strażnik Gaju 36%. Kalkulator dla Bagna bez treningu:
 zwykłe na wejściu 73%, strażnik na wyjściu 24%.
@@ -206,8 +209,8 @@ Cofnięcie: `python -B swiat/bagno_pas_gra/zbuduj.py --usun`, `python -B tools/s
 - **Ponowna budowa mapy lasu** (`swiat/las_pas`) przywraca `ZapowiedzBagna` z niewidzialną ścianą na Pomoście Bagna.
 - **TabelaAktorow prototypu** buduje się z bieżących danych wszystkich aktorów z dysku — wdrożenie aktorów Bagna w
   czasie pracy agentów bohaterów może wysłać ich niedokończone dane.
-- Strażnik Topieli jest trudny (wzorcowy gracz bez treningu wygrywa 20–36% o poziom wyżej) — zgodnie z kalkulatorem,
-  ale bez treningu i petów długo.
+- Strażnik Topieli jest trudny (wzorcowy gracz bez treningu wygrywa 30–42% o poziom wyżej, po D-111; wcześniej
+  20–36%) — zgodnie z kalkulatorem, ale bez treningu i petów długo.
 - Bez spowolnienia w Bagnie (nacisk planu „spowolnienie i trucizna” zostaje tylko jako trucizna i osłony).
 
 ## Wybory dla ludzi
@@ -217,3 +220,44 @@ Cofnięcie: `python -B swiat/bagno_pas_gra/zbuduj.py --usun`, `python -B tools/s
    (zmiana `tools/walka` i prototypu) czy zostać przy istniejących?
 3. **Zapowiedź Bagna w lesie:** usuwać skryptem po każdej budowie lasu czy dodać przełącznik w `swiat/las_pas/generuj.py`?
 4. **Muzyka Bagna:** utwory lasu czy własne (Higgsfield, osobne zadanie)?
+
+## D-107 — walka bez przestojów (19.11.2026; wdrożone w Studio i sprawdzone w grze)
+
+*Status: decyzja D-107 ma podpis Karola i czeka na potwierdzenie Pawła; liczby dobrał agent i są **propozycją do
+oceny**. Wdrożone w Studio 19.11.2026 i sprawdzone próbą w Play (jeden gracz, komputer, okno Studio na wierzchu).
+Liczby w rozdziałach wyżej (8 / 11 / 14 potworów, odrodzenie 12–18 s, strażnik 120 s, rzadki potwór 150 s) opisują
+stan sprzed D-107.*
+
+Bagno używa tego samego kodu potworów i tego samego generatora co las, więc dostaje te same zasady z jednego
+miejsca (`GESTOSC_D107` w `swiat/las_pas_gra/generuj_dane.py`; plan mapy i wygląd bez zmian):
+
+| | Było | Jest |
+|---|---|---|
+| Zwykła strefa (Rechotek, Bulgotnik, Kłodokłap), potworów przy 1 / 8 / 20 graczach | 2 / 3 / 4 | 4 / 7 / 8 |
+| Razem ze strażnikiem | 8 / 11 / 14 | 14 / 23 / 26 |
+| Odrodzenie zwykłych | 12 / 15 / 18 s (z tłumem najszybciej 10 s) | 2 s |
+| Rzadki potwór (Ropucha z Chatką) | 150 s | 20 s |
+| Strażnik (Strażnik Topieli) | 120 s | 30 s |
+| Odstęp potworów na pętli | 25 st | 12 st |
+| Czekanie po walce obejrzanej przy ×4 (także przegranej) | do końca czasu walki ×1 | brak (blokada ÷ 4 mija przed końcem pokazu) |
+| Potwór po przegranej zajęty | czas walki ×1 + 1 s | ÷ 4 + 1 s (rewanż od razu po obejrzeniu) |
+
+**Zmierzone w grze 19.11.2026** (`testy/proba_play.py`, punkty BD1–BD5 ze wspólnego
+`swiat/las_pas_gra/testy/pomoc_d107.py`):
+
+| Co | Wynik |
+|---|---|
+| Liczba potworów (BD1) | 14 przy jednym graczu; po „graczy = 20” 26 po 3,1 s |
+| Odradzanie (BD2) | zwykły 2,8 s (2 s + pętla odradzania co 1 s), rzadki 20,9 s, strażnik 31,0 s |
+| Koszt przy pełnym zestawie (BD3; 8 Kłodokłapów, 26 potworów) | klatka śr. 16,7 ms, p95 17,9 ms, maks. 22,7 ms; 12 widoków, 1200 brył (budżet 4000); pętla ruchu serwera śr. 0,18 ms |
+| Przegrana ze strażnikiem obejrzana przy ×4 (BD4) | pokaz 12,6 s; po zamknięciu wyniku bez blokady, strażnik wolny, rewanż ruszył 1,3 s po podejściu, bez odmowy |
+| Pominięta walka (BD5) | od E do przycisku POMIŃ 0,36 s, spacja → wynik 0,02 s, zamknięcie → pas 0,00 s (bez czasu reakcji człowieka) |
+| Reszta listy biomu | B00–B14: 15 × OK, B13 „?” (koszt ocenia człowiek: klatka śr. 16,7 ms w Kępach), konsola bez błędów |
+
+Pełna lista zdjętych czekań, rachunek „samotny gracz nigdy nie czeka”, zmiany po próbach i **wybory do oceny** są w
+`swiat/las_pas_gra/README.md`, rozdz. „D-107 — walka bez przestojów”. Budżet brył klienta, który w lesie ograniczył
+liczbę wilków, tutaj nie przeszkadza (potwory Bagna mają po 89–177 brył).
+
+Testy bez Studio: `python -B swiat/bagno_pas_gra/testy/test_bagna.py` (liczby D-107 w teście 1c) i
+`python -B swiat/las_pas_gra/testy/test_bez_przestojow.py` (trzy biomy naraz). Same punkty D-107 w grze (ok. 2,5 min):
+`python -B swiat/las_pas_gra/testy/proba_d107.py <folder poza repo> bagno`.

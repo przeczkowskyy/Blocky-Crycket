@@ -1,0 +1,896 @@
+{
+ "opis": "Pet Arena (D-118). Etap 1 rdzeń, etap 2 jajka/wydarzenia/trener/zapis, v2 (21.11, po uwagach Karola): arena 2 × większa, pety różnej wielkości według wagi, fizyka zderzeń i lotu, koloseum, wzgórze króla. Jedyne źródło liczb; dane.py robi z nich zrodla/DanePetArena.luau. Układ: środek areny w (0, 0, 0), podłoga areny y = 0.",
+ "kontener": "PetArenaGra",
+ "prefiks": "[PetArena] ",
+ "wylacznik": "PetArenaWlaczony",
+ "folder_wzorcow_rs": "PetArenaWzorce",
+ "limit_zrodla": 190000,
+ "scena": {
+  "opis": "v2: jasne koloseum. Arena (podłoga) r = arena_r; za krawędzią strefa wybicia (piasek niżej) do mur_r[0]; mur areny do mur_r[1] (wierzch mur_y) z lożami graczy i paleniskami; trybuny z kibicami od mur_r[1] do trybuna_r (stopnie); mur zewnętrzny z blankami i proporcami; brama bossa w murze (kąt brama_kat_st). Wzgórze króla: trzy okrągłe stopnie ze strefami złota. v2b (21.11 wieczór): arena r 40 (ok. 2,8 × pow. etapu 1) — przy najwyżej 6 petach r 48 wyglądało pusto i wymagało długich dojść.",
+  "arena_r": 40,
+  "arena_grubosc": 4,
+  "krawedz_pasow": 56,
+  "segmenty": 56,
+  "drzewa": 0,
+  "sloty": 8,
+  "slot_r": 51.5,
+  "jajka_r": 51.5,
+  "jajka_kat_st": 112.5,
+  "mata_kat_st": 7,
+  "swiatlo": {
+   "ClockTime": 13.2,
+   "Brightness": 3.0,
+   "Ambient": "8A8494",
+   "OutdoorAmbient": "B8B0C8",
+   "GlobalShadows": true,
+   "EnvironmentDiffuseScale": 0.7,
+   "EnvironmentSpecularScale": 0.3
+  },
+  "atmosfera": {
+   "Density": 0.18,
+   "Offset": 0.05,
+   "Color": "D8E8FF",
+   "Decay": "A8C0E8",
+   "Glare": 0.05,
+   "Haze": 0.8
+  },
+  "mata_r": 51.5,
+  "strefa_wybicia_y": -1.5,
+  "mur_r": [
+   50,
+   53
+  ],
+  "mur_y": 8,
+  "trybuna_r": 68,
+  "trybuna_stopnie": 5,
+  "mur_zewn_y": 28,
+  "slot_kat0_st": 22.5,
+  "brama_kat_st": 180,
+  "brama_szer": 26,
+  "brama_wys": 24,
+  "kibicow": 120,
+  "proporcow": 32,
+  "palenisk": 8
+ },
+ "strefy": [
+  {
+   "id": "szczyt",
+   "nazwa": "GOLDEN THRONE",
+   "r": 4.6,
+   "mnoznik": 5,
+   "kolor": "FFC83D",
+   "wysokosc": 4.2,
+   "material": "Foil"
+  },
+  {
+   "id": "stopien2",
+   "nazwa": "x2 STEP",
+   "r": 10,
+   "mnoznik": 2,
+   "kolor": "4F7CE0",
+   "wysokosc": 2.8,
+   "material": "Marble"
+  },
+  {
+   "id": "stopien1",
+   "nazwa": "x1 STEP",
+   "r": 18,
+   "mnoznik": 1,
+   "kolor": "E07A4B",
+   "wysokosc": 1.4,
+   "material": "Slate"
+  }
+ ],
+ "kamera": {
+  "opis": "dwa widoki: CAŁOŚĆ — stała kamera za lożą gracza (nachylenie, odległość, cel), cała arena w pasie ekranu; PET — kamera płynnie za własnym petem (odległość = za_petem × wysokość peta, pet ok. 90–120 pt na telefonie); przy wielkim wybiciu krótko za lecącym petem. Przycisk VIEW przełącza.",
+  "fov": 45,
+  "nachylenie_st": 42,
+  "odleglosc": 72,
+  "cel_z": 16,
+  "pas_ekranu": [
+   0.08,
+   0.92
+  ],
+  "za_petem": 3.7,
+  "za_petem_nachylenie_st": 34,
+  "gladkosc": 4.0,
+  "lot_s": 1.4
+ },
+ "walka": {
+  "opis": "walka liczona na serwerze w 2D stałym krokiem krok_s. Odrzut: v0 = siła × (1 + wspolczynnik_odrzutu × ubytek życia) / waga (ubytek 0 przy pełnym życiu, 1 przy zerze), potem tarcie: v × (1 − tarcie × krok) co krok. Pet idzie do środka, a gdy wróg jest w zasieg_widzenia — do najbliższego; bije, gdy stoi w zasięgu (promienie + zasieg_ciosu). RING OUT: środek peta za arena_r; KO: życie 0. Wybicie zalicza się ostatniemu, kto trafił w ciągu ostatni_cios_s. v2: masa (waga) dzieli odrzut i decyduje o przepychaniu; zderzenie ślizgającego się peta z innym przekazuje pęd (odbicie sprężyste, współczynnik odbicie) i zaliczenie wybicia; krytyk, cios kończący i odrzut ≥ wybicie_v wyrzucają peta w powietrze (vy = lot_vy_x × v, najwyżej lot_vy_maks; grawitacja; w powietrzu bez tarcia i chodzenia, opór_powietrza); za krawędzią — RING OUT (lot ponad trybuny rysuje klient).",
+  "krok_s": 0.05,
+  "tarcie": 5.5,
+  "wspolczynnik_odrzutu": 1.6,
+  "zasieg_ciosu": 1.5,
+  "zasieg_widzenia": 20,
+  "oszolomienie_s_na_odrzut": 0.012,
+  "oszolomienie_maks_s": 0.6,
+  "krytyk_szansa": 0.1,
+  "krytyk_obrazenia": 1.5,
+  "krytyk_odrzut": 1.6,
+  "rozrzut_st": 14,
+  "ostatni_cios_s": 4,
+  "lod_tarcie": 0.25,
+  "ladowanie_r": 6,
+  "ladowanie_sila": 20,
+  "stan_co_s": 0.066,
+  "grawitacja": 70,
+  "wybicie_v": 40,
+  "lot_vy_x": 0.55,
+  "lot_vy_maks": 45,
+  "odbicie": 0.6,
+  "opor_powietrza": 0.4
+ },
+ "rzut": {
+  "opis": "rzut z ręki gracza w wybrane miejsce areny: lot po łuku czas_s + na_stud × odległość, wysokość łuku. Serwer sprawdza: cel na arenie (≤ arena_r − margines), najwyżej limit_areny petów naraz, jeden pet gracza naraz, pet nie odpoczywa, wiadro tempa akcji.",
+  "czas_s": 0.75,
+  "na_stud": 0.006,
+  "wysokosc": 14,
+  "margines": 2.5,
+  "limit_areny": 6,
+  "wiadro_na_s": 3,
+  "wiadro_zapas": 4
+ },
+ "zloto": {
+  "opis": "co sekundę pet gracza na arenie daje baza × mnożnik strefy × stopień peta; premia za wybicie: premia_wybicia × stopień ofiary (dziki pet: premia_dzikiego × stopień).",
+  "baza": 1,
+  "premia_wybicia": 15,
+  "premia_dzikiego": 10
+ },
+ "nagroda": {
+  "opis": "król środka: pet najdłużej w złotym środku (co najmniej korona_po_s). Nosi koronę i nagrodę: start + na_s co sekundę; wybicie króla (RING OUT albo KO) daje nagrodę temu, kto zalicza wybicie. Pet poza środkiem dłużej niż zgubiona_po_s traci koronę i nagrodę.",
+  "korona_po_s": 1.5,
+  "start": 10,
+  "na_s": 3,
+  "zgubiona_po_s": 1.5
+ },
+ "umiejetnosc": {
+  "opis": "pasek 0–1: ładuje się z czasem (na_s), za każdy zadany cios (za_cios) i przyjęty (za_trafienie); pełny — przycisk ABILITY. Pet ogłuszony albo zamrożony nie może jej użyć.",
+  "na_s": 0.06,
+  "za_cios": 0.06,
+  "za_trafienie": 0.04
+ },
+ "odpoczynek_s": 30,
+ "boty": {
+  "opis": "dzikie pety dopełniają arenę do do_ilu petów (najwyżej maks), po jednym co co_s; stopnie losowane z wagi_stopni; umiejętność używają, gdy pełna i wróg w zasięgu, albo po czekaj_s; życie × zycie_x.",
+  "do_ilu": 4,
+  "maks": 4,
+  "co_s": 2.2,
+  "pierwszy_s": 1.0,
+  "wagi_stopni": [
+   50,
+   30,
+   14,
+   5,
+   1
+  ],
+  "czekaj_s": [
+   1.0,
+   4.0
+  ],
+  "zycie_x": 0.9
+ },
+ "gracz": {
+  "opis": "dwa pety startowe; drużyna do 3 (wybór w oknie PETS); pierwsze jajko darmowe (drugi krok samouczka). Profil w magazynie (zapis).",
+  "pety_startowe": [
+   "lesny_slime",
+   "zoledziak"
+  ],
+  "pet_probny": false,
+  "druzyna_maks": 3,
+  "wersja_profilu": 3,
+  "kolory_slotow": [
+   "FF5A5A",
+   "4DA6FF",
+   "6BD66B",
+   "FFB13D",
+   "C27BFF",
+   "FF7FC8",
+   "3DE0D0",
+   "E0E05A"
+  ]
+ },
+ "klasy_wagi": {
+  "opis": "v2: wielkość według wagi (lekki 1, średni 1,6, ciężki 2,4): wysokość modelu, promień ciała (promien_baza × rozmiar), zasięg ciosu i prędkość rosną z wielkością; masa dzieli odrzut i decyduje o przepychaniu. Stopień: × (1 + na_stopien × (stopień − 1)).",
+  "lekki": {
+   "waga": 1.0,
+   "rozmiar": 1.0,
+   "zycie": 100,
+   "obrazenia": 4.5,
+   "odrzut": 13,
+   "predkosc": 11.0,
+   "przerwa_s": 0.85,
+   "wysokosc": 6.0
+  },
+  "sredni": {
+   "waga": 1.8,
+   "rozmiar": 1.6,
+   "zycie": 130,
+   "obrazenia": 6.0,
+   "odrzut": 18,
+   "predkosc": 13.0,
+   "przerwa_s": 1.0,
+   "wysokosc": 9.6
+  },
+  "ciezki": {
+   "waga": 3.0,
+   "rozmiar": 2.4,
+   "zycie": 170,
+   "obrazenia": 8.0,
+   "odrzut": 26,
+   "predkosc": 15.0,
+   "przerwa_s": 1.2,
+   "wysokosc": 14.4
+  },
+  "na_stopien": {
+   "zycie": 0.2,
+   "obrazenia": 0.15,
+   "odrzut": 0.06
+  },
+  "promien_baza": 2.0
+ },
+ "rzadkosci": [
+  {
+   "nazwa": "Common",
+   "kolor": "B8C2CC"
+  },
+  {
+   "nazwa": "Uncommon",
+   "kolor": "6BD66B"
+  },
+  {
+   "nazwa": "Rare",
+   "kolor": "4FB3FF"
+  },
+  {
+   "nazwa": "Epic",
+   "kolor": "C27BFF"
+  },
+  {
+   "nazwa": "Legendary",
+   "kolor": "FFC23D"
+  }
+ ],
+ "pety": [
+  {
+   "id": "lesny_slime",
+   "nazwa": "Slime",
+   "stopien": 1,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "rykoszet",
+    "nazwa": "BOUNCE",
+    "celow": 3,
+    "zasieg": 19.2,
+    "sila": 28.8,
+    "obrazenia": 8
+   }
+  },
+  {
+   "id": "zoledziak",
+   "nazwa": "Acornling",
+   "stopien": 1,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "szarza",
+    "nazwa": "HEADBUTT",
+    "dlugosc": 16.0,
+    "predkosc": 45,
+    "sila": 46.4,
+    "obrazenia": 12,
+    "przebija": false
+   }
+  },
+  {
+   "id": "rechotek",
+   "nazwa": "Croaker",
+   "stopien": 1,
+   "waga": "sredni",
+   "umiejetnosc": {
+    "typ": "jezyk",
+    "nazwa": "TONGUE",
+    "zasieg": 20.8,
+    "sila": 35.2,
+    "obrazenia": 8
+   }
+  },
+  {
+   "id": "muchomornik",
+   "nazwa": "Shroomling",
+   "stopien": 2,
+   "waga": "sredni",
+   "umiejetnosc": {
+    "typ": "ogluszenie",
+    "nazwa": "SPORE CLOUD",
+    "r": 12.0,
+    "czas": 1.5,
+    "obrazenia": 5
+   }
+  },
+  {
+   "id": "mchowy_slimak",
+   "nazwa": "Moss Snail",
+   "stopien": 2,
+   "waga": "ciezki",
+   "umiejetnosc": {
+    "typ": "skorupa",
+    "nazwa": "SHELL",
+    "czas": 3,
+    "sila": 30.4
+   }
+  },
+  {
+   "id": "lisciolis",
+   "nazwa": "Leaf Fox",
+   "stopien": 2,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "szarza",
+    "nazwa": "DASH",
+    "dlugosc": 35.2,
+    "predkosc": 60,
+    "sila": 30.4,
+    "obrazenia": 9,
+    "przebija": true
+   }
+  },
+  {
+   "id": "cierniowy_wilk",
+   "nazwa": "Thorn Wolf",
+   "stopien": 3,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "skok",
+    "nazwa": "POUNCE",
+    "cel": "krol",
+    "czas": 0.7,
+    "wysokosc": 8,
+    "r": 7.2,
+    "sila": 43.2,
+    "obrazenia": 16
+   }
+  },
+  {
+   "id": "ognik",
+   "nazwa": "Wisp",
+   "stopien": 3,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "podpalenie",
+    "nazwa": "BURN",
+    "zasieg": 16.0,
+    "kat_st": 80,
+    "czas": 4,
+    "na_s": 6,
+    "sila": 16.0
+   }
+  },
+  {
+   "id": "wazeczka",
+   "nazwa": "Dragonfly",
+   "stopien": 3,
+   "waga": "lekki",
+   "umiejetnosc": {
+    "typ": "zamrozenie",
+    "nazwa": "FREEZE",
+    "zasieg": 22.4,
+    "czas": 2.2,
+    "obrazenia": 6
+   }
+  },
+  {
+   "id": "lesny_troll",
+   "nazwa": "Forest Troll",
+   "stopien": 4,
+   "waga": "ciezki",
+   "umiejetnosc": {
+    "typ": "fala",
+    "nazwa": "GROUND SLAM",
+    "r": 14.4,
+    "sila": 41.6,
+    "obrazenia": 12
+   }
+  },
+  {
+   "id": "pancernik_ruin",
+   "nazwa": "Ruin Armadillo",
+   "stopien": 4,
+   "waga": "ciezki",
+   "umiejetnosc": {
+    "typ": "szarza",
+    "nazwa": "ROLL",
+    "dlugosc": 64.0,
+    "predkosc": 42,
+    "sila": 38.4,
+    "obrazenia": 12,
+    "przebija": true
+   }
+  },
+  {
+   "id": "ropucha_z_chatka",
+   "nazwa": "Hut Toad",
+   "stopien": 5,
+   "waga": "ciezki",
+   "umiejetnosc": {
+    "typ": "skok",
+    "nazwa": "SKY DIVE",
+    "cel": "tlum",
+    "czas": 1.6,
+    "wysokosc": 30,
+    "r": 17.6,
+    "sila": 51.2,
+    "obrazenia": 18
+   }
+  }
+ ],
+ "ui": {
+  "opis": "teksty po angielsku (D-045); liczby jak w angielskim (1.2K).",
+  "zloto": "GOLD",
+  "na_s": "+%s G/s",
+  "umiejetnosc": "ABILITY",
+  "podpowiedz_dotyk": "Tap the arena to throw your pet!",
+  "podpowiedz_mysz": "Click the arena to throw your pet!",
+  "podpowiedz_pad": "Aim with the stick, press A to throw!",
+  "podpowiedz_umiejetnosc": "Ability ready — tap ABILITY!",
+  "nastepny": "Next pet ready in %ds",
+  "ring_out": "RING OUT!",
+  "ko": "KO!",
+  "krol": "KING!",
+  "nowy_krol": "NEW KING!",
+  "nagroda": "BOUNTY",
+  "pelna": "ARENA FULL!",
+  "poza": "Throw inside the arena!",
+  "odpoczywa": "RESTING",
+  "na_arenie": "IN ARENA",
+  "gotowy": "READY",
+  "probny": "TRIAL",
+  "dziki": "WILD",
+  "ty": "YOU",
+  "kryt": "CRIT!",
+  "slowa": [
+   "POW!",
+   "WHAM!",
+   "BAM!",
+   "BONK!",
+   "SMACK!"
+  ],
+  "plusk": "SPLASH!",
+  "gracz_proby": "Player %d",
+  "czcionka": "LuckiestGuy",
+  "czcionka_cyfr": "FredokaOne",
+  "makiety": {
+   "jajka": "EGGS — COMING SOON",
+   "mata": "TRAINING MAT — SOON"
+  },
+  "kolory": {
+   "zloto": "FFC83D",
+   "tusz": "1B1424",
+   "papier": "FFF6E0",
+   "przycisk": "FF4D4D",
+   "przycisk_cien": "A3202A",
+   "zycie": "5BE35B",
+   "zycie_nisko": "FF4D4D",
+   "pasek": "4FB3FF",
+   "dziki": "9AA39A",
+   "ty": "FFF35A",
+   "tarcza": "6FC8FF"
+  },
+  "jajka_przycisk": "EGGS",
+  "pety_przycisk": "PETS",
+  "trening": "TRAIN",
+  "trening_wl": "TRAINING",
+  "darmowe": "FREE",
+  "wyklij": "HATCH",
+  "nowy_pet": "NEW PET!",
+  "gwiazdka": "+1 STAR!",
+  "maks_gwiazdek": "MAX STARS! +%s G",
+  "za_malo": "NOT ENOUGH GOLD",
+  "podpowiedz_jajko": "Hatch your free egg!",
+  "druzyna": "TEAM",
+  "kolekcja": "COLLECTION",
+  "ksiega": "INDEX",
+  "ksiega_licznik": "INDEX %d/%d",
+  "w_druzynie": "IN TEAM",
+  "szanse": "CHANCES",
+  "zamknij": "X",
+  "poziom": "LV %d",
+  "boss_za": "BOSS IN %s",
+  "zloty_za": "GOLDEN BOSS IN %s",
+  "boss": "BOSS!",
+  "boss_pokonany": "BOSS DEFEATED! +%s G",
+  "boss_uciekl": "THE BOSS ESCAPED!",
+  "zloty": "GOLDEN BOSS!",
+  "zloty_uciekl": "THE GOLDEN BOSS ESCAPED!",
+  "ogl_legendarny": "%s hatched a %s %s!",
+  "ogl_krol": "%s took the king's bounty: %s G!",
+  "ogl_boss": "%s defeated! Gold for everyone who hit it!",
+  "tarcza": "SHIELD",
+  "wybierz_slot": "Pick a pet for slot %d",
+  "pad": {
+   "rzut": "A",
+   "umiejetnosc": "X",
+   "pety": "Y",
+   "jajka": "UP",
+   "zamknij": "B",
+   "druzyna": "LB RB",
+   "trening": "DOWN"
+  },
+  "boss_pokonany_bez": "BOSS DEFEATED!",
+  "widok": "VIEW",
+  "boss_idzie": "BOSS IS COMING!",
+  "auto": "AUTO",
+  "podpowiedz_ruch_dotyk": "Want to steer? Hold the left side of the screen!",
+  "podpowiedz_ruch_mysz": "WASD or arrows: move your pet!",
+  "podpowiedz_ruch_pad": "Left stick: move your pet!",
+  "tytul_gry": "THROW & CATCH MONSTERS",
+  "zlapany": "CAUGHT!",
+  "uciekl": "ESCAPED!",
+  "podpowiedz_lap": "Knock out wild monsters to catch them!",
+  "ogl_zlapal": "%s caught a %s%s!",
+  "alfa": "ALPHA",
+  "alfa_idzie": "ALPHA MONSTER!",
+  "ogl_alfa": "ALPHA %s is here! Last hit catches it!",
+  "nastepne": "NEXT: %s in %s",
+  "nazwy_wydarzen": {
+   "boss": "BOSS",
+   "zloty": "GOLDEN BOSS",
+   "alfa": "ALPHA"
+  },
+  "nowy_potwor": "NEW MONSTER in %d days",
+  "nowy_potwor_jutro": "NEW MONSTER tomorrow!",
+  "jajko_gotowe": "YOUR EGG IS READY!",
+  "wylegarnia": "INCUBATOR",
+  "pusto": "EMPTY",
+  "przyspiesz": "SPEED UP %s G",
+  "wyklij_teraz": "HATCH!",
+  "kup": "BUY",
+  "do_wylegarni": "EGG IN INCUBATOR — ready in %s",
+  "wylegarnia_pelna": "INCUBATOR FULL",
+  "prezent": "GIFT",
+  "prezent_tytul": "DAILY GIFT",
+  "prezent_dzien": "DAY %d",
+  "odbierz": "CLAIM",
+  "jutro": "Tomorrow: %s",
+  "nagroda_zloto": "+%s G",
+  "szanse_lapania": "CATCH",
+  "szanse_odmian": "VARIANTS"
+ },
+ "dzwieki": {
+  "opis": "odcinki arkusza efektów (ten sam arkusz co BONK: swiat/dzwiek_gra/identyfikatory.json, assets/audio/arkusz/sfx_arkusz_a.json); bez muzyki w etapie 1",
+  "cios": "sfx_cios_trafiony",
+  "kryt": "sfx_cios_krytyczny",
+  "monety": "sfx_monety",
+  "plusk": "sfx_galareta_plusk",
+  "klik": "sfx_klik_przycisk",
+  "umiejetnosc": "sfx_zarodniki",
+  "krol": "sfx_fanfara_zwyciestwa",
+  "ko": "sfx_awans_poziom",
+  "glosnosc": {
+   "cios": 0.45,
+   "kryt": 0.7,
+   "monety": 0.4,
+   "plusk": 0.6,
+   "klik": 0.4,
+   "umiejetnosc": 0.6,
+   "krol": 0.5,
+   "ko": 0.55,
+   "trzesienie": 0.5,
+   "wyklucie": 0.7,
+   "boss": 0.6,
+   "zakup": 0.6
+  },
+  "trzesienie": "sfx_zarodniki",
+  "wyklucie": "sfx_awans_poziom",
+  "boss": "sfx_ryk_kolos",
+  "zakup": "sfx_monety",
+  "zlapanie": "sfx_fanfara_zwyciestwa"
+ },
+ "odpoczynek_opis": "odpoczynek peta po RING OUT / KO: 30 s (decyzja projektanta etapu 2 na podstawie symulacji: przy 60 s gracz 40 % czasu nie ma kogo rzucić); Karol mówił o ok. minucie — do sprawdzenia graniem",
+ "gwiazdki": {
+  "opis": "kopia peta z jajka = gwiazdka (najwyżej maks); każda gwiazdka ponad pierwszą: + na_gwiazdke życia i siły (obrażenia i odrzut ciosu); kopia przy maks — zwrot ułamka ceny jajka w złocie",
+  "maks": 5,
+  "na_gwiazdke": 0.08,
+  "zwrot_przy_maks": 0.3
+ },
+ "jajka": [
+  {
+   "nazwa": "FOREST EGG",
+   "model": "jajko_lesne",
+   "cena": 360,
+   "szanse": [
+    0.58,
+    0.3,
+    0.11,
+    0.01,
+    0.0
+   ],
+   "kolor": "6BD66B"
+  },
+  {
+   "nazwa": "SWAMP EGG",
+   "model": "jajko_bagienne",
+   "cena": 2000,
+   "szanse": [
+    0.2,
+    0.42,
+    0.3,
+    0.075,
+    0.005
+   ],
+   "kolor": "4FB3FF"
+  },
+  {
+   "nazwa": "RUIN EGG",
+   "model": "jajko_dzungli",
+   "cena": 8000,
+   "szanse": [
+    0.0,
+    0.28,
+    0.42,
+    0.25,
+    0.05
+   ],
+   "kolor": "C27BFF"
+  }
+ ],
+ "jajka_opis": "trzy stopnie, stała cena, jawne szanse na rzadkość (pet losowany równo w rzadkości), tylko za złoto z gry (D-086, D-015, D-105); pierwsze jajko (stopień 1) darmowe w samouczku; tempo: tempo.py. Ceny i szanse z rachunku tempo.py: pierwsze kupione jajko ok. 2 min, pierwszy Rare do ok. 10 min, pierwszy Epic ok. 30 min (samotny gracz).",
+ "tarcza": {
+  "opis": "tarcza słabszego: pet o co najmniej roznica stopni silniejszy zadaje słabszemu mnoznik obrażeń i odrzutu (boss i złoty pet bez tarczy)",
+  "roznica": 2,
+  "mnoznik": 0.35
+ },
+ "trener": {
+  "opis": "poziom gracza z doświadczenia: za sekundę peta na arenie, za wybicie, za udział w bossie, za stanie na macie (TRAIN — awatar ćwiczy). Poziom n wymaga baza × n^wykladnik doświadczenia; każdy poziom ponad 1: + na_poziom życia i siły wszystkich petów.",
+  "baza": 60,
+  "wykladnik": 1.45,
+  "na_poziom": 0.03,
+  "za_s_na_arenie": 1,
+  "za_wybicie": 12,
+  "za_bossa": 40,
+  "mata_na_s": 0.6,
+  "maks_poziom": 50
+ },
+ "wydarzenia": {
+  "opis": "wydarzenia serwera na zmianę (boss, złoty pet) co co_s; pierwsze po pierwsze_s; zapowiedź z odliczaniem u góry przez zapowiedz_s",
+  "pierwsze_s": 90,
+  "co_s": 150,
+  "zapowiedz_s": 30,
+  "kolejnosc": [
+   "zloty",
+   "boss"
+  ]
+ },
+ "boss": {
+  "opis": "BOSS: Strażnik z BONK wchodzi bramą (wejście wejscie_s) i staje w środku; życie zycie + na_gracza × gracze; co fala_co_s fala odrzutu; po czas_s ucieka. Wybicie: pula złota według udziału w obrażeniach (co najmniej minimum). Wydarzenie złote: ten sam boss cały złoty i lśniący — każdy cios peta gracza = złoto (zloty.za_cios × stopień), pokonanie: premia zloty.premia każdemu, kto trafił, plus pula.",
+  "modele": [
+   {
+    "model": "straznik_topieli",
+    "nazwa": "MIRE GUARDIAN"
+   },
+   {
+    "model": "waz_stu_lian",
+    "nazwa": "VINE SERPENT"
+   }
+  ],
+  "wysokosc": 24,
+  "promien": 8,
+  "zycie": 1400,
+  "na_gracza": 500,
+  "waga": 20,
+  "fala_co_s": 3.2,
+  "fala_r": 17,
+  "fala_sila": 32,
+  "fala_obrazenia": 9,
+  "czas_s": 70,
+  "pula": 400,
+  "minimum": 80,
+  "stopien": 5,
+  "wejscie_s": 2.6
+ },
+ "zloty": {
+  "opis": "wydarzenie złote = złoty boss (patrz boss); za_cios × stopień atakującego za każdy cios, premia za pokonanie",
+  "za_cios": 6,
+  "premia": 150,
+  "kolor": "FFC83D",
+  "nazwa": "GOLDEN BOSS"
+ },
+ "zapis": {
+  "opis": "własny magazyn (DataStore); w próbie (znacznik ZapisProbaDo z tools/zapis_prob.py) magazyn nieczytany — gracz w pamięci; bez udanego wczytania nie zapisujemy; zapis przy wyjściu i co co_s",
+  "magazyn": "PetArena_Gracz_v1",
+  "przyrostek_studio": "_Studio",
+  "przyrostek_proby": "_Proba",
+  "znacznik_proby": "ZapisProbaDo",
+  "znacznik_magazynu": "ZapisProbaMagazyn",
+  "proby": 3,
+  "co_s": 60
+ },
+ "tablice": {
+  "opis": "tablice na ścianie dołu; trzy wyników (wiersze uzupełnia serwer co co_s) i v3: CATCH CHANCES (szanse złapania i odmian)",
+  "tytuly": [
+   "TOP GOLD/S",
+   "LONGEST KING",
+   "KNOCKOUTS",
+   "CATCH CHANCES"
+  ],
+  "katy_st": [
+   150,
+   270,
+   30,
+   90
+  ],
+  "wierszy": 6,
+  "co_s": 2,
+  "szer": 13,
+  "wys": 8.5,
+  "r": 31.6,
+  "y": 3.5
+ },
+ "pokazanie": {
+  "opis": "komunikaty serwera: legendarny lub epicki pet z jajka, wybicie króla z nagrodą od nagroda_ogloszenie, boss pokonany",
+  "nagroda_ogloszenie": 40
+ },
+ "strefy_opis": "wzgórze króla: trzy okrągłe stopnie (wysokość tylko w obrazie); złoty szczyt (tron) mieści jednego peta — x5 dostaje tylko pet najbliżej środka, pozostali na szczycie liczą się jak x2; drugi stopień mieści 2–3 pety; poza wzgórzem bez złota",
+ "sterowanie": {
+  "opis": "gracz kieruje ruchem swojego peta (drążek / WASD / gałka): wektor kierunku o długości ≤ 1 (świat, x/z); cios automatyczny (najbliższy w zasięgu); bez dotknięcia sterowania przez autopilot_s — pet walczy sam (obecna logika); umiejętności kierunkowe w stronę ruchu lub patrzenia (skok: skok_dystans przed petem); serwer sprawdza wartości i tempo (wiadro ruchu)",
+  "autopilot_s": 2.5,
+  "martwa_strefa": 0.15,
+  "wiadro_na_s": 20,
+  "wiadro_zapas": 10,
+  "skok_dystans": 18,
+  "wysylanie_s": 0.1
+ },
+ "dzikie": {
+  "opis": "v3 (Throw & Catch): dzikie potwory to osobny rodzaj — losowane z tabeli (waga = jak często wchodzą bramą); rzadsze są większe (rozmiar_rzadkosci) i mają krążek w kolorze rzadkości. Dopełniają arenę jak boty (boty.do_ilu, boty.maks).",
+  "tabela": {
+   "lesny_slime": 30,
+   "zoledziak": 30,
+   "rechotek": 26,
+   "muchomornik": 16,
+   "mchowy_slimak": 14,
+   "lisciolis": 14,
+   "cierniowy_wilk": 6,
+   "ognik": 6,
+   "wazeczka": 6,
+   "lesny_troll": 2,
+   "pancernik_ruin": 2,
+   "ropucha_z_chatka": 0.6
+  },
+  "rozmiar_rzadkosci": [
+   1.0,
+   1.08,
+   1.18,
+   1.3,
+   1.45
+  ]
+ },
+ "lapanie": {
+  "opis": "„Wybijesz, to zabierasz”: cios kończący (RING OUT albo KO) peta gracza w dzikiego = losowanie złapania z jawną szansą według rzadkości; litość: każda nieudana próba danej rzadkości dodaje litosc_krok (do maks), udane zeruje; pierwsze wybicie dzikiego u nowego gracza = pewne złapanie. Nieudane: ESCAPED! i złoto (ucieczka_zloto × stopień). Asysty (inni gracze, którzy trafili dzikiego): asysta_zloto × stopień. Kopia złapanego = gwiazdka (przy maks zwrot cena_zwrotu × stopień × zwrot_przy_maks).",
+  "szanse": [
+   0.35,
+   0.22,
+   0.12,
+   0.06,
+   0.03
+  ],
+  "litosc_krok": 0.03,
+  "maks": 0.9,
+  "asysta_zloto": 8,
+  "ucieczka_zloto": 6,
+  "cena_zwrotu": 300,
+  "ogloszenie_od_stopnia": 3
+ },
+ "odmiany": {
+  "opis": "odmiana złapanego albo wyklutego peta (widoczna dla wszystkich, w kolekcji i nad petem); losowanie po kolei z listy (rzadsze najpierw). Rozmiar i siła mnożą peta na arenie, zloto mnoży złoto na sekundę. Gdy gracz ma kilka odmian tego samego peta, rozmiar i siła z największej, złoto z GOLDEN. Ogłoszenie na serwerze: każda odmiana z ogloszenie = true.",
+  "lista": [
+   {
+    "id": "giant",
+    "nazwa": "GIANT",
+    "szansa": 0.005,
+    "rozmiar": 1.6,
+    "sila": 1.3,
+    "zloto": 1.0,
+    "kolor": "FF5AD8",
+    "flaga": 16,
+    "ogloszenie": true
+   },
+   {
+    "id": "golden",
+    "nazwa": "GOLDEN",
+    "szansa": 0.03,
+    "rozmiar": 1.0,
+    "sila": 1.0,
+    "zloto": 1.5,
+    "kolor": "FFC83D",
+    "flaga": 32,
+    "ogloszenie": true
+   },
+   {
+    "id": "big",
+    "nazwa": "BIG",
+    "szansa": 0.08,
+    "rozmiar": 1.25,
+    "sila": 1.15,
+    "zloto": 1.0,
+    "kolor": "4FB3FF",
+    "flaga": 8,
+    "ogloszenie": false
+   }
+  ]
+ },
+ "alfa": {
+  "opis": "ALPHA: zapowiedziany rzadki dziki (rzadkość od rzadkosc_min) wchodzi bramą wg zegara wydarzeń; większy (rozmiar), życie × zycie_x; kto zada ostatni cios — złapanie z szansą + szansa_plus i co najmniej odmiana min_odmiana; złoto za wybicie i asysty.",
+  "rzadkosc_min": 3,
+  "rozmiar": 1.5,
+  "zycie_x": 3.0,
+  "sila": 1.25,
+  "szansa_plus": 0.2,
+  "min_odmiana": "big",
+  "zloto": 120,
+  "asysta": 30
+ },
+ "zegar": {
+  "opis": "„Jutro na arenie”: wydarzenia o stałych porach zegara serwera (UTC): reguła = co co_min minut, przesunięcie od_min; przy tej samej chwili wygrywa reguła wcześniej na liście. Panel NEXT od wejścia. tempo_prob — przyspieszenie zegara w próbach (haczyk).",
+  "reguly": [
+   {
+    "typ": "boss",
+    "co_min": 30,
+    "od_min": 0
+   },
+   {
+    "typ": "zloty",
+    "co_min": 15,
+    "od_min": 0
+   },
+   {
+    "typ": "alfa",
+    "co_min": 5,
+    "od_min": 2
+   }
+  ],
+  "tempo_prob": 30
+ },
+ "wylegarnia": {
+  "opis": "kupione jajko trafia do jednego z miejsca miejsc i wylęga się w czasie rzeczywistym (także poza grą): czas_s według jajka; pierwsze darmowe jajko od razu. Przyspieszenie tylko za złoto z gry: pozostałe sekundy × zl_na_s (zaokrąglone w górę).",
+  "miejsca": 2,
+  "czas_s": [
+   120,
+   1800,
+   14400
+  ],
+  "zl_na_s": [
+   1.5,
+   1.0,
+   0.6
+  ]
+ },
+ "prezent": {
+  "opis": "dzienny prezent (dzień = doba UTC); seria nie przepada (przerwa tylko wstrzymuje); nagrody po kolei w kółko: zloto albo jajko (nr jajka — wylęga się od razu). Przy odbiorze widać „Tomorrow: …”.",
+  "nagrody": [
+   {
+    "zloto": 200
+   },
+   {
+    "zloto": 400
+   },
+   {
+    "jajko": 1
+   },
+   {
+    "zloto": 800
+   },
+   {
+    "zloto": 1200
+   },
+   {
+    "jajko": 2
+   },
+   {
+    "zloto": 2000
+   }
+  ]
+ },
+ "nowy_potwor": {
+  "opis": "baner zapowiedzi „NEW MONSTER in N days” (data UTC, dzień ósmy od startu v3).",
+  "data": "2026-11-29"
+ }
+}

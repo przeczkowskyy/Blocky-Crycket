@@ -22,7 +22,10 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       stoiska) — porównanie z planem siatki (czasy_biegu.plan) i celami: sklepy ≤ 5 s, portal ≤ 6 s
   B04 E przy każdym sprzedawcy i bramie (prawdziwe E z klawiatury, postać na stoisku twarzą do podpowiedzi):
       serwer OstatnieE = <gracz>:<id>:<akcja>, klient: OknoMiejsca z właściwym id (słuchacz próby), sygnał HUD tam,
-      gdzie przypisany (karczma → Quests, sklepy → Shop, zagroda → Pets), dymek „… w budowie”, gdy nic się nie otworzyło
+      gdzie przypisany (karczma → Quests, sklepy → Shop, zagroda → Pets), dymek „… w budowie”, gdy nic się nie otworzyło;
+      zbrojownia (19.11.2026): gdy stoi Workspace/SklepProba — okno sklepu SklepProbaOkno i tylko ono (makieta „Shop”
+      schowana), bez dymku; bez SklepProba, ale z oknem zgłoszonym atrybutem OknoMiejsca.zbrojownia (ShopClient
+      w miejscu gry) — bez dymku i okno „Shop” na ekranie; bez żadnego okna — dymek
   B05 istniejące okna: które okna otworzyły się od razu (historia klienta „otwarto”) — dziś oczekiwane: żadne okno
       Pawła (Shop / Pets / Quests jeszcze nie istnieją), portal → TeleportChmury Trwa = true
   B06 kamera we wnętrzach: na stoisku karczmy, mistrza gier, maga, zbrojmistrza i trenera, kamera ustawiona za plecami
@@ -43,7 +46,8 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
   B12 niewidzialne ściany: przy każdym z 4 brzegów pola gry marsz 30 st na zewnątrz (Humanoid:MoveTo) i skoki —
       postać zostaje w polu gry (± 1,5 st) i nie spada (y > −5)
   B13 dymek wyłączany atrybutem: DymkiWylaczone = true → E przy zbrojowni bez dymku; BezDymku = "zbrojownia" — też;
-      po usunięciu atrybutów dymek wraca
+      po usunięciu atrybutów dymek wraca. Gdy zbrojownia ma zgłoszone okno (sklep albo ShopClient — dymku tam nigdy nie
+      ma), ten sam test idzie przy mistrzu gier (miejsce bez okna)
   B14 czas klatki: RenderStepped 8 s na starcie, w karczmie, przy zagrodzie i przy Bramie Leśnej (średnio, p95)
   B15 konsola: bez błędów z [MiasteczkoBazarGra] i bez „error” ze skryptów pakietu
   (ręcznie, poza skryptem: telefon w emulatorze Studio — przycisk E i czytelność dymków; dwóch graczy (Test →
@@ -247,6 +251,14 @@ def main():
             hist = kl.get("historia") or []
             return a.get("OstatnieE"), (hist[-1] if hist else {}), kl
 
+        def ekran_zbrojowni():
+            """Okna u klienta po E zbrojowni: okno sklepu zbrojmistrza (swiat/sklep_proba), makieta „Shop” (ShopClient)
+            i czy zbrojownia ma okno zgłoszone atrybutem zdarzenia OknoMiejsca (wtedy bazar nie pokazuje dymku)."""
+            return js('local pg = game:GetService("Players").LocalPlayer.PlayerGui local s = pg:FindFirstChild("Shop") '
+                      'local o = pg:FindFirstChild("SklepProbaOkno") local e = game:GetService("ReplicatedStorage"):FindFirstChild("OknoMiejsca") '
+                      'return H:JSONEncode({ sklep = o ~= nil and o.Enabled, shop = s ~= nil and s:IsA("ScreenGui") and s.Enabled, '
+                      'zgloszone = e ~= nil and e:GetAttribute("zbrojownia") == true })', "Client")
+
         def klatki(sekundy=8):
             return js('local RS = game:GetService("RunService") local t = {} local c = RS.RenderStepped:Connect(function(dt) '
                       'table.insert(t, dt) end) task.wait(%d) c:Disconnect() table.sort(t) local s = 0 for _, d in t do s += d end '
@@ -260,6 +272,7 @@ def main():
                                'return H:JSONEncode({ kontener = k ~= nil and k:GetAttribute("Wygenerowane") == true, '
                                'mapa = workspace:FindFirstChild("MiasteczkoBazar") ~= nil, '
                                'chmury = workspace:FindFirstChild("TeleportChmury") ~= nil, '
+                               'sklep = workspace:FindFirstChild("SklepProba") ~= nil, '
                                'las = workspace:FindFirstChild("LasPasGra") ~= nil, '
                                'stare = k and k:GetAttribute("PunktStaregoMiasteczka") and { k:GetAttribute("PunktStaregoMiasteczka").X, '
                                'k:GetAttribute("PunktStaregoMiasteczka").Z } or nil })', "Edit"))
@@ -365,13 +378,27 @@ def main():
                 okno = atrybuty(["ProbaOkno"], "Client").get("ProbaOkno")
                 okna[mid] = {"serwer": ost, "zdarzenie": okno, "klient": wpis, "dymki": kl.get("dymki")}
                 if mid == "zbrojownia":
+                    okna[mid]["ekran"] = ekran_zbrojowni()
                     zrzut("03_dymek_zbrojmistrz")
             zapisz("B04", okna)
             zle = [mid for mid, w in okna.items()
                    if not (str(w["serwer"]).endswith(":%s:okno" % mid) and w["zdarzenie"] == mid
                            and (w["klient"].get("hud") == M[mid].get("hud"))
-                           and (w["klient"].get("otwarto") or (w["dymki"] or {}).get(mid) == M[mid]["dymek"]))]
-            punkt("B04", not zle, "E → okno (serwer, OknoMiejsca, HUD, dymek) — niezgodne: %s" % zle)
+                           and (w["klient"].get("otwarto") or (w["dymki"] or {}).get(mid) == M[mid]["dymek"]))
+                   and mid != "zbrojownia"]
+            zb = okna.get("zbrojownia") or {}
+            ze = zb.get("ekran") or {}
+            dymek_zb = bool(zb.get("klient", {}).get("dymek"))
+            if edit.get("sklep"):          # okno sklepu zbrojmistrza (swiat/sklep_proba) — jedno okno, bez dymku
+                ok_zb, opis_zb = ze.get("sklep") is True and ze.get("shop") is not True and not dymek_zb, "okno sklepu"
+            elif ze.get("zgloszone"):      # inne okno zgłoszone atrybutem (ShopClient) — bez dymku, okno „Shop” na ekranie
+                ok_zb, opis_zb = ze.get("shop") is True and not dymek_zb, "okno zgłoszone (Shop)"
+            else:
+                ok_zb, opis_zb = (zb.get("dymki") or {}).get("zbrojownia") == M["zbrojownia"]["dymek"], "dymek"
+            if not (ok_zb and str(zb.get("serwer")).endswith(":zbrojownia:okno") and zb.get("zdarzenie") == "zbrojownia"):
+                zle.append("zbrojownia")
+            punkt("B04", not zle, "E → okno (serwer, OknoMiejsca, HUD, dymek) — niezgodne: %s; zbrojownia: oczekiwane %s, "
+                  "ekran %s, dymek %s" % (zle, opis_zb, ze, dymek_zb))
             otwarte = {mid: w["klient"].get("otwarto") for mid, w in okna.items() if w["klient"].get("otwarto")}
             ost, wpis, _ = e_w("portal_krain", 1.5)
             trwa = js('local t = workspace:FindFirstChild("TeleportChmury") return H:JSONEncode({ trwa = t and t:GetAttribute("Trwa") })', "Client")
@@ -592,16 +619,19 @@ def main():
 
             # ---------------------------------------------------------------- B13 dymek wyłączany atrybutem
             wyniki13 = {}
+            # zbrojownia ze zgłoszonym oknem (sklep albo ShopClient) dymku nie ma nigdy — wtedy miejsce bez okna
+            mid13 = "mistrz_gier" if ekran_zbrojowni().get("zgloszone") else "zbrojownia"
             for opis, kod in (("DymkiWylaczone", 'k:SetAttribute("DymkiWylaczone", true)'),
-                              ("BezDymku", 'k:SetAttribute("DymkiWylaczone", nil) k:SetAttribute("BezDymku", "karczma, zbrojownia")'),
+                              ("BezDymku", 'k:SetAttribute("DymkiWylaczone", nil) k:SetAttribute("BezDymku", "karczma, %s")' % mid13),
                               ("bez atrybutów", 'k:SetAttribute("DymkiWylaczone", nil) k:SetAttribute("BezDymku", nil)')):
                 luau(KP + kod + ' return "ok"', "Server")
                 time.sleep(4.0)  # poprzedni dymek gaśnie po D.czasy.dymek_s
-                _, wpis, kl = e_w("zbrojownia")
-                wyniki13[opis] = {"dymek": wpis.get("dymek"), "widoczny": (kl.get("dymki") or {}).get("zbrojownia")}
+                _, wpis, kl = e_w(mid13)
+                wyniki13[opis] = {"dymek": wpis.get("dymek"), "widoczny": (kl.get("dymki") or {}).get(mid13)}
+            wyniki13["miejsce"] = mid13
             zapisz("B13", wyniki13)
             punkt("B13", wyniki13["DymkiWylaczone"]["dymek"] is False and wyniki13["BezDymku"]["dymek"] is False
-                  and wyniki13["bez atrybutów"]["dymek"] is True, "dymek zbrojowni: %s" % wyniki13)
+                  and wyniki13["bez atrybutów"]["dymek"] is True, "dymek (%s): %s" % (mid13, wyniki13))
 
             # ---------------------------------------------------------------- B14 czas klatki
             kl14 = {}

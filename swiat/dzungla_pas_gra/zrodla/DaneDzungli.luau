@@ -11,7 +11,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "092da3ef25f9",
+	skrot = "5648a060af56",
 	mapa = {
 		nazwa = "DzunglaPas",
 		zrodlo = "znaczniki",

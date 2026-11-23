@@ -7,6 +7,11 @@
     python -B swiat/kowal_proba/dane.py            # zapisuje zrodla/DaneKowala.luau, zrodla/RigKowal.luau, kuznia/czesci.json
     python -B swiat/kowal_proba/dane.py --sprawdz  # tylko sprawdza, czy pliki są aktualne (kod 1, gdy nie)
 
+Przedmioty: dzisiejsze 18 (stopień startowy) ma liczby w ustawienia.json; 54 nowe przedmioty do kupienia (D-106)
+oraz ceny, wymagane poziomy i stopnie wszystkich 72 pochodzą z katalogu sklepu swiat/postacie/sklep_przedmioty.json
+(tylko odczyt). Łup z walk losuje wyłącznie z listy startowej klasy (klasy[k].przedmioty); klasy[k].wszystkie to
+wszystkie przedmioty klasy po stopniach i slotach.
+
 Co sprawdza (błąd = BladDanych, nic nie jest zapisywane): każdy CAŁY przedmiot bohatera z katalogu (zestawy rycerz,
 kot_mag, zwiadowca; bez części zbroi „czesc_od”) ma wpis w ustawieniach i odwrotnie; slot i klasa z katalogu; każda klasa
 ma podstawowy zestaw z bronią i zbroją (Wojownik — także z tarczą, bo blok tarczy ze wzoru należy do tarczy); znane
@@ -35,6 +40,8 @@ PLIK_DANYCH = "DaneKowala.luau"
 PLIK_RIGU = "RigKowal.luau"
 PLIK_KUZNI = os.path.join(TU, "kuznia", "czesci.json")
 KATALOG = os.path.join(REPO, "swiat", "postacie", "przedmioty.json")
+KATALOG_SKLEPU = os.path.join(REPO, "swiat", "postacie", "sklep_przedmioty.json")
+STOPIEN_STARTOWY = "start"
 BAZAR = os.path.join(REPO, "swiat", "miasteczko_bazar")
 ZESTAWY_BOHATEROW = ("rycerz", "zwiadowca", "kot_mag")
 KOLEJNOSC_SLOTOW = ["Weapon", "OffHand", "Chest", "Helmet", "Gloves", "Boots", "Belt"]
@@ -54,6 +61,11 @@ def katalog():
         return json.load(f)
 
 
+def katalog_sklepu():
+    with open(KATALOG_SKLEPU, encoding="utf-8") as f:
+        return json.load(f)
+
+
 def _json(sciezka):
     with open(sciezka, encoding="utf-8") as f:
         return json.load(f)
@@ -65,8 +77,44 @@ def klasy_z_tarcza():
 
 
 # ------------------------------------------------------------------------------------------------ przedmioty
-def przedmioty(U, K):
-    """Całe przedmioty bohaterów z katalogu + liczby z ustawień → (przedmioty, części zbroi, klasy)."""
+def _sprawdz_liczby(pid, u, klasa, slot, staty, tarcze):
+    """Wspólna kontrola wpisu statystyk (dzisiejsze z ustawień i nowe z katalogu sklepu)."""
+    for pole in ("baza", "krok"):
+        for k, v in u[pole].items():
+            if k not in staty:
+                raise BladDanych("przedmiot %s: nieznana statystyka %s" % (pid, k))
+            if k == "tarcza":
+                if not tarcze.get(klasa) or slot != "OffHand":
+                    raise BladDanych("przedmiot %s: tarcza tylko w drugiej ręce klasy z tarczą" % pid)
+                if not (0 <= v <= 0.1):
+                    raise BladDanych("przedmiot %s: tarcza 0..0,1" % pid)
+            elif not isinstance(v, int) or isinstance(v, bool) or v < 0:
+                raise BladDanych("przedmiot %s: %s.%s liczba całkowita ≥ 0" % (pid, pole, k))
+    if not u["krok"]:
+        raise BladDanych("przedmiot %s: ulepszenie bez przyrostu" % pid)
+    waga = u["waga"]
+    if not (isinstance(waga, (int, float)) and 0.5 <= waga <= 3):
+        raise BladDanych("przedmiot %s: waga 0,5..3" % pid)
+
+
+def _wpis(G, staty, pid, nazwa, slot, klasa, u, sklep):
+    """Wpis przedmiotu w danych: liczby kowala (u: podstawowy, waga, baza, krok) + pola sklepu z katalogu."""
+    waga = u["waga"]
+    zl = [int(G["zaokraglenie_zlota"] * math.floor(x * waga / G["zaokraglenie_zlota"] + 0.5)) for x in G["zloto"]]
+    mat = [int(math.floor(x * waga + 0.5)) for x in G["materialy"]]
+    return {"id": pid, "nazwa": nazwa, "slot": slot, "klasa": klasa,
+            "podstawowy": bool(u["podstawowy"]), "waga": waga,
+            "baza": {k: u["baza"][k] for k in staty if k in u["baza"]},
+            "krok": {k: u["krok"][k] for k in staty if k in u["krok"]},
+            "koszt": {"zloto": zl, "materialy": mat},
+            "cena": sklep["cena"], "poziom": sklep["poziom"], "stopien": sklep["stopien"],
+            "nrStopnia": sklep["nr_stopnia"]}
+
+
+def przedmioty(U, K, KS):
+    """Całe przedmioty bohaterów z katalogu + liczby z ustawień (dzisiejsze 18, stopień startowy) i nowe przedmioty
+    do kupienia z katalogu sklepu KS (54: stopnie las, bagno, dzungla) → (przedmioty, części zbroi, klasy).
+    Ceny, wymagane poziomy i stopnie WSZYSTKICH wpisów pochodzą z katalogu sklepu."""
     sloty = U["sloty"]
     staty = [s[0] for s in U["statystyki"]]
     tarcze = klasy_z_tarcza()
@@ -90,6 +138,25 @@ def przedmioty(U, K):
         t = G[nazwa]
         if any((not isinstance(x, int)) or x < 1 for x in t) or any(t[i] > t[i + 1] for i in range(maks - 1)):
             raise BladDanych("ulepszenie.%s: liczby całkowite ≥ 1, nie malejące" % nazwa)
+    sklep = {p["id"]: p for p in KS["przedmioty"]}
+    if len(sklep) != len(KS["przedmioty"]):
+        raise BladDanych("katalog sklepu: powtórzone id")
+    nr_stopni = {s["id"]: s["nr"] for s in KS["stopnie"]}
+    if nr_stopni.get(STOPIEN_STARTOWY) != 0:
+        raise BladDanych("katalog sklepu: stopień startowy ma mieć numer 0")
+
+    def pola_sklepu(pid):
+        s = sklep.get(pid)
+        if s is None or not s.get("sprzedawany"):
+            raise BladDanych("przedmiot %s: brak sprzedawanego wpisu w katalogu sklepu" % pid)
+        if nr_stopni.get(s["stopien"]) != s["nr_stopnia"]:
+            raise BladDanych("przedmiot %s: stopień %s ≠ numer %s" % (pid, s["stopien"], s["nr_stopnia"]))
+        for pole in ("cena", "poziom"):
+            v = s[pole]
+            if isinstance(v, bool) or not isinstance(v, int) or v < (1 if pole == "poziom" else 0):
+                raise BladDanych("przedmiot %s: %s w katalogu sklepu = %r" % (pid, pole, v))
+        return s
+
     wynik = {}
     for p in calosci:
         u = U["przedmioty"][p["id"]]
@@ -98,33 +165,49 @@ def przedmioty(U, K):
             raise BladDanych("przedmiot %s: jedna klasa z %s" % (p["id"], klasy))
         if p["slot"] not in sloty:
             raise BladDanych("przedmiot %s: slot %s spoza ustawienia.sloty" % (p["id"], p["slot"]))
-        for pole in ("baza", "krok"):
-            for k, v in u[pole].items():
-                if k not in staty:
-                    raise BladDanych("przedmiot %s: nieznana statystyka %s" % (p["id"], k))
-                if k == "tarcza":
-                    if not tarcze.get(klasa) or p["slot"] != "OffHand":
-                        raise BladDanych("przedmiot %s: tarcza tylko w drugiej ręce klasy z tarczą" % p["id"])
-                    if not (0 <= v <= 0.1):
-                        raise BladDanych("przedmiot %s: tarcza 0..0,1" % p["id"])
-                elif not isinstance(v, int) or v < 0:
-                    raise BladDanych("przedmiot %s: %s.%s liczba całkowita ≥ 0" % (p["id"], pole, k))
-        if not u["krok"]:
-            raise BladDanych("przedmiot %s: ulepszenie bez przyrostu" % p["id"])
-        waga = u["waga"]
-        if not (isinstance(waga, (int, float)) and 0.5 <= waga <= 3):
-            raise BladDanych("przedmiot %s: waga 0,5..3" % p["id"])
-        zl = [int(G["zaokraglenie_zlota"] * math.floor(x * waga / G["zaokraglenie_zlota"] + 0.5)) for x in G["zloto"]]
-        mat = [int(math.floor(x * waga + 0.5)) for x in G["materialy"]]
-        wynik[p["id"]] = {"id": p["id"], "nazwa": p["nazwa"], "slot": p["slot"], "klasa": klasa,
-                          "podstawowy": bool(u["podstawowy"]), "waga": waga,
-                          "baza": {k: u["baza"][k] for k in staty if k in u["baza"]},
-                          "krok": {k: u["krok"][k] for k in staty if k in u["krok"]},
-                          "koszt": {"zloto": zl, "materialy": mat}}
+        _sprawdz_liczby(p["id"], u, klasa, p["slot"], staty, tarcze)
+        s = pola_sklepu(p["id"])
+        # dzisiejszy przedmiot: liczby zostają z ustawień kowala; katalog sklepu ma mówić to samo
+        if s["stopien"] != STOPIEN_STARTOWY or s["klasa"] != klasa or s["slot"] != p["slot"] or any(
+                s[pole] != u[pole] for pole in ("podstawowy", "waga", "baza", "krok")):
+            raise BladDanych("przedmiot %s: katalog sklepu ≠ ustawienia kowala (stopień, klasa, slot albo liczby)"
+                             % p["id"])
+        if bool(u["podstawowy"]) != (s["cena"] == 0):
+            raise BladDanych("przedmiot %s: cena 0 tylko dla zestawu podstawowego" % p["id"])
+        wynik[p["id"]] = _wpis(G, staty, p["id"], p["nazwa"], p["slot"], klasa, u, s)
+    # nowe przedmioty do kupienia: cały wpis z katalogu sklepu (bez ręcznego przepisywania do ustawień)
+    for s in KS["przedmioty"]:
+        pid = s["id"]
+        if pid in wynik or pid in czesci:
+            continue
+        if not s.get("sprzedawany"):
+            cal = s.get("czesc_od")
+            if cal not in sklep or not sklep[cal].get("sprzedawany"):
+                raise BladDanych("część %s: całość %s spoza katalogu sklepu" % (pid, cal))
+            czesci[pid] = cal
+            continue
+        if s["stopien"] == STOPIEN_STARTOWY:
+            raise BladDanych("przedmiot %s: stopień startowy spoza ustawień kowala" % pid)
+        klasa = s["klasa"]
+        if klasa not in klasy or s["slot"] not in sloty:
+            raise BladDanych("przedmiot %s: klasa %s albo slot %s spoza ustawień" % (pid, klasa, s["slot"]))
+        if s.get("podstawowy") or s["cena"] < 1:
+            raise BladDanych("przedmiot %s: nowy przedmiot nie należy do zestawu podstawowego i ma cenę" % pid)
+        pola_sklepu(pid)
+        _sprawdz_liczby(pid, s, klasa, s["slot"], staty, tarcze)
+        wynik[pid] = _wpis(G, staty, pid, s["nazwa"], s["slot"], klasa, s, s)
+    for cz, cal in czesci.items():
+        if cal not in wynik or wynik[cal]["slot"] != "Chest":
+            raise BladDanych("część %s: całość %s nie jest zbroją z danych" % (cz, cal))
     kl = {}
     for k in klasy:
-        ids = sorted((i for i, P in wynik.items() if P["klasa"] == k),
-                     key=lambda i: (KOLEJNOSC_SLOTOW.index(wynik[i]["slot"]), i))
+        wszystkie = sorted((i for i, P in wynik.items() if P["klasa"] == k),
+                           key=lambda i: (wynik[i]["nrStopnia"], KOLEJNOSC_SLOTOW.index(wynik[i]["slot"]), i))
+        # „przedmioty” = dzisiejsza lista klasy (stopień startowy): z niej losuje łup i ona ustawia okno kowala
+        ids = [i for i in wszystkie if wynik[i]["nrStopnia"] == 0]
+        para = [(wynik[i]["nrStopnia"], wynik[i]["slot"]) for i in wszystkie]
+        if len(set(para)) != len(para):
+            raise BladDanych("klasa %s: dwa przedmioty jednego stopnia w jednym slocie" % k)
         sloty_kl = [wynik[i]["slot"] for i in ids]
         if len(set(sloty_kl)) != len(sloty_kl):
             raise BladDanych("klasa %s: dwa przedmioty w jednym slocie — logika zakłada jeden na slot" % k)
@@ -134,7 +217,7 @@ def przedmioty(U, K):
             raise BladDanych("klasa %s: podstawowy zestaw bez broni albo zbroi" % k)
         if tarcze.get(k) and "OffHand" not in sl:
             raise BladDanych("klasa %s: podstawowy zestaw bez tarczy (blok tarczy ze wzoru należy do tarczy)" % k)
-        kl[k] = {"przedmioty": ids, "podstawowe": podst, "tarcza": bool(tarcze.get(k))}
+        kl[k] = {"przedmioty": ids, "podstawowe": podst, "tarcza": bool(tarcze.get(k)), "wszystkie": wszystkie}
     return wynik, czesci, kl
 
 
@@ -256,7 +339,8 @@ def rig_kowala(U):
 def podstawa():
     U = ustawienia()
     K = katalog()
-    P, czesci, klasy = przedmioty(U, K)
+    KS = katalog_sklepu()
+    P, czesci, klasy = przedmioty(U, K, KS)
     s, kz, e, kowal, x0z0 = scena_kuzni(U)
     miejsce = sprawdz_miejsce(U, kz, e, x0z0, s)
     from kuznia import PODLOGA
@@ -280,9 +364,13 @@ def podstawa():
         "nazwyStatystyk": {a: b for a, b in U["statystyki"]},
         "sloty": dict(U["sloty"]),
         "klasy": klasy,
-        "kolejnosc": [i for k in U["nazwy_klas"] for i in klasy[k]["przedmioty"]],
+        "kolejnosc": [i for k in U["nazwy_klas"] for i in klasy[k]["wszystkie"]],
         "przedmioty": P,
         "czesci": czesci,
+        "czescCalosci": {cal: cz for cz, cal in czesci.items()},
+        "stopnie": [{"id": s["id"], "nr": s["nr"], "nazwa": s["nazwa"]} for s in KS["stopnie"]],
+        "sklep": {"sygnal": U["sklep"]["sygnal"], "celWydatku": U["sklep"]["cel_wydatku"],
+                  "atrybutPoziomu": U["sklep"]["atrybut_poziomu"], "atrybutStacNa": U["sklep"]["atrybut_stac_na"]},
         "blokTarczy": wzorcowe.BLOK_TARCZY,
         "kuznia": {"srodek": kz["srodek_swiat"], "ry": kz["ry"], "e": e, "kowal": kowal,
                    "kowalRy": (kz["ry"] + 180) % 360, "podloga": PODLOGA, "zasieg": kz["zasieg"],
@@ -304,10 +392,14 @@ def _nil(v):
     return NIL if v is None else v
 
 
+def copy_dane(dane):
+    return json.loads(json.dumps(dane))
+
+
 def przypadki(D):
     """Wejścia i wyniki liczone lustrem (logika_kowala.py) — Luau sprawdza je w Studio (LogikaKowala.sprawdzPrzypadki)."""
     P = {"czyste": [], "mod": [], "koszt": [], "rozbierz": [], "plan": [], "lup": [], "stroj": [], "ranga": [],
-         "widok": [], "opis": [], "odmiana": [], "mozna": []}
+         "widok": [], "opis": [], "odmiana": [], "mozna": [], "kup": [], "oferta": [], "zaloz": []}
     for v in (None, "zle", {"przedmioty": {"rycerz_miecz": {"poziom": 3, "zapas": 1}, "nieznany": {"poziom": 1}},
                             "materialy": 7.5, "bezLupu": 2, "klasy": {"wojownik": True, "obcy": True}},
               {"przedmioty": {"kot_mag_kostur": {"poziom": 99, "zapas": -1}}, "materialy": -3}):
@@ -349,6 +441,41 @@ def przypadki(D):
         P["widok"].append({"klasa": k, "dane": pelna, "zalozone": LK.zalozone(D, k, pelna, None), "zloto": 150,
                            "bohater": "Broń 12", "wynik": LK.widok(D, pelna, k, LK.zalozone(D, k, pelna, None), 150,
                                                                   "Broń 12")})
+    # sklep (D-106): dane graczy raz na klasę (sklepDane), przypadki wskazują je numerem — moduł danych ma limit znaków
+    P["sklepDane"] = {}
+    for k in D["klasy"]:
+        dane, _ = LK.podstawowe(D, LK.nowe(D), k)
+        wsz = D["klasy"][k]["wszystkie"]
+        nowe_ids = [i for i in wsz if D["przedmioty"][i]["nrStopnia"] > 0]
+        inna = next(i for i in D["kolejnosc"] if D["przedmioty"][i]["klasa"] != k and D["przedmioty"][i]["nrStopnia"] > 0)
+        czesc = next((c for c, cal in D["czesci"].items() if D["przedmioty"][cal]["klasa"] == k), None)
+        kupione = copy_dane(dane)
+        for i in nowe_ids[::3]:
+            kupione["przedmioty"][i] = {"poziom": 2, "zapas": 0}
+        P["sklepDane"][k] = [dane, kupione]
+        for pid in [nowe_ids[0], nowe_ids[-1], wsz[0], inna, "nieznany", 7] + ([czesc] if czesc else []):
+            for nr, dn in enumerate((dane, kupione)):
+                for poziom, zloto in ((1, 0), (30, 99), (30, 100000)):
+                    ok, w, info = LK.kup(D, dn, k, poziom, zloto, pid)
+                    P["kup"].append({"klasa": k, "nr": nr + 1, "poziom": poziom, "zloto": zloto, "id": pid, "ok": ok,
+                                     "powod": "" if ok else w, "ile": info["cena"] if ok else info,
+                                     "czesc": (info.get("czesc") or "") if ok else ""})
+        for nr, dn in enumerate((dane, kupione)):
+            for napis in (None, ",".join(dn["przedmioty"])):
+                zal = LK.zalozone(D, k, dn, napis)
+                for poziom, zloto in ((6, 400), (30, 100000)):
+                    of = LK.oferta(D, dn, k, poziom, zloto, zal)
+                    P["oferta"].append({"klasa": k, "nr": nr + 1, "poziom": poziom, "zloto": zloto, "napis": _nil(napis),
+                                        "zalozone": LK.na_napis(zal), "skrot": LK.skrot_oferty(of),
+                                        "stac": LK.stac_na(D, dn, k, poziom, zloto)})
+                for pid in (nowe_ids[0], nowe_ids[-1], wsz[1]):
+                    P["zaloz"].append({"klasa": k, "nr": nr + 1, "napis": _nil(napis), "id": pid,
+                                       "czy": LK.czy_zalozyc(D, zal, pid),
+                                       "stroj": LK.stroj_z_przedmiotem(D, napis, pid)})
+    k = "mag"                                            # jedna pełna oferta (wszystkie pola wiersza)
+    dn = P["sklepDane"][k][1]
+    P["ofertaPelna"] = [{"klasa": k, "nr": 2, "poziom": 12, "zloto": 600,
+                         "wynik": LK.oferta(D, dn, k, 12, 600, LK.zalozone(D, k, dn, None))}]
     for r in (0, 1, 2, 3, 4, 5, 6, 7, -1, 1.5):
         P["ranga"].append({"r": r, "wynik": _nil(LK.ranga(D, r))})
     for o in ({"bron": {"obrazenia": 30.4}, "pancerz_przedmiotow": 13.5, "tarcza": {"blok": 0.2828}},
@@ -480,7 +607,8 @@ def main(argv):
     kz = D["kuznia"]
     print("zapisano: %s (skrót %s)" % (", ".join(os.path.relpath(p, REPO).replace("\\", "/") for p in pliki), D["skrot"]))
     print("  przedmiotów %d (%s), części zbroi %d, blok tarczy ze wzoru %.4f"
-          % (len(D["przedmioty"]), ", ".join("%s %d" % (k, len(v["przedmioty"])) for k, v in D["klasy"].items()),
+          % (len(D["przedmioty"]), ", ".join("%s %d z łupu + %d do kupienia" % (
+              k, len(v["przedmioty"]), len(v["wszystkie"]) - len(v["przedmioty"])) for k, v in D["klasy"].items()),
              len(D["czesci"]), D["blokTarczy"]))
     print("  kuźnia: środek %s, E %s, kowal %s (ry %d°), zakres %s; odstępy E: %s"
           % (kz["srodek"], kz["e"], kz["kowal"], kz["kowalRy"], kz["zakres"], kz["odstepyE"]))
