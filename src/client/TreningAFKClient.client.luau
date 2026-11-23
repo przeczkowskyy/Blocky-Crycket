@@ -1,7 +1,7 @@
 --[[
 	TreningAFKClient — okno i animacje treningu AFK (D-141; gałąź pawel/diamenty-afk). Serwer: src/server/TreningAFK.server.luau.
 
-	Trzecia wersja (Paweł 23.11): pasek w procentach, płynny; postać naprawdę ćwiczy:
+	Trzecia wersja (Paweł 23.11): pasek w procentach, płynny; okno z grafik Glossy Ink (D.obrazy, wgrane 23.11 po „tak”); postać naprawdę ćwiczy:
 		Siła — hantle w obu dłoniach, uginanie ramion na zmianę;
 		HP (Kondycja) — leży na ławce i wyciska sztangę;
 		Zręczność — bieg na bieżni (taśma się przesuwa);
@@ -57,7 +57,7 @@ local function napis(rodzic: Instance, nazwa: string, pos: UDim2, size: UDim2, k
 	return t
 end
 
------------------------------------------------------------- okno
+------------------------------------------------------------ okno (grafiki Glossy Ink z D.obrazy; układ zmierzony na panelu 1024 × 404)
 local gui = Instance.new("ScreenGui")
 gui.Name = "TreningAFK"
 gui.ResetOnSpawn = false
@@ -65,90 +65,122 @@ gui.IgnoreGuiInset = true
 gui.DisplayOrder = 15
 gui.Enabled = false
 
-local panel = Instance.new("Frame")
+local panel = Instance.new("ImageLabel")
 panel.Name = "Panel"
+panel.Image = D.obrazy.panel
+panel.BackgroundTransparency = 1
+panel.ScaleType = Enum.ScaleType.Fit
 panel.AnchorPoint = Vector2.new(0.5, 1)
-panel.Position = UDim2.new(0.5, 0, 1, -16)
-panel.Size = UDim2.fromScale(0.42, 0.17)
-panel.BackgroundColor3 = Color3.fromRGB(58, 40, 30)
-panel.BackgroundTransparency = 0.08
+panel.Position = UDim2.new(0.5, 0, 1, -10)
+panel.Size = UDim2.fromScale(0.4, 0.4)
 panel.Parent = gui
-rog(panel, 0.18)
-obrys(panel, 3)
 local ar = Instance.new("UIAspectRatioConstraint")
-ar.AspectRatio = 4.2
+ar.AspectRatio = 1024 / 404
 ar.Parent = panel
 local mx = Instance.new("UISizeConstraint")
-mx.MinSize = Vector2.new(300, 0)
-mx.MaxSize = Vector2.new(620, 160)
+mx.MinSize = Vector2.new(320, 0)
+mx.MaxSize = Vector2.new(580, 230)
 mx.Parent = panel
 
-local tytul = napis(panel, "Tytul", UDim2.fromScale(0.04, 0.07), UDim2.fromScale(0.56, 0.28), Color3.fromRGB(252, 227, 176))
-tytul.TextXAlignment = Enum.TextXAlignment.Left
-local przyrostL = napis(panel, "Przyrost", UDim2.fromScale(0.62, 0.07), UDim2.fromScale(0.34, 0.28), Color3.fromRGB(140, 232, 101))
+local function ulamek(x, y, w, h)
+	return UDim2.fromScale(x, y), UDim2.fromScale(w, h)
+end
+
+-- tabliczka u góry: nazwa statystyki
+local tp, ts = ulamek(0.112, 0.03, 0.293, 0.15)
+local tytul = napis(panel, "Tytul", tp, ts, Color3.fromRGB(252, 227, 176))
+-- ikona stanowiska, czynność, przyrost
+local ikona = Instance.new("ImageLabel")
+ikona.Name = "Ikona"
+ikona.BackgroundTransparency = 1
+ikona.ScaleType = Enum.ScaleType.Fit
+ikona.Position, ikona.Size = ulamek(0.05, 0.22, 0.1, 0.3)
+ikona.Parent = panel
+local cp, cs = ulamek(0.17, 0.25, 0.4, 0.2)
+local czynnoscL = napis(panel, "Czynnosc", cp, cs, Color3.new(1, 1, 1))
+czynnoscL.TextXAlignment = Enum.TextXAlignment.Left
+local pp, psz = ulamek(0.56, 0.27, 0.36, 0.16)
+local przyrostL = napis(panel, "Przyrost", pp, psz, Color3.fromRGB(140, 232, 101))
 przyrostL.TextXAlignment = Enum.TextXAlignment.Right
 
+-- tor paska (ciemny tor jest w grafice panelu); wypełnienie NATYWNE (Paweł 23.11: obrazek paska się pikselował):
+-- zaokrąglona ramka z gradientem zieleni (jasna góra → ciemny dół), czarnym obrysem i połyskiem — jak w makiecie Figmy
 local tor = Instance.new("Frame")
 tor.Name = "Tor"
-tor.Position = UDim2.fromScale(0.04, 0.42)
-tor.Size = UDim2.fromScale(0.74, 0.3)
-tor.BackgroundColor3 = Color3.fromRGB(14, 10, 16)
-tor.ClipsDescendants = true
+tor.BackgroundTransparency = 1
+tor.Position, tor.Size = ulamek(0.0684, 0.5941, 0.7471, 0.2277)
 tor.Parent = panel
-rog(tor, 0.4)
-obrys(tor, 2)
 local wyp = Instance.new("Frame")
 wyp.Name = "Wypelnienie"
-wyp.Size = UDim2.fromScale(0, 1)
-wyp.BackgroundColor3 = Color3.fromRGB(120, 210, 120)
+wyp.BackgroundColor3 = Color3.new(1, 1, 1)
+wyp.BorderSizePixel = 0
+wyp.AnchorPoint = Vector2.new(0, 0.5)
+wyp.Position = UDim2.new(0, 5, 0.5, 0)
+wyp.Size = UDim2.new(0, 0, 0.78, 0)
 wyp.Parent = tor
-rog(wyp, 0.4)
+rog(wyp, 0.5)
+local grad = Instance.new("UIGradient")
+grad.Rotation = 90
+grad.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(158, 242, 89)),
+	ColorSequenceKeypoint.new(0.55, Color3.fromRGB(92, 212, 56)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(46, 158, 41)),
+})
+grad.Parent = wyp
+local wypObrys = Instance.new("UIStroke")
+wypObrys.Color = CIEMNY
+wypObrys.Thickness = 2.5
+wypObrys.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+wypObrys.Parent = wyp
 local polysk = Instance.new("Frame")
+polysk.Name = "Polysk"
 polysk.BackgroundColor3 = Color3.new(1, 1, 1)
-polysk.BackgroundTransparency = 0.6
-polysk.Position = UDim2.fromScale(0.03, 0.14)
-polysk.Size = UDim2.fromScale(0.94, 0.22)
+polysk.BackgroundTransparency = 0.45
+polysk.BorderSizePixel = 0
+polysk.Position = UDim2.new(0.5, 0, 0.14, 0)
+polysk.AnchorPoint = Vector2.new(0.5, 0)
+polysk.Size = UDim2.new(1, -14, 0.22, 0)
 polysk.Parent = wyp
 rog(polysk, 0.5)
 local liczba = napis(tor, "Liczba", UDim2.fromScale(0, 0.05), UDim2.fromScale(1, 0.9), Color3.new(1, 1, 1))
 liczba.ZIndex = 3
 
-local stop = Instance.new("TextButton")
+-- STOP we wnęce po prawej (czerwony przycisk z grafiki, napis natywnie)
+local stop = Instance.new("ImageButton")
 stop.Name = "Stop"
-stop.Position = UDim2.fromScale(0.81, 0.4)
-stop.Size = UDim2.fromScale(0.16, 0.34)
-stop.BackgroundColor3 = Color3.fromRGB(236, 96, 86)
-stop.Text = "STOP"
-stop.FontFace = FONT
-stop.TextScaled = true
-stop.TextColor3 = Color3.new(1, 1, 1)
+stop.BackgroundTransparency = 1
+stop.Image = D.obrazy.stop
+stop.ScaleType = Enum.ScaleType.Fit
+stop.Position, stop.Size = ulamek(0.835, 0.565, 0.112, 0.285)
 stop.Parent = panel
-rog(stop, 0.3)
-obrys(stop, 2).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+local stopL = napis(stop, "Napis", UDim2.fromScale(0.08, 0.2), UDim2.fromScale(0.84, 0.6), Color3.new(1, 1, 1))
+stopL.Text = "STOP"
+stopL.ZIndex = 3
 
-local podp = napis(panel, "Podpowiedz", UDim2.fromScale(0.04, 0.78), UDim2.fromScale(0.92, 0.18), Color3.new(1, 1, 1))
+-- podpowiedź na desce, nad paskiem
+local hp, hs = ulamek(0.17, 0.46, 0.66, 0.11)
+local podp = napis(panel, "Podpowiedz", hp, hs, Color3.fromRGB(255, 236, 180))
 podp.Text = "HIT THE SKILL CHECKS FOR 2X SPEED!"
 
-local check = Instance.new("TextButton")
+-- skill check: złota moneta z pięścią + „2X”, wokół kurczący się pierścień
+local check = Instance.new("ImageButton")
 check.Name = "SkillCheck"
 check.AnchorPoint = Vector2.new(0.5, 0.5)
-check.Size = UDim2.fromScale(0.09, 0.09)
-check.BackgroundColor3 = Color3.fromRGB(255, 214, 90)
-check.Text = "!"
-check.FontFace = FONT
-check.TextScaled = true
-check.TextColor3 = CIEMNY
+check.Size = UDim2.fromScale(0.11, 0.11)
+check.BackgroundTransparency = 1
+check.Image = D.obrazy.skillCheck
+check.ScaleType = Enum.ScaleType.Fit
 check.Visible = false
-check.AutoButtonColor = false
 check.ZIndex = 20
 check.Parent = gui
-rog(check, 0.5)
-obrys(check, 3).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 local ca = Instance.new("UIAspectRatioConstraint")
 ca.Parent = check
 local mc = Instance.new("UISizeConstraint")
-mc.MinSize = Vector2.new(64, 64)
+mc.MinSize = Vector2.new(72, 72) -- duży cel także na telefonie
 mc.Parent = check
+local dwaX = napis(check, "Napis2x", UDim2.fromScale(0.2, 0.58), UDim2.fromScale(0.6, 0.26), Color3.new(1, 1, 1))
+dwaX.Text = "2X"
+dwaX.ZIndex = 22
 local pierscien = Instance.new("Frame")
 pierscien.Name = "Pierscien"
 pierscien.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -178,7 +210,11 @@ local function rysuj(dt: number)
 	else
 		pokazanyProcent += (cel - pokazanyProcent) * math.min(1, dt * 14)
 	end
-	wyp.Size = UDim2.fromScale(pokazanyProcent, 1)
+	-- szerokość w pikselach: pasek nie jest węższy niż wysoki (zaokrąglone końce z grafiki), przy 0% znika
+	local szer = tor.AbsoluteSize.X - 10
+	local wys = wyp.AbsoluteSize.Y
+	wyp.Visible = pokazanyProcent > 0.01
+	wyp.Size = UDim2.new(0, math.max(wys, pokazanyProcent * szer), 0.78, 0)
 	liczba.Text = string.format("%d%%", math.floor(pokazanyProcent * 100 + 0.5)) .. (if tempo > 1 then "  x" .. tostring(tempo) else "")
 end
 
@@ -653,9 +689,10 @@ Z.OnClientEvent:Connect(function(akcja, a, b, c)
 		stanowiskoM = k and k:FindFirstChild(a)
 		postep, tempo, czas = b or 0, 1, 0
 		pokazanyProcent = math.clamp(postep / D.powtorzenNaPasek, 0, 1)
-		tytul.Text = s and (s.nazwa .. " · " .. s.czynnosc) or "TRAINING"
+		tytul.Text = s and s.nazwa or "TRAINING"
+		czynnoscL.Text = s and s.czynnosc or ""
+		ikona.Image = s and s.ikona or ""
 		przyrostL.Text = s and ("+" .. tostring(c or 1) .. " " .. s.skrot .. " / BAR") or ""
-		wyp.BackgroundColor3 = s and s.kolor or wyp.BackgroundColor3
 		gui.Enabled = true
 		ruchStoi = -10 -- chwila na puszczenie klawiszy po wejściu
 	elseif akcja == "postep" then

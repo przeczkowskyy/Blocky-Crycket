@@ -18,12 +18,19 @@ D.odstep = 16 -- studów między środkami stanowisk (wzdłuż osi X)
 D.obrot = 180 -- stopni: obrót stanowiska (gracz patrzy na rekwizyt)
 
 D.stanowiska = {
-	{ id = "Sila", atrybut = "Strength", nazwa = "STRENGTH", skrot = "STR", czynnosc = "DUMBBELLS", kolor = Color3.fromRGB(236, 96, 86) },
-	{ id = "Kondycja", atrybut = "Constitution", nazwa = "HEALTH", skrot = "CON", czynnosc = "BENCH PRESS", kolor = Color3.fromRGB(120, 210, 120) },
-	{ id = "Pancerz", atrybut = "Armor", nazwa = "ARMOR", skrot = "ARM", czynnosc = "SHIELD BLOCK", kolor = Color3.fromRGB(150, 160, 185) },
-	{ id = "Zrecznosc", atrybut = "Dexterity", nazwa = "DEXTERITY", skrot = "DEX", czynnosc = "TREADMILL", kolor = Color3.fromRGB(255, 192, 90) },
-	{ id = "Inteligencja", atrybut = "Intelligence", nazwa = "INTELLIGENCE", skrot = "INT", czynnosc = "BOOKS", kolor = Color3.fromRGB(110, 170, 255) },
-	{ id = "Szczescie", atrybut = "Luck", nazwa = "LUCK", skrot = "LCK", czynnosc = "DICE", kolor = Color3.fromRGB(190, 120, 240) },
+	{ id = "Sila", ikona = "rbxassetid://80829675491231", atrybut = "Strength", nazwa = "STRENGTH", skrot = "STR", czynnosc = "DUMBBELLS", kolor = Color3.fromRGB(236, 96, 86) },
+	{ id = "Kondycja", ikona = "rbxassetid://129848880606537", atrybut = "Constitution", nazwa = "HEALTH", skrot = "CON", czynnosc = "BENCH PRESS", kolor = Color3.fromRGB(120, 210, 120) },
+	{ id = "Pancerz", ikona = "rbxassetid://121315147202267", atrybut = "Armor", nazwa = "ARMOR", skrot = "ARM", czynnosc = "SHIELD BLOCK", kolor = Color3.fromRGB(150, 160, 185) },
+	{ id = "Zrecznosc", ikona = "rbxassetid://121602116084315", atrybut = "Dexterity", nazwa = "DEXTERITY", skrot = "DEX", czynnosc = "TREADMILL", kolor = Color3.fromRGB(255, 192, 90) },
+	{ id = "Inteligencja", ikona = "rbxassetid://137985641979179", atrybut = "Intelligence", nazwa = "INTELLIGENCE", skrot = "INT", czynnosc = "BOOKS", kolor = Color3.fromRGB(110, 170, 255) },
+	{ id = "Szczescie", ikona = "rbxassetid://87096405792117", atrybut = "Luck", nazwa = "LUCK", skrot = "LCK", czynnosc = "DICE", kolor = Color3.fromRGB(190, 120, 240) },
+}
+
+-- grafiki ekranu treningu (Higgsfield, Glossy Ink, wgrane 23.11 po „tak” Pawła; assets/manifest.json, Trening*)
+D.obrazy = {
+	panel = "rbxassetid://113367842595549", -- 1024 × 404
+	stop = "rbxassetid://136347965162300",
+	skillCheck = "rbxassetid://87414657975804", -- moneta z pięścią, napis „2X” natywnie
 }
 
 -- seria
