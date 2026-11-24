@@ -2,21 +2,8 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-24T22:22:51+01:00",
+ "aktualizacja": "2026-11-24T22:23:02+01:00",
  "prace": [
-  {
-   "id": "przebudowa-jajko_korowe",
-   "tytul": "Przebudowa modelu jajko_korowe",
-   "stan": "w_toku",
-   "start": "2026-11-24T22:22:51+01:00",
-   "koniec_szacowany": "2026-11-24T22:42:51+01:00",
-   "aktualizacja": "2026-11-24T22:22:51+01:00",
-   "obszary": [
-    "model:jajko_korowe"
-   ],
-   "kto": "Claude (przeczkowskyy)",
-   "komputer": "0c03c4ec"
-  },
   {
    "id": "ui-kowal-jajka-rybka",
    "tytul": "UI kowala, jajka i mistrza gry; rybka jako waluta; szybsze okna",
