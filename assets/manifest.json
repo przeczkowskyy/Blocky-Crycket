@@ -4070,7 +4070,18 @@
       "approved_sha256": "2bf300a72015b3a151ef5560d76baaede3c154cfca49ec84ba245410fa1b477c",
       "roblox_image": "108070653620156",
       "moderation": "Studio upload_image"
+    },
+    "KartaPetowJajka": {
+      "created_at": "2026-11-24T22:19:50+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "processed",
+      "usage": "Tło karty petów nad jajkiem",
+      "raw": "assets/raw/SzanseJajka/karta_v1.png",
+      "processed": "assets/processed/SzanseJajka/KartaPetowJajka.png",
+      "notes": "Higgsfield job 749940e3",
+      "updated_at": "2026-11-24T22:19:50+00:00"
     }
   },
-  "updated_at": "2026-11-24T21:54:50+00:00"
+  "updated_at": "2026-11-24T22:19:50+00:00"
 }

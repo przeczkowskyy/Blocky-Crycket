@@ -158,7 +158,7 @@ local function przyJajku(gracz: Player): boolean
 end
 
 local ostatnie: { [Player]: number } = {}
-local zajety: { [Player]: boolean } = {}
+local zajety: { [Player]: number | boolean } = {}
 
 kup = function(gracz: Player, n: number): any
 	if zajety[gracz] then
@@ -194,8 +194,13 @@ kup = function(gracz: Player, n: number): any
 			haczyk:Invoke("zwolnij", gracz) -- jego blokada wyklucia: animację gramy tutaj
 		end)
 	end
-	task.delay(3.5, function()
-		zajety[gracz] = nil -- tyle trwa wyklucie w świecie
+	-- kupujący otwiera jajo klikaniem we własnym tempie: blokadę zdejmuje jego „koniec” (niżej), najpóźniej po 45 s
+	local znacznik = os.clock()
+	zajety[gracz] = znacznik
+	task.delay(45, function()
+		if zajety[gracz] == znacznik then
+			zajety[gracz] = nil
+		end
 	end)
 	return { ok = #wyniki > 0, wyniki = wyniki, cena = gracz:GetAttribute(j.atrybuty.cena), tekst = tekst }
 end
@@ -217,15 +222,36 @@ F.OnServerInvoke = function(gracz: Player, akcja: any, n: any)
 	local cena = gracz:GetAttribute(j.atrybuty.cena)
 	if akcja == "info" then
 		local szanse = {}
+		-- opis umiejętności jak na tablicy Karola (LogikaPetow.opisSkilla)
+		local L: any = nil
+		local k = workspace:FindFirstChild("PetyProba")
+		local mod = k and k:FindFirstChild("Moduly")
+		local lm = mod and mod:FindFirstChild("LogikaPetow")
+		if lm and lm:IsA("ModuleScript") then
+			local okL, wynik = pcall(require, lm)
+			L = if okL then wynik else nil
+		end
 		for _, s in ipairs(j.szanse) do
 			local o = opisPeta(D, s.pet)
 			o.szansa = s.szansa
+			if L and L.opisSkilla and L.pet then
+				local okS, opis = pcall(function()
+					return L.opisSkilla(D, L.pet(D, s.pet))
+				end)
+				o.skill = if okS and type(opis) == "string" then opis else ""
+			end
 			table.insert(szanse, o)
 		end
 		return { ok = true, cena = cena, szanse = szanse }
 	end
 	return { ok = false, tekst = "?" }
 end
+
+zdarzenia.OnServerEvent:Connect(function(gracz, rodzaj)
+	if rodzaj == "koniec" then
+		zajety[gracz] = nil
+	end
+end)
 
 Players.PlayerRemoving:Connect(function(g)
 	ostatnie[g] = nil
