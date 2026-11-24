@@ -1,10 +1,10 @@
 -- WYGENEROWANE przez tools/raceselect_assets.py z assets/manifest.json — nie edytuj ręcznie.
 return {
-	RaceHuman = "rbxassetid://124750193963631",
-	RaceDemon = "rbxassetid://77249681341623",
-	RaceDarkElf = "rbxassetid://110692506308033",
-	RaceElf = "rbxassetid://77672055326942",
-	RaceOrc = "rbxassetid://92818431714100",
-	RaceGoblin = "rbxassetid://134109692846702",
-	RaceDemigod = "rbxassetid://74172135014587",
+	RaceHuman = "rbxassetid://135501003073642",
+	RaceDemon = "rbxassetid://138392524742515",
+	RaceDarkElf = "rbxassetid://83869260235970",
+	RaceElf = "rbxassetid://95143745376940",
+	RaceOrc = "rbxassetid://126272805471374",
+	RaceGoblin = "rbxassetid://86847102484621",
+	RaceDemigod = "rbxassetid://91733732651315",
 }

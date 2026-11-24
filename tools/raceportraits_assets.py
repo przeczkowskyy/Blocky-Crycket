@@ -103,11 +103,17 @@ def main():
         wnetrze = wnetrze.crop(((wnetrze.width - bok) // 2, wnetrze.height - bok, (wnetrze.width + bok) // 2, wnetrze.height))
         wnetrze.resize((ROZMIAR, ROZMIAR), Image.LANCZOS).save(OUT / f"Portrait{nazwa}.png", optimize=True)
         print("portret", nazwa, f"kafelek {w}×{h}, ramka {g} px")
+    zapisz_luau()
+
+
+def zapisz_luau():
+    """src/shared/RacePortraits.luau z ID z manifestu (python tools/raceportraits_assets.py --tylko-luau)."""
     man = json.loads((ROOT / "assets/manifest.json").read_text(encoding="utf-8"))["assets"]
     lines = ["-- WYGENEROWANE przez tools/raceportraits_assets.py z assets/manifest.json — nie edytuj ręcznie.",
              "-- Ramki z portretem rasy (RaceFrame<Id>) dla HUD, ekwipunku i sklepów; użycie: Shared.RacePortraitUI.", "return {"]
     for n in KOLEJNOSC:
-        rid = man.get(f"RaceFrame{n}", {}).get("roblox_image")  # ramki z portretem (v4)
+        # ramki z portretem: koty (v2, tools/raceportraits_koty.py), dopóki ich nie ma — ludziki
+        rid = man.get(f"RaceFrame{n}_v2", {}).get("roblox_image") or man.get(f"RaceFrame{n}", {}).get("roblox_image")
         lines.append(f'\t{n} = "rbxassetid://{rid or 0}",')
     lines.append("\t-- pasek doświadczenia w torze ramki: {x, y, w, h} jako ułamki obrazka 512 × 556 — z Figmy (prostokąty ExpBar")
     lines.append("\t-- w ramkach RaceFrame<Id>, strona 9:74, Paweł 23.11: „dopasuj w Figmie co do piksela”), 4 px od złota")
@@ -122,4 +128,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import sys as _sys
+    if "--tylko-luau" in _sys.argv:
+        zapisz_luau()
+    else:
+        main()

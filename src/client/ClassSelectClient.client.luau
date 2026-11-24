@@ -241,11 +241,18 @@ local function makeHero(src: Model, angle: number): Hero
 	}
 end
 
+local classHeroes: { [number]: { h: Hero, id: string } } = {}
 for i, c in ipairs(CLASSES) do
 	local src = modelsFolder:FindFirstChild(c.model)
 	if src and src:IsA("Model") then
 		-- 2. klasa (Zwiadowca) po lewej, 3. (Mag) po prawej
-		table.insert(heroes, makeHero(src, -(i - 1) * 2 * math.pi / N))
+		local h = makeHero(src, -(i - 1) * 2 * math.pi / N)
+		table.insert(heroes, h)
+		-- koty klas (Paweł 24.11, D-145: Koci Rycerz i Koci Zwiadowca, atrybut BronDoGlowy) — broń startowa klasy
+		-- w łapce, dokładana niżej, gdy holdWeapon jest już zdefiniowane
+		if src:GetAttribute("BronDoGlowy") then
+			table.insert(classHeroes, { h = h, id = c.id })
+		end
 	end
 end
 
@@ -469,13 +476,14 @@ local function swing(moving: { [BasePart]: boolean }, joint: Motor6D, axis: Vect
 	end
 end
 
-local function holdWeapon(h: Hero)
+local function holdWeapon(h: Hero, classId: string?)
 	local m = h.model
-	local w = modelsFolder:FindFirstChild("Weapon_" .. CLASSES[index].id)
+	local id = classId or CLASSES[index].id
+	local w = modelsFolder:FindFirstChild("Weapon_" .. id)
 	local kot = m:GetAttribute("BronDoGlowy") == true
 	-- koty ras (D-145): kocia wersja broni (krótsza i grubsza, tools/studio/bronie_kot.py), gdy jest
 	if kot then
-		w = modelsFolder:FindFirstChild("Weapon_" .. CLASSES[index].id .. "_Kot") or w
+		w = modelsFolder:FindFirstChild("Weapon_" .. id .. "_Kot") or w
 	end
 	local elbow = m:FindFirstChild("RightElbow", true)
 	local shoulder = m:FindFirstChild("RightShoulder", true)
@@ -546,6 +554,10 @@ local function holdWeapon(h: Hero)
 		end
 	end
 	c.Parent = m
+end
+
+for _, ch in ipairs(classHeroes) do
+	holdWeapon(ch.h, ch.id)
 end
 
 local function showRace(animate: boolean)

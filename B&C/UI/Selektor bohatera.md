@@ -51,6 +51,8 @@ tags: [ui, klasy, wybór]
 - [x] 2026-11-24 (Paweł): mniej poświaty w sali — Bloom miejsca wyłączony na czas ekranu, własny Bloom słabszy (0,1 / 16 / próg 2,2), z kominka usunięte kule ognia z Neonu (zostaje żar), światło kominka 0,75 zamiast 1,1
 - [x] 2026-11-24 (Paweł): sala — okno z matowymi szybami w ramie, liście bez tekstury, bez dwóch frontowych chorągwi; kostur kota odsunięty od głowy (`BronPrzesuniecie`)
 - [x] 2026-11-24 (Paweł): kot trzyma kostur w łapce — prawe ramię odchylone w barku o 28° (`HOLD_SHOULDER_OUT`, atrybut `BronBarkStopnie`), bez przesuwania broni poza łapkę; księżyc w środkowym oknie cały w górnym łuku
+- [x] 2026-11-24 (Paweł): koło klas z kotami — Koci Rycerz i Koci Zwiadowca (`swiat/postacie/kot_klasy.py`, `WyborKlasyModele.Warrior/Scout`, ludziki jako `*_ludek`) obok Kota-Maga; koty klas trzymają kocią broń startową klasy; ta sama sala i kamera co przy wyborze rasy
+- [x] 2026-11-24 (Paweł): ikony ras z kotami (`Race<Id>_v2`, wgrane)
 - [ ] Zwiadowca to siatka z konta Karola — w opublikowanej grze zasób musi być udostępniony grze (D-044)
 - [ ] Zapis klasy w DataStore; animacje idle na modelach
 

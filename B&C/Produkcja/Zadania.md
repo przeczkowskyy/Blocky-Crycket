@@ -7,6 +7,7 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [x] 2026-11-24: trening AFK na `main` i w Studio (Paweł po rozmowie z Karolem); koty w ikonach ras, ramkach XP, selektorze klas; sklepy z NPC Karola — wgrane i sprawdzone w Play
 - [ ] Blocky & Crycket (D-140, D-141): za poziom Diamenty zamiast punktów statystyk i trening na stanowiskach AFK z paskiem — Karol potwierdza i wybiera, kto wdraża (pytanie 89); przy wdrożeniu przeliczyć tempo walk bez punktów za poziom · Karol, potem agent · #wysoki
 - [ ] Blocky & Crycket: zdjęcie blokad „tylko Studio” w pakietach przed wydaniem (pytanie 90) · Karol · #wysoki
 - [ ] Sklep: „tak” na wgranie ikon przedmiotów z Blendera (80 plików w `swiat/postacie/wynik/…/ikony/`) — do tego czasu kafelki z nazwą; potem wpisać ID do `src/shared/IkonyPrzedmiotow.luau` · Paweł albo Karol · #średni

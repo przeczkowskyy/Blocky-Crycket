@@ -14,6 +14,9 @@ tags: [postacie, rasy, kot-mag, modele]
 - Wymiary, kości i klipy zawsze z `swiat/postacie/kot_mag.py` (wariant = nowy plik, który wczytuje Kota-Maga i zmienia paletę oraz dodaje cechy; pliku Karola nie zmieniamy).
 - Dwie wersje każdej rasy (Paweł 23.11): w pełnym stroju jak na referencji i w stroju podstawowym (koszulka i spodenki, bez przedmiotów).
 
+## Koty klas w selektorze (24.11)
+Koci Rycerz i Koci Zwiadowca — stroje Rycerza i Zwiadowcy Karola przerobione na kości Kota-Maga (`swiat/postacie/kot_klasy.py`, propozycja; plików Karola nie zmieniamy). W selektorze klas zamiast ludzików; broń startowa w łapce z `Weapon_<klasa>_Kot`.
+
 ## Referencje (Higgsfield, Nano Banana 2.1, po jednej wersji; pliki w `assets/raw/RasyKoty/`, poza repozytorium)
 | Rasa | Plik | Stan |
 |---|---|---|

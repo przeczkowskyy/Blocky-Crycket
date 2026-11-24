@@ -39,7 +39,8 @@ def c3(h):
 
 
 def img(name):
-    i = MAN.get(name, {}).get("roblox_image")
+    # okna sklepów z NPC Karola (Paweł 24.11, tools/sklep_sprzedawca.py): wersja _v2, dopóki jej nie ma — stara
+    i = MAN.get(name + "_v2", {}).get("roblox_image") or MAN.get(name, {}).get("roblox_image")
     return f"rbxassetid://{i}" if i else "rbxassetid://0"
 
 

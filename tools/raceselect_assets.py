@@ -7,6 +7,9 @@
 2. Rzuty ras dla modelarza (Karol): assets/raw/RaceTurnarounds/<rasa>_v1.png -> assets/processed/RaceTurnarounds/<rasa>.jpg
    (2400 px szerokości, do podglądu i do Blendera jako tło referencyjne).
 3. src/shared/RaceIcons.luau z ID z assets/manifest.json (brak ID = rbxassetid://0).
+4. Wersja 2 — koty (Paweł 24.11, D-145): jeden arkusz 4 + 3 assets/raw/RaceSelect/ikony_koty_v2.png (Higgsfield,
+   job e5412fd0 — poprawka uszu joba 973181b6) -> assets/processed/RaceSelect/Race<Id>_v2.png. W RaceIcons.luau
+   wygrywa ID wersji 2 (Race<Id>_v2 w manifeście), dopóki go nie ma — stara ikona.
 
 Użycie: python tools/raceselect_assets.py
 """
@@ -75,8 +78,37 @@ def kola(im):
     return [(c0, r0, c1, r1) for (r0, r1) in rows for (c0, c1) in cols]
 
 
+def kola_4_3(im):
+    """Prostokąty siedmiu kół w arkuszu 4 + 3 (spójne obszary bez białego tła, rzędami od lewej)."""
+    from scipy import ndimage
+    g = np.asarray(im.convert("RGB")).astype(int).min(axis=2) <= 232
+    lab, _ = ndimage.label(ndimage.binary_fill_holes(ndimage.binary_closing(g, iterations=3)))
+    sl = ndimage.find_objects(lab)
+    duze = sorted(sl, key=lambda s: -(s[0].stop - s[0].start) * (s[1].stop - s[1].start))[:7]
+    sy = im.height / 2
+    gora = sorted((s for s in duze if (s[0].start + s[0].stop) / 2 < sy), key=lambda s: s[1].start)
+    dol = sorted((s for s in duze if (s[0].start + s[0].stop) / 2 >= sy), key=lambda s: s[1].start)
+    if len(gora) != 4 or len(dol) != 3:
+        raise SystemExit(f"arkusz ikon kotów: oczekiwane 4 + 3, jest {len(gora)} + {len(dol)}")
+    return [(s[1].start, s[0].start, s[1].stop, s[0].stop) for s in gora + dol]
+
+
+def koty():
+    p = RAW / "ikony_koty_v2.png"
+    if not p.exists():
+        return
+    sheet = Image.open(p)
+    for name, box in zip(ALL, kola_4_3(sheet)):
+        x0, y0, x1, y1 = box
+        icon = bez_tla(sheet.crop((x0 - 8, y0 - 8, x1 + 8, y1 + 8)))
+        icon.thumbnail((512, 512), Image.LANCZOS)
+        icon.save(OUT / f"Race{name}_v2.png")
+        print("ikona kota", f"Race{name}_v2.png", icon.size)
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
+    koty()
     sheet = Image.open(RAW / "ikony_v1.png")
     for name, box in zip(SHEET_ORDER, kola(sheet)):
         x0, y0, x1, y1 = box
@@ -99,7 +131,7 @@ def main():
     man = json.loads((ROOT / "assets/manifest.json").read_text(encoding="utf-8"))["assets"]
     lines = ["-- WYGENEROWANE przez tools/raceselect_assets.py z assets/manifest.json — nie edytuj ręcznie.", "return {"]
     for n in ALL:
-        i = man.get(f"Race{n}", {}).get("roblox_image")
+        i = man.get(f"Race{n}_v2", {}).get("roblox_image") or man.get(f"Race{n}", {}).get("roblox_image")
         lines.append(f'\tRace{n} = "rbxassetid://{i or 0}",')
     lines.append("}")
     (ROOT / "src/shared/RaceIcons.luau").write_text("\n".join(lines) + "\n", encoding="utf-8")
