@@ -2,22 +2,6 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-24T20:28:28+01:00",
- "prace": [
-  {
-   "id": "koty-ui-trening",
-   "tytul": "Koty: ikony ras, ramki XP, stroje klas, grafiki sklepów; trening na main",
-   "stan": "w_toku",
-   "start": "2026-11-24T20:28:28+01:00",
-   "koniec_szacowany": "2026-11-24T23:28:28+01:00",
-   "aktualizacja": "2026-11-24T20:28:28+01:00",
-   "obszary": [
-    "studio:WyborKlasyModele",
-    "src/client/ClassSelectClient.client.luau",
-    "assets"
-   ],
-   "kto": "Claude (przeczkowskyy)",
-   "komputer": "0c03c4ec"
-  }
- ]
+ "aktualizacja": "2026-11-24T21:01:25+01:00",
+ "prace": []
 }
