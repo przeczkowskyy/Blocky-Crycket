@@ -17,8 +17,8 @@ ZNANE SŁABOŚCI
 - Odłamki to płyty kory na wierzchu skorupy: po odpadnięciu pod spodem zostaje gładka skorupa i rdzeń.
 
 MODEL jajko_korowe „Jajko korowe (leśne)” (stwor)
-  wymiary ciała: 2,68 × 7,42 × 2,75; z akcesoriami: 2,68 × 7,42 × 2,75
-  trójkąty: 7420 (siatek: 9)
+  wymiary ciała: 2,82 × 7,42 × 2,81; z akcesoriami: 2,82 × 7,42 × 2,81
+  trójkąty: 7160 (siatek: 9)
   kości (10): Root, Podstawa, Jajko, Czubek, Odlamek1, Odlamek2, Odlamek3, Odlamek4, Krysztaly, Promien
   klipy: spoczynek 60 kl. 2,00 s pętla, napiecie 42 kl. 1,40 s jednorazowy, pekniecie 54 kl. 1,80 s jednorazowy
   punkty zaczepienia: RootAttachment, GlowaAttachment
@@ -32,11 +32,11 @@ UWAGI PODGLĄDU
 - klip spoczynek: kanał skali (Promien) — animacja Roblox najpewniej przenosi tylko pozycję i obrót kości
 
 KONTROLA EKSPORTÓW
-- jajko_korowe.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje brak -> ZGODNE
-- jajko_korowe__spoczynek.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje jajko_korowe|Scene 1-61 -> ZGODNE
-- jajko_korowe__napiecie.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje jajko_korowe|Scene 1-43 -> ZGODNE
-- jajko_korowe__pekniecie.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje jajko_korowe|Scene 1-55 -> ZGODNE
-- jajko_korowe.glb: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje napiecie 0-42, pekniecie 0-54, spoczynek 0-60 -> ZGODNE
+- jajko_korowe.fbx: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje brak -> ZGODNE
+- jajko_korowe__spoczynek.fbx: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje jajko_korowe|Scene 1-61 -> ZGODNE
+- jajko_korowe__napiecie.fbx: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje jajko_korowe|Scene 1-43 -> ZGODNE
+- jajko_korowe__pekniecie.fbx: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje jajko_korowe|Scene 1-55 -> ZGODNE
+- jajko_korowe.glb: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje napiecie 0-42, pekniecie 0-54, spoczynek 0-60 -> ZGODNE
 
 PLIKI
 - jajko_korowe.blend

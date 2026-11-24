@@ -904,3 +904,36 @@ Szczegóły: referencje 7 ras (jedna para uszu u elfów i goblina): [[Rasy jako 
 
 Szczegóły: D-142 (Paweł 23.11) mówi „według poziomu, nie według krainy”; pomysł ze strefami ją zmienia, dlatego wariant zgodny z D-142 jest w notatce. Koszt ikon: 15 arkuszy po 6 ikon.
 **Odpowiedź:**
+
+## 95. Katakumby i kolejne lochy: 10 przeciwników po kolei
+- Paweł 24.11: loch „Katakumby”, 10 przeciwników jako modele 3D, E = walka, kolejno bez przeskakiwania; lista przeciwników „bardzo okej” — [[Katakumby — pierwszy loch (propozycja)]]. Lochy 2 i 3 (Zatopiony Galeon 16–26, Psia Twierdza 26–36): [[Lochy 2 i 3 — Zatopiony Galeon i Psia Twierdza (propozycja)]].
+- Agent: liniowa droga z kratami otwieranymi osobno dla gracza zamiast otwartej mapy (otwarta mapa to już las), postęp 4/10 zapisany.
+- Do wyboru: (a) modele robi strona Karola (5 gryzoni na jednym szkielecie + 5 osobnych); (b) agent Pawła krok po kroku; osobno wejście: Korzenna Gardziel w lesie / hala portali w mieście (D-042) / oba.
+
+Szczegóły: poziomy robocze 5–15 (#5 i #10 to ściany), łup za pierwsze pokonanie, powtórki z pomijaniem animacji (D-078). Dotyka pytania 3 w [[Biom Las]] („Loch lasu”).
+**Odpowiedź:**
+
+## 96. Rzadkość przedmiotów: ile statystyk na stopień?
+- Paweł 24.11: zwykły 1–2 statystyki, epicki do 3 i mocniej, legendarny do wszystkich, do tego sekretne; mini-boss i boss mają lepsze szanse — [[Rzadkość przedmiotów — zwykłe, epickie, legendarne, sekretne (propozycja)]].
+- Agent: legenda daje połowę budżetu w główną statystykę klasy + pasywkę, żeby nie była najlepsza dla każdej klasy po równo.
+- Do wyboru: (a) jak w notatce; (b) legenda po równo na wszystkie; osobno: tier Rzadki (niebieski) zostaje / wypada; licznik pecha tak / nie.
+
+Szczegóły: mnożniki budżetu ×1,0 / ×1,4 / ×1,8 i szanse są robocze — do kalkulatora `tools/walka/balans.py`. Zastępuje tabelę rzadkości w [[Przedmioty — zestawy v1]]; rozwija D-142.
+**Odpowiedź:**
+
+## 97. Bez Blocky'ego: gra o kotach, nowa nazwa później?
+- Paweł 24.11: nie nawiązujemy do Blocky'ego, gra „po prostu o kotkach”, w stylu Shakes & Fidget; ekran ładowania i nazwę przerobić później.
+- Zmienia część D-145 (Blocky jako właściciel kotów) — czeka na zdanie Karola.
+- Do wyboru: (a) zgoda, nazwa i ekran ładowania na osobnej sesji; (b) Blocky zostaje jako NPC; (c) rozmowa na sesji.
+
+Szczegóły: tytuł „Blocky & Crycket” bez Blocky'ego traci sens — nowa nazwa dotknie ekranu ładowania ([[Ekran ładowania]]), strony gry i miniatur; repo i nazwy w kodzie mogą zostać. Uwaga agenta (D-114): zgoda — „Cat” w nazwie pomaga w wyszukiwaniu na Roblox, a kot jest jednym rozpoznawalnym bohaterem.
+**Odpowiedź:**
+
+## 95. Karol: mistrz gier i jajko korowe — podpięcie u Ciebie
+- Okno mistrza gier działa (D-053): nagrody wypłaca dziś testowe „przyznaj” Twojego stanu gracza, a płatny rzut odmawia, bo źródła „MistrzGier” nie ma w `DaneStanu.wydatki.zrodla`.
+- Jajko korowe (model z Blendera, wyklucie, podpowiedź z szansami) stoi jako baza u Pawła i kupuje przez haczyk `SterowanieSerwera("kup")` Twoich petów.
+- Do wyboru: (a) dopisujesz „MistrzGier” do wydatków i dajesz źródło nagród, a nowe jajko zastępuje model przy Twoim inkubatorze; (b) agent Pawła robi to na gałęzi, Ty oglądasz; (c) zostaje próbą.
+
+Szczegóły: pliki `src/server/MistrzGier.server.luau`, `src/server/JajkoKorowe.server.luau`, `swiat/postacie/jajko_korowe.py`; Twoich plików nikt nie zmieniał.
+**Odpowiedź:**
+

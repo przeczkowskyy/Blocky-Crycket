@@ -12,61 +12,61 @@
      "trojkaty": 1052,
      "wierzcholki": 570,
      "wymiary": [
-      2.678,
+      2.812,
       0.984,
-      2.678
+      2.812
      ],
      "min": [
-      -1.339,
+      -1.406,
       -0.074,
-      -1.339
+      -1.406
      ],
      "max": [
-      1.339,
+      1.406,
       0.91,
-      1.339
+      1.406
      ]
     },
     {
      "nazwa": "Jajko_Geo",
      "kosc": "Jajko",
-     "trojkaty": 4364,
-     "wierzcholki": 2408,
+     "trojkaty": 4212,
+     "wierzcholki": 2312,
      "wymiary": [
-      1.896,
-      2.413,
-      1.834
+      2.033,
+      2.138,
+      1.979
      ],
      "min": [
-      -0.915,
+      -0.987,
       0.3,
-      -0.917
+      -0.989
      ],
      "max": [
-      0.981,
-      2.713,
-      0.917
+      1.046,
+      2.438,
+      0.99
      ]
     },
     {
      "nazwa": "Czubek_Geo",
      "kosc": "Czubek",
-     "trojkaty": 1616,
-     "wierzcholki": 900,
+     "trojkaty": 1508,
+     "wierzcholki": 828,
      "wymiary": [
-      1.291,
-      1.148,
-      1.281
+      1.395,
+      1.02,
+      1.385
      ],
      "min": [
-      -0.645,
-      1.722,
-      -0.635
+      -0.697,
+      1.56,
+      -0.686
      ],
      "max": [
-      0.646,
-      2.87,
-      0.646
+      0.698,
+      2.58,
+      0.699
      ]
     },
     {
@@ -76,18 +76,18 @@
      "wierzcholki": 32,
      "wymiary": [
       0.458,
-      0.496,
-      0.313
+      0.497,
+      0.314
      ],
      "min": [
-      -0.622,
-      1.302,
-      0.583
+      -0.657,
+      1.154,
+      0.648
      ],
      "max": [
-      -0.164,
-      1.798,
-      0.896
+      -0.199,
+      1.651,
+      0.962
      ]
     },
     {
@@ -97,18 +97,18 @@
      "wierzcholki": 32,
      "wymiary": [
       0.473,
-      0.496,
-      0.28
+      0.497,
+      0.279
      ],
      "min": [
-      0.074,
-      1.352,
-      0.629
+      0.102,
+      1.199,
+      0.698
      ],
      "max": [
-      0.547,
-      1.848,
-      0.909
+      0.575,
+      1.696,
+      0.977
      ]
     },
     {
@@ -118,18 +118,18 @@
      "wierzcholki": 32,
      "wymiary": [
       0.485,
-      0.496,
-      0.23
+      0.497,
+      0.229
      ],
      "min": [
-      -0.419,
-      1.052,
-      0.722
+      -0.434,
+      0.929,
+      0.795
      ],
      "max": [
-      0.066,
-      1.548,
-      0.952
+      0.051,
+      1.426,
+      1.024
      ]
     },
     {
@@ -139,18 +139,18 @@
      "wierzcholki": 32,
      "wymiary": [
       0.35,
-      0.496,
+      0.497,
       0.435
      ],
      "min": [
-      0.519,
-      1.202,
-      0.269
+      0.581,
+      1.064,
+      0.312
      ],
      "max": [
-      0.869,
-      1.698,
-      0.704
+      0.931,
+      1.561,
+      0.747
      ]
     },
     {
@@ -159,19 +159,19 @@
      "trojkaty": 72,
      "wierzcholki": 48,
      "wymiary": [
-      2.655,
+      2.808,
       0.266,
-      2.699
+      2.774
      ],
      "min": [
-      -1.337,
+      -1.415,
       0.149,
       -1.409
      ],
      "max": [
-      1.318,
+      1.393,
       0.415,
-      1.29
+      1.365
      ]
     },
     {
@@ -196,7 +196,7 @@
      ]
     }
    ],
-   "trojkaty_razem": 7420,
+   "trojkaty_razem": 7160,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 15
@@ -204,25 +204,25 @@
    "typ": "stwor",
    "skala": 1.0,
    "wymiary_ciala": [
-    2.678,
+    2.821,
     7.424,
-    2.748
+    2.815
    ],
    "wymiary_z_akcesoriami": [
-    2.678,
+    2.821,
     7.424,
-    2.748
+    2.815
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.339,
+     -1.415,
      -0.074,
      -1.409
     ],
     [
-     1.339,
+     1.406,
      7.35,
-     1.339
+     1.406
     ]
    ],
    "kosci": [
@@ -282,10 +282,10 @@
   "klip spoczynek: kanał skali (Promien) — animacja Roblox najpewniej przenosi tylko pozycję i obrót kości"
  ],
  "kontrola": [
-  "jajko_korowe.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje brak -> ZGODNE",
-  "jajko_korowe__spoczynek.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje jajko_korowe|Scene 1-61 -> ZGODNE",
-  "jajko_korowe__napiecie.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje jajko_korowe|Scene 1-43 -> ZGODNE",
-  "jajko_korowe__pekniecie.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje jajko_korowe|Scene 1-55 -> ZGODNE",
-  "jajko_korowe.glb: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje napiecie 0-42, pekniecie 0-54, spoczynek 0-60 -> ZGODNE"
+  "jajko_korowe.fbx: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje brak -> ZGODNE",
+  "jajko_korowe__spoczynek.fbx: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje jajko_korowe|Scene 1-61 -> ZGODNE",
+  "jajko_korowe__napiecie.fbx: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje jajko_korowe|Scene 1-43 -> ZGODNE",
+  "jajko_korowe__pekniecie.fbx: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje jajko_korowe|Scene 1-55 -> ZGODNE",
+  "jajko_korowe.glb: siatki 11, kości 10, trójkąty 7184, wzrost 7.42 st., akcje napiecie 0-42, pekniecie 0-54, spoczynek 0-60 -> ZGODNE"
  ]
 }

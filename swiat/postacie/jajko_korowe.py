@@ -3,7 +3,7 @@
 poprzecinana świecącymi szmaragdowymi szczelinami, osadzona w kanciastych korzeniach z niebieskimi grzybkami
 i kryształkami) i jego wyklucie w trzech klatkach. Status: propozycja. Plik Karola jajko_lesne.py zostaje bez zmian.
 
-Budowa (te same proporcje jajka co jajko_lesne: 2,54 × 1,7, pety_lesne.jajko_gladkie):
+Budowa (pety_lesne.jajko_gladkie; od 24.11 wieczorem pękatsze 2,25 × 1,85 — Paweł):
   - skorupa z dwóch elipsoid w kolorze ciemnego mchu z płytami kory (pionowe, lekko skręcone) i kępkami mchu;
   - świecące szmaragdowe szczeliny (Neon) w zygzakach między płytami kory;
   - czubek (pokrywa) i cztery odłamki przodu na osobnych kościach — odpadają przy wykluciu;
@@ -41,13 +41,16 @@ PALETA = {
     "grzyb": "4FC3F7", "grzyb_trzon": "BFE9F7", "krysztal": "5CF2D6",
 }
 
-WYS, SZER, CZUBEK_Y = 2.54, 1.7, 1.62
+# Paweł 24.11: „bardziej jajkowate, nie takie podłużne” — niższe i szersze (było 2,54 × 1,7)
+WYS, SZER = 2.25, 1.85
+CZUBEK_Y = round(0.64 * WYS, 3)
 WYS_CZUBKA = WYS - CZUBEK_Y
 PODSTAWA = 0.35          # wysokość, na której jajko siedzi w korzeniach
 # szczeliny: azymuty pionowych zygzaków (0 = przód +Z); na odłamkach przodu leżą ich górne części
 SZCZELINY = (-150, -95, -45, 0, 40, 100, 160)
 # odłamki przodu (kość, azymut środka, y od spodu jajka) — odpadają w klatce 2
-ODLAMKI = (("Odlamek1", -28, 1.25), ("Odlamek2", 22, 1.3), ("Odlamek3", -12, 1.0), ("Odlamek4", 55, 1.15))
+ODLAMKI = (("Odlamek1", -28, 0.49 * WYS), ("Odlamek2", 22, 0.51 * WYS), ("Odlamek3", -12, 0.39 * WYS),
+           ("Odlamek4", 55, 0.45 * WYS))
 
 
 def _na_powierzchni(y, azymut, ks=None, wglab=0.0):
@@ -94,22 +97,23 @@ def _skorupa(p):
     jajko_gladkie(p, "Jajko", "Czubek", 1.0, CZUBEK_Y, WYS, SZER, "kora_ciemna", kolor_wnetrza="rdzen")
     with p.na("Jajko", od="staw"):
         # płyty kory i mchu na całej skorupie (rzędy przesunięte o pół płyty), poza miejscami odłamków
-        for r, y in enumerate((0.3, 0.68, 1.04, 1.38)):
+        for r, y in enumerate((0.12 * WYS, 0.27 * WYS, 0.41 * WYS, 0.545 * WYS)):
             for c in range(12):
                 az = c * 30 + (15 if r % 2 else 0)
                 if any(abs(((az - a + 180) % 360) - 180) < 20 and abs(y - yy) < 0.3 for _, a, yy in ODLAMKI):
                     continue
-                szer = (0.34, 0.36, 0.32, 0.22)[r]
+                szer = (0.38, 0.4, 0.36, 0.25)[r]
                 _plyta(p, "Kora", y, az, 0.4, szer, KOLORY_KORY[(c + r) % len(KOLORY_KORY)], skret=(-1) ** c * 7,
                        ks="dol")
         for i, az in enumerate(SZCZELINY):
             _zygzak(p, az, 0.12, CZUBEK_Y - 0.02, ks="dol", faza=i)
         for i, az in enumerate((-120, 15, 130, -60, 75)):
-            x, z = _na_powierzchni(0.35 + 0.22 * i, az, "dol", wglab=-0.02)
-            p.kula("Mech", (x, 0.35 + 0.22 * i, z), (0.3, 0.16, 0.3), "mech_jasny", "matowy", segm=8)
+            yy = (0.14 + 0.09 * i) * WYS
+            x, z = _na_powierzchni(yy, az, "dol", wglab=-0.02)
+            p.kula("Mech", (x, yy, z), (0.3, 0.16, 0.3), "mech_jasny", "matowy", segm=8)
     # czubek (pokrywa): płyty kory i szczeliny na kopułce
     with p.na("Czubek", od="staw"):
-        for r, y in enumerate((CZUBEK_Y + 0.18, CZUBEK_Y + 0.5)):
+        for r, y in enumerate((CZUBEK_Y + 0.08 * WYS, CZUBEK_Y + 0.21 * WYS)):
             for c in range(10 if r == 0 else 6):
                 az = c * (36 if r == 0 else 60) + (18 if r else 0)
                 _plyta(p, "Kora czubka", y, az, 0.34, 0.3 if r == 0 else 0.26, KOLORY_KORY[(c + r) % 6],
@@ -130,19 +134,19 @@ def _podstawa(p):
     with p.na("Podstawa", od="staw"):
         for i in range(8):
             a = math.radians(i * 45 + 10)
-            r = 0.95 + 0.12 * (i % 2)
+            r = 0.55 * SZER + 0.12 * (i % 2)
             dl, wy = (0.75, 0.55) if i % 2 == 0 else (0.6, 0.42)
             p.blok("Korzen", (r * math.sin(a), wy / 2 - 0.05, r * math.cos(a)), (0.5, wy, dl),
                    "korzen" if i % 3 else "korzen_ciemny", "matowy", rot=(0, math.degrees(a), (-1) ** i * 9), faza=0.08)
             p.blok("Mech korzenia", (r * math.sin(a), wy - 0.02, r * math.cos(a)), (0.46, 0.08, dl - 0.1),
                    "mech_korzeni", "matowy", rot=(0, math.degrees(a), (-1) ** i * 9), faza=0.02)
-        for i, (az, r, h) in enumerate(((-55, 1.05, 0.42), (40, 1.2, 0.34), (150, 1.1, 0.38))):
+        for i, (az, r, h) in enumerate(((-55, 1.13, 0.42), (40, 1.28, 0.34), (150, 1.18, 0.38))):
             a = math.radians(az)
             x, z = r * math.sin(a), r * math.cos(a)
             p.walec("Grzyb trzon", (x, 0.35 + h / 2, z), (0.1, h, 0.1), "grzyb_trzon", "matowy", segm=6)
             p.kula("Grzyb kapelusz", (x, 0.35 + h + 0.05, z), (0.36, 0.18, 0.36), "grzyb", "swiecacy", segm=8)
     with p.na("Krysztaly", od="staw"):
-        for i, (az, r, s) in enumerate(((-20, 1.3, 0.22), (70, 1.35, 0.16), (115, 1.25, 0.2), (-100, 1.3, 0.18),
+        for i, (az, r, s) in enumerate(((-20, 1.38, 0.22), (70, 1.43, 0.16), (115, 1.33, 0.2), (-100, 1.38, 0.18),
                                         (-160, 1.2, 0.15), (200, 1.45, 0.12))):
             a = math.radians(az)
             s *= 0.6
