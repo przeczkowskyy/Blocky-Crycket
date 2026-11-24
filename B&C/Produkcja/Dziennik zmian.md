@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-24 · Claude Code u Pawła (wszystkie rasy jako koty w wyborze rasy)
+- Paweł: „na bazie referencji pozostałe modele kotków i dodajmy”. Elf, mroczny elf, ork, goblin i półbóg jako warianty Kota-Maga (`swiat/postacie/koty_ras.py`, propozycja): pełny strój i strój podstawowy; elfy i goblin z dwoma kocimi uszami (zasada Pawła). Studio: `Workspace/KotRasyPodglad` (`tools/studio/koty_ras_studio.py`), wybór rasy: `Race_<Id>` = kot w stroju podstawowym ×1,4 (`tools/studio/koty_ras_wybor.luau`), ludziki jako `Race_<Id>_ludek`. Sprawdzone w Play.
+- Goblin poprawiony na prośbę Pawła („nos wygląda sztucznie — popraw cały model, żeby pasował do referencji, tylko w bazowym ubranku”): zakrzywiony nos w kolorze futra, grube groźne brwi, chytry uśmiech z ząbkami i kiełkiem na wierzchu pyszczka, brązowe rumieńce, futro bez pręg, zielone wnętrza uszu.
+- Przed tym: potwierdzone, że trening AFK jest na `origin/main` (Karol dostanie go przy `git pull`).
+- Notatki: [[Rasy jako koty — referencje]], [[Selektor bohatera]].
+
 ## 2026-11-24 · Claude Code u Pawła (koty w UI i w selektorze klas; trening AFK na main)
 - Paweł: „po konsultacjach z Karolem” trening AFK (D-141) ma działać też u Karola — trzy pliki treningu z gałęzi `pawel/diamenty-afk` przeniesione na `main` (`src/server/TreningAFK.server.luau`, `src/client/TreningAFKClient.client.luau`, `src/shared/TreningAFKDane.luau`) i wdrożone w Studio. Diamenty za poziom (D-140, zmiany w `swiat/stan_gracza` Karola) zostały na gałęzi — Paweł mówił tylko o treningu. Statusy D-140/D-141 bez zmian (potwierdzenie Karola w panelu — pytanie 89).
 - Ikony wyboru rasy z kotami: jeden arkusz 4 + 3 (Higgsfield, Nano Banana 2.1, job 973181b6 + poprawka uszu e5412fd0 — elfy i goblin z jedną parą uszu) -> `Race<Id>_v2.png` (`tools/raceselect_assets.py`).

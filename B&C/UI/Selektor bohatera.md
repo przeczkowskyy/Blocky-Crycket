@@ -53,6 +53,7 @@ tags: [ui, klasy, wybór]
 - [x] 2026-11-24 (Paweł): kot trzyma kostur w łapce — prawe ramię odchylone w barku o 28° (`HOLD_SHOULDER_OUT`, atrybut `BronBarkStopnie`), bez przesuwania broni poza łapkę; księżyc w środkowym oknie cały w górnym łuku
 - [x] 2026-11-24 (Paweł): koło klas z kotami — Koci Rycerz i Koci Zwiadowca (`swiat/postacie/kot_klasy.py`, `WyborKlasyModele.Warrior/Scout`, ludziki jako `*_ludek`) obok Kota-Maga; koty klas trzymają kocią broń startową klasy; ta sama sala i kamera co przy wyborze rasy
 - [x] 2026-11-24 (Paweł): ikony ras z kotami (`Race<Id>_v2`, wgrane)
+- [x] 2026-11-24 (Paweł): wszystkie rasy w wyborze rasy to koty (`swiat/postacie/koty_ras.py`, `Race_<Id>`, ludziki jako `*_ludek`); goblin według referencji
 - [ ] Zwiadowca to siatka z konta Karola — w opublikowanej grze zasób musi być udostępniony grze (D-044)
 - [ ] Zapis klasy w DataStore; animacje idle na modelach
 

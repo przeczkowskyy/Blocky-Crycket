@@ -14,6 +14,9 @@ tags: [postacie, rasy, kot-mag, modele]
 - Wymiary, kości i klipy zawsze z `swiat/postacie/kot_mag.py` (wariant = nowy plik, który wczytuje Kota-Maga i zmienia paletę oraz dodaje cechy; pliku Karola nie zmieniamy).
 - Dwie wersje każdej rasy (Paweł 23.11): w pełnym stroju jak na referencji i w stroju podstawowym (koszulka i spodenki, bez przedmiotów).
 
+## Wszystkie rasy jako koty (24.11)
+Paweł 24.11: pozostałe koty ras na bazie referencji — `swiat/postacie/koty_ras.py` (jak `kot_demon.py`: własna kopia Kota-Maga, inna paleta i cechy rasy; dwie wersje: pełny strój i podstawowy). W Studio `Workspace/KotRasyPodglad` (`tools/studio/koty_ras_studio.py`), w wyborze rasy wersje podstawowe ×1,4 (`tools/studio/koty_ras_wybor.luau`); ludziki zostały jako `Race_<Id>_ludek`.
+
 ## Koty klas w selektorze (24.11)
 Koci Rycerz i Koci Zwiadowca — stroje Rycerza i Zwiadowcy Karola przerobione na kości Kota-Maga (`swiat/postacie/kot_klasy.py`, propozycja; plików Karola nie zmieniamy). W selektorze klas zamiast ludzików; broń startowa w łapce z `Weapon_<klasa>_Kot`.
 
@@ -22,10 +25,10 @@ Koci Rycerz i Koci Zwiadowca — stroje Rycerza i Zwiadowcy Karola przerobione n
 |---|---|---|
 | Człowiek | sam Kot-Mag (`swiat/postacie/wynik/kot_mag/kot_mag_bohater.jpg`) | baza; w wyborze rasy rudy kot w koszulce i niebieskich spodenkach (`kot_demon.czlowiek_podstawowy()`, `Race_Human`) |
 | Demon | `kot_demon.png` (wersja 2; czerwone futro, czarne rogi przez rondo, żółte oczy, kieł, ogon ze szpicem, czarna szata z czerwonym obszyciem, kostur z płomieniem) | **zatwierdzony przez Pawła 23.11** — zbudowany 24.11 (`swiat/postacie/kot_demon.py`: pełny strój i podstawowy, klipy Kota-Maga), w Studio `Workspace/KotDemonPodglad`, w wyborze rasy jako `Race_Demon` |
-| Elf | `kot_elf.png` | do akceptacji (uszy — patrz uwaga wyżej) |
-| Mroczny elf | `kot_mroczny_elf.png` (wygenerowany 24.11 osobno — pierwsze zlecenie odrzucił limit 4 zadań naraz) | do akceptacji (uszy — patrz uwaga wyżej) |
-| Ork | `kot_ork.png` | do akceptacji |
-| Goblin | `kot_goblin.png` | do akceptacji (uszy — patrz uwaga wyżej) |
-| Półbóg | `kot_polbog.png` | do akceptacji |
+| Elf | `kot_elf.png` | zbudowany 24.11 (`swiat/postacie/koty_ras.py`: kremowe futro, długie złote włosy po bokach twarzy, zielone oczy; pełny strój i podstawowy), w wyborze rasy `Race_Elf` |
+| Mroczny elf | `kot_mroczny_elf.png` (wygenerowany 24.11 osobno — pierwsze zlecenie odrzucił limit 4 zadań naraz) | zbudowany 24.11 (lawendowe futro, długie białe włosy, fioletowe oczy), `Race_DarkElf` |
+| Ork | `kot_ork.png` | zbudowany 24.11 (oliwkowe futro, kły, czarny kok, groźne brwi), `Race_Orc` |
+| Goblin | `kot_goblin.png` | zbudowany 24.11, poprawiony według referencji na prośbę Pawła (zakrzywiony nos, groźne brwi, chytry uśmiech z ząbkami, rumieńce, limonkowe futro bez pręg; dwa kocie uszy), `Race_Goblin` |
+| Półbóg | `kot_polbog.png` | zbudowany 24.11 (złote futro, świecące turkusowe oczy, aureola z klocków), `Race_Demigod` |
 
 Plansza zbiorcza: `assets/raw/RasyKoty/koty_rasy_plansza.jpg`. Koszt: 7 obrazków × 2 kredyty (demon w dwóch podejściach).
