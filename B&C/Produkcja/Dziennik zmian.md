@@ -6,6 +6,16 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-24 · Claude Code u Pawła (leśne jajo z projektu Pawła 1:1, scenka z jego dymkiem, pet ze słupa światła)
+- **Model:** jajo z projektu 3D Pawła („Leśne jajo 3D”) wgrane za jego „tak” jako zasób 92671202213818 i ustawione w `Workspace/JajkoKorowePodglad` skryptem `tools/studio/jajo_lesne_ustaw.luau` (kolory kryształów i grzybków, świecące pęknięcia z maski, skala ×1,5); zastępuje jajo z klocków. Tekstury: JajoLesneKolor 99671035760393, JajoLesneBlask 70749662306023.
+- **Scenka otwierania** (`src/client/JajkoKoroweClient.client.luau`): kamera przed jajem, gracz niewidoczny, 5 kliknięć z komiksowymi dymkami (grafika Pawła, DymekKomiks 105383434661458), skorupa odlatuje w dwóch częściach, słup światła. Sprawdzone w Play do słupa światła.
+- **Pet ze słupa światła** (prośba Pawła): po słupie wyłania się trafiony pet (model z klocków przez `RigPetow` Karola), nazwa nad nim, rzadkość pod nim. Wgrane do Studio, **nie obejrzane jeszcze w Play** — do sprawdzenia przez Pawła.
+- **Karta petów:** tło KartaPetowJajka 84906898270329, opisy umiejętności w dwóch linijkach, „Rybek” zamiast „Złota” na wyświetlaniu (D-146).
+- **Miejsce:** jajo przeniesione z (983, −652) — za niewidzialną ścianą miasteczka — na (955, −695), obok zagrody petów.
+- **Pytania do Karola:** [[Pytania otwarte]] 98 (dawne drugie 95, rozszerzone o dylematy jaja) i 99 (dolna siatka u kowala).
+- Do wyjaśnienia: model jaja dwa razy zniknął z trybu edycji (wygląda na cofnięcie zmian w Studio); wstawiony ponownie tym samym skryptem.
+- Pliki: `src/client/JajkoKoroweClient.client.luau`, `tools/studio/jajo_lesne_ustaw.luau`, `assets/processed/JajoLesne/`, `assets/processed/Dymek/`, `assets/manifest.json`.
+
 ## 2026-11-24 · Claude Code u Pawła (Katakumby — pierwszy loch, rzadkość przedmiotów, bez Blocky'ego)
 - **Lochy 2 i 3** (prośba Pawła): [[Lochy 2 i 3 — Zatopiony Galeon i Psia Twierdza (propozycja)]] — Zatopiony Galeon (16–26, stwory morskie, kot w bańce) i Psia Twierdza (26–36, psy Barona von Hau); trudność rośnie liczbą mechanik na przeciwnika (1 → 2 → 3). Pytanie 95 rozszerzone.
 - **Loch:** propozycja [[Katakumby — pierwszy loch (propozycja)]] — nazwa „katakumby” od Pawła, 10 przeciwników po kolei (Mysz Podjadaczka … Szczurzy Król), liniowa droga z kratami dla gracza, mini-boss #5 i boss #10 z lepszym łupem. Pytanie 95.
@@ -27,7 +37,7 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 ## 2026-11-24 · Claude Code u Pawła (okna kowala i mistrza gier działają; jajko korowe z wykluciem; rybka w HUD)
 - Po „tak” Pawła wgrane do Roblox: ikona `GoldFish` i kafelki okien kowala, jajka i mistrza gier (13 obrazów, ID w `assets/manifest.json`). Złota moneta w HUD to teraz rybka.
 - **Okno kowala** (`src/gui/OknoKowala`, `src/client/OknoKowalaClient.client.luau`): E przy kowalu otwiera nowe okno nad logiką Karola (`KowalProba/Zdalne/Kuznia`: widok, ulepsz, rozbierz) — przedmioty klasy, przed/po, statystyki, poziom, materiały, zapas, koszt w Rybkach; jego tymczasowe okno zamykamy jego haczykiem. Sprawdzone w Play.
-- **Mistrz gier** (D-053; `src/server/MistrzGier.server.luau`, `src/client/OknoMistrzaGierClient.client.luau`, `src/gui/OknoMistrzaGier`): E „Zagraj” w karczmie → plansza 26 pól (start + 25, gwiazda na końcu = nowa plansza ×1,5), kostka na serwerze, pionek = kocia ikona rasy gracza, darmowy rzut co 60 s (próba), płatne od 50 Rybek ×1,6. Nagrody idą do gracza przez testowe „przyznaj” stanu gracza Karola; płatny rzut czeka na dopisanie źródła „MistrzGier” u Karola (pytanie 95). Sprawdzone w Play: rzut, ruch pionka, wypłata.
+- **Mistrz gier** (D-053; `src/server/MistrzGier.server.luau`, `src/client/OknoMistrzaGierClient.client.luau`, `src/gui/OknoMistrzaGier`): E „Zagraj” w karczmie → plansza 26 pól (start + 25, gwiazda na końcu = nowa plansza ×1,5), kostka na serwerze, pionek = kocia ikona rasy gracza, darmowy rzut co 60 s (próba), płatne od 50 Rybek ×1,6. Nagrody idą do gracza przez testowe „przyznaj” stanu gracza Karola; płatny rzut czeka na dopisanie źródła „MistrzGier” u Karola (pytanie 98, dawniej drugie 95). Sprawdzone w Play: rzut, ruch pionka, wypłata.
 - **Jajko korowe** (baza u Pawła): Paweł zrezygnował z okna — nad jajkiem po podejściu wisi podpowiedź z szansami (obrazek panelu petów z grafiki okna jajka, nazwy, szanse, rzadkości, cena), E kupuje przez serwer petów Karola (jego haczyk), wyklucie u wszystkich w pobliżu: pulsujące pęknięcia, napięcie, odłamki, pokrywa, rdzeń w kolorze rzadkości, słup światła z poświatą, iskry, napis z petem (`src/server/JajkoKorowe.server.luau`, `src/client/JajkoKoroweClient.client.luau`). Model pękatszy i bardziej jajowaty (2,25 × 1,85, Paweł). Nowe tekstury jajka (Higgsfield, z referencji Pawła: kora, korzeń, mech, skorupa; `tools/jajko_tekstury.py`) czekają na „tak” do wgrania.
 - Narzędzia: `tools/okna_build_gui.py`, `tools/studio/deploy_serwer.py`.
 

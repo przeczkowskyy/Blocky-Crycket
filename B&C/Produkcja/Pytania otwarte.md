@@ -929,11 +929,21 @@ Szczegóły: mnożniki budżetu ×1,0 / ×1,4 / ×1,8 i szanse są robocze — d
 Szczegóły: tytuł „Blocky & Crycket” bez Blocky'ego traci sens — nowa nazwa dotknie ekranu ładowania ([[Ekran ładowania]]), strony gry i miniatur; repo i nazwy w kodzie mogą zostać. Uwaga agenta (D-114): zgoda — „Cat” w nazwie pomaga w wyszukiwaniu na Roblox, a kot jest jednym rozpoznawalnym bohaterem.
 **Odpowiedź:**
 
-## 95. Karol: mistrz gier i jajko korowe — podpięcie u Ciebie
+## 98. Karol: mistrz gier i leśne jajo — podpięcie u Ciebie
 - Okno mistrza gier działa (D-053): nagrody wypłaca dziś testowe „przyznaj” Twojego stanu gracza, a płatny rzut odmawia, bo źródła „MistrzGier” nie ma w `DaneStanu.wydatki.zrodla`.
-- Jajko korowe (model z Blendera, wyklucie, podpowiedź z szansami) stoi jako baza u Pawła i kupuje przez haczyk `SterowanieSerwera("kup")` Twoich petów.
-- Do wyboru: (a) dopisujesz „MistrzGier” do wydatków i dajesz źródło nagród, a nowe jajko zastępuje model przy Twoim inkubatorze; (b) agent Pawła robi to na gałęzi, Ty oglądasz; (c) zostaje próbą.
+- Leśne jajo Pawła (model z jego projektu 3D, karta petów, scenka z klikaniem, pet wyłania się ze słupa światła) stoi w miasteczku obok Twojej zagrody i kupuje przez haczyk `SterowanieSerwera("kup")` Twoich petów.
+- Do wyboru: (a) dopisujesz „MistrzGier” do wydatków i dajesz źródło nagród, a nowe jajo zastępuje model przy Twoim inkubatorze; (b) agent Pawła robi to na gałęzi, Ty oglądasz; (c) zostaje próbą.
+- Trzy dylematy do jaja: gdzie ma stać na stałe; czy oddajesz budowę modeli petów poza Studio; czy opisy umiejętności mówią „Rybki” zamiast „Złoto” (D-146).
 
-Szczegóły: pliki `src/server/MistrzGier.server.luau`, `src/server/JajkoKorowe.server.luau`, `swiat/postacie/jajko_korowe.py`; Twoich plików nikt nie zmieniał.
+Szczegóły: pliki `src/server/MistrzGier.server.luau`, `src/server/JajkoKorowe.server.luau`, `src/client/JajkoKoroweClient.client.luau`, `tools/studio/jajo_lesne_ustaw.luau`; Twoich plików nikt nie zmieniał. Numer zmieniony z 95 na 98 (24.11 dwa pytania dostały numer 95).
+Dopisek z 2026-11-24 (wieczór), dylematy szerzej: (1) miejsce — jajo stało za północną ścianą miasteczka (983, −652), gdzie gracz nie dojdzie; przeniesione na próbę na (955, −695), obok zagrody petów i stacji treningu Siły — czy tam zostaje, czy staje w lesie zamiast Twojego inkubatora. (2) Pet nad jajem i podobizny na karcie budują się Twoim `RigPetow.zbuduj`, a ten moduł poza Studio zwraca pustą tabelę — w wydanej grze byłyby same napisy (zob. pytanie 90). (3) Klient jaja podmienia w opisach „Złota” na „Rybek” tylko na wyświetlaniu; dane w `DanePetow` zostają Twoje. (4) Scenka u kupującego czeka na 5 kliknięć (bez kliknięcia idzie dalej sama po 7 s), inni gracze widzą wyklucie od razu — to odpowiedź Pawła na D-060 (wyklucie samo czy z klikaniem), do Twojego potwierdzenia.
 **Odpowiedź:**
 
+
+## 99. Karol: dolna siatka u kowala — zapasy do rozbiórki?
+- Nowe okno kowala Pawła ma pod przedmiotami siatkę pustych slotów; Paweł pytał, do czego służą.
+- Propozycja agenta: pokazywać tam zapasowe przedmioty (te, które Twoja kuźnia pozwala rozebrać na materiały), klik = rozbierz.
+- Do wyboru: (a) tak, zapasy do rozbiórki; (b) siatka na materiały; (c) usunąć siatkę z okna.
+
+Szczegóły: okno `src/client/OknoKowalaClient.client.luau` korzysta z Twojego zdalnego `KowalProba/Zdalne/Kuznia` („widok”, „ulepsz”, „rozbierz”) bez zmian u Ciebie; Paweł jeszcze nie wybrał.
+**Odpowiedź:**
