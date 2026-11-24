@@ -11,7 +11,8 @@
 	Decyduje serwer (klient wysyła tylko „stan” i „rzut”). Stan planszy jest na czas sesji (atrybuty gracza
 	MistrzPole, MistrzPlansza) — zapis profilu dojdzie razem z pakietem Karola.
 	Rybki (atrybut Gold) zmienia wyłącznie stan gracza Karola (Workspace/StanGracza):
-	  - nagroda pola: Sygnaly/SterowanieSerwera("przyznaj", gracz, lup) — w bazie to haczyk testowy Karola; docelowo
+	  - nagroda pola (Rybki / Diamenty): Sygnaly/SterowanieSerwera("przyznaj", gracz, lup); przedmiot: haczyk kowala
+	    KowalProba/Sygnaly/SterowanieSerwera("lup", gracz, "zwykly") — w bazie to haczyk testowy Karola; docelowo
 	    mistrz gier powinien mieć własne źródło nagród (pytanie dla Karola w Pytania otwarte);
 	  - płatny rzut: Sygnaly/WydajZloto(gracz, { ile, zrodlo = "MistrzGier", cel = "rzut" }) — dopóki Karol nie dopisze
 	    „MistrzGier” do listy źródeł wydatków (DaneStanu.wydatki.zrodla), stan gracza odmawia, a okno mówi, że płatne
@@ -27,7 +28,10 @@ local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 
 local POL = 26 -- start + 25 pól; ostatnie to złota gwiazda
-local DARMOWY_CO = 60 -- s (próba; docelowo np. 4 h — do ustalenia)
+-- Paweł 24.11 wieczorem: „usuwamy cooldown na rzucanie” — każdy rzut darmowy (0 = bez odliczania). Uwaga agenta
+-- (D-114): bez odliczania i bez opłaty plansza daje nieskończenie dużo Rybek — przed wydaniem wrócić do D-053
+-- (darmowy rzut na czas + płatne rzuty).
+local DARMOWY_CO = 0
 local CENA_START, CENA_KROK, CENA_MAKS = 50, 1.6, 2000
 local LIMIT = 0.6 -- s między zapytaniami
 local ZASIEG = 18 -- studów od punktu E mistrza gier
@@ -60,18 +64,28 @@ local function stan(gracz: Player): Stan
 	return s
 end
 
-local function nagroda(plansza: number, pole: number): number
+-- rodzaje pól (Paweł 24.11): większość daje Rybki, co piąte Diamenty, kilka przedmiot, gwiazda Rybki + Diamenty
+local POLA_DIAMENTOW = { [5] = true, [10] = true, [15] = true, [20] = true }
+local POLA_PRZEDMIOTOW = { [8] = true, [17] = true, [23] = true }
+
+type Nagroda = { typ: string, ile: number, gemy: number? }
+
+local function nagroda(plansza: number, pole: number): Nagroda
 	local mn = 1.5 ^ (plansza - 1)
 	if pole >= POL then
-		return math.floor(300 * mn + 0.5)
+		return { typ = "gwiazda", ile = math.floor(300 * mn + 0.5), gemy = 10 * plansza }
+	elseif POLA_DIAMENTOW[pole] then
+		return { typ = "diamenty", ile = (2 + pole // 5) * plansza }
+	elseif POLA_PRZEDMIOTOW[pole] then
+		return { typ = "przedmiot", ile = 1 }
 	end
-	return math.floor((10 + 6 * pole) * mn + 0.5)
+	return { typ = "rybki", ile = math.floor((10 + 6 * pole) * mn + 0.5) }
 end
 
-local function nagrody(plansza: number): { number }
+local function nagrody(plansza: number): { Nagroda }
 	local t = {}
 	for i = 1, POL do
-		t[i] = if i == 1 then 0 else nagroda(plansza, i)
+		t[i] = if i == 1 then { typ = "start", ile = 0 } else nagroda(plansza, i)
 	end
 	return t
 end
@@ -148,15 +162,34 @@ local function rzut(gracz: Player, platny: boolean)
 	local z = gracz:GetAttribute("MistrzPole") or 1
 	local kostka = los:NextInteger(1, 6)
 	local na = math.min(POL, z + kostka)
-	local ile = nagroda(plansza, na)
+	local n = nagroda(plansza, na)
 	local wyplacono = false
 	local przyznaj = sygnal("SterowanieSerwera")
-	if przyznaj and ile > 0 then
+	if n.typ == "przedmiot" then
+		-- przedmiot: pewny łup kowala Karola (jego haczyk testowy „lup”, ranga zwykła)
+		local k = workspace:FindFirstChild("KowalProba")
+		local sy = k and k:FindFirstChild("Sygnaly")
+		local hk = sy and sy:FindFirstChild("SterowanieSerwera")
+		if hk and hk:IsA("BindableFunction") then
+			local okL, w = pcall(function()
+				return hk:Invoke("lup", gracz, "zwykly")
+			end)
+			wyplacono = okL and w ~= nil and w ~= false
+		end
+	elseif przyznaj then
+		local lup = { zloto = 0, gemy = 0, doswiadczenie = 0, tokeny_krainy = 0, kraina = "" }
+		if n.typ == "diamenty" then
+			lup.gemy = n.ile
+		else
+			lup.zloto = n.ile
+			lup.gemy = n.gemy or 0
+		end
 		local okP, w = pcall(function()
-			return przyznaj:Invoke("przyznaj", gracz, { zloto = ile, doswiadczenie = 0, tokeny_krainy = 0, kraina = "" })
+			return przyznaj:Invoke("przyznaj", gracz, lup)
 		end)
 		wyplacono = okP and type(w) == "table" and w.ok == true
 	end
+	local ile = n.ile
 	local nowaPlansza = false
 	if na >= POL then
 		nowaPlansza = true
@@ -169,6 +202,7 @@ local function rzut(gracz: Player, platny: boolean)
 	w.kostka, w.z, w.na, w.nagroda, w.wyplacono, w.nowaPlansza, w.zaplacono = kostka, z, na, ile, wyplacono, nowaPlansza,
 		zaplacono
 	w.planszaRzutu = plansza
+	w.typ, w.gemy = n.typ, n.gemy
 	return w
 end
 

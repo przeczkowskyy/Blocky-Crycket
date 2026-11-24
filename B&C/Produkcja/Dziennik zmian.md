@@ -12,6 +12,13 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - **Rzadkość:** propozycja [[Rzadkość przedmiotów — zwykłe, epickie, legendarne, sekretne (propozycja)]] — Paweł: zwykły 1–2 statystyki, epicki 3, legendarny wszystkie, sekretne; agent: budżet statystyk z mnożnikiem, połowa legendy w główną statystykę klasy, robocze szanse. Odnośnik w [[Przedmioty — zestawy v1]]. Pytanie 96.
 - **Bez Blocky'ego** (Paweł): gra o kotach w stylu S&F, nazwa i ekran ładowania później — dopisek „zmiana w toku” przy D-145 w [[Rejestr decyzji]], pytanie 97 w [[Pytania otwarte]].
 
+## 2026-11-24 · Claude Code u Pawła (mistrz gier: pionek, pola z nagrodami, bez odliczania; nowa tablica szans jajka, tekstury jajka)
+- Po „tak” Pawła wgrane: pionek mistrza gier, kafelek planszy z pustym polem startowym, tablica szans jajka i 4 tekstury jajka (ID w `assets/manifest.json`).
+- **Mistrz gier** (Paweł): po planszy chodzi drewniany pionek wycięty z grafiki (`tools/pionek_mistrza.py` — dwie generacje: z pionkiem i bez), nie ikona gracza; rzut bez odliczania (uwaga agenta D-114: bez odliczania i opłaty plansza daje nieskończenie dużo Rybek — przed wydaniem wrócić do D-053); pola z rodzajem nagrody i ikoną: Rybki, Diamenty (pola 5, 10, 15, 20), przedmiot ze skrzynki (8, 17, 23 — łup kowala Karola), gwiazda = Rybki + Diamenty. Złota kostka na berecie mistrza bez zmian (Paweł niepewny).
+- **Tablica szans jajka** (Paweł: „słabo wygląda, tekst duży”): nowe proste okienko jak podpowiedź Karola (`tools/tablica_jajka.py`) — 5 rzędów: procent w kółku, nazwa peta na pasku w kolorze rzadkości, na dole E, cena i rybka; lekko półprzezroczyste.
+- **Tekstury jajka** z referencji Pawła (kora, korzeń, mech, skorupa) nałożone na model w Studio (`tools/studio/jajko_korowe_studio.py`).
+- Sprawdzone w Play: tablica nad jajkiem, rzut, ruch pionka, ikony pól, wypłata.
+
 ## 2026-11-24 · Claude Code u Pawła (okna kowala i mistrza gier działają; jajko korowe z wykluciem; rybka w HUD)
 - Po „tak” Pawła wgrane do Roblox: ikona `GoldFish` i kafelki okien kowala, jajka i mistrza gier (13 obrazów, ID w `assets/manifest.json`). Złota moneta w HUD to teraz rybka.
 - **Okno kowala** (`src/gui/OknoKowala`, `src/client/OknoKowalaClient.client.luau`): E przy kowalu otwiera nowe okno nad logiką Karola (`KowalProba/Zdalne/Kuznia`: widok, ulepsz, rozbierz) — przedmioty klasy, przed/po, statystyki, poziom, materiały, zapas, koszt w Rybkach; jego tymczasowe okno zamykamy jego haczykiem. Sprawdzone w Play.

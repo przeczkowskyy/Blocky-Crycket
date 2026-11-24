@@ -31,6 +31,17 @@ local timer = panel:WaitForChild("Timer") :: TextLabel
 local msg = panel:WaitForChild("Message") :: TextLabel
 local board = panel:WaitForChild("Board") :: TextLabel
 local reward = panel:WaitForChild("Reward") :: TextLabel
+local rewardIcon = panel:WaitForChild("RewardIcon") :: ImageLabel
+
+-- ikony nagród pól (Paweł 24.11: „plus, liczba i ikonka — rybki, diamenty, przedmiot”) — ID z assets/manifest.json
+local IKONY = {
+	rybki = "rbxassetid://76704302626777", -- GoldFish
+	gwiazda = "rbxassetid://76704302626777",
+	diamenty = "rbxassetid://130974323293639", -- Gem
+	przedmiot = "rbxassetid://71553702739963", -- NodeIncChest (skrzynka)
+}
+-- pionek z planszy (wycięty z grafiki, tools/pionek_mistrza.py; Paweł 24.11: po planszy chodzi pionek, nie ikona gracza)
+local PIONEK = "rbxassetid://104058018910695" -- PionekMistrza
 
 local function bindable(name: string): BindableEvent
 	local e = RS:FindFirstChild(name)
@@ -48,8 +59,8 @@ local stan: any = nil
 local otwarte, toczy = false, false
 local miejsceOtwarcia: Vector3? = nil
 
-local function pole(i: number): TextLabel
-	return fields:FindFirstChild(string.format("Field%02d", i)) :: TextLabel
+local function pole(i: number): Frame
+	return fields:FindFirstChild(string.format("Field%02d", i)) :: Frame
 end
 
 local function srodekPola(i: number): UDim2
@@ -58,6 +69,10 @@ local function srodekPola(i: number): UDim2
 end
 
 local function ustawPionek()
+	if typeof(PIONEK) == "string" and PIONEK ~= "" then
+		pawn.Image = PIONEK
+		return
+	end
 	local race = player:GetAttribute("Race")
 	local id = if typeof(race) == "string" then "Race" .. race else "RaceHuman"
 	if okRace and RaceIcons[id] then
@@ -77,7 +92,15 @@ local function rysuj()
 		local f = pole(i)
 		if f then
 			local n = stan.nagrody[i]
-			f.Text = if i == stan.pol then "+" .. n elseif n > 0 then "+" .. n else "START"
+			local v = f:FindFirstChild("Value") :: TextLabel
+			local ic = f:FindFirstChild("Icon") :: ImageLabel
+			if n.typ == "start" then
+				v.Text, ic.Image = "", ""
+			elseif n.typ == "przedmiot" then
+				v.Text, ic.Image = "", IKONY.przedmiot
+			else
+				v.Text, ic.Image = "+" .. n.ile, IKONY[n.typ] or ""
+			end
 		end
 	end
 	pawn.Position = srodekPola(stan.pole)
@@ -90,7 +113,7 @@ local function rysujCene()
 	end
 	if stan.darmowyZa <= 0 then
 		price.Text = "FREE ROLL"
-		timer.Text = "READY"
+		timer.Text = "" -- bez odliczania (Paweł 24.11)
 	else
 		price.Text = tostring(stan.cena) .. " FISH"
 		timer.Text = string.format("%d:%02d", stan.darmowyZa // 60, stan.darmowyZa % 60)
@@ -130,10 +153,16 @@ local function skok(z: number, na: number)
 	end
 end
 
-local function pokazNagrode(ile: number, napis: string?)
-	reward.Text = napis or ("+" .. ile .. " FISH")
+local function pokazNagrode(ile: number, napis: string?, typ: string?)
+	reward.Text = napis or ("+" .. ile)
 	local p = pawn.Position
 	reward.Position = UDim2.fromScale(p.X.Scale - reward.Size.X.Scale / 2, p.Y.Scale - 0.16)
+	rewardIcon.Image = IKONY[typ or "rybki"] or ""
+	rewardIcon.Visible = rewardIcon.Image ~= ""
+	rewardIcon.ImageTransparency = 0
+	rewardIcon.Position = UDim2.fromScale(reward.Position.X.Scale + reward.Size.X.Scale * 0.82, reward.Position.Y.Scale)
+	TS:Create(rewardIcon, TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ Position = rewardIcon.Position - UDim2.fromScale(0, 0.08), ImageTransparency = 1 }):Play()
 	reward.TextTransparency = 0
 	reward.Visible = true
 	local sc = reward:FindFirstChildWhichIsA("UIStroke")
@@ -170,11 +199,13 @@ local function rzuc()
 	face.Text = tostring(w.kostka)
 	skok(w.z, w.na)
 	if w.nowaPlansza then
-		pokazNagrode(w.nagroda, "STAR! +" .. w.nagroda .. " FISH")
+		pokazNagrode(w.nagroda, "STAR! +" .. w.nagroda, "rybki")
 		komunikat(string.format("Board %d done! New, better board.", w.planszaRzutu))
 		task.wait(1.2)
+	elseif w.typ == "przedmiot" then
+		pokazNagrode(0, "ITEM!", "przedmiot")
 	else
-		pokazNagrode(w.nagroda)
+		pokazNagrode(w.nagroda, nil, w.typ)
 	end
 	if not w.wyplacono and w.nagroda > 0 then
 		komunikat("Reward not paid — player state (Karol) not running")

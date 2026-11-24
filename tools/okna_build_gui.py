@@ -158,11 +158,18 @@ def mistrz():
     pola = []
     for i, (x, y) in enumerate(POLA, 1):
         fx, fy = x / 1200, y / 872
-        pola.append(text(f"Field{i:02d}", (fx - 0.03, fy - 0.028, 0.06, 0.05), "", WHITE, 15, 1.8, 6))
+        # pole: liczba i ikona nagrody (rybka / diament / skrzynka — ustawia klient według rodzaju pola)
+        pola.append(node(f"Field{i:02d}", "Frame", {**ud(fx - 0.034, fy - 0.03, 0.068, 0.052), "BackgroundTransparency": 1,
+                                                     "ZIndex": 6}, [
+            text("Value", (0.0, 0.0, 0.6, 1.0), "", WHITE, 15, 1.8, 7),
+            node("Icon", "ImageLabel", {**ud(0.56, 0.06, 0.44, 0.88), "BackgroundTransparency": 1, "Image": "",
+                                        "ScaleType": "Fit", "ZIndex": 7}),
+        ]))
     okno("OknoMistrzaGier", [
         text("Title", (0.108, 0.006, 0.494, 0.08), "GAME MASTER", CREAM, 40),
         node("Fields", "Frame", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1, "ZIndex": 6}, pola),
-        node("Pawn", "ImageLabel", {"AnchorPoint": [0.5, 0.85], **ud(POLA[0][0] / 1200, POLA[0][1] / 872, 0.062, 0.085),
+        # pionek wycięty z grafiki (233 × 378 px okna 4615 × 3355), stoi dolną krawędzią na polu
+        node("Pawn", "ImageLabel", {"AnchorPoint": [0.5, 0.92], **ud(POLA[0][0] / 1200, POLA[0][1] / 872, 0.0505, 0.1127),
                                     "BackgroundTransparency": 1, "Image": "", "ScaleType": "Fit", "ZIndex": 12}),
         node("Dice", "Frame", {**ud(0.742, 0.698, 0.068, 0.097), "BackgroundColor3": c3("FBF7EC"), "ZIndex": 8}, [
             corner(0.18),
@@ -176,6 +183,8 @@ def mistrz():
         text("Message", (0.09, 0.1, 0.55, 0.055), "", WHITE, 22, 2, 14),
         text("Board", (0.42, 0.1, 0.24, 0.05), "", CREAM, 18, 2, 14),
         text("Reward", (0.3, 0.45, 0.2, 0.1), "", GOLD, 48, 3, 15),
+        node("RewardIcon", "ImageLabel", {**ud(0.5, 0.45, 0.06, 0.1), "BackgroundTransparency": 1, "Image": "",
+                                          "ScaleType": "Fit", "Visible": False, "ZIndex": 15}),
     ], 27)
 
 

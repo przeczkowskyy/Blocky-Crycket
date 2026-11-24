@@ -29,10 +29,8 @@ local player = Players.LocalPlayer
 
 local KOLOR_SZCZELINY = Color3.fromHex("2BE36B")
 local KOLOR_BLASKU = Color3.fromHex("B8FFD2")
-local SLOT_RZADKOSCI = { pospolity = 1, zwykly = 2, rzadki = 3, epicki = 4, legendarny = 6 }
--- kafelki prawej połowy okna jajka (panel petów) — ID z assets/manifest.json (tools/okna_ui.py)
-local PANEL_GORA = "rbxassetid://123337131605367" -- OknoJajka2
-local PANEL_DOL = "rbxassetid://112688302681211" -- OknoJajka4
+-- tablica szans (Paweł 24.11: proste okienko jak podpowiedź Karola, nie wycięte okno) — tools/tablica_jajka.py
+local TABLICA = "rbxassetid://108070653620156" -- TablicaSzansJajka (1722 × 2291 px)
 local RYBKA = "rbxassetid://76704302626777" -- GoldFish
 
 type Jajko = {
@@ -295,49 +293,38 @@ end
 local function zbudujTablice(punkt: BasePart)
 	local b = Instance.new("BillboardGui")
 	b.Name = "SzanseJajka"
-	-- prawa połowa okna: 2307 × 3355 px → proporcje 0,688
-	b.Size = UDim2.fromScale(3.5, 5.1)
-	b.StudsOffset = Vector3.new(3.4, 1.8, 0)
+	b.Size = UDim2.fromScale(3.0, 3.99) -- proporcje grafiki 0,7516
+	b.StudsOffset = Vector3.new(3.1, 1.5, 0)
 	b.MaxDistance = 24
 	b.LightInfluence = 0
 	b.Adornee = punkt
-	local f = Instance.new("Frame")
+	local f = Instance.new("ImageLabel")
 	f.BackgroundTransparency = 1
 	f.Size = UDim2.fromScale(1, 1)
+	f.Image = TABLICA
+	f.ImageTransparency = 0.12 -- lekko półprzezroczysta (Paweł)
+	f.ScaleType = Enum.ScaleType.Stretch
+	f.ZIndex = 1
 	f.Parent = b
-	for i, id in ipairs({ PANEL_GORA, PANEL_DOL }) do
-		local im = Instance.new("ImageLabel")
-		im.BackgroundTransparency = 1
-		im.Size = UDim2.fromScale(1, 0.5)
-		im.Position = UDim2.fromScale(0, (i - 1) * 0.5)
-		im.Image = id
-		im.ScaleType = Enum.ScaleType.Stretch
-		im.ZIndex = 1
-		im.Parent = f
+	-- miejsca z grafiki (ułamki): deska tytułu, 5 rzędów (kółko + pasek), dół: klawisz, cena, kółko na rybkę
+	tekst(f, "Tytul", 0.2, 0.035, 0.6, 0.1, Color3.fromHex("FCE3B0"), 30).Text = "FOREST EGG"
+	local RZEDY = { 0.25, 0.381, 0.5, 0.619, 0.743 }
+	for i, y in ipairs(RZEDY) do
+		tekst(f, "Szansa" .. i, 0.115, y - 0.035, 0.12, 0.07, Color3.fromHex("FFD65A"), 16)
+		local n = tekst(f, "Pet" .. i, 0.3, y - 0.03, 0.56, 0.06, Color3.new(1, 1, 1), 18)
+		n.TextXAlignment = Enum.TextXAlignment.Left
 	end
-	-- ułamki z okna (tools/okna_build_gui.py) przeliczone na prawą połowę: x' = (x − 0,5) / 0,5
-	tekst(f, "Tytul", 0.2, 0.006, 0.55, 0.08, Color3.fromHex("FCE3B0"), 40).Text = "FOREST EGG"
-	local kol, rzedy, tabl = { 0.084, 0.364, 0.642 }, { 0.14, 0.415 }, { 0.333, 0.61 }
-	local i = 1
-	for r = 1, 2 do
-		for c = 1, 3 do
-			tekst(f, "Szansa" .. i, kol[c], rzedy[r] + 0.01, 0.236, 0.05, Color3.fromHex("FFD65A"), 26)
-			tekst(f, "Pet" .. i, kol[c] + 0.01, rzedy[r] + 0.07, 0.216, 0.09, Color3.new(1, 1, 1), 22)
-			tekst(f, "Rzadkosc" .. i, kol[c] + 0.008, tabl[r] + 0.004, 0.22, 0.04, Color3.new(1, 1, 1), 16)
-			i += 1
-		end
-	end
-	tekst(f, "PrzyciskE", 0.076, 0.79, 0.246, 0.09, Color3.new(1, 1, 1), 34).Text = "E"
-	tekst(f, "Cena", 0.358, 0.79, 0.246, 0.09, Color3.fromHex("FFD65A"), 28)
+	tekst(f, "PrzyciskE", 0.11, 0.85, 0.11, 0.075, Color3.fromHex("4A2E1A"), 26).Text = "E"
+	tekst(f, "Cena", 0.29, 0.852, 0.42, 0.07, Color3.fromHex("FFD65A"), 24)
 	local ryb = Instance.new("ImageLabel")
 	ryb.BackgroundTransparency = 1
 	ryb.Image = RYBKA
 	ryb.ScaleType = Enum.ScaleType.Fit
-	ryb.Position = UDim2.fromScale(0.672, 0.775)
-	ryb.Size = UDim2.fromScale(0.186, 0.12)
+	ryb.Position = UDim2.fromScale(0.785, 0.845)
+	ryb.Size = UDim2.fromScale(0.1, 0.08)
 	ryb.ZIndex = 3
 	ryb.Parent = f
-	tekst(f, "Komunikat", 0.05, 0.69, 0.9, 0.05, Color3.new(1, 1, 1), 18)
+	tekst(f, "Komunikat", 0.05, 0.925, 0.9, 0.05, Color3.new(1, 1, 1), 14)
 	b.Parent = player:WaitForChild("PlayerGui")
 	tablica = b
 end
@@ -350,17 +337,12 @@ local function odswiezTablice()
 	if not (ok and type(w) == "table" and w.ok) then
 		return
 	end
-	for i = 1, 6 do
-		etykiety["Szansa" .. i].Text = ""
-		etykiety["Pet" .. i].Text = if i == 5 then "???" else ""
-		etykiety["Rzadkosc" .. i].Text = ""
-	end
-	for _, s in ipairs(w.szanse) do
-		local i = SLOT_RZADKOSCI[s.rzadkosc]
+	local kolejnosc = { pospolity = 1, zwykly = 2, rzadki = 3, epicki = 4, legendarny = 5 }
+	for _, sz in ipairs(w.szanse) do
+		local i = kolejnosc[sz.rzadkosc]
 		if i then
-			etykiety["Szansa" .. i].Text = string.format("%g%%", math.floor(s.szansa * 1000 + 0.5) / 10)
-			etykiety["Pet" .. i].Text = s.nazwa
-			etykiety["Rzadkosc" .. i].Text = wielkie(s.rzadkoscNazwa)
+			etykiety["Szansa" .. i].Text = string.format("%g%%", math.floor(sz.szansa * 1000 + 0.5) / 10)
+			etykiety["Pet" .. i].Text = sz.nazwa
 		end
 	end
 	etykiety["Cena"].Text = if type(w.cena) == "number" then tostring(w.cena) else ""
