@@ -122,7 +122,7 @@ local function rysujTabliczke()
 	if s and not s.towar then
 		plate.Text = "COMING SOON"
 	elseif zloto then
-		plate.Text = tostring(zloto) .. " GOLD"
+		plate.Text = tostring(zloto) .. " FISH" -- Paweł 24.11: waluta to Rybki (ikona rybki zamiast monety)
 	else
 		plate.Text = "NEW GOODS"
 	end
@@ -308,7 +308,7 @@ local function pokazKarte(w: any, zLewej: boolean)
 	end
 	card.Req.Text = if w.poziom then "REQUIRES LV " .. tostring(w.poziom) else ""
 	card.Req.TextColor3 = if w.stan == "za_niski_poziom" then Color3.fromRGB(255, 120, 100) else Color3.new(1, 1, 1)
-	card.Price.Text = if w.cena and w.cena > 0 and w.stan ~= "masz" and w.stan ~= "zalozone" then tostring(w.cena) .. " GOLD" else ""
+	card.Price.Text = if w.cena and w.cena > 0 and w.stan ~= "masz" and w.stan ~= "zalozone" then tostring(w.cena) .. " FISH" else ""
 	card.Price.TextColor3 = if w.stan == "za_drogie" then Color3.fromRGB(255, 120, 100) else Color3.fromRGB(255, 214, 90)
 	local b = card.BuyButton
 	if zLewej or w.stan == "zalozone" then
@@ -407,10 +407,9 @@ local function open(id: string)
 	rysujTowar()
 	rysujTabliczke()
 	gui.Enabled = true
-	backdrop.BackgroundTransparency = 1
-	TS:Create(backdrop, TweenInfo.new(0.2), { BackgroundTransparency = 0.45 }):Play()
-	panelScale.Scale = 0.8
-	TS:Create(panelScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	-- Paweł 24.11: okno od razu, bez wjazdu
+	backdrop.BackgroundTransparency = 0.45
+	panelScale.Scale = 1
 	if s.towar then
 		-- tymczasowe okno Karola otwiera się na to samo E: zamykamy je (kolejność słuchaczy jest nieustalona)
 		task.spawn(function()
@@ -504,7 +503,7 @@ card.BuyButton.Activated:Connect(function()
 	elseif w.stan == "masz" then
 		prosba("zaloz", w.id)
 	elseif w.stan == "za_drogie" then
-		komunikat("NOT ENOUGH GOLD", true)
+		komunikat("NOT ENOUGH FISH", true)
 	elseif w.stan == "za_niski_poziom" then
 		komunikat("NEED LV " .. tostring(w.poziom), true)
 	end

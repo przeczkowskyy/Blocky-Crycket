@@ -812,10 +812,9 @@ local function open()
 	isOpen = true
 	gui.Enabled = true
 	rescale()
-	backdrop.BackgroundTransparency = 1
-	panelScale.Scale = 0.85
-	TS:Create(backdrop, TweenInfo.new(0.2), { BackgroundTransparency = 0.45 }):Play()
-	TS:Create(panelScale, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	-- Paweł 24.11: okno od razu, bez wjazdu (wcześniej skalowanie 0,85 -> 1 przez 0,28 s i migało)
+	backdrop.BackgroundTransparency = 0.45
+	panelScale.Scale = 1
 	action:Fire("Opened")
 end
 

@@ -1,0 +1,291 @@
+{
+ "modul": "jajko_korowe",
+ "modele": [
+  {
+   "id": "jajko_korowe",
+   "nazwa": "Jajko korowe (leśne)",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "Podstawa_Geo",
+     "kosc": "Podstawa",
+     "trojkaty": 1052,
+     "wierzcholki": 570,
+     "wymiary": [
+      2.678,
+      0.984,
+      2.678
+     ],
+     "min": [
+      -1.339,
+      -0.074,
+      -1.339
+     ],
+     "max": [
+      1.339,
+      0.91,
+      1.339
+     ]
+    },
+    {
+     "nazwa": "Jajko_Geo",
+     "kosc": "Jajko",
+     "trojkaty": 4364,
+     "wierzcholki": 2408,
+     "wymiary": [
+      1.896,
+      2.413,
+      1.834
+     ],
+     "min": [
+      -0.915,
+      0.3,
+      -0.917
+     ],
+     "max": [
+      0.981,
+      2.713,
+      0.917
+     ]
+    },
+    {
+     "nazwa": "Czubek_Geo",
+     "kosc": "Czubek",
+     "trojkaty": 1616,
+     "wierzcholki": 900,
+     "wymiary": [
+      1.291,
+      1.148,
+      1.281
+     ],
+     "min": [
+      -0.645,
+      1.722,
+      -0.635
+     ],
+     "max": [
+      0.646,
+      2.87,
+      0.646
+     ]
+    },
+    {
+     "nazwa": "Odlamek1_Geo",
+     "kosc": "Odlamek1",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.458,
+      0.496,
+      0.313
+     ],
+     "min": [
+      -0.622,
+      1.302,
+      0.583
+     ],
+     "max": [
+      -0.164,
+      1.798,
+      0.896
+     ]
+    },
+    {
+     "nazwa": "Odlamek2_Geo",
+     "kosc": "Odlamek2",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.473,
+      0.496,
+      0.28
+     ],
+     "min": [
+      0.074,
+      1.352,
+      0.629
+     ],
+     "max": [
+      0.547,
+      1.848,
+      0.909
+     ]
+    },
+    {
+     "nazwa": "Odlamek3_Geo",
+     "kosc": "Odlamek3",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.485,
+      0.496,
+      0.23
+     ],
+     "min": [
+      -0.419,
+      1.052,
+      0.722
+     ],
+     "max": [
+      0.066,
+      1.548,
+      0.952
+     ]
+    },
+    {
+     "nazwa": "Odlamek4_Geo",
+     "kosc": "Odlamek4",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.35,
+      0.496,
+      0.435
+     ],
+     "min": [
+      0.519,
+      1.202,
+      0.269
+     ],
+     "max": [
+      0.869,
+      1.698,
+      0.704
+     ]
+    },
+    {
+     "nazwa": "Krysztaly_Geo",
+     "kosc": "Krysztaly",
+     "trojkaty": 72,
+     "wierzcholki": 48,
+     "wymiary": [
+      2.655,
+      0.266,
+      2.699
+     ],
+     "min": [
+      -1.337,
+      0.149,
+      -1.409
+     ],
+     "max": [
+      1.318,
+      0.415,
+      1.29
+     ]
+    },
+    {
+     "nazwa": "Promien_Geo",
+     "kosc": "Promien",
+     "trojkaty": 92,
+     "wierzcholki": 48,
+     "wymiary": [
+      1.1,
+      6.0,
+      1.1
+     ],
+     "min": [
+      -0.55,
+      1.35,
+      -0.55
+     ],
+     "max": [
+      0.55,
+      7.35,
+      0.55
+     ]
+    }
+   ],
+   "trojkaty_razem": 7420,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 15
+   },
+   "typ": "stwor",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.678,
+    7.424,
+    2.748
+   ],
+   "wymiary_z_akcesoriami": [
+    2.678,
+    7.424,
+    2.748
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.339,
+     -0.074,
+     -1.409
+    ],
+    [
+     1.339,
+     7.35,
+     1.339
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "Podstawa",
+    "Jajko",
+    "Czubek",
+    "Odlamek1",
+    "Odlamek2",
+    "Odlamek3",
+    "Odlamek4",
+    "Krysztaly",
+    "Promien"
+   ],
+   "zaczepy": [
+    "RootAttachment",
+    "GlowaAttachment"
+   ],
+   "znaczniki_att": [
+    "Root_Att",
+    "Glowa_Att"
+   ],
+   "klipy": [
+    {
+     "n": "spoczynek",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    },
+    {
+     "n": "napiecie",
+     "dlugosc": 42,
+     "fps": 30,
+     "sekundy": 1.4,
+     "petla": false
+    },
+    {
+     "n": "pekniecie",
+     "dlugosc": 54,
+     "fps": 30,
+     "sekundy": 1.8,
+     "petla": false
+    }
+   ],
+   "akcesoria": [],
+   "ostrzezenia": [
+    "klip spoczynek ma kanał skali (Promien) — animacja Roblox najpewniej go nie przeniesie",
+    "klip napiecie ma kanał skali (Promien) — animacja Roblox najpewniej go nie przeniesie",
+    "klip pekniecie ma kanał skali (Promien) — animacja Roblox najpewniej go nie przeniesie"
+   ]
+  }
+ ],
+ "uwagi_podgladu": [
+  "klip napiecie: kanał skali (Promien) — animacja Roblox najpewniej przenosi tylko pozycję i obrót kości",
+  "klip pekniecie: kanał skali (Promien) — animacja Roblox najpewniej przenosi tylko pozycję i obrót kości",
+  "klip spoczynek: kanał skali (Promien) — animacja Roblox najpewniej przenosi tylko pozycję i obrót kości"
+ ],
+ "kontrola": [
+  "jajko_korowe.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje brak -> ZGODNE",
+  "jajko_korowe__spoczynek.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje jajko_korowe|Scene 1-61 -> ZGODNE",
+  "jajko_korowe__napiecie.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje jajko_korowe|Scene 1-43 -> ZGODNE",
+  "jajko_korowe__pekniecie.fbx: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje jajko_korowe|Scene 1-55 -> ZGODNE",
+  "jajko_korowe.glb: siatki 11, kości 10, trójkąty 7444, wzrost 7.42 st., akcje napiecie 0-42, pekniecie 0-54, spoczynek 0-60 -> ZGODNE"
+ ]
+}

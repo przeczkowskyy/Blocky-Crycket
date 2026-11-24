@@ -676,3 +676,8 @@ Uwaga agenta (D-114), zgoda z poprawką: jeden słodki, rozpoznawalny bohater (k
 
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*
+
+### D-146 Rybki zamiast Złota (ikona i nazwa waluty); licznik Rybek znika z HUD
+✅ zatwierdzona · waluty / UI · 2026-11-24 · źródło: polecenie Pawła w Claude Code 24.11 wieczorem („doszliśmy z Karolem do wniosku…”) · zdecydował: Paweł 2026-11-24 (Paweł mówi o zgodzie Karola — czeka na podpis Karola w panelu)
+Rybki przestają być osobną walutą premium: okno/licznik Rybek w HUD znika, a **złota moneta zamienia się w rybkę** — waluta, którą dziś liczy atrybut `Gold` (sklep, jajka, ulepszenia), w grze nazywa się i wygląda jak Rybki. Nowa ikona `GoldFish` (Higgsfield, Nano Banana 2.1, wzór kształtu: rybki z referencji Pawła). W kodzie atrybut zostaje `Gold` (bez migracji zapisu); napisy w sklepie „FISH”. Zmienia rolę Rybek z D-086 (Rybki na game passy, bundle i startery) — waluta premium zostaje jedna: Diamenty. Uwaga agenta (D-114): zgoda — jedna miękka waluta z zabawną ikoną zamiast dwóch podobnych jest prostsza dla nowego gracza (zasada „proste od pierwszego kliknięcia”); trzeba tylko poprawić opisy D-086 i ekranu ładowania, gdzie Rybki są walutą premium.
+

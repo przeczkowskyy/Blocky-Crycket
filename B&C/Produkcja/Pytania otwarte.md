@@ -896,3 +896,11 @@ Szczegóły: dziś okno ekwipunku (`EquipmentPanelClient`) liczy Szczęście × 
 
 Szczegóły: referencje 7 ras (jedna para uszu u elfów i goblina): [[Rasy jako koty — referencje]]. Przedmioty z katalogu sklepu mają ciało „czlowiek” i nie pasują do kota. Bohater w świecie (`swiat/bohater_swiat`) dalej pokazuje Rycerza/Zwiadowcę/Kota-Maga — zob. też pytanie 91. Kopie ludzików w wyborze rasy zostały jako `Race_Demon_ludek` i `Race_Human_ludek`.
 **Odpowiedź:**
+
+## 94. Pula Lv 1–10: 5 przedmiotów na slot, spodnie jako slot, strefy?
+- Paweł 24.11: w pierwszej puli po 5 przedmiotów na slot (broń, hełm, klata, spodnie, buty, rękawice) dla każdej klasy; zestawy opcjonalne — lista nazw: [[Przedmioty — pula Lv 1–10, 5 na slot (propozycja)]].
+- Spodnie to nowy slot (dziś są częścią zbroi, a slotem jest pas) — zmienia ekwipunek i sklep.
+- Do wyboru: (a) lista jak w notatce, ikony najpierw dla Rycerza (30); (b) wszystkie 90 ikon od razu; (c) poprawki nazw. Osobno: spodnie zamiast pasa / obok pasa; strefa tylko podbija szansę na „przedmiot strefy” z puli (zgodnie z D-142) albo pule według stref.
+
+Szczegóły: D-142 (Paweł 23.11) mówi „według poziomu, nie według krainy”; pomysł ze strefami ją zmienia, dlatego wariant zgodny z D-142 jest w notatce. Koszt ikon: 15 arkuszy po 6 ikon.
+**Odpowiedź:**

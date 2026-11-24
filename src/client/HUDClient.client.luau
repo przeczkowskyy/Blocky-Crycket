@@ -29,7 +29,9 @@ local player = Players.LocalPlayer
 local hud = player:WaitForChild("PlayerGui"):WaitForChild("HUD")
 local panel = hud:WaitForChild("PlayerPanel")
 local xpFill = panel.XPBar.XPFill
-local levelLbl, goldLbl, gemsLbl, fishLbl = panel.Level, panel.Gold, panel.Gems, panel:WaitForChild("Fish")
+-- Paweł 24.11 (z Karolem): Rybki zamiast złotej monety — licznik Rybek (Fish) z HUD usunięty, ikona Złota to rybka
+local levelLbl, goldLbl, gemsLbl = panel.Level, panel.Gold, panel.Gems
+local fishLbl = panel:FindFirstChild("Fish")
 
 local pressed = RS:FindFirstChild("HUDButtonPressed")
 if not pressed then
@@ -215,6 +217,9 @@ player:GetAttributeChangedSignal("Gems"):Connect(function()
 	setCurrency(gemsLbl, "Gems", not ready)
 end)
 player:GetAttributeChangedSignal("Fish"):Connect(function()
+	if not fishLbl then
+		return
+	end
 	setCurrency(fishLbl, "Fish", not ready)
 end)
 
@@ -244,7 +249,9 @@ updateXP(true)
 updateLevel(false)
 setCurrency(goldLbl, "Gold", true)
 setCurrency(gemsLbl, "Gems", true)
-setCurrency(fishLbl, "Fish", true)
+if fishLbl then
+	setCurrency(fishLbl, "Fish", true)
+end
 
 ------------------------------------------------ telefon: kolumny wyżej, nad kontrolkami dotykowymi
 local columns = { hud.LeftColumn, hud.RightColumn }
@@ -255,36 +262,24 @@ if UIS.TouchEnabled and not UIS.KeyboardEnabled then
 	end
 end
 
------------------------------------------------- przyciski: stan startowy (poza ekranem, przezroczyste)
+------------------------------------------------ przyciski i panel: od razu na miejscu
+-- Paweł 24.11: „żeby się wyświetlały natychmiast, a nie ze spowolnieniem” — dawniej panel zjeżdżał z góry (0,5 s),
+-- a przyciski wlatywały z boków po kolei i rozjaśniały się z przezroczystości, co przy wejściu wyglądało jak miganie.
 local buttons = {}
 for _, col in ipairs(columns) do
-	local left = col.Name == "LeftColumn"
 	for _, slot in ipairs(col:GetChildren()) do
 		local b = slot:IsA("Frame") and slot:FindFirstChildWhichIsA("ImageButton")
 		if b then
 			table.insert(buttons, { btn = b, order = slot.LayoutOrder })
-			b.Position = UDim2.fromScale(left and -1.5 or 2.5, 0.5)
-			b.ImageTransparency = 1
+			b.Position = UDim2.fromScale(0.5, 0.5)
+			b.ImageTransparency = 0
 		end
 	end
 end
 
-local panelHome = panel.Position
-panel.Position = panelHome - UDim2.fromScale(0, 0.3)
-
 hud.Enabled = true
 rescale()
 ready = true
-
------------------------------------------------- wejście: panel z góry, przyciski z boków (stagger)
-TS:Create(panel, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = panelHome }):Play()
-for _, e in ipairs(buttons) do
-	task.delay(0.15 + (e.order - 1) * 0.08, function()
-		TS:Create(e.btn, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-			{ Position = UDim2.fromScale(0.5, 0.5) }):Play()
-		TS:Create(e.btn, TweenInfo.new(0.3), { ImageTransparency = 0 }):Play()
-	end)
-end
 
 ------------------------------------------------ hover / wciśnięcie / klik
 local useHover = UIS.MouseEnabled

@@ -3772,7 +3772,139 @@
       "approved_sha256": "b7da619a3e6dd18e1a8c10e4c4a45ad73eaf8feb403f52c786fdd6f2c1e83fef",
       "roblox_image": "116945288529801",
       "moderation": "Studio upload_image (bez decala)"
+    },
+    "GoldFish": {
+      "created_at": "2026-11-24T20:57:06+00:00",
+      "history": [],
+      "category": "currency",
+      "status": "in_figma",
+      "usage": "Waluta Rybki zamiast złotej monety (D-146): HUD GoldIcon, sklep",
+      "raw": "assets/raw/Rybka/rybka_v1.png",
+      "processed": "assets/processed/GoldFish.png",
+      "figma_node": "56:115",
+      "notes": "Higgsfield job 3afacf03, referencja rybek Pawła",
+      "updated_at": "2026-11-24T20:57:06+00:00"
+    },
+    "OknoKowala1": {
+      "created_at": "2026-11-24T20:57:06+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoKowala (jedna generacja, kafelek 1 z 2x2)",
+      "processed": "assets/processed/OknoKowala/OknoKowala1.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:06+00:00"
+    },
+    "OknoKowala2": {
+      "created_at": "2026-11-24T20:57:06+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoKowala (jedna generacja, kafelek 2 z 2x2)",
+      "processed": "assets/processed/OknoKowala/OknoKowala2.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:06+00:00"
+    },
+    "OknoKowala3": {
+      "created_at": "2026-11-24T20:57:06+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoKowala (jedna generacja, kafelek 3 z 2x2)",
+      "processed": "assets/processed/OknoKowala/OknoKowala3.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:06+00:00"
+    },
+    "OknoKowala4": {
+      "created_at": "2026-11-24T20:57:06+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoKowala (jedna generacja, kafelek 4 z 2x2)",
+      "processed": "assets/processed/OknoKowala/OknoKowala4.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:06+00:00"
+    },
+    "OknoJajka1": {
+      "created_at": "2026-11-24T20:57:06+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoJajka (jedna generacja, kafelek 1 z 2x2)",
+      "processed": "assets/processed/OknoJajka/OknoJajka1.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:06+00:00"
+    },
+    "OknoJajka2": {
+      "created_at": "2026-11-24T20:57:06+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoJajka (jedna generacja, kafelek 2 z 2x2)",
+      "processed": "assets/processed/OknoJajka/OknoJajka2.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:06+00:00"
+    },
+    "OknoJajka3": {
+      "created_at": "2026-11-24T20:57:07+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoJajka (jedna generacja, kafelek 3 z 2x2)",
+      "processed": "assets/processed/OknoJajka/OknoJajka3.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:07+00:00"
+    },
+    "OknoJajka4": {
+      "created_at": "2026-11-24T20:57:07+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoJajka (jedna generacja, kafelek 4 z 2x2)",
+      "processed": "assets/processed/OknoJajka/OknoJajka4.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:07+00:00"
+    },
+    "OknoMistrzaGier1": {
+      "created_at": "2026-11-24T20:57:07+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoMistrzaGier (jedna generacja, kafelek 1 z 2x2)",
+      "processed": "assets/processed/OknoMistrzaGier/OknoMistrzaGier1.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:07+00:00"
+    },
+    "OknoMistrzaGier2": {
+      "created_at": "2026-11-24T20:57:07+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoMistrzaGier (jedna generacja, kafelek 2 z 2x2)",
+      "processed": "assets/processed/OknoMistrzaGier/OknoMistrzaGier2.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:07+00:00"
+    },
+    "OknoMistrzaGier3": {
+      "created_at": "2026-11-24T20:57:07+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoMistrzaGier (jedna generacja, kafelek 3 z 2x2)",
+      "processed": "assets/processed/OknoMistrzaGier/OknoMistrzaGier3.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:07+00:00"
+    },
+    "OknoMistrzaGier4": {
+      "created_at": "2026-11-24T20:57:07+00:00",
+      "history": [],
+      "category": "frame",
+      "status": "in_figma",
+      "usage": "OknoMistrzaGier (jedna generacja, kafelek 4 z 2x2)",
+      "processed": "assets/processed/OknoMistrzaGier/OknoMistrzaGier4.png",
+      "figma_node": "56:115",
+      "updated_at": "2026-11-24T20:57:07+00:00"
     }
   },
-  "updated_at": "2026-11-24T19:58:20+00:00"
+  "updated_at": "2026-11-24T20:57:07+00:00"
 }

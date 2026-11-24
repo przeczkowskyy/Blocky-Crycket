@@ -783,10 +783,9 @@ local function open()
 	if hs then
 		hs.Transparency = 0
 	end
-	backdrop.BackgroundTransparency = 1
-	TS:Create(backdrop, TweenInfo.new(0.2), { BackgroundTransparency = 0.45 }):Play()
-	panelScale.Scale = 0.8
-	TS:Create(panelScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	-- Paweł 24.11: okno od razu, bez wjazdu
+	backdrop.BackgroundTransparency = 0.45
+	panelScale.Scale = 1
 	task.defer(selectTab, "Player", true) -- zawsze start na PLAYER (polecenie Pawła 15.11)
 end
 

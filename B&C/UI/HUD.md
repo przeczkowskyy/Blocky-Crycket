@@ -26,6 +26,7 @@ implementacja: wersja z Figmy (panel gracza + 6 przycisków) w Roblox, 2026-11-1
 - Pliki: `src/gui/HUD.model.json`, `src/client/HUDClient.client.luau`, `src/server/PlayerStatsDefaults.server.luau`.
 
 ## Stan implementacji
+- [x] 2026-11-24 (Paweł): HUD od razu na miejscu (bez wlatywania przycisków), okna bez wjazdu, wczytywanie i podgrzewanie grafik przy starcie (`PreloadUI`); licznik Rybek usunięty (D-146), ikona Złota → rybka po wgraniu `GoldFish`.
 - [x] 2026-11-24 (Paweł): ramki portretu z kotami (`RaceFrame<Id>_v2`): ta sama złota ramka i tor paska co do piksela, nowy portret kota (`tools/raceportraits_koty.py`); wgrane, pasek w Play na miejscu.
 - [x] 2026-11-23: ramka portretu z portretem rasy gracza (`RaceFrame<Rasa>`, Shared.RacePortraitUI podmienia FrameArt; bez rasy pusta PlayerFrame).
 - [x] ScreenGui `HUD` (`src/gui/HUD.model.json`), zgodny z Figmą 9:1571 (2026-11-11)
