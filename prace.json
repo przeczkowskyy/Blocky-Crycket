@@ -2,6 +2,23 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-24T21:26:38+01:00",
- "prace": []
+ "aktualizacja": "2026-11-24T21:41:24+01:00",
+ "prace": [
+  {
+   "id": "ui-kowal-jajka-rybka",
+   "tytul": "UI kowala, jajka i mistrza gry; rybka jako waluta; szybsze okna",
+   "stan": "w_toku",
+   "start": "2026-11-24T21:41:24+01:00",
+   "koniec_szacowany": "2026-11-25T01:41:24+01:00",
+   "aktualizacja": "2026-11-24T21:41:24+01:00",
+   "obszary": [
+    "src/gui",
+    "src/client",
+    "assets",
+    "studio:JajkaKoty"
+   ],
+   "kto": "Claude (przeczkowskyy)",
+   "komputer": "0c03c4ec"
+  }
+ ]
 }
