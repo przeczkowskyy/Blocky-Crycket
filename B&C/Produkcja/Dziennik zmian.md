@@ -50,6 +50,14 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: omówiony temat sesji: Marketing gry i nowy workflow do mózgu w Obsidianie ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Pet Arena z Pawłem: styl sceny i kto o niej decyduje (pytania 78 i 79; D-124) ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Karol: pety – drugi slot, zdejmowanie i usuwanie (pytanie 103) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Karol: dolna siatka u kowala – zapasy do rozbiórki? (pytanie 99) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Bez Blocky'ego: gra o kotach, nowa nazwa później? (pytanie 97) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Karta B&C 12/30 „odrzuć” a powrót do gry na 100% (D-139; karta pomysłu [[Blocky & Crycket]]) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Pierwsze 10 sekund: ile ekranów przed pierwszą walką (D-081; pytanie 72) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Walka toczy się sama: zostaje jak w S&F czy gracz dostaje decyzję (D-068, D-082; pytanie 72) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Co znaczy „dokończyć B&C”: zakres i data pierwszej publicznej wersji (D-035, D-139; pytanie 90) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Pierwsza próba B&C z ludźmi spoza zespołu: kiedy i jakie progi (D-128, D-023; pytanie 20) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Rzadkość przedmiotów: Paweł i Karol mówią co innego (pytanie 96; D-142) ([[Sesje główne]])
 
 ## 2026-11-25 · Claude Code u Karola (panel: pulpit osobno dla każdej gry; start prac nad miastem i muzyką)
 - **Panel:** Karol: „Chcę, żeby dashboard był per gra robiony”. Agent na Opus (ok. 0,3–0,55 mln tokenów, 40 min) dodał przełącznik gier i przypisanie pytań, decyzji, zadań i raportów do gry; opis w [[Panel zespołu]]. Testy panelu: 23 nowe, cała paczka bez błędów.
