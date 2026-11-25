@@ -954,6 +954,7 @@ Dopisek z 2026-11-25 (Karol): ekran ładowania trzeba poprawić już teraz, bo p
 
 Szczegóły: pliki `src/server/MistrzGier.server.luau`, `src/server/JajkoKorowe.server.luau`, `src/client/JajkoKoroweClient.client.luau`, `tools/studio/jajo_lesne_ustaw.luau`; Twoich plików nikt nie zmieniał. Numer zmieniony z 95 na 98 (24.11 dwa pytania dostały numer 95).
 Dopisek z 2026-11-24 (wieczór), dylematy szerzej: (1) miejsce — jajo stało za północną ścianą miasteczka (983, −652), gdzie gracz nie dojdzie; przeniesione na próbę na (955, −695), obok zagrody petów i stacji treningu Siły — czy tam zostaje, czy staje w lesie zamiast Twojego inkubatora. (2) Pet nad jajem i podobizny na karcie budują się Twoim `RigPetow.zbuduj`, a ten moduł poza Studio zwraca pustą tabelę — w wydanej grze byłyby same napisy (zob. pytanie 90). (3) Klient jaja podmienia w opisach „Złota” na „Rybek” tylko na wyświetlaniu; dane w `DanePetow` zostają Twoje. (4) Scenka u kupującego czeka na 5 kliknięć (bez kliknięcia idzie dalej sama po 7 s), inni gracze widzą wyklucie od razu — to odpowiedź Pawła na D-060 (wyklucie samo czy z klikaniem), do Twojego potwierdzenia.
+Dopisek z 2026-11-25: mistrz gier ma planszę 3D na swoim stole zamiast płaskiego okna (prośba Pawła, wersja robocza „do poprawienia przez Karola”): E przenosi kamerę nad stół, kostka i pionek są modelami, plansza powstaje u gracza w czasie gry, a Twoja ozdobna plansza, pionki i kostka są u niego ukrywane. Opis: `src/client/MistrzGier3DClient.client.luau`.
 **Odpowiedź:**
 - Karol Balucki (2026-11-25): a
 
@@ -964,6 +965,7 @@ Dopisek z 2026-11-24 (wieczór), dylematy szerzej: (1) miejsce — jajo stało z
 - Do wyboru: (a) tak, zapasy do rozbiórki; (b) siatka na materiały; (c) usunąć siatkę z okna.
 
 Szczegóły: okno `src/client/OknoKowalaClient.client.luau` korzysta z Twojego zdalnego `KowalProba/Zdalne/Kuznia` („widok”, „ulepsz”, „rozbierz”) bez zmian u Ciebie; Paweł jeszcze nie wybrał.
+Dopisek z 2026-11-25: nad górną siatką są dwie zakładki — ITEMS (przedmioty) i INGREDIENTS (składniki), o które prosiłeś. Twoja kuźnia zna dziś jeden składnik (materiały z rozbiórki), więc zakładka pokazuje jedno pole „Scrap”; gdy „widok” zacznie podawać kolejne, okno je pokaże.
 **Odpowiedź:**
 
 ## 100. Miasto: kreska jak w sali dziś czy czarna i grubsza?
@@ -1012,5 +1014,15 @@ Szczegóły: [[Okno petów (propozycja)]]; serwer okna `src/server/OknoPetow.ser
 - Do wyboru: (a) wszystkie pięć; (b) tylko te, gdzie rysunek wyraźnie różni się od modelu; (c) zostają obecne modele.
 
 Szczegóły: [[Pety leśnego jajka — arkusze obrotów (propozycja)]] (różnice i brakujące widoki: ślimak bez tyłu, sówka bez boku). Rysunek to wzór wyglądu — kości, klipy i rozmiar zostają, jak wymaga gra.
+**Odpowiedź:**
+
+
+## 105. Karol: tablica w miasteczku jako tablica questów
+- Paweł 25.11: tablica ogłoszeń ma dawać questy (dzienne i osiągnięcia) zamiast rankingu; wybrane questy lądują w szufladzie HUD.
+- Działa na próbę; ranking i napis „Ranking” na E są wyłączane tylko u gracza w czasie gry — Twoje obiekty bez zmian.
+- Do wyboru: (a) przełączasz tablicę w pakiecie bazaru (napis, E „Quests”, bez rankingu); (b) ranking zostaje na tablicy, questy idą gdzie indziej; (c) ranking przenosimy w inne miejsce.
+- Osobno: zapis postępu w stanie gracza i jak pogodzić to z zadaniami na czas z karczmy (D-034).
+
+Szczegóły: [[Tablica questów (propozycja)]]; serwer `src/server/Questy.server.luau` liczy postęp z atrybutów gracza i wypłaca przez Twoje „przyznaj”. Zastrzeżenie agenta: bez zapisu gracz traci postęp przy wyjściu — przed wydaniem trzeba to podpiąć.
 **Odpowiedź:**
 

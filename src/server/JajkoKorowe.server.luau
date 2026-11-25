@@ -194,6 +194,11 @@ kup = function(gracz: Player, n: number): any
 			haczyk:Invoke("zwolnij", gracz) -- jego blokada wyklucia: animację gramy tutaj
 		end)
 	end
+	-- questy (src/server/Questy.server.luau): każde kupione jajko liczy się do „Hatch eggs”
+	local q = game:GetService("ServerStorage"):FindFirstChild("QuestPostep")
+	if #wyniki > 0 and q and q:IsA("BindableEvent") then
+		q:Fire(gracz, "jajka", #wyniki)
+	end
 	-- kupujący otwiera jajo klikaniem we własnym tempie: blokadę zdejmuje jego „koniec” (niżej), najpóźniej po 45 s
 	local znacznik = os.clock()
 	zajety[gracz] = znacznik
