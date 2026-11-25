@@ -1,0 +1,225 @@
+{
+ "biom": "bagno",
+ "calosc": {
+  "trojkaty_razem": 12712,
+  "trojkaty_w_spoczynku": 7448,
+  "rozmiar_m": [
+   3.75,
+   3.0,
+   3.776
+  ],
+  "najnizszy_y_m": 0.0
+ },
+ "czesci": {
+  "Egg": {
+   "trojkaty": 2484,
+   "rozmiar_m": [
+    1.869,
+    2.62,
+    1.873
+   ],
+   "srodek_m": [
+    0.0,
+    1.69,
+    0.0
+   ],
+   "material": "Jajo_bagno"
+  },
+  "ShellBottom": {
+   "trojkaty": 3024,
+   "rozmiar_m": [
+    1.869,
+    1.899,
+    1.873
+   ],
+   "srodek_m": [
+    0.0,
+    1.33,
+    0.0
+   ],
+   "material": "Jajo_bagno"
+  },
+  "ShellTopRight": {
+   "trojkaty": 1000,
+   "rozmiar_m": [
+    0.848,
+    1.015,
+    1.548
+   ],
+   "srodek_m": [
+    0.424,
+    2.492,
+    -0.036
+   ],
+   "material": "Jajo_bagno"
+  },
+  "ShellTopLeft": {
+   "trojkaty": 1240,
+   "rozmiar_m": [
+    1.127,
+    1.049,
+    1.685
+   ],
+   "srodek_m": [
+    -0.295,
+    2.476,
+    0.02
+   ],
+   "material": "Jajo_bagno"
+  },
+  "MudBed": {
+   "trojkaty": 920,
+   "rozmiar_m": [
+    3.666,
+    0.634,
+    3.776
+   ],
+   "srodek_m": [
+    0.049,
+    0.317,
+    0.054
+   ],
+   "material": "Ozdoby_bagno"
+  },
+  "Water": {
+   "trojkaty": 14,
+   "rozmiar_m": [
+    1.032,
+    0.0,
+    1.121
+   ],
+   "srodek_m": [
+    -0.95,
+    0.06,
+    0.858
+   ],
+   "material": "Ozdoby_bagno"
+  },
+  "Lilies": {
+   "trojkaty": 488,
+   "rozmiar_m": [
+    2.747,
+    0.14,
+    0.72
+   ],
+   "srodek_m": [
+    0.045,
+    0.142,
+    0.95
+   ],
+   "material": "Ozdoby_bagno"
+  },
+  "Roots": {
+   "trojkaty": 480,
+   "rozmiar_m": [
+    2.912,
+    0.764,
+    3.046
+   ],
+   "srodek_m": [
+    0.07,
+    0.382,
+    0.028
+   ],
+   "material": "Ozdoby_bagno"
+  },
+  "Reeds": {
+   "trojkaty": 1768,
+   "rozmiar_m": [
+    3.457,
+    2.461,
+    2.549
+   ],
+   "srodek_m": [
+    -0.14,
+    1.306,
+    -0.447
+   ],
+   "material": "Ozdoby_bagno"
+  },
+  "MushroomStems": {
+   "trojkaty": 180,
+   "rozmiar_m": [
+    1.664,
+    0.524,
+    1.891
+   ],
+   "srodek_m": [
+    0.17,
+    0.485,
+    0.129
+   ],
+   "material": "Trzon_bagno"
+  },
+  "MushroomCaps": {
+   "trojkaty": 320,
+   "rozmiar_m": [
+    1.88,
+    0.561,
+    2.11
+   ],
+   "srodek_m": [
+    0.15,
+    0.689,
+    0.105
+   ],
+   "material": "Kapelusz_bagno"
+  },
+  "MushroomSpots": {
+   "trojkaty": 250,
+   "rozmiar_m": [
+    1.865,
+    0.463,
+    2.035
+   ],
+   "srodek_m": [
+    0.144,
+    0.696,
+    0.113
+   ],
+   "material": "Neon_bagno"
+  },
+  "Bubbles": {
+   "trojkaty": 216,
+   "rozmiar_m": [
+    2.387,
+    0.98,
+    2.214
+   ],
+   "srodek_m": [
+    -0.099,
+    0.49,
+    0.056
+   ],
+   "material": "Neon_bagno"
+  },
+  "Crystals": {
+   "trojkaty": 216,
+   "rozmiar_m": [
+    2.038,
+    0.73,
+    1.967
+   ],
+   "srodek_m": [
+    0.139,
+    0.701,
+    0.281
+   ],
+   "material": "Neon_bagno"
+  },
+  "Shards": {
+   "trojkaty": 112,
+   "rozmiar_m": [
+    2.695,
+    0.535,
+    2.431
+   ],
+   "srodek_m": [
+    0.055,
+    0.268,
+    -0.053
+   ],
+   "material": "Neon_bagno"
+  }
+ }
+}
