@@ -18,6 +18,7 @@ import { kartyRaportow } from "./raport_karta.js";
 import { pytanieRaportu, skrotOpisu, zwykly } from "./kolejka.js";
 import { pobierzPrace, ostatniePrace, miniaturaPracy, napisKonca, etapPracy, maPodglad } from "./prace.js";
 import { dyktafon } from "./dyktafon.js";
+import { wGrze, etykietaGry, wybranaGra } from "./gry.js";   // tylko raporty wybranej gry (i wspólne) — 25.11
 
 const ARKUSZ_STYLOW = new URL("./przeglad.css", import.meta.url).href;
 const ODSWIEZANIE_MS = 20000;
@@ -90,7 +91,7 @@ export function przegladAkceptacji(ctx, opcje = {}) {
     return wynik;
   }
   const migawkaRaportu = (r) => r.migawka || ((r.komponenty || []).find((k) => k.typ === "migawka") || {}).cel || null;
-  const czekajace = () => (raporty || []).filter(czekaNaAkceptacje);
+  const czekajace = () => (raporty || []).filter((r) => czekaNaAkceptacje(r) && wGrze(r));
 
   // ------------------------------------------------------------------ powstaje teraz (prace w toku z podglądem)
   function rysujPrace(d) {
@@ -128,6 +129,7 @@ export function przegladAkceptacji(ctx, opcje = {}) {
         migawkaRaportu(r) ? el("span", { class: "przeglad-3d" }, "3D") : null),
       mozeDecydowac() ? el("label", { class: "przeglad-wybor", title: "Zaznacz" }, pole) : null,
       el("div", { class: "przeglad-kafel-tekst" },
+        etykietaGry(r),
         el("strong", { class: "przeglad-kafel-tytul" }, tytul),
         el("span", { class: "cichy-tekst przeglad-kafel-meta" }, (r.kto || "ktoś") + " · ", el("time", { datetime: r.czas || "", title: dataKrotka(r.czas) }, czasTemu(r.czas)))));
     return k;
@@ -159,7 +161,8 @@ export function przegladAkceptacji(ctx, opcje = {}) {
     const lista = czekajace();
     if (opcje.naLiczbe) opcje.naLiczbe(raporty ? lista.length : null);
     licznikEl.textContent = raporty ? String(lista.length) : "";
-    const s = JSON.stringify([lista.map((r) => [r.id, r.tytul, r.kto, r.czas, r.zrzuty, migawkaRaportu(r)]), [...migawki.keys()], blad && blad.message]);
+    const s = JSON.stringify([lista.map((r) => [r.id, r.tytul, r.kto, r.czas, r.zrzuty, migawkaRaportu(r)]), [...migawki.keys()], blad && blad.message,
+      wybranaGra()]);
     rysujPasek();
     if (s === podpis && !wymus) return;
     podpis = s;
@@ -454,6 +457,7 @@ export function przegladAkceptacji(ctx, opcje = {}) {
   window.addEventListener("bc:git-pobrano", () => {
     if (stop) odswiez();
   });
+  window.addEventListener("bc:gra", () => rysuj());            // przełącznik gier: inna lista raportów
 
   return {
     el: korzen,

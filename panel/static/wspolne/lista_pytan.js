@@ -34,8 +34,9 @@ import { komentarze } from "./komentarze.js";
 import { kartyRaportow } from "./raport_karta.js";
 import {
   zbudujPytania, numerDecyzji, OTWARTE_DECYZJE, pytaniaZamknieteDecyzjami, pasuje, zwykly,
-  pytanieDecyzji, kanoniczne, podzielPytanie, skrotOpisu,
+  pytanieDecyzji, kanoniczne, podzielPytanie, skrotOpisu, bezWierszaGry,
 } from "./kolejka.js";
+import { etykietaGry, wybranaGra, maRejestr, wszystkieGry, nazwaGry, czekaGdzieIndziej, wybierzGre, WSZYSTKIE } from "./gry.js";
 import { pobierzPrace, ostatniePrace, pracePoKluczu, znaczekPracy } from "./prace.js";
 
 const ARKUSZ_STYLOW = new URL("./lista_pytan.css", import.meta.url).href;
@@ -392,7 +393,7 @@ export function listaPytan(ctx, opcje = {}) {
     const anuluj = el("button", { type: "button", class: "przycisk cichy" }, "Anuluj");
     const form = el("form", { class: "formularz" },
       el("p", null, el("strong", null, d.id + " "), d.tytul || ""),
-      d.opis_md ? el("div", { class: "decyzja-podglad" }, html(d.opis_md)) : null,
+      d.opis_md ? el("div", { class: "decyzja-podglad" }, html(bezWierszaGry(d.opis_md))) : null,
       el("div", { class: "podpowiedz" }, ikona("info"), el("div", null,
         el("strong", null, "To zmiana kanonu"),
         el("p", null, "W Rejestrze decyzji wiersz statusu zmieni się na „" + (zatw ? "✅ zatwierdzona" : "❌ odrzucona") +
@@ -493,7 +494,7 @@ export function listaPytan(ctx, opcje = {}) {
     const form = el("form", { class: "formularz" },
       el("p", null, el("strong", null, d.id + " "), d.tytul || ""),
       el("p", { class: "cichy-tekst" }, (zd.kto || "Ktoś") + (d.status === "odrzucona" ? " odrzucił" : " zatwierdził") + (zd.data ? " " + zd.data : "") + "."),
-      d.opis_md ? el("div", { class: "decyzja-podglad" }, html(d.opis_md)) : null,
+      d.opis_md ? el("div", { class: "decyzja-podglad" }, html(bezWierszaGry(d.opis_md))) : null,
       el("div", { class: "podpowiedz" }, ikona("info"), el("div", null,
         el("p", null, o.opis(d)),
         imie ? null : el("p", null, el("strong", null, "Wpisz swoje imię w Ustawieniach — odpowiedź musi mieć podpis.")))),
@@ -620,7 +621,7 @@ export function listaPytan(ctx, opcje = {}) {
 
   /** Opis decyzji: dwa pierwsze zdania widoczne, reszta i meta (źródło, kategoria) zwinięte. */
   function opisDecyzji(s, d, ...dodatki) {
-    const { krotko, reszta } = skrotOpisu(d.opis_md, 2);
+    const { krotko, reszta } = skrotOpisu(bezWierszaGry(d.opis_md), 2);
     const meta = (d.meta || []).length ? el("p", { class: "cichy-tekst decyzja-meta" }, (d.meta || []).join(" · ")) : null;
     return [krotko ? el("div", { class: "md sprawa-krotko", html: md(krotko) }) : null,
       szczegoly(s.klucz, reszta ? html(reszta) : null, meta, ...dodatki)];
@@ -1008,7 +1009,7 @@ export function listaPytan(ctx, opcje = {}) {
         return el("div", { class: "sprawa-dec status-" + (d.status || "brak"), dataset: { decyzja: d.id } },
           el("div", { class: "decyzja-gora" }, el("span", { class: "sprawa-zrodlo" }, "rozstrzyga decyzja " + d.id), chipDecyzji(d)),
           el("strong", { class: "sprawa-dec-tytul" }, otwarta ? pytanieDecyzji(d) : zwykly(d.tytul)),
-          d.opis_md ? szczegoly(s.klucz + "~" + d.id, html(d.opis_md)) : null,
+          d.opis_md ? szczegoly(s.klucz + "~" + d.id, html(bezWierszaGry(d.opis_md))) : null,
           s.zamknieta ? null : przyciskiDecyzji(d, wersja));
       }));
   }
@@ -1125,6 +1126,12 @@ export function listaPytan(ctx, opcje = {}) {
       else kartaDecyzji(s, k);
     }
     if (s.nieaktualna) k.classList.add("sprawa-nieaktualna");
+    const chipGry = etykietaGry(s);                            // „Wszystkie gry”: mała etykieta gry przy sprawie
+    if (chipGry) {
+      const zrodlo = k.querySelector(".sprawa-gora .sprawa-zrodlo") || k.querySelector(".sprawa-gora > *");
+      if (zrodlo) zrodlo.after(chipGry);
+      else if (k.querySelector(".sprawa-gora")) k.querySelector(".sprawa-gora").append(chipGry);
+    }
     if (trybZaznaczania && moznaZaznaczyc(s)) {               // tryb zaznaczania: pole wyboru (bez kart potwierdzenia)
       const gora = k.querySelector(".sprawa-gora");
       if (gora) gora.prepend(poleZaznaczenia(s));
@@ -1145,7 +1152,7 @@ export function listaPytan(ctx, opcje = {}) {
 
   function podpisSprawy(s) {
     const flagi = [mozeZapisywac(), decydent(), naSesjeMozna(), s.zamknieta, s.odlozona,
-      trybZaznaczania && moznaZaznaczyc(s), bledyZbiorcze.get(s.klucz) || ""];
+      trybZaznaczania && moznaZaznaczyc(s), bledyZbiorcze.get(s.klucz) || "", wszystkieGry() ? s.gra : ""];
     if (s.typ === "raport") return JSON.stringify([s.r, flagi, raportyUI.zmieniaDecyzje(s.r.id)]);
     if (s.typ === "pytanie") return JSON.stringify([s.p, s.decyzje.map((x) => x.d), s.powiazane.map((x) => x.d && x.d.status), flagi]);
     // potwierdzenie i decyzja zależą też od tego, kto patrzy (znacznik „Twoja decyzja”, czyja kolejka)
@@ -1417,9 +1424,13 @@ export function listaPytan(ctx, opcje = {}) {
     licznikEl.textContent = String(pokazane);
     licznikEl.classList.toggle("zero", !pokazane);
     if (typeof opcje.naLicznik === "function") opcje.naLicznik(pokazane);
+    // przy jednej grze: czy coś czeka w innych grach — nic nie ginie po cichu za przełącznikiem
+    const gdzieIndziej = maRejestr() && !wszystkieGry() ? czekaGdzieIndziej() : 0;
     const pustyEl = el("div", { class: "pusty kolejka-pusta" }, el("div", { class: "pusty-ikona" }, ikona("ok")),
-      el("strong", null, "Nic nie czeka na odpowiedź"),
-      el("p", null, sprawy.odlozone.length && !zwarta ? "Reszta czeka na sesję główną." : "Wszystkie pytania, decyzje i raporty są rozpatrzone."));
+      el("strong", null, maRejestr() && !wszystkieGry() ? "Nic nie czeka w grze " + nazwaGry(wybranaGra()) : "Nic nie czeka na odpowiedź"),
+      el("p", null, sprawy.odlozone.length && !zwarta ? "Reszta czeka na sesję główną." : "Wszystkie pytania, decyzje i raporty są rozpatrzone."),
+      gdzieIndziej ? el("button", { type: "button", class: "przycisk maly", onclick: () => wybierzGre(WSZYSTKIE) },
+        el("span", null, "W innych grach czeka: " + gdzieIndziej + " — pokaż wszystkie gry")) : null);
     if (zwarta) {                                              // w Sesji: najpierw to, co jest na agendzie
       kolejkaOdlozona = uzgodnij(listaEl, [...sprawy.odlozone, ...sprawy.czekajace], kartyKolejki, pustyEl);
       filtruj();
@@ -1540,6 +1551,9 @@ export function listaPytan(ctx, opcje = {}) {
     podpisDanych = "";
     for (const m of [kartyKolejki, kartyOdlozonych]) for (const w of m.values()) w.podpis = "";   // nowy podpis odpowiedzi
     if (typeof opcje.naZmianeOsoby === "function") opcje.naZmianeOsoby();
+    if (pierwszeDane) przerysuj();
+  });
+  window.addEventListener("bc:gra", () => {                    // przełącznik gier (wspolne/gry.js): inna gra = inna lista
     if (pierwszeDane) przerysuj();
   });
 

@@ -4,6 +4,8 @@ import { api, apiSurowe, sse, STATYCZNY, plik } from "./wspolne/api.js";
 import { el, ikona, maIkone, toast, arkusz, awatar } from "./wspolne/ui.js";
 import { pobierzKolejke } from "./wspolne/kolejka.js";
 import { pobierzPrace, godzina as godzinaPracy } from "./wspolne/prace.js";
+import { ustawRejestr, maRejestr, wybranaGra, nazwaGry, listaGier, liczbyGier, czekaGdzieIndziej, wybierzGre, gra as graRejestru,
+  WSZYSTKIE } from "./wspolne/gry.js";
 
 // Kolejność i opisy na wypadek, gdyby moduł widoku nie wstał (wtedy pokazujemy komunikat zamiast niego).
 // Zakładka Pytania łączy dawne Plan, Raporty i Decyzje; stare adresy (#/decyzje, #/plan, #/raporty,
@@ -165,13 +167,26 @@ function zbudujPowloke() {
   const marka = () => el("a", { class: "marka", href: "#/pulpit", "aria-label": "Pulpit" },
     el("span", { class: "logo-znak", "aria-hidden": "true" }, "B&C"));
 
+  // Przełącznik gier (wspolne/gry.js): z rejestrem gier nazwa gry w nagłówku jest przyciskiem — telefon: górny pasek,
+  // komputer: nagłówek bocznego paska. Bez rejestru — sama nazwa gry, jak dawniej.
+  const gry = maRejestr();
+  elementy.graGora = el("span", { class: "gora-gra" }, ctx.konfiguracja.gra.nazwa || "BLOCKY & CRYCKET");
+  const tekstBoku = gry
+    ? el("button", { type: "button", class: "bok-marka-tekst przelacznik-gry", "aria-haspopup": "dialog", onclick: otworzWyborGry },
+      el("span", { class: "przelacznik-gry-nazwa" }, elementy.nazwaGry, ikona("dol")), el("span", { class: "marka-pod" }, "Panel zespołu"))
+    : el("div", { class: "bok-marka-tekst" }, elementy.nazwaGry, el("span", { class: "marka-pod" }, "Panel zespołu"));
+  const tytulyGory = gry
+    ? el("button", { type: "button", class: "gora-tytuly przelacznik-gry", "aria-haspopup": "dialog", onclick: otworzWyborGry },
+      el("span", { class: "przelacznik-gry-nazwa" }, elementy.graGora, ikona("dol")), elementy.tytulGora)
+    : el("div", { class: "gora-tytuly" }, elementy.graGora, elementy.tytulGora);
+  elementy.przelaczniki = gry ? [tekstBoku, tytulyGory] : [];
+
   const bok = el("aside", { class: "bok" },
-    el("div", { class: "bok-marka" }, marka(), el("div", { class: "bok-marka-tekst" }, elementy.nazwaGry, el("span", { class: "marka-pod" }, "Panel zespołu"))),
+    el("div", { class: "bok-marka" }, marka(), tekstBoku),
     navBok,
     el("div", { class: "bok-stopka" }, elementy.praceBok, elementy.obecniBok, elementy.ktoBok));
 
-  const gora = el("header", { class: "gora" }, marka(), el("div", { class: "gora-tytuly" },
-    el("span", { class: "gora-gra" }, ctx.konfiguracja.gra.nazwa || "BLOCKY & CRYCKET"), elementy.tytulGora), elementy.praceGora, elementy.obecniGora, elementy.ktoGora);
+  const gora = el("header", { class: "gora" }, marka(), tytulyGory, elementy.praceGora, elementy.obecniGora, elementy.ktoGora);
 
   elementy.tresc = el("main", { class: "tresc", id: "tresc", tabindex: "-1" });
   const korzen = el("div", { class: "powloka" + (STATYCZNY ? " statyczna" : "") },
@@ -186,6 +201,66 @@ function zbudujPowloke() {
   const app = document.getElementById("aplikacja");
   app.replaceChildren(korzen);
   odswiezOsobe();
+  odswiezPrzelacznikGier();
+}
+
+// --------------------------------------------------------------------------- przełącznik gier (pulpit per gra, 25.11)
+/** Nazwa wybranej gry w nagłówku i plakietka „+N”: ile spraw czeka na ludzi w innych grach (wstrzymane też). */
+function odswiezPrzelacznikGier() {
+  if (!elementy.przelaczniki || !elementy.przelaczniki.length) return;
+  const nazwa = nazwaGry(wybranaGra());
+  elementy.nazwaGry.textContent = nazwa;
+  elementy.graGora.textContent = nazwa;
+  const inne = czekaGdzieIndziej();
+  for (const b of elementy.przelaczniki) {
+    // boczny pasek komputera jest wąski: plakietka w drugim wierszu („Panel zespołu +7”), na telefonie obok nazwy
+    const miejsce = b.querySelector(".marka-pod") || b.querySelector(".przelacznik-gry-nazwa");
+    let plak = miejsce.querySelector(".przelacznik-gry-inne");
+    if (inne && !plak) {
+      plak = el("span", { class: "przelacznik-gry-inne" });
+      miejsce.append(plak);
+    }
+    if (plak) {
+      plak.hidden = !inne;
+      plak.textContent = "+" + inne;
+    }
+    b.setAttribute("aria-label", "Gra: " + nazwa + (inne ? ". W innych grach czeka: " + inne : "") + ". Zmień grę");
+    b.title = inne ? "W innych grach czeka: " + inne + " — zmień grę" : "Zmień grę";
+  }
+  if (elementy.arkuszGier && elementy.arkuszGier.el.isConnected) elementy.arkuszGier.cialo.replaceChildren(listaWyboruGry());
+}
+
+/** Lista w oknie „Która gra?”: każda gra (wstrzymane przygaszone) z liczbą spraw czekających na ludzi i „Wszystkie gry”. */
+function listaWyboruGry() {
+  const liczby = liczbyGier();
+  const wybrana = wybranaGra();
+  const opcja = (id, nazwa, n, wstrzymana) => el("button", {
+    type: "button", class: "gra-opcja" + (id === wybrana ? " wybrana" : "") + (wstrzymana ? " wstrzymana" : ""),
+    "aria-pressed": id === wybrana ? "true" : "false", dataset: { gra: id },
+    onclick: () => {
+      wybierzGre(id);
+      if (elementy.arkuszGier) elementy.arkuszGier.zamknij();
+    },
+  },
+  el("span", { class: "gra-opcja-znak", "aria-hidden": "true" }, id === wybrana ? ikona("ok") : null),
+  el("span", { class: "gra-opcja-nazwa" }, nazwa, wstrzymana ? el("span", { class: "gra-opcja-stan" }, "wstrzymana") : null),
+  n ? el("span", { class: "gra-opcja-liczba", title: "Czeka na ludzi: " + n }, String(n)) : null);
+  const wspolne = Object.keys(liczby).filter((id) => graRejestru(id) && graRejestru(id).wspolne);
+  const nWspolne = wspolne.reduce((s, id) => s + (liczby[id] || 0), 0);
+  const razem = Object.values(liczby).reduce((s, v) => s + (v || 0), 0);
+  const nazwaWspolnych = graRejestru("wspolne") ? graRejestru("wspolne").nazwa : "Wspólne";
+  return el("div", { class: "gry-wybor" },
+    el("div", { class: "gry-lista" },
+      listaGier().map((g) => opcja(g.id, g.nazwa, liczby[g.id] || 0, g.stan === "wstrzymana")),
+      opcja(WSZYSTKIE, "Wszystkie gry", razem, false)),
+    el("p", { class: "cichy-tekst gry-przypis" }, nazwaWspolnych + " (panel, sesje główne) widać w każdej grze" +
+      (nWspolne ? " — czeka " + nWspolne : "") + ". Liczba = sprawy czekające na ludzi."));
+}
+
+function otworzWyborGry() {
+  const ark = arkusz({ tytul: "Która gra?", tresc: listaWyboruGry(), naZamkniecie: () => { elementy.arkuszGier = null; } });
+  elementy.arkuszGier = ark;
+  pobierzKolejke(ctx).catch(() => {});                         // świeże liczby (zdarzenie bc:gry-liczby przerysuje listę)
 }
 
 function odswiezOsobe() {
@@ -628,6 +703,7 @@ async function start() {
   const zapisane = czytajLS("bc.kto");
   if (zapisane) ctx.ja.kto = zapisane;
   if (cfg) ctx.konfiguracja = Object.assign(ctx.konfiguracja, cfg, { gra: Object.assign({}, ctx.konfiguracja.gra, cfg.gra || {}) });
+  ustawRejestr(cfg && cfg.gry);                                // rejestr gier (wspolne/gry.js); bez niego — jedna gra
 
   WIDOKI.forEach((meta, i) => {
     const m = moduly[i];
@@ -651,6 +727,11 @@ async function start() {
   });
 
   window.addEventListener("hashchange", naZmianeAdresu);
+  window.addEventListener("bc:gra", () => {                    // inna gra: nagłówek i plakietka Pytań (widoki przerysowują się same)
+    odswiezPrzelacznikGier();
+    odswiezLicznikSpraw();
+  });
+  window.addEventListener("bc:gry-liczby", odswiezPrzelacznikGier);
   naZmianeAdresu();
 
   const d = await zaCzas(zdrowie, 1500);

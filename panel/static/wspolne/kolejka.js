@@ -11,6 +11,10 @@
 // po decyzji albo informacyjne — razem, od najnowszych.
 // Używają tego: zakładka Pytania, lista Pytania w zakładce Sesja, Pulpit (trzy pierwsze sprawy) i powłoka (plakietka).
 // Starszy serwer nie zwraca pól `rozstrzyga` / `powiazane` — wtedy wiersz „Rozstrzyga:” czytamy z treści pytania.
+// Gry (25.11, wspolne/gry.js): każda sprawa ma pole `gra`; lista pokazuje tylko wybraną grę (i sprawy wspólne),
+// a `poGrach` liczy, ile czeka w każdej grze (przełącznik gier w powłoce). Bez rejestru gier — bez filtra.
+
+import { wGrze, wybranaGra, graSprawy, maRejestr, zapamietajLiczby, rozpoznajGre, WSZYSTKIE } from "./gry.js";
 
 export const OTWARTE_DECYZJE = ["propozycja", "do_decyzji"];
 // „nieaktualna” (14.11): zdjęta z kolejki jako nieaktualna — zamknięta, nie obowiązuje, nie czeka na drugą osobę
@@ -72,9 +76,22 @@ export function powiazane(p) {
   return identyfikatory(((p && p.tytul) || "") + "\n" + ((p && p.tresc_md) || "")).filter((i) => !r.includes(i));
 }
 
-/** Treść pytania bez wiersza „Rozstrzyga:” (decyzje pokazuje karta osobno). */
+// Jawny znacznik gry pytania i decyzji (bc/gry.py): wiersz „Gra: smok” — przy rejestrze gier nie jest pokazywany
+// (tylko gdy wartość to gra z rejestru; zdanie zaczynające się od „Gra:” zostaje).
+const RX_WIERSZ_GRY = /^\s*(?:[-*+]\s+)?(?:\*\*|__)?\s*Gra\s*(?:\*\*|__)?\s*:\s*(?:\*\*|__)?\s*(.*?)\s*(?:\*\*|__)?\s*$/i;
+
+/** Tekst bez wierszy „Gra: <gra z rejestru>” (tylko przy rejestrze gier — bez niego to zwykły tekst). */
+export function bezWierszaGry(md) {
+  if (!maRejestr()) return String(md || "");
+  return String(md || "").split("\n").filter((l) => {
+    const m = RX_WIERSZ_GRY.exec(l);
+    return !(m && rozpoznajGre(m[1]));
+  }).join("\n");
+}
+
+/** Treść pytania bez wiersza „Rozstrzyga:” (decyzje pokazuje karta osobno) i bez znacznika gry. */
 export function bezWierszaRozstrzyga(md) {
-  return String(md || "").split("\n").filter((l) => !RX_ROZSTRZYGA.test(l)).join("\n").trim();
+  return bezWierszaGry(md).split("\n").filter((l) => !RX_ROZSTRZYGA.test(l)).join("\n").trim();
 }
 
 // ----------------------------------------------------------------------------- krótka treść karty
@@ -332,12 +349,16 @@ export function pytaniePotwierdzenia(d) {
 }
 
 /**
- * zbudujPytania(plan, raporty, agenda, ja?) → {czekajace, odlozone, odpowiedziane}   (ja = ctx.ja: imię do potwierdzeń)
+ * zbudujPytania(plan, raporty, agenda, ja?, opcje?) → {czekajace, odlozone, odpowiedziane, poGrach, pelne}
+ *   (ja = ctx.ja: imię do potwierdzeń; opcje.gra = id gry albo WSZYSTKIE — domyślnie gra wybrana w przełączniku)
  * sprawa: {typ:"pytanie"|"decyzja"|"raport"|"potwierdzenie", klucz, zrodlo?, pytanie (tytuł karty), pochodzenie (mała etykieta),
- *          dzien, czas, waga, nr, szukaj, p?, d?, r?, decyzje?:[{id, d}], powiazane?:[{id, d}], odlozona, zamknieta}
+ *          dzien, czas, waga, nr, szukaj, gra, p?, d?, r?, decyzje?:[{id, d}], powiazane?:[{id, d}], odlozona, zamknieta}
  * klucz: "pytanie-19", "D-009" (powtórzony numer: "D-031~2"), "raport-<id>" (adres #/pytania?sprawa=<klucz>).
+ * Listy zawierają tylko sprawy wybranej gry i wspólne (wspolne/gry.js); `pelne` — te same listy bez filtra (np. adres
+ * do sprawy z innej gry), `poGrach` — {id gry: ile spraw czeka na ludzi} (bez odłożonych na sesję). Decyzje z wiersza
+ * „Rozstrzyga:” są w karcie swojego pytania, więc idą za grą pytania.
  */
-export function zbudujPytania(plan, raporty, agenda, ja) {
+export function zbudujPytania(plan, raporty, agenda, ja, opcje) {
   const kto = ja && ja.kto;                                    // potwierdzenia: tylko te, które czekają na MNIE
   const decyzje = mapaDecyzji(plan);
   const decyzja = (id) => decyzje.get(numerDecyzji(id)) || null;
@@ -352,7 +373,7 @@ export function zbudujPytania(plan, raporty, agenda, ja) {
     const czeka = r.status === "czeka";
     const czas = czeka ? r.czas || "" : (r.decyzja && r.decyzja.czas) || r.czas || "";
     const s = {
-      typ: "raport", klucz: "raport-" + r.id, pytanie: pyt.tekst, tytul: r.tytul || "(bez tytułu)", pochodzenie: "z raportu",
+      typ: "raport", klucz: "raport-" + r.id, pytanie: pyt.tekst, tytul: r.tytul || "(bez tytułu)", pochodzenie: "z raportu", gra: graSprawy(r),
       dzien: String(czas).slice(0, 10), czas, waga: 1, nr: 0, r, odlozona: false, zamknieta: !czeka,
       nieaktualna: r.status === "nieaktualne",
       szukaj: doSzukania([pyt.tekst, r.tytul, r.opis_md, r.pytanie, r.kto, r.id, "raport",
@@ -377,7 +398,7 @@ export function zbudujPytania(plan, raporty, agenda, ja) {
     }
     const nieakt = !p.otwarte && pytanieNieaktualne(p);
     const s = {
-      typ: "pytanie", klucz: "pytanie-" + p.nr, zrodlo, pytanie: zwykly(p.tytul) || "Pytanie #" + p.nr, tytul: p.tytul || "",
+      typ: "pytanie", klucz: "pytanie-" + p.nr, zrodlo, pytanie: zwykly(p.tytul) || "Pytanie #" + p.nr, tytul: p.tytul || "", gra: graSprawy(p),
       pochodzenie: "pytanie #" + p.nr, dzien, czas: "", waga: otwarteDec.length ? 2 : 1, nr: p.nr || 0, p,
       decyzje: roz, powiazane: pow, odlozona: p.otwarte && odlozoneZrodla.has(zrodlo), zamknieta: !p.otwarte, nieaktualna: nieakt,
       szukaj: doSzukania([p.tytul, p.tresc_md, p.odpowiedz_md, "pytanie #" + p.nr,
@@ -403,7 +424,7 @@ export function zbudujPytania(plan, raporty, agenda, ja) {
     if (ile === 1 && czekaNaMnie(d, kto)) {                    // druga osoba zdecydowała — pytanie do mnie (D-043)
       const p = pytaniePotwierdzenia(d);
       czekajace.push({
-        typ: "potwierdzenie", klucz: d.id, zrodlo, pytanie: p, tytul: d.tytul || "",
+        typ: "potwierdzenie", klucz: d.id, zrodlo, pytanie: p, tytul: d.tytul || "", gra: graSprawy(d),
         pochodzenie: "decyzja " + d.id + " · potwierdzenie",
         dzien: (d.zdecydowal && d.zdecydowal.data) || ostatniaData(meta), czas: "", waga: 2, nr: n, d,
         odlozona: odlozoneZrodla.has(zrodlo), zamknieta: false,
@@ -414,7 +435,7 @@ export function zbudujPytania(plan, raporty, agenda, ja) {
     const s = {
       // w historii też jako pytanie — odpowiedzią jest status (zatwierdzona / odrzucona / zastąpiona)
       typ: "decyzja", klucz: d.id + (ile > 1 ? "~" + ile : ""), zrodlo, pytanie: pytanieDecyzji(d),
-      tytul: d.tytul || "",
+      tytul: d.tytul || "", gra: graSprawy(d),
       pochodzenie: "decyzja " + d.id, dzien: ostatniaData(meta), czas: "", waga: d.status === "do_decyzji" ? 2 : 1, nr: n, d,
       powtorzona: ile > 1, odlozona: otwarta && odlozoneZrodla.has(zrodlo), zamknieta: !otwarta,
       nieaktualna: d.status === "nieaktualna",
@@ -427,15 +448,25 @@ export function zbudujPytania(plan, raporty, agenda, ja) {
   czekajace.sort(porownaj);
   odpowiedziane.sort((a, b) => String(b.dzien).localeCompare(String(a.dzien)) ||
     String(b.czas || "").localeCompare(String(a.czas || "")) || (b.nr || 0) - (a.nr || 0));
-  return {
+  const pelne = {
     czekajace: czekajace.filter((s) => !s.odlozona), odlozone: czekajace.filter((s) => s.odlozona), odpowiedziane,
   };
+  const poGrach = {};
+  if (maRejestr()) {
+    for (const s of pelne.czekajace) poGrach[s.gra] = (poGrach[s.gra] || 0) + 1;
+    zapamietajLiczby(poGrach);                                 // przełącznik gier: ile czeka w każdej grze
+  }
+  const gra = opcje && opcje.gra !== undefined ? opcje.gra : wybranaGra();
+  if (!maRejestr() || gra === WSZYSTKIE) return Object.assign({ poGrach, pelne }, pelne);
+  const f = (lista) => lista.filter((s) => wGrze(s, gra));
+  return { czekajace: f(pelne.czekajace), odlozone: f(pelne.odlozone), odpowiedziane: f(odpowiedziane), poGrach, pelne };
 }
 
-/** Zgodność wstecz (Pulpit, powłoka): {aktywne, odlozone, wszystkie} — tylko sprawy czekające. */
-export function zbudujKolejke(plan, raporty, agenda, ja) {
-  const k = zbudujPytania(plan, raporty, agenda, ja);
-  return { aktywne: k.czekajace, odlozone: k.odlozone, wszystkie: [...k.czekajace, ...k.odlozone], odpowiedziane: k.odpowiedziane };
+/** Zgodność wstecz (Pulpit, powłoka): {aktywne, odlozone, wszystkie} — tylko sprawy czekające (wybranej gry). */
+export function zbudujKolejke(plan, raporty, agenda, ja, opcje) {
+  const k = zbudujPytania(plan, raporty, agenda, ja, opcje);
+  return { aktywne: k.czekajace, odlozone: k.odlozone, wszystkie: [...k.czekajace, ...k.odlozone], odpowiedziane: k.odpowiedziane,
+    poGrach: k.poGrach, pelne: k.pelne };
 }
 
 /** Pytania otwarte, których wszystkie decyzje z wiersza „Rozstrzyga:” są już zamknięte (do podpowiedzi). */

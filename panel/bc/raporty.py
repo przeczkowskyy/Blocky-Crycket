@@ -10,7 +10,8 @@ Układ plików (rdzen.DANE = panel/dane):
 
 Funkcje publiczne (dla CLI `narzedzia/raport.py` i innych modułów):
     dodaj_raport(tytul, opis_md="", rodzaj="wdrozenie", komponenty=None, migawka=None, pytanie=None, kto=None,
-                 zrzuty=None)  -> raport           (zrzuty = ścieżki obrazów na dysku do skopiowania)
+                 zrzuty=None, gra=None)  -> raport  (zrzuty = ścieżki obrazów na dysku do skopiowania;
+                                                     gra = identyfikator z rejestru gier, bc/gry.py)
     lista_raportow()          -> [raport…] (najnowszy pierwszy)
     raport(rid)               -> raport albo None
     zapisz_decyzje(rid, wartosc, kto, komentarz=None) -> raport
@@ -25,7 +26,7 @@ import re
 import threading
 import time
 
-from . import rdzen
+from . import gry, rdzen
 from .http import Odp
 from .rdzen import BladHTTP
 
@@ -48,8 +49,9 @@ MAX_ZRZUT_BAJTY = 3 * 1024 * 1024                              # limit jednego z
 MAX_ZRZUT_WEJSCIE = 60 * 1024 * 1024                           # większych plików nawet nie czytamy
 BOK_ZRZUTU = 1600
 
-POLA_RAPORTU = ("tytul", "opis_md", "kto", "rodzaj", "komponenty", "migawka", "zrzuty", "pytanie")
-POLA_WYLICZANE = ("status", "komentarzy")                      # przysłane przez klienta są pomijane
+# „gra” (25.11): jawna gra raportu z rejestru gier (bc/gry.py); raport bez pola dostaje grę przy odczycie (po tytule)
+POLA_RAPORTU = ("tytul", "opis_md", "kto", "rodzaj", "komponenty", "migawka", "zrzuty", "pytanie", "gra")
+POLA_WYLICZANE = ("status", "komentarzy", "gra_skad")          # przysłane przez klienta są pomijane
 RX_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$")
 RX_PLIK = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,99}$")
 ROZSZERZENIA_OBRAZOW = (".png", ".jpg", ".jpeg", ".webp", ".gif")
@@ -305,7 +307,7 @@ def _uzupelnij(r, decyzja, liczniki):
     out.setdefault("komponenty", [])
     out.setdefault("zrzuty", [])
     out["komentarzy"] = liczniki.get(r.get("id"), 0)
-    return out
+    return gry.oznacz_raport(out)                              # `gra`, `gra_skad` (bez rejestru gier — bez zmian)
 
 
 def _liczniki_komentarzy():
@@ -322,8 +324,9 @@ def lista_raportow():
     """Wszystkie raporty, najnowszy pierwszy (ze statusem, decyzją i liczbą komentarzy)."""
     wr, wpisy = _raporty_kat.wpisy()
     wk, liczniki = _liczniki_komentarzy()
+    klucz = (rdzen.DANE, wr, wk, gry.podpis())                 # zmiana rejestru gier = nowa klasyfikacja raportów
     with _lista_lock:
-        if _lista_cache["klucz"] == (rdzen.DANE, wr, wk):
+        if _lista_cache["klucz"] == klucz:
             return list(_lista_cache["lista"])
     decyzje = {}
     raporty = []
@@ -336,7 +339,7 @@ def lista_raportow():
     wynik.sort(key=lambda r: (_czas_klucz(r.get("czas")), _raporty_kat.czas_zapisu(str(r.get("id")) + ".json"),
                               r.get("id") or ""), reverse=True)
     with _lista_lock:
-        _lista_cache.update(klucz=(rdzen.DANE, wr, wk), lista=wynik)
+        _lista_cache.update(klucz=klucz, lista=wynik)
     return list(wynik)
 
 
@@ -376,6 +379,9 @@ def sprawdz_raport(dane):
     kto = _tekst(dane, "kto", 200, nazwa="kto")
     if kto:
         out["kto"] = kto
+    gra = gry.sprawdz_gre(dane.get("gra"))                    # tylko gra z rejestru (bc/gry.py)
+    if gra:
+        out["gra"] = gra
     zrzuty = dane.get("zrzuty")
     if zrzuty not in (None, []):
         raise BladHTTP(400, "Zrzuty dołącza się poleceniem: python panel/narzedzia/raport.py dodaj --zrzut plik.png")
@@ -383,13 +389,16 @@ def sprawdz_raport(dane):
 
 
 def dodaj_raport(tytul, opis_md="", rodzaj="wdrozenie", komponenty=None, migawka=None, pytanie=None, kto=None,
-                 zrzuty=None):
-    """Tworzy raport. `zrzuty` = lista ścieżek obrazów na dysku (kopiowane do załączników). Zwraca raport."""
+                 zrzuty=None, gra=None):
+    """Tworzy raport. `zrzuty` = lista ścieżek obrazów na dysku (kopiowane do załączników), `gra` = identyfikator
+    z rejestru gier (bc/gry.py; bez niego gra wynika z tytułu przy odczycie). Zwraca raport."""
     dane = {"tytul": tytul, "opis_md": opis_md or "", "rodzaj": rodzaj or "wdrozenie", "komponenty": komponenty or []}
     if migawka:
         dane["migawka"] = migawka
     if pytanie:
         dane["pytanie"] = pytanie
+    if gra:
+        dane["gra"] = gra
     czyste = sprawdz_raport(dane)
     if czyste.get("migawka"):                                  # raport może wskazywać tylko istniejącą migawkę
         from . import podglad
@@ -413,7 +422,7 @@ def dodaj_raport(tytul, opis_md="", rodzaj="wdrozenie", komponenty=None, migawka
             nazwy.append(nazwa)
         r = {"id": rid, "tytul": czyste["tytul"], "opis_md": czyste["opis_md"], "kto": _kto(kto), "czas": rdzen.teraz(),
              "rodzaj": czyste["rodzaj"], "komponenty": czyste["komponenty"], "zrzuty": nazwy}
-        for pole in ("migawka", "pytanie"):
+        for pole in ("migawka", "pytanie", "gra"):
             if czyste.get(pole):
                 r[pole] = czyste[pole]
         rdzen.zapisz_json(_sciezka_raportu(rid), r)
@@ -498,7 +507,7 @@ def _post_raport(z):
     dane = z.json
     czyste = sprawdz_raport(dane)
     r = dodaj_raport(czyste["tytul"], czyste["opis_md"], czyste["rodzaj"], czyste["komponenty"], czyste.get("migawka"),
-                     czyste.get("pytanie"), kto=czyste.get("kto") or z.kto)
+                     czyste.get("pytanie"), kto=czyste.get("kto") or z.kto, gra=czyste.get("gra"))
     return 201, r
 
 

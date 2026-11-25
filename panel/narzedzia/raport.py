@@ -6,10 +6,13 @@ Przykłady:
     python panel/narzedzia/raport.py dodaj --tytul "Karczma: nowe drzwi" --opis "Co zrobiłem…" \
         --komponent studio:Workspace/DemoLesnaBaza/Karczma:"Karczma" --zrzut zrzut.png
     python panel/narzedzia/raport.py dodaj --rodzaj pytanie --tytul "Kolor dachu?" --pytanie "Czerwony czy zielony?"
-    python panel/narzedzia/raport.py lista [--czeka] [--json]
+    python panel/narzedzia/raport.py dodaj --gra smok --tytul "Gra o smoku: nowa mapa" --opis "…"
+    python panel/narzedzia/raport.py lista [--czeka] [--gra smok] [--json]
     python panel/narzedzia/raport.py odpowiedzi [--od 2026-11-12T20:00] [--raport r-…] [--json]
 
 `odpowiedzi` wypisuje decyzje i komentarze ludzi (bez wpisów agentów „Claude…”) — tak agent czyta odpowiedź człowieka.
+`--gra <id>` (identyfikator z rejestru gier w panel/konfiguracja.json, bc/gry.py) przypisuje raport do gry — panel pokazuje
+go na pulpicie tej gry; bez `--gra` gra wynika z tytułu (słowa kluczowe gier) albo jest domyślna.
 """
 import argparse
 import datetime
@@ -22,7 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import contextlib  # noqa: E402
 
-from bc import rdzen, raporty  # noqa: E402
+from bc import gry, rdzen, raporty  # noqa: E402
 from bc.rdzen import BladHTTP  # noqa: E402
 
 _log_oryginalny = rdzen.log
@@ -107,14 +110,16 @@ def _tekst_opisu(a):
 
 # --------------------------------------------------------------------------- polecenia
 def cmd_dodaj(a):
+    gra = gry.sprawdz_gre(a.gra, "--gra")                     # przed zapisem: nieznana gra = błąd, nic nie powstaje
     r = raporty.dodaj_raport(a.tytul, _tekst_opisu(a), a.rodzaj, [_komponent(s) for s in a.komponent or []],
-                             a.migawka, a.pytanie, kto=a.kto or _domyslny_kto(), zrzuty=a.zrzut or [])
+                             a.migawka, a.pytanie, kto=a.kto or _domyslny_kto(), zrzuty=a.zrzut or [], gra=gra)
     if a.json:
         _wypisz(json.dumps(r, ensure_ascii=False, indent=1))
     else:
         _wypisz("Dodano raport %s: %s" % (r["id"], r["tytul"]))
-        _wypisz("  status: %s · zrzutów: %d · komponentów: %d" % (STATUSY.get(r["status"], r["status"]),
-                                                                 len(r["zrzuty"]), len(r["komponenty"])))
+        _wypisz("  status: %s · zrzutów: %d · komponentów: %d%s" % (STATUSY.get(r["status"], r["status"]),
+                                                                   len(r["zrzuty"]), len(r["komponenty"]),
+                                                                   " · gra: %s" % r["gra"] if r.get("gra") else ""))
         _wypisz("  plik: %s" % rdzen.wzgledem_repo(os.path.join(rdzen.DANE, "raporty", r["id"] + ".json")))
         _wypisz("  Odpowiedź ludzi sprawdzisz poleceniem: python panel/narzedzia/raport.py odpowiedzi --raport %s"
                 % r["id"])
@@ -125,6 +130,10 @@ def cmd_lista(a):
     lista = raporty.lista_raportow()
     if a.czeka:
         lista = [r for r in lista if r["status"] == "czeka"]
+    if a.gra:
+        gra = gry.sprawdz_gre(a.gra, "--gra")
+        wspolne = {g["id"] for g in (gry.rejestr() or {}).get("lista", []) if g["wspolne"]}
+        lista = [r for r in lista if r.get("gra") == gra or r.get("gra") in wspolne]
     lista = lista[:a.ile] if a.ile else lista
     if a.json:
         _wypisz(json.dumps({"raporty": lista}, ensure_ascii=False, indent=1))
@@ -224,10 +233,12 @@ def main(argv=None):
     d.add_argument("--zrzut", action="append", help="obraz do załączenia (PNG/JPG/WEBP/GIF, limit 3 MB)")
     d.add_argument("--pytanie", help="pytanie do ludzi (przy rodzaju „pytanie”)")
     d.add_argument("--kto", help="autor (domyślnie „Claude (<imię z git>)”)")
+    d.add_argument("--gra", help="gra z rejestru gier (np. bc, smok, wspolne); bez tego — po tytule albo domyślna")
     d.set_defaults(fn=cmd_dodaj)
 
     li = sub.add_parser("lista", parents=[wspolne], help="lista raportów")
     li.add_argument("--czeka", action="store_true", help="tylko czekające na decyzję")
+    li.add_argument("--gra", help="tylko raporty tej gry (i wspólne)")
     li.add_argument("--ile", type=int, default=0, help="najwyżej tyle (najnowsze)")
     li.set_defaults(fn=cmd_lista)
 

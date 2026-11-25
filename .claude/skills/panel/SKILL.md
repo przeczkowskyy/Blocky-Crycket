@@ -28,6 +28,8 @@ Narzędzia działają bez uruchomionego serwera (piszą pliki do `panel/dane/`).
    - Obrazy do 3 MB; obejrzyj każdy przed załączeniem.
 3. **Sejf**: raport nie zastępuje zasad z `CLAUDE.md` — zaktualizuj notatki, `Zadania.md` i `Dziennik zmian.md`.
 
+**Gra sprawy (pulpit per gra, od 25.11):** panel pokazuje jedną grę naraz (rejestr `gry` w `panel/konfiguracja.json`: `bc`, `smok`, `pet-arena`, `bonk`, `wytwornia`, `wspolne`). Raport dodawaj z `--gra <id>`; pytanie i decyzję, które **nie** dotyczą gry domyślnej (`bc`), oznacz wierszem `Gra: <id>` (pytanie: w treści przed `**Odpowiedź:**`; decyzja: w opisie pod wierszem statusu), a zadanie — znacznikiem `· #gra/<id>` przed `· agent:` i priorytetem. Bez znacznika gra wynika ze słów w tytule albo jest `bc`. Szczegóły: `panel/README.md`, „Gry”.
+
 ## Prace w toku: zawsze z szacowanym końcem (od 15.11)
 **ZASADA:** każdą dłuższą pracę (dłuższą niż kilka minut: mapa, modele, poprawki po raporcie, render) zgłaszasz w panelu **na starcie** z szacowanym końcem, aktualizujesz **przy zmianie etapu** (i gdy koniec się przesuwa) i **zamykasz na końcu** z id raportu. Karol pracuje zdalnie z telefonu i z Pulpitu ma wiedzieć, co powstaje i o której się skończy.
 ```

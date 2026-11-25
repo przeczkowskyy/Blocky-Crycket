@@ -318,6 +318,8 @@ Nie ma klasy, która z założenia wygrywa z inną (np. Zwiadowca kontrujący Ma
 ✅ zatwierdzona · proces · 2026-11-14 · źródło: rozmowa Karola z Claude Code 14.11 · zdecydował: Karol Balucki 2026-11-14
 Cokolwiek Karol albo Paweł (albo ich Claude Code) zmienia w grze, sejfie lub kodzie, trafia od razu na GitHub: po każdej skończonej zmianie commit i push na `main`, bez czekania na osobną prośbę — tak, żeby druga osoba widziała to od razu (Karol: „cokolwiek Paweł robi w grze, musi to robić, jednocześnie pushując na GitHuba — i vice versa”). Panel jest jedynym miejscem, w którym obaj oglądają stan pracy (modele, raporty, decyzje), i sam się odświeża: sam pobiera zmiany drugiej osoby i sam wysyła zmiany zrobione w panelu. Zmienia zasadę „commit i push tylko na prośbę” z `CLAUDE.md`. Bez zmian: żadnych sekretów w repozytorium, `python tools/sejf_lint.py` przed commitem zmian w sejfie, nigdy siłowego nadpisania — konflikt rozwiązuje człowiek albo Claude razem z nim. Paweł wchodzi do panelu Karola przez link, więc własnego panelu nie musi uruchamiać. Zob. [[Panel zespołu]], [[Zadania]].
 
+Gra: wspolne
+
 ### D-071 Ekwipunek widoczny na modelu postaci; bazowe modele bez stroju
 ✅ zatwierdzona · 3D / game design · 2026-11-15 · źródło: rozmowa Karola z Claude Code 15.11 · zdecydował: Karol Balucki 2026-11-15
 Każdy element ekwipunku — zbroja, miecz, spodnie, czapka albo szata maga, tarcza — jest widoczny na modelu 3D postaci: gracz zakłada przedmiot i widzi go na swojej postaci, także w walce (Karol: „jak ubieram jakiś strój, czy tam tarczę, czy tam zbroję, to widać ją na modelu”; przypomina wcześniejsze ustalenie z rozmów). Dlatego postacie dostają **bazowe („gołe”) modele** bez stroju, a dzisiejszy wygląd Rycerza, Kota-Maga i Zwiadowcy staje się kompletem przedmiotów zakładanych na te modele. **Tarcza jest widoczna tylko wtedy, gdy jest wyekwipowana** — nie należy do stałego wyglądu Rycerza. „Goły” znaczy w prostej bieliźnie albo w samym futrze (zasady Roblox, gra dla wszystkich). Dotyczy slotów z [[Okno ekwipunku]] i klas z D-054; slot tarczy ma tylko Wojownik (D-062). Do ustalenia: czy spodnie to osobny slot, czy część zbroi. Zob. [[Postacie 3D — Blender i Roblox]], [[Rycerz]], [[Kot-Mag]], [[Zwiadowca]].
@@ -532,6 +534,8 @@ Karol chce „mózgu w Obsidianie… zastępującego mózg idealnej gry Roblox, 
 ✅ zatwierdzona · produkcja / Wytwórnia · 2026-11-20 · źródło: [[Sesja główna 2026-11-20 — zapis ustaleń]] · zaproponował: Claude Code (z sesji głównej) · zdecydował: Karol 2026-11-20
 Na sesji 20.11 Karol opowiedział pomysł gry o petach walczących na wspólnej arenie bez kolejki (wyrzucanie z areny, przerwa przegranego peta, postęp przechodzący na kolejnego peta), a Paweł pomysł „Super Kitty Brawlers” (koty w domku, łapanie z ucieczką przed policjantem albo karmienie z ulicy, stroje z pasywkami, rybki jako waluta). Karol: oba trzeba „jeszcze ocenić kartą” i krytyką agenta [18:59]. Propozycja: założyć dla każdego kartę z szablonu „Pomysł gry” (etap `pomysł`), agent dopisuje ocenę z krytyką i pre-mortem według [[Karta oceny pomysłu]], Karol i Paweł oceniają osobno w panelu (Wytwórnia), a oba pomysły dołączają do wyboru w pytaniu 75. Nie wybiera pomysłu do testu i niczego nie buduje. Przy karcie pet-areny rozstrzygnąć, czy to osobny pomysł, czy wersja [[Ring Potworów]]. Zob. [[00 Wytwórnia pomysłów]].
 
+Gra: wytwornia
+
 ### D-117 BONK: porzucić jako grę docelową i wykorzystać jego zasoby w nowych grach z Wytwórni
 ✅ zatwierdzona · produkcja / kierunek · 2026-11-20 · źródło: [[Sesja główna 2026-11-20 — zapis ustaleń]] · zaproponował: Karol (na sesji głównej, bez podpisu), zapisał: Claude Code · zdecydował: Karol 2026-11-20
 Karol [18:52]: „zdecydujemy, żeby porzucić finalnie” BONK i zacząć nowe gry na zasobach, pomysłach, workflow i wiedzy z B&C i BONK-a. Chwilę później [18:58] zastrzegł, że to **nie jest jego ostateczna decyzja** i że czeka na opinię agenta: porzucić BONK czy dokończyć go i przeskanować rynek. Dlatego tylko propozycja. Stoi w sprzeczności z D-112 i D-113 (BONK do próby we dwóch i do pomiaru powrotów); do czasu decyzji one obowiązują jako robocze ustalenia z podpisem Karola. W Wytwórni BONK ma 19/30 i werdykt „popraw”, jego wariant Chain Reaction 22/30 ([[BONK]], [[BONK Chain Reaction]]). Konflikt opisuje pytanie 76 w [[Pytania otwarte]]; opinia agenta jest zadaniem w [[Zadania]].
@@ -568,6 +572,8 @@ Karol [18:31], sam na sesji: agent może wykonywać jego polecenia o Pet Arenie 
 💡 propozycja · proces / raporty · 2026-11-21 · źródło: [[Sesja główna 2026-11-21 — zapis ustaleń]] · zaproponował: Karol (na sesji głównej, bez podpisu), zapisał: Claude Code
 Karol [18:29] o filmie demo Pet Areny wysłanym na telefon: bardzo fajny styl raportowania; jeśli nie zużywa zbyt wielu tokenów, ma być standardem. Zmienia jego prośbę z 15.11 („wystarczą zrzuty”, bo filmy zabierały czas). Koszt jednego filmu ok. 40 s: ok. 5 minut pracy Studio i jedna plansza klatek do obejrzenia przez agenta. Propozycja agenta (D-114, zgoda z poprawką): jeden krótki film (20–40 s) przy każdym większym wdrożeniu gry, przy drobnych poprawkach same zrzuty. Zob. [[Panel zespołu]].
 
+Gra: wspolne
+
 ### D-126 Marketing: konto klipów z wirtualnymi streamerami — wersja jawna
 💡 propozycja · marketing · 2026-11-21 · źródło: pomysł Karola na czacie 21.11; wersję jawną zaproponował Claude Code
 Karol: ogólnorobloxowe konto na Instagramie i TikToku z klipami, w których streamerzy stworzeni w Higgsfield reagują na gry Roblox — wiele gier i postaci, w tym nasza gra; konto miałoby wyglądać jak zbiór momentów z cudzych streamów. Agent (D-114): format dobry i realny, ale nie w wersji udawanej — realistyczne postacie AI trzeba oznaczać (zasady TikToka i Instagrama), a ukryta promocja własnej gry to nieuczciwa praktyka; widzami są w dużej części dzieci. Proponowana wersja: ci sami wirtualni streamerzy jawnie jako postacie AI, nasza gra oznaczona jako nasza, próba 15 klipów z progami. Opis: [[Konto klipów z wirtualnymi streamerami — pomysł]]. Praca w osobnej sesji (`/marketing`).
@@ -583,6 +589,8 @@ Uzasadnienie — Karol, 2026-11-21: „Zgadzam się na wszystko, ale jestem otwa
 Falę wybieramy z danych rynku (gry rosnące dziś, młodsze niż pięć tygodni, po szukaniu przegranych po mechanice). O losie próbki decydują miary u prawdziwych graczy z progami zapisanymi przed próbą; **próbka idzie do graczy także wtedy, gdy właścicielom się nie spodoba** — gust jest jedną z obserwacji, nie werdyktem. Do zrobienia przez ludzi: zebrać 8–12 graczy spoza zespołu (9–15 lat). Kolejność pracy: [[Kierunki z rynku 2026-11-22]].
 
 Uzasadnienie — Karol, 2026-11-22: „Jakie znaczenie ma moje zdanie, skoro będzie ono subiektywne, a nie obiektywne? Liczą się liczby i statystyki” oraz „Okej. Zgoda. Zdajemy się na realne liczby i statystykę”. Czeka na potwierdzenie Pawła (D-043).
+
+Gra: wspolne
 
 ### D-129 Monster Evolution: budowa próbki
 ✅ zatwierdzona · produkcja / projekt gry · 2026-11-22 · źródło: wiadomość Karola na czacie 22.11 i [[Walidacja kierunku jesteś potworem (2026-11-22)]] · zaproponował: Claude Code (wybór z liczb na prośbę Karola) · zdecydował: Karol 2026-11-22
@@ -609,6 +617,8 @@ Karol [18:58–18:59]: rozbudować grę o smoku — gracz zaczyna jako ameba (po
 ### D-134 Baseball i ameba: najpierw ocena agenta, gra o smoku bez zmian do próby z graczami
 💡 propozycja · produkcja / Wytwórnia · 2026-11-22 · źródło: [[Sesja główna 2026-11-22 — zapis ustaleń]] · zaproponował: Karol i Paweł (prośba o ocenę na sesji głównej, bez podpisu); kolejność dopisał Claude Code
 Na sesji obaj poprosili agenta o ocenę: Karol [18:57, 18:59] — ocenić oba pomysły i powiedzieć, który lepszy; gra o smoku „może zostać przerobiona”, jeśli nowe okażą się lepsze; Paweł [19:01] — powiedzieć, czy to w ogóle ma sens. Propozycja kolejności: (1) agent sprawdza rynek po mechanice baseballu (uderzenie piłki, kopanie skarbów; ok. 0,2 mln tokenów) i wypełnia kartę z krytyką, a pomysł z amebą ocenia na danych z 22.11 (prawie bez kosztu); (2) Karol i Paweł oceniają kartą osobno w panelu; (3) do tego czasu gra o smoku zostaje bez zmian i idzie do próby z graczami (D-128, D-129) — czeka na ludzi, nie na budowę; (4) jeśli baseball przejdzie sprawdzenie, powstaje najpierw próbka jednej pętli według bramki z [[Karta oceny pomysłu]], bo okno fali liczymy do ok. 6.12. Nie wybiera gry i niczego nie buduje. Wybór po ocenie: pytanie 86 w [[Pytania otwarte]].
+
+Gra: wytwornia
 
 ### D-135 Karta oceny: kryterium „Inni gracze” nie obniża oceny gier solo
 💡 propozycja · proces / Wytwórnia · 2026-11-22 · źródło: [[Sesja główna 2026-11-22 (2) — zapis ustaleń]] · zaproponował: Karol (na sesji głównej, bez podpisu), zapisał: Claude Code

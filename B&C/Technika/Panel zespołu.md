@@ -152,6 +152,21 @@ Szczegóły techniczne i API: `panel/README.md`.
 
 **Temat sesji (od 20.11.2026):** w zakładce Sesja lista „Temat sesji” — Wytwórnia (nowe pomysły na gry), gra z portfela, pomysł z lejka, Pytania do odpowiedzi albo Inne (z tekstem). Wybiera Karol albo Paweł, widzą wszyscy w rozmowie; temat zapisuje się przy sesji, a agent sesji czyta pod niego notatki (Wytwórnia, notatka gry, karta pomysłu) i z niego proponuje agendę.
 
+## Pulpit osobno dla każdej gry (od 25.11.2026)
+Karol 25.11: „Chcę, żeby dashboard był per gra robiony” — w pytaniach i raportach mieszały się sprawy gry o smoku i Pet Areny, choć wróciliśmy do Blocky & Crycket (D-139).
+- **Przełącznik gier** jest w nagłówku panelu. Domyślnie pokazuje grę aktywną (Blocky & Crycket). Pozostałe: gra o smoku, Pet Arena, BONK, Wytwórnia — pomysły (wszystkie wstrzymane) oraz „Wszystkie gry”. Przy przełączniku widać, ile spraw czeka w innych grach.
+- **Co jest przypisane do gry:** pytania, decyzje, zadania i raporty. Sprawy wspólne (sesje główne, sam panel, zasady pracy, marketing) widać przy każdej grze.
+- **Jak panel rozpoznaje grę:** najpierw jawny znacznik, potem słowa kluczowe w tytule, a gdy nic nie pasuje — gra domyślna (Blocky & Crycket). Lista gier i słów jest w `panel/konfiguracja.json` (klucz `gry`).
+- **Znaczniki** (dla spraw, których tytuł nie mówi, o jaką grę chodzi):
+  - pytanie: wiersz `Gra: <id>` przed `**Odpowiedź:**`;
+  - decyzja: wiersz `Gra: <id>` w opisie, pod wierszem statusu;
+  - zadanie: tag `#gra/<id>`;
+  - raport: `raport.py dodaj --gra <id>`.
+  - Identyfikatory: `bc`, `smok`, `pet-arena`, `bonk`, `wytwornia`, `wspolne`.
+- **Czego filtr jeszcze nie obejmuje:** podglądu 3D, „Powstaje teraz”, Roadmapy, Dziennika i agendy Sesji.
+- Starszy kod panelu (np. u Pawła przed pobraniem zmian) znaczników nie psuje i działa jak dawniej.
+- To zmiana narzędzia (panelu), nie kanonu gry.
+
 ## Wejście z telefonu spoza domu (tunel)
 Sprawdzone naprawdę 13.11.2026: przenośny `cloudflared` (bez instalatora i uprawnień administratora) wystawia panel pod losowym adresem https, a wejście wymaga kodu dostępu. Gość z tunelu nie dostaje uprawnień osoby przy komputerze — nie uruchomi agenta, gita ani nowej migawki — nawet jeśli zna klucz lokalny. Przed udostępnieniem adresu drugiej osobie trzeba wyjąć z konfiguracji lokalnej prywatne sejfy podpięte do panelu. Kroki: `panel/INSTALACJA.md`.
 

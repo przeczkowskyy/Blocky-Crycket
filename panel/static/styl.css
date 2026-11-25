@@ -204,6 +204,59 @@ img { max-width: 100%; }
 .bok-osoba-tekst strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .bok-osoba-tekst span { font-size: 12px; color: var(--przygaszony); }
 
+/* przełącznik gier (pulpit per gra, wspolne/gry.js) — nazwa gry w nagłówku jako przycisk */
+.przelacznik-gry {
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+  background: none; border: 0; padding: 0; margin: 0; border-radius: 10px;
+}
+.przelacznik-gry:hover .przelacznik-gry-nazwa { filter: brightness(1.15); }
+.przelacznik-gry:focus-visible { outline: 2px solid var(--zloto); outline-offset: 2px; }
+.gora-tytuly.przelacznik-gry { min-height: 44px; justify-content: center; }
+.bok-marka-tekst.przelacznik-gry { flex: 1; min-width: 0; min-height: 44px; justify-content: center; padding: 2px 4px; }
+.bok-marka-tekst.przelacznik-gry:hover { background: rgba(255, 255, 255, 0.04); }
+.przelacznik-gry-nazwa { display: inline-flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%; }
+.przelacznik-gry-nazwa > .marka-nazwa, .przelacznik-gry-nazwa > .gora-gra { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.przelacznik-gry-nazwa .ikona { width: 14px; height: 14px; flex: none; color: var(--zloto); }
+.przelacznik-gry .gora-gra { text-transform: uppercase; }   /* boczny pasek: zwykłe litery — nazwa ze strzałką musi się zmieścić */
+.przelacznik-gry-inne {
+  flex: none; min-width: 20px; height: 18px; padding: 0 6px; border-radius: 999px;
+  font-size: 11px; font-weight: 800; line-height: 18px; text-align: center; letter-spacing: 0;
+  color: var(--tlo); background: var(--przygaszony);
+}
+.gry-wybor { display: flex; flex-direction: column; gap: 12px; }
+.gry-lista { display: flex; flex-direction: column; gap: 6px; }
+.gra-opcja {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 8px 12px;
+  font: inherit; color: var(--tekst); text-align: left; cursor: pointer;
+  background: var(--karta2); border: 1.5px solid var(--obrys); border-radius: 12px;
+}
+.gra-opcja:hover { border-color: var(--obrys-jasny); }
+.gra-opcja.wybrana { border-color: rgba(245, 184, 46, 0.6); background: rgba(245, 184, 46, 0.1); }
+.gra-opcja.wstrzymana .gra-opcja-nazwa { color: var(--przygaszony); }
+.gra-opcja-znak { display: inline-grid; place-items: center; width: 18px; flex: none; color: var(--zloto); }
+.gra-opcja-znak .ikona { width: 16px; height: 16px; }
+.gra-opcja-nazwa { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; font-weight: 700; }
+.gra-opcja-stan { font-size: 12px; font-weight: 600; color: var(--szary); }
+.gra-opcja-liczba {
+  flex: none; min-width: 26px; height: 24px; padding: 0 8px; border-radius: 999px;
+  font-size: 12px; font-weight: 800; line-height: 24px; text-align: center; color: #fff; background: var(--czerwien);
+}
+.gra-opcja.wstrzymana .gra-opcja-liczba { background: var(--szary); }
+.gry-przypis { margin: 0; }
+/* etykieta gry przy sprawie w „Wszystkich grach” */
+.chip-gry {
+  display: inline-flex; align-items: center; max-width: 100%; padding: 0 7px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: var(--zloto); background: rgba(245, 184, 46, 0.1); border: 1px solid rgba(245, 184, 46, 0.35);
+}
+.chip-gry.wstrzymana { color: var(--przygaszony); background: rgba(125, 134, 155, 0.1); border-color: rgba(125, 134, 155, 0.35); }
+.chip-gry.wspolna { color: #7cc0ff; background: rgba(78, 168, 255, 0.1); border-color: rgba(78, 168, 255, 0.35); }
+.sprawa-nad .chip-gry { margin-left: 6px; vertical-align: middle; }
+.sprawa-gora > .chip-gry { margin: 0 4px 0 8px; }
+.sprawa-gora > .chip-gry::before, .sprawa-gora > .chip-gry + *::before { content: none; }
+.marka-pod .przelacznik-gry-inne { display: inline-block; margin-left: 6px; vertical-align: 1px; }
+.przeglad-kafel-tekst .chip-gry { align-self: flex-start; }
+
 /* ------------------------------------------------------------------ klasy wspólne (README) */
 .karta {
   position: relative;

@@ -188,9 +188,13 @@ def eksportuj(app, folder, czas=None):
                       "zapis_sejfu": False})                   # lustro niczego nie zapisuje
     cfg = rdzen.konfiguracja()
     w_repo = [s for s in cfg.get("sejfy") or [] if isinstance(s, dict) and not os.path.isabs(str(s.get("sciezka") or ""))]
-    trasa("/api/konfiguracja", {"port": None, "gra": cfg.get("gra"),
-                                "sejfy": [{"id": s.get("id"), "nazwa": s.get("nazwa")} for s in w_repo],
-                                "agent": {"zdalnie": False}, "glos": cfg.get("glos")})
+    konf = {"port": None, "gra": cfg.get("gra"), "sejfy": [{"id": s.get("id"), "nazwa": s.get("nazwa")} for s in w_repo],
+            "agent": {"zdalnie": False}, "glos": cfg.get("glos")}
+    from . import gry
+    rej = gry.publiczny()                                      # rejestr gier: przełącznik gier działa też w lustrze
+    if rej:
+        konf["gry"] = rej
+    trasa("/api/konfiguracja", konf)
     niedostepne = "Lustro tylko do odczytu — ta funkcja działa w panelu uruchomionym na komputerze."
     trasa("/api/agent/stan", {"dostepny": False, "zdalnie": False, "tryby": [], "tryb_domyslny": "plan", "model": "", "powod": niedostepne})
     trasa("/api/agent/watki", {"watki": []})

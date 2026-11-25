@@ -12,6 +12,10 @@ import { el, ikona, czasTemu, dataKrotka, pusty, stanBledu, ladowanie, przelaczn
 import { md, mdLinia } from "../wspolne/markdown.js";
 import { listaPytan, zajety, podswietl } from "../wspolne/lista_pytan.js";
 import { pasuje, zwykly } from "../wspolne/kolejka.js";
+import { maRejestr, wGrze, wszystkieGry, wybranaGra, etykietaGry, listaGier, gra as graRejestru, domyslna, nazwaGry,
+  graSprawy, wybierzGre, WSZYSTKIE } from "../wspolne/gry.js";
+// Gry (25.11): lista, historia, wyszukiwarka i Zadania pokazują wybraną grę i sprawy wspólne (wspolne/gry.js);
+// wyszukiwarka mówi, ile trafień jest w innych grach, a adres do sprawy z innej gry przełącza na jej grę.
 
 const ARKUSZ_STYLOW = new URL("./pytania.css", import.meta.url).href;
 const CZAS_COFNIECIA_MS = 5000;
@@ -178,6 +182,14 @@ export default {
       }
       wynikSzukania.textContent = !naLiscie && !wHistorii ? "Nic nie znaleziono dla „" + zapytanie + "”."
         : "Znaleziono: " + naLiscie + " do odpowiedzi, " + wHistorii + " w historii.";
+      const pelne = D && D.sprawy && D.sprawy.pelne;
+      if (pelne && maRejestr() && !wszystkieGry()) {          // trafienia w innych grach — jednym przyciskiem
+        const inne = [...pelne.czekajace, ...pelne.odlozone, ...pelne.odpowiedziane].filter((s) => !wGrze(s) && pasuje(s, zapytanie)).length;
+        if (inne) {
+          wynikSzukania.append(" ", el("button", { type: "button", class: "przycisk cichy maly szukaj-inne-gry", onclick: () => wybierzGre(WSZYSTKIE) },
+            el("span", null, "W innych grach: " + inne + " — pokaż wszystkie gry")));
+        }
+      }
     }
 
     // ------------------------------------------------------------------ historia „Odpowiedziane”
@@ -240,6 +252,7 @@ export default {
         linia(p.tekst_md, "wiersz-tekst"),
         p.data ? el("span", { class: "cichy-tekst data-zadania" }, dataKrotka(p.data)) : null,
         p.priorytet ? el("span", { class: "chip " + (PRIORYTETY[p.priorytet] || "") }, p.priorytet) : null,
+        o.etykietaGry ? etykietaGry(p) : null,
         agentowe);
     }
 
@@ -444,11 +457,17 @@ export default {
       const segAgent = decydent() ? przelacznik([{ id: "", tekst: "nikt" }].concat(zespol.map((o) => ({ id: o, tekst: o }))),
         agentZadania, (id) => { agentZadania = id; }, "Czyj agent") : null;
       if (segAgent) segAgent.classList.add("maly");
+      // gra zadania (wspolne/gry.js): domyślnie ta, którą człowiek ogląda; serwer dopisze „#gra/<id>”, gdy trzeba
+      const poleGry = maRejestr() ? el("select", { class: "pole pole-gry-zadania", "aria-label": "Gra" },
+        [...listaGier(), ...(graRejestru("wspolne") ? [graRejestru("wspolne")] : [])].map((g) => el("option", { value: g.id },
+          g.nazwa + (g.stan === "wstrzymana" ? " (wstrzymana)" : "")))) : null;
+      if (poleGry) poleGry.value = wszystkieGry() ? domyslna() : wybranaGra();
       const zapisz = el("button", { class: "przycisk glowny szeroki", type: "submit" }, ikona("plus"), el("span", null, "Dodaj do Zadań"));
       const form = el("form", { class: "formularz" },
         el("label", { class: "etykieta" }, "Zadanie"), pole,
         el("span", { class: "etykieta" }, "Sekcja"), segSekcja,
         el("span", { class: "etykieta" }, "Priorytet"), segPriorytet,
+        poleGry ? el("span", { class: "etykieta" }, "Gra") : null, poleGry,
         segAgent ? el("span", { class: "etykieta" }, "Czyj agent robi (na czyim koncie Claude)") : null, segAgent,
         el("p", { class: "cichy-tekst" }, "Trafi na koniec wybranej sekcji w B&C/Produkcja/Zadania.md jako „- [ ] … · #priorytet”, z wpisem w Dzienniku zmian."),
         zapisz);
@@ -473,10 +492,13 @@ export default {
         try {
           const cialo = { tekst, sekcja: sekcjaZadania, priorytet };
           if (agentZadania) cialo.agent = agentZadania;
+          if (poleGry && poleGry.value) cialo.gra = poleGry.value;
           const w = await lista.zapiszDoSejfu("/api/sejf/zadania/dodaj", cialo, wersjeZadan);
           if (w) {
             ark.zamknij();
-            toast("Dodano zadanie (" + (sekcjaZadania === "teraz" ? "Teraz" : "Backlog") + ").", "ok");
+            const innaGra = cialo.gra && !wGrze({ gra: cialo.gra });
+            toast("Dodano zadanie (" + (sekcjaZadania === "teraz" ? "Teraz" : "Backlog") + ")" +
+              (innaGra ? " — w grze " + nazwaGry(cialo.gra) + "." : "."), "ok");
           } else {
             zapisz.disabled = false;
           }
@@ -486,9 +508,19 @@ export default {
       });
     }
 
+    /** Zadania wybranej gry (i wspólne): sekcje bez pozycji tej gry znikają, pusta sekcja z pliku zostaje. */
+    function zadaniaGry(z) {
+      const sekcje = (z && z.sekcje) || [];
+      if (!maRejestr() || wszystkieGry()) return { sekcje, otwarte: z && z.otwarte, zrobione: z && z.zrobione, filtr: false };
+      const wynik = sekcje.map((s) => Object.assign({}, s, { pozycje: (s.pozycje || []).filter((p) => wGrze(p)) }))
+        .filter((s, i) => s.pozycje.length || !(sekcje[i].pozycje || []).length);
+      const wszystkie = wynik.flatMap((s) => s.pozycje);
+      return { sekcje: wynik, otwarte: wszystkie.filter((p) => !p.zrobione).length, zrobione: wszystkie.filter((p) => p.zrobione).length, filtr: true };
+    }
+
     function czescZadan(plan) {
       odswiezZadaniaAgenta();                                  // w tle; po odpowiedzi przerysuje, gdy coś się zmieniło
-      const z = plan.zadania || {};
+      const z = zadaniaGry(plan.zadania || {});
       const sekcje = z.sekcje || [];
       const moze = D && D.mozeZapisywac;
       const akcje = moze ? el("div", { class: "plan-akcje" },
@@ -505,7 +537,7 @@ export default {
         const otw = poz.filter((p) => !p.zrobione);
         const zrob = poz.filter((p) => p.zrobione);
         const tylkoZrobione = !otw.length && zrob.length;
-        const wiersz = (p) => pozycjaZadania(p, { odhaczalne: moze });
+        const wiersz = (p) => pozycjaZadania(p, { odhaczalne: moze, etykietaGry: true });
         return el("article", { class: "karta sekcja-zadan", style: { "--i": i } },
           el("h3", { class: "karta-tytul" }, el("span", null, s.nazwa || "Zadania"),
             el("span", { class: "karta-akcje" }, el("span", { class: "chip" }, otw.length + " / " + poz.length))),
@@ -565,7 +597,7 @@ export default {
       segment.ustaw(czescPlanu);
       const plan = D && D.plan;
       if (plan) {
-        const z = plan.zadania || {};
+        const z = zadaniaGry(plan.zadania || {});
         segment.licznik("zadania", typeof z.otwarte === "number" ? z.otwarte || null : null);
       }
       if (!planDet.open) return;                               // zwinięty: narysuje się przy rozwinięciu
@@ -622,11 +654,20 @@ export default {
       requestAnimationFrame(() => planDet.scrollIntoView({ block: "start", behavior: "smooth" }));
     }
 
-    /** Karta sprawy: na liście „Do odpowiedzi”, a jeśli jej tam nie ma — w historii. */
+    /** Karta sprawy: na liście „Do odpowiedzi”, a jeśli jej tam nie ma — w historii. Sprawa z innej gry (adres
+     * z Telegramu, z Pulpitu w „Wszystkich grach”) przełącza panel na jej grę. */
     function idzDoSprawy(klucz) {
       if (lista.idzDo(klucz)) return true;
       const wszystkie = (D && D.sprawy && D.sprawy.odpowiedziane) || [];
       const i = wszystkie.findIndex((s) => s.klucz === klucz);
+      const pelne = (D && D.sprawy && D.sprawy.pelne) || null;
+      if (i < 0 && pelne && maRejestr() && !wszystkieGry()) {
+        const s = [...pelne.czekajace, ...pelne.odlozone, ...pelne.odpowiedziane].find((x) => x.klucz === klucz);
+        if (s && !wGrze(s) && wybierzGre(graSprawy(s))) {     // „bc:gra” przerysowuje listę od razu
+          toast("Ta sprawa jest w grze " + nazwaGry(graSprawy(s)) + " — pokazuję tę grę.", "info");
+          return idzDoSprawy(klucz);
+        }
+      }
       if (i < 0) {
         toast(/^raport-/.test(klucz) ? "Nie ma takiego raportu (może został usunięty)." : "Nie ma tej sprawy ani na liście, ani w historii.", "info");
         return false;

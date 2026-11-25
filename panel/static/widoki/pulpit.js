@@ -10,6 +10,9 @@ import { zbudujKolejke } from "../wspolne/kolejka.js";
 import { pobierzPrace, ostatniePrace, napisKonca, etapPracy, postep as postepPracy, kluczPozycji, inni as praceInnych,
   zMain, kolizjeMojej, kolizjeCudzej, tekstKolizji, dopelniacz, miniaturaPracy } from "../wspolne/prace.js";
 import { kartaGry } from "../wspolne/wytwornia.js";
+// Gry (25.11, wspolne/gry.js): „Czeka na Ciebie”, „Co nowego” (raporty i decyzje) i „Teraz” pokazują wybraną grę
+// i sprawy wspólne; w „Wszystkich grach” wiersz ma etykietę gry. Karta „Gry” (portfel Wytwórni) — zawsze wszystkie.
+import { wGrze, etykietaGry, wybranaGra } from "../wspolne/gry.js";
 
 const enc = encodeURIComponent;
 
@@ -302,7 +305,7 @@ export default {
           const o = opisSprawy(s);
           return el("li", null, el("button", { type: "button", class: "wiersz wiersz-klik sprawa-wiersz", onclick: () => doSprawy(s.klucz) },
             el("span", { class: "wiersz-tekst" },
-              el("span", { class: "sprawa-nad" }, o.nad),
+              el("span", { class: "sprawa-nad" }, o.nad, etykietaGry(s)),
               el("strong", null, skroc(zwykly(s.pytanie || s.tytul), 90) || "(bez tytułu)"),
               el("span", { class: "cichy-tekst" }, o.pod)),
             ikona("prawo", { klasa: "wiersz-strzalka" })));
@@ -338,12 +341,12 @@ export default {
       const { plan, raporty } = dane;
       if (!plan && !raporty) return c.replaceChildren(el("p", { class: "cichy-tekst" }, "Brak danych."));
       const wpisy = [];
-      for (const r of (raporty || []).slice().sort((a, b) => String(b.czas || "").localeCompare(String(a.czas || ""))).slice(0, 3)) {
+      for (const r of (raporty || []).filter((x) => wGrze(x)).sort((a, b) => String(b.czas || "").localeCompare(String(a.czas || ""))).slice(0, 3)) {
         wpisy.push({ ikona: "raporty", tekst: r.tytul || "(bez tytułu)", pod: "Raport · " + (r.kto || "ktoś"), czas: r.czas || "", akcja: () => doSprawy("raport-" + r.id) });
       }
       const decyzje = [];
       for (const d of (plan && plan.decyzje) || []) {
-        if (d.status !== "zatwierdzona" && d.status !== "odrzucona") continue;
+        if ((d.status !== "zatwierdzona" && d.status !== "odrzucona") || !wGrze(d)) continue;
         for (const m of d.meta || []) {
           const mm = /^(?:zdecydował|zdecydowała)\S*:\s*(.+?)\s+(\d{4}-\d{2}-\d{2})$/.exec(String(m).trim());
           if (mm) decyzje.push({ ikona: "decyzja", tekst: d.id + " " + (d.tytul || ""), pod: "Decyzja " + STATUSY_DECYZJI[d.status] + " · " + mm[1], czas: mm[2], akcja: () => doSprawy(d.id) });
@@ -371,7 +374,8 @@ export default {
     function rysujTeraz(plan, blad) {
       const c = kTeraz.cialo;
       if (blad) return c.replaceChildren(stanBledu(blad, "Zadania"));
-      const sekcje = (plan.zadania && plan.zadania.sekcje) || [];
+      const sekcje = ((plan.zadania && plan.zadania.sekcje) || [])            // zadania wybranej gry (i wspólne)
+        .map((s) => Object.assign({}, s, { pozycje: (s.pozycje || []).filter((p) => wGrze(p)) }));
       const pierwsza = sekcje.find((s) => (s.pozycje || []).some((p) => !p.zrobione)) || sekcje[0];
       if (!pierwsza) return c.replaceChildren(pusty("Brak zadań", "Lista zadań w sejfie jest pusta."));
       const otwarte = (pierwsza.pozycje || []).filter((p) => !p.zrobione);
@@ -382,7 +386,7 @@ export default {
         el("ul", { class: "lista zadania-lista" }, otwarte.slice(0, 5).map((p) => el("li", { class: "wiersz zadanie-wiersz" },
           el("span", { class: "pole-wyboru", "aria-hidden": "true" }),
           el("span", { class: "md md-linia wiersz-tekst", html: mdLinia(p.tekst_md) }),
-          chipPriorytetu(p.priorytet)))),
+          chipPriorytetu(p.priorytet), etykietaGry(p)))),
         otwarte.length > 5 ? el("p", { class: "cichy-tekst" }, "…i jeszcze " + (otwarte.length - 5) + " w tej sekcji.") : null);
     }
 
@@ -639,12 +643,13 @@ export default {
       });
       const sPlan = sygn(plan);
       const sRap = sygn(rap);
+      const sGra = "|" + wybranaGra();                         // inna gra w przełączniku = karty od nowa
       rysuj("gora", sPlan, () => rysujGore(dane.plan, dane.bladPlanu));
-      rysuj("czeka", sPlan + sRap + sygn(ag), () => rysujCzeka(dane));
+      rysuj("czeka", sPlan + sRap + sygn(ag) + sGra, () => rysujCzeka(dane));
       rysuj("rozmowa", sygn(ob), () => rysujRozmowe(wart(ob), blad(ob)));
-      rysuj("nowe", sPlan + sRap, () => rysujNowe(dane));
+      rysuj("nowe", sPlan + sRap + sGra, () => rysujNowe(dane));
       rysuj("sync", sygn(git), () => rysujSync(wart(git), blad(git)));
-      rysuj("teraz", sPlan, () => rysujTeraz(wart(plan), blad(plan)));
+      rysuj("teraz", sPlan + sGra, () => rysujTeraz(wart(plan), blad(plan)));
       rysuj("kto", sygn(ob), () => rysujKto(wart(ob), blad(ob)));
       rysuj("migawka", sygn(pod), () => rysujMigawke(wart(pod), blad(pod)));
       rysuj("gry", sygn(wyt), () => rysujGry(wart(wyt), blad(wyt)));
@@ -656,6 +661,7 @@ export default {
     });
     // panel sam pobrał zmiany z GitHuba (powłoka, app.js) — od razu nowe dane, bez czekania na odpytywanie
     window.addEventListener("bc:git-pobrano", () => odswiez());
+    window.addEventListener("bc:gra", () => odswiez());         // przełącznik gier (wspolne/gry.js)
     // prace w toku: nowa treść z dowolnego miejsca panelu (powłoka pyta co 30 s) i moduły znane po starcie
     window.addEventListener("bc:prace", (e) => {
       try {

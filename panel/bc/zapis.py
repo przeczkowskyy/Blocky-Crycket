@@ -67,7 +67,7 @@ import threading
 import time
 import unicodedata
 
-from . import rdzen, sejf
+from . import gry, rdzen, sejf
 from .rdzen import BladHTTP
 
 LIMIT_ODPOWIEDZI = 2000
@@ -1024,32 +1024,45 @@ def osoba_agenta(agent):
     return osoba
 
 
-def dodaj_zadanie(tekst, sekcja, priorytet, wersja, kto, znacznik=None, agent=None):
+def dodaj_zadanie(tekst, sekcja, priorytet, wersja, kto, znacznik=None, agent=None, gra=None):
+    """Nowe zadanie na końcu sekcji. `gra` (rejestr gier, bc/gry.py) = gra, którą człowiek oglądał w panelu: gdy sam
+    tekst nie trafiłby do niej (gra domyślna bez słów innej gry albo słowo kluczowe tej gry), linia dostaje znacznik
+    „ · #gra/<id>” przed polem agenta i priorytetem."""
     tekst = czysty_tekst(tekst, LIMIT_ZADANIA, "tekst")
     if sejf._RX_PRIORYTET.search(tekst):
         raise BladHTTP(400, "Priorytet wybierz w polu „priorytet”, nie w treści zadania")
     if _RX_AGENT_W_TEKSCIE.search(tekst):                     # przypisanie tylko polem „agent” (z uprawnieniem)
         raise BladHTTP(400, "Czyj agent robi zadanie, wybierz w polu „agent”, nie w treści zadania")
+    if gry.znacznik_zadania(tekst):                            # gra tylko polem „gra” (sprawdzona z rejestrem)
+        raise BladHTTP(400, "Grę wybierz w polu „gra” (przełącznik gier w panelu), nie w treści zadania")
     if sekcja not in SEKCJE_DODAWANIA:
         raise BladHTTP(400, "Pole „sekcja” musi mieć wartość „teraz” albo „backlog”")
     if priorytet not in PRIORYTETY:
         raise BladHTTP(400, "Pole „priorytet” musi mieć wartość „wysoki”, „średni” albo „niski”")
     agent = osoba_agenta(agent)
-    wiersz = "- [ ] %s%s · #%s" % (tekst, " · agent: %s" % agent if agent else "", PRIORYTETY[priorytet])
+    gra = gry.sprawdz_gre(gra)
+    znacznik_gry = gry.znacznik_nowego_zadania(tekst, gra)
+    wiersz = "- [ ] %s%s%s · #%s" % (tekst, znacznik_gry, " · agent: %s" % agent if agent else "", PRIORYTETY[priorytet])
+    gra_nowego = gry.gra_zadania(tekst + znacznik_gry)
 
     def zmiana(dok):
         sekcje = _sekcje_h2(dok)
-        for start, koniec, nazwa in sekcje:                    # bez dubli: identyczne otwarte zadanie już jest
+        for start, koniec, nazwa in sekcje:                    # bez dubli: identyczne otwarte zadanie (tej samej gry)
             for i in range(start + 1, koniec):
                 for zrobione, pole in sejf._pola_wyboru(dok.tresc(i)):
-                    if not zrobione and sejf.agent_zadania(_bez_priorytetu(pole))[0] == tekst:
+                    if zrobione:
+                        continue
+                    bez = sejf.agent_zadania(_bez_priorytetu(pole))[0]
+                    if gry.bez_znacznika_zadania(bez) == tekst and gry.gra_zadania(bez) == gra_nowego:
                         raise BladHTTP(409, "Takie zadanie już jest na liście.", kod="juz_zapisane")
         cel = _sekcja_rodzaju(sekcje, sekcja)
         if cel is None:
             raise BladHTTP(404, "W pliku zadań nie ma sekcji „%s”" % NAZWY_SEKCJI[sekcja])
         dok.wstaw(dok.za_trescia(cel[0], cel[1]), [wiersz])
-        return "dodane zadanie: %s (%s%s)" % (skrot(tekst), NAZWY_SEKCJI[sekcja],
-                                              ", agent: %s" % agent if agent else "")
+        nazwa_gry = (gry.gra(gra) or {}).get("nazwa") if znacznik_gry else None
+        return "dodane zadanie: %s (%s%s%s)" % (skrot(tekst), NAZWY_SEKCJI[sekcja],
+                                                ", agent: %s" % agent if agent else "",
+                                                ", gra: %s" % nazwa_gry if nazwa_gry else "")
 
     return _wykonaj("zadania", wersja, zmiana, kto, znacznik)
 
@@ -1582,12 +1595,12 @@ BRAK_PRAWA_AGENTA = ("Czyj agent robi zadanie (na czyim koncie Claude), wybiera 
 
 
 def _t_dodaj(z):
-    d = _dane(z, ("tekst", "sekcja", "priorytet", "wersja", "agent"))
+    d = _dane(z, ("tekst", "sekcja", "priorytet", "wersja", "agent", "gra"))
     if d.get("agent") and not decydent(z):
         raise BladHTTP(403, BRAK_PRAWA_AGENTA, kod="brak_klucza_zatwierdzania")
     kto, znacznik = podpis(z)
     return dodaj_zadanie(d.get("tekst"), d.get("sekcja"), d.get("priorytet"), d.get("wersja"), kto, znacznik,
-                         agent=d.get("agent"))
+                         agent=d.get("agent"), gra=d.get("gra"))
 
 
 def _t_agent(z):

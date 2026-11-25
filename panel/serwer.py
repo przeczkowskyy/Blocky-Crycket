@@ -446,7 +446,11 @@ class Obsluga(http.server.BaseHTTPRequestHandler):
             ciastko_gd = ciastka.get("bc_gd") or ""
             game_director = bool(klucz_gd and ciastko_gd and hmac.compare_digest(ciastko_gd.encode(), klucz_gd.encode()))
         if do_ustawienia and not api and self.command == "GET":   # klucze z adresu -> ciasteczka, adres bez kluczy
-            return self._odp(Odp.przekieruj(adres_powrotu(url.path), do_ustawienia), False)
+            powrot = adres_powrotu(url.path)
+            gra = query.get("gra") or ""                       # wybór gry (static/wspolne/gry.js) przeżywa zamianę klucza
+            if re.match(r"^[a-z0-9][a-z0-9-]{0,31}$", gra):
+                powrot += "?gra=" + gra
+            return self._odp(Odp.przekieruj(powrot, do_ustawienia), False)
 
         # --- ochrona POST
         cialo = b""
@@ -548,10 +552,19 @@ def _ja(z):
 
 def _konfiguracja(z):
     cfg = rdzen.konfiguracja()
-    return {"port": STAN["port"], "gra": cfg.get("gra"), "sejfy": [{"id": s.get("id"), "nazwa": s.get("nazwa")}
-                                                                   for s in cfg.get("sejfy") or []],
-            "agent": {k: v for k, v in (cfg.get("agent") or {}).items() if k in ("tryb_domyslny", "model", "zdalnie")},
-            "glos": {k: v for k, v in (cfg.get("glos") or {}).items() if z.lokalny or k != "katalog_modeli"}}
+    wynik = {"port": STAN["port"], "gra": cfg.get("gra"), "sejfy": [{"id": s.get("id"), "nazwa": s.get("nazwa")}
+                                                                    for s in cfg.get("sejfy") or []],
+             "agent": {k: v for k, v in (cfg.get("agent") or {}).items() if k in ("tryb_domyslny", "model", "zdalnie")},
+             "glos": {k: v for k, v in (cfg.get("glos") or {}).items() if z.lokalny or k != "katalog_modeli"}}
+    try:                                                       # rejestr gier (bc/gry.py); bez niego — jak dawniej
+        from bc import gry
+        rej = gry.publiczny()
+    except Exception as e:                                     # błąd rejestru nie psuje konfiguracji panelu
+        rdzen.log("gry: rejestr niedostępny: %r" % e)
+        rej = None
+    if rej:
+        wynik["gry"] = rej
+    return wynik
 
 
 def _konfiguracja_lokalna(z):

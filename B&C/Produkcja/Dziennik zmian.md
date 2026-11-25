@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-25 · Claude Code u Karola (panel: pulpit osobno dla każdej gry; start prac nad miastem i muzyką)
+- **Panel:** Karol: „Chcę, żeby dashboard był per gra robiony”. Agent na Opus (ok. 0,3–0,55 mln tokenów, 40 min) dodał przełącznik gier i przypisanie pytań, decyzji, zadań i raportów do gry; opis w [[Panel zespołu]]. Testy panelu: 23 nowe, cała paczka bez błędów.
+- **Znaczniki w sejfie:** D-070, D-125 i D-128 oznaczone jako wspólne, D-116 i D-134 jako Wytwórnia; trzy zadania o repozytorium i panelu jako wspólne.
+- **Zadania:** 12 zadań Pet Areny, gry o smoku i radaru Wytwórni przeniesione z „Teraz” do „Wstrzymane”.
+- **Miasto (D-147):** agent na Opus zaczął nakładać tekstury i kreskę; kolor kreski domyślnie jak w sali dziś (pytanie 100 otwarte).
+- **Muzyka miasteczka:** trzy próbki po 60 s z Higgsfield wysłane Karolowi do wyboru (26 kredytów). Łącznik Higgsfield w sesji agenta ma osobne konto bez kredytów; generowanie idzie przez narzędzie na komputerze Karola.
+- Uwaga dla Pawła: po pobraniu zmian trzeba zrestartować własny panel, żeby pojawił się przełącznik gier.
+
 ## 2026-11-25 · Claude Code u Karola (porządek w pytaniach, plan pracy nad B&C, D-147)
 - **Pytania zdjęte jako nieaktualne** na polecenie Karola: 78 i 79 (Pet Arena), 85 (baseball), 87 (sklep gry o smoku). Podpisane jako agent, nie jako Karol.
 - **Decyzja Karola D-147** (czeka na Pawła): miasto dostaje tekstury i kreskę jak sala wyboru rasy, bez przebudowy.

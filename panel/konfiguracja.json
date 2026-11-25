@@ -5,6 +5,26 @@
     "universeId": 10776202722,
     "placeId": 129485428021967
   },
+  "gry": {
+    "domyslna": "bc",
+    "aktywna": "bc",
+    "lista": [
+      { "id": "bc", "nazwa": "Blocky & Crycket", "stan": "aktywna",
+        "slowa": ["Blocky", "Crycket", "B&C"] },
+      { "id": "smok", "nazwa": "Gra o smoku", "stan": "wstrzymana",
+        "slowa": ["o smok", "ze smok", "Monster Evolution", "Dragon Lair", "o ewolucji"] },
+      { "id": "pet-arena", "nazwa": "Pet Arena", "stan": "wstrzymana",
+        "slowa": ["Pet Aren", "PetArena", "Ring Potwor", "Throw & Catch", "Throw Pets"] },
+      { "id": "bonk", "nazwa": "BONK", "stan": "wstrzymana",
+        "slowa": ["BONK"] },
+      { "id": "wytwornia", "nazwa": "Wytwórnia — pomysły", "stan": "wstrzymana",
+        "slowa": ["Wytworni", "Baseball", "Ragdoll", "Olbrzym", "Giant", "nastepna gra", "nastepnej gry",
+                  "Super Kitty", "kart ocen", "karci ocen", "ameb", "trend"] },
+      { "id": "wspolne", "nazwa": "Wspólne", "stan": "aktywna", "wspolne": true,
+        "slowa": ["^sesj glown", "^panel", "Marketing", "streamer", "Telegram", "klucz zatwierdz", "agent mysli",
+                  "decyzje zatwierdza", "decyzja jednej osoby"] }
+    ]
+  },
   "sejfy": [
     { "id": "B&C", "nazwa": "Sejf gry", "sciezka": "B&C" }
   ],

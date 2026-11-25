@@ -11,6 +11,7 @@ Zasada D-008: mózgiem projektu jest sejf `B&C/`. Ten moduł niczego nie zapisuj
 - Plan (roadmapa, zadania, decyzje, pytania, dziennik) parsowany z `<sejf B&C>/Produkcja/*.md`.
 - Decyzje mają pola potwierdzania przez drugą osobę (D-043): `zdecydowal`, `potwierdzil`, `sprzeciw`,
   `do_rozmowy`, `czeka_na` — patrz „potwierdzanie decyzji” niżej.
+- Pytania, decyzje i zadania mają pole `gra` (i `gra_skad`) z klasyfikatora bc/gry.py, gdy konfiguracja ma rejestr gier.
 """
 import datetime
 import hashlib
@@ -21,7 +22,7 @@ import time
 import unicodedata
 import zlib
 
-from . import rdzen
+from . import gry, rdzen
 from .rdzen import BladHTTP
 
 POMIJANE_FOLDERY = {".obsidian", ".trash", "_narzędzia", "__pycache__"}
@@ -666,6 +667,10 @@ def parsuj_zadania(tekst):
         for linia in linie:
             for zrob, t in _pola_wyboru(linia):
                 poz = {"id": id_zadania(t), "tekst_md": t, "zrobione": zrob}
+                znacznik = gry.znacznik_zadania(t)             # „#gra/smok” (bc/gry.py) — nie jest częścią tekstu
+                if znacznik:
+                    poz["gra_znacznik"] = znacznik             # roboczo: gry.oznacz_plan() zamienia je na `gra`
+                    t = gry.bez_znacznika_zadania(t)
                 mp = _RX_PRIORYTET.search(t)
                 if mp:
                     p = mp.group(1).lower()
@@ -1044,8 +1049,9 @@ def plan():
             stany[klucz] = (st.st_mtime_ns, st.st_size)
         except OSError:
             stany[klucz] = None
-    # zespół (osoby z ustawień bota) zmienia pole `czeka_na` decyzji, więc też jest w podpisie pamięci
-    podpis = (tuple(sorted((k, pliki[k][0], v) for k, v in stany.items())), tuple(zespol()))
+    # zespół (osoby z ustawień bota) zmienia pole `czeka_na` decyzji, a rejestr gier — pole `gra`, więc oba są
+    # w podpisie pamięci
+    podpis = (tuple(sorted((k, pliki[k][0], v) for k, v in stany.items())), tuple(zespol()), gry.podpis())
     with _plan_blokada:
         if _plan_pamiec["plan"] is not None and _plan_pamiec["podpis"] == podpis:
             return _plan_pamiec["plan"]
@@ -1068,6 +1074,10 @@ def plan():
                 wynik[klucz] = PARSERY[klucz](tekst)
             except Exception as e:                             # plan nigdy nie zwraca błędu
                 rdzen.log("sejf: nie udało się odczytać %s: %r" % (pokaz, e))
+        try:
+            gry.oznacz_plan(wynik)                             # pole `gra` pytań, decyzji i zadań (bc/gry.py)
+        except Exception as e:                                 # plan nigdy nie zwraca błędu
+            rdzen.log("sejf: nie udało się przypisać gier: %r" % e)
         wynik["zrodla"] = zrodla
         wynik["pliki"] = {k: pokaz for k, (_, pokaz) in pliki.items()}
         wynik["wersje"] = wersje
