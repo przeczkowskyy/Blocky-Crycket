@@ -40,6 +40,7 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: odpowiedź na pytanie 100 ([[Pytania otwarte]])
 - Karol Balucki: odpowiedź na pytanie 102 ([[Pytania otwarte]])
 - Karol Balucki: omówiony temat sesji: Baseball, ameba czy smok: wybór po ocenie agenta (pytanie 86; D-133, D-134) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Kierunek z 19.11: trzy biomy grywalne zamiast Pustyni (D-106–D-111) ([[Sesje główne]])
 
 ## 2026-11-25 · Claude Code u Karola (panel: pulpit osobno dla każdej gry; start prac nad miastem i muzyką)
 - **Panel:** Karol: „Chcę, żeby dashboard był per gra robiony”. Agent na Opus (ok. 0,3–0,55 mln tokenów, 40 min) dodał przełącznik gier i przypisanie pytań, decyzji, zadań i raportów do gry; opis w [[Panel zespołu]]. Testy panelu: 23 nowe, cała paczka bez błędów.
