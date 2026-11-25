@@ -241,7 +241,8 @@ local function zamknij()
 end
 
 okna.Event:Connect(function(id)
-	if id == "mistrz_gier" then
+	-- Paweł 25.11: plansza 3D na stole (MistrzGier3DClient) zastępuje to okno; bez niej okno działa jak dotąd
+	if id == "mistrz_gier" and okna:GetAttribute("mistrz_gier_3d") ~= true then
 		otworz()
 	end
 end);
