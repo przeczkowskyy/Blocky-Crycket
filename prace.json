@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-25T23:53:42+01:00",
+ "aktualizacja": "2026-11-25T23:53:47+01:00",
  "prace": [
   {
    "id": "jajka-biomow-studio",
@@ -14,29 +14,6 @@
    "obszary": [
     "studio:JajkaBiomowPodglad",
     "swiat/jajka_biomow/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "pety-lasu-noc2511",
-   "tytul": "Przebudowa pięciu petów lasu według arkuszy Pawła",
-   "stan": "w_toku",
-   "start": "2026-11-25T23:21:38+01:00",
-   "koniec_szacowany": "2026-11-26T01:15:00+01:00",
-   "aktualizacja": "2026-11-25T23:21:38+01:00",
-   "obszary": [
-    "model:zoledziak",
-    "model:mchowy_slimak",
-    "model:lisciolis",
-    "model:swietlikowka",
-    "model:jelonek_gaju",
-    "swiat/postacie/zoledziak.py",
-    "swiat/postacie/mchowy_slimak.py",
-    "swiat/postacie/lisciolis.py",
-    "swiat/postacie/swietlikowka.py",
-    "swiat/postacie/jelonek_gaju.py",
-    "swiat/pety_proba/zrodla/rigi/*"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
