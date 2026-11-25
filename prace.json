@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-25T23:40:25+01:00",
+ "aktualizacja": "2026-11-25T23:40:52+01:00",
  "prace": [
   {
    "id": "miasto-zagroda-trening",
@@ -74,19 +74,6 @@
    "obszary": [
     "swiat/pety_proba/**",
     "studio:PetyProba"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-pula_wojownika_podworkowy",
-   "tytul": "Przebudowa modelu pula_wojownika_podworkowy",
-   "stan": "w_toku",
-   "start": "2026-11-25T23:40:25+01:00",
-   "koniec_szacowany": "2026-11-26T00:00:25+01:00",
-   "aktualizacja": "2026-11-25T23:40:25+01:00",
-   "obszary": [
-    "model:pula_wojownika_podworkowy"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
