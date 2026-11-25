@@ -759,6 +759,7 @@ Rozstrzyga: D-126
 
 Szczegóły: Ocena, zasady i progi próby: [[Konto klipów z wirtualnymi streamerami — pomysł]]; zasady marketingu: [[00 Marketing]]. Koszt klipu w kredytach Higgsfield do wyceny w sesji marketingowej.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): rozstrzygnięte decyzjami: D-126 zatwierdzona
 
 ## 81. Po Pet Arenie: wieczór trzech zabawek?
 - Karol po graniu (21.11): Pet Arena jest mało wciągająca, „to chyba nie ten pomysł”. Agent zaleca zakończyć ją w tym kształcie.
@@ -871,6 +872,7 @@ Rozstrzyga: D-139.
 
 Szczegóły: poprawki agenta (tapnięcie przyspiesza pasek, przyrost rośnie z poziomem, mini-gry jako bonus, przeliczenie tempa walk bez punktów za poziom) są w treści D-140 i D-141 w [[Rejestr decyzji]]. Dotyka D-097 (dwa podpisy), D-050, D-108 i pytania 50.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): Paweł już wdrożył
 
 ## 90. Pakiety Karola działają tylko w Studio — przed wydaniem?
 - Stan gracza, kowal, sklep (i inne pakiety `swiat/…`) mają na początku `if not RunService:IsStudio() then return`.
@@ -879,6 +881,7 @@ Szczegóły: poprawki agenta (tapnięcie przyspiesza pasek, przyrost rośnie z p
 
 Szczegóły: wykryte 23.11 przy podpinaniu sklepu Pawła pod serwer sklepu Karola (`swiat/sklep_proba/zrodla/SerwerSklepu.server.luau`, wiersz 19; podobnie `swiat/kowal_proba`, `swiat/stan_gracza`). Prawdopodobnie zabezpieczenie prototypów przed przypadkową publikacją. Właściciel: Karol.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): a
 
 ## 91. Karol: gracz chodzi modelem rasy zamiast bohatera klasy?
 - Paweł 23.11 (D-143): po wyborze rasy gracz porusza się modelem rasy (demon, elf, ork…), nie Rycerzem, Zwiadowcą ani Kotem-Magiem; animacje mają pasować do ras.
@@ -887,6 +890,7 @@ Szczegóły: wykryte 23.11 przy podpinaniu sklepu Pawła pod serwer sklepu Karol
 
 Szczegóły: modele ras mają ten sam szkielet R15 i klipy co bohaterowie (`swiat/postacie/RASY.md` pkt 1). Animacje treningu AFK (gałąź `pawel/diamenty-afk`) już działają na bohaterze, awatarze i każdym szkielecie R15 — nadpisują pozę tylko lokalnie, w czasie treningu, po pętli Twojego bohatera (priorytet Last + 1). Poza tym trening potrzebuje od Ciebie: rozszerzenia umowy `RuchBohatera` o wymuszony obrót korzenia (leżenie na ławce) albo zgody na obecne obejście.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): Tak. Teraz zdecydowaliśmy że każda postać to kotem, tylko różnica będzie jako model rasy. Teraz wojownik też jest kotkiem, ale może być razy ddemon, elf itd
 
 ## 92. Skalowanie statystyk: limit krytyka i redukcji obrażeń
 - Paweł: przy 134 Szczęścia okno pokazuje 167,50% krytyka — trzeba to przeskalować, np. krytyk najwyżej 50% (D-144, do decyzji).
@@ -895,6 +899,7 @@ Szczegóły: modele ras mają ten sam szkielet R15 i klipy co bohaterowie (`swia
 
 Szczegóły: dziś okno ekwipunku (`EquipmentPanelClient`) liczy Szczęście × 1,25% i Pancerz × 0,44% bez limitu — to zastępcze napisy, nie te same liczby co walka w `StanGracza` (Karol). Przy obecnym starcie wzór z (a) daje te same wartości co teraz (10 Szczęścia ≈ 12,5%, 10 Pancerza ≈ 4,4%), a rośnie coraz wolniej. Zdanie agenta (D-114): (a) albo (b) — ważne, żeby okno i walka liczyły tak samo.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): c - zbalansowane limity, balans całkowity przeprowadzimy w ramach wporwadzenia broni, bo balans będzie się musiał na nich opierać
 
 ## 93. Karol: koty zamiast ludzików — kto robi modele i przedmioty?
 - Paweł 24.11 (D-145): wszystkie postacie gracza to koty (rasy = warianty Kota-Maga), w wyborze klasy koty w przedmiotach Rycerza i Zwiadowcy; Blocky zostaje właścicielem kotów w lore.
@@ -971,6 +976,7 @@ Szczegóły: [[Tekstury sali wyboru klasy]], sekcja „Wersja 2”. Zdanie agent
 
 Szczegóły: Paweł 24.11 już przyspieszył okna (grafiki wczytywane z góry, bez animacji wjazdu). Zdanie agenta: (a) — pomiar i poprawka w jednych rękach, a Paweł zachowuje kontrolę nad swoim kodem.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): ja
 
 
 ## 102. Karol: nowy układ HUD — przyciski po lewej, questy w szufladzie

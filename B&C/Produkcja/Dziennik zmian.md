@@ -6,6 +6,23 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-25 · Panel (ludzie)
+- Karol Balucki: odpowiedź na pytanie 101 ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-125 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-126 zatwierdzona ([[Rejestr decyzji]])
+- Karol Balucki: odpowiedź na pytanie 80 (rozstrzygnięte decyzjami: D-126 zatwierdzona) ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 89 ([[Pytania otwarte]])
+- Karol Balucki: temat na sesję główną: Karol: pety – drugi slot, zdejmowanie i usuwanie (pytanie 103) ([[Sesje główne]])
+- Karol Balucki: temat na sesję główną: Karol: dolna siatka u kowala – zapasy do rozbiórki? (pytanie 99) ([[Sesje główne]])
+- Karol Balucki: odpowiedź na pytanie 90 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 91 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 92 ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-140 potwierdzona: zgoda (zatwierdzona przez Paweł 2026-11-23), przez panel ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-141 potwierdzona: zgoda (zatwierdzona przez Paweł 2026-11-23), przez panel ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-142 potwierdzona: zgoda (zatwierdzona przez Paweł 2026-11-23), przez panel ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-143 potwierdzona: zgoda (zatwierdzona przez Paweł 2026-11-23), przez panel ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-144 zatwierdzona ([[Rejestr decyzji]])
+
 ## 2026-11-25 · Claude Code u Karola (panel: pulpit osobno dla każdej gry; start prac nad miastem i muzyką)
 - **Panel:** Karol: „Chcę, żeby dashboard był per gra robiony”. Agent na Opus (ok. 0,3–0,55 mln tokenów, 40 min) dodał przełącznik gier i przypisanie pytań, decyzji, zadań i raportów do gry; opis w [[Panel zespołu]]. Testy panelu: 23 nowe, cała paczka bez błędów.
 - **Znaczniki w sejfie:** D-070, D-125 i D-128 oznaczone jako wspólne, D-116 i D-134 jako Wytwórnia; trzy zadania o repozytorium i panelu jako wspólne.
