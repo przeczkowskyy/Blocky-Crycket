@@ -41,6 +41,10 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: odpowiedź na pytanie 102 ([[Pytania otwarte]])
 - Karol Balucki: omówiony temat sesji: Baseball, ameba czy smok: wybór po ocenie agenta (pytanie 86; D-133, D-134) ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Kierunek z 19.11: trzy biomy grywalne zamiast Pustyni (D-106–D-111) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: AFK grind w Training Center (pytanie 50; D-050) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Pierwsza godzina gracza: punkty za poziom i premia pierwszej wygranej (pytania 58 i 59, reszta… ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Postać gracza w świecie: bohater klasy czy awatar Roblox (pytanie 63) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Rasy a Mag-kot i proporcje modeli (pytania 67, 68 i 69; D-079, D-104) ([[Sesje główne]])
 
 ## 2026-11-25 · Claude Code u Karola (panel: pulpit osobno dla każdej gry; start prac nad miastem i muzyką)
 - **Panel:** Karol: „Chcę, żeby dashboard był per gra robiony”. Agent na Opus (ok. 0,3–0,55 mln tokenów, 40 min) dodał przełącznik gier i przypisanie pytań, decyzji, zadań i raportów do gry; opis w [[Panel zespołu]]. Testy panelu: 23 nowe, cała paczka bez błędów.
