@@ -1,0 +1,302 @@
+{
+ "przed": {
+  "urzadzenie": "Samsung Galaxy A06 800x360",
+  "instancje_miasteczka": 4511,
+  "czesci_z_wariantem": 0,
+  "viewport": "705, 338",
+  "czesci": 4410,
+  "warianty_w_MaterialService": 0,
+  "ujecia": [
+   {
+    "klatka_p95_ms": 68.08879971504211,
+    "trojkaty": 44508,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 4.957775425043751,
+    "drawcalle": 30,
+    "klatek": 61,
+    "klatka_sr_ms": 66.65965719301192,
+    "nazwa": "tekstury_plac",
+    "render_gpu_ms": 0.32487661257141925
+   },
+   {
+    "klatka_p95_ms": 67.76060163974762,
+    "trojkaty": 35950,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 4.8763849927733345,
+    "drawcalle": 29,
+    "klatek": 60,
+    "klatka_sr_ms": 66.6689932346344,
+    "nazwa": "tekstury_uliczka",
+    "render_gpu_ms": 0.9927499108016491
+   },
+   {
+    "klatka_p95_ms": 67.93110072612762,
+    "trojkaty": 34522,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 4.729226607984553,
+    "drawcalle": 29,
+    "klatek": 60,
+    "klatka_sr_ms": 66.66449469824632,
+    "nazwa": "tekstury_budynek",
+    "render_gpu_ms": 0.32568322494626045
+   },
+   {
+    "klatka_p95_ms": 125.6922036409378,
+    "trojkaty": 50558.07272727273,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 6.6258471797813066,
+    "drawcalle": 31,
+    "klatek": 55,
+    "klatka_sr_ms": 73.0105925690044,
+    "nazwa": "tekstury_calosc",
+    "render_gpu_ms": 0.36314763128757477
+   }
+  ],
+  "etykieta": "przed",
+  "czas": "2026-11-25 19:59"
+ },
+ "po": {
+  "urzadzenie": "Samsung Galaxy A06 800x360",
+  "instancje_miasteczka": 4511,
+  "czesci_z_wariantem": 2186,
+  "viewport": "705, 338",
+  "czesci": 4410,
+  "warianty_w_MaterialService": 25,
+  "ujecia": [
+   {
+    "klatka_p95_ms": 17.669599503278732,
+    "trojkaty": 8408,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.333214581167946,
+    "drawcalle": 19,
+    "klatek": 240,
+    "klatka_sr_ms": 16.73512786316375,
+    "nazwa": "tekstury_plac",
+    "render_gpu_ms": 0.5386709359299857
+   },
+   {
+    "klatka_p95_ms": 17.76150055229664,
+    "trojkaty": 12296,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.5185828389966214,
+    "drawcalle": 33,
+    "klatek": 239,
+    "klatka_sr_ms": 16.733967736129607,
+    "nazwa": "tekstury_uliczka",
+    "render_gpu_ms": 0.581991893607562
+   },
+   {
+    "klatka_p95_ms": 17.595600336790085,
+    "trojkaty": 13454,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.488534881475092,
+    "drawcalle": 36,
+    "klatek": 238,
+    "klatka_sr_ms": 16.806350860494273,
+    "nazwa": "tekstury_budynek",
+    "render_gpu_ms": 0.5184494840869477
+   },
+   {
+    "klatka_p95_ms": 17.552999779582024,
+    "trojkaty": 67120,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.971738999717216,
+    "drawcalle": 68,
+    "klatek": 241,
+    "klatka_sr_ms": 16.66636805579499,
+    "nazwa": "tekstury_calosc",
+    "render_gpu_ms": 0.7755376629944876
+   }
+  ],
+  "etykieta": "po",
+  "czas": "2026-11-25 20:16"
+ },
+ "ab": {
+  "urzadzenie": "Samsung Galaxy A06 800x360",
+  "instancje_miasteczka": 4511,
+  "czesci_z_wariantem": 2186,
+  "viewport": "705, 338",
+  "czesci": 4410,
+  "warianty_w_MaterialService": 25,
+  "ujecia": [
+   {
+    "klatka_p95_ms": 17.794400453567505,
+    "trojkaty": 8408,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.3101683456657662,
+    "drawcalle": 19,
+    "klatek": 180,
+    "klatka_sr_ms": 16.760473284456467,
+    "nazwa": "tekstury_plac z_teksturami",
+    "render_gpu_ms": 0.49847182526718825
+   },
+   {
+    "klatka_p95_ms": 17.779599875211716,
+    "trojkaty": 8408,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.349757476745801,
+    "drawcalle": 19,
+    "klatek": 181,
+    "klatka_sr_ms": 16.66678675548148,
+    "nazwa": "tekstury_plac bez_tekstur",
+    "render_gpu_ms": 0.49882377780850423
+   },
+   {
+    "klatka_p95_ms": 17.699500545859337,
+    "trojkaty": 8408,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.3692519646137953,
+    "drawcalle": 19,
+    "klatek": 179,
+    "klatka_sr_ms": 16.76421006881325,
+    "nazwa": "tekstury_plac z_teksturami",
+    "render_gpu_ms": 0.4970690494991173
+   },
+   {
+    "klatka_p95_ms": 17.451899126172066,
+    "trojkaty": 8408,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.2801611129091017,
+    "drawcalle": 19,
+    "klatek": 180,
+    "klatka_sr_ms": 16.757218317232198,
+    "nazwa": "tekstury_plac bez_tekstur",
+    "render_gpu_ms": 0.4984490644548916
+   },
+   {
+    "klatka_p95_ms": 17.584199085831642,
+    "trojkaty": 12296,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.4155182370617574,
+    "drawcalle": 33,
+    "klatek": 181,
+    "klatka_sr_ms": 16.662315357455892,
+    "nazwa": "tekstury_uliczka z_teksturami",
+    "render_gpu_ms": 0.5162600591876518
+   },
+   {
+    "klatka_p95_ms": 17.83910021185875,
+    "trojkaty": 12296,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.5735788690443666,
+    "drawcalle": 33,
+    "klatek": 180,
+    "klatka_sr_ms": 16.661134972754454,
+    "nazwa": "tekstury_uliczka bez_tekstur",
+    "render_gpu_ms": 0.5166990135977458
+   },
+   {
+    "klatka_p95_ms": 17.909400165081024,
+    "trojkaty": 12296,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.4875834260382867,
+    "drawcalle": 33,
+    "klatek": 181,
+    "klatka_sr_ms": 16.66945087831488,
+    "nazwa": "tekstury_uliczka z_teksturami",
+    "render_gpu_ms": 0.5181100469041431
+   },
+   {
+    "klatka_p95_ms": 17.970100045204163,
+    "trojkaty": 12296,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.384018324625989,
+    "drawcalle": 33,
+    "klatek": 180,
+    "klatka_sr_ms": 16.75619223775963,
+    "nazwa": "tekstury_uliczka bez_tekstur",
+    "render_gpu_ms": 0.51446897107073
+   },
+   {
+    "klatka_p95_ms": 17.794400453567505,
+    "trojkaty": 13454,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.5592447528975772,
+    "drawcalle": 36,
+    "klatek": 181,
+    "klatka_sr_ms": 16.66390166221732,
+    "nazwa": "tekstury_budynek z_teksturami",
+    "render_gpu_ms": 0.5221155440584031
+   },
+   {
+    "klatka_p95_ms": 17.772499471902847,
+    "trojkaty": 13454,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.5265944769492794,
+    "drawcalle": 36,
+    "klatek": 181,
+    "klatka_sr_ms": 16.665623235150925,
+    "nazwa": "tekstury_budynek bez_tekstur",
+    "render_gpu_ms": 0.5195357438655395
+   },
+   {
+    "klatka_p95_ms": 17.49259978532791,
+    "trojkaty": 13454,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.5131722080728247,
+    "drawcalle": 36,
+    "klatek": 180,
+    "klatka_sr_ms": 16.672644934927423,
+    "nazwa": "tekstury_budynek z_teksturami",
+    "render_gpu_ms": 0.5195207188888971
+   },
+   {
+    "klatka_p95_ms": 17.67360046505928,
+    "trojkaty": 13454,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.4892442005876845,
+    "drawcalle": 36,
+    "klatek": 181,
+    "klatka_sr_ms": 16.663286176340357,
+    "nazwa": "tekstury_budynek bez_tekstur",
+    "render_gpu_ms": 0.519597974608431
+   },
+   {
+    "klatka_p95_ms": 17.598899081349373,
+    "trojkaty": 67120,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.91736166137788,
+    "drawcalle": 68,
+    "klatek": 180,
+    "klatka_sr_ms": 16.665878302107256,
+    "nazwa": "tekstury_calosc z_teksturami",
+    "render_gpu_ms": 0.7748664916208428
+   },
+   {
+    "klatka_p95_ms": 17.650600522756577,
+    "trojkaty": 67120,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.884406616262968,
+    "drawcalle": 68,
+    "klatek": 181,
+    "klatka_sr_ms": 16.666808752188697,
+    "nazwa": "tekstury_calosc bez_tekstur",
+    "render_gpu_ms": 0.7743646441547211
+   },
+   {
+    "klatka_p95_ms": 17.510399222373962,
+    "trojkaty": 67120,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.9194016471608646,
+    "drawcalle": 68,
+    "klatek": 180,
+    "klatka_sr_ms": 16.66662998807927,
+    "nazwa": "tekstury_calosc z_teksturami",
+    "render_gpu_ms": 0.7748039132113465
+   },
+   {
+    "klatka_p95_ms": 17.406800761818886,
+    "trojkaty": 67120,
+    "drawcalle_cieni": 0,
+    "render_cpu_ms": 3.8867033259088988,
+    "drawcalle": 68,
+    "klatek": 181,
+    "klatka_sr_ms": 16.66342054406253,
+    "nazwa": "tekstury_calosc bez_tekstur",
+    "render_gpu_ms": 0.774409903023001
+   }
+  ],
+  "etykieta": "ab",
+  "czas": "2026-11-25 20:18"
+ }
+}

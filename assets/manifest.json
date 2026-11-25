@@ -4279,7 +4279,809 @@
       "roblox_image": "112326933158150",
       "moderation": "Studio upload_image",
       "figma_node": "57:126"
+    },
+    "TownTex01": {
+      "created_at": "2026-11-25T18:53:14+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex01_Trawa.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 1/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "prompt": "Texture sheet for a cartoon 3D game town, painted in exactly the same hand-drawn cartoon style as the attached reference texture sheet (first image) and the \"Blocky & Crycket\" key art (second image): soft painterly cel-shading, thin warm dark-brown outlines (not thick black ink), gentle soft highlights, no halftone dots, no cracks unless asked, friendly saturated but soft colours. Layout: a 4 x 4 grid of 16 equal square tiles separated by even white gaps. Every tile is a flat, straight-on, edge-to-edge seamless repeating material swatch that completely fills its square: no frame, no border, no rounded corners, no vignette, no perspective, no objects, no shadows from outside; the pattern must tile seamlessly left-right and top-bottom. Row 1, left to right: (1) short cartoon grass lawn with small leaf tufts, light green; (2) smooth light grey-beige flagstone surface with faint speckles, no joints and no grout lines; (3) red clay roof tiles in overlapping scalloped rows; (4) blue-grey slate roof shingles in staggered rectangular rows. Row 2: (5) golden straw thatch; (6) plain woven canvas cloth, light cream; (7) dense rounded clumps of tree leaves, fresh green; (8) dense pine needle clusters, dark green. Row 3: (9) cartoon water surface with soft ripples and small white glints, blue; (10) packed brown dirt ground with small pebbles; (11) grey rock face with angular facets; (12) vertical brown tree bark with long grooves. Row 4: (13) soft green moss; (14) smooth cream plaster wall with subtle brush strokes, no bricks; (15) pale sandy gravel ground; (16) rounded grey cobblestones with dark brown joints. No text, no letters, no logo, no numbers. All icons, elements, and 3D texts are strictly contained inside the borders with nothing sticking out. Clean flat 2D mobile game UI asset, isolated on a solid flat white background, no external drop shadows.\n\nNegative Prompt: realistic 3D, photorealism, plastic texture, blurry, external drop shadow, elements sticking out of frame, broken borders, cropped text, dark gloomy teal palette, square text brackets \"[+]\", stat progress bars, character inside portrait frame, floating map pins.",
+      "updated_at": "2026-11-25T18:53:14+00:00"
+    },
+    "TownTex02": {
+      "created_at": "2026-11-25T18:53:14+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex02_PlytaKamienna.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 2/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:14+00:00"
+    },
+    "TownTex03": {
+      "created_at": "2026-11-25T18:53:14+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex03_Dachowka.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 3/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:14+00:00"
+    },
+    "TownTex04": {
+      "created_at": "2026-11-25T18:53:14+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex04_Lupek.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 4/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:14+00:00"
+    },
+    "TownTex05": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex05_Strzecha.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 5/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex06": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex06_Plotno.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 6/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex07": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex07_Liscie.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 7/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex08": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex08_Igliwie.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 8/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex09": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex09_Woda.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 9/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex10": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex10_Ziemia.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 10/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex11": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex11_Skala.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 11/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex12": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex12_Kora.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 12/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex13": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex13_Mech.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 13/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex14": {
+      "created_at": "2026-11-25T18:53:15+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex14_TynkGladki.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 14/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:15+00:00"
+    },
+    "TownTex15": {
+      "created_at": "2026-11-25T18:53:16+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex15_Piasek.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 15/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:16+00:00"
+    },
+    "TownTex16": {
+      "created_at": "2026-11-25T18:53:16+00:00",
+      "history": [],
+      "category": "texture",
+      "status": "processed",
+      "processed": "assets/processed/TownTextures/TownTex16_KocieLby.png",
+      "raw": "assets/raw/TownTextures/v1.png",
+      "usage": "Tekstury miasteczka-bazaru (źródło map do barwienia TownMap_*)",
+      "notes": "kafelek 16/16 arkusza 4x4 z Higgsfield (nano_banana_2_1, 4k, referencje: arkusz v2 sali i KeyArt_ref), 25.11.2026, D-147; świadomie bez stałego początku Glossy Ink (cienka brązowa kreska jak arkusz v2 sali); prompt w TownTex01",
+      "updated_at": "2026-11-25T18:53:16+00:00"
+    },
+    "TownMap_Tynk": {
+      "created_at": "2026-11-25T18:53:17+00:00",
+      "history": [
+        {
+          "roblox_decal": "124548770126537",
+          "replaced_at": "2026-11-25T19:04:54+00:00"
+        },
+        {
+          "roblox_image": "132316086234858",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Tynk.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Tynk (barwiona kolorem części)",
+      "notes": "z CsTex03 (assets/processed/ClassSelectTextures/CsTex03_Tynk.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:04:50+00:00",
+      "approved_sha256": "d5cea047d1660b9fabc9b7aa6dedad82d81c8ef6a16aaa9665747d45d133034b",
+      "roblox_decal": "121639128517561",
+      "moderation": "Approved",
+      "roblox_image": "71612508518433"
+    },
+    "TownMap_TynkGladki": {
+      "created_at": "2026-11-25T18:53:20+00:00",
+      "history": [
+        {
+          "roblox_decal": "71291286189990",
+          "replaced_at": "2026-11-25T19:04:58+00:00"
+        },
+        {
+          "roblox_image": "100276374414106",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_TynkGladki.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_TynkGladki (barwiona kolorem części)",
+      "notes": "z TownTex14 (assets/processed/TownTextures/TownTex14_TynkGladki.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:04:54+00:00",
+      "approved_sha256": "016dc96da24eb1cd94650af1a92251672b418c1c23d12d3185b5220ef16ac1b8",
+      "roblox_decal": "72603934670179",
+      "moderation": "Approved",
+      "roblox_image": "137268072483995"
+    },
+    "TownMap_Kamien": {
+      "created_at": "2026-11-25T18:53:21+00:00",
+      "history": [
+        {
+          "roblox_decal": "87628399998028",
+          "replaced_at": "2026-11-25T19:05:03+00:00"
+        },
+        {
+          "roblox_image": "137353009016960",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Kamien.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Kamien (barwiona kolorem części)",
+      "notes": "z CsTex01 (assets/processed/ClassSelectTextures/CsTex01_KamienMuru.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:04:58+00:00",
+      "approved_sha256": "ec2fab290fb8f08baa744c1852aa099017f141aa6c97b6a4e0b7c2e5f5285fab",
+      "roblox_decal": "136414150347691",
+      "moderation": "Approved",
+      "roblox_image": "138779290666800"
+    },
+    "TownMap_KamienOkragly": {
+      "created_at": "2026-11-25T18:53:22+00:00",
+      "history": [
+        {
+          "roblox_decal": "137221809511310",
+          "replaced_at": "2026-11-25T19:05:07+00:00"
+        },
+        {
+          "roblox_image": "108401330438903",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_KamienOkragly.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_KamienOkragly (barwiona kolorem części)",
+      "notes": "z CsTex09 (assets/processed/ClassSelectTextures/CsTex09_KamienKominka.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:03+00:00",
+      "approved_sha256": "01894d9c87e1eadc95d9b06c7bb2e275540ef46f4ec3f87776453767dc3f5604",
+      "roblox_decal": "94205579893072",
+      "moderation": "Approved",
+      "roblox_image": "131649822180380"
+    },
+    "TownMap_Cegla": {
+      "created_at": "2026-11-25T18:53:22+00:00",
+      "history": [
+        {
+          "roblox_decal": "103208169478259",
+          "replaced_at": "2026-11-25T19:05:12+00:00"
+        },
+        {
+          "roblox_image": "127605303747055",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Cegla.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Cegla (barwiona kolorem części)",
+      "notes": "z CsTex04 (assets/processed/ClassSelectTextures/CsTex04_Cegla.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:07+00:00",
+      "approved_sha256": "d4c1ea44b3e2f1e995596501f50f0226fede7ad87c493dce09c327e2ccad3b4e",
+      "roblox_decal": "95105940834626",
+      "moderation": "Approved",
+      "roblox_image": "107497403417453"
+    },
+    "TownMap_Belka": {
+      "created_at": "2026-11-25T18:53:23+00:00",
+      "history": [
+        {
+          "roblox_decal": "85620429838945",
+          "replaced_at": "2026-11-25T19:05:16+00:00"
+        },
+        {
+          "roblox_image": "98294559531854",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Belka.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Belka (barwiona kolorem części)",
+      "notes": "z CsTex05 (assets/processed/ClassSelectTextures/CsTex05_BelkaDrewno.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:12+00:00",
+      "approved_sha256": "45979ca37fba462d5565c876181484d7266992277d44ef6c4b92a18ab9396d75",
+      "roblox_decal": "112038249879134",
+      "moderation": "Approved",
+      "roblox_image": "105228532035927"
+    },
+    "TownMap_Deski": {
+      "created_at": "2026-11-25T18:53:24+00:00",
+      "history": [
+        {
+          "roblox_decal": "75505850666071",
+          "replaced_at": "2026-11-25T19:05:20+00:00"
+        },
+        {
+          "roblox_image": "93065433920385",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Deski.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Deski (barwiona kolorem części)",
+      "notes": "z CsTex06 (assets/processed/ClassSelectTextures/CsTex06_DeskiPolki.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:16+00:00",
+      "approved_sha256": "28d617f6e4dfe571d2a2b26c3308954bc6893ca0a739e9f2cb7ea79f66aed21c",
+      "roblox_decal": "75970195926809",
+      "moderation": "Approved",
+      "roblox_image": "103616806657955"
+    },
+    "TownMap_Skrzynia": {
+      "created_at": "2026-11-25T18:53:24+00:00",
+      "history": [
+        {
+          "roblox_decal": "100119780406783",
+          "replaced_at": "2026-11-25T19:05:25+00:00"
+        },
+        {
+          "roblox_image": "126073334601085",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Skrzynia.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Skrzynia (barwiona kolorem części)",
+      "notes": "z CsTex16 (assets/processed/ClassSelectTextures/CsTex16_DeskiSkrzyni.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:20+00:00",
+      "approved_sha256": "cc94cfa01b7a6ccabcab853da5f142f239c69c7b311f7e63d2f230bb6985e3c2",
+      "roblox_decal": "84747722305037",
+      "moderation": "Approved",
+      "roblox_image": "83681290496155"
+    },
+    "TownMap_Beczka": {
+      "created_at": "2026-11-25T18:53:25+00:00",
+      "history": [
+        {
+          "roblox_decal": "104553718673314",
+          "replaced_at": "2026-11-25T19:05:29+00:00"
+        },
+        {
+          "roblox_image": "114366064147949",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Beczka.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Beczka (barwiona kolorem części)",
+      "notes": "z CsTex08 (assets/processed/ClassSelectTextures/CsTex08_Beczka.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:25+00:00",
+      "approved_sha256": "1e6e55cff0e9354656555c53bf2f31524bcdefb04d5b4329798b2610f9232daf",
+      "roblox_decal": "129089320596942",
+      "moderation": "Approved",
+      "roblox_image": "127169356529857"
+    },
+    "TownMap_Zelazo": {
+      "created_at": "2026-11-25T18:53:26+00:00",
+      "history": [
+        {
+          "roblox_decal": "132143974491228",
+          "replaced_at": "2026-11-25T19:05:33+00:00"
+        },
+        {
+          "roblox_image": "95279578734687",
+          "replaced_at": "2026-11-25T19:07:03+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Zelazo.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Zelazo (barwiona kolorem części)",
+      "notes": "z CsTex15 (assets/processed/ClassSelectTextures/CsTex15_Zelazo.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:03+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:29+00:00",
+      "approved_sha256": "a16ac2e4dda2825148e1b935c5714776fc002d2b05caa9cc33ab5a784ab65217",
+      "roblox_decal": "96416065826309",
+      "moderation": "Approved",
+      "roblox_image": "117820252310107"
+    },
+    "TownMap_Zloto": {
+      "created_at": "2026-11-25T18:53:27+00:00",
+      "history": [
+        {
+          "roblox_decal": "116337139015029",
+          "replaced_at": "2026-11-25T19:05:38+00:00"
+        },
+        {
+          "roblox_image": "111425582808288",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Zloto.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Zloto (barwiona kolorem części)",
+      "notes": "z CsTex12 (assets/processed/ClassSelectTextures/CsTex12_Zloto.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:33+00:00",
+      "approved_sha256": "952891e90af18975a34c07220385aec283f0b7f4e9e5da3d7c248e0f49e7e786",
+      "roblox_decal": "123059850021120",
+      "moderation": "Approved",
+      "roblox_image": "72671077762967"
+    },
+    "TownMap_Trawa": {
+      "created_at": "2026-11-25T18:53:28+00:00",
+      "history": [
+        {
+          "roblox_decal": "72275836076528",
+          "replaced_at": "2026-11-25T19:05:42+00:00"
+        },
+        {
+          "roblox_image": "95021255990082",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Trawa.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Trawa (barwiona kolorem części)",
+      "notes": "z TownTex01 (assets/processed/TownTextures/TownTex01_Trawa.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:38+00:00",
+      "approved_sha256": "47eb068ea4ca406eff665306a56c9af47ea8ab0b9d25f6dc3c9eca5a43c57650",
+      "roblox_decal": "128527928673338",
+      "moderation": "Approved",
+      "roblox_image": "139052949902222"
+    },
+    "TownMap_Bruk": {
+      "created_at": "2026-11-25T18:53:30+00:00",
+      "history": [
+        {
+          "roblox_decal": "101460012834433",
+          "replaced_at": "2026-11-25T19:05:46+00:00"
+        },
+        {
+          "roblox_image": "128743929461466",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Bruk.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Bruk (barwiona kolorem części)",
+      "notes": "z TownTex02 (assets/processed/TownTextures/TownTex02_PlytaKamienna.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:42+00:00",
+      "approved_sha256": "da8118be16986ced25aaac405618a7b4469624135339e561a09b8e138d3db187",
+      "roblox_decal": "82412569074268",
+      "moderation": "Approved",
+      "roblox_image": "83281528811400"
+    },
+    "TownMap_Dachowka": {
+      "created_at": "2026-11-25T18:53:30+00:00",
+      "history": [
+        {
+          "roblox_decal": "136250307278837",
+          "replaced_at": "2026-11-25T19:05:51+00:00"
+        },
+        {
+          "roblox_image": "97322358986745",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Dachowka.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Dachowka (barwiona kolorem części)",
+      "notes": "z TownTex03 (assets/processed/TownTextures/TownTex03_Dachowka.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:46+00:00",
+      "approved_sha256": "4e66dd75af6a5bb7717bb0b10d9b1ed13c79f3719a4a7e153d0f2c811b9870f6",
+      "roblox_decal": "93598934617416",
+      "moderation": "Approved",
+      "roblox_image": "93251032239213"
+    },
+    "TownMap_Lupek": {
+      "created_at": "2026-11-25T18:53:31+00:00",
+      "history": [
+        {
+          "roblox_decal": "120657640280649",
+          "replaced_at": "2026-11-25T19:05:55+00:00"
+        },
+        {
+          "roblox_image": "87000772429759",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Lupek.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Lupek (barwiona kolorem części)",
+      "notes": "z TownTex04 (assets/processed/TownTextures/TownTex04_Lupek.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:51+00:00",
+      "approved_sha256": "56900e5e72ffcf81a25130a1f2877bf8d71225e9149ba6a5b74d4e7e06ac8ec3",
+      "roblox_decal": "110553333563683",
+      "moderation": "Approved",
+      "roblox_image": "105689242598394"
+    },
+    "TownMap_Strzecha": {
+      "created_at": "2026-11-25T18:53:32+00:00",
+      "history": [
+        {
+          "roblox_decal": "82701400993889",
+          "replaced_at": "2026-11-25T19:05:59+00:00"
+        },
+        {
+          "roblox_image": "76080476750140",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Strzecha.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Strzecha (barwiona kolorem części)",
+      "notes": "z TownTex05 (assets/processed/TownTextures/TownTex05_Strzecha.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:55+00:00",
+      "approved_sha256": "0059d10a8e7fa2c8f08b8140c615057129e56c3d8767fe1edaf0c5f7e5643c8f",
+      "roblox_decal": "105809771484084",
+      "moderation": "Approved",
+      "roblox_image": "134303461950888"
+    },
+    "TownMap_Plotno": {
+      "created_at": "2026-11-25T18:53:33+00:00",
+      "history": [
+        {
+          "roblox_decal": "81329271147211",
+          "replaced_at": "2026-11-25T19:06:04+00:00"
+        },
+        {
+          "roblox_image": "100773658890926",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Plotno.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Plotno (barwiona kolorem części)",
+      "notes": "z TownTex06 (assets/processed/TownTextures/TownTex06_Plotno.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:05:59+00:00",
+      "approved_sha256": "144cbf7cb66a0c803234b04f2275745bf0f58386a137a982300e7c5c44c84166",
+      "roblox_decal": "116174238027114",
+      "moderation": "Approved",
+      "roblox_image": "115398269695818"
+    },
+    "TownMap_Liscie": {
+      "created_at": "2026-11-25T18:53:34+00:00",
+      "history": [
+        {
+          "roblox_decal": "140663145789828",
+          "replaced_at": "2026-11-25T19:06:08+00:00"
+        },
+        {
+          "roblox_image": "136396030361316",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Liscie.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Liscie (barwiona kolorem części)",
+      "notes": "z TownTex07 (assets/processed/TownTextures/TownTex07_Liscie.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:06:04+00:00",
+      "approved_sha256": "20b3bee212385309f9998040cf864ea19af27a61dc76fa182e18e12eb88e3d6c",
+      "roblox_decal": "122020351616380",
+      "moderation": "Approved",
+      "roblox_image": "80717516682769"
+    },
+    "TownMap_Igliwie": {
+      "created_at": "2026-11-25T18:53:34+00:00",
+      "history": [
+        {
+          "roblox_decal": "121748950968261",
+          "replaced_at": "2026-11-25T19:06:13+00:00"
+        },
+        {
+          "roblox_image": "79073476003311",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Igliwie.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Igliwie (barwiona kolorem części)",
+      "notes": "z TownTex08 (assets/processed/TownTextures/TownTex08_Igliwie.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:06:08+00:00",
+      "approved_sha256": "7e813a4efe0b1ba689bbcdedab7b9e1ad883f100936e79910fd1e1b52a55c9a8",
+      "roblox_decal": "90923865602529",
+      "moderation": "Approved",
+      "roblox_image": "128089302763913"
+    },
+    "TownMap_Woda": {
+      "created_at": "2026-11-25T18:53:35+00:00",
+      "history": [
+        {
+          "roblox_decal": "83201123302271",
+          "replaced_at": "2026-11-25T19:06:17+00:00"
+        },
+        {
+          "roblox_image": "128741915088704",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Woda.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Woda (barwiona kolorem części)",
+      "notes": "z TownTex09 (assets/processed/TownTextures/TownTex09_Woda.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:06:13+00:00",
+      "approved_sha256": "f9cf557d0ce3826a2f7871b16455b4de874d0080b7c325a0a67cb0a4876f37ae",
+      "roblox_decal": "126334464142774",
+      "moderation": "Approved",
+      "roblox_image": "70828632586358"
+    },
+    "TownMap_Ziemia": {
+      "created_at": "2026-11-25T18:53:36+00:00",
+      "history": [
+        {
+          "roblox_decal": "94137932370581",
+          "replaced_at": "2026-11-25T19:06:21+00:00"
+        },
+        {
+          "roblox_image": "131537700834331",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Ziemia.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Ziemia (barwiona kolorem części)",
+      "notes": "z TownTex10 (assets/processed/TownTextures/TownTex10_Ziemia.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:06:17+00:00",
+      "approved_sha256": "b9a7ec31852cad56bcefbf6f93c4c594ad887cef284008b9c704b6fdb51f1753",
+      "roblox_decal": "114348772153129",
+      "moderation": "Approved",
+      "roblox_image": "111013694926210"
+    },
+    "TownMap_Skala": {
+      "created_at": "2026-11-25T18:53:37+00:00",
+      "history": [
+        {
+          "roblox_decal": "99407080662501",
+          "replaced_at": "2026-11-25T19:06:25+00:00"
+        },
+        {
+          "roblox_image": "137854343766621",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Skala.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Skala (barwiona kolorem części)",
+      "notes": "z TownTex11 (assets/processed/TownTextures/TownTex11_Skala.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:06:21+00:00",
+      "approved_sha256": "7b254476fd2d5fb56dc06e17076e91af5eb45e58cb5c2c6a518b69c0206cfb2a",
+      "roblox_decal": "74156385418993",
+      "moderation": "Approved",
+      "roblox_image": "94693469184395"
+    },
+    "TownMap_Kora": {
+      "created_at": "2026-11-25T18:53:38+00:00",
+      "history": [
+        {
+          "roblox_decal": "76277704990054",
+          "replaced_at": "2026-11-25T19:06:30+00:00"
+        },
+        {
+          "roblox_image": "113578094576151",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Kora.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Kora (barwiona kolorem części)",
+      "notes": "z TownTex12 (assets/processed/TownTextures/TownTex12_Kora.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:06:26+00:00",
+      "approved_sha256": "201999ccf691173166955eed373de20579123bb3522a137175ff25ee1c930515",
+      "roblox_decal": "134556052278327",
+      "moderation": "Approved",
+      "roblox_image": "76937204149387"
+    },
+    "TownMap_Mech": {
+      "created_at": "2026-11-25T18:53:39+00:00",
+      "history": [
+        {
+          "roblox_decal": "106382714304478",
+          "replaced_at": "2026-11-25T19:06:34+00:00"
+        },
+        {
+          "roblox_image": "140574322630052",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Mech.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Mech (barwiona kolorem części)",
+      "notes": "z TownTex13 (assets/processed/TownTextures/TownTex13_Mech.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:06:30+00:00",
+      "approved_sha256": "61bdffa1b64581f3acc242e31a15b075119e9980e8920c05488f2bfd00114fae",
+      "roblox_decal": "101871296304312",
+      "moderation": "Approved",
+      "roblox_image": "94774256830397"
+    },
+    "TownMap_Piasek": {
+      "created_at": "2026-11-25T18:53:40+00:00",
+      "history": [
+        {
+          "roblox_decal": "106356979035938",
+          "replaced_at": "2026-11-25T19:06:39+00:00"
+        },
+        {
+          "roblox_image": "70517978662048",
+          "replaced_at": "2026-11-25T19:07:04+00:00"
+        }
+      ],
+      "category": "texture",
+      "status": "in_roblox",
+      "processed": "assets/processed/TownTextures/TownMap_Piasek.png",
+      "usage": "Miasteczko-bazar: mapa koloru MaterialVariant BC_Bazar_Piasek (barwiona kolorem części)",
+      "notes": "z TownTex15 (assets/processed/TownTextures/TownTex15_Piasek.png) przez swiat/miasteczko_bazar/tekstury.py mapy; D-147",
+      "updated_at": "2026-11-25T19:07:04+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-25T19:06:34+00:00",
+      "approved_sha256": "de7cd2935631aaa0438afb9abd6a02df577dfc79879b95db6ae63b6acf63dcc0",
+      "roblox_decal": "89172091761870",
+      "moderation": "Approved",
+      "roblox_image": "133019147937003"
     }
   },
-  "updated_at": "2026-11-25T17:53:11+00:00"
+  "updated_at": "2026-11-25T19:07:04+00:00"
 }

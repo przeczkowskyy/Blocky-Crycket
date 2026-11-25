@@ -15,6 +15,9 @@ przejściem na działkę, zagrodą petów, tablicą z rankingiem i Bramą Leśn�
 | `postacie.py` | sprzedawcy (barman, mistrz gier, mag, zbrojmistrz, trener, opiekunka) i pety (pies, slime, smok) |
 | `wspolne.py` | skorupa sklepu z wnętrzem, lada, półki, markiza, lampa, girlanda, punkty E, rejestr znaczników |
 | `podglad/` | `plan_gora.jpg` (plansza z podpisami, izochronami biegu i skalą) i `u1`–`u5` (całość, uliczka, wnętrze karczmy, plac z portalem i działką, zagroda z tablicą) |
+| `tekstury.json` | wygląd w kresce sali wyboru rasy (D-147): kolor i grubość kreski, materiały własne (MaterialVariant) i reguły „co na co” |
+| `tekstury.py` | kafelki z arkusza, mapy do barwienia, wgrywanie do Roblox, raport przypisania, pomiar w emulacji telefonu |
+| `ujecia_tekstury.json`, `podglad/tekstury_*` | cztery kadry przed/po (plac, uliczka, karczma z bliska, całość z góry) i wyniki pomiaru `tekstury_pomiar.json` |
 
 **Liczby:** 4410 części (po zmianie postaci 17.11.2026; cel ok. 8000, twardy limit 12 000), 93 grupy. Kontener `Workspace/MiasteczkoBazar`.
 Świat = (994 + x; y; −700 + z), bez obrotu: części stoją w pliku już tam, gdzie mają stanąć (X 882…1066,
@@ -31,6 +34,67 @@ python -B swiat/miasteczko_bazar/podglad.py      # → podglad/*.jpg i ujecia.js
 
 Wynik kontroli z 17.11.2026: **0 błędów, 2 ostrzeżenia** (ok. 85 drobnych części wtopionych w grunt do 0,4 st, czyli
 w płytę Baseplate — jak w dzisiejszym miasteczku; 31 drobiazgów mniejszych niż 0,5 — oczy, guziki, oczka kostki).
+
+## Tekstury i kreska w stylu sali wyboru rasy (D-147, 25.11.2026)
+
+Karol (D-147): miasto „w kresce” panelu wyboru rasy — tekstury na budynkach zamiast gładkich kolorów i jednolita kreska,
+bez przebudowy miasta. Status: **propozycja**.
+
+- **Tekstury bez nowych instancji.** Zamiast obiektu `Texture` na każdej ścianie (sala ma ich ok. 4800; tu byłoby ok.
+  20 000) części dostają materiał własny: 25 obiektów `MaterialVariant` (`BC_Bazar_<nazwa>`, baza SmoothPlastic) w jednym
+  folderze `MaterialService/BC_MiasteczkoBazar` (atrybut `Wygenerowane`). W `Workspace/MiasteczkoBazar` liczba instancji
+  się nie zmienia (4511). Teksturę ma 2186 z 4410 części — wszystkie duże powierzchnie; gładkie zostają szyby, kryształy,
+  Neon, postacie i pety, chmury, dym, ścieżki-kody, kwiaty i drobne symbole, a także sama kreska.
+- **Paleta miasta zostaje.** W Roblox kolor części mnoży mapę koloru materiału, więc kafelki z paczki (fioletowy kamień,
+  beżowy tynk) przerabiamy na „mapy do barwienia”: każdy kafelek dzielimy przez jego typową barwę, płaska powierzchnia
+  wychodzi prawie biała (`jasnosc` 0,96–0,98), a kreska, cegły, słoje i dachówki zostają jako ciemniejszy rysunek.
+  Zielony dom zostaje zielony, kremowa karczma kremowa — tylko z rysunkiem tynku i cegieł jak w sali.
+- **Skąd tekstury.** 11 z paczki sali (CsTex v2: tynk, kamień, kamienie kominka, cegła, belka, deski, skrzynia, beczka,
+  żelazo, złoto) i 14 z nowego arkusza miasteczka `TownTex01`–`16` (Higgsfield, Nano Banana 2.1, 4k, referencje: arkusz
+  v2 sali i key-art; ta sama cienka brązowa kreska): trawa, płyta bruku, dachówka, łupek, strzecha, płótno, liście,
+  igliwie, woda, ziemia, skała, kora, mech, gładki tynk, piasek (kocie łby — w zapasie). Mapy: `assets/processed/
+  TownTextures/TownMap_<nazwa>.png`, 512 × 512 (na telefon wystarczy; 4 × mniej pamięci niż 1024), ID w
+  `assets/manifest.json`.
+- **Kreska.** To ciemne części „tusz” z generatora (narożniki, ramy okien i drzwi, ranty dachów, wieńce, szprosy —
+  1178 części). Kolor i grubość są w jednej linii `"kreska"` w `tekstury.json`: dziś `4A3426` (ciepły brąz jak w sali)
+  i grubość 1,0 (geometria z generatora). Wariant czarny i grubszy: `{"kolor": "1D1916", "grubosc": 1.4}` (gotowy wpis
+  `kreska_wariant_czarny`; sprawdzony `sprawdz.py`: 0 błędów). Postacie i pety mają własną, czarną kreskę twarzy.
+  Bez obrysów `Highlight`: silnik rysuje naraz najwyżej 31, w miejscu jest już 19 (sala, postacie), a na telefonie
+  każdy to dodatkowe przejście renderu.
+- **Każda przebudowa zachowuje wygląd.** `generuj.py` dopisuje do `czesci.json` blok „tekstury” (definicje materiałów
+  i numer materiału każdej części), a `tools/studio_buduj.py` tworzy z niego folder w MaterialService i ustawia
+  `Material` + `MaterialVariant` w tej samej paczce, w której buduje części.
+- **Uprawnienia.** Mapy są wgrane na konto osoby zalogowanej w Studio (Karol), a gra należy do innego konta — dlatego
+  `tekstury.py wgraj` nadaje też grze (universe) prawo „Use” do obrazów (Open Cloud, asset-permissions); bez tego
+  obrazy mogą się nie wczytać w grze.
+- **Uwaga przy wgrywaniu:** Studio, które poprosi o mapę w pierwszych minutach po wgraniu, potrafi zapamiętać błąd do
+  końca sesji (ściana robi się szarozielona, bez rysunku). Wtedy wystarczy przebudować kontener jeszcze raz po kilku
+  minutach (25.11 tak było: po drugiej budowie wszystkie 25 map w porządku, także u klienta w trybie Play).
+
+**Pomiar 25.11.2026** (`tekstury.py pomiar`, emulacja Samsung Galaxy A06 800 × 360, te same 4 kadry, wyniki
+`podglad/tekstury_pomiar.json`): instancje kontenera bez zmian — 4511 (4410 części), do MaterialService doszło 26
+(folder i 25 wariantów). Przy oknie Studio na wierzchu: klatka 16,7 ms (p95 17,4–18,0 ms, 60 kl./s) w każdym kadrze,
+render CPU 3,3–4,0 ms, GPU 0,5–0,8 ms, drawcalle 19–68 — w próbie A/B na przemian z wariantami i bez nich (folder
+odpięty) liczby są takie same. Przed zmianą okno Studio było w tle (limit Studia 15 kl./s = 66,7 ms), więc „przed”
+porównujemy w renderze: CPU 4,7–6,6 ms, drawcalle 29–31; po zmianie w szerokim kadrze z góry drawcalli jest więcej
+(31 → 68, osobne partie na materiał), co i tak jest daleko poniżej budżetu telefonu. Mapy 512 px: 25 × ok. 270 KB.
+Zrzuty: `podglad/tekstury_{plac,uliczka,budynek,calosc}_{przed,po}.jpg`. Gra w trybie Play: serwer i klient bazaru
+gotowe (zgodność logiki 71/71, 13 podpowiedzi), u klienta 25 wariantów i 2186 części z materiałem.
+
+**Słabsze miejsca:** kilka kafelków sali (kamień muru, kamienie kominka, cegła, deski) nie jest idealnie bez szwów —
+co 5–7 st widać lekkie przesunięcie rzędów, tak samo jak w sali; mapa wody ma po zszyciu delikatne pasy (woda to tylko
+fontanna, koryto i beczka); igliwie z arkusza to małe choinki, nie igły; narożniki budynków (1,3 st) zostają grubsze
+niż kreska w sali — cieńsze wymagałyby zmiany modułów budynków, nie tylko parametru.
+
+```
+python -B swiat/miasteczko_bazar/tekstury.py kafle      # arkusz assets/raw/TownTextures/v1.png → TownTex01–16
+python -B swiat/miasteczko_bazar/tekstury.py mapy --podglad   # mapy do barwienia + plansza _mapy_barwione.jpg
+python -B swiat/miasteczko_bazar/tekstury.py wgraj      # mapy bez ID → Roblox przez Studio + imageId + prawo Use dla gry
+python -B swiat/miasteczko_bazar/tekstury.py raport --gladkie 40   # co dostaje który materiał, czego nie ma
+python -B swiat/miasteczko_bazar/generuj.py && python -B tools/studio_buduj.py swiat/miasteczko_bazar/czesci.json
+python -B tools/studio_zrzuty.py swiat/miasteczko_bazar/ujecia_tekstury.json --wyj <folder>
+python -B swiat/miasteczko_bazar/tekstury.py pomiar --etykieta po [--ab]   # emulacja telefonu (Galaxy A06)
+```
 
 ## Budowa w Studio (następny etap — w tym etapie Studio nie było używane)
 

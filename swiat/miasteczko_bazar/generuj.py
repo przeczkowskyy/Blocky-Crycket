@@ -9,7 +9,9 @@ Kontener w Studio: Workspace/MiasteczkoBazar (osobny od Workspace/KrzyweMiastecz
 W pliku części wszystko stoi już tam, gdzie ma stanąć w świecie Studio: świat = (X0 + x; y; Z0 + z), bez obrotu
 (X0 = 994, Z0 = −700 z uklad.json; wschodni brzeg bazaru x 72 = X 1066 = początek pasa Lasu).
 Wynik deterministyczny (random.Random(ziarno)). Kolejność: teren → budynki (moduły) → domy → stragany → łączniki i mury
-→ rekwizyty → kulisy i tło → niewidzialne ściany → bruk (omija obrysy budynków) → ścieżki-kody i start → zapis.
+→ rekwizyty → kulisy i tło → niewidzialne ściany → bruk (omija obrysy budynków) → ścieżki-kody i start → kreska → zapis.
+Kreska i tekstury (D-147, 25.11.2026): kolor tuszu i grubość listew oraz materiały własne (MaterialVariant) czyta
+tekstury.json; do czesci.json dochodzi blok „tekstury”, który tools/studio_buduj.py nakłada przy budowie (tekstury.py).
 Status: propozycja (16.11.2026), nie kanon.
 """
 import argparse
@@ -29,6 +31,7 @@ from swiat.biblioteka.scena import Scena, KULA, WALEC  # noqa: E402
 from swiat.krzywe_miasteczko import zestaw  # noqa: E402
 from swiat.krzywe_miasteczko.paleta import PALETA, cien  # noqa: E402
 from swiat.miasteczko_bazar import wspolne  # noqa: E402
+from swiat.miasteczko_bazar import tekstury  # noqa: E402
 
 PLIK_UKLADU = os.path.join(TU, "uklad.json")
 LIMIT, CEL = 12000, 8000
@@ -440,6 +443,8 @@ def generuj(U=None):
                          kier=(1, 0, 0), las_od_X=U["swiat"]["las_od_X"],
                          opis="wschodni brzeg bazaru = początek pasa Lasu (u −34, ściana zamykająca Lasu); Brama Leśna stoi "
                               "7,5 st przed nim")
+    # kreska w stylu sali wyboru rasy (D-147): kolor tuszu i grubość listew z tekstury.json (jedna linia „kreska”)
+    s.kreska = tekstury.kreska(s.czesci, s.grupy, tekstury.wczytaj())
     return s, raport
 
 
@@ -471,9 +476,21 @@ def main():
     a = ap.parse_args()
     U = wczytaj_uklad()
     s, raport = generuj(U)
-    s.zapisz(a.wyj)
+    # tekstury (D-147): materiały własne z tekstury.json → blok „tekstury” w czesci.json; nakłada je tools/studio_buduj.py
+    R = tekstury.wczytaj()
+    blok, brak = tekstury.blok_tekstur(R, tekstury.przypisz(s.czesci, s.grupy, s.materialy, R))
+    d = s.json()
+    d["tekstury"] = blok
+    with open(a.wyj, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
+        f.write("\n")
     zapisz_znaczniki(U, os.path.join(TU, "znaczniki.json"), raport)
     wypisz_raport(s, raport)
+    print("KRESKA: kolor %s, grubość %s (przebarwione %d, zmieniony przekrój %d)" % (
+        R["kreska"]["kolor"], R["kreska"].get("grubosc", 1.0), s.kreska[0], s.kreska[1]))
+    print("TEKSTURY: %d z %d części, %d materiałów własnych%s" % (
+        sum(1 for x in blok["czesci"] if x), len(s.czesci), len(blok["definicje"]),
+        (" · bez wgranej mapy (gładkie): " + ", ".join(brak)) if brak else ""))
     if len(s.czesci) > LIMIT:
         print("BŁĄD: przekroczony twardy limit części")
         return 1

@@ -14,6 +14,9 @@ Zasady bezpieczeństwa (wspólne miejsce Team Create):
 - przed i po budowie stawiany jest punkt historii (ChangeHistoryService) — całość cofa się jednym Ctrl+Z;
 - skrypt niczego nie publikuje i nie zapisuje miejsca.
 Części: Anchored, bez CanTouch; liście, kwiaty, dym, ogień i woda bez kolizji.
+Tekstury (opcjonalnie, blok „tekstury” w czesci.json — np. swiat/miasteczko_bazar/tekstury.py): materiały własne
+(MaterialVariant) w JEDNYM folderze MaterialService/<kontener> z atrybutem Wygenerowane (odbudowywany razem ze sceną;
+cudzego folderu o tej nazwie skrypt nie rusza) i Material + MaterialVariant ustawiane częściom w tej samej paczce.
 """
 import argparse
 import json
@@ -32,6 +35,7 @@ BEZ_CIENIA = ("Kwiat", "Łata trawy", "Droga", "Bruk", "kropka", "Dym", "woda", 
 WSPOLNE = r'''
 local G = __GRUPY__
 local M = __MATERIALY__
+local W = __WARIANTY__
 local cache = {}
 local function grupa(i)
 	local m = cache[i]
@@ -54,20 +58,43 @@ end
 
 START = r'''
 local CH = game:GetService("ChangeHistoryService")
+local MS = game:GetService("MaterialService")
 local nazwa = "__KORZEN__"
+local TK = __TEKSTURY__
 local stary = workspace:FindFirstChild(nazwa)
+if stary and stary:GetAttribute("Wygenerowane") ~= true then
+	return "STOP: w Workspace jest już obiekt '" .. nazwa .. "' bez atrybutu Wygenerowane — nie ruszam cudzej pracy"
+end
+local staryMS = TK and MS:FindFirstChild(TK.kontener)
+if staryMS and staryMS:GetAttribute("Wygenerowane") ~= true then
+	return "STOP: w MaterialService jest już '" .. TK.kontener .. "' bez atrybutu Wygenerowane — nie ruszam cudzej pracy"
+end
 if stary then
-	if stary:GetAttribute("Wygenerowane") ~= true then
-		return "STOP: w Workspace jest już obiekt '" .. nazwa .. "' bez atrybutu Wygenerowane — nie ruszam cudzej pracy"
-	end
 	CH:SetWaypoint("Panel: przed usunięciem " .. nazwa)
 	stary:Destroy()
 end
+if staryMS then staryMS:Destroy() end
 if __USUN__ then
 	CH:SetWaypoint("Panel: usunięto " .. nazwa)
 	return "USUNIETO"
 end
 CH:SetWaypoint("Panel: przed budową " .. nazwa)
+if TK then
+	local mf = Instance.new("Folder")
+	mf.Name = TK.kontener
+	mf:SetAttribute("Wygenerowane", true)
+	mf:SetAttribute("Zrodlo", "__ZRODLO__")
+	for _, d in TK.definicje do
+		local v = Instance.new("MaterialVariant")
+		v.Name = d[1]
+		v.BaseMaterial = Enum.Material[d[2]]
+		v.ColorMap = d[3]
+		v.StudsPerTile = d[4]
+		v.MaterialPattern = Enum.MaterialPattern[d[5]]
+		v.Parent = mf
+	end
+	mf.Parent = MS
+end
 local f = Instance.new("Folder")
 f.Name = nazwa
 f:SetAttribute("Wygenerowane", true)
@@ -103,6 +130,11 @@ for _, c in D do
 	p.CanTouch = false
 	p.CanCollide = c[16] == 1
 	p.CastShadow = c[17] == 1
+	local w = c[18] and W[c[18]]
+	if w then
+		p.Material = Enum.Material[w[2]]
+		p.MaterialVariant = w[1]
+	end
 	p.Parent = grupa(c[2] + 1)
 	n += 1
 end
@@ -113,9 +145,13 @@ KONIEC = r'''
 local f = workspace:FindFirstChild("__KORZEN__")
 local n = 0
 local obrysow = 0
+local tekstur = 0
 if f then
 	for _, d in f:GetDescendants() do
-		if d:IsA("BasePart") then n += 1 end
+		if d:IsA("BasePart") then
+			n += 1
+			if d.MaterialVariant ~= "" then tekstur += 1 end
+		end
 	end
 	for _, sciezka in __OBRYSY__ do
 		local path = string.split(sciezka, "/")
@@ -137,7 +173,7 @@ if f then
 	end
 end
 game:GetService("ChangeHistoryService"):SetWaypoint("Panel: zbudowano __KORZEN__")
-return n .. " części, obrysów: " .. obrysow
+return n .. " części, obrysów: " .. obrysow .. (tekstur > 0 and (", z materiałem własnym: " .. tekstur) or "")
 '''
 
 
@@ -178,7 +214,16 @@ def main():
     print("Kontener: Workspace/%s · części: %d · grup: %d · materiały: %s" % (korzen, len(czesci), len(grupy), ", ".join(materialy)))
     if a.sucho:
         return
-    wspolne = WSPOLNE.replace("__GRUPY__", luau(grupy)).replace("__MATERIALY__", luau(materialy))
+    tk = d.get("tekstury")
+    if tk and len(tk.get("czesci", [])) != len(czesci):
+        sys.exit("Blok „tekstury” nie pasuje do części (%d ≠ %d) — uruchom generator jeszcze raz" % (len(tk["czesci"]), len(czesci)))
+    if tk and not tk.get("definicje"):
+        tk = None
+    if tk:
+        print("Tekstury: %d materiałów własnych w MaterialService/%s, %d części" % (
+            len(tk["definicje"]), tk["kontener"], sum(1 for x in tk["czesci"] if x)))
+    wspolne = (WSPOLNE.replace("__GRUPY__", luau(grupy)).replace("__MATERIALY__", luau(materialy))
+               .replace("__WARIANTY__", luau(tk["definicje"]) if tk else "{}"))
     zrodlo = os.path.relpath(os.path.abspath(a.plik), os.path.dirname(os.path.dirname(os.path.abspath(__file__)))).replace("\\", "/")
     try:
         with StudioMCP() as s:
@@ -198,7 +243,8 @@ def main():
                         raise StudioError(r["text"])
                     return r["text"].strip()
 
-            kod = (START.replace("__KORZEN__", korzen).replace("__USUN__", "true" if a.usun else "false")
+            tk_luau = ("{kontener=%s, definicje=%s}" % (luau(tk["kontener"]), luau(tk["definicje"]))) if tk else "nil"
+            kod = (START.replace("__TEKSTURY__", tk_luau).replace("__KORZEN__", korzen).replace("__USUN__", "true" if a.usun else "false")
                    .replace("__ZRODLO__", zrodlo).replace("__CZAS__", time.strftime("%Y-%m-%dT%H:%M:%S")))
             wynik = wykonaj(kod)
             print("start:", wynik)
@@ -217,7 +263,10 @@ def main():
                     else:                                      # v1: po słowach w nazwie części
                         kolizja = 0 if any(k in nazwa for k in BEZ_KOLIZJI) else 1
                         cien = 0 if any(k in nazwa for k in BEZ_CIENIA) else 1
-                    paczka.append(list(c[:15]) + [kolizja, cien])
+                    wiersz = list(c[:15]) + [kolizja, cien]
+                    if tk:
+                        wiersz.append(int(tk["czesci"][i + len(paczka)]))
+                    paczka.append(wiersz)
                 n = wykonaj(wspolne + PACZKA.replace("__DANE__", luau(paczka)))
                 razem += int(float(n))
                 print("  %5d / %d" % (razem, len(czesci)), flush=True)
