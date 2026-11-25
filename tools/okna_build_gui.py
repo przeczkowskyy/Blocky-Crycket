@@ -74,6 +74,31 @@ def slot_przedmiotu(i, r):
     ])
 
 
+def zakladka(nazwa, r, napis, aktywna):
+    """Natywna zakładka nad górną siatką (Paweł 25.11: przełączanie PRZEDMIOTY / SKŁADNIKI). Kolory zmienia klient."""
+    return node(nazwa, "TextButton", {**ud(*r), "BackgroundColor3": c3("F2B33D" if aktywna else "6B4226"), "Text": napis,
+                                      "TextColor3": c3(WHITE if aktywna else CREAM), "FontFace": S.FONT, "TextScaled": True,
+                                      "AutoButtonColor": False, "ZIndex": 7}, [
+        corner(0.3),
+        node("UIStroke", "UIStroke", {"Color": c3("1A1410"), "Thickness": 2, "ApplyStrokeMode": "Border"}),
+        node("UIPadding", "UIPadding", {"PaddingLeft": {"UDim": [0.06, 0]}, "PaddingRight": {"UDim": [0.06, 0]},
+                                        "PaddingTop": {"UDim": [0.12, 0]}, "PaddingBottom": {"UDim": [0.12, 0]}}),
+        node("UITextSizeConstraint", "UITextSizeConstraint", {"MaxTextSize": 18, "MinTextSize": 6}),
+    ])
+
+
+def slot_skladnika(i, r):
+    return node(f"Ingredient{i:02d}", "ImageButton", {**ud(*r), "BackgroundTransparency": 1, "Image": "", "AutoButtonColor": False,
+                                                      "Visible": False, "ZIndex": 6}, [
+        node("Select", "Frame", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1, "Visible": False, "ZIndex": 6},
+             [corner(0.15), node("UIStroke", "UIStroke", {"Color": c3("FFD65A"), "Thickness": 3})]),
+        node("Icon", "ImageLabel", {**ud(0.14, 0.06, 0.72, 0.62), "BackgroundTransparency": 1, "Image": "", "ScaleType": "Fit",
+                                    "ZIndex": 7}),
+        text("ItemName", (0.04, 0.66, 0.92, 0.3), "", WHITE, 13, 1.5, 8),
+        text("Count", (0.42, 0.02, 0.56, 0.3), "", "8CE865", 15, 1.5, 8),
+    ])
+
+
 def kowal():
     kol = [0.075, 0.152, 0.227]
     rzedy_a = [0.135, 0.239, 0.342, 0.447]
@@ -84,6 +109,10 @@ def kowal():
         for x in kol:
             sloty.append(slot_przedmiotu(i, (x, rz, *wh)))
             i += 1
+    # składniki zajmują te same pola co górna siatka (12 slotów); widać je po kliknięciu zakładki
+    skladniki = [slot_skladnika(n + 1, (x, rz, *wh)) for n, (rz, x) in enumerate((rz, x) for rz in rzedy_a for x in kol)]
+    zakladki = [zakladka("TabItems", (0.072, 0.089, 0.108, 0.036), "ITEMS", True),
+                zakladka("TabIngredients", (0.186, 0.089, 0.115, 0.036), "INGREDIENTS", False)]
     przed_po = []
     for nazwa, x in (("Before", 0.369), ("After", 0.534)):
         przed_po.append(node(nazwa, "Frame", {**ud(x, 0.151, 0.081, 0.141), "BackgroundTransparency": 1, "ZIndex": 6}, [
@@ -96,6 +125,8 @@ def kowal():
     okno("OknoKowala", [
         text("Title", (0.108, 0.006, 0.292, 0.08), "BLACKSMITH", CREAM, 40),
         *sloty,
+        *skladniki,
+        *zakladki,
         *przed_po,
         ciemny("Stats", (0.39, 0.36, 0.205, 0.175), "Pick an item on the left", 18),
         *kolka, *podpisy,

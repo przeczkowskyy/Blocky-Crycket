@@ -118,7 +118,7 @@ def main():
                                                                              "DominantAxis": "Width"}),
                 node("UIScale", "UIScale", {"Scale": 1}),
                 node("InputBlocker", "TextButton", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1, "Text": "", "AutoButtonColor": False}),
-                node("FrameArt", "ImageLabel", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1, "Image": img("SkillTreeFrame"),
+                node("FrameArt", "ImageLabel", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1, "Image": img("SkillTreeFrameDwie"),  # 25.11: bez zakładki fortecy; powrót = "SkillTreeFrame"
                                                 "ScaleType": "Stretch", "ZIndex": 1}),
                 content,
                 node("Tabs", "Frame", {**ud(0, 0, 1, 1), "BackgroundTransparency": 1, "ZIndex": 3}, tabs),

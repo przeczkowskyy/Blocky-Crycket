@@ -24,7 +24,12 @@ tags: [produkcja, zadania]
 - [ ] Muzyka miasteczka: nowe propozycje z Higgsfield do odsłuchu (obecna „dosyć słaba” — Karol 25.11), Karol wybiera, wgranie po osobnym „tak” · agent Karola, Karol · #wysoki
 - [ ] Responsywność: lag przy otwieraniu sklepu i ekwipunku — pomiar i poprawka według odpowiedzi na pytanie 101 · agent Karola albo Pawła · #wysoki
 - [ ] Ekran ładowania z kotami zamiast ludzików (D-145; napis tytułu — pytanie 97) · agent Karola · #średni
-- [ ] Modele 3D broni z ikon Pawła — czekamy, aż Paweł wrzuci ikony (25.11 w repozytorium jest 6 ikon puli Lv 1–10, w tym jedna broń) · Paweł, potem agent Karola · #średni
+- [ ] Modele 3D przedmiotów wojownika (pula Lv 1–10) według arkuszy Pawła: 5 zestawów po 6 przedmiotów w `assets/refs/przedmioty_rycerz/`, opis w [[Przedmioty — pula Lv 1–10, 5 na slot (propozycja)]]; do tego 6 ikon „Leśnego Złomu”. Arkusze zwiadowcy i maga — jeszcze nie ma · agent Karola (Karol 25.11: „przedmiotami zajmuję się ja”) · #średni
+- [ ] Pety leśnego jajka: przebudować modele według arkuszy obrotów Pawła (`assets/refs/pety_las/`, [[Pety leśnego jajka — arkusze obrotów (propozycja)]]); przed przebudową peta agent otwiera jego arkusz — zakres: pytanie 104 · agent Karola · #średni
+- [ ] HUD: usunąć na razie przycisk gildii i przerobić przyciski na podłużne (ikona po lewej, napis po prawej) według referencji Karola (Paweł 25.11, „na ostatnie zadanie”) · agent Pawła · #średni
+- [ ] Koty ras: dopracować modele do referencji z Higgsfield; elf i mroczny elf z jedną parą uszu, goblin zostaje (Paweł 25.11) · agent Pawła (Blender) · #średni
+- [ ] Figma: dokończyć makiety „MistrzGier — stół” (58:115) i „OknoQuestow — tablica” (58:130) na stronie „HUD Buttons”, gdy odnowi się limit wywołań planu Starter · agent Pawła · #niski
+- [x] 2026-11-25: [[Tablica questów (propozycja)]] (dzienne, osiągnięcia, szuflada), kowal z zakładkami ITEMS / INGREDIENTS, mistrz gier z planszą 3D na stole i własnym interfejsem, drzewko bez zakładki fortecy; 18 grafik wgranych po „tak” Pawła — w Studio, sprawdzone w Play (Paweł; pytania 98, 99, 105)
 - [x] 2026-11-25: HUD — przyciski po lewej w dwóch rzędach, Index zamiast Quests, szuflada questów, [[Okno petów (propozycja)]] pod przyciskiem Pets (Paweł; czeka na Karola: pytania 102 i 103)
 - [x] 2026-11-24: trening AFK na `main` i w Studio (Paweł po rozmowie z Karolem); koty w ikonach ras, ramkach XP, selektorze klas; sklepy z NPC Karola — wgrane i sprawdzone w Play
 - [ ] Blocky & Crycket (D-140, D-141): za poziom Diamenty zamiast punktów statystyk i trening na stanowiskach AFK z paskiem — Karol potwierdza i wybiera, kto wdraża (pytanie 89); przy wdrożeniu przeliczyć tempo walk bez punktów za poziom · Karol, potem agent · #wysoki
@@ -32,7 +37,7 @@ tags: [produkcja, zadania]
 - [ ] Sklep: „tak” na wgranie ikon przedmiotów z Blendera (80 plików w `swiat/postacie/wynik/…/ikony/`) — do tego czasu kafelki z nazwą; potem wpisać ID do `src/shared/IkonyPrzedmiotow.luau` · Paweł albo Karol · #średni
 - [ ] Sklep: sprawdzić na telefonie (Device Emulator), czy nazwy na kafelkach i karta przedmiotu są czytelne; ustalić towar sklepu magicznego · Paweł · #średni
 - [ ] Panel: po wyborze tematu sesji (gra albo pomysł) agenda i lista pytań w zakładce Sesja dostosowują się do tej gry; prośba Karola z drugiej sesji 22.11, start po poleceniu na czacie ([[Sesja główna 2026-11-22 (2) — zapis ustaleń]]) · #średni
-- [ ] Marketing: osobna sesja (`/marketing`) — wersja konta klipów (pytanie 80; po sesji 25.11 także pytanie 105: jawnie czy „losowy Instagramer”), obsada wirtualnych streamerów, wycena klipu w kredytach ([[00 Marketing]]) · Karol · #średni
+- [ ] Marketing: osobna sesja (`/marketing`) — wersja konta klipów (pytanie 80; po sesji 25.11 także pytanie 107: jawnie czy „losowy Instagramer”), obsada wirtualnych streamerów, wycena klipu w kredytach ([[00 Marketing]]) · Karol · #średni
 - [ ] Paweł: potwierdzić albo zmienić D-114 (prawo agenta do sprzeciwu) i D-115 (Wytwórnia pomysłów) · Paweł · #średni
 - [ ] Paweł: przełączyć repozytorium na prywatne w ustawieniach GitHub (D-044) — działanie właściciela, po zatwierdzeniu decyzji; wtedy lustro panelu na GitHub Pages odpada · #gra/wspolne · #wysoki
 - [ ] Kroki założenia grupy Roblox, publikacji gry jako gry grupy i ponownego wgrania animacji — po odpowiedzi na pytanie 31 (D-044) · #średni
