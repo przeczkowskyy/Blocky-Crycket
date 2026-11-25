@@ -2,6 +2,23 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-25T23:36:53+01:00",
- "prace": []
+ "aktualizacja": "2026-11-25T23:40:43+01:00",
+ "prace": [
+  {
+   "id": "koty-rasy-dopracowanie",
+   "tytul": "Koty ras: dopracowanie modeli do referencji",
+   "stan": "w_toku",
+   "start": "2026-11-25T23:40:43+01:00",
+   "koniec_szacowany": "2026-11-26T01:40:43+01:00",
+   "aktualizacja": "2026-11-25T23:40:43+01:00",
+   "obszary": [
+    "swiat/postacie/koty_ras.py",
+    "swiat/postacie/kot_demon.py",
+    "studio:KotRasyPodglad",
+    "studio:KotDemonPodglad"
+   ],
+   "kto": "Claude (przeczkowskyy)",
+   "komputer": "0c03c4ec"
+  }
+ ]
 }
