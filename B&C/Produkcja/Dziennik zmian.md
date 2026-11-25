@@ -45,6 +45,11 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: omówiony temat sesji: Pierwsza godzina gracza: punkty za poziom i premia pierwszej wygranej (pytania 58 i 59, reszta… ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Postać gracza w świecie: bohater klasy czy awatar Roblox (pytanie 63) ([[Sesje główne]])
 - Karol Balucki: omówiony temat sesji: Rasy a Mag-kot i proporcje modeli (pytania 67, 68 i 69; D-079, D-104) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Kowal i sklep: zasady z próby i okna Pawła (pytania 57, 61 i 71; D-093, D-110) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Wybór pomysłu do najtańszego testu po ocenie kartą (pytanie 75; D-116) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Marketing gry i nowy workflow do mózgu w Obsidianie ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Pet Arena z Pawłem: styl sceny i kto o niej decyduje (pytania 78 i 79; D-124) ([[Sesje główne]])
+- Karol Balucki: omówiony temat sesji: Karol: pety – drugi slot, zdejmowanie i usuwanie (pytanie 103) ([[Sesje główne]])
 
 ## 2026-11-25 · Claude Code u Karola (panel: pulpit osobno dla każdej gry; start prac nad miastem i muzyką)
 - **Panel:** Karol: „Chcę, żeby dashboard był per gra robiony”. Agent na Opus (ok. 0,3–0,55 mln tokenów, 40 min) dodał przełącznik gier i przypisanie pytań, decyzji, zadań i raportów do gry; opis w [[Panel zespołu]]. Testy panelu: 23 nowe, cała paczka bez błędów.
