@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-25T18:11:27+01:00",
+ "aktualizacja": "2026-11-25T18:43:50+01:00",
  "prace": [
   {
    "id": "hud-questy-pety",
    "tytul": "HUD: przyciski po lewej, panel questów, okno petów",
    "stan": "w_toku",
+   "etap": "wgrywanie grafik i test w Play",
    "start": "2026-11-25T18:11:27+01:00",
-   "koniec_szacowany": "2026-11-25T20:11:27+01:00",
-   "aktualizacja": "2026-11-25T18:11:27+01:00",
+   "koniec_szacowany": "2026-11-25T19:43:50+01:00",
+   "aktualizacja": "2026-11-25T18:43:50+01:00",
    "obszary": [
     "src/gui/HUD.model.json",
     "src/client/HUDClient.client.luau",
