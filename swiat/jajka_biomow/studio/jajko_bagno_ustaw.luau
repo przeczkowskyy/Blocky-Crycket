@@ -13,15 +13,16 @@ local IMPORT = "JajkoBagnaImport"
 local NAZWA = "Jajko Bagna"
 local SKALA = 1.5
 -- maska blasku pęknięć: wgrać swiat/jajka_biomow/tekstury/bagno_jajo_blask.png (manifest: JajkoBagnaBlask) i wpisać ID
-local BLASK = "rbxassetid://0"
+local BLASK = "rbxassetid://111489350305678"
 local KOLOR_ZYL = Color3.fromRGB(155, 255, 79) -- EmissiveTint pęknięć (u Pawła 83, 232, 154)
 local KOLOR_BLASKU = Color3.fromHex("F4FFD2") -- jasny środek rdzenia i słupa
 -- miejsce: obok stanowiska jajka z mapy (Workspace/BagnoPas/Punkty/StanowiskoJajka), przesunięte o PRZESUNIECIE, żeby nie wejść
 -- w stare gniazdo; bez mapy — punkt ze znaczników (swiat/bagno_pas/krotki/znaczniki.json). Przód (LookVector) w stronę PRZOD.
+-- Sprawdzone na mapie 25.11 (Studio): +9 Z stawiało jajo za starym gniazdem (15,6 × 15,9), z dala od drogi; po +X płynie rów z wodą (Przejscia/Rowy/Toń, X 1560–1568). -16 X: twardy grunt (Teren/Grunt), bez wody, obok tylko pojedyncza trzcina; droga (kładka) biegnie po -Z, więc przód -Z.
 local STANOWISKO = "Workspace/BagnoPas/Punkty/StanowiskoJajka"
 local ZAPAS = Vector3.new(1548.88, 0, -680)
-local PRZESUNIECIE = Vector3.new(0, 0, 9)
-local PRZOD = Vector3.new(-1, 0, 0)
+local PRZESUNIECIE = Vector3.new(-16, 0, -2)
+local PRZOD = Vector3.new(0, 0, -1)
 
 local KOLORY = { -- nazwa siatki -> kolor, materiał, przezroczystość (nil = siatka z teksturą atlasu: kolor biały)
 	Crystals = { Color3.fromRGB(155, 255, 79), Enum.Material.Neon },
@@ -132,6 +133,8 @@ korzen.Anchored, korzen.CanCollide, korzen.CanTouch, korzen.CanQuery = true, fal
 korzen.CFrame = CFrame.lookAt(Vector3.new(sx, dol, sz), Vector3.new(sx, dol, sz + 1))
 korzen.Parent = m
 m.PrimaryPart = korzen
+-- StreamingEnabled: całe jajo przychodzi do klienta naraz (JajkaBiomowSpoczynek szuka Egg i Korzen w modelu)
+m.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
 m.Parent = k
 m:ScaleTo(SKALA)
 
@@ -155,10 +158,23 @@ elseif st then -- folder punktów: środek jego części
 	end
 end
 local miejsce = baza + PRZESUNIECIE
+-- grunt: pierwsza nieprzezroczysta część z kolizją (mgła, tafle wody i ozdoby bez kolizji są pomijane —
+-- w Dżungli nad trawą wisi „Mgla/Mgiełka” na Y 1,25 i zwykły promień postawiłby jajo w powietrzu)
 local rp = RaycastParams.new()
 rp.FilterType = Enum.RaycastFilterType.Exclude
-rp.FilterDescendantsInstances = { k }
-local traf = workspace:Raycast(miejsce + Vector3.new(0, 150, 0), Vector3.new(0, -400, 0), rp)
+local pomin = { k }
+local traf = nil
+for _ = 1, 20 do
+	rp.FilterDescendantsInstances = pomin
+	traf = workspace:Raycast(miejsce + Vector3.new(0, 150, 0), Vector3.new(0, -400, 0), rp)
+	local c = traf and traf.Instance
+	if c and c:IsA("BasePart") and (not c.CanCollide or c.Transparency > 0.5) then
+		table.insert(pomin, c)
+		traf = nil
+	else
+		break
+	end
+end
 if traf then
 	miejsce = Vector3.new(miejsce.X, traf.Position.Y, miejsce.Z)
 end

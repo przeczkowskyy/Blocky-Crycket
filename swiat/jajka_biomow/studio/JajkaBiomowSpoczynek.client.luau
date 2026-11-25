@@ -1,7 +1,9 @@
 --[[
-	JajkaBiomowSpoczynek — ruch jajek Bagna i Dżungli w spoczynku (swiat/jajka_biomow, Karol 25.11.2026; PROPOZYCJA,
-	przygotowane, nie wstawione). Docelowo LocalScript src/client/JajkaBiomowSpoczynek.client.luau, dane
-	z ReplicatedStorage.Shared.JajkaBiomowDane (studio/JajkaBiomowDane.luau).
+	JajkaBiomowSpoczynek — ruch jajek Bagna i Dżungli w spoczynku (swiat/jajka_biomow, Karol 25.11.2026; PROPOZYCJA).
+	Na próbę wstawia go swiat/jajka_biomow/wdroz.py jako Script (RunContext = Client) w Workspace/JajkaBiomowPodglad,
+	a dane jako ModuleScript Workspace/JajkaBiomowPodglad/Moduly/JajkaBiomowDane (jak pakiety próby Karola, bez src/).
+	Docelowo (za zgodą Pawła) LocalScript w src/client i dane w ReplicatedStorage.Shared — skrypt szuka danych
+	najpierw w kontenerze, potem w ReplicatedStorage.Shared.
 
 	Co robi u każdego klienta, gdy kamera jest bliżej niż ZASIEG:
 	  • Egg buja się wokół korzenia i pęknięcia pulsują (te same liczby co leśne jajo Pawła) — tylko gdy atrybut
@@ -21,10 +23,27 @@ local RS = game:GetService("ReplicatedStorage")
 
 local ZASIEG = 160
 
-local wspolny = RS:WaitForChild("Shared", 30)
-local modul = wspolny and wspolny:WaitForChild("JajkaBiomowDane", 30)
-if not (modul and modul:IsA("ModuleScript")) then
-	warn("[JajkaBiomowSpoczynek] brak ReplicatedStorage.Shared.JajkaBiomowDane")
+local KONTENER = "JajkaBiomowPodglad" -- = D.wspolne.kontener (tu na sztywno, bo dane dopiero szukamy)
+
+local function znajdzDane(): ModuleScript?
+	local k = workspace:FindFirstChild(KONTENER)
+	local moduly = k and k:FindFirstChild("Moduly")
+	local m = moduly and moduly:FindFirstChild("JajkaBiomowDane")
+	if not m then
+		local wspolny = RS:FindFirstChild("Shared")
+		m = wspolny and wspolny:FindFirstChild("JajkaBiomowDane")
+	end
+	return if m and m:IsA("ModuleScript") then m else nil
+end
+
+local modul = znajdzDane()
+local doKiedy = os.clock() + 30
+while not modul and os.clock() < doKiedy do
+	task.wait(0.5)
+	modul = znajdzDane()
+end
+if not modul then
+	warn("[JajkaBiomowSpoczynek] brak danych JajkaBiomowDane (Workspace/" .. KONTENER .. "/Moduly ani ReplicatedStorage.Shared)")
 	return
 end
 local D = require(modul)

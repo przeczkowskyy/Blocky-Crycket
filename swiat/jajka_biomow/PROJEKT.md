@@ -6,7 +6,7 @@ status: propozycja
 Zlecenie Karola z sesji 25.11.2026: wziąć leśne jajo Pawła (artefakt „Leśne jajo 3D”, zasób 92671202213818,
 `tools/studio/jajo_lesne_ustaw.luau`, scenka `src/client/JajkoKoroweClient.client.luau`) jako wzór i zrobić takie same
 jakościowo jajka do Bagna i Dżungli, z animacją spoczynku i wyklucia. **Propozycja** — nic tu nie jest kanonem;
-nie wgrane do Roblox i nie wstawione do Studio (osobny etap, kroki niżej).
+stan etapu „Studio” z nocy 25/26.11 — w sekcji „Stan w Studio” niżej (modele jeszcze NIE w grze).
 
 Całość jednym poleceniem (Blender 5.0 bez okna, jedna instancja naraz; ok. 30 s z teksturami):
 
@@ -22,7 +22,8 @@ Całość jednym poleceniem (Blender 5.0 bez okna, jedna instancja naraz; ok. 30
 | `tekstury.py` | tekstury malowane skryptem (numpy + Pillow, bez generatorów) → `tekstury/` |
 | `blender_jajko.py` | siatki, eksport GLB + FBX, rendery podglądu |
 | `zbuduj.py` | wszystko po kolei + plansze `podglad/`; czyści ścieżki dysku w FBX |
-| `studio_skrypty.py` → `studio/jajko_<biom>_ustaw.luau` | ustawienie modelu w Studio (wzór: `jajo_lesne_ustaw.luau`) — **nie uruchamiane** |
+| `studio_skrypty.py` → `studio/jajko_<biom>_ustaw.luau` | ustawienie modelu w Studio (wzór: `jajo_lesne_ustaw.luau`) — maski i miejsce wpisane 26.11, na modelach jeszcze nie uruchamiane |
+| `wdroz.py` | wysyłka do Studio: `wgraj` (GLB → zasoby Model, prawo Use, manifest), `wstaw` (do kontenera + skrypty ustawiające), `skrypty` (animacja spoczynku), `wszystko`, `--sucho` |
 | `studio/JajkaBiomowDane.luau` | dane animacji (spoczynek, wyklucie, reakcje ozdób) — docelowo `src/shared/` |
 | `studio/JajkaBiomowSpoczynek.client.luau` | ruch w spoczynku i reakcja ozdób na finał — docelowo `src/client/` |
 | `modele/jajko_<biom>.glb`, `.fbx`, `_statystyki.json` | modele do importu (tekstury koloru osadzone) i liczby |
@@ -74,23 +75,42 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
 - **Umowa ze scenką:** na czas scenki atrybut modelu `Wyklucie = true` (spoczynek nie rusza wtedy Egg), w chwili BOOM
   `Final += 1` (ozdoby grają finał), opcjonalnie `KolorRzadkosci` (Color3) — błysk kryształów w kolorze trafionego peta.
 
-## Etap „Studio” (po tym pakiecie — kroki)
+## Stan w Studio (noc 25/26.11.2026)
 
-1. **Wgranie modelu:** `modele/jajko_bagno.glb` i `jajko_dzungla.glb` jako zasoby Model (Open Cloud albo 3D Importer
-   w Studio). Importer sam utworzy obrazy z osadzonych tekstur koloru i atlasu. Każda siatka < 3,1 tys. trójkątów.
-2. **Maski blasku:** wgrać `tekstury/bagno_jajo_blask.png` i `dzungla_jajo_blask.png` (obrazy), wpisać do
-   `assets/manifest.json` (np. `JajkoBagnaBlask`, `JajkoDzungliBlask`) i podać ID w `studio_skrypty.py` (`BLASK_ID`
-   w `KONFIG`) → `python -B swiat/jajka_biomow/studio_skrypty.py`.
-3. **Zgoda „Use”:** jeśli zasoby wgrał ktoś inny niż właściciel gry, w Creator Hub → zasób → Permissions dodać
-   doświadczenie Blocky & Crycket z prawem Use (inaczej `insert_asset` nie wstawi modelu).
-4. **Wstawienie:** Studio w trybie Edit, bez innego agenta w Studio; ChangeHistory przed i po. Utworzyć kontener
-   `Workspace/JajkaBiomowPodglad` (atrybut `Wygenerowane`), wstawić model jako `JajkoBagnaImport` /
-   `JajkoDzungliImport`, uruchomić `studio/jajko_<biom>_ustaw.luau` (MCP `execute_luau`). Skrypt stawia jajko obok
-   stanowiska z mapy (`BagnoPas/Punkty/StanowiskoJajka`, `DzunglaPas/...`, przesunięcie 9 studów, przód −X) i niczego
-   nie usuwa — stare gniazda z klocków zostają do decyzji. Sprawdzić zrzutem, czy przód patrzy na ścieżkę.
-5. **Animacja spoczynku:** `studio/JajkaBiomowDane.luau` → `src/shared/JajkaBiomowDane.luau`,
-   `studio/JajkaBiomowSpoczynek.client.luau` → `src/client/` (Rojo zsynchronizuje).
-6. **Scenka wyklucia (pliki Pawła — za jego zgodą albo przez niego):** w `JajkoKoroweClient` zamiast jednego modelu
+- **Maski blasku wgrane** (Studio MCP `upload_image`, konto osoby w Studio; gra ma prawo „Use”): JajkoBagnaBlask
+  **111489350305678**, JajkoDzungliBlask **119055456876620** — w `assets/manifest.json` i w `studio_skrypty.py` (`BLASK_ID`).
+- **Modele GLB NIE wgrane:** Studio odrzuciło plik przed wysłaniem — folder `swiat/jajka_biomow/modele` nie jest
+  zatwierdzony do wgrywania (Assistant → Settings → MCP Permissions → approved upload directories), a narzędzie zabrania
+  kopiowania pliku do innego zatwierdzonego folderu. Do zrobienia przez człowieka: dodać ten folder do zatwierdzonych
+  (albo wyraźnie zgodzić się na drogę przez folder wyników postaci), potem `python -B swiat/jajka_biomow/wdroz.py wszystko`.
+- **Miejsce sprawdzone na mapie i poprawione** (było: 9 studów +Z od stanowiska, przód −X): +Z stawiało jajo za starym
+  gniazdem, z dala od drogi, a po +X stanowisk płynie woda (Bagno: rów `Przejscia/Rowy/Toń`, Dżungla: strumień).
+  Teraz: Bagno −16 X / −2 Z od `BagnoPas/Punkty/StanowiskoJajka` → ok. (1533, 0, −681,6); Dżungla −13 X / −2 Z od
+  `DzunglaPas/...` → ok. (1955,9, 0, −682,1); oba na twardym gruncie, bez wody, widoczne z kładki/drogi; przód −Z (na
+  drogę). Promień gruntu pomija mgłę (w Dżungli „Mgla/Mgiełka” na Y 1,25) i części bez kolizji. Zrzuty miejsc:
+  `podglad/studio_miejsce_bagno.jpg`, `studio_miejsce_dzungla.jpg`; leśne jajo Pawła dla porównania:
+  `podglad/studio_lesne_pawla_przod.jpg`.
+- **Animacja spoczynku wdrożona z pakietu** (`wdroz.py skrypty`, jak `swiat/pety_proba/zbuduj.py`, bez `src/`):
+  `Workspace/JajkaBiomowPodglad/Moduly/JajkaBiomowDane` (ModuleScript) i `JajkaBiomowPodglad/JajkaBiomowSpoczynek`
+  (Script, RunContext = Client, strażnik Studio). Skrypt szuka danych najpierw w kontenerze, potem w
+  `ReplicatedStorage.Shared`. Sprawdzona w Play na atrapach (jajo z siatki leśnego + maski, ozdoby z klocków; atrapy
+  potem usunięte): bujanie, puls blasku 0,41–0,54, wiatr, lilie, bąble, puls kryształów, finał (odchylenie 5,8–7,8°,
+  bąble pękają i wracają po 4,5 s, błysk w `KolorRzadkosci`), `Wyklucie = true` zatrzymuje Egg; konsola bez błędów
+  tych skryptów. Modele dostają `ModelStreamingMode = Atomic` (StreamingEnabled jest włączone).
+
+## Etap „Studio” (kroki)
+
+1. **Wgranie modeli:** `wdroz.py wgraj` — `modele/jajko_bagno.glb` i `jajko_dzungla.glb` jako zasoby Model
+   (open_cloud_invoke z folderu `modele/`, który musi być zatwierdzony w Studio), czekanie na operację i moderację,
+   prawo „Use” dla gry (universe 10776202722), wpisy `JajkoBagnaModel` / `JajkoDzungliModel` w manifeście, stan
+   w `studio/zasoby.json` (ochrona przed podwójnym wgraniem). Każda siatka < 3,1 tys. trójkątów.
+2. **Maski blasku:** zrobione (wyżej).
+3. **Wstawienie:** `wdroz.py wstaw` — Studio w trybie Edit; kontener `Workspace/JajkaBiomowPodglad` (atrybut
+   `Wygenerowane`), `insert_asset` jako `JajkoBagnaImport` / `JajkoDzungliImport`, potem `studio/jajko_<biom>_ustaw.luau`
+   (skala ×1,5, kolory, maska, korzeń, miejsce jak wyżej). Niczego cudzego nie usuwa — stare gniazda z klocków zostają.
+   Potem zrzuty z gry (każde jajko z dwóch stron i z bliska) i ocena: tekstura, siła Neonu, skala.
+4. **Animacja spoczynku:** zrobione (`wdroz.py skrypty`); po wstawieniu modeli sprawdzić w Play na prawdziwych siatkach.
+5. **Scenka wyklucia (pliki Pawła — za jego zgodą albo przez niego):** w `JajkoKoroweClient` zamiast jednego modelu
    lista jajek (`Jajko korowe` + modele z `JajkaBiomowPodglad`), `KOLOR_ZYL` i `KOLOR_BLASKU` z atrybutów modelu
    `KolorZyl` / `KolorBlasku`, ustawianie `Wyklucie` i `Final`; w `JajkoKorowe.server.luau` zamiast stałej
    `JAJKO = "jajko_lesne"` — id z atrybutu `JajkoId` modelu (`jajko_bagienne`, `jajko_dzungli`), podpowiedź E na
@@ -98,15 +118,16 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
    haczyk serwera petów Karola (`SterowanieSerwera("kup", gracz, id)`), bez zmian w `swiat/pety_proba`.
    Jeden „pisarz” ruchu jaja: w spoczynku Egg nowych jajek rusza `JajkaBiomowSpoczynek`, a klient Pawła tylko
    w czasie scenki (gdy `Wyklucie = true`) — inaczej dwa skrypty co klatkę ustawiają ten sam CFrame.
-7. Próba w Play (kupno, 5 kliknięć, rozpad, słup, pet), zrzuty, raport w panelu.
+6. Próba w Play (kupno, 5 kliknięć, rozpad, słup, pet), zrzuty, raport w panelu.
 
 ## Niepewne
 
-- Modelu leśnego jaja (GLB) nie ma w repo ani w Studio w trybie Edit tej nocy — skala i liczba trójkątów nowych jajek
+- Leśne jajo Pawła stoi w Studio („Jajko korowe” w `JajkoKorowePodglad`, (955, 0,2, −695), skala 1,5, całość z ozdobami
+  4,7 × 4,8 × 4,6 studa; nowe: Bagno ok. 5,6 × 4,5 × 5,7, Dżungla ok. 7,5 × 4,5 × 5,7). Pliku GLB leśnego nie ma w repo — skala i liczba trójkątów nowych jajek
   są dobrane z liczb w skryptach Pawła (rdzeń 1,59, kula 1,35, skala ×1,5) i z jego tekstury; zestawienie
   `podglad/jajka_zestawienie.jpg` pokazuje leśne tylko jako teksturę Pawła na tej samej bryle.
 - FBX: skala jednostek w imporcie Roblox niesprawdzona — zalecany GLB (ta sama droga co leśne).
 - Rendery to Blender (Eevee, obrys odwróconą otoczką = jak `Highlight` w kliencie) — w Roblox oświetlenie i Neon będą
   wyglądać inaczej; ocenić dopiero zrzutem ze Studio.
-- Miejsce i przód w Studio to założenie (stanowisko z map `bagno_pas` / `dzungla_pas` sprzed przebudowy biomów
-  z 19.11) — do sprawdzenia na mapie.
+- Miejsce i przód sprawdzone na mapie 26.11 (wyżej), ale bez prawdziwego modelu — po wstawieniu obejrzeć zrzutem,
+  czy liście Dżungli (7,5 studa szerokości) nie wchodzą w kwiaty obok i czy trzcina obok jaja Bagna nie przebija jaja.

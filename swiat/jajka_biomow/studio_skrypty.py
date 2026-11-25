@@ -31,6 +31,7 @@ local KOLOR_ZYL = %(KOLOR_ZYL)s -- EmissiveTint pęknięć (u Pawła 83, 232, 15
 local KOLOR_BLASKU = %(KOLOR_BLASKU)s -- jasny środek rdzenia i słupa
 -- miejsce: obok stanowiska jajka z mapy (%(STANOWISKO)s), przesunięte o PRZESUNIECIE, żeby nie wejść
 -- w stare gniazdo; bez mapy — punkt ze znaczników (%(ZNACZNIKI)s). Przód (LookVector) w stronę PRZOD.
+-- %(MIEJSCE_UWAGA)s
 local STANOWISKO = "%(STANOWISKO)s"
 local ZAPAS = Vector3.new(%(ZAPAS)s)
 local PRZESUNIECIE = Vector3.new(%(PRZESUNIECIE)s)
@@ -140,6 +141,8 @@ korzen.Anchored, korzen.CanCollide, korzen.CanTouch, korzen.CanQuery = true, fal
 korzen.CFrame = CFrame.lookAt(Vector3.new(sx, dol, sz), Vector3.new(sx, dol, sz + 1))
 korzen.Parent = m
 m.PrimaryPart = korzen
+-- StreamingEnabled: całe jajo przychodzi do klienta naraz (JajkaBiomowSpoczynek szuka Egg i Korzen w modelu)
+m.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
 m.Parent = k
 m:ScaleTo(SKALA)
 
@@ -163,10 +166,23 @@ elseif st then -- folder punktów: środek jego części
 	end
 end
 local miejsce = baza + PRZESUNIECIE
+-- grunt: pierwsza nieprzezroczysta część z kolizją (mgła, tafle wody i ozdoby bez kolizji są pomijane —
+-- w Dżungli nad trawą wisi „Mgla/Mgiełka” na Y 1,25 i zwykły promień postawiłby jajo w powietrzu)
 local rp = RaycastParams.new()
 rp.FilterType = Enum.RaycastFilterType.Exclude
-rp.FilterDescendantsInstances = { k }
-local traf = workspace:Raycast(miejsce + Vector3.new(0, 150, 0), Vector3.new(0, -400, 0), rp)
+local pomin = { k }
+local traf = nil
+for _ = 1, 20 do
+	rp.FilterDescendantsInstances = pomin
+	traf = workspace:Raycast(miejsce + Vector3.new(0, 150, 0), Vector3.new(0, -400, 0), rp)
+	local c = traf and traf.Instance
+	if c and c:IsA("BasePart") and (not c.CanCollide or c.Transparency > 0.5) then
+		table.insert(pomin, c)
+		traf = nil
+	else
+		break
+	end
+end
 if traf then
 	miejsce = Vector3.new(miejsce.X, traf.Position.Y, miejsce.Z)
 end
@@ -211,11 +227,14 @@ return string.format("ok: %%d części, rozmiar %%.1f × %%.1f × %%.1f, pivot %
 
 KONFIG = {
     "bagno": dict(
-        BLASK_ID="0",  # ID obrazu tekstury/bagno_jajo_blask.png po wgraniu (etap Studio)
+        BLASK_ID="111489350305678",  # JajkoBagnaBlask (tekstury/bagno_jajo_blask.png), wgrane 25.11, Use dla gry
         NAZWA="Jajko Bagna", IMPORT="JajkoBagnaImport", JAJKO_ID="jajko_bagienne", MASKA="bagno_jajo_blask.png",
         MANIFEST="JajkoBagnaBlask", KOLOR_ZYL="Color3.fromRGB(155, 255, 79)", KOLOR_BLASKU='Color3.fromHex("F4FFD2")',
         STANOWISKO="Workspace/BagnoPas/Punkty/StanowiskoJajka", ZNACZNIKI="swiat/bagno_pas/krotki/znaczniki.json",
-        ZAPAS="1548.88, 0, -680", PRZESUNIECIE="0, 0, 9", PRZOD="-1, 0, 0", CIEN="MudBed",
+        ZAPAS="1548.88, 0, -680", PRZESUNIECIE="-16, 0, -2", PRZOD="0, 0, -1", CIEN="MudBed",
+        MIEJSCE_UWAGA="Sprawdzone na mapie 25.11 (Studio): +9 Z stawiało jajo za starym gniazdem (15,6 × 15,9), z dala od "
+        "drogi; po +X płynie rów z wodą (Przejscia/Rowy/Toń, X 1560–1568). -16 X: twardy grunt (Teren/Grunt), bez wody, "
+        "obok tylko pojedyncza trzcina; droga (kładka) biegnie po -Z, więc przód -Z.",
         KOLORY="\n".join([
             '\tCrystals = { Color3.fromRGB(155, 255, 79), Enum.Material.Neon },',
             '\tShards = { Color3.fromRGB(155, 255, 79), Enum.Material.Neon },',
@@ -225,11 +244,14 @@ KONFIG = {
             '\tMushroomSpots = { Color3.fromRGB(190, 255, 120), Enum.Material.Neon },',
         ])),
     "dzungla": dict(
-        BLASK_ID="0",  # ID obrazu tekstury/dzungla_jajo_blask.png po wgraniu (etap Studio)
+        BLASK_ID="119055456876620",  # JajkoDzungliBlask (tekstury/dzungla_jajo_blask.png), wgrane 25.11, Use dla gry
         NAZWA="Jajko Dżungli", IMPORT="JajkoDzungliImport", JAJKO_ID="jajko_dzungli", MASKA="dzungla_jajo_blask.png",
         MANIFEST="JajkoDzungliBlask", KOLOR_ZYL="Color3.fromRGB(255, 95, 168)", KOLOR_BLASKU='Color3.fromHex("FFE6F3")',
         STANOWISKO="Workspace/DzunglaPas/Punkty/StanowiskoJajka", ZNACZNIKI="swiat/dzungla_pas/krotki/znaczniki.json",
-        ZAPAS="1968.88, 0, -680", PRZESUNIECIE="0, 0, 9", PRZOD="-1, 0, 0", CIEN="StoneBase",
+        ZAPAS="1968.88, 0, -680", PRZESUNIECIE="-13, 0, -2", PRZOD="0, 0, -1", CIEN="StoneBase",
+        MIEJSCE_UWAGA="Sprawdzone na mapie 25.11 (Studio): +9 Z stawiało jajo za starym gniazdem (15 × 15,3), z dala od "
+        "drogi; po +X płynie strumień (Przejscia/Strumienie/Woda). -13 X: twardy grunt, bez wody i bez kolizji; droga "
+        "biegnie po -Z, więc przód -Z.",
         KOLORY="\n".join([
             '\tCrystals = { Color3.fromRGB(255, 140, 26), Enum.Material.Neon },',
             '\tShards = { Color3.fromRGB(255, 170, 60), Enum.Material.Neon },',
