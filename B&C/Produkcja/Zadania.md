@@ -7,7 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] Miasto: tekstury i kreska jak w sali wyboru rasy (D-147) — własne materiały z paczki Pawła, brakujące tekstury z Higgsfield, pomiar czasu klatki przed i po; kolor kreski po odpowiedzi na pytanie 100 · agent Karola · od 2026-11-25 · #wysoki
+- [ ] Miasto: ocenić wygląd po teksturach (raport w panelu) i wybrać kreskę (pytanie 100); do poprawy według uwag: grube słupy narożne (1,3 studa), pasy na wodzie, kafel „igliwie” · Karol, Paweł · #wysoki
+- [ ] Bazar: dwa testy pakietu `miasteczko_bazar_gra` nie przechodzą po zmianach HUD Pawła z 25.11 (przyciski HUD i sygnał okien) — dostosować pakiet albo testy do nowego układu · agent Karola · #średni
+- [ ] Dźwięki i grafiki wgrane z konta Karola: gra należy do innego konta, więc każdy zasób potrzebuje zgody „Use” dla gry; dwa dźwięki jej nie mają i w grze nie zagrają — nadać zgodę tak jak teksturom miasta · agent Karola · #średni
 - [ ] Muzyka miasteczka: nowe propozycje z Higgsfield do odsłuchu (obecna „dosyć słaba” — Karol 25.11), Karol wybiera, wgranie po osobnym „tak” · agent Karola, Karol · #wysoki
 - [ ] Responsywność: lag przy otwieraniu sklepu i ekwipunku — pomiar i poprawka według odpowiedzi na pytanie 101 · agent Karola albo Pawła · #wysoki
 - [ ] Ekran ładowania z kotami zamiast ludzików (D-145; napis tytułu — pytanie 97) · agent Karola · #średni
@@ -162,6 +164,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Miasto: tekstury i kreska jak w sali wyboru rasy (D-147) — 25 własnych materiałów, brązowa kreska, w Studio; czeka na ocenę wyglądu (raport w panelu) i odpowiedź na pytanie 100 · agent Karola · 2026-11-25
 - [x] [[Panel zespołu|Panel]]: pulpit osobno dla każdej gry — przełącznik gier, pytania, decyzje, zadania i raporty przypisane do gry, wstrzymane gry schowane z licznikiem · agent Karola · 2026-11-25
 - [x] Sklep z bronią oskryptowany: naprawa znikającego okna (chował je sklep Karola na próbę), lewa strona = kopia EQ (wspólny stan, zakładki, poziom), towar i kupno z serwera kowala, karta przedmiotu, kupione przedmioty w EQ; sprawdzone w Play · agent u Pawła · 2026-11-23
 - [x] Gra o smoku: odczucie walki, miejsca na dźwięki, krótsze powitanie, tempo, kod sklepu wyłączony do decyzji · agent · 2026-11-23 (wersja prywatna „odczucie1”)

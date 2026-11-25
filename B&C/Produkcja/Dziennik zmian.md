@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-25 · Claude Code u Karola (miasto: tekstury i kreska jak w sali wyboru rasy — D-147 w Studio)
+- Agent na Opus (ok. 50 min, ok. 0,45–0,5 mln tokenów) nałożył na miasteczko-bazar 25 własnych materiałów i brązową kreskę; opis w [[Klocki — Blender i Roblox]]. Liczba obiektów miasta bez zmian, w emulacji telefonu 16,7 ms na klatkę. Nic nie przebudowano ani nie przesunięto.
+- **Higgsfield:** jeden arkusz 16 tekstur; 6 kredytów zamiast 3, bo pierwsze wywołanie zostało policzone, a obrazu nie udało się odzyskać. Razem z próbkami muzyki wydane dziś 32 kredyty, zostało ok. 99.
+- **Wgrane do Roblox** w ramach stałej zgody na materiały: 25 map w użyciu i 25 większych, nieużywanych (pierwsze podejście). Gra dostała zgodę „Use” na 25 map w użyciu.
+- **Znalezione przy okazji:** dwa testy pakietu bazaru nie przechodzą po dzisiejszych zmianach HUD Pawła (nie przez tekstury — sprawdzone na czystej kopii repozytorium); dwa dźwięki nie mają zgody dla gry. Oba w [[Zadania]].
+- Raport ze zrzutami przed i po w panelu; zrzuty także u Karola na telefonie.
+
 ## 2026-11-25 · Panel (ludzie)
 - Karol Balucki: odpowiedź na pytanie 101 ([[Pytania otwarte]])
 - Karol Balucki: decyzja D-125 zatwierdzona ([[Rejestr decyzji]])

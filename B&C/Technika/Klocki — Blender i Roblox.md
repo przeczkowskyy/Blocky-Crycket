@@ -39,6 +39,16 @@ Stan w Studio po nocy 16/17.11 (propozycje, D-075, D-084, D-085; ludzie jeszcze 
 - Części z kolizją dodane tylko po to, żeby kamera nie wchodziła w ozdoby wnętrz: tablica zleceń, księgi, ramy drzwi, głowy sprzedawców.
 - Każdy pakiet ma README z kolejnością wdrożenia, listą prób w trybie Play i wyborami do decyzji. Stare `KrzyweMiasteczko`, `BiomLas`, `LasPotwory` i `LasTeleport` zostają nietknięte do decyzji ludzi.
 
+## Tekstury miasta jako materiały (25.11.2026, D-147)
+Miasteczko-bazar dostało wygląd sali wyboru rasy ([[Tekstury sali wyboru klasy]]): tekstury na budynkach i brązową kreskę.
+- **Metoda:** własne materiały (25 sztuk w `MaterialService/BC_MiasteczkoBazar`) zamiast osobnego obiektu tekstury na każdej ścianie. Sala ma ok. 4,8 tys. takich obiektów; w mieście byłoby ich ok. 20 tys. Liczba obiektów miasta się nie zmieniła.
+- **Kolory:** kolor części mnoży teksturę, więc każda tekstura jest najpierw rozjaśniana do prawie białej i zostaje w niej sam rysunek (cegły, słoje, dachówki). Domy zachowują swoje kolory.
+- **Skąd tekstury:** 11 z paczki sali (wersja 2) i 16 nowych z jednego arkusza Higgsfield (trawa, bruk, dachówka, łupek, strzecha, płótno, liście, woda, ziemia, skała, kora, mech i inne): `assets/processed/TownTextures/`.
+- **Reguły:** `swiat/miasteczko_bazar/tekstury.json` (która część dostaje którą teksturę). Budowa przez `tools/studio_buduj.py`, więc przebudowa miasta zachowuje wygląd.
+- **Kreska:** kolor i grubość w jednym wierszu `tekstury.json` (`kreska`). Dziś `4A3426` i grubość 1,0, jak w sali; gotowy wariant czarny (`1D1916`, 1,4). Zmiana wymaga `generuj.py` i `studio_buduj.py`.
+- **Pomiar:** emulacja telefonu w Studio, 16,7 ms na klatkę z materiałami i bez nich. Na prawdziwym telefonie nie sprawdzano.
+- **Pułapki:** gra należy do innego konta niż konto wgrywające, więc każda grafika potrzebuje zgody „Use” dla gry (`tekstury.py wgraj` nadaje ją sam). Budowa miasta zaraz po wgraniu grafik może zostawić szare ściany do końca sesji Studio — pomaga przebudowa po kilku minutach.
+
 ## Postacie z klocków (13.11.2026)
 Tą samą drogą co mapa da się postawić w Studio postacie: części Roblox połączone stawami `Motor6D`, z klipami animacji jako `KeyframeSequence`. Sześć postaci stoi w `Workspace/TestPostaci` na rynku miasteczka. Opis: [[Postacie 3D — Blender i Roblox]].
 
