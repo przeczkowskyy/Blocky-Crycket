@@ -6,6 +6,17 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-25 · Claude Code u Karola (powrót do Blocky & Crycket — D-139 z dwoma podpisami)
+- Karol: „Okej, wracamy do pracy. Ostateczną decyzją jest powrót do B&C na 100%. Dokańczamy tę grę, zwracając uwagę na nasze błędy.”
+- **D-139** ma teraz oba podpisy: Paweł 23.11, Karol 25.11. **D-137** (wydanie gry o smoku) jest zastąpiona. W pytaniu 88 jest odpowiedź (b): smok wstrzymany bez wydania.
+- **Gra o smoku:** zostaje prywatna w wersji „mapa2a”. Agent budujący przerwał etap B mapy 23.11 przez błąd dostępu do API. Te niesprawdzone zmiany odłożyłem lokalnie (git stash), nie trafiły do repozytorium.
+- **Zadania:**
+  - zadania smoka i pomysłów z Wytwórni przeniesione do nowej sekcji „Wstrzymane”;
+  - sekcja zadań Blocky & Crycket wstrzymanych od 20.11 oznaczona jako wracająca, do przejrzenia;
+  - karta [[Monster Evolution]] ma etap „wstrzymana”.
+- **Repozytorium:** przejrzane 28 commitów Pawła z 23–24.11, czyli decyzje D-139–D-146 i pytania 88–99. Podsumowanie poszło do Karola na czacie.
+- **Panel i tunel** uruchomione ponownie, bo stanęły 23.11 po południu.
+
 ## 2026-11-24 · Claude Code u Pawła (leśne jajo z projektu Pawła 1:1, scenka z jego dymkiem, pet ze słupa światła)
 - **Model:** jajo z projektu 3D Pawła („Leśne jajo 3D”) wgrane za jego „tak” jako zasób 92671202213818 i ustawione w `Workspace/JajkoKorowePodglad` skryptem `tools/studio/jajo_lesne_ustaw.luau` (kolory kryształów i grzybków, świecące pęknięcia z maski, skala ×1,5); zastępuje jajo z klocków. Tekstury: JajoLesneKolor 99671035760393, JajoLesneBlask 70749662306023.
 - **Scenka otwierania** (`src/client/JajkoKoroweClient.client.luau`): kamera przed jajem, gracz niewidoczny, 5 kliknięć z komiksowymi dymkami (grafika Pawła, DymekKomiks 105383434661458), skorupa odlatuje w dwóch częściach, słup światła. Sprawdzone w Play do słupa światła.

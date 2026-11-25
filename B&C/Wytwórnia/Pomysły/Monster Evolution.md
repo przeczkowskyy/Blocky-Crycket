@@ -2,7 +2,7 @@
 status: propozycja
 typ: pomysł-gry
 gra: Monster Evolution
-etap: prototyp
+etap: wstrzymana
 zdanie: "Hatch as a tiny dragon, eat and evolve through eight stages into the Ancient Dragon — every stage you reach guards your lair and grows your hoard."
 ocena_agenta: 21
 werdykt_agenta: popraw

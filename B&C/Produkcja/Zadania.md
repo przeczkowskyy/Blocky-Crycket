@@ -12,17 +12,6 @@ tags: [produkcja, zadania]
 - [ ] Blocky & Crycket: zdjęcie blokad „tylko Studio” w pakietach przed wydaniem (pytanie 90) · Karol · #wysoki
 - [ ] Sklep: „tak” na wgranie ikon przedmiotów z Blendera (80 plików w `swiat/postacie/wynik/…/ikony/`) — do tego czasu kafelki z nazwą; potem wpisać ID do `src/shared/IkonyPrzedmiotow.luau` · Paweł albo Karol · #średni
 - [ ] Sklep: sprawdzić na telefonie (Device Emulator), czy nazwy na kafelkach i karta przedmiotu są czytelne; ustalić towar sklepu magicznego · Paweł · #średni
-- [ ] Gra o smoku: ceny sklepu i łączenie mnożników — odpowiedź na pytanie #87 w [[Pytania otwarte]] · Karol, Paweł · #wysoki
-- [ ] Gra o smoku: mapa v2 w grze — etap A płaski (do wydania), etap B teren z wysokościami za przełącznikiem (do wydania albo jako pierwsza aktualizacja) · agent · Blender gotowy 2026-11-23, wpięcie w toku · #wysoki
-- [ ] Gra o smoku: zagrać z telefonu w wersję „odrodzenie1” (https://www.roblox.com/games/93704244631419) — co przeszkadza w sterowaniu, walce i interfejsie; wybrać pisklę (obecne czy łagodniejsze) · Karol, Paweł · #wysoki
-- [ ] Gra o smoku: zgoda na drogę wgrania 24 ikon interfejsu (folder w zatwierdzonych folderach Studio albo „tak, przez folder modeli”) oraz na jedno wgranie arkusza dźwięków smoka · Karol · #wysoki
-- [ ] Gra o smoku: przed wydaniem — akceptacja opisu i ustawień strony gry (szkic w [[Projekt próbki — Monster Evolution]]), wgranie ikony i miniatur, test z ludźmi, sprawdzenie rankingu i analityki w prawdziwej grze · agent, Karol, Paweł · #wysoki
-- [ ] Gra o smoku (D-137): wydanie publiczne wt–śr 24–25.11 — tytuł, ikona i miniatury, opis, ustawienia gry; sprawdzenie „wydajemy / jeszcze dzień” we wtorek wieczorem · Karol, Paweł, agent · #wysoki
-- [ ] Slide a Ragdoll (pomysł Pawła z 22.11): sprawdzenie rynku po mechanice (kukła + obrażenia za monety + rozbudowa toru; ok. 0,2 mln tokenów) i poprawiona karta; ocena wstępna 17/30 bez tego sprawdzenia; start po poleceniu na czacie ([[Slide a Ragdoll]]) · #średni
-- [ ] Baseball for treasure: pełna ocena agenta — sprawdzenie rynku po mechanice (uderzenie piłki, kopanie skarbów; ok. 0,2 mln tokenów), karta 0–30 z krytyką, propozycja celownika, ograniczenia lotu na boki i tempa gry; prośba Karola i Pawła z sesji 22.11, start po poleceniu na czacie (propozycja D-134, [[Baseball for treasure]], [[Sesja główna 2026-11-22 — zapis ustaleń]]) · #wysoki
-- [ ] Ocenić pomysł Karola z sesji 22.11 — ewolucja od ameby z osobnymi serwerami na poziomy (propozycja D-133) — i porównać trzy drogi: baseball, ameba, gra o smoku bez zmian (pytanie 86); start po poleceniu na czacie · #wysoki
-- [ ] Karol i Paweł: ocenić kartą w panelu (Wytwórnia) Baseball for treasure, każdy osobno, i odpowiedzieć na pytanie 85 (skąd gracz bierze siłę) · Karol, Paweł · #średni
-- [ ] Baseball for treasure: zaproponować 2–3 odmiany łatające słabe punkty z oceny agenta (głębia, trend, pokazanie się, odsłona) — w tym potworek zamiast skarbu (propozycja D-136) — oraz pokrewne gry tego typu; najlepiej razem z pełną oceną; prośba Karola z drugiej sesji 22.11, start po poleceniu na czacie ([[Sesja główna 2026-11-22 (2) — zapis ustaleń]]) · #wysoki
 - [ ] Panel: po wyborze tematu sesji (gra albo pomysł) agenda i lista pytań w zakładce Sesja dostosowują się do tej gry; prośba Karola z drugiej sesji 22.11, start po poleceniu na czacie ([[Sesja główna 2026-11-22 (2) — zapis ustaleń]]) · #średni
 - [ ] Gra o ewolucji: po próbie z graczami włączyć w Studio „Enable Studio Access to API Services” (Ustawienia gry → Bezpieczeństwo) na czas odczytu wyników i uruchomić `swiat/ewolucja/testy/odczyt_prob.py`; potem można wyłączyć ([[Projekt próbki — Monster Evolution]], „Pomiar do próby z graczami”) · Karol · #średni
 - [ ] Monster Evolution: zagrać z telefonu w prywatną wersję (https://www.roblox.com/games/93704244631419, teraz wersja ze smokiem i legowiskiem) i zapisać, czy gra startuje, w której minucie chciało się wyjść oraz co nie działało w sterowaniu — to obserwacja, nie werdykt (D-128) · Karol, Paweł · #wysoki
@@ -41,7 +30,23 @@ tags: [produkcja, zadania]
 - [ ] Paweł: przełączyć repozytorium na prywatne w ustawieniach GitHub (D-044) — działanie właściciela, po zatwierdzeniu decyzji; wtedy lustro panelu na GitHub Pages odpada · #wysoki
 - [ ] Kroki założenia grupy Roblox, publikacji gry jako gry grupy i ponownego wgrania animacji — po odpowiedzi na pytanie 31 (D-044) · #średni
 
-## ⏸️ Wstrzymane: B&C do decyzji o kierunku (od 2026-11-20)
+## ⏸️ Wstrzymane: gra o smoku i inne pomysły z Wytwórni (od 2026-11-25, D-139)
+Karol 25.11: „Okej, wracamy do pracy. Ostateczną decyzją jest powrót do B&C na 100%. Dokańczamy tę grę, zwracając uwagę na nasze błędy.” Gra o smoku zostaje prywatna, bez wydania. Pomysły z Wytwórni czekają.
+
+- [ ] Gra o smoku: ceny sklepu i łączenie mnożników — odpowiedź na pytanie #87 w [[Pytania otwarte]] · Karol, Paweł · #wysoki
+- [ ] Gra o smoku: mapa v2 w grze — etap A płaski (do wydania), etap B teren z wysokościami za przełącznikiem (do wydania albo jako pierwsza aktualizacja) · agent · Blender gotowy 2026-11-23, wpięcie w toku · #wysoki
+- [ ] Gra o smoku: zagrać z telefonu w wersję „odrodzenie1” (https://www.roblox.com/games/93704244631419) — co przeszkadza w sterowaniu, walce i interfejsie; wybrać pisklę (obecne czy łagodniejsze) · Karol, Paweł · #wysoki
+- [ ] Gra o smoku: zgoda na drogę wgrania 24 ikon interfejsu (folder w zatwierdzonych folderach Studio albo „tak, przez folder modeli”) oraz na jedno wgranie arkusza dźwięków smoka · Karol · #wysoki
+- [ ] Gra o smoku: przed wydaniem — akceptacja opisu i ustawień strony gry (szkic w [[Projekt próbki — Monster Evolution]]), wgranie ikony i miniatur, test z ludźmi, sprawdzenie rankingu i analityki w prawdziwej grze · agent, Karol, Paweł · #wysoki
+- [ ] Gra o smoku (D-137): wydanie publiczne wt–śr 24–25.11 — tytuł, ikona i miniatury, opis, ustawienia gry; sprawdzenie „wydajemy / jeszcze dzień” we wtorek wieczorem · Karol, Paweł, agent · #wysoki
+- [ ] Slide a Ragdoll (pomysł Pawła z 22.11): sprawdzenie rynku po mechanice (kukła + obrażenia za monety + rozbudowa toru; ok. 0,2 mln tokenów) i poprawiona karta; ocena wstępna 17/30 bez tego sprawdzenia; start po poleceniu na czacie ([[Slide a Ragdoll]]) · #średni
+- [ ] Baseball for treasure: pełna ocena agenta — sprawdzenie rynku po mechanice (uderzenie piłki, kopanie skarbów; ok. 0,2 mln tokenów), karta 0–30 z krytyką, propozycja celownika, ograniczenia lotu na boki i tempa gry; prośba Karola i Pawła z sesji 22.11, start po poleceniu na czacie (propozycja D-134, [[Baseball for treasure]], [[Sesja główna 2026-11-22 — zapis ustaleń]]) · #wysoki
+- [ ] Ocenić pomysł Karola z sesji 22.11 — ewolucja od ameby z osobnymi serwerami na poziomy (propozycja D-133) — i porównać trzy drogi: baseball, ameba, gra o smoku bez zmian (pytanie 86); start po poleceniu na czacie · #wysoki
+- [ ] Karol i Paweł: ocenić kartą w panelu (Wytwórnia) Baseball for treasure, każdy osobno, i odpowiedzieć na pytanie 85 (skąd gracz bierze siłę) · Karol, Paweł · #średni
+- [ ] Baseball for treasure: zaproponować 2–3 odmiany łatające słabe punkty z oceny agenta (głębia, trend, pokazanie się, odsłona) — w tym potworek zamiast skarbu (propozycja D-136) — oraz pokrewne gry tego typu; najlepiej razem z pełną oceną; prośba Karola z drugiej sesji 22.11, start po poleceniu na czacie ([[Sesja główna 2026-11-22 (2) — zapis ustaleń]]) · #wysoki
+
+## 🔁 Blocky & Crycket: zadania wracają po D-139 (od 2026-11-25, do przejrzenia)
+Wstrzymane od 20.11 („większość jest już zupełnie nieaktualna” — Karol). Po D-139 trzeba je przejrzeć: nieaktualne przenieść do „Zrobione” albo skreślić z dopiskiem, aktualne przenieść do „Teraz”.
 Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky & Crycket czekają na wybór kierunku w [[00 Wytwórnia pomysłów]] (D-115) — nie są skasowane; wracają do „Teraz”, jeśli B&C zostanie wybrane do dalszej budowy.
 
 - [ ] Zapis postępu (D-110), dalej: włączony i sprawdzony w Studio 19.11 (raport „Zapis postępu włączony: stan wraca po ponownym wejściu”); do zrobienia: pierwsze prawdziwe wejście Karola i Pawła według pięciu kroków z raportu, blokada sesji z dwóch okien Studio, pamięć poznanych gatunków w walce, przeniesienie zapisu do gry opublikowanej (osobna decyzja) · agent: Karol · #wysoki

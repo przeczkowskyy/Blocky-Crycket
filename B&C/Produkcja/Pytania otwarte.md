@@ -856,6 +856,9 @@ Szczegóły: kod, sprawdzenia i uzasadnienie każdej ceny opisuje sekcja „Odcz
 
 Szczegóły: zdanie agenta (D-114) — (a). Wydanie kosztuje mało, bo gra jest gotowa do próby, a da pierwsze dane o prawdziwych graczach; porzucenie dzień przed wydaniem marnuje największą naukę z tej pracy. Zmienię zdanie, jeśli przed wydaniem zostało więcej niż około dzień pracy.
 **Odpowiedź:**
+- Karol (2026-11-25): „Okej, wracamy do pracy. Ostateczną decyzją jest powrót do B&C na 100%. Dokańczamy tę grę, zwracając uwagę na nasze błędy.” Oznacza to wariant (b): smok wstrzymany bez wydania, wersja prywatna zostaje.
+
+Rozstrzyga: D-139.
 
 ## 89. Karol: za poziom Diamenty, trening AFK — kto wdraża?
 - Paweł 23.11: awans daje Diamenty na drzewko zamiast punktów statystyk (D-140), a statystyki trenuje się na stanowiskach AFK z paskiem (D-141). Obie czekają na Twoje potwierdzenie.
