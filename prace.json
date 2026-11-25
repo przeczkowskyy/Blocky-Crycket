@@ -2,17 +2,24 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-25T18:56:39+01:00",
+ "aktualizacja": "2026-11-25T19:07:09+01:00",
  "prace": [
   {
    "id": "panel-per-gra",
-   "tytul": "Panel: pulpit osobno dla każdej gry (przełącznik gier w pytaniach, decyzjach, zadaniach i raportach)",
+   "tytul": "Panel: widok per gra (przełącznik gier)",
    "stan": "w_toku",
-   "start": "2026-11-25T18:56:39+01:00",
-   "koniec_szacowany": "2026-11-25T20:36:39+01:00",
-   "aktualizacja": "2026-11-25T18:56:39+01:00",
+   "etap": "Plan",
+   "start": "2026-11-25T19:06:40+01:00",
+   "koniec_szacowany": "2026-11-25T22:06:40+01:00",
+   "aktualizacja": "2026-11-25T19:06:40+01:00",
    "obszary": [
-    "panel/**"
+    "panel/bc/**",
+    "panel/static/**",
+    "panel/testy/**",
+    "panel/konfiguracja.json",
+    "panel/README.md",
+    "panel/narzedzia/raport.py",
+    ".claude/skills/panel/SKILL.md"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
