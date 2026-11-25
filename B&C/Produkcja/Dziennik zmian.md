@@ -6,6 +6,17 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-25 · Claude Code u Karola (noc po sesji głównej: miasto, jajka, Rybki z zagrody — stan na północ)
+- **Po sesji:** lista prac dla Pawła w [[Po sesji 2026-11-25 — podział prac]]; wiadomość do Pawła na grupie Telegram, że lista jest na GitHubie (prośba Karola z końca sesji).
+- **Miasto w Studio** (agent na Opus, ok. 0,59 mln tokenów, 22:27–23:50): zagroda bez psa, smoka, slime'a i budek, Jagoda przed bramką, osiem legowisk; Training Center z salą treningową w miejscu niebieskiego domu przy placyku; sześć stanowisk treningu AFK w sali; poprawki animacji w trzech plikach treningu Pawła (zgoda z sesji). Kontrola miasta 0 błędów; raport ze zrzutami w panelu.
+- **Zatrzymany tryb Play:** agent miasta zastał o 22:28 Studio w trybie Play z prawdziwym zapisem (gracz stał w miejscu od ok. 18 minut) i o 22:48 dał Stop; postęp zapisał się jak przy zwykłym wyjściu.
+- **Jajka Bagna i Dżungli** (ok. 0,36 mln): modele na wzór leśnego jajka Pawła w `swiat/jajka_biomow/`, raport z planszami w panelu; wstawianie do Studio w toku. Scenka wyklucia to pliki Pawła — potrzebna jego zgoda (zadanie).
+- **Rybki z zagrody** (ok. 0,40 mln): pety w zagrodzie dają Rybki, pet za graczem nie, miejsca 2 → 4 → 6 → 8 u Jagody; zaprogramowane i sprawdzone bez Studio (51 z 51 testów petów), liczby robocze: zagroda daje zwykle 3–14% Rybek z walk, najwyżej ok. 26%. Wdrożenie w Studio po przebudowie modeli petów. To propozycja D-153, niezatwierdzona.
+- **Nazwa gry** (ok. 0,16 mln): pięć propozycji w [[Nazwa gry — propozycje z „Cat” (propozycja)]], dopisek pod pytaniem 97.
+- **Wzory Pawła:** na arkuszach obrotów petów i zestawach przedmiotów wojownika pracują dwaj kolejni agenci (modele, bez Studio).
+- **Połączenie z GitHubem:** konflikt w tym dzienniku rozwiązany za zgodą Karola („połącz”) — zostały oba wpisy; pytania z sesji mają numery 106 (lochy) i 107 (konto klipów), bo 104 i 105 zajął Paweł. Podpisane przez panel wiersze (potwierdzenia Pawła z Telegrama, odhaczone tematy sesji) czekają na komputerze Karola na zapis.
+- Sprzeciw agenta zapisany w [[Po sesji 2026-11-25 — podział prac]]: nowa mechanika w rozmowie, która przycinała zakres; wydanie nadal blokuje pytanie 90.
+
 ## 2026-11-25 · Claude Code u Karola (ustalenia z sesji głównej: powrót do Blocky & Crycket)
 - **Nowa notatka:** [[Sesja główna 2026-11-25 — zapis ustaleń]] (status propozycja) — sesja Karola i Pawła 21:53–22:20, temat: pomysł [[Blocky & Crycket]] po D-139 z dwoma podpisami. Zapis rozmowy zostaje lokalnie u gospodarza panelu.
 - **Rejestr decyzji:** propozycje D-148 (nazwa bez Blocky'ego, z „Cat”), D-149 (pierwsza wersja bez Twierdzy i walk petów), D-150 (drzewko: postać i pety, gałąź Twierdzy schowana), D-151 (stanowiska AFK w rozszerzonym Training Center), D-152 (kuźnia: rozbiórka i sklep składników), D-153 (pety: zagroda daje Rybki, założony pet premie, miejsca u Jagody), D-154 (sklep petów znika), D-155 (rzadkość: ≥1,5×, unikalna zdolność). Nic nie zatwierdzone; przy D-149, D-152 i D-153 uwagi agenta (zakres i liczby).

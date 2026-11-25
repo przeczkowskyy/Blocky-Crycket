@@ -7,10 +7,12 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Nazwa gry: wybrać z pięciu propozycji ([[Nazwa gry — propozycje z „Cat” (propozycja)]], pytanie 97); po wyborze nowy ekran ładowania z kotami · Karol, Paweł · #wysoki
+- [ ] Training Center i zagroda po nocy 25/26.11: ocenić w panelu (raport „Miasto: zagroda bez dodatków i Training Center ze stanowiskami w środku”) — sala stoi w miejscu niebieskiego domu przy placyku, w sali jest ciasno; animację treningu widzi tylko trenujący gracz · Karol, Paweł · #wysoki
+- [ ] Jajka Bagna i Dżungli: Paweł — zgoda na rozszerzenie scenki wyklucia (pliki JajkoKorowe) z jednego jajka na listę jajek; bez tego nowe jajka są tylko do oglądania (raport „Jajka Bagna i Dżungli: modele do oceny”) · Paweł · #średni
+- [ ] Zagroda: pet z drugiego slotu okna Pets nadal stoi w zagrodzie i daje Rybki (stan gracza zna jednego aktywnego peta) — ustalić z Pawłem: zgłaszanie drugiego slotu haczykiem albo kilku aktywnych petów w stanie gracza · agent Karola, Paweł · #średni
 - [ ] Jajka pozostałych biomów (Bagno, Dżungla) na wzór leśnego jaja Pawła — model, karta petów, scenka wyklucia; Karol na sesji 25.11: „poproszę mojego Clauda, żeby wziął Twoje jajko i zbudował do innych biomów”; start po poleceniu na czacie ([[Sesja główna 2026-11-25 — zapis ustaleń]]) · agent: Karol · #wysoki
 - [ ] Pety i zagroda: poprawić modele i animacje petów (referencje od Pawła), z zagrody usunąć smoka, psa i domek, Jagoda przed zagrodą; po zatwierdzeniu D-153 — miejsca 2 → 4 → 6 → 8 u Jagody i Rybki na sekundę z zagrody (najpierw liczby w kalkulatorze) · agent: Karol · #wysoki
-- [ ] Training Center: rozszerzyć budynek w lewo, przenieść tam stanowiska AFK (bieżnie, ławki, czytanie), poprawić animacje — sztanga przez ubranie, książka w głowie przy czytaniu, nic w ręce (propozycja D-151; Karol na sesji 25.11: „to chcę, żebyś ty zrobił, w sensie Claude”) · agent: Karol · #wysoki
-- [ ] Nazwa gry: zaproponować warianty z „Cat”, dobrze indeksujące się w wyszukiwarce Roblox, ze sprawdzeniem wolnych tytułów; wybór Karola i Pawła (propozycja D-148, pytanie 97) · #wysoki
 - [ ] Paweł: obraz referencyjny broni (ma kilka poglądowych z Higgsfield) i referencje petów dla Karola — prośba z sesji 25.11 · Paweł · #wysoki
 - [ ] Paweł: okno kowala z zakładkami — ulepszanie, rozbiórka (dół: przedmioty, góra: składniki), sklep składników za Rybki; poprawić górną siatkę z grafiki (dziś „Kostur Kota-Maga” zamiast składników) (propozycja D-152, pytanie 99) · agent: Paweł · #wysoki
 - [ ] Paweł: UI questów — tablica ogłoszeń w bazarze z wykrzyknikiem, kliknięcie otwiera okno z questami do wyboru (pomysł Pawła z sesji 25.11) · agent: Paweł · #średni
@@ -180,6 +182,8 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Training Center: sala treningowa przy lewym boku, sześć stanowisk AFK w środku, poprawione animacje (bez broni w łapach, sztanga nad ubraniem, książka w łapach); zagroda bez psa, smoka, slime'a i budek, Jagoda przed bramką, osiem legowisk — w Studio, czeka na ocenę (propozycja D-151) · agent Karola · 2026-11-25
+- [x] Nazwa gry: pięć propozycji z „Cat” ze sprawdzeniem wyszukiwarki Roblox i cudzych marek (propozycja D-148, pytanie 97) · agent Karola · 2026-11-25
 - [x] Miasto: tekstury i kreska jak w sali wyboru rasy (D-147) — 25 własnych materiałów, brązowa kreska, w Studio; czeka na ocenę wyglądu (raport w panelu) i odpowiedź na pytanie 100 · agent Karola · 2026-11-25
 - [x] [[Panel zespołu|Panel]]: pulpit osobno dla każdej gry — przełącznik gier, pytania, decyzje, zadania i raporty przypisane do gry, wstrzymane gry schowane z licznikiem · agent Karola · 2026-11-25
 - [x] Sklep z bronią oskryptowany: naprawa znikającego okna (chował je sklep Karola na próbę), lewa strona = kopia EQ (wspólny stan, zakładki, poziom), towar i kupno z serwera kowala, karta przedmiotu, kupione przedmioty w EQ; sprawdzone w Play · agent u Pawła · 2026-11-23

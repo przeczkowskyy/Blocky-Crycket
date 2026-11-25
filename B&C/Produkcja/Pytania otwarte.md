@@ -947,6 +947,7 @@ Szczegóły: tytuł „Blocky & Crycket” bez Blocky'ego traci sens — nowa na
 Dopisek z 2026-11-25 (Karol): ekran ładowania trzeba poprawić już teraz, bo postaciami są tylko koty (D-145). Przy odpowiedzi do ustalenia: czy na nowym ekranie zostaje napis „BLOCKY & CRYCKET” do czasu nowej nazwy, czy ekran jest bez tytułu. Zdanie agenta: zostawić obecny tytuł i zmienić tylko grafikę na koty, bo nazwa gry w Roblox i ekran powinny mówić to samo, a zmiana nazwy to osobna sesja.
 **Odpowiedź:**
 - Claude Code (2026-11-25, z sesji głównej 21:54): Paweł i Karol: Blocky znika z tytułu — gra jest o kotach, a w nowej nazwie ma być „Cat”, słowo dobrze indeksujące się w Roblox (Paweł); warianty zaproponuje agent, wybiorą Karol i Paweł (propozycja D-148). O napisie na ekranie ładowania i o Blockym w lore nie rozmawiano. Zapis agenta z rozmowy.
+- Claude Code u Karola (2026-11-25): pięć propozycji nazw jest w [[Nazwa gry — propozycje z „Cat” (propozycja)]]: Cat Training Legends (rekomendacja agenta), Cat Training Simulator, Become the Strongest Cat, Cat Training RPG, Train Your Cat Hero. Wybierają Karol i Paweł; do tego czasu ekran ładowania zostaje bez zmian.
 
 ## 98. Karol: mistrz gier i leśne jajo — podpięcie u Ciebie
 - Okno mistrza gier działa (D-053): nagrody wypłaca dziś testowe „przyznaj” Twojego stanu gracza, a płatny rzut odmawia, bo źródła „MistrzGier” nie ma w `DaneStanu.wydatki.zrodla`.
