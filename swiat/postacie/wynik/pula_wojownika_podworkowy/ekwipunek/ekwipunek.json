@@ -1,0 +1,400 @@
+{
+ "bohater": "kot_rycerz",
+ "cialo": "kot",
+ "klasy": [
+  "wojownik"
+ ],
+ "pula": "Lv 1-10",
+ "arkusz": "Podwórkowy",
+ "kolumna_arkusza": 1,
+ "komplet_z_premia": false,
+ "kanon": [
+  "kot_rycerz_podworkowy_helm",
+  "kot_rycerz_podworkowy_zbroja",
+  "kot_rycerz_podworkowy_pas",
+  "kot_rycerz_podworkowy_rekawice",
+  "kot_rycerz_podworkowy_buty",
+  "kot_rycerz_podworkowy_miecz"
+ ],
+ "stroje": {
+  "golas": [],
+  "komplet": [
+   "kot_rycerz_podworkowy_helm",
+   "kot_rycerz_podworkowy_zbroja",
+   "kot_rycerz_podworkowy_pas",
+   "kot_rycerz_podworkowy_rekawice",
+   "kot_rycerz_podworkowy_buty",
+   "kot_rycerz_podworkowy_miecz"
+  ]
+ },
+ "korekty_chwytu": {
+  "HatAttachment": {
+   "zaczep": "KapeluszAttachment",
+   "pos": [
+    0,
+    0.02,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  "RightGripAttachment": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0,
+    0
+   ],
+   "rot": [
+    -90,
+    0,
+    0
+   ]
+  }
+ },
+ "przedmioty": [
+  {
+   "id": "kot_rycerz_podworkowy_helm",
+   "nazwa": "Garnek po Zupie",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_helm",
+     "kosc": "HatPivot",
+     "zakrywa": false,
+     "zaczep": "KapeluszAttachment",
+     "pos": [
+      0,
+      0.02,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_helm.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_helm.glb",
+     "trojkaty": 652,
+     "attachment_pos": [
+      0.0,
+      0.191,
+      0.01
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_helm_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_zbroja",
+   "nazwa": "Napierśnik z Tary",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_zbroja_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_zbroja_tulow.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_zbroja_tulow.glb",
+     "trojkaty": 416,
+     "attachment_pos": [
+      0.0,
+      0.09,
+      -0.097
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_zbroja_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_pas",
+   "nazwa": "Sznurek do Snopków",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_pas_biodra.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_pas_biodra.glb",
+     "trojkaty": 568,
+     "attachment_pos": [
+      -0.018,
+      -0.163,
+      -0.062
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_pas_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_rekawice",
+   "nazwa": "Rękawice z Dziurawych Skarpet",
+   "slot": "Gloves",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_rekawice_dlon_l.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_rekawice_dlon_l.glb",
+     "trojkaty": 280,
+     "attachment_pos": [
+      0.0,
+      -0.006,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_rycerz_podworkowy_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_rekawice_dlon_p.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_rekawice_dlon_p.glb",
+     "trojkaty": 268,
+     "attachment_pos": [
+      0.0,
+      -0.006,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_rekawice_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_buty",
+   "nazwa": "Kalosze Dziadka",
+   "slot": "Boots",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_stopa_l.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_stopa_l.glb",
+     "trojkaty": 144,
+     "attachment_pos": [
+      0.0,
+      -0.015,
+      -0.21
+     ]
+    },
+    {
+     "id": "kot_rycerz_podworkowy_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": false,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_golen_l.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_golen_l.glb",
+     "trojkaty": 80,
+     "attachment_pos": [
+      -0.005,
+      -0.04,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_rycerz_podworkowy_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_stopa_p.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_stopa_p.glb",
+     "trojkaty": 144,
+     "attachment_pos": [
+      0.0,
+      -0.015,
+      -0.21
+     ]
+    },
+    {
+     "id": "kot_rycerz_podworkowy_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": false,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_golen_p.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_golen_p.glb",
+     "trojkaty": 68,
+     "attachment_pos": [
+      0.0,
+      -0.04,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_buty_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_miecz",
+   "nazwa": "Miecz ze Sztachety",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_miecz",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0,
+      0
+     ],
+     "rot": [
+      -90,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_miecz.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_miecz.glb",
+     "trojkaty": 412,
+     "attachment_pos": [
+      0.0,
+      -0.745,
+      -0.097
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_miecz_ikona.png"
+  }
+ ],
+ "cialo_pliki": {
+  "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/pula_wojownika_podworkowy_cialo.fbx",
+  "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/pula_wojownika_podworkowy_cialo.glb"
+ }
+}

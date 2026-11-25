@@ -1,0 +1,158 @@
+RAPORT — pula_wojownika_giermek
+PULA WOJOWNIKA Lv 1–10 — Zestaw Giermka (kolumna 5 arkuszy Pawła) na kocie-wojowniku. Status: propozycja.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/pula_wojownika_giermek.py · wygenerowano 25.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py pula_wojownika_giermek
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: pula_wojownika_giermek
+- przedmioty (akcesoria): 2
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 32 plików, zgodnych 32
+- ostrzeżenia z raportu: 1; uwagi podglądu: 1
+
+ZNANE SŁABOŚCI
+- Propozycja wyglądu z arkuszy Pawła; nazwy czekają na akceptację (pytanie 94), statystyk i cen tu nie ma.
+- Ciało to goły Kot-Mag (rasa Człowiek), tak jak Koci Rycerz z kot_klasy.py; inne rasy kota mają te same klocki, więc przedmioty pasują na każdą z nich (sprawdzone tylko na rudym kocie).
+- Hełm i miecz siedzą na kościach nośnych kota (HatPivot, StaffPivot): w klipie upadku hełm zsuwa się z głowy, a miecz wypada z łapy — jak kapelusz i kostur Kota-Maga.
+- Cholewy butów to nakładka na łydce (kot nie ma właściciela powłoki na LowerLeg) — futro łydki zostaje pod cholewą; to jedyne rozszerzenie względem tabeli właścicieli w EKWIPUNEK.md.
+- Klipy walki w komplecie nie były liczone klatka po klatce; plansze pokazują pozę spoczynku.
+- W Roblox Studio nic z tego nie było budowane ani oglądane; nic nie zostało wgrane.
+
+MODEL pula_wojownika_giermek „Kot-wojownik — Zestaw Giermka” (r15)
+  wymiary ciała: 2,28 × 3,83 × 2,11; z akcesoriami: 2,39 × 4,62 × 2,14
+  trójkąty: 4520 (siatek: 21)
+  budżety ciała R15: Head 680/4000, Torso 788/1750, LeftArm 424/1248, RightArm 424/1248, LeftLeg 356/1248, RightLeg 356/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_rycerz_giermek_helm na KapeluszAttachment (tylko podgląd, bez eksportu), kot_rycerz_giermek_miecz na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.83 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+kot_rycerz_giermek_helm HatAttachment              Hat          688  2,04 × 2,11 × 1,80   (-0,00; -0,39; 0,00)  
+kot_rycerz_giermek_miecz RightGripAttachment        Bron         372  0,62 × 2,58 × 0,28   (-0,00; -0,71; -0,00) 
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
+- strój golas (goły kot): bez przedmiotów
+- strój komplet (Zestaw Giermka): kot_rycerz_giermek_helm, kot_rycerz_giermek_zbroja, kot_rycerz_giermek_pas, kot_rycerz_giermek_rekawice, kot_rycerz_giermek_buty, kot_rycerz_giermek_miecz
+- kot_rycerz_giermek_helm „Hełm Giermka” [Helmet]: kot_rycerz_giermek_helm na KapeluszAttachment
+- kot_rycerz_giermek_zbroja „Kirys Giermka” [Chest]: kot_rycerz_giermek_zbroja_tulow UpperTorso (powłoka) 244 tr.; kot_rycerz_giermek_zbroja_ramie_l LeftUpperArm (powłoka) 100 tr.; kot_rycerz_giermek_zbroja_ramie_p RightUpperArm (powłoka) 100 tr.; kot_rycerz_giermek_zbroja_biodra LowerTorso (powłoka) 164 tr.
+- kot_rycerz_giermek_pas „Pas Giermka” [Belt]: kot_rycerz_giermek_pas_biodra LowerTorso 380 tr.
+- kot_rycerz_giermek_rekawice „Rękawice Giermka” [Gloves]: kot_rycerz_giermek_rekawice_dlon_l LeftHand (powłoka) 236 tr.; kot_rycerz_giermek_rekawice_dlon_p RightHand (powłoka) 236 tr.
+- kot_rycerz_giermek_buty „Trzewiki Giermka” [Boots]: kot_rycerz_giermek_buty_stopa_l LeftFoot (powłoka) 168 tr.; kot_rycerz_giermek_buty_golen_l LeftLowerLeg 100 tr.; kot_rycerz_giermek_buty_stopa_p RightFoot (powłoka) 168 tr.; kot_rycerz_giermek_buty_golen_p RightLowerLeg 100 tr.
+- kot_rycerz_giermek_miecz „Miecz Giermka” [Weapon]: kot_rycerz_giermek_miecz na KosturAttachment
+
+UWAGI PODGLĄDU
+- pula_wojownika_giermek: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+
+KONTROLA EKSPORTÓW
+- pula_wojownika_giermek.fbx: siatki 40, kości 23, trójkąty 3712, wzrost 3.83 st., akcje brak -> ZGODNE
+- pula_wojownika_giermek__idle.fbx: siatki 40, kości 23, trójkąty 3712, wzrost 3.83 st., akcje pula_wojownika_giermek|Scene 1-61 -> ZGODNE
+- pula_wojownika_giermek.glb: siatki 40, kości 23, trójkąty 3712, wzrost 3.83 st., akcje idle 0-60 -> ZGODNE
+- kot_rycerz_giermek_helm.fbx: siatki 1, kości 0, trójkąty 688, wzrost 2.11 st., akcje brak -> ZGODNE
+- kot_rycerz_giermek_helm.glb: siatki 1, kości 0, trójkąty 688, wzrost 2.11 st., akcje brak -> ZGODNE
+- kot_rycerz_giermek_miecz.fbx: siatki 1, kości 0, trójkąty 372, wzrost 2.58 st., akcje brak -> ZGODNE
+- kot_rycerz_giermek_miecz.glb: siatki 1, kości 0, trójkąty 372, wzrost 2.58 st., akcje brak -> ZGODNE
+- ekwipunek: pula_wojownika_giermek_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE
+- ekwipunek: pula_wojownika_giermek_cialo__idle.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje pula_wojownika_giermek_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: pula_wojownika_giermek_cialo.glb: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_zbroja_tulow.fbx: siatki 1, kości 0, trójkąty 244, wzrost 0.86 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_zbroja_tulow.glb: siatki 1, kości 0, trójkąty 244, wzrost 0.86 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_zbroja_ramie_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.42 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_zbroja_ramie_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.42 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_zbroja_ramie_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.42 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_zbroja_ramie_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.42 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_zbroja_biodra.fbx: siatki 1, kości 0, trójkąty 164, wzrost 0.56 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_zbroja_biodra.glb: siatki 1, kości 0, trójkąty 164, wzrost 0.56 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_pas_biodra.fbx: siatki 1, kości 0, trójkąty 380, wzrost 0.39 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_pas_biodra.glb: siatki 1, kości 0, trójkąty 380, wzrost 0.39 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 236, wzrost 0.48 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 236, wzrost 0.48 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 236, wzrost 0.48 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 236, wzrost 0.48 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 168, wzrost 0.24 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 168, wzrost 0.24 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_buty_golen_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_buty_golen_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 168, wzrost 0.24 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 168, wzrost 0.24 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_buty_golen_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_giermek_buty_golen_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE
+
+PLIKI
+- pula_wojownika_giermek.blend
+- pula_wojownika_giermek.fbx
+- pula_wojownika_giermek.glb
+- pula_wojownika_giermek__idle.fbx
+- pula_wojownika_giermek_bohater.jpg
+- pula_wojownika_giermek_ikona.png
+- pula_wojownika_giermek_plansza.jpg
+- pula_wojownika_giermek_tekstury/
+- przedmioty/kot_rycerz_giermek_helm.fbx
+- przedmioty/kot_rycerz_giermek_helm.glb
+- przedmioty/kot_rycerz_giermek_helm_tekstury/
+- ikony/kot_rycerz_giermek_helm_ikona.png
+- przedmioty/kot_rycerz_giermek_miecz.fbx
+- przedmioty/kot_rycerz_giermek_miecz.glb
+- przedmioty/kot_rycerz_giermek_miecz_tekstury/
+- ikony/kot_rycerz_giermek_miecz_ikona.png
+- pula_wojownika_giermek_ikony_arkusz.jpg
+- ekwipunek/pula_wojownika_giermek_golas_plansza.jpg
+- ekwipunek/pula_wojownika_giermek_golas_bohater.jpg
+- ekwipunek/pula_wojownika_giermek_komplet_plansza.jpg
+- ekwipunek/pula_wojownika_giermek_komplet_bohater.jpg
+- ekwipunek/pula_wojownika_giermek_ekwipunek_plansza.jpg
+- ekwipunek/pula_wojownika_giermek_cialo.fbx
+- ekwipunek/pula_wojownika_giermek_cialo.glb
+- ekwipunek/pula_wojownika_giermek_cialo_tekstury/
+- ekwipunek/ikony/kot_rycerz_giermek_helm_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_tulow.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_tulow.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_tulow_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_ramie_l.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_ramie_l.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_ramie_l_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_ramie_p.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_ramie_p.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_ramie_p_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_biodra.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_biodra.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_zbroja_biodra_tekstury/
+- ekwipunek/ikony/kot_rycerz_giermek_zbroja_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_giermek_pas_biodra.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_pas_biodra.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_pas_biodra_tekstury/
+- ekwipunek/ikony/kot_rycerz_giermek_pas_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_giermek_rekawice_dlon_l.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_rekawice_dlon_l.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_rekawice_dlon_l_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_giermek_rekawice_dlon_p.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_rekawice_dlon_p.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_rekawice_dlon_p_tekstury/
+- ekwipunek/ikony/kot_rycerz_giermek_rekawice_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_stopa_l.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_stopa_l.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_stopa_l_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_golen_l.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_golen_l.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_golen_l_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_stopa_p.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_stopa_p.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_stopa_p_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_golen_p.fbx
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_golen_p.glb
+- ekwipunek/przedmioty/kot_rycerz_giermek_buty_golen_p_tekstury/
+- ekwipunek/ikony/kot_rycerz_giermek_buty_ikona.png
+- ekwipunek/ikony/kot_rycerz_giermek_miecz_ikona.png
+- ekwipunek/pula_wojownika_giermek_ekwipunek_ikony_arkusz.jpg
+- ekwipunek/ekwipunek.json
+- ../_pula_wojownika/noc2511_zestaw_giermek.jpg
+- ../_pula_wojownika/noc2511_zestaw_giermek_na_kocie.jpg
+- raport.json
+- raport.txt

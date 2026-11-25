@@ -1,0 +1,25 @@
+{
+ "id": "r-20261125-235701-0896",
+ "tytul": "Pety leśnego jajka przebudowane według arkuszy Pawła (do oceny)",
+ "opis_md": "Pięć petów leśnego jajka jest przebudowanych według arkuszy obrotów Pawła (pytanie 104, wariant „wszystkie pięć” przyjęty na noc, do zmiany). To modele do oceny: do gry wejdą razem z wdrożeniem pakietu petów.\n\n**Co się zmieniło**\n- Wszystkie pety są obłe zamiast kanciastych i mają okrągłe oczy z odblaskami.\n- Żołędziak: czapka w pasy z daszkiem, rączki-patyczki. Mchowy Ślimak: duża głowa z buzią, muszla ze spiralą, grzybek. Liściolis: wielka głowa, uszy i kołnierz z liści, ogon z liściem. Świetlikówka: maska z dwóch kół, latarenka na brzuszku, świetliki po bokach. Jelonek Gaju: kryształowe poroże z kwiatkami, wianek z klejnotem, cętki.\n- Kości, klipy animacji i rozmiary zostały takie, jak wymaga gra. Testy petów: 51 z 51.\n\n**Czego nie dało się oddać**\n- Głowy to kostki z ostrymi krawędziami, a na rysunkach są zaokrąglone. W grze nie ma też czarnego obrysu z plansz.\n- Ślimak nie ma na arkuszu tyłu, a sówka boku — te widoki są dorobione.\n- Jelonek jest na limicie 45 części, więc poroże ma po dwie odnogi i jeden kwiatek na stronę.\n\n**Do decyzji**\n- Które pety są dobre, a które poprawić?\n- Pet Arena i BONK budują pety z tych samych plików. Ich dane mają jeszcze stare modele, więc w tych grach nic się nie zmieniło, ale ich budowa odmówi działania, dopóki nie wybierzemy: nowe pety także tam albo stare zostają (wymaga zmiany kodu tych gier). Obie gry są wstrzymane.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-25T23:57:01+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "assets/refs/pety_las/CZYTAJ.md",
+   "etykieta": "Arkusze Pawła"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ],
+ "pytanie": "Czy przebudowane pety leśnego jajka pasują do arkuszy Pawła?",
+ "gra": "bc"
+}

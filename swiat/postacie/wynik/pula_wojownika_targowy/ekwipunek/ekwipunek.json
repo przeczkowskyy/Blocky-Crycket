@@ -1,0 +1,376 @@
+{
+ "bohater": "kot_rycerz",
+ "cialo": "kot",
+ "klasy": [
+  "wojownik"
+ ],
+ "pula": "Lv 1-10",
+ "arkusz": "Targowy",
+ "kolumna_arkusza": 2,
+ "komplet_z_premia": false,
+ "kanon": [
+  "kot_rycerz_targowy_helm",
+  "kot_rycerz_targowy_zbroja",
+  "kot_rycerz_targowy_pas",
+  "kot_rycerz_targowy_rekawice",
+  "kot_rycerz_targowy_buty",
+  "kot_rycerz_targowy_miecz"
+ ],
+ "stroje": {
+  "golas": [],
+  "komplet": [
+   "kot_rycerz_targowy_helm",
+   "kot_rycerz_targowy_zbroja",
+   "kot_rycerz_targowy_pas",
+   "kot_rycerz_targowy_rekawice",
+   "kot_rycerz_targowy_buty",
+   "kot_rycerz_targowy_miecz"
+  ]
+ },
+ "korekty_chwytu": {
+  "HatAttachment": {
+   "zaczep": "KapeluszAttachment",
+   "pos": [
+    0,
+    0.02,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  "RightGripAttachment": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0,
+    0
+   ],
+   "rot": [
+    -90,
+    0,
+    0
+   ]
+  }
+ },
+ "przedmioty": [
+  {
+   "id": "kot_rycerz_targowy_helm",
+   "nazwa": "Durszlak Bojowy",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_targowy_helm",
+     "kosc": "HatPivot",
+     "zakrywa": false,
+     "zaczep": "KapeluszAttachment",
+     "pos": [
+      0,
+      0.02,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_targowy/przedmioty/kot_rycerz_targowy_helm.fbx",
+     "glb": "wynik/pula_wojownika_targowy/przedmioty/kot_rycerz_targowy_helm.glb",
+     "trojkaty": 776,
+     "attachment_pos": [
+      0.0,
+      0.123,
+      0.01
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_targowy/ekwipunek/ikony/kot_rycerz_targowy_helm_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_targowy_zbroja",
+   "nazwa": "Kolczuga z Kapsli",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_targowy_zbroja_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": true,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_tulow.fbx",
+     "glb": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_tulow.glb",
+     "trojkaty": 1604,
+     "attachment_pos": [
+      0.0,
+      0.02,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_rycerz_targowy_zbroja_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": true,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_biodra.fbx",
+     "glb": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_biodra.glb",
+     "trojkaty": 284,
+     "attachment_pos": [
+      0.0,
+      0.03,
+      -0.022
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_targowy/ekwipunek/ikony/kot_rycerz_targowy_zbroja_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_targowy_pas",
+   "nazwa": "Pas z Uprzęży",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_targowy_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_pas_biodra.fbx",
+     "glb": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_pas_biodra.glb",
+     "trojkaty": 488,
+     "attachment_pos": [
+      0.0,
+      0.125,
+      -0.073
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_targowy/ekwipunek/ikony/kot_rycerz_targowy_pas_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_targowy_rekawice",
+   "nazwa": "Rękawice Ogrodnika",
+   "slot": "Gloves",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_targowy_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_l.fbx",
+     "glb": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_l.glb",
+     "trojkaty": 276,
+     "attachment_pos": [
+      0.0,
+      -0.06,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_rycerz_targowy_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_p.fbx",
+     "glb": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_p.glb",
+     "trojkaty": 168,
+     "attachment_pos": [
+      0.0,
+      0.035,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_targowy/ekwipunek/ikony/kot_rycerz_targowy_rekawice_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_targowy_buty",
+   "nazwa": "Trepy z Podkową",
+   "slot": "Boots",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_targowy_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_l.fbx",
+     "glb": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_l.glb",
+     "trojkaty": 224,
+     "attachment_pos": [
+      0.0,
+      -0.053,
+      -0.269
+     ]
+    },
+    {
+     "id": "kot_rycerz_targowy_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_p.fbx",
+     "glb": "wynik/pula_wojownika_targowy/ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_p.glb",
+     "trojkaty": 224,
+     "attachment_pos": [
+      0.0,
+      -0.053,
+      -0.269
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_targowy/ekwipunek/ikony/kot_rycerz_targowy_buty_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_targowy_miecz",
+   "nazwa": "Tasak Rzeźnika Bolka",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_targowy_miecz",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0,
+      0
+     ],
+     "rot": [
+      -90,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_targowy/przedmioty/kot_rycerz_targowy_miecz.fbx",
+     "glb": "wynik/pula_wojownika_targowy/przedmioty/kot_rycerz_targowy_miecz.glb",
+     "trojkaty": 292,
+     "attachment_pos": [
+      0.259,
+      -0.5,
+      -0.005
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_targowy/ekwipunek/ikony/kot_rycerz_targowy_miecz_ikona.png"
+  }
+ ],
+ "cialo_pliki": {
+  "fbx": "wynik/pula_wojownika_targowy/ekwipunek/pula_wojownika_targowy_cialo.fbx",
+  "glb": "wynik/pula_wojownika_targowy/ekwipunek/pula_wojownika_targowy_cialo.glb"
+ }
+}

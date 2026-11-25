@@ -1,0 +1,139 @@
+RAPORT — pula_wojownika_targowy
+PULA WOJOWNIKA Lv 1–10 — arkusz Targowy (kolumna 2) na kocie-wojowniku. Status: propozycja.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/pula_wojownika_targowy.py · wygenerowano 25.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py pula_wojownika_targowy
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: pula_wojownika_targowy
+- przedmioty (akcesoria): 2
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 24 plików, zgodnych 24
+- ostrzeżenia z raportu: 2; uwagi podglądu: 1
+
+ZNANE SŁABOŚCI
+- Propozycja wyglądu z arkuszy Pawła; nazwy czekają na akceptację (pytanie 94), statystyk i cen tu nie ma.
+- Ciało to goły Kot-Mag (rasa Człowiek), tak jak Koci Rycerz z kot_klasy.py; inne rasy kota mają te same klocki, więc przedmioty pasują na każdą z nich (sprawdzone tylko na rudym kocie).
+- Hełm i miecz siedzą na kościach nośnych kota (HatPivot, StaffPivot): w klipie upadku hełm zsuwa się z głowy, a miecz wypada z łapy — jak kapelusz i kostur Kota-Maga.
+- Cholewy butów to nakładka na łydce (kot nie ma właściciela powłoki na LowerLeg) — futro łydki zostaje pod cholewą; to jedyne rozszerzenie względem tabeli właścicieli w EKWIPUNEK.md.
+- Klipy walki w komplecie nie były liczone klatka po klatce; plansze pokazują pozę spoczynku.
+- W Roblox Studio nic z tego nie było budowane ani oglądane; nic nie zostało wgrane.
+
+MODEL pula_wojownika_targowy „Kot-wojownik — Targowy” (r15)
+  wymiary ciała: 2,20 × 3,83 × 2,24; z akcesoriami: 2,72 × 3,83 × 2,24
+  trójkąty: 5976 (siatek: 21)
+  budżety ciała R15: Head 680/4000, Torso 2376/1750, LeftArm 452/1248, RightArm 344/1248, LeftLeg 312/1248, RightLeg 312/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_rycerz_targowy_helm na KapeluszAttachment (tylko podgląd, bez eksportu), kot_rycerz_targowy_miecz na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało Torso: 2376 trójkątów > 1750 (budżet części ciała awatara)
+  OSTRZEŻENIE: ciało razem: wys 3.83 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+kot_rycerz_targowy_helm HatAttachment              Hat          776  2,30 × 1,32 × 1,80   (-0,00; 0,12; 0,01)   
+kot_rycerz_targowy_miecz RightGripAttachment        Bron         292  0,75 × 1,72 × 0,19   (0,26; -0,50; -0,01)  
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
+- strój golas (goły kot): bez przedmiotów
+- strój komplet (Targowy): kot_rycerz_targowy_helm, kot_rycerz_targowy_zbroja, kot_rycerz_targowy_pas, kot_rycerz_targowy_rekawice, kot_rycerz_targowy_buty, kot_rycerz_targowy_miecz
+- kot_rycerz_targowy_helm „Durszlak Bojowy” [Helmet]: kot_rycerz_targowy_helm na KapeluszAttachment
+- kot_rycerz_targowy_zbroja „Kolczuga z Kapsli” [Chest]: kot_rycerz_targowy_zbroja_tulow UpperTorso (powłoka) 1604 tr.; kot_rycerz_targowy_zbroja_biodra LowerTorso (powłoka) 284 tr.
+- kot_rycerz_targowy_pas „Pas z Uprzęży” [Belt]: kot_rycerz_targowy_pas_biodra LowerTorso 488 tr.
+- kot_rycerz_targowy_rekawice „Rękawice Ogrodnika” [Gloves]: kot_rycerz_targowy_rekawice_dlon_l LeftHand (powłoka) 276 tr.; kot_rycerz_targowy_rekawice_dlon_p RightHand (powłoka) 168 tr.
+- kot_rycerz_targowy_buty „Trepy z Podkową” [Boots]: kot_rycerz_targowy_buty_stopa_l LeftFoot (powłoka) 224 tr.; kot_rycerz_targowy_buty_stopa_p RightFoot (powłoka) 224 tr.
+- kot_rycerz_targowy_miecz „Tasak Rzeźnika Bolka” [Weapon]: kot_rycerz_targowy_miecz na KosturAttachment
+
+UWAGI PODGLĄDU
+- pula_wojownika_targowy: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+
+KONTROLA EKSPORTÓW
+- pula_wojownika_targowy.fbx: siatki 40, kości 23, trójkąty 5160, wzrost 3.83 st., akcje brak -> ZGODNE
+- pula_wojownika_targowy__idle.fbx: siatki 40, kości 23, trójkąty 5160, wzrost 3.83 st., akcje pula_wojownika_targowy|Scene 1-61 -> ZGODNE
+- pula_wojownika_targowy.glb: siatki 40, kości 23, trójkąty 5160, wzrost 3.83 st., akcje idle 0-60 -> ZGODNE
+- kot_rycerz_targowy_helm.fbx: siatki 1, kości 0, trójkąty 776, wzrost 1.32 st., akcje brak -> ZGODNE
+- kot_rycerz_targowy_helm.glb: siatki 1, kości 0, trójkąty 776, wzrost 1.32 st., akcje brak -> ZGODNE
+- kot_rycerz_targowy_miecz.fbx: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE
+- kot_rycerz_targowy_miecz.glb: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE
+- ekwipunek: pula_wojownika_targowy_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE
+- ekwipunek: pula_wojownika_targowy_cialo__idle.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje pula_wojownika_targowy_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: pula_wojownika_targowy_cialo.glb: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_zbroja_tulow.fbx: siatki 1, kości 0, trójkąty 1604, wzrost 0.90 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_zbroja_tulow.glb: siatki 1, kości 0, trójkąty 1604, wzrost 0.90 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_zbroja_biodra.fbx: siatki 1, kości 0, trójkąty 284, wzrost 0.32 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_zbroja_biodra.glb: siatki 1, kości 0, trójkąty 284, wzrost 0.32 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_pas_biodra.fbx: siatki 1, kości 0, trójkąty 488, wzrost 0.45 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_pas_biodra.glb: siatki 1, kości 0, trójkąty 488, wzrost 0.45 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 276, wzrost 0.64 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 276, wzrost 0.64 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 168, wzrost 0.45 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 168, wzrost 0.45 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 224, wzrost 0.30 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 224, wzrost 0.30 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 224, wzrost 0.30 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_targowy_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 224, wzrost 0.30 st., akcje brak -> ZGODNE
+
+PLIKI
+- pula_wojownika_targowy.blend
+- pula_wojownika_targowy.fbx
+- pula_wojownika_targowy.glb
+- pula_wojownika_targowy__idle.fbx
+- pula_wojownika_targowy_bohater.jpg
+- pula_wojownika_targowy_ikona.png
+- pula_wojownika_targowy_plansza.jpg
+- pula_wojownika_targowy_tekstury/
+- przedmioty/kot_rycerz_targowy_helm.fbx
+- przedmioty/kot_rycerz_targowy_helm.glb
+- przedmioty/kot_rycerz_targowy_helm_tekstury/
+- ikony/kot_rycerz_targowy_helm_ikona.png
+- przedmioty/kot_rycerz_targowy_miecz.fbx
+- przedmioty/kot_rycerz_targowy_miecz.glb
+- przedmioty/kot_rycerz_targowy_miecz_tekstury/
+- ikony/kot_rycerz_targowy_miecz_ikona.png
+- pula_wojownika_targowy_ikony_arkusz.jpg
+- ekwipunek/pula_wojownika_targowy_golas_plansza.jpg
+- ekwipunek/pula_wojownika_targowy_golas_bohater.jpg
+- ekwipunek/pula_wojownika_targowy_komplet_plansza.jpg
+- ekwipunek/pula_wojownika_targowy_komplet_bohater.jpg
+- ekwipunek/pula_wojownika_targowy_ekwipunek_plansza.jpg
+- ekwipunek/pula_wojownika_targowy_cialo.fbx
+- ekwipunek/pula_wojownika_targowy_cialo.glb
+- ekwipunek/pula_wojownika_targowy_cialo_tekstury/
+- ekwipunek/ikony/kot_rycerz_targowy_helm_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_tulow.fbx
+- ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_tulow.glb
+- ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_tulow_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_biodra.fbx
+- ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_biodra.glb
+- ekwipunek/przedmioty/kot_rycerz_targowy_zbroja_biodra_tekstury/
+- ekwipunek/ikony/kot_rycerz_targowy_zbroja_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_targowy_pas_biodra.fbx
+- ekwipunek/przedmioty/kot_rycerz_targowy_pas_biodra.glb
+- ekwipunek/przedmioty/kot_rycerz_targowy_pas_biodra_tekstury/
+- ekwipunek/ikony/kot_rycerz_targowy_pas_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_l.fbx
+- ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_l.glb
+- ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_l_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_p.fbx
+- ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_p.glb
+- ekwipunek/przedmioty/kot_rycerz_targowy_rekawice_dlon_p_tekstury/
+- ekwipunek/ikony/kot_rycerz_targowy_rekawice_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_l.fbx
+- ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_l.glb
+- ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_l_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_p.fbx
+- ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_p.glb
+- ekwipunek/przedmioty/kot_rycerz_targowy_buty_stopa_p_tekstury/
+- ekwipunek/ikony/kot_rycerz_targowy_buty_ikona.png
+- ekwipunek/ikony/kot_rycerz_targowy_miecz_ikona.png
+- ekwipunek/pula_wojownika_targowy_ekwipunek_ikony_arkusz.jpg
+- ekwipunek/ekwipunek.json
+- ../_pula_wojownika/noc2511_zestaw_targowy.jpg
+- ../_pula_wojownika/noc2511_zestaw_targowy_na_kocie.jpg
+- raport.json
+- raport.txt

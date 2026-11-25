@@ -1,0 +1,149 @@
+RAPORT — pula_wojownika_mleczarz
+PULA WOJOWNIKA Lv 1–10 — arkusz Mleczarz (kolumna 4) na kocie-wojowniku. Status: propozycja.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/pula_wojownika_mleczarz.py · wygenerowano 25.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py pula_wojownika_mleczarz
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: pula_wojownika_mleczarz
+- przedmioty (akcesoria): 2
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 28 plików, zgodnych 28
+- ostrzeżenia z raportu: 1; uwagi podglądu: 2
+
+ZNANE SŁABOŚCI
+- Propozycja wyglądu z arkuszy Pawła; nazwy czekają na akceptację (pytanie 94), statystyk i cen tu nie ma.
+- Ciało to goły Kot-Mag (rasa Człowiek), tak jak Koci Rycerz z kot_klasy.py; inne rasy kota mają te same klocki, więc przedmioty pasują na każdą z nich (sprawdzone tylko na rudym kocie).
+- Hełm i miecz siedzą na kościach nośnych kota (HatPivot, StaffPivot): w klipie upadku hełm zsuwa się z głowy, a miecz wypada z łapy — jak kapelusz i kostur Kota-Maga.
+- Cholewy butów to nakładka na łydce (kot nie ma właściciela powłoki na LowerLeg) — futro łydki zostaje pod cholewą; to jedyne rozszerzenie względem tabeli właścicieli w EKWIPUNEK.md.
+- Klipy walki w komplecie nie były liczone klatka po klatce; plansze pokazują pozę spoczynku.
+- W Roblox Studio nic z tego nie było budowane ani oglądane; nic nie zostało wgrane.
+
+MODEL pula_wojownika_mleczarz „Kot-wojownik — Mleczarz” (r15)
+  wymiary ciała: 2,30 × 3,83 × 2,10; z akcesoriami: 2,77 × 4,09 × 2,11
+  trójkąty: 5088 (siatek: 21)
+  budżety ciała R15: Head 680/4000, Torso 1596/1750, LeftArm 356/1248, RightArm 332/1248, LeftLeg 212/1248, RightLeg 308/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_rycerz_mleczarz_helm na KapeluszAttachment (tylko podgląd, bez eksportu), kot_rycerz_mleczarz_miecz na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.83 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+kot_rycerz_mleczarz_helm HatAttachment              Hat          676  2,18 × 1,20 × 1,76   (-0,00; -0,32; 0,01)  
+kot_rycerz_mleczarz_miecz RightGripAttachment        Bron         496  0,98 × 2,20 × 0,20   (0,19; -0,72; -0,00)  
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
+- strój golas (goły kot): bez przedmiotów
+- strój komplet (Mleczarz): kot_rycerz_mleczarz_helm, kot_rycerz_mleczarz_zbroja, kot_rycerz_mleczarz_pas, kot_rycerz_mleczarz_rekawice, kot_rycerz_mleczarz_buty, kot_rycerz_mleczarz_miecz
+- kot_rycerz_mleczarz_helm „Hełm z Bańki na Mleko” [Helmet]: kot_rycerz_mleczarz_helm na KapeluszAttachment
+- kot_rycerz_mleczarz_zbroja „Przeszywanica Babci” [Chest]: kot_rycerz_mleczarz_zbroja_tulow UpperTorso (powłoka) 996 tr.; kot_rycerz_mleczarz_zbroja_biodra LowerTorso (powłoka) 232 tr.
+- kot_rycerz_mleczarz_pas „Pas z Klamrą Patelni” [Belt]: kot_rycerz_mleczarz_pas_biodra LowerTorso 368 tr.
+- kot_rycerz_mleczarz_rekawice „Rękawice Szermiercze” [Gloves]: kot_rycerz_mleczarz_rekawice_dlon_l LeftHand (powłoka) 180 tr.; kot_rycerz_mleczarz_rekawice_dlon_p RightHand (powłoka) 156 tr.
+- kot_rycerz_mleczarz_buty „Buty Mleczarza” [Boots]: kot_rycerz_mleczarz_buty_stopa_l LeftFoot (powłoka) 56 tr.; kot_rycerz_mleczarz_buty_golen_l LeftLowerLeg 68 tr.; kot_rycerz_mleczarz_buty_stopa_p RightFoot (powłoka) 152 tr.; kot_rycerz_mleczarz_buty_golen_p RightLowerLeg 68 tr.
+- kot_rycerz_mleczarz_miecz „Zardzewiały Kordelas” [Weapon]: kot_rycerz_mleczarz_miecz na KosturAttachment
+
+UWAGI PODGLĄDU
+- pula_wojownika_mleczarz: część „Trzonek otwor” cieńsza niż 0,02 studa
+- pula_wojownika_mleczarz: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+
+KONTROLA EKSPORTÓW
+- pula_wojownika_mleczarz.fbx: siatki 40, kości 23, trójkąty 4168, wzrost 3.83 st., akcje brak -> ZGODNE
+- pula_wojownika_mleczarz__idle.fbx: siatki 40, kości 23, trójkąty 4168, wzrost 3.83 st., akcje pula_wojownika_mleczarz|Scene 1-61 -> ZGODNE
+- pula_wojownika_mleczarz.glb: siatki 40, kości 23, trójkąty 4168, wzrost 3.83 st., akcje idle 0-60 -> ZGODNE
+- kot_rycerz_mleczarz_helm.fbx: siatki 1, kości 0, trójkąty 676, wzrost 1.20 st., akcje brak -> ZGODNE
+- kot_rycerz_mleczarz_helm.glb: siatki 1, kości 0, trójkąty 676, wzrost 1.20 st., akcje brak -> ZGODNE
+- kot_rycerz_mleczarz_miecz.fbx: siatki 1, kości 0, trójkąty 496, wzrost 2.20 st., akcje brak -> ZGODNE
+- kot_rycerz_mleczarz_miecz.glb: siatki 1, kości 0, trójkąty 496, wzrost 2.20 st., akcje brak -> ZGODNE
+- ekwipunek: pula_wojownika_mleczarz_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE
+- ekwipunek: pula_wojownika_mleczarz_cialo__idle.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje pula_wojownika_mleczarz_cialo|Scene 1-61 -> ZGODNE
+- ekwipunek: pula_wojownika_mleczarz_cialo.glb: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_zbroja_tulow.fbx: siatki 1, kości 0, trójkąty 996, wzrost 0.86 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_zbroja_tulow.glb: siatki 1, kości 0, trójkąty 996, wzrost 0.86 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_zbroja_biodra.fbx: siatki 1, kości 0, trójkąty 232, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_zbroja_biodra.glb: siatki 1, kości 0, trójkąty 232, wzrost 0.35 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_pas_biodra.fbx: siatki 1, kości 0, trójkąty 368, wzrost 0.46 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_pas_biodra.glb: siatki 1, kości 0, trójkąty 368, wzrost 0.46 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 180, wzrost 0.47 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 180, wzrost 0.47 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 156, wzrost 0.47 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 156, wzrost 0.47 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 56, wzrost 0.22 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 56, wzrost 0.22 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_buty_golen_l.fbx: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_buty_golen_l.glb: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 152, wzrost 0.24 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 152, wzrost 0.24 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_buty_golen_p.fbx: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE
+- ekwipunek: kot_rycerz_mleczarz_buty_golen_p.glb: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE
+
+PLIKI
+- pula_wojownika_mleczarz.blend
+- pula_wojownika_mleczarz.fbx
+- pula_wojownika_mleczarz.glb
+- pula_wojownika_mleczarz__idle.fbx
+- pula_wojownika_mleczarz_bohater.jpg
+- pula_wojownika_mleczarz_ikona.png
+- pula_wojownika_mleczarz_plansza.jpg
+- pula_wojownika_mleczarz_tekstury/
+- przedmioty/kot_rycerz_mleczarz_helm.fbx
+- przedmioty/kot_rycerz_mleczarz_helm.glb
+- przedmioty/kot_rycerz_mleczarz_helm_tekstury/
+- ikony/kot_rycerz_mleczarz_helm_ikona.png
+- przedmioty/kot_rycerz_mleczarz_miecz.fbx
+- przedmioty/kot_rycerz_mleczarz_miecz.glb
+- przedmioty/kot_rycerz_mleczarz_miecz_tekstury/
+- ikony/kot_rycerz_mleczarz_miecz_ikona.png
+- pula_wojownika_mleczarz_ikony_arkusz.jpg
+- ekwipunek/pula_wojownika_mleczarz_golas_plansza.jpg
+- ekwipunek/pula_wojownika_mleczarz_golas_bohater.jpg
+- ekwipunek/pula_wojownika_mleczarz_komplet_plansza.jpg
+- ekwipunek/pula_wojownika_mleczarz_komplet_bohater.jpg
+- ekwipunek/pula_wojownika_mleczarz_ekwipunek_plansza.jpg
+- ekwipunek/pula_wojownika_mleczarz_cialo.fbx
+- ekwipunek/pula_wojownika_mleczarz_cialo.glb
+- ekwipunek/pula_wojownika_mleczarz_cialo_tekstury/
+- ekwipunek/ikony/kot_rycerz_mleczarz_helm_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_zbroja_tulow.fbx
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_zbroja_tulow.glb
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_zbroja_tulow_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_zbroja_biodra.fbx
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_zbroja_biodra.glb
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_zbroja_biodra_tekstury/
+- ekwipunek/ikony/kot_rycerz_mleczarz_zbroja_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_pas_biodra.fbx
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_pas_biodra.glb
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_pas_biodra_tekstury/
+- ekwipunek/ikony/kot_rycerz_mleczarz_pas_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_rekawice_dlon_l.fbx
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_rekawice_dlon_l.glb
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_rekawice_dlon_l_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_rekawice_dlon_p.fbx
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_rekawice_dlon_p.glb
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_rekawice_dlon_p_tekstury/
+- ekwipunek/ikony/kot_rycerz_mleczarz_rekawice_ikona.png
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_stopa_l.fbx
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_stopa_l.glb
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_stopa_l_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_golen_l.fbx
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_golen_l.glb
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_golen_l_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_stopa_p.fbx
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_stopa_p.glb
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_stopa_p_tekstury/
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_golen_p.fbx
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_golen_p.glb
+- ekwipunek/przedmioty/kot_rycerz_mleczarz_buty_golen_p_tekstury/
+- ekwipunek/ikony/kot_rycerz_mleczarz_buty_ikona.png
+- ekwipunek/ikony/kot_rycerz_mleczarz_miecz_ikona.png
+- ekwipunek/pula_wojownika_mleczarz_ekwipunek_ikony_arkusz.jpg
+- ekwipunek/ekwipunek.json
+- ../_pula_wojownika/noc2511_zestaw_mleczarz.jpg
+- ../_pula_wojownika/noc2511_zestaw_mleczarz_na_kocie.jpg
+- raport.json
+- raport.txt
