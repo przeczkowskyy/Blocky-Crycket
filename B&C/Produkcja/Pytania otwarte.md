@@ -971,3 +971,24 @@ Szczegóły: [[Tekstury sali wyboru klasy]], sekcja „Wersja 2”. Zdanie agent
 
 Szczegóły: Paweł 24.11 już przyspieszył okna (grafiki wczytywane z góry, bez animacji wjazdu). Zdanie agenta: (a) — pomiar i poprawka w jednych rękach, a Paweł zachowuje kontrolę nad swoim kodem.
 **Odpowiedź:**
+
+
+## 102. Karol: nowy układ HUD — przyciski po lewej, questy w szufladzie
+- Paweł 25.11: sześć mniejszych przycisków po lewej w dwóch rzędach, Index zamiast Quests, questy w wysuwanym panelu po prawej.
+- Stoi na próbę w Studio; kanon HUD (5 zakładek) i układ z Figmy czekają na decyzję.
+- Do wyboru: (a) zostaje; (b) zostaje z poprawkami — jakimi; (c) wracamy do dwóch kolumn.
+- Osobno: co pokazuje szuflada questów — zadania na czas z karczmy (D-034), zadania dzienne, jedno i drugie?
+
+Szczegóły: opis w [[HUD]], sekcja „Układ z 2026-11-25”. W szufladzie są dziś trzy przykładowe wpisy bez logiki. Twoja tablica w karczmie woła dawny przycisk „Quests” — teraz otwiera szufladę. Przycisk Index nie ma jeszcze okna. Zastrzeżenie agenta: na telefonie lewy dół zajmuje joystick, więc rzędy stoją tam wyżej.
+**Odpowiedź:**
+
+
+## 103. Karol: pety — drugi slot, zdejmowanie i usuwanie
+- Okno petów Pawła ma 4 sloty (2 otwarte), a Twój stan gracza zna jednego aktywnego peta.
+- Dziś slot 2 jest tylko w oknie (bez premii, bez zapisu), peta ze slotu 1 nie da się zdjąć poza zagrodą, DELETE nie działa.
+- Do wyboru: (a) dodajesz w stanie gracza kilka aktywnych petów, „odstaw” bez zasięgu i usuwanie kopii; (b) agent Pawła robi to na gałęzi, Ty oglądasz; (c) zostaje jeden pet, okno pokazuje jeden slot.
+- Do ustalenia też: jak odblokowuje się sloty 3 i 4 i czy plecak petów ma limit.
+
+Szczegóły: [[Okno petów (propozycja)]]; serwer okna `src/server/OknoPetow.server.luau` woła tylko Twój haczyk `SterowanieSerwera` („stan”, „wybierz” z pominięciem zasięgu). Premie kilku petów naraz zmieniają balans walki (dziś +20% Inteligencji od jednego epickiego).
+**Odpowiedź:**
+

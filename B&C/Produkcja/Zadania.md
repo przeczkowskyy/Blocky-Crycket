@@ -12,6 +12,7 @@ tags: [produkcja, zadania]
 - [ ] Responsywność: lag przy otwieraniu sklepu i ekwipunku — pomiar i poprawka według odpowiedzi na pytanie 101 · agent Karola albo Pawła · #wysoki
 - [ ] Ekran ładowania z kotami zamiast ludzików (D-145; napis tytułu — pytanie 97) · agent Karola · #średni
 - [ ] Modele 3D broni z ikon Pawła — czekamy, aż Paweł wrzuci ikony (25.11 w repozytorium jest 6 ikon puli Lv 1–10, w tym jedna broń) · Paweł, potem agent Karola · #średni
+- [x] 2026-11-25: HUD — przyciski po lewej w dwóch rzędach, Index zamiast Quests, szuflada questów, [[Okno petów (propozycja)]] pod przyciskiem Pets (Paweł; czeka na Karola: pytania 102 i 103)
 - [x] 2026-11-24: trening AFK na `main` i w Studio (Paweł po rozmowie z Karolem); koty w ikonach ras, ramkach XP, selektorze klas; sklepy z NPC Karola — wgrane i sprawdzone w Play
 - [ ] Blocky & Crycket (D-140, D-141): za poziom Diamenty zamiast punktów statystyk i trening na stanowiskach AFK z paskiem — Karol potwierdza i wybiera, kto wdraża (pytanie 89); przy wdrożeniu przeliczyć tempo walk bez punktów za poziom · Karol, potem agent · #wysoki
 - [ ] Blocky & Crycket: zdjęcie blokad „tylko Studio” w pakietach przed wydaniem (pytanie 90) · Karol · #wysoki

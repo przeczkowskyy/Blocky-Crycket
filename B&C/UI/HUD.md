@@ -25,7 +25,18 @@ implementacja: wersja z Figmy (panel gracza + 6 przycisków) w Roblox, 2026-11-1
 - **Kliknięcia:** `ReplicatedStorage.HUDButtonPressed` (BindableEvent na kliencie) z nazwą przycisku. Okien (Shop, Pets…) jeszcze nie ma.
 - Pliki: `src/gui/HUD.model.json`, `src/client/HUDClient.client.luau`, `src/server/PlayerStatsDefaults.server.luau`.
 
+## Układ z 2026-11-25 (polecenie Pawła, czeka na Karola)
+> [!warning] Propozycja w grze
+> Wdrożone na próbę w Studio; układ z Figmy (dwie kolumny) i tabela kanonu wyżej zostają bez zmian do decyzji — [[Pytania otwarte]] 102.
+
+- **Sześć przycisków po lewej**, w dwóch rzędach po 3, mniejsze: ok. 114 px przy 1080p (było 150). Górny rząd: Teleport, Equipment, Pets; dolny: **Index**, Shop, Guilds. Na telefonie oba rzędy stoją na wysokości połowy ekranu (lewy dół zajmuje joystick).
+- **Index zamiast Quests:** nowy przycisk (`IconIndex`, `rbxassetid://78578283184741`); okna indeksu jeszcze nie ma.
+- **Questy w szufladzie po prawej:** zakładka ze strzałką wysuwa panel zza krawędzi ekranu i chowa go. Treść to na razie trzy przykładowe wpisy bez postępu i nagród; docelowo miejsce na zadania na czas z [[Karczma (Questy)|karczmy]] (D-034: licznik zadania w HUD).
+- **Pets** otwiera [[Okno petów (propozycja)]].
+- Pliki: `tools/hud_pety_build_gui.py` (przerabia `src/gui/HUD.model.json`), `src/client/HUDClient.client.luau`, `src/client/QuestyClient.client.luau`. Górny rząd nazywa się nadal `LeftColumn`, bo wskazówki Karola szukają `HUD/LeftColumn/TeleportSlot/Teleport`.
+
 ## Stan implementacji
+- [x] 2026-11-25 (Paweł): przyciski w dwóch rzędach po lewej, Index zamiast Quests, szuflada questów po prawej, okno petów pod przyciskiem Pets — sprawdzone w Play (opis wyżej).
 - [x] 2026-11-24 (Paweł): HUD od razu na miejscu (bez wlatywania przycisków), okna bez wjazdu, wczytywanie i podgrzewanie grafik przy starcie (`PreloadUI`); licznik Rybek usunięty (D-146), ikona Złota → rybka po wgraniu `GoldFish`.
 - [x] 2026-11-24 (Paweł): ramki portretu z kotami (`RaceFrame<Id>_v2`): ta sama złota ramka i tor paska co do piksela, nowy portret kota (`tools/raceportraits_koty.py`); wgrane, pasek w Play na miejscu.
 - [x] 2026-11-23: ramka portretu z portretem rasy gracza (`RaceFrame<Rasa>`, Shared.RacePortraitUI podmienia FrameArt; bez rasy pusta PlayerFrame).

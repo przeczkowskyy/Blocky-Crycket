@@ -24,6 +24,14 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - **Repozytorium:** przejrzane 28 commitów Pawła z 23–24.11, czyli decyzje D-139–D-146 i pytania 88–99. Podsumowanie poszło do Karola na czacie.
 - **Panel i tunel** uruchomione ponownie, bo stanęły 23.11 po południu.
 
+## 2026-11-25 · Claude Code u Pawła (HUD: przyciski po lewej, szuflada questów, okno petów)
+- **HUD** (polecenie Pawła): sześć mniejszych przycisków po lewej w dwóch rzędach po 3, **Index** zamiast Quests, questy w wysuwanej szufladzie po prawej (zakładka ze strzałką). Opis: [[HUD]], sekcja „Układ z 2026-11-25”.
+- **Okno petów** pod przyciskiem Pets: 4 sloty założonych (2 z kłódką), plecak 8 × 3, EQUIP BEST / UNEQUIP ALL / DELETE, podpowiedź z nazwą, rzadkością i premiami. Notatka [[Okno petów (propozycja)]]. Dane z próby petów Karola, bez zmian w jego plikach.
+- **Grafiki:** jedna generacja (Higgsfield, arkusz `assets/raw/HudPety/arkusz_v1.png`), pocięta `tools/hud_pety_ui.py`; wgrane po „tak” Pawła: OknoPetow1–4, PanelQuestow, ZakladkaQuestowWysun / Schowaj, IconIndex, PodpowiedzPeta (ID w `assets/manifest.json`).
+- **Sprawdzone w Play:** układ przycisków, wysuwanie szuflady, otwieranie okna petów, lista 4 gatunków (13 petów), zakładanie i zamiana, EQUIP BEST, odmowy, podpowiedź. **Nie sprawdzone:** podobizny 3D w kafelkach (zrzuty nie łapały widoku 3D), telefon, arkusz w Figmie.
+- **Ograniczenia:** slot 2 bez premii i bez zapisu, brak zdejmowania poza zagrodą i usuwania petów, questy to trzy przykładowe wpisy, Index bez okna — [[Pytania otwarte]] 102 i 103.
+- Pliki: `tools/hud_pety_ui.py`, `tools/hud_pety_build_gui.py`, `src/gui/HUD.model.json`, `src/gui/OknoPetow.model.json`, `src/client/HUDClient.client.luau`, `src/client/QuestyClient.client.luau`, `src/client/OknoPetowClient.client.luau`, `src/server/OknoPetow.server.luau`, `assets/processed/HudPety/`.
+
 ## 2026-11-24 · Claude Code u Pawła (leśne jajo z projektu Pawła 1:1, scenka z jego dymkiem, pet ze słupa światła)
 - **Model:** jajo z projektu 3D Pawła („Leśne jajo 3D”) wgrane za jego „tak” jako zasób 92671202213818 i ustawione w `Workspace/JajkoKorowePodglad` skryptem `tools/studio/jajo_lesne_ustaw.luau` (kolory kryształów i grzybków, świecące pęknięcia z maski, skala ×1,5); zastępuje jajo z klocków. Tekstury: JajoLesneKolor 99671035760393, JajoLesneBlask 70749662306023.
 - **Scenka otwierania** (`src/client/JajkoKoroweClient.client.luau`): kamera przed jajem, gracz niewidoczny, 5 kliknięć z komiksowymi dymkami (grafika Pawła, DymekKomiks 105383434661458), skorupa odlatuje w dwóch częściach, słup światła. Sprawdzone w Play do słupa światła.

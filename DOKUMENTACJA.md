@@ -175,6 +175,8 @@ LoadingScreen (ScreenGui)
 
 > **❓ Konflikt z kanonem.** Figma ma 6 przycisków zamiast 5 zakładek: **Teleport, Equipment, Pets** (lewa kolumna) i **Quests, Shop, Guilds** (prawa), z angielskimi napisami. Wdrożona jest wersja z Figmy, na polecenie Game Directora. Kanon pozostaje bez zmian do decyzji (pytanie otwarte #5).
 
+> **Układ z 25.11.2026 (propozycja w grze, polecenie Pawła):** sześć mniejszych przycisków po lewej w dwóch rzędach po 3 (Teleport, Equipment, Pets / Index, Shop, Guilds), questy w wysuwanej szufladzie po prawej, przycisk Pets otwiera okno petów. Szczegóły: `B&C/UI/HUD.md`, `B&C/UI/Okno petów (propozycja).md`; pytania otwarte 102 i 103.
+
 **Wdrożona wersja z Figmy** (layout [node 9:1571](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=9-1571), panel gracza [14:145](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=14-145), przyciski [9:1570](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=9-1570)):
 - **ScreenGui `HUD`:** na starcie `Enabled = false`. `ResetOnSpawn = false`, `IgnoreGuiInset = false` i `ScreenInsets = CoreUISafeInsets`, więc nie wchodzi pod pasek Robloxa ani pod notch. `DisplayOrder = 10`.
 - **Panel gracza (lewa góra):** x 40, y 30 przy 1920×1080, rozmiar 470×212 px (19,6% wysokości ekranu).
@@ -357,7 +359,7 @@ player:SetAttribute("Gold", player:GetAttribute("Gold") + 250)
 
 -- klient: reakcja na kliknięcie przycisku HUD
 game:GetService("ReplicatedStorage"):WaitForChild("HUDButtonPressed").Event:Connect(function(name)
-	-- "Teleport" | "Equipment" | "Pets" | "Quests" | "Shop" | "Guilds"
+	-- "Teleport" | "Equipment" | "Pets" | "Index" | "Shop" | "Guilds"
 end)
 ```
 
@@ -377,7 +379,8 @@ end)
 | Przycisk Teleport | `rbxassetid://133130837278176` | HUD, lewa kolumna |
 | Przycisk Equipment | `rbxassetid://72063518170257` | HUD, lewa kolumna |
 | Przycisk Pets | `rbxassetid://114125804667140` | HUD, lewa kolumna |
-| Przycisk Quests | `rbxassetid://97193506181159` | HUD, prawa kolumna |
+| Przycisk Quests | `rbxassetid://97193506181159` | nieużywany od 25.11 (questy w szufladzie) |
+| Przycisk Index | `rbxassetid://78578283184741` | HUD, dolny rząd |
 | Przycisk Shop | `rbxassetid://101275423490142` | HUD, prawa kolumna |
 | Przycisk Guilds | `rbxassetid://133105071163555` | HUD, prawa kolumna |
 | Ramka portretu (PNG 416×476) | `rbxassetid://128244393062229` | `HUD.PlayerPanel.FrameArt` |

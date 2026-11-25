@@ -7,7 +7,7 @@
 	Kliknięcia: ReplicatedStorage.HUDButtonPressed (BindableEvent, tylko klient):
 
 		RS:WaitForChild("HUDButtonPressed").Event:Connect(function(name) ... end)
-		-- "Teleport" | "Equipment" | "Pets" | "Quests" | "Shop" | "Guilds"
+		-- "Teleport" | "Equipment" | "Pets" | "Index" | "Shop" | "Guilds"
 
 	Vault: B&C/UI/HUD.md
 ]]
@@ -254,20 +254,23 @@ if fishLbl then
 end
 
 ------------------------------------------------ telefon: kolumny wyżej, nad kontrolkami dotykowymi
-local columns = { hud.LeftColumn, hud.RightColumn }
+-- Paweł 25.11: wszystkie przyciski po lewej w dwóch rzędach po 3, mniejsze niż dawniej; Index zamiast Quests (questy
+-- siedzą w wysuwanej szufladzie po prawej — QuestyClient). Górny rząd nazywa się nadal LeftColumn (ścieżka, której
+-- szukają wskazówki Karola: HUD/LeftColumn/TeleportSlot/Teleport), dolny BottomRow.
+local columns = { hud:WaitForChild("LeftColumn"), hud:WaitForChild("BottomRow") }
 if UIS.TouchEnabled and not UIS.KeyboardEnabled then
-	for _, col in ipairs(columns) do
-		col.AnchorPoint = Vector2.new(col.AnchorPoint.X, 0.5)
-		col.Position = UDim2.fromScale(col.Position.X.Scale, COLUMN_Y_MOBILE)
-	end
+	local gora, dol = columns[1] :: Frame, columns[2] :: Frame
+	local odstep = dol.Position.Y.Scale - dol.Size.Y.Scale - gora.Position.Y.Scale
+	gora.Position = UDim2.fromScale(gora.Position.X.Scale, COLUMN_Y_MOBILE - odstep / 2)
+	dol.Position = UDim2.fromScale(dol.Position.X.Scale, COLUMN_Y_MOBILE + odstep / 2 + dol.Size.Y.Scale)
 end
 
 ------------------------------------------------ przyciski i panel: od razu na miejscu
 -- Paweł 24.11: „żeby się wyświetlały natychmiast, a nie ze spowolnieniem” — dawniej panel zjeżdżał z góry (0,5 s),
 -- a przyciski wlatywały z boków po kolei i rozjaśniały się z przezroczystości, co przy wejściu wyglądało jak miganie.
 local buttons = {}
-for _, col in ipairs(columns) do
-	for _, slot in ipairs(col:GetChildren()) do
+for _, row in ipairs(columns) do
+	for _, slot in ipairs(row:GetChildren()) do
 		local b = slot:IsA("Frame") and slot:FindFirstChildWhichIsA("ImageButton")
 		if b then
 			table.insert(buttons, { btn = b, order = slot.LayoutOrder })
