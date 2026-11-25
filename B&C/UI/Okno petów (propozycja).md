@@ -26,7 +26,7 @@ Okno otwierane przyciskiem **Pets** w [[HUD]]. Zamówił je Paweł 25.11.2026; u
 - [x] 2026-11-25: `src/gui/OknoPetow.model.json` (`tools/hud_pety_build_gui.py`), `src/client/OknoPetowClient.client.luau`, `src/server/OknoPetow.server.luau`; w Play sprawdzone: otwieranie, lista petów, zakładanie, zamiana, EQUIP BEST, odmowy, podpowiedź.
 - [ ] Podobizny 3D w kafelkach obejrzane na ekranie (zrzuty z 25.11 nie łapały widoku 3D).
 - [ ] Telefon (dotyk zamiast najechania).
-- [ ] Arkusz w Figmie.
+- [x] 2026-11-25: elementy w Figmie — strona „HUD Buttons”, grupa „HUD + Pets (2026-11-25)” (okno petów [57:116](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=57-116), panel questów 57:118, zakładki 57:120 i 57:122, Index 57:124, podpowiedź 57:126). Plan Figmy ma limit 3 stron, więc bez osobnej strony.
 
 ## Do ustalenia
 - Drugi slot z premią, zdejmowanie poza zagrodą, usuwanie petów — [[Pytania otwarte]] 103.
