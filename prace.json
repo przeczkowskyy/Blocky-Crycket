@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-25T22:49:04+01:00",
+ "aktualizacja": "2026-11-25T22:59:18+01:00",
  "prace": [
   {
    "id": "jajka-biomow",
    "tytul": "Jajka Bagna i Dżungli na wzór leśnego (Blender)",
    "stan": "w_toku",
+   "etap": "modele, tekstury i plansze gotowe; opis i raport",
    "start": "2026-11-25T22:29:32+01:00",
    "koniec_szacowany": "2026-11-26T01:15:00+01:00",
-   "aktualizacja": "2026-11-25T22:29:32+01:00",
+   "aktualizacja": "2026-11-25T22:58:26+01:00",
    "obszary": [
     "swiat/jajka_biomow/**",
     "model:jajko_bagna_wzor",
