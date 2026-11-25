@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-25T22:59:18+01:00",
+ "aktualizacja": "2026-11-25T23:03:18+01:00",
  "prace": [
   {
    "id": "jajka-biomow",
@@ -82,20 +82,6 @@
    "obszary": [
     "swiat/ewolucja/**",
     "studio:EwolucjaGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "zagroda-rybki",
-   "tytul": "Zagroda petów: Rybki na sekundę i miejsca (offline)",
-   "stan": "w_toku",
-   "start": "2026-11-25T22:31:28+01:00",
-   "koniec_szacowany": "2026-11-26T00:45:00+01:00",
-   "aktualizacja": "2026-11-25T22:31:28+01:00",
-   "obszary": [
-    "swiat/pety_proba/**",
-    "swiat/stan_gracza/**"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
