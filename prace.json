@@ -2,17 +2,19 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-25T22:26:09+01:00",
+ "aktualizacja": "2026-11-25T22:29:32+01:00",
  "prace": [
   {
    "id": "jajka-biomow",
-   "tytul": "Jajka Bagna i Dżungli na wzór leśnego jajka Pawła (modele i animacje)",
+   "tytul": "Jajka Bagna i Dżungli na wzór leśnego (Blender)",
    "stan": "w_toku",
-   "start": "2026-11-25T22:26:09+01:00",
-   "koniec_szacowany": "2026-11-26T03:56:09+01:00",
-   "aktualizacja": "2026-11-25T22:26:09+01:00",
+   "start": "2026-11-25T22:29:32+01:00",
+   "koniec_szacowany": "2026-11-26T01:15:00+01:00",
+   "aktualizacja": "2026-11-25T22:29:32+01:00",
    "obszary": [
-    "swiat/jajka_biomow/**"
+    "swiat/jajka_biomow/**",
+    "model:jajko_bagna_wzor",
+    "model:jajko_dzungli_wzor"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
