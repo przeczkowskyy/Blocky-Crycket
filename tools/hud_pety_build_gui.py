@@ -39,7 +39,9 @@ def ciemny(name, r, s, mx, z=5, x_align="Left", gruby=False):
 # ------------------------------------------------------------------------------------------------ HUD
 WYS_RZEDU = 0.1058  # wysokość rzędu jako ułamek ekranu -> przycisk ok. 114 px przy 1080p (było 150)
 ODSTEP_RZEDOW = 0.0135
-DOL_SIATKI = 0.85185  # dół dolnego rzędu (jak dawne kolumny)
+SRODEK_SZUFLADY = 0.46  # środek szuflady questów (i jej zakładki ze strzałką) na wysokości ekranu
+# Paweł 25.11 (wieczór): przyciski wyżej, mniej więcej na wysokości strzałki — środek obu rzędów = środek szuflady
+DOL_SIATKI = round(SRODEK_SZUFLADY + WYS_RZEDU + ODSTEP_RZEDOW / 2, 5)
 
 
 def znajdz(n, nazwa):
@@ -96,7 +98,7 @@ def szuflada_questow():
                                               "ScaleType": "Fit", "ZIndex": 5}),
             text("Reward", (0.885, 0.27, 0.15, 0.46), "", GOLD, 18, 1.5, 5),
         ]))
-    return node("QuestDrawer", "Frame", {"AnchorPoint": [1, 0.5], "Position": {"UDim2": [[1, 0], [0.46, 0]]},
+    return node("QuestDrawer", "Frame", {"AnchorPoint": [1, 0.5], "Position": {"UDim2": [[1, 0], [SRODEK_SZUFLADY, 0]]},
                                          "Size": {"UDim2": [[0.34, 0], [0.38, 0]]}, "BackgroundTransparency": 1}, dzieci)
 
 

@@ -29,7 +29,7 @@ implementacja: wersja z Figmy (panel gracza + 6 przycisków) w Roblox, 2026-11-1
 > [!warning] Propozycja w grze
 > Wdrożone na próbę w Studio; układ z Figmy (dwie kolumny) i tabela kanonu wyżej zostają bez zmian do decyzji — [[Pytania otwarte]] 102.
 
-- **Sześć przycisków po lewej**, w dwóch rzędach po 3, mniejsze: ok. 114 px przy 1080p (było 150). Górny rząd: Teleport, Equipment, Pets; dolny: **Index**, Shop, Guilds. Na telefonie oba rzędy stoją na wysokości połowy ekranu (lewy dół zajmuje joystick).
+- **Sześć przycisków po lewej**, w dwóch rzędach po 3, mniejsze: ok. 114 px przy 1080p (było 150). Górny rząd: Teleport, Equipment, Pets; dolny: **Index**, Shop, Guilds. Od wieczora 25.11 (Paweł) oba rzędy są wyżej: ich środek wypada na wysokości strzałki szuflady questów (46% wysokości ekranu), tak samo na telefonie.
 - **Index zamiast Quests:** nowy przycisk (`IconIndex`, `rbxassetid://78578283184741`); okna indeksu jeszcze nie ma.
 - **Questy w szufladzie po prawej:** zakładka ze strzałką wysuwa panel zza krawędzi ekranu i chowa go. Treść to na razie trzy przykładowe wpisy bez postępu i nagród; docelowo miejsce na zadania na czas z [[Karczma (Questy)|karczmy]] (D-034: licznik zadania w HUD).
 - **Pets** otwiera [[Okno petów (propozycja)]].

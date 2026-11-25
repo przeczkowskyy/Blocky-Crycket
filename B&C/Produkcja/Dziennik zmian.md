@@ -24,6 +24,9 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - **Repozytorium:** przejrzane 28 commitów Pawła z 23–24.11, czyli decyzje D-139–D-146 i pytania 88–99. Podsumowanie poszło do Karola na czacie.
 - **Panel i tunel** uruchomione ponownie, bo stanęły 23.11 po południu.
 
+## 2026-11-25 · Claude Code u Pawła (przyciski HUD wyżej, na wysokości strzałki questów)
+- Paweł: oba rzędy przycisków po lewej podniesione — środek rzędów na wysokości zakładki ze strzałką szuflady questów (46% ekranu), na komputerze i telefonie. Sprawdzone w Play. Pliki: `tools/hud_pety_build_gui.py`, `src/gui/HUD.model.json`, `src/client/HUDClient.client.luau`, [[HUD]].
+
 ## 2026-11-25 · Claude Code u Pawła (HUD: przyciski po lewej, szuflada questów, okno petów)
 - **HUD** (polecenie Pawła): sześć mniejszych przycisków po lewej w dwóch rzędach po 3, **Index** zamiast Quests, questy w wysuwanej szufladzie po prawej (zakładka ze strzałką). Opis: [[HUD]], sekcja „Układ z 2026-11-25”.
 - **Okno petów** pod przyciskiem Pets: 4 sloty założonych (2 z kłódką), plecak 8 × 3, EQUIP BEST / UNEQUIP ALL / DELETE, podpowiedź z nazwą, rzadkością i premiami. Notatka [[Okno petów (propozycja)]]. Dane z próby petów Karola, bez zmian w jego plikach.

@@ -19,7 +19,7 @@ local RS = game:GetService("ReplicatedStorage")
 
 -- === USTAWIENIA ===
 local REF_H = 1080 -- grubości obrysów w modelu są podane w px @1080p
-local COLUMN_Y_MOBILE = 0.55 -- telefon: kolumny wyśrodkowane, nad joystickiem / przyciskiem skoku
+local COLUMN_Y_MOBILE = 0.46 -- telefon: środek rzędów przycisków, jak na komputerze (na wysokości strzałki questów)
 local LOADING_TIMEOUT = 30
 local AFTER_LOADING_FADE = 0.7 -- s: loading screen kończy fade-out (0.6 s)
 local QUICK = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
