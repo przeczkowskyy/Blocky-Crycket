@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-25T19:38:03+01:00",
+ "aktualizacja": "2026-11-25T19:42:47+01:00",
  "prace": [
   {
    "id": "miasto-tekstury",
@@ -15,26 +15,6 @@
     "mapa:miasteczko_bazar",
     "studio:MiasteczkoBazar",
     "swiat/miasteczko_bazar/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "panel-per-gra",
-   "tytul": "Panel: widok per gra (przełącznik gier)",
-   "stan": "w_toku",
-   "etap": "Testy (cała paczka i przeglądarka)",
-   "start": "2026-11-25T19:06:40+01:00",
-   "koniec_szacowany": "2026-11-25T20:12:07+01:00",
-   "aktualizacja": "2026-11-25T19:37:07+01:00",
-   "obszary": [
-    "panel/bc/**",
-    "panel/static/**",
-    "panel/testy/**",
-    "panel/konfiguracja.json",
-    "panel/README.md",
-    "panel/narzedzia/raport.py",
-    ".claude/skills/panel/SKILL.md"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
