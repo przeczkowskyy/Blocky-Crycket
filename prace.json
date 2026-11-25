@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T00:19:57+01:00",
+ "aktualizacja": "2026-11-26T00:35:01+01:00",
  "prace": [
   {
    "id": "pety-zagroda-rybki",
@@ -37,9 +37,10 @@
    "id": "zagroda-rybki-studio",
    "tytul": "Zagroda petów: Rybki, nowe legowiska i nowe modele w Studio",
    "stan": "w_toku",
+   "etap": "Próby w Play: zagroda 12/12, regresje; teraz ręczne sprawdzenie i zrzuty",
    "start": "2026-11-26T00:13:54+01:00",
-   "koniec_szacowany": "2026-11-26T02:13:54+01:00",
-   "aktualizacja": "2026-11-26T00:13:54+01:00",
+   "koniec_szacowany": "2026-11-26T02:00:00+01:00",
+   "aktualizacja": "2026-11-26T00:35:01+01:00",
    "obszary": [
     "studio:StanGracza",
     "studio:PetyProba"
