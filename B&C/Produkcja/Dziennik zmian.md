@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-25 · Claude Code u Karola (porządek w pytaniach, plan pracy nad B&C, D-147)
+- **Pytania zdjęte jako nieaktualne** na polecenie Karola: 78 i 79 (Pet Arena), 85 (baseball), 87 (sklep gry o smoku). Podpisane jako agent, nie jako Karol.
+- **Decyzja Karola D-147** (czeka na Pawła): miasto dostaje tekstury i kreskę jak sala wyboru rasy, bez przebudowy.
+- **Nowe pytania:** 100 (kolor i grubość kreski w mieście — Paweł 24.11 zmiękczył kreskę sali) i 101 (kto poprawia lag okien, bo kod jest Pawła). Do pytania 97 dopisek o ekranie ładowania z kotami.
+- **Zadania w „Teraz”:** miasto, muzyka miasteczka, responsywność okien, ekran ładowania, modele 3D broni z ikon Pawła (czeka na ikony).
+- Uwaga dla Pawła: do repozytorium nie trafiły trzy notatki, do których prowadzą linki z pytań 95 i 96 („Katakumby — pierwszy loch”, „Lochy 2 i 3…”, „Rzadkość przedmiotów…”). Kontrola sejfu zgłasza przez to 6 błędów.
+
 ## 2026-11-25 · Claude Code u Karola (powrót do Blocky & Crycket — D-139 z dwoma podpisami)
 - Karol: „Okej, wracamy do pracy. Ostateczną decyzją jest powrót do B&C na 100%. Dokańczamy tę grę, zwracając uwagę na nasze błędy.”
 - **D-139** ma teraz oba podpisy: Paweł 23.11, Karol 25.11. **D-137** (wydanie gry o smoku) jest zastąpiona. W pytaniu 88 jest odpowiedź (b): smok wstrzymany bez wydania.

@@ -678,6 +678,12 @@ Gracz gra **kotem**: każda rasa to wariant naszego Kota-Maga — ten sam model 
 
 Uwaga agenta (D-114), zgoda z poprawką: jeden słodki, rozpoznawalny bohater (kot) to mocniejsza marka i miniatura niż ludziki Roblox, a jeden szkielet dla wszystkich ras upraszcza klipy i przedmioty. Poprawka: przedmioty Rycerza i Zwiadowcy oraz cały katalog sklepu (`swiat/postacie/sklep_przedmioty.json`, ciało „czlowiek”) trzeba przerobić pod ciało „kot” — to duża praca 3D, najlepiej po stronie Karola. Tytuł „Blocky & Crycket” zostaje spójny tylko, jeśli Blocky jest widoczny w grze (np. NPC-opiekun w miasteczku, przewodnik w samouczku). Zmienię zdanie, jeśli testerzy będą woleli wygląd ludzików.
 
+### D-147 Miasto w kresce sali wyboru rasy: tekstury na budynkach i widoczny obrys
+✅ zatwierdzona · art direction / świat 3D · 2026-11-25 · źródło: wiadomość Karola na czacie 25.11 (Karol mówi o rozmowie z Pawłem na osobności) · zdecydował: Karol 2026-11-25
+Miasteczko dostaje ten sam wygląd co sala wyboru rasy: tekstury na budynkach zamiast gładkich kolorów i widoczną kreskę obrysu. Bez przebudowy miasta — chodzi o jednolitość. Tekstury: paczka Pawła (`CsTex`, `CsProp` w `assets/processed/ClassSelectTextures/`); brakujące agent generuje w Higgsfield w tym samym stylu. Czeka na potwierdzenie Pawła (D-043). Kolor i grubość kreski: pytanie 100 w [[Pytania otwarte]].
+
+Uzasadnienie — Karol, 2026-11-25: „musimy to wszystko sprowadzić do takiej kreski, jaka jest w panelu wyboru rasy… nie ma na budynkach takiego plain, tylko jest jakaś tekstura nałożona… Nie jakoś super, bo miasto wygląda u nas bardzo dobrze. Tylko żeby poprawić i nadać tekstury, żeby była jednolitość”. Uwaga agenta (D-114), zgoda z poprawką: jednolity styl to tania zmiana o dużym efekcie na pierwsze wrażenie. Poprawka techniczna: w sali każda ściana ma teksturę jako osobny obiekt (ok. 4,8 tys. ścian); miasto ma 4410 części, więc ta sama metoda dołożyłaby kilkanaście tysięcy obiektów i ryzyko dla telefonu. Agent użyje własnych materiałów (jedna tekstura na materiał, bez dodatkowych obiektów) i zmierzy czas klatki przed i po. Zmienię zdanie co do techniki, jeśli materiały nie oddadzą wyglądu sali.
+
 ---
 *Nowa decyzja: skopiuj szablon [[Decyzja]] (folder Szablony) albo dopisz sekcję `### D-0XX` na końcu.*
 

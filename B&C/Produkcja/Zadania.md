@@ -7,6 +7,11 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Miasto: tekstury i kreska jak w sali wyboru rasy (D-147) — własne materiały z paczki Pawła, brakujące tekstury z Higgsfield, pomiar czasu klatki przed i po; kolor kreski po odpowiedzi na pytanie 100 · agent Karola · od 2026-11-25 · #wysoki
+- [ ] Muzyka miasteczka: nowe propozycje z Higgsfield do odsłuchu (obecna „dosyć słaba” — Karol 25.11), Karol wybiera, wgranie po osobnym „tak” · agent Karola, Karol · #wysoki
+- [ ] Responsywność: lag przy otwieraniu sklepu i ekwipunku — pomiar i poprawka według odpowiedzi na pytanie 101 · agent Karola albo Pawła · #wysoki
+- [ ] Ekran ładowania z kotami zamiast ludzików (D-145; napis tytułu — pytanie 97) · agent Karola · #średni
+- [ ] Modele 3D broni z ikon Pawła — czekamy, aż Paweł wrzuci ikony (25.11 w repozytorium jest 6 ikon puli Lv 1–10, w tym jedna broń) · Paweł, potem agent Karola · #średni
 - [x] 2026-11-24: trening AFK na `main` i w Studio (Paweł po rozmowie z Karolem); koty w ikonach ras, ramkach XP, selektorze klas; sklepy z NPC Karola — wgrane i sprawdzone w Play
 - [ ] Blocky & Crycket (D-140, D-141): za poziom Diamenty zamiast punktów statystyk i trening na stanowiskach AFK z paskiem — Karol potwierdza i wybiera, kto wdraża (pytanie 89); przy wdrożeniu przeliczyć tempo walk bez punktów za poziom · Karol, potem agent · #wysoki
 - [ ] Blocky & Crycket: zdjęcie blokad „tylko Studio” w pakietach przed wydaniem (pytanie 90) · Karol · #wysoki

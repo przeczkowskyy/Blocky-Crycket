@@ -739,6 +739,7 @@ Dopisek z 2026-11-21 (po analizie trendu): okno jest krótkie — prywatny test 
 
 Szczegóły: [[Sesja główna 2026-11-21 — zapis ustaleń]] (18:28–18:29). Karol dodał, że liczy się tu z cudzym zdaniem — z zapisu nie wynika, czy mówił do agenta, czy do Pawła. Zdanie agenta (D-114): (b) — gra ma być dla każdej grupy wiekowej (D-022), a ciemna klatka z bijącymi się zwierzakami budzi skojarzenie z walkami zwierząt, którego mieliśmy unikać ([[Ring Potworów]]); zmienię zdanie, jeśli dzieci znajomych wybiorą ciemną wersję ze zrzutów. Od odpowiedzi zależy przebudowa sceny (propozycja D-119).
 **Odpowiedź:**
+- Claude Code u Karola (2026-11-25): nieaktualne — Pet Arena jest wstrzymana, wracamy do Blocky & Crycket (D-139, oba podpisy). Zdjęte z kolejki na polecenie Karola z 25.11 („wyczyść dashboard z pytań nieaktualnych”).
 
 ## 79. Pet Arena: czy Karol decyduje o niej sam?
 - Karol 21.11, sam na sesji: agent może wykonywać jego polecenia o Pet Arenie bez wiedzy Pawła, bo to jego pomysł i projekt.
@@ -748,6 +749,7 @@ Szczegóły: [[Sesja główna 2026-11-21 — zapis ustaleń]] (18:28–18:29). K
 Szczegóły: [[Sesja główna 2026-11-21 — zapis ustaleń]] (18:31). Pawła nie było na sesji; D-118 (budowa Pet Areny) dalej czeka na jego potwierdzenie, a 20.11 miał wątpliwość co do pomysłu. Dla pracy agenta oba warianty znaczą to samo: zlecenia Karola wykonuje od razu, na roboczych ustaleniach z jednym podpisem. Różnica jest tylko taka, czy Paweł może decyzję o Pet Arenie cofnąć. Zasadę podpisów zmieniają obaj, więc najlepiej, żeby odpowiedział tu Paweł.
 Rozstrzyga: D-124
 **Odpowiedź:**
+- Claude Code u Karola (2026-11-25): nieaktualne — Pet Arena jest wstrzymana, wracamy do Blocky & Crycket (D-139, oba podpisy). Zdjęte z kolejki na polecenie Karola z 25.11 („wyczyść dashboard z pytań nieaktualnych”).
 
 ## 80. Konto klipów z wirtualnymi streamerami: w jakiej wersji?
 - Pomysł Karola (21.11): konto na Instagramie i TikToku, streamerzy z Higgsfield reagują na gry Roblox, w tym naszą.
@@ -819,6 +821,7 @@ Rozstrzyga: D-138 (tytuł); zwierzę — smok, w D-137.
 
 Szczegóły: [[Sesja główna 2026-11-22 — zapis ustaleń]] (18:56–18:57, 19:00). Łączy się z propozycją D-132: kij roboczo daje mnożnik siły. Zdanie agenta (D-114): zostawić trening, czyli (a) albo (b) — różnica między nimi to tylko wygląd, a hantla odróżnia nas od drążka ze wzoru. Wariant (c) zabiera grze powód, żeby zostawić ją włączoną i wrócić następnego dnia, oraz jeden z trzech wydatków złota: we wzorze drążek robi powtórzenie co pół sekundy także pod nieobecność gracza, a drążków do kupienia jest 46 ([[Rozbiór wzoru — Throw Food For Animals]]). Zmienię zdanie, jeśli próbka bez treningu trzyma graczy tak samo długo. Karta: [[Baseball for treasure]].
 **Odpowiedź:**
+- Claude Code u Karola (2026-11-25): nieaktualne — Baseball for treasure jest wstrzymany, wracamy do Blocky & Crycket (D-139, oba podpisy). Zdjęte z kolejki na polecenie Karola z 25.11 („wyczyść dashboard z pytań nieaktualnych”).
 
 ## 86. Baseball, ameba czy smok: co budujemy dalej?
 - Na sesji 22.11 Paweł przedstawił Baseball for treasure, a Karol rozbudowę gry o smoku: od ameby, z osobnymi serwerami na poziomy.
@@ -848,6 +851,7 @@ Szczegóły: kod, sprawdzenia i uzasadnienie każdej ceny opisuje sekcja „Odcz
 - Zdanie agenta (D-114): (a) oraz łączenie do ×4. Pierwsza fala graczy po wydaniu to największa szansa na przychód, więc sklep powinien być od pierwszego dnia. Łączenie mnożników to w grach o wzroście norma, a gracze się go spodziewają.
 - Zmienię zdanie, jeśli próba z ludźmi pokaże, że ×4 przeskakuje stadia tak szybko, że gra traci cel. Wtedy zostaje (a) bez łączenia.
 **Odpowiedź:**
+- Claude Code u Karola (2026-11-25): nieaktualne — gra o smoku nie wychodzi (D-137 zastąpiona przez D-139), więc jej sklep nie jest potrzebny. Zdjęte z kolejki na polecenie Karola z 25.11 („wyczyść dashboard z pytań nieaktualnych”).
 
 ## 88. Powrót do Blocky & Crycket: co z wydaniem smoka?
 - Paweł 23.11 zdecydował: wracamy do Blocky & Crycket jako głównej gry (D-139). Czeka na potwierdzenie Karola.
@@ -930,6 +934,7 @@ Szczegóły: mnożniki budżetu ×1,0 / ×1,4 / ×1,8 i szanse są robocze — d
 - Do wyboru: (a) zgoda, nazwa i ekran ładowania na osobnej sesji; (b) Blocky zostaje jako NPC; (c) rozmowa na sesji.
 
 Szczegóły: tytuł „Blocky & Crycket” bez Blocky'ego traci sens — nowa nazwa dotknie ekranu ładowania ([[Ekran ładowania]]), strony gry i miniatur; repo i nazwy w kodzie mogą zostać. Uwaga agenta (D-114): zgoda — „Cat” w nazwie pomaga w wyszukiwaniu na Roblox, a kot jest jednym rozpoznawalnym bohaterem.
+Dopisek z 2026-11-25 (Karol): ekran ładowania trzeba poprawić już teraz, bo postaciami są tylko koty (D-145). Przy odpowiedzi do ustalenia: czy na nowym ekranie zostaje napis „BLOCKY & CRYCKET” do czasu nowej nazwy, czy ekran jest bez tytułu. Zdanie agenta: zostawić obecny tytuł i zmienić tylko grafikę na koty, bo nazwa gry w Roblox i ekran powinny mówić to samo, a zmiana nazwy to osobna sesja.
 **Odpowiedź:**
 
 ## 98. Karol: mistrz gier i leśne jajo — podpięcie u Ciebie
@@ -949,4 +954,20 @@ Dopisek z 2026-11-24 (wieczór), dylematy szerzej: (1) miejsce — jajo stało z
 - Do wyboru: (a) tak, zapasy do rozbiórki; (b) siatka na materiały; (c) usunąć siatkę z okna.
 
 Szczegóły: okno `src/client/OknoKowalaClient.client.luau` korzysta z Twojego zdalnego `KowalProba/Zdalne/Kuznia` („widok”, „ulepsz”, „rozbierz”) bez zmian u Ciebie; Paweł jeszcze nie wybrał.
+**Odpowiedź:**
+
+## 100. Miasto: kreska jak w sali dziś czy czarna i grubsza?
+- Karol 25.11 (D-147): miasto ma dostać kreskę i tekstury jak sala wyboru rasy; mówił o „widoczniejszych czarnych kreskach”.
+- Paweł 24.11 zmiękczył salę: cienka brązowa kreska i tekstury w wersji 2 zamiast grubego czarnego tuszu.
+- Do wyboru: (a) miasto jak sala dziś, czyli brązowa i cienka; (b) czarna i grubsza w mieście i w sali; (c) czarna tylko w mieście.
+
+Szczegóły: [[Tekstury sali wyboru klasy]], sekcja „Wersja 2”. Zdanie agenta (D-114): (a). Celem jest jednolitość, a Paweł dopiero co wybrał miękką kreskę; wariant (b) cofa jego zmianę, więc wymaga jego zgody. Zmienię zdanie, jeśli na telefonie brązowa kreska na budynkach widzianych z daleka zniknie — wtedy grubsza kreska tylko na dużych bryłach.
+**Odpowiedź:**
+
+## 101. Lag przy otwieraniu sklepu i ekwipunku: kto poprawia?
+- Karol 25.11: okna sklepu i ekwipunku czasem przycinają przy otwieraniu.
+- Kod tych okien jest Pawła (`src/client`, `src/gui`), więc agent Karola nie zmienia go bez zgody.
+- Do wyboru: (a) agent Karola mierzy i poprawia na osobnej gałęzi, Paweł ogląda przed scaleniem; (b) agent Karola tylko mierzy i opisuje, poprawia agent Pawła; (c) Paweł zgadza się na poprawki prosto na `main`.
+
+Szczegóły: Paweł 24.11 już przyspieszył okna (grafiki wczytywane z góry, bez animacji wjazdu). Zdanie agenta: (a) — pomiar i poprawka w jednych rękach, a Paweł zachowuje kontrolę nad swoim kodem.
 **Odpowiedź:**
