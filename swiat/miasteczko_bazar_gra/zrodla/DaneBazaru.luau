@@ -1,7 +1,7 @@
 --[[
 	DaneBazaru — WYGENEROWANE przez swiat/miasteczko_bazar_gra/dane.py z miejsca.json, swiat/miasteczko_bazar/
 	znaczniki.json i swiat/krzywe_miasteczko/uklad.json. Nie edytuj ręcznie: zmień źródła i uruchom dane.py.
-	Skrót danych: 3f610bbf3b94
+	Skrót danych: e79f61d19616
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -166,9 +166,9 @@ return {
 			hud = "Pets",
 			znacznik = "zagroda/punkt_e",
 			znacznik_id = "zagroda_petow",
-			punkt = { 959.669, 5.1, -671.116 },
-			stoisko = { 959.994, 0.5, -676.13 },
-			dymek_nad = { 959.669, 8.5, -671.116 },
+			punkt = { 954.172, 4.9, -688.134 },
+			stoisko = { 954.632, 0.3, -692.153 },
+			dymek_nad = { 954.172, 8.3, -688.134 },
 			model = "Workspace/MiasteczkoBazar/ZagrodaPetow/Opiekunka",
 			czesc_mapy = "Workspace/MiasteczkoBazar/ZagrodaPetow/_Interakcja/Podpowiedź E zagroda_petow",
 		},
@@ -2742,5 +2742,5 @@ return {
 			wynik = false,
 		},
 	},
-	skrot = "3f610bbf3b94",
+	skrot = "e79f61d19616",
 }

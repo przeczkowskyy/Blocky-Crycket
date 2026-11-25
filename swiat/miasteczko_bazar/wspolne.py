@@ -32,6 +32,8 @@ H_LADY = 3.0              # wierzch lady nad posadzką (dłonie sprzedawcy ×0,8
 
 # --------------------------------------------------------------------------- rejestr znaczników (świat Studio)
 ZNACZNIKI = []
+# dodatkowe bloki do znaczniki.json spoza listy „wszystkie” (np. miejsca stanowisk treningu AFK w sali Training Center)
+DODATKI = {}
 
 
 def swiat(s, p):
@@ -84,10 +86,12 @@ def skorupa(s, rnd, W, D, sciana, dach, H0=15.0, T=1.2, otwor=14.0, otwor_x=0.0,
             posadzka=("drewno_jasne", "WoodPlanks"), hp=7.0, nawis=(2.4, 0.6, 1.0, 0.8), rz_p=5.0, ry_p=4.0,
             dach_h=10.0, rz_d=-9.0, okap=2.4, okap_bok=1.4, podzial=0.62, markiza=None, okna_pietra=("prostokat", "okragle"),
             swiatlo="neon_okno", okna_boczne=(1, 1), szczyt=True, kalenica=None, komin=None, duet="rycerz",
-            na_pietrze=None, na_dachu=None):
+            na_pietrze=None, na_dachu=None, otwarty_bok=None):
     """Pusty w środku budynek-sklep (patrz docstring modułu). Zwraca słownik z wymiarami wnętrza i otworu, wysokością
     szczytu i układem dachu (do szyldów): {"wn": (x0, x1, z0, z1), "otwor": (xa, xb, H_otw), "H0", "front", "W1", "D1",
-    "top", "dach": (pos, obrot, info)}."""
+    "top", "dach": (pos, obrot, info)}.
+    otwarty_bok = (sx, z0, z1): bok sx (−1 lewy, 1 prawy) ma przejście od z0 do z1 na wysokość H_otw — ściana i cokół
+    tylko poza nim, nad przejściem podciąg (do dobudowanej sali, np. Training Center 25.11.2026); domyślnie pełne boki."""
     xa, xb = otwor_x - otwor / 2.0, otwor_x + otwor / 2.0
     zf, zb = D / 2.0, -D / 2.0
     nazwa = s._grupy[-1]
@@ -100,11 +104,22 @@ def skorupa(s, rnd, W, D, sciana, dach, H0=15.0, T=1.2, otwor=14.0, otwor_x=0.0,
     s.blok("Posadzka", (0, (Y_PODLOGI - 0.15) / 2.0, 0), (W - 0.2, Y_PODLOGI + 0.15, D - 0.2), posadzka[0], posadzka[1])
     s.blok("Próg", (otwor_x, 0.125, zf - T / 2.0), (otwor - 0.2, 0.35, T + 0.3), "kamien_cokol", "Cobblestone")
     s.blok("Cokół", (0, 0.6, zb + T / 2.0), (W + 0.5, 1.4, T + 0.5), "kamien_cokol", "Cobblestone")
+    def odcinki_boku(sx, a, b):
+        # odcinki boku sx w zakresie z a…b, z pominięciem przejścia otwarty_bok
+        if not otwarty_bok or otwarty_bok[0] != sx:
+            return [(a, b)]
+        return [(p, q) for p, q in ((a, max(a, otwarty_bok[1])), (min(b, otwarty_bok[2]), b)) if q - p > 0.05]
+
     for sx in (-1, 1):
-        s.blok("Cokół", (sx * (W / 2.0 - T / 2.0), 0.6, 0), (T + 0.5, 1.4, D + 0.5), "kamien_cokol", "Cobblestone")
+        for a, b in odcinki_boku(sx, -D / 2.0 - 0.25, D / 2.0 + 0.25):
+            s.blok("Cokół", (sx * (W / 2.0 - T / 2.0), 0.6, (a + b) / 2.0), (T + 0.5, 1.4, b - a), "kamien_cokol", "Cobblestone")
     s.blok("Ściana tył", (0, H0 / 2.0, zb + T / 2.0), (W - 2 * T, H0, T), sciana)
     for sx in (-1, 1):
-        s.blok("Ściana bok", (sx * (W / 2.0 - T / 2.0), H0 / 2.0, 0), (T, H0, D), sciana)
+        for a, b in odcinki_boku(sx, -D / 2.0, D / 2.0):
+            s.blok("Ściana bok", (sx * (W / 2.0 - T / 2.0), H0 / 2.0, (a + b) / 2.0), (T, H0, b - a), sciana)
+    if otwarty_bok:
+        sx, a, b = otwarty_bok
+        s.blok("Podciąg", (sx * (W / 2.0 - T / 2.0), (H_otw + H0) / 2.0, (a + b) / 2.0), (T, H0 - H_otw, b - a), sciana)
     for a, b in ((xl + T, xa), (xb, xr - T)):
         if b - a > 0.05:
             s.blok("Filar", ((a + b) / 2.0, H0 / 2.0, zf - T / 2.0), (b - a, H0, T), sciana)

@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Zagroda petów — miejsce, gdzie gracz odstawia pety, które zwykle chodzą za bohaterem (D-085; pety z kanonu: pies,
-slime, smok). Otwarty wybieg za płotkiem z bramką na uliczkę, budka opiekunki z daszkiem w kolorze petów, legowiska,
-miski, koryto i siano. Opiekunka stoi przy korycie (E → okno zagrody, okno w HUD robi Paweł). Sześć miejsc na odstawione
-pety zapisuje się w znacznikach. Jajek tu nie ma: jajka są w inkubatorach biomów (D-060), w Lesie przy przybyciu.
+"""Zagroda petów — miejsce, gdzie gracz odstawia pety, które zwykle chodzą za bohaterem (D-085). Sama zagroda: otwarty
+wybieg za płotkiem z bramką na uliczkę, osiem legowisk = osiem miejsc na odstawione pety (znaczniki
+`zagroda_miejsce_1…8`, w kształcie litery U wokół przejścia od bramki: po trzy przy bocznych płotach, dwa przy tylnym),
+miski, koryto i siano. Opiekunka Jagoda stoi PRZED zagrodą, obok bramki od strony uliczki (E → okno zagrody, okno
+w HUD robi Paweł), więc nie zasłania petów. Jajek tu nie ma: jajka są w inkubatorach biomów (D-060).
 Szyld: wielka łapa nad bramką.
+
+Zmiana 25.11.2026 (sesja główna Karola i Pawła, „zagroda ma być tylko zagrodą”): bez ozdobnego psa, smoka, slime'a,
+budki opiekunki i psiej budy; osiem miejsc zamiast sześciu; obrys zagrody bez zmian (26 × 20).
 """
 import math
 import os
@@ -23,8 +27,13 @@ WYSOKOSC = 17
 BUDZET = 330
 KOD = "dach_wylegarnia"
 Y_WYBIEGU = 0.2
-OPIEKUNKA = (2.5, -5.4)
-MIEJSCA = ((-9.5, -1.5), (-9.0, 6.0), (-5.0, 7.0), (6.5, 7.0), (10.0, 2.0), (9.5, -4.5))   # odstawione pety
+# opiekunka przed zagrodą: na bruku uliczki (y 0 = wierzch bruku), obok prawego słupka bramki, twarzą do uliczki
+OPIEKUNKA = (7.6, 11.8)
+# osiem miejsc na odstawione pety (układ modułu: +z = bramka i uliczka): 1–2 przy bramce, potem w głąb, 7–8 przy tylnym
+# płocie; kolejność = kolejność odblokowania (2 → 4 → 6 → 8)
+MIEJSCA = ((-8.0, 4.6), (8.0, 4.6), (-8.0, -0.6), (8.0, -0.6), (-8.0, -5.8), (8.0, -5.8), (-3.4, -5.6), (3.4, -5.6))
+KOLORY_LEGOWISK = ("dach_kolo", "dach_twierdza", "pomarancz", "dach_sklep", "dach_karczma", "dach_brama", "dach_gildia",
+                   "dach_wylegarnia")
 
 
 def buduj(s, rnd):
@@ -42,31 +51,27 @@ def buduj(s, rnd):
     zestaw.plot(s, [(W / 2.0 - 0.5, D / 2.0 - 0.6), (W / 2.0 - 0.5, -D / 2.0 + 0.5)], rnd)
     zestaw.plot(s, [(-W / 2.0 + 0.5, -D / 2.0 + 0.5), (W / 2.0 - 0.5, -D / 2.0 + 0.5)], rnd, wys=3.4)
     _bramka(s)
-    _budka(s)
-    # opiekunka przy korycie
+    # opiekunka PRZED zagrodą, przy bramce (na bruku), lekko zwrócona ku przejściu
     ox, oz = OPIEKUNKA
-    s.blok("Koryto", (ox + 3.6, 1.0, oz + 0.6), (4.2, 1.6, 1.8), "drewno", "WoodPlanks")
-    with s.cechy(kolizja=False, cien=False):
-        s.blok("Koryto woda", (ox + 3.6, 1.75, oz + 0.6), (3.6, 0.15, 1.3), "woda")
-    postacie.postac(s, "opiekunka", NAZWA + "/Opiekunka", (ox, Y_WYBIEGU, oz), ry=-12)
-    wspolne.punkt_e(s, NAZWA, "zagroda_petow", (ox - 0.5, oz + 5.6), (ox, Y_WYBIEGU + 4.6, oz + 0.6), typ="zagroda",
+    postacie.postac(s, "opiekunka", NAZWA + "/Opiekunka", (ox, 0.0, oz), ry=-14)
+    wspolne.punkt_e(s, NAZWA, "zagroda_petow", (ox - 0.8, 0.0, oz + 4.6), (ox - 0.2, 4.6, oz + 0.6), typ="zagroda",
                     sklep="zagroda_petow", nazwa="Zagroda petów (opiekunka)", okno="Okno zagrody petów (Paweł)",
                     postac="opiekunka", model=NAZWA + "/Opiekunka", kier=(0, 0, 1))
-    # pety z kanonu i ich legowiska, miski, siano
-    postacie.pies(s, NAZWA + "/Pety/Pies", (-6.8, Y_WYBIEGU, 2.4), ry=40)
-    postacie.slime(s, NAZWA + "/Pety/Slime", (7.2, Y_WYBIEGU, 4.6), ry=-30)
-    postacie.smok(s, NAZWA + "/Pety/Smok", (8.6, Y_WYBIEGU, -2.4), ry=-70)
+    # legowiska = miejsca na odstawione pety (bez kolizji: pet i gracz stają na nich)
     with s.cechy(kolizja=False):
-        for x, z, kol in ((-9.0, 6.0, "dach_kolo"), (10.0, 2.0, "dach_twierdza"), (9.5, -4.5, "pomarancz")):
+        for (x, z), kol in zip(MIEJSCA, KOLORY_LEGOWISK):
             s.walec("Legowisko", (x, Y_WYBIEGU + 0.25, z), 1.7, 0.5, kol, "Fabric", os="y")
             s.walec("Legowisko rant", (x, Y_WYBIEGU + 0.45, z), 1.9, 0.3, cien(s, kol, 0.8), "Fabric", os="y")
-        for x, z in ((-4.2, 6.6), (4.4, 6.8)):
+        # miski z kością przy bramce (w przejściu, nie na legowiskach)
+        for x, z in ((-3.6, 7.4), (3.8, 7.6)):
             s.walec("Miska", (x, Y_WYBIEGU + 0.35, z), 0.9, 0.7, KOD, os="y")
             s.blok("Kość", (x + 0.1, Y_WYBIEGU + 0.8, z), (1.3, 0.3, 0.3), "biel", rot=(0, 35, 0))
-    for i, (x, z, k) in enumerate(((10.4, -8.0, 8), (8.2, -8.2, -6))):
-        s.blok("Siano", (x, Y_WYBIEGU + 1.0, z), (2.4, 2.0, 1.8), "dach_stajnia", rot=(0, k, 0))
+    # koryto z wodą przy tylnym płocie, między miejscami 7 i 8; siano w tylnych narożnikach
+    s.blok("Koryto", (0, 1.0, -8.3), (3.0, 1.6, 1.6), "drewno", "WoodPlanks")
     with s.cechy(kolizja=False):
-        s.blok("Siano", (9.3, Y_WYBIEGU + 2.6, -8.1), (2.2, 1.6, 1.6), cien(s, "dach_stajnia", 0.9), rot=(0, 3, 6))
+        s.blok("Koryto woda", (0, 1.75, -8.3), (2.4, 0.15, 1.1), "woda")
+    for x, k in ((11.0, 8), (-11.0, -6)):
+        s.blok("Siano", (x, Y_WYBIEGU + 1.0, -8.4), (2.4, 2.0, 1.8), "dach_stajnia", rot=(0, k, 0))
     for i, (x, z) in enumerate(MIEJSCA):
         wspolne.znacznik(s, "miejsce_peta", "zagroda_miejsce_%d" % (i + 1), (x, Y_WYBIEGU, z),
                          opis="miejsce na odstawionego peta (Zagroda petów)")
@@ -95,27 +100,3 @@ def _bramka(s):
         with s.uklad(pos=(0.4, 12.6, z + 0.2), obrot=(-6, 0, 9)):
             _lapa(s)
         zestaw.choragiewka_duetu(s, (-5.8, 9.4, z), "kot", przechyl=-12)
-
-
-def _budka(s):
-    """Budka opiekunki w lewym tyle: biała, z dachem w kolorze petów, okienkiem i psią budą obok."""
-    with s.uklad(pos=(-6.0, 0, -6.4), obrot=(0, 4, 0)):
-        s.blok("Budka", (0, 3.6, 0), (9.0, 7.2, 5.6), "biel")
-        with s.cechy(kolizja=False):
-            for sx in (-1, 1):
-                for sz in (-1, 1):
-                    s.blok("Narożnik", (sx * 4.3, 3.7, sz * 2.6), (0.9, 7.0, 0.9), "tusz")
-            s.blok("Cokół", (0, 0.5, 0), (9.4, 1.0, 6.0), "kamien_cokol", "Cobblestone")
-        zestaw.okno(s, (1.6, 4.6, 2.8), 3.0, 2.6, przechyl=5, swiatlo="neon_slime", okiennica=KOD, strona_okiennicy=1)
-        zestaw.drzwi(s, (-2.4, 0, 2.95), 3.0, 5.4, kolor=KOD, nadproze=None, tanie=True)
-        with s.uklad(pos=(0, 7.2, 0), obrot=(0, 0, -6)):
-            zestaw.dach_czapa(s, 9.0, 5.6, 4.6, KOD, okap=1.4, okap_bok=1.0, podzial=0.58, szczyt="biel")
-            with s.cechy(kolizja=False):
-                postacie.slime(s, NAZWA + "/Pety/SlimeNaDachu", (2.2, 4.1, -0.4), ry=20, skala=0.7)
-    # psia buda przy płocie
-    with s.uklad(pos=(-10.6, 0, 1.4), obrot=(0, 76, 0)):
-        s.blok("Buda", (0, 1.6, 0), (3.6, 3.2, 3.4), "drewno", "WoodPlanks")
-        with s.cechy(kolizja=False):
-            s.blok("Buda otwór", (0, 1.3, 1.65), (1.6, 2.0, 0.2), "tusz")
-            s.klin("Buda dach", (0, 3.9, 0.95), (4.2, 1.6, 2.2), "dach_karczma", rot=(0, 180, 0))
-            s.klin("Buda dach", (0, 3.9, -0.95), (4.2, 1.6, 2.2), cien(s, "dach_karczma", 0.85))

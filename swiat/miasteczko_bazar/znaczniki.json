@@ -282,19 +282,19 @@
    "typ": "zagroda",
    "id": "zagroda_petow",
    "swiat": [
-    959.994,
-    0.5,
-    -676.13
+    954.632,
+    0.3,
+    -692.153
    ],
    "stoisko": [
-    959.994,
-    0.5,
-    -676.13
+    954.632,
+    0.3,
+    -692.153
    ],
    "podpowiedz": [
-    959.669,
-    5.1,
-    -671.116
+    954.172,
+    4.9,
+    -688.134
    ],
    "grupa_zaczepu": "Workspace/MiasteczkoBazar/ZagrodaPetow/_Interakcja",
    "czesc_stoiska": "Punkt E zagroda_petow",
@@ -310,19 +310,19 @@
     -0.9994
    ],
    "bazar": [
-    -34.006,
-    0.5,
-    23.87
+    -39.368,
+    0.3,
+    7.847
    ],
    "stoisko_bazar": [
-    -34.006,
-    0.5,
-    23.87
+    -39.368,
+    0.3,
+    7.847
    ],
    "podpowiedz_bazar": [
-    -34.331,
-    5.1,
-    28.884
+    -39.828,
+    4.9,
+    11.866
    ]
   },
   "miejsca_petow": [
@@ -330,90 +330,120 @@
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_1",
     "swiat": [
-     971.547,
+     969.835,
      0.5,
-     -674.832
+     -680.876
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -22.453,
+     -24.165,
      0.5,
-     25.168
+     19.124
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_2",
     "swiat": [
-     970.785,
+     953.844,
      0.5,
-     -682.31
+     -680.318
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -23.215,
+     -40.156,
      0.5,
-     17.69
+     19.682
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_3",
     "swiat": [
-     966.753,
+     970.016,
      0.5,
-     -683.17
+     -675.68
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -27.247,
+     -23.984,
      0.5,
-     16.83
+     24.32
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_4",
     "swiat": [
-     955.26,
+     954.026,
      0.5,
-     -682.769
+     -675.121
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -38.74,
+     -39.974,
      0.5,
-     17.231
+     24.879
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_5",
     "swiat": [
-     951.936,
+     970.198,
      0.5,
-     -677.65
+     -670.483
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -42.064,
+     -23.802,
      0.5,
-     22.35
+     29.517
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_6",
     "swiat": [
-     952.663,
+     954.207,
      0.5,
-     -671.171
+     -669.924
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -41.337,
+     -39.793,
      0.5,
-     28.829
+     30.076
+    ]
+   },
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_7",
+    "swiat": [
+     965.593,
+     0.5,
+     -670.522
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -28.407,
+     0.5,
+     29.478
+    ]
+   },
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_8",
+    "swiat": [
+     958.798,
+     0.5,
+     -670.285
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -35.202,
+     0.5,
+     29.715
     ]
    }
   ]
@@ -910,25 +940,25 @@
  ],
  "czesci_na_budynek": {
   "Teren": 2,
-  "TrainingCenter": 213,
+  "TrainingCenter": 254,
   "Karczma": 318,
   "PortalKrain": 54,
   "Tablica": 41,
   "SklepMagiczny": 237,
   "Zbrojownia": 212,
-  "ZagrodaPetow": 219,
+  "ZagrodaPetow": 153,
   "BramaTwierdzy": 229,
   "BramaLochow": 271,
   "StudniaPomnik": 77,
   "BramaLesna": 39,
-  "Domy": 259,
+  "Domy": 193,
   "Kulisy/Domy": 1149,
   "Stragany": 75,
-  "Mury": 88,
-  "Rekwizyty": 296,
+  "Mury": 85,
+  "Rekwizyty": 290,
   "Kulisy i tło": 271,
   "Niewidzialne": 4,
-  "Uliczka (bruk)": 292,
+  "Uliczka (bruk)": 294,
   "Start": 7,
   "Uliczka (kody)": 57
  },
@@ -1405,19 +1435,19 @@
    "typ": "zagroda",
    "id": "zagroda_petow",
    "swiat": [
-    959.994,
-    0.5,
-    -676.13
+    954.632,
+    0.3,
+    -692.153
    ],
    "stoisko": [
-    959.994,
-    0.5,
-    -676.13
+    954.632,
+    0.3,
+    -692.153
    ],
    "podpowiedz": [
-    959.669,
-    5.1,
-    -671.116
+    954.172,
+    4.9,
+    -688.134
    ],
    "grupa_zaczepu": "Workspace/MiasteczkoBazar/ZagrodaPetow/_Interakcja",
    "czesc_stoiska": "Punkt E zagroda_petow",
@@ -1433,109 +1463,139 @@
     -0.9994
    ],
    "bazar": [
-    -34.006,
-    0.5,
-    23.87
+    -39.368,
+    0.3,
+    7.847
    ],
    "stoisko_bazar": [
-    -34.006,
-    0.5,
-    23.87
+    -39.368,
+    0.3,
+    7.847
    ],
    "podpowiedz_bazar": [
-    -34.331,
-    5.1,
-    28.884
+    -39.828,
+    4.9,
+    11.866
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_1",
    "swiat": [
-    971.547,
+    969.835,
     0.5,
-    -674.832
+    -680.876
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -22.453,
+    -24.165,
     0.5,
-    25.168
+    19.124
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_2",
    "swiat": [
-    970.785,
+    953.844,
     0.5,
-    -682.31
+    -680.318
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -23.215,
+    -40.156,
     0.5,
-    17.69
+    19.682
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_3",
    "swiat": [
-    966.753,
+    970.016,
     0.5,
-    -683.17
+    -675.68
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -27.247,
+    -23.984,
     0.5,
-    16.83
+    24.32
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_4",
    "swiat": [
-    955.26,
+    954.026,
     0.5,
-    -682.769
+    -675.121
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -38.74,
+    -39.974,
     0.5,
-    17.231
+    24.879
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_5",
    "swiat": [
-    951.936,
+    970.198,
     0.5,
-    -677.65
+    -670.483
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -42.064,
+    -23.802,
     0.5,
-    22.35
+    29.517
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_6",
    "swiat": [
-    952.663,
+    954.207,
     0.5,
-    -671.171
+    -669.924
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -41.337,
+    -39.793,
     0.5,
-    28.829
+    30.076
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_7",
+   "swiat": [
+    965.593,
+    0.5,
+    -670.522
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -28.407,
+    0.5,
+    29.478
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_8",
+   "swiat": [
+    958.798,
+    0.5,
+    -670.285
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -35.202,
+    0.5,
+    29.715
    ]
   },
   {
@@ -1813,5 +1873,94 @@
     0.0
    ]
   }
- ]
+ ],
+ "trening_afk": {
+  "opis": "miejsca sześciu stanowisk treningu AFK w sali Training Center (środek maty na posadzce, świat Studio; obrot = stopnie obrotu stanowiska w Roblox, gracz patrzy w −Z stanowiska = „przod”). Wpisane do src/shared/TreningAFKDane.luau (D.miejsca).",
+  "stanowiska": [
+   {
+    "id": "Szczescie",
+    "pozycja": [
+     905.81,
+     0.5,
+     -726.85
+    ],
+    "obrot": 3.0,
+    "przod": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ]
+   },
+   {
+    "id": "Kondycja",
+    "pozycja": [
+     914.099,
+     0.5,
+     -727.284
+    ],
+    "obrot": 3.0,
+    "przod": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ]
+   },
+   {
+    "id": "Inteligencja",
+    "pozycja": [
+     922.387,
+     0.5,
+     -727.719
+    ],
+    "obrot": 3.0,
+    "przod": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ]
+   },
+   {
+    "id": "Pancerz",
+    "pozycja": [
+     906.197,
+     0.5,
+     -719.46
+    ],
+    "obrot": 183.0,
+    "przod": [
+     0.0523,
+     0.0,
+     0.9986
+    ]
+   },
+   {
+    "id": "Zrecznosc",
+    "pozycja": [
+     914.486,
+     0.5,
+     -719.895
+    ],
+    "obrot": 3.0,
+    "przod": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ]
+   },
+   {
+    "id": "Sila",
+    "pozycja": [
+     922.775,
+     0.5,
+     -720.329
+    ],
+    "obrot": 3.0,
+    "przod": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ]
+   }
+  ]
+ }
 }

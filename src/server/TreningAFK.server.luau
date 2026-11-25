@@ -4,7 +4,8 @@
 	Diamenty za poziom D-140 zostały na gałęzi pawel/diamenty-afk).
 
 	Stanowiska: kontener Workspace/TreningAFK (atrybut Wygenerowane), budowany przy starcie serwera z klocków na wolnym
-	pasie placu w miasteczku (TreningAFKDane.start). Trzecia wersja (Paweł 23.11): każde stanowisko ma swoją czynność
+	pasie placu w miasteczku (TreningAFKDane.start; agent Karola, sesja 25.11: od dziś w sali Training Center —
+	TreningAFKDane.miejsca). Trzecia wersja (Paweł 23.11): każde stanowisko ma swoją czynność
 	i animację postaci — hantle (Siła), wyciskanie sztangi na ławce (HP), bieżnia (Zręczność), czytanie książki
 	(Inteligencja), blok tarczą przed pomidorami od NPC (Pancerz), rzut kośćmi (Szczęście).
 	Animacje i ruch rekwizytów liczy klient (src/client/TreningAFKClient.client.luau) — serwer tylko stawia gracza
@@ -181,6 +182,11 @@ local REKWIZYTY: { [string]: (Model, CFrame, Color3) -> () } = {
 	Pancerz = function(m, o, k)
 		-- NPC z koszem pomidorów 11 st przed graczem (patrzy na gracza) + tarcza na stojaku obok maty
 		local n = o * CFrame.new(0, 0, -11) * CFrame.Angles(0, math.rad(180), 0)
+		-- agent Karola, sesja 25.11: NPC stoi poza salą (na placyku) — stopy na ziemi pod nim, nie na wysokości posadzki
+		local grunt = workspace:Raycast(n.Position + Vector3.new(0, 6, 0), Vector3.new(0, -12, 0))
+		if grunt then
+			n += Vector3.new(0, grunt.Position.Y - n.Position.Y, 0)
+		end
 		local rz = Instance.new("Model")
 		rz.Name = "Rzucajacy"
 		local skora = Color3.fromRGB(236, 190, 150)
@@ -214,15 +220,17 @@ local REKWIZYTY: { [string]: (Model, CFrame, Color3) -> () } = {
 	end,
 	Szczescie = function(m, o, k)
 		-- stolik przed graczem, kubek do kości w dłoni, dwie kości
-		czesc(m, "Stolik", Vector3.new(3.6, 0.3, 2.4), o * CFrame.new(0, 2.6, -2.6), Color3.fromRGB(40, 120, 70))
-		czesc(m, "Stolik rant", Vector3.new(3.8, 0.4, 2.6), o * CFrame.new(0, 2.45, -2.6), DREWNO)
-		czesc(m, "Stolik noga", Vector3.new(0.6, 2.4, 0.6), o * CFrame.new(0, 1.2, -2.6), DREWNO)
-		local kub = grupa(m, "Kubek", o * CFrame.new(1.2, 3.1, -2.4))
-		czesc(kub, "Kubek", Vector3.new(0.9, 0.9, 0.9), o * CFrame.new(1.2, 3.1, -2.4), Color3.fromRGB(110, 70, 40), Enum.PartType.Cylinder)
+		-- agent Karola, sesja 25.11: stolik niżej o 0,5 (blat 2,25) — kot (wzrost ok. 2,8 st) miał blat na wysokości brody
+		-- i kubek w dłoni wchodził w krawędź stolika; człowiekowi blat sięga teraz do bioder
+		czesc(m, "Stolik", Vector3.new(3.6, 0.3, 2.4), o * CFrame.new(0, 2.1, -2.6), Color3.fromRGB(40, 120, 70))
+		czesc(m, "Stolik rant", Vector3.new(3.8, 0.4, 2.6), o * CFrame.new(0, 1.95, -2.6), DREWNO)
+		czesc(m, "Stolik noga", Vector3.new(0.6, 1.9, 0.6), o * CFrame.new(0, 0.95, -2.6), DREWNO)
+		local kub = grupa(m, "Kubek", o * CFrame.new(1.2, 2.6, -2.4))
+		czesc(kub, "Kubek", Vector3.new(0.9, 0.9, 0.9), o * CFrame.new(1.2, 2.6, -2.4), Color3.fromRGB(110, 70, 40), Enum.PartType.Cylinder)
 		bezKolizji(kub)
 		for i = 1, 2 do
-			local g = grupa(m, "Kosc_" .. i, o * CFrame.new(-0.6 + i * 0.6, 3.0, -2.6))
-			czesc(g, "Kość", Vector3.new(0.5, 0.5, 0.5), o * CFrame.new(-0.6 + i * 0.6, 3.0, -2.6), if i == 1 then Color3.new(1, 1, 1) else k)
+			local g = grupa(m, "Kosc_" .. i, o * CFrame.new(-0.6 + i * 0.6, 2.5, -2.6))
+			czesc(g, "Kość", Vector3.new(0.5, 0.5, 0.5), o * CFrame.new(-0.6 + i * 0.6, 2.5, -2.6), if i == 1 then Color3.new(1, 1, 1) else k)
 			bezKolizji(g)
 		end
 	end,
@@ -241,8 +249,10 @@ local function zbuduj()
 	f.Name = "TreningAFK"
 	f:SetAttribute("Wygenerowane", true)
 	for i, s in ipairs(D.stanowiska) do
-		local srodek = D.start + Vector3.new((i - 1) * D.odstep, 0, 0)
-		local o = CFrame.new(srodek) * CFrame.Angles(0, math.rad(D.obrot), 0)
+		-- agent Karola, sesja 25.11: miejsce z D.miejsca (sala Training Center), bez wpisu — dawny rząd od D.start
+		local miejsce = D.miejsca and D.miejsca[s.id]
+		local srodek = if miejsce then miejsce.pozycja else D.start + Vector3.new((i - 1) * D.odstep, 0, 0)
+		local o = CFrame.new(srodek) * CFrame.Angles(0, math.rad(if miejsce then miejsce.obrot else D.obrot), 0)
 		local m = Instance.new("Model")
 		m.Name = s.id
 		m:SetAttribute("Atrybut", s.atrybut)

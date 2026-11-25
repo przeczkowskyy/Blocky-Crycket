@@ -19,7 +19,7 @@ przejściem na działkę, zagrodą petów, tablicą z rankingiem i Bramą Leśn�
 | `tekstury.py` | kafelki z arkusza, mapy do barwienia, wgrywanie do Roblox, raport przypisania, pomiar w emulacji telefonu |
 | `ujecia_tekstury.json`, `podglad/tekstury_*` | cztery kadry przed/po (plac, uliczka, karczma z bliska, całość z góry) i wyniki pomiaru `tekstury_pomiar.json` |
 
-**Liczby:** 4410 części (po zmianie postaci 17.11.2026; cel ok. 8000, twardy limit 12 000), 93 grupy. Kontener `Workspace/MiasteczkoBazar`.
+**Liczby:** 4312 części (po sali Training Center i zagrodzie 25.11.2026; wcześniej 4410; cel ok. 8000, twardy limit 12 000), 84 grupy. Kontener `Workspace/MiasteczkoBazar`.
 Świat = (994 + x; y; −700 + z), bez obrotu: części stoją w pliku już tam, gdzie mają stanąć (X 882…1066,
 Z −790…−610), więc przy budowie i zrzutach **nie podaje się `--przesun`**. Wschodni brzeg (X 1066) to początek pasa
 Lasu. Bazar stoi na wschodnim końcu płyty Baseplate (PROJEKT.md, wybór 1).
@@ -34,6 +34,50 @@ python -B swiat/miasteczko_bazar/podglad.py      # → podglad/*.jpg i ujecia.js
 
 Wynik kontroli z 17.11.2026: **0 błędów, 2 ostrzeżenia** (ok. 85 drobnych części wtopionych w grunt do 0,4 st, czyli
 w płytę Baseplate — jak w dzisiejszym miasteczku; 31 drobiazgów mniejszych niż 0,5 — oczy, guziki, oczka kostki).
+
+## Zagroda „tylko zagrodą” i sala treningowa w Training Center (noc 25/26.11.2026)
+
+Zlecenie z sesji głównej Karola i Pawła 25.11 (zgoda obu na głos; status zmian: **propozycja** do obejrzenia).
+
+**Zagroda petów** (`budynki/zagroda_petow.py`): bez ozdobnego psa, smoka, slime'a (także tego na dachu), budki opiekunki
+i psiej budy. Opiekunka Jagoda stoi **przed zagrodą**, na bruku obok prawego słupka bramki (punkt E przed nią, od strony
+uliczki), więc nie zasłania petów. Obrys bez zmian (26 × 20). **Osiem miejsc** na pety w kształcie litery U wokół przejścia
+od bramki (każde z legowiskiem w innym kolorze), miski przy bramce, koryto przy tylnym płocie, siano w tylnych narożnikach.
+Nazwy znaczników i id interakcji `zagroda_petow` bez zmian. Kolejność = kolejność odblokowania (2 → 4 → 6 → 8):
+
+| Znacznik | Świat Studio (X; Y; Z) | | Znacznik | Świat Studio (X; Y; Z) |
+|---|---|---|---|---|
+| `zagroda_miejsce_1` | 969,835; 0,5; −680,876 | | `zagroda_miejsce_5` | 970,198; 0,5; −670,483 |
+| `zagroda_miejsce_2` | 953,844; 0,5; −680,318 | | `zagroda_miejsce_6` | 954,207; 0,5; −669,924 |
+| `zagroda_miejsce_3` | 970,016; 0,5; −675,680 | | `zagroda_miejsce_7` | 965,593; 0,5; −670,522 |
+| `zagroda_miejsce_4` | 954,026; 0,5; −675,121 | | `zagroda_miejsce_8` | 958,798; 0,5; −670,285 |
+
+Punkt E opiekunki: stoisko (954,632; 0,3; −692,153), podpowiedź (954,172; 4,9; −688,134). Za nim poszły dane pakietów
+gry: `swiat/miasteczko_bazar_gra` (`dane.py`, w Studio `zbuduj.py --skrypty`) i NPC Jagody w `swiat/npc_gra` (`dane.py`,
+`zbuduj.py`; kotwice bez zmian).
+
+**Training Center rozszerzony „w lewo”** (`budynki/training_center.py`, patrząc z uliczki = na zachód): sala treningowa
+24,2 × 16,8 st przy lewym boku budynku, w tym samym stylu (miętowy tynk, różowy okap i kalenica, kreska tuszem, tekstury
+z `tekstury.json` przez nazwy części). Lewy bok budynku ma przejście do sali pod podciągiem (nowa opcja `otwarty_bok`
+w `wspolne.skorupa`, inne budynki bez zmian). **Kamera:** front sali otwarty na całej szerokości (bez słupów), belka frontu
+z kolizją, a dach to szkło (przezroczystość 0,55) na krokwiach — kamera Roblox (Poppercam) przechodzi przez części
+przezroczyste ≥ 0,25 i bez kolizji, więc nie wjeżdża w sufit, a stanowiska widać z placyku. Trener, tablica wyboru i punkt
+E `training_center` stoją jak stały; stojak z hantlami spod lewej ściany usunięty (zastępuje go stanowisko Siły), manekin
+odsunięty o ok. 1 st. Miejsca sześciu stanowisk AFK zapisuje moduł w `znaczniki.json` (blok `trening_afk`, poza listą
+`wszystkie`), stąd wpisane do `src/shared/TreningAFKDane.luau` (`D.miejsca`): dwa rzędy po trzy, gracz twarzą do tylnej
+ściany; Pancerz w przednim rzędzie twarzą do placyku, żeby NPC z pomidorami (11 st przed graczem) stał na placyku.
+
+**Kolizje sali z mapą i wybór** (sala stoi w kącie pn.-zach. placyku studni): niebieski dom placyku `dom_placyk_pn`
+zastąpiony salą (wpis w `uklad.json` zostaje z polem `pominiety`, żeby pozostałe domy miały te same losowania), łącznik
+„Training Center | dom placyku” usunięty (łączył z tym domem i stałby przed salą), drzewo z kąta placyku (−92; −29,5)
+usunięte, latarnia z (−71,3; −16,4) przesunięta o 4,1 st na (−75,3; −15,5) — stała na linii frontu sali, za plecami
+stanowiska Siły (słup z kolizją wciągałby kamerę). Front sali cofnięty o 3,2 st względem frontu budynku, więc ławka
+placyku zostaje. Mur w rogu placyku (x −95,5) dotyka ściany sali cokołem (0,2 st), dom zachodni nie nachodzi.
+
+Kontrola: `sprawdz.py` **0 błędów, 2 ostrzeżenia** (te same co wcześniej), 4312 części (było 4410). Testy
+`swiat/miasteczko_bazar_gra`: 36/38, dwa niezaliczenia sprzed tej pracy (`test_1d…`, `test_5e…`). Zrzuty przed/po:
+`podglad/noc2511_*.jpg` (zagroda, Training Center z zewnątrz i w środku, sześć stanowisk w trakcie treningu — Kot-Mag
+i Wojownik).
 
 ## Tekstury i kreska w stylu sali wyboru rasy (D-147, 25.11.2026)
 
@@ -132,7 +176,7 @@ z `podglad/`.
 5. **Brama Leśna:** E → Las (albo przejście pieszo — wybór 2 w PROJEKT.md, wymaga bramy w ścianie zamykającej Lasu).
 6. **Brama Twierdzy:** E → działka gracza, gdy Twierdza powstanie.
 7. **Wrota lochów:** blokada osobna dla gracza — klient chowa `BramaLochow/Blokada` po odblokowaniu (cutscenka, D-042).
-8. **Zagroda petów:** sześć miejsc `miejsce_peta` na odstawione pety; okno zagrody — Paweł.
+8. **Zagroda petów:** osiem miejsc `miejsce_peta` na odstawione pety (od 25.11.2026; wcześniej sześć); okno zagrody — Paweł.
 9. **Tablica:** SurfaceGui na powierzchni ze znacznika `tablica_ranking` (środek, normalna, 6,4 × 4,8).
 10. **Pomiar:** chodzenie w Play (progi, schodki portalu, kamera we wnętrzach), telefon (części, streaming — bazar to
     hub, rozważyć `Persistent`), czytelność sprzedawców i szyldów.

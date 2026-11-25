@@ -51,7 +51,7 @@
   {"x": 23.0, "z": 19.6, "ry": 184, "kolory": ["dach_stajnia", "biel"], "towar": "klocki"}
  ],
  "domy": [
-  {"id": "dom_placyk_pn", "x": -81.0, "z": -27.0, "ry": 0, "szer": 16, "gl": 14, "wys": 22, "wariant": "a", "sciana": "tynk_blekit", "dach": "dach_dom_ceglasty", "pochyl": 1},
+  {"id": "dom_placyk_pn", "x": -81.0, "z": -27.0, "ry": 0, "szer": 16, "gl": 14, "wys": 22, "wariant": "a", "sciana": "tynk_blekit", "dach": "dach_dom_ceglasty", "pochyl": 1, "pominiety": "25.11.2026: w tym miejscu stoi sala treningowa Training Center (budynki/training_center.py); wpis zostaje, żeby pozostałe domy miały te same losowania"},
   {"id": "dom_placyk_pd", "x": -81.0, "z": 27.0, "ry": 180, "szer": 16, "gl": 14, "wys": 23, "wariant": "c", "sciana": "tynk_brzoskwinia", "dach": "dach_dom_lupek", "pochyl": -1},
   {"id": "dom_zachod_pn", "x": -102.0, "z": -15.0, "ry": 90, "szer": 16, "gl": 14, "wys": 24, "wariant": "b", "sciana": "tynk_mieta", "dach": "dach_dom_ceglasty", "pochyl": -1},
   {"id": "dom_zachod_pd", "x": -102.0, "z": 15.0, "ry": 90, "szer": 16, "gl": 14, "wys": 21, "wariant": "d", "sciana": "tynk_krem", "dach": "drewno", "pochyl": 1}
@@ -83,7 +83,6 @@
   {"x": 39.0, "z": -14.6, "dl": 3.4, "opis": "sklep magiczny | zbrojownia"},
   {"x": -17.5, "z": 14.6, "dl": 3.6, "opis": "zagroda | Brama Twierdzy"},
   {"x": 17.0, "z": 14.6, "dl": 2.6, "opis": "Brama Twierdzy | stragan"},
-  {"x": -71.3, "z": -14.6, "dl": 3.6, "opis": "Training Center | dom placyku"},
   {"x": -71.3, "z": 14.6, "dl": 3.6, "opis": "stragany | dom placyku"}
  ],
  "mury": [
@@ -99,7 +98,7 @@
  ],
  "latarnie": [
   {"x": -46.25, "z": -16.4, "strona": "pn"}, {"x": -17.6, "z": -16.0, "strona": "pn"}, {"x": 18.6, "z": -15.8, "strona": "pn"},
-  {"x": 39.0, "z": -16.4, "strona": "pn"}, {"x": -71.3, "z": -16.4, "strona": "pn"},
+  {"x": 39.0, "z": -16.4, "strona": "pn"}, {"x": -75.3, "z": -15.5, "strona": "pn"},
   {"x": -46.6, "z": 16.2, "strona": "pd"}, {"x": -17.5, "z": 16.4, "strona": "pd"}, {"x": 16.8, "z": 16.4, "strona": "pd"},
   {"x": 61.6, "z": 15.6, "strona": "pd"}, {"x": -71.3, "z": 16.4, "strona": "pd"}
  ],

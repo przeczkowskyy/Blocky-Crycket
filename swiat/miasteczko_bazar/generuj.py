@@ -144,6 +144,10 @@ def budynki(s, U, obrysy):
         raport[m.NAZWA] = len(s.czesci) - n0
         w, d = m.OBRYS
         obrysy.append(Obrys(m.NAZWA, b["x"], b["z"], b["ry"], w, d, 0.2))
+        r = math.radians(b["ry"])
+        for cx, cz, w2, d2 in getattr(m, "OBRYSY_DODATKOWE", ()):     # dobudówki poza OBRYS (sala Training Center)
+            obrysy.append(Obrys(m.NAZWA + "+", b["x"] + cx * math.cos(r) + cz * math.sin(r),
+                                b["z"] - cx * math.sin(r) + cz * math.cos(r), b["ry"], w2, d2, 0.2))
     return raport
 
 
@@ -151,6 +155,8 @@ def domy(s, U, rnd, obrysy):
     P = U["poziomy"]
     n0 = len(s.czesci)
     for i, d in enumerate(U["domy"]):
+        if d.get("pominiety"):                                 # np. dom placyku zastąpiony salą Training Center
+            continue
         with s.uklad(pos=(d["x"], P["budynki_y0"], d["z"]), obrot=(0, d["ry"], 0), grupa="Domy/" + d["id"]):
             zestaw.dom_mieszkalny(s, random.Random(100 + i), wariant=d["wariant"], kolor_dachu=d["dach"],
                                   kolor_sciany=d["sciana"], szer=d["szer"], gl=d["gl"], wys=d["wys"], pochyl=d["pochyl"],
@@ -239,7 +245,7 @@ def rekwizyty(s, U, rnd):
     with s.grupa("Rekwizyty/Placyk"):
         zestaw.lawka(s, (-81.0, y, -14.5), ry=0)
         zestaw.lawka(s, (-81.0, y, 14.5), ry=180)
-        zestaw.drzewo_lisciaste(s, (-92.0, y, -29.5), random.Random(11), skala=0.9)
+        # drzewo z kąta pn.-zach. placyku (−92; −29,5) usunięte 25.11.2026: w tym miejscu stoi sala Training Center
         zestaw.drzewo_lisciaste(s, (-92.0, y, 29.5), random.Random(12), skala=0.95, owoce=True)
         zestaw.kwiaty(s, (-92.0, y, -3.0), ry=90, kolory=("czerwien", "biel"))
         zestaw.kwiaty(s, (-92.0, y, 3.0), ry=90, kolory=("dach_sklep", "zloto"))
@@ -406,6 +412,8 @@ def zapisz_znaczniki(U, plik, raport):
         "czesci_na_budynek": raport,
         "wszystkie": wszystkie,
     }
+    for k, v in wspolne.DODATKI.items():                       # bloki spoza „wszystkie” (np. trening_afk)
+        d[k] = v
     with open(plik, "w", encoding="utf-8", newline="\n") as f:
         json.dump(d, f, ensure_ascii=False, indent=1)
         f.write("\n")
@@ -415,6 +423,7 @@ def zapisz_znaczniki(U, plik, raport):
 def generuj(U=None):
     U = U or wczytaj_uklad()
     wspolne.ZNACZNIKI.clear()
+    wspolne.DODATKI.clear()
     X0, Z0 = U["swiat"]["X0"], U["swiat"]["Z0"]
     s = Scena(U["swiat"]["kontener"], paleta=PALETA)
     rnd = random.Random(U["ziarno"])

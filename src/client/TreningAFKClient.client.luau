@@ -15,6 +15,8 @@
 	Karola (Workspace/BohaterSwiat/BohaterowieLokalni, stawy Motor6D, jego pętla ma priorytet Last — nasza Last+1,
 	więc nadpisujemy pozę tylko w czasie treningu, bez zmian w jego plikach), na awatarze (AnimationConstraint) i na
 	modelach ras (ten sam szkielet). Bieg na bohaterze gra jego własny klip "bieg" przez umowę RuchBohatera.
+	Agent Karola, sesja 25.11: stanowiska w sali Training Center (TreningAFKDane.miejsca); na czas treningu broń bohatera
+	schowana, a narzędzie awatara w plecaku; sztanga i książka liczone z wymiarów postaci (kot ma krótkie łapy i szatę).
 	Ograniczenie: pozę i ruch rekwizytów widzi tylko trenujący gracz — dla innych graczy trzeba będzie te same ruchy
 	wgrać jako animacje Roblox (osobna zgoda na wgranie).
 ]]
@@ -328,6 +330,201 @@ local function oddajSzkielet(r: Rig?)
 	end
 end
 
+------------------------------------------------------------ agent Karola, sesja 25.11: nic w łapach, dłonie na rekwizycie
+-- (1) Na czas treningu broń znika: u bohatera lokalnie (LocalTransparencyModifier) modele przedmiotów z kategorii
+-- „Weapons” (moduł przymierzalni Workspace/StrojeProba/Moduly/DaneStrojow; bez niego — modele przyspawane do dłoni albo
+-- do StaffPivot), narzędzie awatara idzie do plecaka. Po treningu wszystko wraca.
+-- (2) Kot ma krótkie łapy (zasięg ok. 0,75 st od barku) i grubą szatę, więc kąty „na oko” wkładały sztangę w ubranie,
+-- a książkę w głowę. Dłonie celują teraz w punkt w układzie UpperTorso: dwa odcinki ramienia z długości ze stawów Motor6D
+-- (bark może wysunąć się do przodu o ≤ 0,5 st, gdy łapa nie sięga), a punkt liczy się z grubości klatki z ubraniem
+-- i dołu głowy tej postaci (rasa, klasa i strój mają różne wymiary).
+local bronCzesci: { BasePart } = {}
+local bronModel: Model? = nil
+local odlozoneNarzedzie: Tool? = nil
+local przedmiotyStrojow: any = nil
+
+local function czyBron(m: Model): boolean
+	if przedmiotyStrojow == nil then
+		przedmiotyStrojow = false
+		local sp = workspace:FindFirstChild("StrojeProba")
+		local md = sp and sp:FindFirstChild("Moduly")
+		local dane = md and md:FindFirstChild("DaneStrojow")
+		if dane and dane:IsA("ModuleScript") then
+			local ok, d = pcall(require, dane)
+			if ok and type(d) == "table" and type(d.przedmioty) == "table" then
+				przedmiotyStrojow = d.przedmioty
+			end
+		end
+	end
+	local p = przedmiotyStrojow and przedmiotyStrojow[m.Name]
+	if p then
+		return p.kategoria == "Weapons"
+	end
+	for _, d in ipairs(m:GetDescendants()) do
+		local p0 = d:IsA("JointInstance") and d.Part0
+		if p0 and (p0.Name == "StaffPivot" or p0.Name == "RightHand" or p0.Name == "LeftHand") then
+			return true
+		end
+	end
+	return false
+end
+
+local function schowajBron(r: Rig)
+	if r.rodzaj == "bohater" and (bronModel ~= r.model or (bronCzesci[1] and bronCzesci[1].Parent == nil)) then
+		bronModel = r.model
+		bronCzesci = {}
+		for _, m in ipairs(r.model:GetChildren()) do
+			if m:IsA("Model") and czyBron(m) then
+				for _, p in ipairs(m:GetDescendants()) do
+					if p:IsA("BasePart") then
+						table.insert(bronCzesci, p)
+					end
+				end
+			end
+		end
+	end
+	for _, p in ipairs(bronCzesci) do
+		p.LocalTransparencyModifier = 1
+	end
+	local char = player.Character
+	local narz = char and char:FindFirstChildOfClass("Tool")
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if narz and hum then
+		odlozoneNarzedzie = narz
+		hum:UnequipTools()
+	end
+end
+
+local function oddajBron(r: Rig?)
+	-- części bohatera mają wspólną przezroczystość lokalną (pętla bohatera): bierzemy ją z widocznej części ciała
+	local ltm = 0
+	if r and #bronCzesci > 0 then
+		for _, d in ipairs(r.model:GetDescendants()) do
+			if d:IsA("BasePart") and d.Transparency < 1 and not table.find(bronCzesci, d) then
+				ltm = d.LocalTransparencyModifier
+				break
+			end
+		end
+	end
+	for _, p in ipairs(bronCzesci) do
+		p.LocalTransparencyModifier = ltm
+	end
+	bronCzesci, bronModel = {}, nil
+	local narz = odlozoneNarzedzie
+	odlozoneNarzedzie = nil
+	local char = player.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if narz and hum and narz.Parent == player:FindFirstChildOfClass("Backpack") then
+		hum:EquipTool(narz)
+	end
+end
+
+type Miary = { klatka: number, glowaDol: number, wysTulowia: number, bark: Vector3, zasieg: number }
+local miary: Miary? = nil
+
+local function staw(r: Rig, n: string): Motor6D?
+	local j = r.stawy[n]
+	return if j and j:IsA("Motor6D") then j else nil
+end
+
+local function dlugosciRamienia(r: Rig, strona: string): (number, number)
+	local sh, el, wr = staw(r, strona .. "Shoulder"), staw(r, strona .. "Elbow"), staw(r, strona .. "Wrist")
+	if not (sh and el and wr) then
+		return 1, 1.1
+	end
+	return (el.C0.Position - sh.C1.Position).Magnitude, (wr.C0.Position - el.C1.Position).Magnitude + wr.C1.Position.Magnitude
+end
+
+-- wymiary w układzie UpperTorso (−Z = przód): przód klatki z ubraniem, dół głowy, wysokość tułowia, bark, zasięg łapy
+local function zmierz(r: Rig): Miary
+	local M: Miary = { klatka = 0.6, glowaDol = 0.75, wysTulowia = 1.6, bark = Vector3.new(1.5, 0.5, 0), zasieg = 2 }
+	local ut = r.model:FindFirstChild("UpperTorso") :: BasePart?
+	local sh, szyja, pas = staw(r, "RightShoulder"), staw(r, "Neck"), staw(r, "Waist")
+	if not ut then
+		return M
+	end
+	if sh then
+		M.bark = sh.C0.Position
+		local a, b = dlugosciRamienia(r, "Right")
+		M.zasieg = a + b
+	end
+	M.wysTulowia = if szyja and pas then szyja.C0.Y - pas.C1.Y else ut.Size.Y
+	local function rogi(korzen: BasePart, f: (Vector3) -> ())
+		local lista = korzen:GetDescendants()
+		table.insert(lista, korzen)
+		for _, p in ipairs(lista) do
+			if p:IsA("BasePart") and p.Transparency < 1 then
+				local cf = ut.CFrame:ToObjectSpace(p.CFrame)
+				local h = p.Size / 2
+				for _, s in ipairs({ Vector3.new(1, 1, 1), Vector3.new(1, 1, -1), Vector3.new(1, -1, 1), Vector3.new(1, -1, -1),
+					Vector3.new(-1, 1, 1), Vector3.new(-1, 1, -1), Vector3.new(-1, -1, 1), Vector3.new(-1, -1, -1) }) do
+					f(cf * (h * s))
+				end
+			end
+		end
+	end
+	local przod = 0
+	rogi(ut, function(q)
+		przod = math.max(przod, -q.Z)
+	end)
+	if przod > 0 then
+		M.klatka = przod
+	end
+	local glowa = r.model:FindFirstChild("Head") :: BasePart?
+	if glowa then
+		local dol = math.huge
+		rogi(glowa, function(q)
+			dol = math.min(dol, q.Y)
+		end)
+		if dol < math.huge then
+			M.glowaDol = dol
+		end
+	end
+	return M
+end
+
+-- dłoń w punkcie cel (układ UpperTorso): Transform barku (wysunięcie + pochylenie + odwiedzenie) i łokcia
+local function celuj(r: Rig, strona: string, cel: Vector3, maxWysun: number): (CFrame?, CFrame?)
+	local sh = staw(r, strona .. "Shoulder")
+	if not sh then
+		return nil, nil
+	end
+	local L1, L2 = dlugosciRamienia(r, strona)
+	local v = cel - sh.C0.Position
+	local zasieg = (L1 + L2) * 0.98
+	local wysun = Vector3.zero
+	if v.Magnitude > zasieg then
+		wysun = v.Unit * math.min(v.Magnitude - zasieg, maxWysun)
+		v -= wysun
+	end
+	local d = math.max(v.Magnitude, math.abs(L1 - L2) + 0.01)
+	local u = v.Unit
+	local odw = math.asin(math.clamp(u.X, -1, 1))
+	local poch = math.atan2(-u.Z, -u.Y)
+	local zgiecie = math.pi - math.acos(math.clamp((L1 * L1 + L2 * L2 - d * d) / (2 * L1 * L2), -1, 1))
+	local alfa = math.atan2(L2 * math.sin(zgiecie), L1 + L2 * math.cos(zgiecie))
+	return CFrame.new(wysun) * CFrame.Angles(poch - alfa, 0, odw), CFrame.Angles(zgiecie, 0, 0)
+end
+
+-- książka w łapach przed klatką: środek i nachylenie (układ UpperTorso) i skala (kot ma tułów 0,85 st → 0,45, człowiek ok. 1,5 → 0,8)
+local function ukladKsiazki(M: Miary): (CFrame, number)
+	local k = math.clamp(M.wysTulowia / 1.9, 0.42, 1)
+	local th = math.rad(65) -- strony zwrócone ku twarzy
+	local pol = 0.75 * k -- połowa długości książki (grzbiet wzdłuż Z)
+	-- górna krawędź pod brodą (z zapasem na pochyloną głowę — Neck −12° przy czytaniu)
+	local y = math.min(M.glowaDol - 0.18 - pol * math.sin(th), M.bark.Y - 0.1)
+	y = math.max(y, -M.wysTulowia * 0.45)
+	local z = -(M.klatka + 0.1 + pol * math.cos(th) + 0.07 * k) -- dolna krawędź przed ubraniem
+	return CFrame.new(0, y, z) * CFrame.Angles(th, 0, 0), k
+end
+
+-- sztanga: odległość dłoni od środka tułowia ku niebu (dół nad ubraniem, góra = wyprost)
+local function torSztangi(M: Miary, f: number): number
+	local dol = M.klatka + 0.32
+	local gora = math.max(dol + 0.4, M.zasieg * 0.95)
+	return dol + (gora - dol) * math.sin(math.pi * math.clamp(f, 0, 1))
+end
+
 ------------------------------------------------------------ rekwizyty stanowiska
 local stanowiskoM: Model? = nil
 local bazowe: { [Instance]: CFrame } = {} -- Model (PivotTo) albo BasePart → pozycja z serwera
@@ -346,6 +543,9 @@ local function przywrocRekwizyty()
 	for i, cf in pairs(bazowe) do
 		if i.Parent then
 			if i:IsA("Model") then
+				if i:GetScale() ~= 1 then
+					i:ScaleTo(1) -- agent Karola, sesja 25.11: książka zmniejszona do wzrostu postaci wraca do rozmiaru
+				end
 				i:PivotTo(cf)
 			elseif i:IsA("BasePart") then
 				i.CFrame = cf
@@ -375,7 +575,7 @@ local function dzwon(f: number): number -- 0 → 1 → 0 w jednym powtórzeniu
 	return math.sin(math.pi * math.clamp(f, 0, 1))
 end
 
-local POZY: { [string]: (f: number, t: number) -> { [string]: CFrame } } = {
+local POZY: { [string]: (f: number, t: number, r: Rig, M: Miary) -> { [string]: CFrame } } = {
 	Sila = function(f)
 		local p = if f < 0.5 then dzwon(f * 2) else 0
 		local l = if f >= 0.5 then dzwon(f * 2 - 1) else 0
@@ -385,12 +585,21 @@ local POZY: { [string]: (f: number, t: number) -> { [string]: CFrame } } = {
 			Waist = R(0, 6 * (p - l), 0), Neck = R(-4),
 		}
 	end,
-	Kondycja = function(f)
-		-- ręce do nieba (do przodu ciała): bark 90−a, łokieć 2a → dłoń wędruje prosto w górę i w dół
-		local a = 62 * (1 - dzwon(f))
+	Kondycja = function(f, _, r, M)
+		-- ręce do nieba (do przodu ciała), dłonie prosto nad barkami; agent Karola, sesja 25.11: dół ruchu nad klatką
+		-- z ubraniem (sztanga nie wchodzi w szatę), dłonie trochę szerzej niż barki, poniżej linii barków (nie w brodzie)
+		local d = torSztangi(M, f)
+		local x, y = math.abs(M.bark.X) + 0.12 * M.wysTulowia, M.bark.Y - 0.12 * M.wysTulowia
+		local bP, lP = celuj(r, "Right", Vector3.new(x, y, -d), 0.5)
+		local bL, lL = celuj(r, "Left", Vector3.new(-x, y, -d), 0.5)
+		if not (bP and bL) then
+			-- szkielet bez Motor6D (awatar na AnimationConstraint): dawna poza
+			local a = 62 * (1 - dzwon(f))
+			bP, lP, bL, lL = R(90 - a, 0, 8 + a * 0.25), R(2 * a), R(90 - a, 0, -8 - a * 0.25), R(2 * a)
+		end
 		return {
-			RightShoulder = R(90 - a, 0, 8 + a * 0.25), RightElbow = R(2 * a),
-			LeftShoulder = R(90 - a, 0, -8 - a * 0.25), LeftElbow = R(2 * a),
+			RightShoulder = bP, RightElbow = lP, RightWrist = R(-15),
+			LeftShoulder = bL, LeftElbow = lL, LeftWrist = R(-15),
 			RightHip = R(8), LeftHip = R(8), RightKnee = R(-14), LeftKnee = R(-14),
 			Neck = R(6),
 		}
@@ -406,12 +615,19 @@ local POZY: { [string]: (f: number, t: number) -> { [string]: CFrame } } = {
 			RightElbow = R(85), LeftElbow = R(85),
 		}
 	end,
-	Inteligencja = function(f)
+	Inteligencja = function(f, _, r, M)
+		-- agent Karola, sesja 25.11: łapy trzymają dolne rogi książki, która leży przed klatką pod brodą (ukladKsiazki)
 		local kiw = math.sin(f * math.pi * 2) * 3
+		local cf, k = ukladKsiazki(M)
+		local bP, lP = celuj(r, "Right", (cf * CFrame.new(0.95 * k, -0.08, 0.55 * k)).Position, 0.5)
+		local bL, lL = celuj(r, "Left", (cf * CFrame.new(-0.95 * k, -0.08, 0.55 * k)).Position, 0.5)
+		if not (bP and bL) then
+			bP, lP, bL, lL = R(30, 0, -10), R(70), R(30, 0, 10), R(70) -- szkielet bez Motor6D
+		end
 		return {
-			RightShoulder = R(42, 0, -14), RightElbow = R(78), RightWrist = R(-10),
-			LeftShoulder = R(42, 0, 14), LeftElbow = R(78), LeftWrist = R(-10),
-			Neck = R(-20 + kiw), Waist = R(-4),
+			RightShoulder = bP, RightElbow = lP, RightWrist = R(-25),
+			LeftShoulder = bL, LeftElbow = lL, LeftWrist = R(-25),
+			Neck = R(-12 + kiw), Waist = R(-4), -- było −20: pochylona głowa kota wchodziła w książkę
 		}
 	end,
 	Pancerz = function(f)
@@ -425,15 +641,17 @@ local POZY: { [string]: (f: number, t: number) -> { [string]: CFrame } } = {
 		}
 	end,
 	Szczescie = function(f)
-		local bark, lokiec, nadg = 50, 75, 0
+		-- agent Karola, sesja 25.11: kubek przed klatką, nie przy twarzy (było bark 50 / łokieć 75), rzut łapą w przód i w dół
+		-- na niższy stolik
+		local bark, lokiec, nadg = 38, 50, 0
 		if f < 0.35 then
 			nadg = 25 * math.sin(f * math.pi * 14) -- potrząsanie kubkiem
 		elseif f < 0.5 then
 			local k = (f - 0.35) / 0.15
-			bark, lokiec = 50 + 35 * k, 75 - 55 * k -- rzut
+			bark, lokiec = 38 + 34 * k, 50 - 38 * k -- rzut
 		elseif f < 0.8 then
 			local k = (f - 0.5) / 0.3
-			bark, lokiec = 85 - 35 * k, 20 + 55 * k -- powrót
+			bark, lokiec = 72 - 34 * k, 12 + 38 * k -- powrót
 		end
 		return {
 			RightShoulder = R(bark, 0, 6), RightElbow = R(lokiec), RightWrist = R(nadg),
@@ -487,7 +705,15 @@ local function ruszRekwizyty(f: number, t: number, r: Rig)
 		local g = grupa("Sztanga")
 		zapamietajGrupe(g)
 		if g and r.dlonL and r.dlonP and r.korzen then
-			local srodek = (r.dlonL.Position + r.dlonP.Position) / 2
+			-- agent Karola, sesja 25.11: sztanga w dłoniach od strony nieba i nigdy bliżej klatki niż ubranie + 0,25
+			local srodek = (r.dlonL.Position + r.dlonP.Position) / 2 + r.korzen.CFrame.LookVector * 0.1
+			local ut = r.model:FindFirstChild("UpperTorso") :: BasePart?
+			if ut and miary then
+				local p = ut.CFrame:PointToObjectSpace(srodek)
+				if -p.Z < miary.klatka + 0.25 then
+					srodek = ut.CFrame:PointToWorldSpace(Vector3.new(p.X, p.Y, -(miary.klatka + 0.25)))
+				end
+			end
 			local prawo = r.korzen.CFrame.RightVector
 			g:PivotTo(CFrame.fromMatrix(srodek, prawo, r.korzen.CFrame.UpVector))
 		end
@@ -507,14 +733,23 @@ local function ruszRekwizyty(f: number, t: number, r: Rig)
 		local k, kart = grupa("Ksiazka"), grupa("Kartka")
 		zapamietajGrupe(k)
 		zapamietajGrupe(kart)
-		if k and r.dlonL and r.dlonP and r.korzen then
-			local srodek = (r.dlonL.Position + r.dlonP.Position) / 2 + r.korzen.CFrame.UpVector * 0.25
-			local cf = CFrame.new(srodek) * r.korzen.CFrame.Rotation * R(50)
+		local ut = r.model:FindFirstChild("UpperTorso") :: BasePart?
+		if k and ut and miary then
+			-- agent Karola, sesja 25.11: książka przed klatką pod brodą (nie przy dłoniach, które u kota sięgały twarzy),
+			-- zmniejszona do wzrostu postaci; łapy trzymają jej dolne rogi (POZY.Inteligencja)
+			local uk, skala = ukladKsiazki(miary)
+			if math.abs(k:GetScale() - skala) > 0.01 then
+				k:ScaleTo(skala)
+				if kart then
+					kart:ScaleTo(skala)
+				end
+			end
+			local cf = ut.CFrame * uk
 			k:PivotTo(cf)
 			if kart then
 				-- kartka przewraca się z prawej na lewą w drugiej połowie powtórzenia
 				local kat = if f < 0.5 then 0 elseif f < 0.9 then math.pi * ((f - 0.5) / 0.4) else math.pi
-				kart:PivotTo(cf * CFrame.new(0, 0.09, 0) * CFrame.Angles(0, 0, kat))
+				kart:PivotTo(cf * CFrame.new(0, 0.09 * skala, 0) * CFrame.Angles(0, 0, kat))
 			end
 		end
 	elseif id == "Pancerz" then
@@ -571,7 +806,7 @@ local function ruszRekwizyty(f: number, t: number, r: Rig)
 			local g = grupa("Kosc_" .. i)
 			zapamietajGrupe(g)
 			if g and cp then
-				local cel = o * CFrame.new(losKosci[i].X, 2.98, -2.6 + losKosci[i].Z)
+				local cel = o * CFrame.new(losKosci[i].X, 2.48, -2.6 + losKosci[i].Z) -- blat niżej (agent Karola, sesja 25.11)
 				if f < 0.42 then
 					g:PivotTo(cp * CFrame.new(0, 0.6, 0)) -- w kubku (schowane wyżej przez kubek)
 				elseif f < 0.62 then
@@ -608,6 +843,7 @@ RunService:BindToRenderStep("TreningAFK", Enum.RenderPriority.Last.Value + 1, fu
 		rig = znajdzRig()
 		if rig then
 			przejmijAwatara(rig)
+			miary = zmierz(rig) -- agent Karola, sesja 25.11
 			if rig.rodzaj == "bohater" and aktywne == "Zrecznosc" then
 				local ruch = ruchBohatera()
 				if ruch then
@@ -624,9 +860,10 @@ RunService:BindToRenderStep("TreningAFK", Enum.RenderPriority.Last.Value + 1, fu
 	end
 	local f = postep % 1
 	-- bieg na bohaterze gra jego własny klip; na awatarze nasz
+	schowajBron(r) -- agent Karola, sesja 25.11: nic w łapach na czas treningu
 	local poza = POZY[aktywne :: string]
 	if poza and not (r.rodzaj == "bohater" and aktywne == "Zrecznosc") then
-		local cele = poza(f, czas)
+		local cele = poza(f, czas, r, miary or zmierz(r))
 		for n, j in pairs(r.stawy) do
 			j.Transform = cele[n] or CFrame.identity
 		end
@@ -672,6 +909,8 @@ end)
 
 ------------------------------------------------------------ zdarzenia z serwera
 local function koniec()
+	oddajBron(rig) -- agent Karola, sesja 25.11
+	miary = nil
 	oddajSzkielet(rig)
 	przywrocRekwizyty()
 	rig = nil

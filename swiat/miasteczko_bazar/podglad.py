@@ -41,7 +41,7 @@ KADRY = {
     "u4_portal_dzialka": ((44.0, 64.0, 12.0), (-4.0, 4.0, -4.0), 54.0, "Plac startu: portal do krain i Brama Twierdzy",
                           "z prawej (północ) portal do krain z wirem i tablica z rankingiem, z lewej Brama Twierdzy (działka), w środku start"),
     "u5_zagroda_tablica": ((-36.0, 40.0, 48.0), (-24.0, 2.0, -2.0), 60.0, "Zagroda petów i tablica ogłoszeń",
-                           "na dole zagroda (opiekunka, pies, slime, smok), wyżej tablica z rankingiem obok startu i portalu"),
+                           "na dole zagroda (osiem legowisk na pety, opiekunka przed bramką), wyżej tablica z rankingiem obok startu i portalu"),
 }
 ETYKIETY = {   # id znacznika → (numer, krótka nazwa, budynek do położenia etykiety, rząd etykiety: z bazaru)
     "start": (1, "Start", None, None),
