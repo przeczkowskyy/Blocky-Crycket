@@ -2,27 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-25T23:52:33+01:00",
+ "aktualizacja": "2026-11-25T23:52:41+01:00",
  "prace": [
-  {
-   "id": "miasto-zagroda-trening",
-   "tytul": "Miasto: zagroda bez dodatków, większy Training Center, stanowiska treningu w środku, poprawki animacji",
-   "stan": "w_toku",
-   "start": "2026-11-25T22:26:01+01:00",
-   "koniec_szacowany": "2026-11-26T01:46:01+01:00",
-   "aktualizacja": "2026-11-25T22:26:01+01:00",
-   "obszary": [
-    "mapa:miasteczko_bazar",
-    "studio:MiasteczkoBazar",
-    "studio:TreningAFK",
-    "swiat/miasteczko_bazar/**",
-    "src/shared/TreningAFKDane.luau",
-    "src/server/TreningAFK.server.luau",
-    "src/client/TreningAFKClient.client.luau"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "pety-lasu-noc2511",
    "tytul": "Przebudowa pięciu petów lasu według arkuszy Pawła",
