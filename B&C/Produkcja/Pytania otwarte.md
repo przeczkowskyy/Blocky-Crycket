@@ -935,6 +935,7 @@ Szczegóły: poziomy robocze 5–15 (#5 i #10 to ściany), łup za pierwsze poko
 
 Szczegóły: mnożniki budżetu ×1,0 / ×1,4 / ×1,8 i szanse są robocze — do kalkulatora `tools/walka/balans.py`. Zastępuje tabelę rzadkości w [[Przedmioty — zestawy v1]]; rozwija D-142.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): To nie jest ogólne przypisanie. Legendarny przedmot może mieć jedną statystykę, ale bardzo mocną + specjalną umiejętnośc, a common przedmiot może mieć 3 ale bardzo słąbe
 
 ## 97. Bez Blocky'ego: gra o kotach, nowa nazwa później?
 - Paweł 24.11: nie nawiązujemy do Blocky'ego, gra „po prostu o kotkach”, w stylu Shakes & Fidget; ekran ładowania i nazwę przerobić później.
@@ -954,6 +955,7 @@ Dopisek z 2026-11-25 (Karol): ekran ładowania trzeba poprawić już teraz, bo p
 Szczegóły: pliki `src/server/MistrzGier.server.luau`, `src/server/JajkoKorowe.server.luau`, `src/client/JajkoKoroweClient.client.luau`, `tools/studio/jajo_lesne_ustaw.luau`; Twoich plików nikt nie zmieniał. Numer zmieniony z 95 na 98 (24.11 dwa pytania dostały numer 95).
 Dopisek z 2026-11-24 (wieczór), dylematy szerzej: (1) miejsce — jajo stało za północną ścianą miasteczka (983, −652), gdzie gracz nie dojdzie; przeniesione na próbę na (955, −695), obok zagrody petów i stacji treningu Siły — czy tam zostaje, czy staje w lesie zamiast Twojego inkubatora. (2) Pet nad jajem i podobizny na karcie budują się Twoim `RigPetow.zbuduj`, a ten moduł poza Studio zwraca pustą tabelę — w wydanej grze byłyby same napisy (zob. pytanie 90). (3) Klient jaja podmienia w opisach „Złota” na „Rybek” tylko na wyświetlaniu; dane w `DanePetow` zostają Twoje. (4) Scenka u kupującego czeka na 5 kliknięć (bez kliknięcia idzie dalej sama po 7 s), inni gracze widzą wyklucie od razu — to odpowiedź Pawła na D-060 (wyklucie samo czy z klikaniem), do Twojego potwierdzenia.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): a
 
 
 ## 99. Karol: dolna siatka u kowala — zapasy do rozbiórki?
@@ -971,6 +973,7 @@ Szczegóły: okno `src/client/OknoKowalaClient.client.luau` korzysta z Twojego z
 
 Szczegóły: [[Tekstury sali wyboru klasy]], sekcja „Wersja 2”. Zdanie agenta (D-114): (a). Celem jest jednolitość, a Paweł dopiero co wybrał miękką kreskę; wariant (b) cofa jego zmianę, więc wymaga jego zgody. Zmienię zdanie, jeśli na telefonie brązowa kreska na budynkach widzianych z daleka zniknie — wtedy grubsza kreska tylko na dużych bryłach.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): a
 
 ## 101. Lag przy otwieraniu sklepu i ekwipunku: kto poprawia?
 - Karol 25.11: okna sklepu i ekwipunku czasem przycinają przy otwieraniu.
@@ -990,6 +993,7 @@ Szczegóły: Paweł 24.11 już przyspieszył okna (grafiki wczytywane z góry, b
 
 Szczegóły: opis w [[HUD]], sekcja „Układ z 2026-11-25”. W szufladzie są dziś trzy przykładowe wpisy bez logiki. Twoja tablica w karczmie woła dawny przycisk „Quests” — teraz otwiera szufladę. Przycisk Index nie ma jeszcze okna. Zastrzeżenie agenta: na telefonie lewy dół zajmuje joystick, więc rzędy stoją tam wyżej.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): a
 
 
 ## 103. Karol: pety — drugi slot, zdejmowanie i usuwanie

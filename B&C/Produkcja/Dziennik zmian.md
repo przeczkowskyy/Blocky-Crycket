@@ -25,6 +25,13 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - Karol Balucki: odpowiedź na pytanie 93 ([[Pytania otwarte]])
 - Karol Balucki: odpowiedź na pytanie 94 ([[Pytania otwarte]])
 - Karol Balucki: odpowiedź na pytanie 95 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 96 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 98 ([[Pytania otwarte]])
+- Karol Balucki: decyzja D-145 potwierdzona: zgoda (zatwierdzona przez Paweł 2026-11-24), przez panel ([[Rejestr decyzji]])
+- Karol Balucki: decyzja D-146 potwierdzona: zgoda (zatwierdzona przez Paweł 2026-11-24), przez panel ([[Rejestr decyzji]])
+- Karol Balucki: temat na sesję główną: Bez Blocky'ego: gra o kotach, nowa nazwa później? (pytanie 97) ([[Sesje główne]])
+- Karol Balucki: odpowiedź na pytanie 100 ([[Pytania otwarte]])
+- Karol Balucki: odpowiedź na pytanie 102 ([[Pytania otwarte]])
 
 ## 2026-11-25 · Claude Code u Karola (panel: pulpit osobno dla każdej gry; start prac nad miastem i muzyką)
 - **Panel:** Karol: „Chcę, żeby dashboard był per gra robiony”. Agent na Opus (ok. 0,3–0,55 mln tokenów, 40 min) dodał przełącznik gier i przypisanie pytań, decyzji, zadań i raportów do gry; opis w [[Panel zespołu]]. Testy panelu: 23 nowe, cała paczka bez błędów.
