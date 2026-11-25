@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-25 · Claude Code u Pawła (wojownik: komplet 5 arkuszy zestawów, wzór dla modeli Karola)
+- **Trzy nowe arkusze** zestawów wojownika z puli Lv 1–10 (polecenie Pawła): Podwórkowy, Targowy, Mleczarz — te same ustawienia co Giermek i Kuchenny z 24.11 (Nano Banana 2.1, 16:9, 4k, jedna wersja). Higgsfield: 3 generacje.
+- **Bez powtórek:** pięć nazw w tabeli Rycerza zastąpionych nowymi (rysunki już były w „Leśnym Złomie” albo trzeci raz kubeł) — lista w [[Przedmioty — pula Lv 1–10, 5 na slot (propozycja)]].
+- **Dla agenta Karola:** wszystkie 5 arkuszy w `assets/refs/przedmioty_rycerz/` jako wzór dla modeli 3D przedmiotów (sekcja „Dla agenta Karola” w notatce, zadanie w [[Zadania]]). Nic nie wgrano do Roblox, ikony niepocięte.
+
 ## 2026-11-25 · Claude Code u Pawła (rysunki referencyjne petów leśnego jajka dla Karola)
 - Paweł dał arkusze obrotów pięciu petów z leśnego jajka (Żołędziak, Mchowy Ślimak, Liściolis, Świetlikówka, Jelonek Gaju), wygenerowane z promptów Glossy Ink. W repozytorium: `assets/refs/pety_las/<pet>_obroty.jpg` + `CZYTAJ.md`.
 - **Dla agenta Karola:** przy przebudowie modeli tych petów korzysta z arkuszy — zasady w [[Pety leśnego jajka — arkusze obrotów (propozycja)]]; zadanie w [[Zadania]], zakres w [[Pytania otwarte]] 104. Ślimakowi brakuje widoku z tyłu, sówce z boku.

@@ -13,7 +13,7 @@ tags: [produkcja, zadania]
 - [ ] Muzyka miasteczka: nowe propozycje z Higgsfield do odsłuchu (obecna „dosyć słaba” — Karol 25.11), Karol wybiera, wgranie po osobnym „tak” · agent Karola, Karol · #wysoki
 - [ ] Responsywność: lag przy otwieraniu sklepu i ekwipunku — pomiar i poprawka według odpowiedzi na pytanie 101 · agent Karola albo Pawła · #wysoki
 - [ ] Ekran ładowania z kotami zamiast ludzików (D-145; napis tytułu — pytanie 97) · agent Karola · #średni
-- [ ] Modele 3D broni z ikon Pawła — czekamy, aż Paweł wrzuci ikony (25.11 w repozytorium jest 6 ikon puli Lv 1–10, w tym jedna broń) · Paweł, potem agent Karola · #średni
+- [ ] Modele 3D przedmiotów wojownika (pula Lv 1–10) według arkuszy Pawła: 5 zestawów po 6 przedmiotów w `assets/refs/przedmioty_rycerz/`, opis w [[Przedmioty — pula Lv 1–10, 5 na slot (propozycja)]]; do tego 6 ikon „Leśnego Złomu”. Arkusze zwiadowcy i maga — jeszcze nie ma · agent Karola (Karol 25.11: „przedmiotami zajmuję się ja”) · #średni
 - [ ] Pety leśnego jajka: przebudować modele według arkuszy obrotów Pawła (`assets/refs/pety_las/`, [[Pety leśnego jajka — arkusze obrotów (propozycja)]]); przed przebudową peta agent otwiera jego arkusz — zakres: pytanie 104 · agent Karola · #średni
 - [x] 2026-11-25: HUD — przyciski po lewej w dwóch rzędach, Index zamiast Quests, szuflada questów, [[Okno petów (propozycja)]] pod przyciskiem Pets (Paweł; czeka na Karola: pytania 102 i 103)
 - [x] 2026-11-24: trening AFK na `main` i w Studio (Paweł po rozmowie z Karolem); koty w ikonach ras, ramkach XP, selektorze klas; sklepy z NPC Karola — wgrane i sprawdzone w Play
