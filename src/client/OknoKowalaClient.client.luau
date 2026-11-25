@@ -10,6 +10,10 @@
 	Lewa strona: przedmioty klasy (posiadane jasne, nieposiadane przygaszone; „+N” poziom, „xN” zapas do rozbiórki).
 	Środek: przedmiot przed / po ulepszeniu, statystyki na pergaminie, kółka (poziom, materiały, zapas), cena,
 	przyciski ULEPSZ (młotek) i ROZBIERZ (kowadło). Okno otwiera się od razu, bez wjazdu.
+
+	Zakładki nad górną siatką (Paweł 25.11, prośba Karola o panel na składniki): ITEMS — przedmioty jak dotąd;
+	INGREDIENTS — składniki kuźni w tych samych 12 polach. Serwer Karola zna dziś jeden składnik (materiały
+	z rozbiórki, „widok.materialy”); lista SKLADNIKI niżej jest gotowa na kolejne, gdy pojawią się w „widoku”.
 ]]
 
 local Players = game:GetService("Players")
@@ -35,6 +39,12 @@ local upLbl = panel:WaitForChild("UpgradeLabel") :: TextLabel
 local scrapLbl = panel:WaitForChild("ScrapLabel") :: TextLabel
 
 local SLOTOW = 21
+local GORNYCH = 12 -- pola górnej siatki: przedmioty 1–12 albo składniki (zakładki)
+local tabItems = panel:WaitForChild("TabItems") :: TextButton
+local tabIngr = panel:WaitForChild("TabIngredients") :: TextButton
+local zakladka = "items" -- "items" | "ingredients"
+local wybranySkladnik: number? = nil
+local IKONA_ZLOMU = "rbxassetid://119371548847065" -- ItemScrap (assets/manifest.json)
 local widok: any = nil
 local wybrany: string? = nil
 local otwarte, czeka = false, false
@@ -96,7 +106,39 @@ local function przycisk(b: GuiButton, l: TextLabel, wlaczony: boolean)
 	l.TextTransparency = if wlaczony then 0 else 0.55
 end
 
+-- składniki kuźni z „widoku” serwera; kolejne dojdą tu, gdy serwer Karola zacznie je podawać
+local function skladniki(): { { nazwa: string, ile: string, ikona: string, opis: string } }
+	if not widok then
+		return {}
+	end
+	return {
+		{
+			nazwa = "Scrap", ile = liczba(widok.materialy), ikona = IKONA_ZLOMU,
+			opis = "Scrap\nUsed for every upgrade.\nGet it by scrapping spare items (SCRAP button).",
+		},
+	}
+end
+
+local function rysujZakladki()
+	for b, aktywna in pairs({ [tabItems] = zakladka == "items", [tabIngr] = zakladka == "ingredients" }) do
+		b.BackgroundColor3 = if aktywna then Color3.fromRGB(242, 179, 61) else Color3.fromRGB(107, 66, 38)
+		b.TextColor3 = if aktywna then Color3.new(1, 1, 1) else Color3.fromRGB(252, 227, 176)
+	end
+end
+
 local function rysujSrodek()
+	if zakladka == "ingredients" then
+		local s = wybranySkladnik and skladniki()[wybranySkladnik]
+		for _, f in ipairs({ before, after }) do
+			(f:FindFirstChild("ItemName") :: TextLabel).Text = "";
+			(f:FindFirstChild("Lvl") :: TextLabel).Text = ""
+		end
+		stats.Text = if s then s.opis .. "\nYou have: " .. s.ile else "Pick an ingredient on the left"
+		priceL.Text, c1.Text, c3.Text = "", "", ""
+		przycisk(upBtn, upLbl, false)
+		przycisk(scrapBtn, scrapLbl, false)
+		return
+	end
 	local w = wiersz(wybrany)
 	if not w then
 		for _, f in ipairs({ before, after }) do
@@ -140,15 +182,28 @@ local function rysuj()
 	for i = 1, SLOTOW do
 		local s = panel:FindFirstChild(string.format("Item%02d", i)) :: ImageButton
 		local w = widok.wiersze[i]
-		s.Visible = w ~= nil
+		s.Visible = w ~= nil and (i > GORNYCH or zakladka == "items")
 		if w then
 			(s:FindFirstChild("ItemName") :: TextLabel).Text = krotka(w.nazwa);
 			(s:FindFirstChild("ItemName") :: TextLabel).TextTransparency = if w.posiadany then 0 else 0.5;
 			(s:FindFirstChild("Lvl") :: TextLabel).Text = if w.posiadany then "+" .. w.poziom else "";
 			(s:FindFirstChild("Spare") :: TextLabel).Text = if w.posiadany and w.zapas > 0 then "x" .. w.zapas else "";
-			(s:FindFirstChild("Select") :: Frame).Visible = w.id == wybrany
+			(s:FindFirstChild("Select") :: Frame).Visible = w.id == wybrany and zakladka == "items"
 		end
 	end
+	local lista = skladniki()
+	for i = 1, GORNYCH do
+		local s = panel:FindFirstChild(string.format("Ingredient%02d", i)) :: ImageButton
+		local d = lista[i]
+		s.Visible = zakladka == "ingredients" and d ~= nil
+		if d then
+			(s:FindFirstChild("Icon") :: ImageLabel).Image = d.ikona;
+			(s:FindFirstChild("ItemName") :: TextLabel).Text = d.nazwa;
+			(s:FindFirstChild("Count") :: TextLabel).Text = "x" .. d.ile;
+			(s:FindFirstChild("Select") :: Frame).Visible = wybranySkladnik == i
+		end
+	end
+	rysujZakladki()
 	rysujSrodek()
 end
 
@@ -203,6 +258,7 @@ local function otworz()
 	local root = char and char:FindFirstChild("HumanoidRootPart") :: BasePart?
 	miejsceOtwarcia = root and root.Position or nil
 	msg.Text = ""
+	zakladka = "items" -- okno zawsze zaczyna od przedmiotów
 	gui.Enabled = true
 	-- jego tymczasowe okno otwiera się na to samo E — zamykamy je (kolejność słuchaczy nieustalona)
 	task.spawn(function()
@@ -254,6 +310,30 @@ for i = 1, SLOTOW do
 		end
 	end)
 end
+for i = 1, GORNYCH do
+	local s = panel:WaitForChild(string.format("Ingredient%02d", i)) :: ImageButton
+	s.Activated:Connect(function()
+		if skladniki()[i] then
+			wybranySkladnik = i
+			rysuj()
+		end
+	end)
+end
+local function ustawZakladke(nazwa: string)
+	if zakladka ~= nazwa then
+		zakladka = nazwa
+		if nazwa == "ingredients" and not wybranySkladnik and skladniki()[1] then
+			wybranySkladnik = 1
+		end
+		rysuj()
+	end
+end
+tabItems.Activated:Connect(function()
+	ustawZakladke("items")
+end)
+tabIngr.Activated:Connect(function()
+	ustawZakladke("ingredients")
+end)
 upBtn.Activated:Connect(function()
 	akcja("ulepsz")
 end)
