@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-25 · Claude Code u Pawła (rysunki referencyjne petów leśnego jajka dla Karola)
+- Paweł dał arkusze obrotów pięciu petów z leśnego jajka (Żołędziak, Mchowy Ślimak, Liściolis, Świetlikówka, Jelonek Gaju), wygenerowane z promptów Glossy Ink. W repozytorium: `assets/refs/pety_las/<pet>_obroty.jpg` + `CZYTAJ.md`.
+- **Dla agenta Karola:** przy przebudowie modeli tych petów korzysta z arkuszy — zasady w [[Pety leśnego jajka — arkusze obrotów (propozycja)]]; zadanie w [[Zadania]], zakres w [[Pytania otwarte]] 104. Ślimakowi brakuje widoku z tyłu, sówce z boku.
+- Pliki Karola (`swiat/`) bez zmian.
+
 ## 2026-11-25 · Claude Code u Karola (miasto: tekstury i kreska jak w sali wyboru rasy — D-147 w Studio)
 - Agent na Opus (ok. 50 min, ok. 0,45–0,5 mln tokenów) nałożył na miasteczko-bazar 25 własnych materiałów i brązową kreskę; opis w [[Klocki — Blender i Roblox]]. Liczba obiektów miasta bez zmian, w emulacji telefonu 16,7 ms na klatkę. Nic nie przebudowano ani nie przesunięto.
 - **Higgsfield:** jeden arkusz 16 tekstur; 6 kredytów zamiast 3, bo pierwsze wywołanie zostało policzone, a obrazu nie udało się odzyskać. Razem z próbkami muzyki wydane dziś 32 kredyty, zostało ok. 99.

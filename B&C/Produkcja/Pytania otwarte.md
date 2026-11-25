@@ -1005,3 +1005,12 @@ Szczegóły: opis w [[HUD]], sekcja „Układ z 2026-11-25”. W szufladzie są 
 Szczegóły: [[Okno petów (propozycja)]]; serwer okna `src/server/OknoPetow.server.luau` woła tylko Twój haczyk `SterowanieSerwera` („stan”, „wybierz” z pominięciem zasięgu). Premie kilku petów naraz zmieniają balans walki (dziś +20% Inteligencji od jednego epickiego).
 **Odpowiedź:**
 
+
+## 104. Karol: przebudowa petów leśnego jajka według rysunków Pawła
+- Paweł 25.11 dał arkusze obrotów pięciu petów leśnego jajka (`assets/refs/pety_las/`).
+- Prosi, żeby Twój agent przebudował według nich modele petów.
+- Do wyboru: (a) wszystkie pięć; (b) tylko te, gdzie rysunek wyraźnie różni się od modelu; (c) zostają obecne modele.
+
+Szczegóły: [[Pety leśnego jajka — arkusze obrotów (propozycja)]] (różnice i brakujące widoki: ślimak bez tyłu, sówka bez boku). Rysunek to wzór wyglądu — kości, klipy i rozmiar zostają, jak wymaga gra.
+**Odpowiedź:**
+
