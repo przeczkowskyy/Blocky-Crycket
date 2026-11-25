@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-25 · Claude Code u Karola (ustalenia z sesji głównej: powrót do Blocky & Crycket)
+- **Nowa notatka:** [[Sesja główna 2026-11-25 — zapis ustaleń]] (status propozycja) — sesja Karola i Pawła 21:53–22:20, temat: pomysł [[Blocky & Crycket]] po D-139 z dwoma podpisami. Zapis rozmowy zostaje lokalnie u gospodarza panelu.
+- **Rejestr decyzji:** propozycje D-148 (nazwa bez Blocky'ego, z „Cat”), D-149 (pierwsza wersja bez Twierdzy i walk petów), D-150 (drzewko: postać i pety, gałąź Twierdzy schowana), D-151 (stanowiska AFK w rozszerzonym Training Center), D-152 (kuźnia: rozbiórka i sklep składników), D-153 (pety: zagroda daje Rybki, założony pet premie, miejsca u Jagody), D-154 (sklep petów znika), D-155 (rzadkość: ≥1,5×, unikalna zdolność). Nic nie zatwierdzone; przy D-149, D-152 i D-153 uwagi agenta (zakres i liczby).
+- **Pytania otwarte:** odpowiedzi z sesji pod 97 (nazwa) i 99 (dolna siatka kowala); dopiski pod 96 i 103; nowe 104 (lochy w pierwszej wersji) i 105 (marketing: jawnie czy „pod przykrywką” — rozjazd z zatwierdzoną dziś D-126). Pytania zamknięte jako nieaktualne (58, 59, 63, 67–69) bez zmian.
+- **Zadania:** trzy nocne dla agenta Karola (jajka biomów, pety i zagroda, Training Center), nazwy gry, lista dla Pawła (referencje broni i petów, okno kowala, UI questów, mistrz gier, modele kotów), drzewko i sklep petów po zatwierdzeniu. Prośba z nagrania o push na GitHub i wiadomość na Telegramie nie została wykonana — polecenie panelu dla sesji mówi „nie commituj”.
+- **Sesje główne:** 19 tematów odhaczonych przez Karola dostało wyniki i odnośnik; do agendy — poradnik i pierwsza godzina gracza oraz lochy i termin pierwszej wersji.
+- Karta [[Blocky & Crycket]]: etap z „wstrzymana” na „prototyp” (D-139 ma oba podpisy), dopisek z sesji. Raport w panelu: „Sesja główna 2026-11-25 — do zatwierdzenia” (plik raportu zapisany ręcznie, bo narzędzia terminala były w tej sesji zablokowane).
+
 ## 2026-11-25 · Claude Code u Karola (miasto: tekstury i kreska jak w sali wyboru rasy — D-147 w Studio)
 - Agent na Opus (ok. 50 min, ok. 0,45–0,5 mln tokenów) nałożył na miasteczko-bazar 25 własnych materiałów i brązową kreskę; opis w [[Klocki — Blender i Roblox]]. Liczba obiektów miasta bez zmian, w emulacji telefonu 16,7 ms na klatkę. Nic nie przebudowano ani nie przesunięto.
 - **Higgsfield:** jeden arkusz 16 tekstur; 6 kredytów zamiast 3, bo pierwsze wywołanie zostało policzone, a obrazu nie udało się odzyskać. Razem z próbkami muzyki wydane dziś 32 kredyty, zostało ok. 99.

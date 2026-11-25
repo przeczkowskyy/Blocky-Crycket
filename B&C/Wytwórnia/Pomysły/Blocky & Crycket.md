@@ -2,7 +2,7 @@
 status: propozycja
 typ: pomysł-gry
 gra: Blocky & Crycket
-etap: wstrzymana
+etap: prototyp
 zdanie: "Pick a class, fight monsters across biomes, build your stronghold."
 ocena_agenta: 12
 werdykt_agenta: odrzuć
@@ -56,6 +56,8 @@ Rozwój postaci, Twierdza, jajka.
 | Koszt dla nas | 0 | | |
 
 ## Krytyka agenta
+**Dopisek 2026-11-25 (agent, po sesji głównej):** D-139 ma oba podpisy (Paweł 23.11, Karol 25.11) — gra wraca do budowy, więc etap z „wstrzymana” wraca na „prototyp”; powód wstrzymania („zadania stoją do decyzji o kierunku”) przestał obowiązywać. Ocena 12/30 zostaje do czasu nowej oceny: na sesji Karol i Paweł nie przeszli po kryteriach, za to zdjęli z pierwszej wersji Twierdzę i walki petów (propozycja D-149 — poprawia „koszt” i „pierwsze 10 sekund”), a dodali ekonomię petów i kuźni (D-152, D-153 — ciągną w drugą stronę). Pola ocen Karola i Pawła dalej puste. Zapis: [[Sesja główna 2026-11-25 — zapis ustaleń]].
+
 **Ocena odświeżona 2026-11-22 (agent): 12/30, werdykt: odrzuć.** Wszystkie zadania gry stoją do decyzji o kierunku, więc etap „prototyp” jest nieaktualny. Rdzeń — walka toczy się sama — to ten sam błąd, który znudził właściciela w dwóch kolejnych prototypach, a w falach rosnących 22.11 (ewolucja, sprzątanie, dom i noc, armia) nie ma klasowego RPG. Największa głębia w lejku nie ratuje pierwszych 10 sekund (wybór klasy przed akcją) ani kosztu dojścia do publicznej wersji; werdykt dotyczy budowy teraz, a zasoby gry zostają jako materiał — o losie samej gry decydują ludzie. Etap: prototyp → wstrzymana. Źródła: [[Lekcje z prototypów]] · [[Wschodzące trendy 2026-11-22]] · [[Karta oceny pomysłu]] · [[Mózg — zasady hitu Roblox]].
 
 - Ma to, czego brakuje BONK (głębia), a nie ma tego, co BONK ma (prostota na start). Pełna diagnoza i propozycja przycięcia: [[Diagnoza 2026-11-19 — prostota i szansa na hit]].

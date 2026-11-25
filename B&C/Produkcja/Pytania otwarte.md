@@ -934,6 +934,7 @@ Szczegóły: poziomy robocze 5–15 (#5 i #10 to ściany), łup za pierwsze poko
 - Do wyboru: (a) jak w notatce; (b) legenda po równo na wszystkie; osobno: tier Rzadki (niebieski) zostaje / wypada; licznik pecha tak / nie.
 
 Szczegóły: mnożniki budżetu ×1,0 / ×1,4 / ×1,8 i szanse są robocze — do kalkulatora `tools/walka/balans.py`. Zastępuje tabelę rzadkości w [[Przedmioty — zestawy v1]]; rozwija D-142.
+Dopisek z 2026-11-25 (sesja główna 22:15–22:16): Karol i Paweł uzgodnili na głos — liczba statystyk nie jest sztywna (zwykły może mieć trzy słabe, legendarny jedną mocną), legendarny daje co najmniej 1,5 razy więcej statystyk niż zwykły (Paweł), a epickie i legendarne mają unikalną zdolność, np. podpalenie (Karol) — propozycja D-155. Zob. [[Sesja główna 2026-11-25 — zapis ustaleń]].
 **Odpowiedź:**
 - Karol Balucki (2026-11-25): To nie jest ogólne przypisanie. Legendarny przedmot może mieć jedną statystykę, ale bardzo mocną + specjalną umiejętnośc, a common przedmiot może mieć 3 ale bardzo słąbe
 
@@ -945,6 +946,7 @@ Szczegóły: mnożniki budżetu ×1,0 / ×1,4 / ×1,8 i szanse są robocze — d
 Szczegóły: tytuł „Blocky & Crycket” bez Blocky'ego traci sens — nowa nazwa dotknie ekranu ładowania ([[Ekran ładowania]]), strony gry i miniatur; repo i nazwy w kodzie mogą zostać. Uwaga agenta (D-114): zgoda — „Cat” w nazwie pomaga w wyszukiwaniu na Roblox, a kot jest jednym rozpoznawalnym bohaterem.
 Dopisek z 2026-11-25 (Karol): ekran ładowania trzeba poprawić już teraz, bo postaciami są tylko koty (D-145). Przy odpowiedzi do ustalenia: czy na nowym ekranie zostaje napis „BLOCKY & CRYCKET” do czasu nowej nazwy, czy ekran jest bez tytułu. Zdanie agenta: zostawić obecny tytuł i zmienić tylko grafikę na koty, bo nazwa gry w Roblox i ekran powinny mówić to samo, a zmiana nazwy to osobna sesja.
 **Odpowiedź:**
+- Claude Code (2026-11-25, z sesji głównej 21:54): Paweł i Karol: Blocky znika z tytułu — gra jest o kotach, a w nowej nazwie ma być „Cat”, słowo dobrze indeksujące się w Roblox (Paweł); warianty zaproponuje agent, wybiorą Karol i Paweł (propozycja D-148). O napisie na ekranie ładowania i o Blockym w lore nie rozmawiano. Zapis agenta z rozmowy.
 
 ## 98. Karol: mistrz gier i leśne jajo — podpięcie u Ciebie
 - Okno mistrza gier działa (D-053): nagrody wypłaca dziś testowe „przyznaj” Twojego stanu gracza, a płatny rzut odmawia, bo źródła „MistrzGier” nie ma w `DaneStanu.wydatki.zrodla`.
@@ -965,6 +967,7 @@ Dopisek z 2026-11-24 (wieczór), dylematy szerzej: (1) miejsce — jajo stało z
 
 Szczegóły: okno `src/client/OknoKowalaClient.client.luau` korzysta z Twojego zdalnego `KowalProba/Zdalne/Kuznia` („widok”, „ulepsz”, „rozbierz”) bez zmian u Ciebie; Paweł jeszcze nie wybrał.
 **Odpowiedź:**
+- Claude Code (2026-11-25, z sesji głównej 22:05): Karol (Paweł nie zaprzeczył): wariant (a) — dół to przedmioty do rozbiórki, góra to składniki z rozbiórki; do tego w kuźni ma być sklep składników za Rybki, a Paweł zrobi okno z zakładkami zamiast przerabiać całość (propozycja D-152). Zapis agenta z rozmowy.
 
 ## 100. Miasto: kreska jak w sali dziś czy czarna i grubsza?
 - Karol 25.11 (D-147): miasto ma dostać kreskę i tekstury jak sala wyboru rasy; mówił o „widoczniejszych czarnych kreskach”.
@@ -1003,5 +1006,23 @@ Szczegóły: opis w [[HUD]], sekcja „Układ z 2026-11-25”. W szufladzie są 
 - Do ustalenia też: jak odblokowuje się sloty 3 i 4 i czy plecak petów ma limit.
 
 Szczegóły: [[Okno petów (propozycja)]]; serwer okna `src/server/OknoPetow.server.luau` woła tylko Twój haczyk `SterowanieSerwera` („stan”, „wybierz” z pominięciem zasięgu). Premie kilku petów naraz zmieniają balans walki (dziś +20% Inteligencji od jednego epickiego).
+Dopisek z 2026-11-25 (sesja główna 22:09–22:14): liczby slotów, zdejmowania poza zagrodą i usuwania kopii nie rozstrzygnięto. Padło za to: sklep petów znika, pety są pod przyciskiem Pet (propozycja D-154); pety w zagrodzie dają Rybki na sekundę, pet założony na gracza jest wyjęty z zagrody i daje statystyki oraz pasywki, a miejsc w zagrodzie jest 2 → 4 → 6 → 8 za ulepszenie u Jagody (propozycja D-153). Zob. [[Sesja główna 2026-11-25 — zapis ustaleń]].
+**Odpowiedź:**
+
+## 104. Lochy w pierwszej wersji: tak czy dopiero w aktualizacji?
+- Na sesji 25.11 obaj zgodzili się na pierwszą wersję bez Twierdzy i walk petów (propozycja D-149); o lochach nie było zgody.
+- Karol najpierw „bez dungeonów”, potem przypomniał sobie, że chcieli je dać; Paweł: „możemy dać… nie”, chodziło mu tylko o Twierdzę i walki petów.
+- Do wyboru: (a) Katakumby w pierwszej wersji; (b) lochy jako pierwsza aktualizacja po wydaniu; (c) inaczej — jak.
+
+Szczegóły: [[Sesja główna 2026-11-25 — zapis ustaleń]] (21:57–21:58). Katakumby są częściowo zrobione po stronie Pawła (pytanie 95: boss gotowy; lista przeciwników w notatce Pawła, która jeszcze nie trafiła do repozytorium). Zdanie agenta (D-114): (b) — Paweł sam podał wzór gry, która dokładała treść aktualizacjami, żeby gracze wracali; loch jako pierwsza aktualizacja to gotowy „powód powrotu”, a pierwsza wersja ma być jak najkrótsza do wydania. Zmienię zdanie, jeśli przejście trzech biomów okaże się krótsze niż godzina.
+**Odpowiedź:**
+
+## 105. Konto klipów: jawne (D-126) czy „losowy Instagramer” z sesji?
+- Karol 25.11 zatwierdził w panelu D-126: konto klipów w wersji jawnej (postacie oznaczone jako AI, nasza gra oznaczona jako nasza).
+- Na sesji 25.11 (22:08–22:09) opisał to inaczej: konto losowego Instagramera, który postuje klipy z Robloxa i „pod przykrywką”, pośrednio promuje naszą grę.
+- Do wyboru: (a) zostaje wersja jawna z D-126 — agent robi klipy z gry i reakcje postaci z Higgsfield, oznaczone; (b) wersja z sesji — agent w niej nie pomoże; (c) rozmowa na sesji.
+Gra: wspolne
+
+Szczegóły: [[Sesja główna 2026-11-25 — zapis ustaleń]]; zasady i progi próby: [[Konto klipów z wirtualnymi streamerami — pomysł]], [[00 Marketing]]. Paweł na sesji zdania nie wyraził. Zdanie agenta (D-114): (a) — ukryta promocja własnej gry przez konto udające zwykłego gracza to ukryta reklama, a widzami będą dzieci; sam format (klipy z gry plus reakcje) działa też jawnie. Tego zdania nie zmienię; o kierunku decydują Karol i Paweł, ja mogę tylko odmówić wersji udawanej.
 **Odpowiedź:**
 

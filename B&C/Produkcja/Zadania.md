@@ -7,6 +7,17 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Jajka pozostałych biomów (Bagno, Dżungla) na wzór leśnego jaja Pawła — model, karta petów, scenka wyklucia; Karol na sesji 25.11: „poproszę mojego Clauda, żeby wziął Twoje jajko i zbudował do innych biomów”; start po poleceniu na czacie ([[Sesja główna 2026-11-25 — zapis ustaleń]]) · agent: Karol · #wysoki
+- [ ] Pety i zagroda: poprawić modele i animacje petów (referencje od Pawła), z zagrody usunąć smoka, psa i domek, Jagoda przed zagrodą; po zatwierdzeniu D-153 — miejsca 2 → 4 → 6 → 8 u Jagody i Rybki na sekundę z zagrody (najpierw liczby w kalkulatorze) · agent: Karol · #wysoki
+- [ ] Training Center: rozszerzyć budynek w lewo, przenieść tam stanowiska AFK (bieżnie, ławki, czytanie), poprawić animacje — sztanga przez ubranie, książka w głowie przy czytaniu, nic w ręce (propozycja D-151; Karol na sesji 25.11: „to chcę, żebyś ty zrobił, w sensie Claude”) · agent: Karol · #wysoki
+- [ ] Nazwa gry: zaproponować warianty z „Cat”, dobrze indeksujące się w wyszukiwarce Roblox, ze sprawdzeniem wolnych tytułów; wybór Karola i Pawła (propozycja D-148, pytanie 97) · #wysoki
+- [ ] Paweł: obraz referencyjny broni (ma kilka poglądowych z Higgsfield) i referencje petów dla Karola — prośba z sesji 25.11 · Paweł · #wysoki
+- [ ] Paweł: okno kowala z zakładkami — ulepszanie, rozbiórka (dół: przedmioty, góra: składniki), sklep składników za Rybki; poprawić górną siatkę z grafiki (dziś „Kostur Kota-Maga” zamiast składników) (propozycja D-152, pytanie 99) · agent: Paweł · #wysoki
+- [ ] Paweł: UI questów — tablica ogłoszeń w bazarze z wykrzyknikiem, kliknięcie otwiera okno z questami do wyboru (pomysł Pawła z sesji 25.11) · agent: Paweł · #średni
+- [ ] Paweł: poprawić mistrza gier (zapowiedź Pawła, przypomniana przez Karola na sesji 25.11) · agent: Paweł · #średni
+- [ ] Paweł: modele kotów wszystkich ras do końca (Paweł na sesji 25.11: „mogę zrobić do końca, mam je u siebie”); Karol: drobne poprawki w niektórych rasach · Paweł · #wysoki
+- [ ] Po zatwierdzeniu D-149 i D-150: drzewko tylko postać i pety, gałąź Twierdzy pod kłódką (kod zostaje); Twierdza, działka i walki petów schowane przed graczem w pierwszej wersji — kto robi, ustalić (drzewko to kod Pawła, działka i zagroda 3D Karola) · #wysoki
+- [ ] Po zatwierdzeniu D-154: sklep petów znika, pety tylko pod przyciskiem Pet — potwierdzić, które okno znika (Pet Tamer?) · #średni
 - [ ] Miasto: ocenić wygląd po teksturach (raport w panelu) i wybrać kreskę (pytanie 100); do poprawy według uwag: grube słupy narożne (1,3 studa), pasy na wodzie, kafel „igliwie” · Karol, Paweł · #wysoki
 - [ ] Bazar: dwa testy pakietu `miasteczko_bazar_gra` nie przechodzą po zmianach HUD Pawła z 25.11 (przyciski HUD i sygnał okien) — dostosować pakiet albo testy do nowego układu · agent Karola · #średni
 - [ ] Dźwięki i grafiki wgrane z konta Karola: gra należy do innego konta, więc każdy zasób potrzebuje zgody „Use” dla gry; dwa dźwięki jej nie mają i w grze nie zagrają — nadać zgodę tak jak teksturom miasta · agent Karola · #średni
@@ -21,7 +32,7 @@ tags: [produkcja, zadania]
 - [ ] Sklep: „tak” na wgranie ikon przedmiotów z Blendera (80 plików w `swiat/postacie/wynik/…/ikony/`) — do tego czasu kafelki z nazwą; potem wpisać ID do `src/shared/IkonyPrzedmiotow.luau` · Paweł albo Karol · #średni
 - [ ] Sklep: sprawdzić na telefonie (Device Emulator), czy nazwy na kafelkach i karta przedmiotu są czytelne; ustalić towar sklepu magicznego · Paweł · #średni
 - [ ] Panel: po wyborze tematu sesji (gra albo pomysł) agenda i lista pytań w zakładce Sesja dostosowują się do tej gry; prośba Karola z drugiej sesji 22.11, start po poleceniu na czacie ([[Sesja główna 2026-11-22 (2) — zapis ustaleń]]) · #średni
-- [ ] Marketing: osobna sesja (`/marketing`) — wersja konta klipów (pytanie 80), obsada wirtualnych streamerów, wycena klipu w kredytach ([[00 Marketing]]) · Karol · #średni
+- [ ] Marketing: osobna sesja (`/marketing`) — wersja konta klipów (pytanie 80; po sesji 25.11 także pytanie 105: jawnie czy „losowy Instagramer”), obsada wirtualnych streamerów, wycena klipu w kredytach ([[00 Marketing]]) · Karol · #średni
 - [ ] Paweł: potwierdzić albo zmienić D-114 (prawo agenta do sprzeciwu) i D-115 (Wytwórnia pomysłów) · Paweł · #średni
 - [ ] Paweł: przełączyć repozytorium na prywatne w ustawieniach GitHub (D-044) — działanie właściciela, po zatwierdzeniu decyzji; wtedy lustro panelu na GitHub Pages odpada · #gra/wspolne · #wysoki
 - [ ] Kroki założenia grupy Roblox, publikacji gry jako gry grupy i ponownego wgrania animacji — po odpowiedzi na pytanie 31 (D-044) · #średni
