@@ -2,8 +2,23 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-25T19:07:09+01:00",
+ "aktualizacja": "2026-11-25T19:29:50+01:00",
  "prace": [
+  {
+   "id": "miasto-tekstury",
+   "tytul": "Miasto: tekstury i kreska jak w sali wyboru rasy (D-147)",
+   "stan": "w_toku",
+   "start": "2026-11-25T19:29:50+01:00",
+   "koniec_szacowany": "2026-11-25T21:59:50+01:00",
+   "aktualizacja": "2026-11-25T19:29:50+01:00",
+   "obszary": [
+    "mapa:miasteczko_bazar",
+    "studio:MiasteczkoBazar",
+    "swiat/miasteczko_bazar/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
   {
    "id": "panel-per-gra",
    "tytul": "Panel: widok per gra (przełącznik gier)",
