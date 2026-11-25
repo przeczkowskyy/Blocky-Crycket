@@ -908,6 +908,7 @@ Szczegóły: dziś okno ekwipunku (`EquipmentPanelClient`) liczy Szczęście × 
 
 Szczegóły: referencje 7 ras (jedna para uszu u elfów i goblina): [[Rasy jako koty — referencje]]. Przedmioty z katalogu sklepu mają ciało „czlowiek” i nie pasują do kota. Bohater w świecie (`swiat/bohater_swiat`) dalej pokazuje Rycerza/Zwiadowcę/Kota-Maga — zob. też pytanie 91. Kopie ludzików w wyborze rasy zostały jako `Race_Demon_ludek` i `Race_Human_ludek`.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): Paweł zrobił modele, pobierzmy je, poprawmy bugi i animacje. Przedmiotami zajmuje się ja. Zadbaj aby się nie bugował podczas animacji i żeby nie nachodziły na kotka twarz podczas wykonywnia ruchów lub czegoś
 
 ## 94. Pula Lv 1–10: 5 przedmiotów na slot, spodnie jako slot, strefy?
 - Paweł 24.11: w pierwszej puli po 5 przedmiotów na slot (broń, hełm, klata, spodnie, buty, rękawice) dla każdej klasy; zestawy opcjonalne — lista nazw: [[Przedmioty — pula Lv 1–10, 5 na slot (propozycja)]].
@@ -916,6 +917,7 @@ Szczegóły: referencje 7 ras (jedna para uszu u elfów i goblina): [[Rasy jako 
 
 Szczegóły: D-142 (Paweł 23.11) mówi „według poziomu, nie według krainy”; pomysł ze strefami ją zmienia, dlatego wariant zgodny z D-142 jest w notatce. Koszt ikon: 15 arkuszy po 6 ikon.
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): b
 
 ## 95. Katakumby i kolejne lochy: 10 przeciwników po kolei
 - Paweł 24.11: loch „Katakumby”, 10 przeciwników jako modele 3D, E = walka, kolejno bez przeskakiwania; lista przeciwników „bardzo okej” — [[Katakumby — pierwszy loch (propozycja)]]. Lochy 2 i 3 (Zatopiony Galeon 16–26, Psia Twierdza 26–36): [[Lochy 2 i 3 — Zatopiony Galeon i Psia Twierdza (propozycja)]].
@@ -924,6 +926,7 @@ Szczegóły: D-142 (Paweł 23.11) mówi „według poziomu, nie według krainy�
 
 Szczegóły: poziomy robocze 5–15 (#5 i #10 to ściany), łup za pierwsze pokonanie, powtórki z pomijaniem animacji (D-078). Dotyka pytania 3 w [[Biom Las]] („Loch lasu”).
 **Odpowiedź:**
+- Karol Balucki (2026-11-25): a. Ja mogę zrobić pomnijesze gryzonie, ale podobno Paweł zrobił już bosa.
 
 ## 96. Rzadkość przedmiotów: ile statystyk na stopień?
 - Paweł 24.11: zwykły 1–2 statystyki, epicki do 3 i mocniej, legendarny do wszystkich, do tego sekretne; mini-boss i boss mają lepsze szanse — [[Rzadkość przedmiotów — zwykłe, epickie, legendarne, sekretne (propozycja)]].
