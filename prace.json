@@ -2,8 +2,23 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-25T23:40:43+01:00",
+ "aktualizacja": "2026-11-25T23:49:59+01:00",
  "prace": [
+  {
+   "id": "hud-przyciski-podluzne",
+   "tytul": "HUD: 5 podłużnych przycisków w kolumnie, bez gildii",
+   "stan": "w_toku",
+   "start": "2026-11-25T23:49:59+01:00",
+   "koniec_szacowany": "2026-11-26T01:19:59+01:00",
+   "aktualizacja": "2026-11-25T23:49:59+01:00",
+   "obszary": [
+    "src/gui/HUD.model.json",
+    "src/client/HUDClient.client.luau",
+    "tools/hud_pety_build_gui.py"
+   ],
+   "kto": "Claude (przeczkowskyy)",
+   "komputer": "0c03c4ec"
+  },
   {
    "id": "koty-rasy-dopracowanie",
    "tytul": "Koty ras: dopracowanie modeli do referencji",
