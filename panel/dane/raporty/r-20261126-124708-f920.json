@@ -1,0 +1,17 @@
+{
+ "id": "r-20261126-124708-f920",
+ "tytul": "Przedmioty wojownika: hełmy zasłaniają uszy, chwyt broni według rodzaju",
+ "opis_md": "Po uwadze Pawła („poprawić hełmy, żeby zasłaniały kocie uszy”) i Karola („odróżniaj różdżkę od miecza i łuk”) — modele i plansze, jeszcze nie w grze.\n\n**Hełmy**\n- Wszystkie pięć hełmów jest większych i mieści całe uszy; uszy pod hełmem są schowane (zapas 0,08–0,10 studa).\n- Twarz zostaje odkryta jak dotąd. Komplet ma teraz 160–178 części (limit 220).\n- Do porównania: Hełm Giermka z osłonami w kształcie uszu — hełm zasłania uszy, a sylwetka kota zostaje. To wariant, w zestawie jest kopuła.\n\n**Chwyt broni według rodzaju**\n- Każda broń mówi, jak się ją trzyma: miecz, różdżka, kostur, proca (prawa łapa), łuk, tarcza, księga (lewa łapa).\n- Pięć broni wojownika to „miecz”: kot trzyma je odchylone od ciała, a nie pionowo jak kostur.\n- Różdżka i księga na planszy to atrapy — tych modeli jeszcze nie ma.\n\n**Do oceny**\n- Hełm: duża kopuła czy osłony uszu?\n- Miecz: wychylony 20° w bok i 10° do przodu. Mocniej do przodu wygląda bojowo, ale w upadku ostrze wchodzi w ziemię (przy 30° o ponad 0,7 studa; teraz najwyżej 0,19).\n- Łuk: trzymany ukosem, cięciwą na zewnątrz — cięciwą do ciała przechodził przez łapę.\n\n**Znane słabości**\n- Po upadku hełm spada z głowy, a uszy zostają schowane — modele nie umieją ich pokazać w trakcie klipu, w grze zrobi to skrypt.\n- W grze chwyt według rodzaju wymaga jeszcze zmian: ekran wyboru klasy (kod Pawła) ustawia jedną pozę dla każdej broni; bohater w świecie i walka biorą dane z Kota-Maga.\n\nZrzuty: zestawy po zmianie, zestawy przed zmianą, chwyty według rodzaju, hełm z kopułą i z osłonami uszu.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T12:47:08+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "pytanie": "Hełm: duża kopuła czy osłony w kształcie uszu?",
+ "gra": "bc"
+}

@@ -16,16 +16,23 @@ Jak to jest zbudowane (kontrakt swiat/postacie/EKWIPUNEK.md, bez nowego systemu)
     buty — Foot. Cholewa butów to NAKŁADKA na łydce (LowerLeg kota nie ma właściciela, futro zostaje pod spodem);
   - hełm i miecz na zaczepach HatAttachment / RightGripAttachment z korektą kota (KOREKTY_CHWYTU: kości nośne
     HatPivot i StaffPivot — w upadku hełm zsuwa się z głowy, a miecz wypada z łapy, jak kapelusz i kostur Kota-Maga);
-  - hełm zostawia odkrytą twarz: obręcz kończy się nad oczami, osłony policzków stoją za płaszczyzną wąsów,
-    uszy przechodzą przez kopułę (jak rondo kapelusza Kota-Maga).
+  - hełm zostawia odkrytą twarz: obręcz kończy się nad oczami, osłony policzków stoją za płaszczyzną wąsów;
+  - hełm ZAKRYWA USZY (Paweł 26.11.2026): każdy hełm mieści całą bryłę uszu kota w pozie spoczynku (pomiar:
+    --uszy) i deklaruje ukrywa=("Uszy",) — ubierz() zdejmuje gołe bryły kości LeftEar/RightEar (EKWIPUNEK.md
+    pkt 14), w danych gry pole „ukrywa”: ["Uszy"];
+  - broń deklaruje RODZAJ CHWYTU (Akcesorium.chwyt, Karol 26.11.2026): pięć mieczy puli to „miecz” — ostrze
+    w górę, odchylone 20° na zewnątrz i 10° do przodu (tabela rodzajów i korekty kota: swiat/postacie/chwyty.py,
+    EKWIPUNEK.md pkt 15); dawny chwyt kostura (pionowo przy biodrze) to rodzaj „drzewce”.
 Id: kot_rycerz_<zestaw>_<rzecz> (rzecz: helm, zbroja, pas, rekawice, buty, miecz); segment: <id>_<skrót kości>.
 Bryły: same bloki, kliny i walce (bez ostrosłupów), żeby komplet mieścił się w limicie brył bohatera w świecie (220).
 
     python -B swiat/postacie/pula_wojownika.py               # lista przedmiotów, bryły i części Roblox (bez Blendera)
     python -B swiat/postacie/pula_wojownika.py --kontrola    # to samo + sprawdzian postaci w każdym komplecie
     python -B swiat/postacie/pula_wojownika.py --przenikanie # broń w głowie, hełmie i tułowiu w klipach walki kota
+    python -B swiat/postacie/pula_wojownika.py --uszy        # czy hełmy mieszczą uszy kota (zapas w studach)
     python -B swiat/postacie/pula_wojownika.py --razem       # plansza zbiorcza zrobionych zestawów (po przebudowach)
     python -B swiat/postacie/przebuduj.py pula_wojownika_giermek --bez-filmow     # modele, ikony, plansze zestawu
+    python -B swiat/postacie/przebuduj.py pula_wojownika_chwyty --bez-filmow      # plansze: chwyty, hełm z uszami
 """
 import copy
 import importlib.util
@@ -38,8 +45,9 @@ REPO = os.path.dirname(os.path.dirname(TU))
 if __package__ in (None, ""):
     sys.path.insert(0, REPO)
 
-from swiat.postacie.biblioteka.postac import Akcesorium  # noqa: E402
-from swiat.postacie.ekwipunek import Przedmiot, ubierz  # noqa: E402
+from swiat.postacie import chwyty as CH  # noqa: E402
+from swiat.postacie.biblioteka.postac import Akcesorium, macierz_obrotu, razy_wektor  # noqa: E402
+from swiat.postacie.ekwipunek import ZNACZNIKI_CIALA, Przedmiot, ubierz  # noqa: E402
 
 BOHATER = "kot_rycerz"
 KLASY = ("wojownik",)
@@ -47,10 +55,15 @@ RZECZY = ("helm", "zbroja", "pas", "rekawice", "buty", "miecz")       # kolejno�
 UKLAD_ARKUSZA = ("miecz", "helm", "zbroja", "rekawice", "buty", "pas")  # kolejność rysunków na arkuszu Pawła
 SLOTY = {"helm": ("Helmet", "Armor"), "zbroja": ("Chest", "Armor"), "pas": ("Belt", "Armor"),
          "rekawice": ("Gloves", "Armor"), "buty": ("Boots", "Armor"), "miecz": ("Weapon", "Weapons")}
+# co przedmiot chowa na ciele (EKWIPUNEK.md pkt 14): hełm mieści uszy kota i je zdejmuje
+UKRYWA = {"helm": ("Uszy",)}
+# rodzaj chwytu broni każdego zestawu (chwyty.py): wszystkie pięć to broń jednoręczna trzymana jak miecz
+CHWYT_BRONI = {"giermek": "miecz", "podworkowy": "miecz", "targowy": "miecz", "kuchenny": "miecz",
+               "mleczarz": "miecz"}
 # ikony przedmiotów z segmentów kostnych: przód lekko ku kamerze (kamera ikon patrzy z góry)
 IKONA_OBROT = {"pas": (30, 0, 0), "buty": (0, 65, 0), "zbroja": (-10, 20, 0)}
-PODGLADY = os.path.join(TU, "wynik", "_pula_wojownika")              # plansze noc2511_*.jpg
-PREFIKS_PLANSZ = "noc2511_"
+PODGLADY = os.path.join(TU, "wynik", "_pula_wojownika")              # plansze <prefiks>*.jpg
+PREFIKS_PLANSZ = "d2611_"          # 26.11.2026: hełmy z uszami i chwyt miecza; plansze noc2511_* zostają do porównania
 
 # zestaw (arkusz) -> kolumna w tabeli Pawła, nazwa arkusza, plik wzoru, nazwy przedmiotów (propozycja, pytanie 94)
 ZESTAWY = {
@@ -114,7 +127,8 @@ def _kot_mag():
 
 
 KM = _kot_mag()
-KOREKTY_CHWYTU = KM.KOREKTY_CHWYTU
+# korekty kota: dawne (nakrycie głowy na HatPivot, broń bez rodzaju na StaffPivot jak kostur) + rodzaje chwytu
+KOREKTY_CHWYTU = dict(KM.KOREKTY_CHWYTU, **CH.KOREKTY_KOTA)
 MIARA = KM._postac(BOHATER + "_miara", "Kot-wojownik (miara)")
 W = MIARA.wymiary
 
@@ -128,7 +142,8 @@ def _nowy(zestaw, rzecz):
     z = ZESTAWY[zestaw]
     slot, kat = SLOTY[rzecz]
     return Przedmiot(_id(zestaw, rzecz), z["przedmioty"][rzecz], slot, kat, MIARA, cialo=KM.CIALO_TYP, klasy=KLASY,
-                     zestaw=("%s_%s" % (BOHATER, zestaw)) if z["komplet"] else None, paleta=PALETA)
+                     zestaw=("%s_%s" % (BOHATER, zestaw)) if z["komplet"] else None, paleta=PALETA,
+                     ukrywa=UKRYWA.get(rzecz, ()))
 
 
 def _helm(zestaw):
@@ -139,9 +154,10 @@ def _helm(zestaw):
 
 
 def _bron(zestaw):
-    """Akcesorium broni: (0,0,0) = środek łapy (RightGripAttachment), klinga w +Y, płaz do przodu (+Z)."""
+    """Akcesorium broni: (0,0,0) = środek łapy (RightGripAttachment), klinga w +Y, płaz do przodu (+Z); rodzaj
+    chwytu z CHWYT_BRONI (chwyty.py) — u kota korekta tego rodzaju zamiast chwytu kostura."""
     return Akcesorium(_id(zestaw, "miecz"), ZESTAWY[zestaw]["przedmioty"]["miecz"], zaczep="RightGripAttachment",
-                      typ="Bron", paleta=PALETA, ikona_obrot=(0, 0, -45))
+                      typ="Bron", paleta=PALETA, ikona_obrot=(0, 0, -45), chwyt=CHWYT_BRONI[zestaw])
 
 
 def _grot(a, nazwa, pos, szer, h, grub, kolor, mat="metal"):
@@ -171,6 +187,73 @@ def _obrecz(s, nazwa, y, szer, glab, wys, grub, kolor, mat="matowy", faza=0.02):
 STRONY = (("Left", 1), ("Right", -1))        # strona kota i znak „na zewnątrz” w osi X (lewa = +X)
 
 
+def _kopula_giermka(a, uszy=False):
+    """Kopuła hełmu Giermka ze złotą gałką na szczycie; zwraca wysokość szczytu gałki (tam staje pióro).
+    uszy=False — duża kopuła, która mieści całe uszy kota (wersja zestawu, 26.11.2026);
+    uszy=True — WARIANT DO PORÓWNANIA (propozycja): dawna niska kopuła (do 25.11) i dwie stalowe osłony w kształcie
+    kocich uszu, które mieszczą uszy kota — sylwetka kota zostaje."""
+    if not uszy:
+        a.blok("Obrecz", (0, -0.19, -0.01), (2.04, 0.14, 1.74), "stal_cien", "metal", faza=0.03)
+        a.blok("Kopula dol", (0, 0.0, -0.01), (2.16, 0.3, 1.7), "stal", "metal", faza=0.04)
+        a.walec("Kopula", (0, 0.3, -0.01), (2.2, 0.34, 1.72), "stal", "metal", faza=0.05)
+        a.walec("Kopula srodek", (0, 0.62, -0.01), (2.18, 0.32, 1.56), "stal", "metal", faza=0.05)
+        a.walec("Kopula gora", (0, 0.86, -0.01), (1.62, 0.18, 1.12), "stal", "metal", faza=0.04)
+        # jaśniejszy pas przez środek kopuły (przód, schodki, wierzch, tył) z nitami
+        a.blok("Pas kopuly przod", (0, 0.15, 0.865), (0.2, 0.62, 0.05), "stal_jasna", "metal", faza=0.0)
+        a.blok("Pas schodka przod", (0, 0.62, 0.785), (0.2, 0.32, 0.05), "stal_jasna", "metal", faza=0.0)
+        a.blok("Pas gory przod", (0, 0.86, 0.565), (0.2, 0.18, 0.05), "stal_jasna", "metal", faza=0.0)
+        a.blok("Pas kopuly wierzch", (0, 0.965, -0.01), (0.2, 0.03, 1.14), "stal_jasna", "metal", faza=0.0)
+        a.blok("Pas kopuly tyl", (0, 0.15, -0.885), (0.2, 0.62, 0.05), "stal_jasna", "metal", faza=0.0)
+        nity_pasa, z_nitu, z_obreczy, x_oslony = (-0.02, 0.3), 0.9, 0.875, 0.97
+        z_karku, szer_karku, gora = -0.86, 1.7, 1.0
+    else:
+        a.blok("Obrecz", (0, -0.19, -0.01), (1.94, 0.14, 1.7), "stal_cien", "metal", faza=0.03)
+        a.blok("Kopula dol", (0, -0.04, -0.01), (1.86, 0.2, 1.62), "stal", "metal", faza=0.04)
+        a.walec("Kopula", (0, 0.16, -0.01), (1.84, 0.22, 1.6), "stal", "metal", faza=0.05)
+        a.walec("Kopula srodek", (0, 0.36, -0.01), (1.46, 0.2, 1.26), "stal", "metal", faza=0.05)
+        a.walec("Kopula gora", (0, 0.53, -0.01), (0.98, 0.16, 0.84), "stal", "metal", faza=0.04)
+        a.blok("Pas kopuly przod", (0, 0.05, 0.815), (0.2, 0.38, 0.05), "stal_jasna", "metal", faza=0.0)
+        a.blok("Pas schodka przod", (0, 0.36, 0.635), (0.2, 0.2, 0.05), "stal_jasna", "metal", faza=0.0)
+        a.blok("Pas kopuly wierzch", (0, 0.625, -0.01), (0.2, 0.03, 0.88), "stal_jasna", "metal", faza=0.0)
+        a.blok("Pas kopuly tyl", (0, 0.05, -0.835), (0.2, 0.38, 0.05), "stal_jasna", "metal", faza=0.0)
+        # osłony uszu: trójkątne graniastosłupy z dwóch klinów, w ramce kości ucha (staw u nasady: x ±0,6, 0,09
+        # nad głową, z −0,05; ucho odchylone o 28° na zewnątrz), większe od ucha o ok. 0,1 z każdej strony
+        for zn in (1, -1):
+            with a.uklad(pos=(zn * 0.6, 0.07, -0.05), obrot=(0, 0, -zn * 28)):
+                _grot(a, "Oslona ucha", (zn * 0.04, -0.06, 0.015), 0.8, 0.98, 0.5, "stal")
+                a.blok("Oslona ucha nit", (zn * 0.03, 0.12, 0.275), (0.07, 0.07, 0.04), "zloto", "metal", faza=0.0)
+        nity_pasa, z_nitu, z_obreczy, x_oslony = (-0.04, 0.15), 0.85, 0.88, 0.94
+        z_karku, szer_karku, gora = -0.83, 1.66, 0.67
+    for i, y in enumerate(nity_pasa):
+        a.blok("Nit pasa %d" % i, (0, y, z_nitu), (0.07, 0.07, 0.04), "zloto", "metal", faza=0.0)
+    for x in (-0.66, -0.33, 0.33, 0.66):
+        a.blok("Nit obreczy", (x, -0.19, z_obreczy), (0.07, 0.07, 0.04), "zloto", "metal", faza=0.0)
+    for zn in (1, -1):
+        # osłony policzków: nad kępkami futra (y > −0,74), przednia krawędź 0,14 za płaszczyzną twarzy
+        a.blok("Oslona policzka", (zn * x_oslony, -0.45, 0.22), (0.1, 0.42, 0.7), "stal", "metal",
+               rot=(0, 0, zn * 6), faza=0.03)
+        a.blok("Nit oslony", (zn * (x_oslony + 0.06), -0.33, 0.44), (0.04, 0.07, 0.07), "zloto", "metal", faza=0.0)
+    a.blok("Oslona karku", (0, -0.42, z_karku), (szer_karku, 0.36, 0.1), "stal", "metal", rot=(8, 0, 0), faza=0.03)
+    a.kula("Galka", (0, gora, -0.05), (0.18, 0.14, 0.18), "zloto", "metal")
+    return gora
+
+
+def helm_giermka_z_uszami():
+    """WARIANT do porównania (propozycja, nie w zestawie): Hełm Giermka z osłonami uszu — dawna niska kopuła i dwie
+    stalowe osłony w kształcie kocich uszu (mieszczą uszy kota, ukrywa „Uszy”), to samo pióro co w hełmie zestawu."""
+    prz = Przedmiot(_id("giermek", "helm_uszy"), "Hełm Giermka z osłonami uszu", "Helmet", "Armor", MIARA,
+                    cialo=KM.CIALO_TYP, klasy=KLASY, paleta=PALETA, ukrywa=UKRYWA["helm"])
+    a = Akcesorium(prz.id, prz.nazwa, zaczep="HatAttachment", typ="Hat", paleta=PALETA, ikona_obrot=(-22, 25, 0))
+    gora = _kopula_giermka(a, uszy=True)
+    with a.uklad(pos=(0, gora + 0.02, -0.08), obrot=(0, 40, 0)):
+        with a.uklad(obrot=(-22, 0, 0)):
+            a.kula("Pioro", (0, 0.36, 0), (0.09, 0.78, 0.4), "pioro", "matowy", segm=8)
+            with a.uklad(pos=(0, 0.66, 0), obrot=(-62, 0, 0)):
+                a.kula("Pioro koniec", (0, 0.16, 0), (0.08, 0.42, 0.26), "pioro_ciemne", "matowy", segm=8)
+    prz.na_zaczepie(a)
+    return prz
+
+
 # --------------------------------------------------------------------------- 5. ZESTAW GIERMKA
 def _giermek():
     """Arkusz `zestaw_giermek.jpg`: stalowy hełm z nitami, obręczą, osłonami policzków i niebieskim piórem; stalowy
@@ -181,35 +264,12 @@ def _giermek():
     Z = "giermek"
     wynik = {}
 
-    # --- hełm
+    # --- hełm: kopuła mieści całe uszy kota (uszy sięgają 0,98 w bok i 0,70 nad głowę — --uszy), dlatego jest
+    # szersza (do 2,2) i wyższa (do 0,95 nad głową) niż głowa; uszy schowane (ukrywa „Uszy”)
     prz = _nowy(Z, "helm")
     a = _helm(Z)
-    # obręcz i dolny pas obejmują kanciastą głowę; nad głową kopuła z ośmiokątnych walców (okrąglejsza sylwetka,
-    # każdy walec to jedna część Roblox)
-    a.blok("Obrecz", (0, -0.19, -0.01), (1.94, 0.14, 1.7), "stal_cien", "metal", faza=0.03)
-    a.blok("Kopula dol", (0, -0.04, -0.01), (1.86, 0.2, 1.62), "stal", "metal", faza=0.04)
-    a.walec("Kopula", (0, 0.16, -0.01), (1.84, 0.22, 1.6), "stal", "metal", faza=0.05)
-    a.walec("Kopula srodek", (0, 0.36, -0.01), (1.46, 0.2, 1.26), "stal", "metal", faza=0.05)
-    a.walec("Kopula gora", (0, 0.53, -0.01), (0.98, 0.16, 0.84), "stal", "metal", faza=0.04)
-    # jaśniejszy pas przez środek kopuły (przód, wierzch, tył) z nitami
-    a.blok("Pas kopuly przod", (0, 0.05, 0.815), (0.2, 0.38, 0.05), "stal_jasna", "metal", faza=0.0)
-    a.blok("Pas schodka przod", (0, 0.36, 0.635), (0.2, 0.2, 0.05), "stal_jasna", "metal", faza=0.0)
-    a.blok("Pas kopuly wierzch", (0, 0.625, -0.01), (0.2, 0.03, 0.88), "stal_jasna", "metal", faza=0.0)
-    a.blok("Pas kopuly tyl", (0, 0.05, -0.835), (0.2, 0.38, 0.05), "stal_jasna", "metal", faza=0.0)
-    for i, y in enumerate((-0.04, 0.15)):
-        a.blok("Nit pasa %d" % i, (0, y, 0.85), (0.07, 0.07, 0.04), "zloto", "metal", faza=0.0)
-    for x in (-0.66, -0.33, 0.33, 0.66):
-        a.blok("Nit obreczy", (x, -0.19, 0.88), (0.07, 0.07, 0.04), "zloto", "metal", faza=0.0)
-    for zn in (1, -1):
-        # osłony policzków: nad kępkami futra (y > −0,74), przednia krawędź 0,14 za płaszczyzną twarzy
-        a.blok("Oslona policzka", (zn * 0.94, -0.45, 0.22), (0.1, 0.42, 0.7), "stal", "metal",
-               rot=(0, 0, zn * 6), faza=0.03)
-        a.blok("Nit oslony", (zn * 1.0, -0.33, 0.44), (0.04, 0.07, 0.07), "zloto", "metal", faza=0.0)
-    a.blok("Oslona karku", (0, -0.42, -0.83), (1.66, 0.36, 0.1), "stal", "metal", rot=(8, 0, 0), faza=0.03)
-    # niebieskie pióro na złotej gałce: spłaszczone elipsoidy (jedna część Roblox każda), wygięte do tyłu,
-    # płaszczyzna skręcona o 40°, żeby z 3/4 było widać szeroki bok
-    a.kula("Galka", (0, 0.67, -0.05), (0.18, 0.14, 0.18), "zloto", "metal")
-    with a.uklad(pos=(0, 0.69, -0.08), obrot=(0, 40, 0)):
+    gora = _kopula_giermka(a)
+    with a.uklad(pos=(0, gora + 0.02, -0.08), obrot=(0, 40, 0)):
         with a.uklad(obrot=(-22, 0, 0)):
             a.kula("Pioro", (0, 0.36, 0), (0.09, 0.78, 0.4), "pioro", "matowy", segm=8)
             with a.uklad(pos=(0, 0.66, 0), obrot=(-62, 0, 0)):
@@ -336,26 +396,27 @@ def _podworkowy():
     Z = "podworkowy"
     wynik = {}
 
-    # --- hełm: garnek do góry dnem (kanciasty, zaokrąglony fazą, obejmuje głowę; brzeg tuż nad oczami)
+    # --- hełm: garnek do góry dnem (kanciasty, zaokrąglony fazą, obejmuje głowę; brzeg tuż nad oczami); wysoki
+    # i szeroki garnek mieści całe uszy kota (ukrywa „Uszy”)
     prz = _nowy(Z, "helm")
     a = _helm(Z)
-    a.blok("Garnek", (0, -0.09, -0.01), (1.92, 0.36, 1.68), "emalia", "polysk", faza=0.04)
-    a.walec("Garnek gora", (0, 0.25, -0.01), (1.92, 0.34, 1.68), "emalia", "polysk", faza=0.06)
-    a.walec("Dno", (0, 0.44, -0.01), (1.5, 0.05, 1.3), "emalia_ciemna", "polysk", faza=0.02)
-    a.blok("Brzeg", (0, -0.25, -0.01), (1.98, 0.07, 1.74), "emalia_biala", "polysk", faza=0.02)
+    a.blok("Garnek", (0, 0.0, -0.01), (2.16, 0.5, 1.76), "emalia", "polysk", faza=0.04)
+    a.walec("Garnek gora", (0, 0.5, -0.01), (2.18, 0.52, 1.78), "emalia", "polysk", faza=0.06)
+    a.walec("Dno", (0, 0.785, -0.01), (1.8, 0.05, 1.46), "emalia_ciemna", "polysk", faza=0.02)
+    a.blok("Brzeg", (0, -0.25, -0.01), (2.22, 0.07, 1.82), "emalia_biala", "polysk", faza=0.02)
     for zn in (1, -1):                                         # uchwyty-pętle po bokach
-        a.blok("Uchwyt", (zn * 1.11, 0.0, 0), (0.06, 0.24, 0.32), "emalia", "polysk", faza=0.02)
-        for y in (-0.1, 0.1):
-            a.blok("Uchwyt ramie", (zn * 1.02, y, 0), (0.16, 0.06, 0.32), "emalia", "polysk", faza=0.02)
-    for i, (x, y, zz) in enumerate(((-0.6, -0.1, 0.835), (0.0, -0.12, 0.835), (0.58, -0.08, 0.835),
-                                     (-0.2, 0.3, 0.835), (0.22, 0.2, 0.835))):
+        a.blok("Uchwyt", (zn * 1.24, 0.1, 0), (0.06, 0.26, 0.32), "emalia", "polysk", faza=0.02)
+        for y in (0.0, 0.2):
+            a.blok("Uchwyt ramie", (zn * 1.15, y, 0), (0.16, 0.06, 0.32), "emalia", "polysk", faza=0.02)
+    for i, (x, y, zz) in enumerate(((-0.6, -0.05, 0.885), (0.0, -0.08, 0.885), (0.6, -0.03, 0.885),
+                                     (-0.22, 0.42, 0.895), (0.25, 0.3, 0.895))):
         a.blok("Kropka %d" % i, (x, y, zz), (0.16, 0.15, 0.03), "emalia_biala", "polysk", faza=0.0)
     for zn in (1, -1):
-        for zz, y in ((0.3, -0.1), (-0.2, 0.3)):
-            a.blok("Kropka bok", (zn * 0.975, y, zz), (0.03, 0.15, 0.16), "emalia_biala", "polysk", faza=0.0)
-    a.blok("Kropka tyl", (0.3, 0.1, -0.855), (0.16, 0.15, 0.03), "emalia_biala", "polysk", faza=0.0)
-    a.blok("Odprysk", (0.32, 0.03, 0.835), (0.22, 0.1, 0.03), "rdza", "matowy", rot=(0, 0, 14), faza=0.0)
-    a.blok("Odprysk bok", (-0.975, -0.12, -0.2), (0.03, 0.12, 0.26), "rdza", "matowy", faza=0.0)
+        for zz, y in ((0.3, -0.05), (-0.2, 0.15)):
+            a.blok("Kropka bok", (zn * 1.095, y, zz), (0.03, 0.15, 0.16), "emalia_biala", "polysk", faza=0.0)
+    a.blok("Kropka tyl", (0.3, 0.1, -0.905), (0.16, 0.15, 0.03), "emalia_biala", "polysk", faza=0.0)
+    a.blok("Odprysk", (0.32, 0.1, 0.885), (0.22, 0.1, 0.03), "rdza", "matowy", rot=(0, 0, 14), faza=0.0)
+    a.blok("Odprysk bok", (-1.095, -0.12, -0.2), (0.03, 0.12, 0.26), "rdza", "matowy", faza=0.0)
     # nitka makaronu zwisa z przedniego rogu garnka, tuż za krawędzią twarzy (poza oczami i policzkiem, nad wąsami)
     with a.uklad(pos=(0.9, -0.28, 0.8)):
         a.blok("Makaron", (0, -0.12, 0), (0.065, 0.26, 0.06), "makaron", "polysk", rot=(0, 0, 12), faza=0.0)
@@ -488,26 +549,27 @@ def _targowy():
     Z = "targowy"
     wynik = {}
 
-    # --- hełm: durszlak (kopuła z ośmiokątnych walców nad głową, dziurki, uchwyty, stopka na wierzchu)
+    # --- hełm: durszlak (kopuła z ośmiokątnych walców nad głową, dziurki, uchwyty, stopka na wierzchu); szeroka
+    # i wysoka miska mieści całe uszy kota (ukrywa „Uszy”), ku górze węższa od przodu do tyłu
     prz = _nowy(Z, "helm")
     a = _helm(Z)
-    a.blok("Brzeg", (0, -0.24, -0.01), (2.04, 0.07, 1.8), "stal_jasna", "metal", faza=0.02)
-    a.blok("Durszlak", (0, -0.08, -0.01), (1.88, 0.28, 1.64), "stal", "metal", faza=0.04)
-    a.walec("Kopula", (0, 0.14, -0.01), (1.84, 0.2, 1.6), "stal", "metal", faza=0.05)
-    a.walec("Kopula gora", (0, 0.32, -0.01), (1.44, 0.18, 1.24), "stal", "metal", faza=0.05)
-    a.walec("Stopka", (0, 0.46, -0.01), (0.92, 0.1, 0.8), "stal_cien", "metal", faza=0.02)
-    a.walec("Stopka brzeg", (0, 0.52, -0.01), (0.98, 0.03, 0.86), "stal_jasna", "metal", faza=0.0)
+    a.blok("Brzeg", (0, -0.24, -0.01), (2.24, 0.07, 1.84), "stal_jasna", "metal", faza=0.02)
+    a.blok("Durszlak", (0, -0.05, -0.01), (2.14, 0.34, 1.74), "stal", "metal", faza=0.04)
+    a.walec("Kopula", (0, 0.28, -0.01), (2.18, 0.34, 1.74), "stal", "metal", faza=0.05)
+    a.walec("Kopula gora", (0, 0.61, -0.01), (2.18, 0.34, 1.52), "stal", "metal", faza=0.05)
+    a.walec("Stopka", (0, 0.83, -0.01), (1.2, 0.12, 1.0), "stal_cien", "metal", faza=0.02)
+    a.walec("Stopka brzeg", (0, 0.905, -0.01), (1.26, 0.03, 1.06), "stal_jasna", "metal", faza=0.0)
     for i, (x, y) in enumerate(((-0.6, -0.1), (-0.3, -0.02), (0.0, -0.12), (0.3, -0.02), (0.6, -0.1),
-                                (-0.45, 0.14), (-0.15, 0.17), (0.15, 0.14), (0.45, 0.17),
-                                (-0.2, 0.33), (0.2, 0.33))):
-        zz = 0.825 if y < 0.04 else (0.8 if y < 0.25 else 0.62)
+                                (-0.45, 0.2), (-0.15, 0.24), (0.15, 0.2), (0.45, 0.24),
+                                (-0.2, 0.6), (0.2, 0.6))):
+        zz = 0.865 if y < 0.44 else 0.765
         a.blok("Dziurka %d" % i, (x, y, zz), (0.07, 0.07, 0.03), "otwor", "matowy", faza=0.0)
     for zn in (1, -1):
         for zz in (0.25, -0.3):
-            a.blok("Dziurka bok", (zn * 0.955, -0.06, zz), (0.03, 0.07, 0.07), "otwor", "matowy", faza=0.0)
-        a.blok("Uchwyt", (zn * 1.12, -0.06, 0), (0.06, 0.2, 0.3), "stal_jasna", "metal", faza=0.02)
+            a.blok("Dziurka bok", (zn * 1.075, -0.06, zz), (0.03, 0.07, 0.07), "otwor", "matowy", faza=0.0)
+        a.blok("Uchwyt", (zn * 1.24, -0.06, 0), (0.06, 0.2, 0.3), "stal_jasna", "metal", faza=0.02)
         for y in (-0.15, 0.03):
-            a.blok("Uchwyt ramie", (zn * 1.03, y, 0), (0.16, 0.05, 0.3), "stal_jasna", "metal", faza=0.01)
+            a.blok("Uchwyt ramie", (zn * 1.15, y, 0), (0.16, 0.05, 0.3), "stal_jasna", "metal", faza=0.01)
         # rozpięty pasek pod brodę: zwisa przy policzku przed kępkami futra, nad wąsami
         a.blok("Pasek", (zn * 0.99, -0.52, 0.56), (0.05, 0.52, 0.1), "skora", "matowy", rot=(0, 0, zn * 4),
                faza=0.0)
@@ -618,27 +680,29 @@ def _kuchenny():
     Z = "kuchenny"
     wynik = {}
 
-    # --- hełm: kubeł do góry dnem, lekko zsunięty na tył głowy
+    # --- hełm: kubeł do góry dnem, lekko zsunięty na tył głowy; szeroki i wysoki kubeł mieści całe uszy kota
+    # (ukrywa „Uszy”), dno węższe od przodu do tyłu
     prz = _nowy(Z, "helm")
     a = _helm(Z)
     with a.uklad(obrot=(-6, 0, 0)):
-        a.blok("Brzeg", (0, -0.25, -0.01), (2.0, 0.07, 1.76), "stal_jasna", "metal", faza=0.02)
-        a.blok("Kubel", (0, -0.1, -0.01), (1.92, 0.3, 1.68), "stal", "metal", faza=0.03)
-        a.walec("Kubel srodek", (0, 0.21, -0.01), (1.84, 0.34, 1.6), "stal", "metal", faza=0.03)
-        a.walec("Kubel gora", (0, 0.48, -0.01), (1.66, 0.22, 1.44), "stal", "metal", faza=0.03)
-        a.walec("Kubel dno", (0, 0.61, -0.01), (1.5, 0.05, 1.3), "stal_cien", "metal", faza=0.02)
-        for i, y in enumerate((0.03, 0.37)):
-            a.walec("Przetloczenie %d" % i, (0, y, -0.01), (1.87, 0.03, 1.63), "stal_cien", "metal", faza=0.0)
+        a.blok("Brzeg", (0, -0.25, -0.01), (2.22, 0.07, 1.82), "stal_jasna", "metal", faza=0.02)
+        a.blok("Kubel", (0, -0.07, -0.01), (2.14, 0.32, 1.74), "stal", "metal", faza=0.03)
+        a.walec("Kubel srodek", (0, 0.27, -0.01), (2.18, 0.38, 1.74), "stal", "metal", faza=0.03)
+        a.walec("Kubel gora", (0, 0.63, -0.01), (2.16, 0.36, 1.56), "stal", "metal", faza=0.03)
+        a.walec("Kubel dno", (0, 0.835, -0.01), (1.9, 0.05, 1.36), "stal_cien", "metal", faza=0.02)
+        for i, (y, sx, sz) in enumerate(((0.08, 2.21, 1.77), (0.46, 2.19, 1.59))):
+            a.walec("Przetloczenie %d" % i, (0, y, -0.01), (sx, 0.03, sz), "stal_cien", "metal", faza=0.0)
         for zn in (1, -1):                                  # dziury „na oczy” — na blasze nad oczami kota
-            a.walec("Dziura", (zn * 0.36, -0.08, 0.83), (0.24, 0.04, 0.2), "otwor", "matowy", rot=(90, 0, 0),
+            a.walec("Dziura", (zn * 0.36, -0.06, 0.87), (0.24, 0.04, 0.2), "otwor", "matowy", rot=(90, 0, 0),
                     faza=0.0)
-            a.blok("Ucho kabla", (zn * 0.975, -0.12, 0.0), (0.04, 0.12, 0.12), "stal_ciemna", "metal", faza=0.0)
-        a.blok("Wgniecenie", (0.3, 0.5, 0.715), (0.2, 0.12, 0.03), "stal_ciemna", "metal", rot=(0, 0, 25), faza=0.0)
+            a.blok("Ucho kabla", (zn * 1.085, -0.12, 0.0), (0.04, 0.12, 0.12), "stal_ciemna", "metal", faza=0.0)
+        a.blok("Wgniecenie", (0.3, 0.62, 0.785), (0.2, 0.12, 0.03), "stal_ciemna", "metal", rot=(0, 0, 25),
+               faza=0.0)
         # kabłąk przerzucony do tyłu: boki wzdłuż skroni, łuk za potylicą, drewniany uchwyt
         for zn in (1, -1):
-            a.blok("Kablak bok", (zn * 1.01, -0.32, -0.42), (0.04, 0.04, 0.86), "stal_ciemna", "metal",
+            a.blok("Kablak bok", (zn * 1.12, -0.32, -0.42), (0.04, 0.04, 0.86), "stal_ciemna", "metal",
                    rot=(-28, 0, 0), faza=0.0)
-        a.blok("Kablak tyl", (0, -0.52, -0.84), (2.02, 0.04, 0.04), "stal_ciemna", "metal", faza=0.0)
+        a.blok("Kablak tyl", (0, -0.52, -0.84), (2.24, 0.04, 0.04), "stal_ciemna", "metal", faza=0.0)
         a.walec("Uchwyt kablaka", (0, -0.52, -0.84), (0.1, 0.5, 0.1), "drewno", "matowy", rot=(0, 0, 90))
     prz.na_zaczepie(a)
     wynik["helm"] = prz
@@ -762,22 +826,23 @@ def _mleczarz():
     Z = "mleczarz"
     wynik = {}
 
-    # --- hełm: bańka na mleko
+    # --- hełm: bańka na mleko; wysoki i szeroki brzuch bańki mieści całe uszy kota (ukrywa „Uszy”), szyjka
+    # z pokrywką nad nim
     prz = _nowy(Z, "helm")
     a = _helm(Z)
-    a.blok("Brzeg", (0, -0.25, -0.01), (2.0, 0.07, 1.76), "stal_cien", "metal", faza=0.02)
-    a.blok("Banka", (0, -0.1, -0.01), (1.92, 0.32, 1.68), "stal", "metal", faza=0.03)
-    a.walec("Banka gora", (0, 0.24, -0.01), (1.92, 0.36, 1.68), "stal", "metal", faza=0.04)
-    a.walec("Ramiona banki", (0, 0.47, -0.01), (1.46, 0.12, 1.28), "stal", "metal", faza=0.05)
-    a.walec("Szyjka", (0, 0.66, -0.01), (0.74, 0.28, 0.66), "stal", "metal", faza=0.02)
-    a.walec("Pokrywka brzeg", (0, 0.83, -0.01), (0.94, 0.08, 0.84), "stal_cien", "metal", faza=0.02)
-    a.walec("Pokrywka", (0, 0.89, -0.01), (0.78, 0.05, 0.7), "stal_jasna", "metal", faza=0.02)
-    a.blok("Wizjer", (0, -0.07, 0.835), (0.95, 0.11, 0.03), "otwor", "matowy", faza=0.0)
-    a.blok("Blysk", (-0.55, 0.2, 0.8), (0.12, 0.34, 0.03), "stal_jasna", "metal", faza=0.0)
-    for zn in (1, -1):                                        # uchwyty na ramionach bańki
-        a.blok("Uchwyt", (zn * 1.06, 0.42, 0), (0.06, 0.26, 0.3), "stal_jasna", "metal", faza=0.02)
-        a.blok("Uchwyt ramie", (zn * 0.9, 0.54, 0), (0.36, 0.06, 0.3), "stal_jasna", "metal", faza=0.01)
-        a.blok("Uchwyt ramie", (zn * 1.0, 0.3, 0), (0.12, 0.06, 0.3), "stal_jasna", "metal", faza=0.01)
+    a.blok("Brzeg", (0, -0.25, -0.01), (2.22, 0.07, 1.82), "stal_cien", "metal", faza=0.02)
+    a.blok("Banka", (0, -0.07, -0.01), (2.14, 0.32, 1.74), "stal", "metal", faza=0.03)
+    a.walec("Banka gora", (0, 0.43, -0.01), (2.2, 0.7, 1.76), "stal", "metal", faza=0.04)
+    a.walec("Ramiona banki", (0, 0.84, -0.01), (1.72, 0.14, 1.4), "stal", "metal", faza=0.05)
+    a.walec("Szyjka", (0, 1.03, -0.01), (0.74, 0.26, 0.66), "stal", "metal", faza=0.02)
+    a.walec("Pokrywka brzeg", (0, 1.19, -0.01), (0.94, 0.08, 0.84), "stal_cien", "metal", faza=0.02)
+    a.walec("Pokrywka", (0, 1.25, -0.01), (0.78, 0.05, 0.7), "stal_jasna", "metal", faza=0.02)
+    a.blok("Wizjer", (0, -0.05, 0.875), (0.95, 0.11, 0.03), "otwor", "matowy", faza=0.0)
+    a.blok("Blysk", (-0.3, 0.42, 0.885), (0.12, 0.4, 0.03), "stal_jasna", "metal", faza=0.0)
+    for zn in (1, -1):                                        # uchwyty na brzuchu bańki, pod ramionami
+        a.blok("Uchwyt", (zn * 1.24, 0.62, 0), (0.06, 0.3, 0.3), "stal_jasna", "metal", faza=0.02)
+        for y in (0.48, 0.76):
+            a.blok("Uchwyt ramie", (zn * 1.15, y, 0), (0.16, 0.06, 0.3), "stal_jasna", "metal", faza=0.01)
     prz.na_zaczepie(a)
     wynik["helm"] = prz
 
@@ -956,6 +1021,10 @@ def ekwipunek_json(zestaw, id_modulu):
             "kanon": list(komplet(zestaw)), "stroje": {"golas": [], "komplet": list(komplet(zestaw))},
             "korekty_chwytu": {k: {"zaczep": zz, "pos": list(pos), "rot": list(ob)}
                                for k, (zz, pos, ob) in KOREKTY_CHWYTU.items()},
+            # klucze korekt: zaczep przedmiotu albo rodzaj chwytu broni (pole „chwyt” części broni, chwyty.py)
+            "rodzaje_chwytu": CH.dla_gry(KOREKTY_CHWYTU),
+            # znaczniki z pola „ukrywa” przedmiotów, które chowają części ciała (gra: Transparency = 1 tych kości)
+            "znaczniki_ciala": {k: list(v) for k, v in ZNACZNIKI_CIALA.items()},
             "przedmioty": [x.opis(KOREKTY_CHWYTU) for x in przedmioty(zestaw)]}
 
 
@@ -976,6 +1045,130 @@ def liczby(zestaw):
     p = postac(zestaw)
     zal = [c for a, *_ in p.zalozone for c in a.czesci]
     return wiersze, (czesci_roblox(golas.czesci), czesci_roblox(p.czesci) + czesci_roblox(zal))
+
+
+# --------------------------------------------------------------------------- uszy w hełmie (bez Blendera)
+def _w_srodku(czesci, Q):
+    """Maska punktów Q (tablica N×3, układ hełmu) leżących w sumie brył hełmu. Walec i kula jak w Roblox (gładka
+    elipsa / elipsoida — mniejsza niż ośmiokąt z Blendera, więc to ostrzejszy warunek); klin jak WedgePart (wysoka
+    ściana +Z, skos ku −Z); reszta jako skrzynka (faza krawędzi pominięta)."""
+    import numpy as np
+    w = np.zeros(len(Q), dtype=bool)
+    for c in czesci:
+        L = (Q - np.asarray(c["p"])) @ np.asarray(c["R"])        # współrzędne w układzie bryły: R^T (q − p)
+        x, y, z = L[:, 0], L[:, 1], L[:, 2]
+        hx, hy, hz = (v / 2.0 for v in c["s"])
+        if c["k"] == "walec":
+            m = (np.abs(y) <= hy) & ((x / hx) ** 2 + (z / hz) ** 2 <= 1.0)
+        elif c["k"] == "kula":
+            m = (x / hx) ** 2 + (y / hy) ** 2 + (z / hz) ** 2 <= 1.0
+        else:
+            m = (np.abs(x) <= hx) & (np.abs(y) <= hy) & (np.abs(z) <= hz)
+            if c["k"] == "klin":
+                m &= (y + hy) * hz <= (z + hz) * hy
+        w |= m
+    return w
+
+
+def _kierunki():
+    """26 kierunków (osie, przekątne ścian i sześcianu), znormalizowane."""
+    import numpy as np
+    d = np.array([(a, b, c) for a in (-1, 0, 1) for b in (-1, 0, 1) for c in (-1, 0, 1) if (a, b, c) != (0, 0, 0)],
+                 dtype=float)
+    return d / np.linalg.norm(d, axis=1)[:, None]
+
+
+def _zapas(czesci, Q, krok=0.005, do=0.2):
+    """Zapas mieszczenia punktów Q w sumie brył: dla każdego punktu najmniejsza (po 26 kierunkach) odległość, o którą
+    można go przesunąć, nie wychodząc z hełmu (co `krok`, do `do`); punkt poza hełmem — wartość ujemna: −(najmniejsze
+    przesunięcie, które wprowadza go do środka). Odporne na szwy między bryłami (kopuła z kilku walców). Zwraca
+    (najmniejszy zapas, punkt)."""
+    import numpy as np
+    D = _kierunki()
+    kroki = np.arange(krok, do + 1e-9, krok)
+    w0 = _w_srodku(czesci, Q)
+    zap = np.full(len(Q), do)
+    for d in D:
+        jeszcze = w0.copy()
+        for t in kroki:
+            if not jeszcze.any():
+                break
+            idx = np.nonzero(jeszcze)[0]
+            wyszedl = ~_w_srodku(czesci, Q[idx] + t * d)
+            zap[idx[wyszedl]] = np.minimum(zap[idx[wyszedl]], t - krok)
+            jeszcze[idx[wyszedl]] = False
+    poza = np.nonzero(~w0)[0]
+    if len(poza):
+        wejscie = np.full(len(poza), do)
+        for d in D:
+            nie = np.ones(len(poza), dtype=bool)
+            for t in kroki:
+                if not nie.any():
+                    break
+                idx = np.nonzero(nie)[0]
+                wszedl = _w_srodku(czesci, Q[poza[idx]] + t * d)
+                wejscie[idx[wszedl]] = np.minimum(wejscie[idx[wszedl]], t)
+                nie[idx[wszedl]] = False
+        zap[poza] = -wejscie
+    i = int(np.argmin(zap))
+    return float(zap[i]), tuple(float(v) for v in Q[i])
+
+
+def _punkty_uszu(gestosc=6):
+    """Punkty wypełniające bryły uszu gołego kota (ostrosłupy ścięte: interpolacja trójliniowa między podstawą
+    a górą) w układzie modelu, w pozie spoczynku: [(kość, punkt)]."""
+    pk = []
+    for c in cialo().json()["czesci"]:
+        if c["kosc"] not in ZNACZNIKI_CIALA["Uszy"]:
+            continue
+        sx, sy, sz = c["s"]
+        gx, gz = c.get("gora") or (sx, sz)
+        pgx, pgz = c.get("pg") or (0.0, 0.0)
+        R = macierz_obrotu(*c["r"])
+        n = gestosc
+        for i in range(n + 1):
+            for j in range(n + 1):
+                for k in range(n + 1):
+                    u, v, w = i / n, j / n, k / n               # v: od podstawy (0) do góry (1)
+                    x = (1 - v) * (u - 0.5) * sx + v * (pgx + (u - 0.5) * gx)
+                    z = (1 - v) * (w - 0.5) * sz + v * (pgz + (w - 0.5) * gz)
+                    lok = razy_wektor(R, (x, (v - 0.5) * sy, z))
+                    pk.append((c["kosc"], tuple(c["p"][t] + lok[t] for t in range(3))))
+    return pk
+
+
+def uszy_w_helmie(prz, klipy=True):
+    """Zapas, z jakim hełm (Przedmiot na HatAttachment) mieści uszy kota (_zapas: studa; < 0 — ucho wystaje o tyle).
+    Spoczynek (bryły uszu wypełnione punktami co ok. 0,1) oraz — informacyjnie, bo uszy pod hełmem są schowane —
+    każda klatka klipów kota poza upadkiem (w upadku hełm zsuwa się z głowy; tylko wierzchołki brył uszu)."""
+    import numpy as np
+    p0 = cialo()
+    zh = p0.zaczepy["HatAttachment"]
+    st = p0.kosci[zh["kosc"]]["staw"]
+    _, pos, _ob = KOREKTY_CHWYTU["HatAttachment"]
+    hp = tuple(st[i] + zh["p"][i] + pos[i] for i in range(3))   # ramka hełmu w spoczynku (obrót zerowy)
+    czesci = [dict(c, R=macierz_obrotu(*c["r"])) for c in prz.segmenty[0]["akc"].czesci_w()]
+    punkty = _punkty_uszu()
+    spoczynek = _zapas(czesci, np.array([[q[i] - hp[i] for i in range(3)] for _k, q in punkty]))
+    ruch = {}
+    if klipy:
+        rogi = _punkty_uszu(1)
+        for kl in p0.klipy:
+            if kl.nazwa == "upadek":
+                continue
+            Q = []
+            for f in range(kl.dlugosc + 1):
+                W = KM._fk(p0, KM._poza_klatki(p0, kl, f))
+                Rh, th = W["HatPivot"]
+                for kosc, q in rogi:
+                    R, t = W[kosc]
+                    s0 = p0.kosci[kosc]["staw"]
+                    v = razy_wektor(R, tuple(q[i] - s0[i] for i in range(3)))
+                    w = tuple(t[i] + v[i] - th[i] for i in range(3))
+                    l = tuple(sum(Rh[j][i] * w[j] for j in range(3)) for i in range(3))
+                    Q.append([l[i] - pos[i] for i in range(3)])
+            ruch[kl.nazwa] = _zapas(czesci, np.array(Q), krok=0.01)
+    return spoczynek, ruch
 
 
 # --------------------------------------------------------------------------- przenikanie w klipach walki (bez Blendera)
@@ -1159,7 +1352,16 @@ SLABOSCI = [
     "a miecz wypada z łapy — jak kapelusz i kostur Kota-Maga.",
     "Cholewy butów to nakładka na łydce (kot nie ma właściciela powłoki na LowerLeg) — futro łydki zostaje pod "
     "cholewą; to jedyne rozszerzenie względem tabeli właścicieli w EKWIPUNEK.md.",
-    "Klipy walki w komplecie nie były liczone klatka po klatce; plansze pokazują pozę spoczynku.",
+    "Hełmy (26.11.2026) mieszczą całe uszy kota (zapas 0,07–0,09 studa w spoczynku, --uszy) i chowają je "
+    "(ukrywa „Uszy”); dlatego są szersze od głowy (ok. 2,2) i wyższe (0,8–1,3 nad głową). W klipie upadku hełm "
+    "zsuwa się, a uszu nie ma przez cały klip (eksport nie przełącza widoczności) — w grze odsłoni je dopiero skrypt.",
+    "W klipie upadku hełm leży do 0,25–0,79 studa pod ziemią (tak było już przed 26.11: tor lotu liczono dla "
+    "kapelusza Kota-Maga, a hełmy mają części poniżej obręczy — osłony, pasek, makaron, kabłąk).",
+    "Miecze trzyma chwyt „miecz” (chwyty.py): ostrze odchylone 20° na zewnątrz i 10° do przodu. Większe pochylenie do "
+    "przodu wbijałoby czubek w ziemię w upadku (30° → do 0,84 studa); przy 10° czubek schodzi do 0,19 studa pod "
+    "ziemię (przed 26.11 miecz leżał 0,03–0,20 nad ziemią).",
+    "Przenikanie miecza w głowę, hełm i tułów w klipach walki kota: --przenikanie (dane walki maga, próg głowy 0,02, "
+    "tułowia 0,10). Plansze pokazują pozę spoczynku.",
     "W Roblox Studio nic z tego nie było budowane ani oglądane; nic nie zostało wgrane.",
 ]
 
@@ -1170,6 +1372,18 @@ if __name__ == "__main__":
     if "--razem" in sys.argv:
         print(plansza_razem())
         raise SystemExit(0)
+    if "--uszy" in sys.argv:
+        _helmy = [(ZESTAWY[_z]["nazwa"], przedmioty(_z)[RZECZY.index("helm")]) for _z in zrobione()]
+        _helmy.append(("wariant: Hełm Giermka z osłonami uszu", helm_giermka_z_uszami()))
+        _zle = 0
+        for _n, _h in _helmy:
+            (_m, _q), _ruch = uszy_w_helmie(_h)
+            _zle += _m < 0.04
+            print("== %s: uszy w hełmie w spoczynku — zapas %.3f studa (najciaśniej przy x %.2f, y %.2f, z %.2f)"
+                  % (_n, _m, _q[0], _q[1], _q[2]))
+            print("   w ruchu (informacyjnie, uszy są schowane): " + ", ".join(
+                "%s %.2f" % (_k, _v[0]) for _k, _v in sorted(_ruch.items(), key=lambda kv: kv[1][0])))
+        raise SystemExit(1 if _zle else 0)
     if "--przenikanie" in sys.argv:
         for _z in zrobione():
             _n, _s, _pr = przenikanie(_z)
@@ -1177,6 +1391,11 @@ if __name__ == "__main__":
                            if v[0] > _pr[k[1]] or v[0] - _s.get(k, (0,))[0] > 0.02), reverse=True)
             print("== %s: %d pomiarów, ponad próg albo gorzej niż Kot-Mag z kosturem: %d"
                   % (ZESTAWY[_z]["nazwa"], len(_n), len(_zle)))
+            for _st in sorted({k[1] for k in _n}):
+                _w = max(((v[0], k[0], v[1], v[2]) for k, v in _n.items() if k[1] == _st), default=(0, "", "", 0))
+                _b = max((v[0] for k, v in _s.items() if k[1] == _st), default=0.0)
+                print("  strefa %-8s najgłębiej %.3f (próg %.2f; Kot-Mag z kosturem najgłębiej %.3f)%s"
+                      % (_st, _w[0], _pr[_st], _b, "  %s, %s, t=%.2f s" % (_w[1], _w[2], _w[3]) if _w[0] > 0 else ""))
             for _g, (_sc, _st), _v in _zle[:12]:
                 print("  %-26s %-8s %.3f (Kot-Mag %.3f, próg %.2f)  %s  t=%.2f s"
                       % (_sc, _st, _g, _s.get((_sc, _st), (0,))[0], _pr[_st], _v[1], _v[2]))

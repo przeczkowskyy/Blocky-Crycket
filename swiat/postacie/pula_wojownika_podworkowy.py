@@ -6,7 +6,7 @@ Cienkie opakowanie dla przebuduj.py; cała geometria jest w swiat/postacie/pula_
     python -B swiat/postacie/przebuduj.py pula_wojownika_podworkowy --bez-filmow
 
 Wynik (wynik/pula_wojownika_podworkowy/): kot w komplecie (GLB/FBX, plansza 3/4-przód-bok-tył), miecz jako osobny
-przedmiot (przedmioty/), ekwipunek/ (segmenty kostne GLB/FBX, ikony, ekwipunek.json), plansze noc2511_* w
+przedmiot (przedmioty/), ekwipunek/ (segmenty kostne GLB/FBX, ikony, ekwipunek.json), plansze d2611_* w
 wynik/_pula_wojownika/.
 """
 import os

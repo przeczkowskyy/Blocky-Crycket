@@ -322,48 +322,6 @@
      ]
     },
     {
-     "nazwa": "LeftEar_Geo",
-     "kosc": "LeftEar",
-     "trojkaty": 40,
-     "wierzcholki": 24,
-     "wymiary": [
-      0.581,
-      0.69,
-      0.343
-     ],
-     "min": [
-      0.392,
-      3.132,
-      -0.203
-     ],
-     "max": [
-      0.973,
-      3.822,
-      0.14
-     ]
-    },
-    {
-     "nazwa": "RightEar_Geo",
-     "kosc": "RightEar",
-     "trojkaty": 40,
-     "wierzcholki": 24,
-     "wymiary": [
-      0.581,
-      0.69,
-      0.343
-     ],
-     "min": [
-      -0.973,
-      3.132,
-      -0.203
-     ],
-     "max": [
-      -0.392,
-      3.822,
-      0.14
-     ]
-    },
-    {
      "nazwa": "Tail_Geo",
      "kosc": "Tail",
      "trojkaty": 88,
@@ -411,19 +369,19 @@
      "trojkaty": 776,
      "wierzcholki": 448,
      "wymiary": [
-      2.3,
-      1.316,
-      1.8
+      2.54,
+      1.701,
+      1.84
      ],
      "min": [
-      -1.15,
+      -1.27,
       2.389,
-      -0.91
+      -0.93
      ],
      "max": [
-      1.15,
-      3.705,
-      0.89
+      1.27,
+      4.09,
+      0.91
      ]
     },
     {
@@ -432,48 +390,48 @@
      "trojkaty": 292,
      "wierzcholki": 168,
      "wymiary": [
-      0.748,
-      1.72,
-      0.19
+      1.219,
+      1.667,
+      0.411
      ],
      "min": [
-      -1.573,
-      0.6,
-      -0.09
+      -1.953,
+      0.597,
+      -0.135
      ],
      "max": [
-      -0.825,
-      2.32,
-      0.1
+      -0.734,
+      2.264,
+      0.276
      ]
     }
    ],
-   "trojkaty_razem": 5976,
+   "trojkaty_razem": 5896,
    "tekstury": {
     "rozmiar_px": 64,
-    "kolory_materialy": 32
+    "kolory_materialy": 31
    },
    "typ": "r15",
    "skala": 1.0,
    "wymiary_ciala": [
     2.2,
-    3.827,
+    3.155,
     2.242
    ],
    "wymiary_z_akcesoriami": [
-    2.723,
-    3.827,
+    3.223,
+    4.095,
     2.242
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.573,
+     -1.953,
      -0.005,
      -1.239
     ],
     [
-     1.15,
-     3.822,
+     1.27,
+     4.09,
      1.003
     ]
    ],
@@ -626,7 +584,7 @@
    },
    "ostrzezenia": [
     "ciało Torso: 2376 trójkątów > 1750 (budżet części ciała awatara)",
-    "ciało razem: wys 3.83 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+    "ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
    ]
   },
   {
@@ -640,19 +598,19 @@
      "trojkaty": 776,
      "wierzcholki": 448,
      "wymiary": [
-      2.3,
-      1.316,
-      1.8
+      2.54,
+      1.701,
+      1.84
      ],
      "min": [
-      -1.15,
+      -1.27,
       -0.781,
-      -0.91
+      -0.93
      ],
      "max": [
-      1.15,
-      0.535,
-      0.89
+      1.27,
+      0.92,
+      0.91
      ]
     }
    ],
@@ -665,19 +623,19 @@
    "typ_roblox": "Hat",
    "zakres_od_zaczepu": [
     [
-     -1.15,
+     -1.27,
      -0.781,
-     -0.91
+     -0.93
     ],
     [
-     1.15,
-     0.535,
-     0.89
+     1.27,
+     0.92,
+     0.91
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    -0.123,
+    0.07,
     -0.01
    ],
    "ostrzezenia": []
@@ -740,11 +698,11 @@
   "pula_wojownika_targowy: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15"
  ],
  "kontrola": [
-  "pula_wojownika_targowy.fbx: siatki 40, kości 23, trójkąty 5160, wzrost 3.83 st., akcje brak -> ZGODNE",
-  "pula_wojownika_targowy__idle.fbx: siatki 40, kości 23, trójkąty 5160, wzrost 3.83 st., akcje pula_wojownika_targowy|Scene 1-61 -> ZGODNE",
-  "pula_wojownika_targowy.glb: siatki 40, kości 23, trójkąty 5160, wzrost 3.83 st., akcje idle 0-60 -> ZGODNE",
-  "kot_rycerz_targowy_helm.fbx: siatki 1, kości 0, trójkąty 776, wzrost 1.32 st., akcje brak -> ZGODNE",
-  "kot_rycerz_targowy_helm.glb: siatki 1, kości 0, trójkąty 776, wzrost 1.32 st., akcje brak -> ZGODNE",
+  "pula_wojownika_targowy.fbx: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje brak -> ZGODNE",
+  "pula_wojownika_targowy__idle.fbx: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje pula_wojownika_targowy|Scene 1-61 -> ZGODNE",
+  "pula_wojownika_targowy.glb: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
+  "kot_rycerz_targowy_helm.fbx: siatki 1, kości 0, trójkąty 776, wzrost 1.70 st., akcje brak -> ZGODNE",
+  "kot_rycerz_targowy_helm.glb: siatki 1, kości 0, trójkąty 776, wzrost 1.70 st., akcje brak -> ZGODNE",
   "kot_rycerz_targowy_miecz.fbx: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE",
   "kot_rycerz_targowy_miecz.glb: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE",
   "ekwipunek: pula_wojownika_targowy_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",

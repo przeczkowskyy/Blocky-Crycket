@@ -43,7 +43,8 @@ dłoni pasuje do każdego typu ciała.
   (jak oczy). Nie robimy wcięć, bo wcięty tułów zostawiłby szparę 0,08 między tułowiem a ramieniem. **Wyjątek:
   spodenki** (ściągacz i nogawka) wystają tylko o 0,01, bo pas i poły tuniki leżą o 0,02 nad klockiem — przy tej samej
   odległości ściany migotałyby, gdy pas albo kirys są założone bez spodni (pkt 12).
-- Twarz, uszy i ogon nigdy nie znikają. Włosy są akcesorium ciała, więc hełm może je schować (`ukrywa`).
+- Twarz i ogon nigdy nie znikają. Włosy są akcesorium ciała, więc hełm może je schować (`ukrywa`). Uszy kota
+  znikają tylko pod hełmem, który mieści je w całości i deklaruje `ukrywa=("Uszy",)` (od 26.11.2026, pkt 14).
 - Kości nośne kota `HatPivot` i `StaffPivot` zostają w gołym ciele bez brył. Klipy dalej nimi ruszają, co bez
   przedmiotu nic nie zmienia.
 - Goły bohater wygląda sympatycznie: ta sama mina co w pełnym stroju, jasna koszula, kolorowe spodenki. Bez nagości.
@@ -574,3 +575,73 @@ O zaczepie przedmiotu na zaczepie:
   `--kontrola` bohaterów i regresja z tego etapu (poza repozytorium);
 - `katalog_ekwipunku.jpg` (tryb Blendera w `zestawienie.py`) nie pokazuje jeszcze przedmiotów bohaterów:
   `ikony_katalogu()` i `ZESTAWY` (podpis „Rekwizyty Kota-Maga”) są sprzed tego etapu.
+
+## 14. Uszy kota pod hełmem (`ukrywa` „Uszy”, 26.11.2026, propozycja)
+Paweł (26.11.2026, przez Karola): hełmy puli wojownika mają zasłaniać kocie uszy. Uszy kota to gołe bryły kości
+`LeftEar`/`RightEar` (ostrosłupy), a nie akcesorium ze `znacznik`, więc dawne `ukrywa` (tylko akcesoria ciała,
+pkt 9) ich nie obejmowało. Najmniejsze rozszerzenie, bez nowego pola:
+- `ekwipunek.ZNACZNIKI_CIALA = {"Uszy": ("LeftEar", "RightEar")}` — znacznik w `ukrywa`, który jest w tej tabeli,
+  zdejmuje w `ubierz()` gołe bryły (`golas`) tych kości, tak jak powłoka zdejmuje gołe bryły swojej kości, ale bez
+  własnych brył na tych kościach. Znaczniki spoza tabeli (np. „Wlosy”) działają jak dotąd. Ciało bez tych kości
+  (człowiek): znacznik nic nie robi.
+- **Warunek:** przedmiot z `ukrywa=("Uszy",)` musi mieścić całe uszy w pozie spoczynku — chowamy ucho pod hełmem,
+  a nie ucinamy je hełmowi za małemu. Pomiar: `python -B swiat/postacie/pula_wojownika.py --uszy` (zapas = o ile każdy
+  punkt brył uszu da się przesunąć w 26 kierunkach, nie wychodząc z hełmu; walce jak gładkie walce Roblox; kod 1, gdy
+  zapas < 0,04). Uszy w ramce `HatAttachment` kota: x 0,35…0,98 (na zewnątrz głowy 0,825), y −0,04…0,70 nad czubkiem
+  głowy, z −0,21…0,14 — hełm mieszczący uszy ma ok. 2,2 szerokości i sięga ok. 0,8–1,0 nad głowę.
+- **Dane dla gry:** `ukrywa: ["Uszy"]` w przedmiocie i `znaczniki_ciala: {"Uszy": ["LeftEar", "RightEar"]}` w
+  `ekwipunek.json` bohatera (pula wojownika). Rig z części: `Transparency = 1` części kości uszu, gdy przedmiot jest
+  założony (jak włosy); rig z siatek: siatki `LeftEar_Geo`/`RightEar_Geo`.
+- **Upadek:** w klipie `upadek` hełm zsuwa się z głowy (kość `HatPivot`), a uszu w modelu nie ma przez cały klip —
+  eksport (FBX/GLB, części Roblox) nie zna przełączania widoczności w czasie klipu, a klipy nie mają kanału skali.
+  W grze może to zrobić skrypt: odsłonić uszy w chwili zsunięcia hełmu (klatka 30 klipu upadku kota,
+  `kot_mag.UPADEK_LOT`). Niezrobione.
+- W ruchu uszy (gdyby były widoczne) wychodziłyby poza hełm do 0,17 studa (`trafienie`, `unik` — uszy kładą się po
+  sobie); są schowane, więc nie przenikają.
+- Stan kontraktu dla innych ciał bez zmian: kapelusz Kota-Maga dalej nic nie ukrywa (uszy przez rondo).
+
+## 15. Rodzaje chwytu broni (`Akcesorium.chwyt`, 26.11.2026, propozycja)
+Karol (26.11.2026): „odróżniaj różdżkę od miecza i łuk itd.”. Do dziś każda broń w prawej łapie kota szła przez
+jedną korektę — chwyt kostura (`KosturAttachment`, obrót (−90, 0, 0)), więc miecz stał pionowo przy biodrze jak
+kostur. Teraz broń deklaruje rodzaj, a ciało ma korektę na każdy rodzaj:
+- **Deklaracja w broni:** pole `Akcesorium.chwyt` (to samo, które biblioteka ma od dawna dla „drzewce” w przymiarce),
+  np. `Akcesorium(..., zaczep="RightGripAttachment", typ="Bron", chwyt="miecz")`. Konwencja modelu bez zmian
+  (rękojeść w (0, 0, 0), oś główna w +Y, lico +Z); tarcza i księga jak tarcza Rycerza (blok `uklad(obrot=(−90, 0,
+  0))`, osie dłoni).
+- **Korekta w ciele:** `KOREKTY_CHWYTU` bohatera ma obok kluczy-zaczepów klucze-rodzaje: {rodzaj: (zaczep ciała, pos,
+  obrot)}. `ekwipunek.korekta()` (używają jej `ubierz()` i `Przedmiot.opis()`) bierze najpierw wpis rodzaju, potem
+  wpis zaczepu, potem brak korekty — **broń bez rodzaju i ciała bez wpisów rodzajów budują się co do bitu jak
+  dotąd** (sprawdzone 26.11.2026: JSON postaci, strojów i `ekwipunek_json` Kota-Maga, Rycerza, Zwiadowcy,
+  Kota-Demona, kotów ras i kotów klas — 40 pozycji identycznych przed i po zmianie).
+- **Tabela rodzajów i korekty kota:** `swiat/postacie/chwyty.py` (`RODZAJE`, `POCHYLENIE_KOTA` → `KOREKTY_KOTA`).
+  Korekta kota to pochylenie broni w ramce dłoni (do przodu, na zewnątrz, skręt), w pozie spoczynku dłoń kota ≈ osie
+  świata. Na dziś korekty ma tylko kot (pula wojownika: `KOREKTY_CHWYTU = KM.KOREKTY_CHWYTU + chwyty.KOREKTY_KOTA`);
+  Kot-Mag (`kot_mag.py`, zamrożony) i koty klas Pawła (`kot_klasy.py`) mają dawne korekty.
+
+| rodzaj | łapa | zaczep kota | pochylenie (przód, zewnątrz, skręt) | pos | rot korekty |
+|---|---|---|---|---|---|
+| `miecz` — miecz, tasak, pałka, pogrzebacz | prawa | `KosturAttachment` (StaffPivot) | 10°, 20°, 0 | (−0,08, 0, 0) | (−80, 20, 0) |
+| `rozdzka` — różdżka | prawa | `KosturAttachment` | 60°, 10°, 0 | (−0,08, 0, 0) | (−30, 10, 0) |
+| `drzewce` — kostur, włócznia (dzisiejszy chwyt) | prawa | `KosturAttachment` | 0, 0, 0 | (−0,08, 0, 0) | (−90, 0, 0) |
+| `proca` | prawa | `KosturAttachment` | 5°, 30°, 0 | (−0,08, 0, 0) | (−85, 30, 0) |
+| `luk` | lewa | `LeftGripAttachment` | 45°, 30°, −55° (łuk bokiem do patrzącego z przodu) | (0,15, 0,2, 0) | (−6,66, −51,94, 45,58) |
+| `tarcza` | lewa | `LeftGripAttachment` | jak u człowieka | (−0,12, 0, 0) | (0, 0, 0) |
+| `ksiega` | lewa | `LeftGripAttachment` | jak u człowieka (atrapa wisi pod łapą) | (0, 0, 0) | (0, 0, 0) |
+
+- **Dlaczego miecz odchyla się głównie na zewnątrz, a nie do przodu:** w klipie `upadek` kość `StaffPivot` kładzie
+  broń na ziemi tak, że oś dłoni „do przodu” patrzy w dół. Każdy stopień pochylenia do przodu wbija czubek w ziemię
+  (miecz 2 studa: 30° → 0,74–0,84 studa pod ziemią, 10° → do 0,19). Odchylenie na zewnątrz leży w płaszczyźnie ziemi.
+  Różdżka (60° do przodu) w upadku wchodzi w ziemię — do decyzji, gdy różdżka trafi na kota w grze.
+- **Lewa łapa kota nie ma kości nośnej** (jak `StaffPivot` w prawej): łuk, tarcza i księga zostają w łapie także
+  w upadku (nie sprawdzane w klipach).
+- **Dane dla gry:** część broni w `ekwipunek.json` ma pole `chwyt` (tylko gdy broń je deklaruje), `zaczep`/`pos`/`rot`
+  już po korekcie rodzaju; bohater ma `korekty_chwytu` (klucze: zaczepy i rodzaje) i `rodzaje_chwytu` (rodzaj →
+  łapa, zaczep standardowy, opis, korekta kota) — `chwyty.dla_gry()`.
+- **Jak nowa broń deklaruje rodzaj:** `chwyt="<rodzaj>"` w `Akcesorium`; nowy rodzaj — wpis w `chwyty.RODZAJE` i
+  w `chwyty.POCHYLENIE_KOTA`, potem `--przenikanie` puli i plansza `pula_wojownika_chwyty`.
+- **Sprawdzenie:** `pula_wojownika.py --przenikanie` (miecz w głowie, hełmie i tułowiu w klipach walki kota; próg
+  głowy 0,02, tułowia 0,10; odniesienie Kot-Mag z kosturem), plansza `wynik/_pula_wojownika/d2611_chwyty.jpg`
+  (przód i 3/4 każdego rodzaju: `python -B swiat/postacie/przebuduj.py pula_wojownika_chwyty --bez-filmow`).
+- **Uwaga dla katalogu:** `zestawienie.py` odwraca `korekty_chwytu` po zaczepie ciała (`{v["zaczep"]: …}`); gdy
+  kiedyś obejmie bohatera z rodzajami, kilka kluczy ma ten sam `KosturAttachment` — trzeba będzie brać rodzaj z pola
+  `chwyt` części. Dziś katalog czyta tylko Rycerza, Kota-Maga i Zwiadowcę (bez rodzajów).

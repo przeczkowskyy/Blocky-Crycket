@@ -53,7 +53,232 @@
     0,
     0
    ]
+  },
+  "miecz": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    -80.0,
+    20.0,
+    0.0
+   ]
+  },
+  "rozdzka": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    -30.0,
+    10.0,
+    0.0
+   ]
+  },
+  "drzewce": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    -90.0,
+    0.0,
+    0.0
+   ]
+  },
+  "proca": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    -85.0,
+    30.0,
+    0.0
+   ]
+  },
+  "luk": {
+   "zaczep": "LeftGripAttachment",
+   "pos": [
+    0.1,
+    0.15,
+    0.0
+   ],
+   "rot": [
+    -53.058,
+    14.233,
+    -48.937
+   ]
+  },
+  "tarcza": {
+   "zaczep": "LeftGripAttachment",
+   "pos": [
+    -0.12,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "ksiega": {
+   "zaczep": "LeftGripAttachment",
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
   }
+ },
+ "rodzaje_chwytu": {
+  "miecz": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "broń jednoręczna (miecz, tasak, pałka, pogrzebacz): pięść na rękojeści, ostrze w górę, odchylone na zewnątrz (z dala od twarzy) i lekko do przodu, płaz widać z przodu",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.08,
+     0.0,
+     0.0
+    ],
+    "rot": [
+     -80.0,
+     20.0,
+     0.0
+    ]
+   }
+  },
+  "rozdzka": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "różdżka: lekki chwyt przy końcu, czubek do przodu i w górę",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.08,
+     0.0,
+     0.0
+    ],
+    "rot": [
+     -30.0,
+     10.0,
+     0.0
+    ]
+   }
+  },
+  "drzewce": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "kostur, włócznia, chorągiew: drzewce pionowo wzdłuż łapy, dół przy ziemi (dzisiejszy chwyt kostura Kota-Maga; nazwa „drzewce” jak w bibliotece)",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.08,
+     0.0,
+     0.0
+    ],
+    "rot": [
+     -90.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "proca": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "proca: rękojeść w pięści, widełki w górę, skórka z kamykiem do przodu",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.08,
+     0.0,
+     0.0
+    ],
+    "rot": [
+     -85.0,
+     30.0,
+     0.0
+    ]
+   }
+  },
+  "luk": {
+   "lapa": "lewa",
+   "zaczep_standardowy": "LeftGripAttachment",
+   "opis": "łuk: majdan w lewej łapie, łuk prawie pionowo (górne ramię pochylone do przodu i na zewnątrz, z dala od przedramienia), brzuch łuku do przodu i na zewnątrz, cięciwa ku ciału",
+   "kot": {
+    "zaczep": "LeftGripAttachment",
+    "pos": [
+     0.1,
+     0.15,
+     0.0
+    ],
+    "rot": [
+     -53.058,
+     14.233,
+     -48.937
+    ]
+   }
+  },
+  "tarcza": {
+   "lapa": "lewa",
+   "zaczep_standardowy": "LeftGripAttachment",
+   "opis": "tarcza: na lewym przedramieniu (pasy na łapie), lico na zewnątrz — jak tarcza Rycerza",
+   "kot": {
+    "zaczep": "LeftGripAttachment",
+    "pos": [
+     -0.12,
+     0.0,
+     0.0
+    ],
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "ksiega": {
+   "lapa": "lewa",
+   "zaczep_standardowy": "LeftGripAttachment",
+   "opis": "księga: zamknięta, trzymana za górną krawędź w lewej łapie, wisi wzdłuż boku, okładką do przodu i na zewnątrz",
+   "kot": {
+    "zaczep": "LeftGripAttachment",
+    "pos": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  }
+ },
+ "znaczniki_ciala": {
+  "Uszy": [
+   "LeftEar",
+   "RightEar"
+  ]
  },
  "przedmioty": [
   {
@@ -66,7 +291,9 @@
     "wojownik"
    ],
    "czesc_od": null,
-   "ukrywa": [],
+   "ukrywa": [
+    "Uszy"
+   ],
    "zestaw": null,
    "czesci": [
     {
@@ -89,7 +316,7 @@
      "trojkaty": 676,
      "attachment_pos": [
       0.0,
-      -0.315,
+      -0.495,
       0.01
      ]
     }
@@ -396,14 +623,15 @@
      "zaczep": "KosturAttachment",
      "pos": [
       -0.08,
-      0,
-      0
+      0.0,
+      0.0
      ],
      "rot": [
-      -90,
-      0,
-      0
+      -80.0,
+      20.0,
+      0.0
      ],
+     "chwyt": "miecz",
      "fbx": "wynik/pula_wojownika_mleczarz/przedmioty/kot_rycerz_mleczarz_miecz.fbx",
      "glb": "wynik/pula_wojownika_mleczarz/przedmioty/kot_rycerz_mleczarz_miecz.glb",
      "trojkaty": 496,

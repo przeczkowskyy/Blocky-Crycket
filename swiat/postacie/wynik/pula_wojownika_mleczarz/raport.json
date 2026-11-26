@@ -322,48 +322,6 @@
      ]
     },
     {
-     "nazwa": "LeftEar_Geo",
-     "kosc": "LeftEar",
-     "trojkaty": 40,
-     "wierzcholki": 24,
-     "wymiary": [
-      0.581,
-      0.69,
-      0.343
-     ],
-     "min": [
-      0.392,
-      3.132,
-      -0.203
-     ],
-     "max": [
-      0.973,
-      3.822,
-      0.14
-     ]
-    },
-    {
-     "nazwa": "RightEar_Geo",
-     "kosc": "RightEar",
-     "trojkaty": 40,
-     "wierzcholki": 24,
-     "wymiary": [
-      0.581,
-      0.69,
-      0.343
-     ],
-     "min": [
-      -0.973,
-      3.132,
-      -0.203
-     ],
-     "max": [
-      -0.392,
-      3.822,
-      0.14
-     ]
-    },
-    {
      "nazwa": "Tail_Geo",
      "kosc": "Tail",
      "trojkaty": 88,
@@ -411,19 +369,19 @@
      "trojkaty": 676,
      "wierzcholki": 368,
      "wymiary": [
-      2.18,
-      1.2,
-      1.76
+      2.54,
+      1.56,
+      1.82
      ],
      "min": [
-      -1.09,
+      -1.27,
       2.885,
-      -0.89
+      -0.92
      ],
      "max": [
-      1.09,
-      4.085,
-      0.87
+      1.27,
+      4.445,
+      0.9
      ]
     },
     {
@@ -432,49 +390,49 @@
      "trojkaty": 496,
      "wierzcholki": 300,
      "wymiary": [
-      0.977,
-      2.202,
-      0.2
+      1.629,
+      1.879,
+      0.512
      ],
      "min": [
-      -1.617,
-      0.579,
-      -0.1
+      -2.191,
+      0.569,
+      -0.161
      ],
      "max": [
-      -0.64,
-      2.781,
-      0.1
+      -0.562,
+      2.448,
+      0.351
      ]
     }
    ],
-   "trojkaty_razem": 5088,
+   "trojkaty_razem": 5008,
    "tekstury": {
     "rozmiar_px": 64,
-    "kolory_materialy": 38
+    "kolory_materialy": 37
    },
    "typ": "r15",
    "skala": 1.0,
    "wymiary_ciala": [
     2.3,
-    3.827,
+    3.155,
     2.099
    ],
    "wymiary_z_akcesoriami": [
-    2.767,
-    4.09,
-    2.109
+    3.461,
+    4.45,
+    2.139
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.617,
+     -2.191,
      -0.005,
      -1.239
     ],
     [
-     1.15,
-     4.085,
-     0.87
+     1.27,
+     4.445,
+     0.9
     ]
    ],
    "kosci": [
@@ -625,7 +583,7 @@
     }
    },
    "ostrzezenia": [
-    "ciało razem: wys 3.83 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+    "ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
    ]
   },
   {
@@ -639,19 +597,19 @@
      "trojkaty": 676,
      "wierzcholki": 368,
      "wymiary": [
-      2.18,
-      1.2,
-      1.76
+      2.54,
+      1.56,
+      1.82
      ],
      "min": [
-      -1.09,
+      -1.27,
       -0.285,
-      -0.89
+      -0.92
      ],
      "max": [
-      1.09,
-      0.915,
-      0.87
+      1.27,
+      1.275,
+      0.9
      ]
     }
    ],
@@ -664,19 +622,19 @@
    "typ_roblox": "Hat",
    "zakres_od_zaczepu": [
     [
-     -1.09,
+     -1.27,
      -0.285,
-     -0.89
+     -0.92
     ],
     [
-     1.09,
-     0.915,
-     0.87
+     1.27,
+     1.275,
+     0.9
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    0.315,
+    0.495,
     -0.01
    ],
    "ostrzezenia": []
@@ -740,11 +698,11 @@
   "pula_wojownika_mleczarz: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15"
  ],
  "kontrola": [
-  "pula_wojownika_mleczarz.fbx: siatki 40, kości 23, trójkąty 4168, wzrost 3.83 st., akcje brak -> ZGODNE",
-  "pula_wojownika_mleczarz__idle.fbx: siatki 40, kości 23, trójkąty 4168, wzrost 3.83 st., akcje pula_wojownika_mleczarz|Scene 1-61 -> ZGODNE",
-  "pula_wojownika_mleczarz.glb: siatki 40, kości 23, trójkąty 4168, wzrost 3.83 st., akcje idle 0-60 -> ZGODNE",
-  "kot_rycerz_mleczarz_helm.fbx: siatki 1, kości 0, trójkąty 676, wzrost 1.20 st., akcje brak -> ZGODNE",
-  "kot_rycerz_mleczarz_helm.glb: siatki 1, kości 0, trójkąty 676, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "pula_wojownika_mleczarz.fbx: siatki 38, kości 23, trójkąty 4088, wzrost 3.15 st., akcje brak -> ZGODNE",
+  "pula_wojownika_mleczarz__idle.fbx: siatki 38, kości 23, trójkąty 4088, wzrost 3.15 st., akcje pula_wojownika_mleczarz|Scene 1-61 -> ZGODNE",
+  "pula_wojownika_mleczarz.glb: siatki 38, kości 23, trójkąty 4088, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
+  "kot_rycerz_mleczarz_helm.fbx: siatki 1, kości 0, trójkąty 676, wzrost 1.56 st., akcje brak -> ZGODNE",
+  "kot_rycerz_mleczarz_helm.glb: siatki 1, kości 0, trójkąty 676, wzrost 1.56 st., akcje brak -> ZGODNE",
   "kot_rycerz_mleczarz_miecz.fbx: siatki 1, kości 0, trójkąty 496, wzrost 2.20 st., akcje brak -> ZGODNE",
   "kot_rycerz_mleczarz_miecz.glb: siatki 1, kości 0, trójkąty 496, wzrost 2.20 st., akcje brak -> ZGODNE",
   "ekwipunek: pula_wojownika_mleczarz_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",

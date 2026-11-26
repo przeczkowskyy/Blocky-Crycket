@@ -2,7 +2,7 @@ RAPORT — pula_wojownika_kuchenny
 PULA WOJOWNIKA Lv 1–10 — arkusz Kuchenny (kolumna 3) na kocie-wojowniku. Status: propozycja.
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/pula_wojownika_kuchenny.py · wygenerowano 25.11.2026 poleceniem:
+Źródło: swiat/postacie/pula_wojownika_kuchenny.py · wygenerowano 26.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py pula_wojownika_kuchenny
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 
@@ -17,22 +17,25 @@ ZNANE SŁABOŚCI
 - Ciało to goły Kot-Mag (rasa Człowiek), tak jak Koci Rycerz z kot_klasy.py; inne rasy kota mają te same klocki, więc przedmioty pasują na każdą z nich (sprawdzone tylko na rudym kocie).
 - Hełm i miecz siedzą na kościach nośnych kota (HatPivot, StaffPivot): w klipie upadku hełm zsuwa się z głowy, a miecz wypada z łapy — jak kapelusz i kostur Kota-Maga.
 - Cholewy butów to nakładka na łydce (kot nie ma właściciela powłoki na LowerLeg) — futro łydki zostaje pod cholewą; to jedyne rozszerzenie względem tabeli właścicieli w EKWIPUNEK.md.
-- Klipy walki w komplecie nie były liczone klatka po klatce; plansze pokazują pozę spoczynku.
+- Hełmy (26.11.2026) mieszczą całe uszy kota (zapas 0,07–0,09 studa w spoczynku, --uszy) i chowają je (ukrywa „Uszy”); dlatego są szersze od głowy (ok. 2,2) i wyższe (0,8–1,3 nad głową). W klipie upadku hełm zsuwa się, a uszu nie ma przez cały klip (eksport nie przełącza widoczności) — w grze odsłoni je dopiero skrypt.
+- W klipie upadku hełm leży do 0,25–0,79 studa pod ziemią (tak było już przed 26.11: tor lotu liczono dla kapelusza Kota-Maga, a hełmy mają części poniżej obręczy — osłony, pasek, makaron, kabłąk).
+- Miecze trzyma chwyt „miecz” (chwyty.py): ostrze odchylone 20° na zewnątrz i 10° do przodu. Większe pochylenie do przodu wbijałoby czubek w ziemię w upadku (30° → do 0,84 studa); przy 10° czubek schodzi do 0,19 studa pod ziemię (przed 26.11 miecz leżał 0,03–0,20 nad ziemią).
+- Przenikanie miecza w głowę, hełm i tułów w klipach walki kota: --przenikanie (dane walki maga, próg głowy 0,02, tułowia 0,10). Plansze pokazują pozę spoczynku.
 - W Roblox Studio nic z tego nie było budowane ani oglądane; nic nie zostało wgrane.
 
 MODEL pula_wojownika_kuchenny „Kot-wojownik — Kuchenny” (r15)
-  wymiary ciała: 2,19 × 3,83 × 2,08; z akcesoriami: 2,44 × 3,87 × 2,13
-  trójkąty: 4884 (siatek: 21)
+  wymiary ciała: 2,19 × 3,15 × 2,08; z akcesoriami: 3,15 × 4,10 × 2,16
+  trójkąty: 4804 (siatek: 19)
   budżety ciała R15: Head 680/4000, Torso 1452/1750, LeftArm 404/1248, RightArm 404/1248, LeftLeg 300/1248, RightLeg 300/1248
   kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
   klipy: idle 60 kl. 2,00 s pętla
   punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
   założone: kot_rycerz_kuchenny_helm na KapeluszAttachment (tylko podgląd, bez eksportu), kot_rycerz_kuchenny_miecz na KosturAttachment (tylko podgląd, bez eksportu)
-  OSTRZEŻENIE: ciało razem: wys 3.83 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+  OSTRZEŻENIE: ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
 
 PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
 id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
-kot_rycerz_kuchenny_helm HatAttachment              Hat          512  2,06 × 1,35 × 1,75   (-0,00; -0,02; -0,02) 
+kot_rycerz_kuchenny_helm HatAttachment              Hat          512  2,28 × 1,58 × 1,84   (-0,00; -0,13; -0,00) 
 kot_rycerz_kuchenny_miecz RightGripAttachment        Bron         400  0,78 × 2,68 × 0,20   (0,02; -0,84; -0,00)  
 attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
 importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
@@ -46,17 +49,17 @@ EKWIPUNEK (D-071: ciało bazowe + strój z przedmiotów; pliki w ekwipunek/)
 - kot_rycerz_kuchenny_pas „Pas z Łańcucha Studni” [Belt]: kot_rycerz_kuchenny_pas_biodra LowerTorso 676 tr.
 - kot_rycerz_kuchenny_rekawice „Mitenki z Łańcucha” [Gloves]: kot_rycerz_kuchenny_rekawice_dlon_l LeftHand (powłoka) 228 tr.; kot_rycerz_kuchenny_rekawice_dlon_p RightHand (powłoka) 228 tr.
 - kot_rycerz_kuchenny_buty „Kapcie Pancerne” [Boots]: kot_rycerz_kuchenny_buty_stopa_l LeftFoot (powłoka) 212 tr.; kot_rycerz_kuchenny_buty_stopa_p RightFoot (powłoka) 212 tr.
-- kot_rycerz_kuchenny_miecz „Pogrzebacz z Kominka” [Weapon]: kot_rycerz_kuchenny_miecz na KosturAttachment
+- kot_rycerz_kuchenny_miecz „Pogrzebacz z Kominka” [Weapon]: kot_rycerz_kuchenny_miecz na KosturAttachment (chwyt: miecz)
 
 UWAGI PODGLĄDU
 - pula_wojownika_kuchenny: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
 
 KONTROLA EKSPORTÓW
-- pula_wojownika_kuchenny.fbx: siatki 40, kości 23, trójkąty 4224, wzrost 3.83 st., akcje brak -> ZGODNE
-- pula_wojownika_kuchenny__idle.fbx: siatki 40, kości 23, trójkąty 4224, wzrost 3.83 st., akcje pula_wojownika_kuchenny|Scene 1-61 -> ZGODNE
-- pula_wojownika_kuchenny.glb: siatki 40, kości 23, trójkąty 4224, wzrost 3.83 st., akcje idle 0-60 -> ZGODNE
-- kot_rycerz_kuchenny_helm.fbx: siatki 1, kości 0, trójkąty 512, wzrost 1.35 st., akcje brak -> ZGODNE
-- kot_rycerz_kuchenny_helm.glb: siatki 1, kości 0, trójkąty 512, wzrost 1.35 st., akcje brak -> ZGODNE
+- pula_wojownika_kuchenny.fbx: siatki 38, kości 23, trójkąty 4144, wzrost 3.15 st., akcje brak -> ZGODNE
+- pula_wojownika_kuchenny__idle.fbx: siatki 38, kości 23, trójkąty 4144, wzrost 3.15 st., akcje pula_wojownika_kuchenny|Scene 1-61 -> ZGODNE
+- pula_wojownika_kuchenny.glb: siatki 38, kości 23, trójkąty 4144, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE
+- kot_rycerz_kuchenny_helm.fbx: siatki 1, kości 0, trójkąty 512, wzrost 1.58 st., akcje brak -> ZGODNE
+- kot_rycerz_kuchenny_helm.glb: siatki 1, kości 0, trójkąty 512, wzrost 1.58 st., akcje brak -> ZGODNE
 - kot_rycerz_kuchenny_miecz.fbx: siatki 1, kości 0, trójkąty 400, wzrost 2.68 st., akcje brak -> ZGODNE
 - kot_rycerz_kuchenny_miecz.glb: siatki 1, kości 0, trójkąty 400, wzrost 2.68 st., akcje brak -> ZGODNE
 - ekwipunek: pula_wojownika_kuchenny_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE
@@ -127,7 +130,7 @@ PLIKI
 - ekwipunek/ikony/kot_rycerz_kuchenny_miecz_ikona.png
 - ekwipunek/pula_wojownika_kuchenny_ekwipunek_ikony_arkusz.jpg
 - ekwipunek/ekwipunek.json
-- ../_pula_wojownika/noc2511_zestaw_kuchenny.jpg
-- ../_pula_wojownika/noc2511_zestaw_kuchenny_na_kocie.jpg
+- ../_pula_wojownika/d2611_zestaw_kuchenny.jpg
+- ../_pula_wojownika/d2611_zestaw_kuchenny_na_kocie.jpg
 - raport.json
 - raport.txt

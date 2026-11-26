@@ -380,7 +380,10 @@ def raport_ekwipunku(modul, rap):
                 seg.append("%s %s%s %s tr." % (s["akc"].id, s["kosc"], " (powłoka)" if s["zakrywa"] else "",
                                                tr.get(s["akc"].id, "?")))
             else:
-                seg.append("%s na %s" % (s["akc"].id, korekty.get(s["zaczep"], (s["zaczep"],))[0]))
+                rodzaj = getattr(s["akc"], "chwyt", None)        # rodzaj chwytu broni (chwyty.py) ma pierwszeństwo
+                kor = korekty.get(rodzaj) if rodzaj is not None else None
+                seg.append("%s na %s%s" % (s["akc"].id, (kor or korekty.get(s["zaczep"], (s["zaczep"],)))[0],
+                                           " (chwyt: %s)" % rodzaj if kor else ""))
         L.append("- %s „%s” [%s%s]: %s" % (x.id, x.nazwa, x.slot, ", część " + x.czesc_od if x.czesc_od else "",
                                           "; ".join(seg)))
     if rap["filmy"]:

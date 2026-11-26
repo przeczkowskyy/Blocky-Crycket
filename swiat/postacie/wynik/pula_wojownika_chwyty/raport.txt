@@ -1,0 +1,309 @@
+RAPORT — pula_wojownika_chwyty
+PULA WOJOWNIKA — plansze do oceny przez ludzi (26.11.2026). Status: propozycja.
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/pula_wojownika_chwyty.py · wygenerowano 26.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py pula_wojownika_chwyty
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: pula_wojownika_chwyty_miecz, pula_wojownika_chwyty_miecz_przod, pula_wojownika_chwyty_rozdzka, pula_wojownika_chwyty_rozdzka_przod, pula_wojownika_chwyty_drzewce, pula_wojownika_chwyty_drzewce_przod, pula_wojownika_chwyty_proca, pula_wojownika_chwyty_proca_przod, pula_wojownika_chwyty_luk, pula_wojownika_chwyty_luk_przod, pula_wojownika_chwyty_tarcza, pula_wojownika_chwyty_tarcza_przod, pula_wojownika_chwyty_ksiega, pula_wojownika_chwyty_ksiega_przod, pula_wojownika_chwyty_helm_kopula, pula_wojownika_chwyty_helm_kopula_przod, pula_wojownika_chwyty_helm_uszy, pula_wojownika_chwyty_helm_uszy_przod
+- przedmioty (akcesoria): 0
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 63 plików, zgodnych 63
+- ostrzeżenia z raportu: 18; uwagi podglądu: 18
+
+ZNANE SŁABOŚCI
+- Plansza propozycji: rodzaje chwytu i ich korekty kota (chwyty.py) czekają na ocenę ludzi.
+- Różdżka i księga to atrapy (nie ma ich modeli); łuk, proca i tarcza to modele ludzkich bohaterów i broni startowej przeskalowane na kota tylko do tej planszy.
+- Lewa łapa kota nie ma kości nośnej (jak StaffPivot w prawej): łuk, tarcza i księga w upadku zostają w łapie.
+- Klipy kota są pisane pod kostur; inne rodzaje broni sprawdzone liczbowo tylko dla mieczy puli (--przenikanie).
+- Widok z przodu to postać obrócona w kadrze (klip „kadr_przod”, jedna klatka), nie osobna kamera.
+
+MODEL pula_wojownika_chwyty_miecz „Kot-wojownik — chwyt: miecz” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,79 × 3,82 × 2,10
+  trójkąty: 2904 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_rycerz_giermek_miecz na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_miecz_przod „Kot-wojownik — chwyt: miecz (przód)” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,79 × 3,82 × 2,10
+  trójkąty: 2904 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, kadr_przod 1 kl. 0,03 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_rycerz_giermek_miecz na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_rozdzka „Kot-wojownik — chwyt: rozdzka” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,26 × 3,82 × 2,23
+  trójkąty: 2664 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: atrapa_rozdzka na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_rozdzka_przod „Kot-wojownik — chwyt: rozdzka (przód)” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,26 × 3,82 × 2,23
+  trójkąty: 2664 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, kadr_przod 1 kl. 0,03 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: atrapa_rozdzka na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_drzewce „Kot-wojownik — chwyt: drzewce” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,48 × 3,82 × 2,10
+  trójkąty: 2916 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_mag_kostur na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_drzewce_przod „Kot-wojownik — chwyt: drzewce (przód)” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,48 × 3,82 × 2,10
+  trójkąty: 2916 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, kadr_przod 1 kl. 0,03 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_mag_kostur na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_proca „Kot-wojownik — chwyt: proca” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 3,36 × 3,82 × 2,10
+  trójkąty: 3228 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: proca_kot na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_proca_przod „Kot-wojownik — chwyt: proca (przód)” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 3,36 × 3,82 × 2,10
+  trójkąty: 3228 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, kadr_przod 1 kl. 0,03 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: proca_kot na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_luk „Kot-wojownik — chwyt: luk” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,87 × 3,82 × 2,10
+  trójkąty: 3000 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: zwiadowca_luk_kot na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_luk_przod „Kot-wojownik — chwyt: luk (przód)” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,87 × 3,82 × 2,10
+  trójkąty: 3000 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, kadr_przod 1 kl. 0,03 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: zwiadowca_luk_kot na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_tarcza „Kot-wojownik — chwyt: tarcza” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,44 × 3,82 × 2,10
+  trójkąty: 2732 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: rycerz_tarcza_kot na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_tarcza_przod „Kot-wojownik — chwyt: tarcza (przód)” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,44 × 3,82 × 2,10
+  trójkąty: 2732 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, kadr_przod 1 kl. 0,03 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: rycerz_tarcza_kot na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_ksiega „Kot-wojownik — chwyt: ksiega” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,23 × 3,82 × 2,10
+  trójkąty: 2612 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: atrapa_ksiega na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_ksiega_przod „Kot-wojownik — chwyt: ksiega (przód)” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,23 × 3,82 × 2,10
+  trójkąty: 2612 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, kadr_przod 1 kl. 0,03 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: atrapa_ksiega na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_helm_kopula „Kot-wojownik — Zestaw Giermka” (r15)
+  wymiary ciała: 2,28 × 3,15 × 2,11; z akcesoriami: 2,84 × 4,95 × 2,16
+  trójkąty: 4452 (siatek: 19)
+  budżety ciała R15: Head 680/4000, Torso 788/1750, LeftArm 424/1248, RightArm 424/1248, LeftLeg 356/1248, RightLeg 356/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_rycerz_giermek_helm na KapeluszAttachment (tylko podgląd, bez eksportu), kot_rycerz_giermek_miecz na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_helm_kopula_przod „Kot-wojownik — Zestaw Giermka (przód)” (r15)
+  wymiary ciała: 2,28 × 3,15 × 2,11; z akcesoriami: 2,84 × 4,95 × 2,16
+  trójkąty: 4452 (siatek: 19)
+  budżety ciała R15: Head 680/4000, Torso 788/1750, LeftArm 424/1248, RightArm 424/1248, LeftLeg 356/1248, RightLeg 356/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, kadr_przod 1 kl. 0,03 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_rycerz_giermek_helm na KapeluszAttachment (tylko podgląd, bez eksportu), kot_rycerz_giermek_miecz na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_helm_uszy „Kot-wojownik — Zestaw Giermka, hełm z osłonami uszu (wariant)” (r15)
+  wymiary ciała: 2,28 × 3,15 × 2,11; z akcesoriami: 2,84 × 4,62 × 2,14
+  trójkąty: 4496 (siatek: 19)
+  budżety ciała R15: Head 680/4000, Torso 788/1750, LeftArm 424/1248, RightArm 424/1248, LeftLeg 356/1248, RightLeg 356/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_rycerz_giermek_helm_uszy na KapeluszAttachment (tylko podgląd, bez eksportu), kot_rycerz_giermek_miecz na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL pula_wojownika_chwyty_helm_uszy_przod „Kot-wojownik — Zestaw Giermka, hełm z osłonami uszu (wariant) (przód)” (r15)
+  wymiary ciała: 2,28 × 3,15 × 2,11; z akcesoriami: 2,84 × 4,62 × 2,14
+  trójkąty: 4496 (siatek: 19)
+  budżety ciała R15: Head 680/4000, Torso 788/1750, LeftArm 424/1248, RightArm 424/1248, LeftLeg 356/1248, RightLeg 356/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla, kadr_przod 1 kl. 0,03 s jednorazowy
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: kot_rycerz_giermek_helm_uszy na KapeluszAttachment (tylko podgląd, bez eksportu), kot_rycerz_giermek_miecz na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+UWAGI PODGLĄDU
+- pula_wojownika_chwyty_drzewce: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_drzewce_przod: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_helm_kopula: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_helm_kopula_przod: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_helm_uszy: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_helm_uszy_przod: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_ksiega: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_ksiega_przod: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_luk: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_luk_przod: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_miecz: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_miecz_przod: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_proca: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_proca_przod: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_rozdzka: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_rozdzka_przod: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_tarcza: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- pula_wojownika_chwyty_tarcza_przod: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+
+KONTROLA EKSPORTÓW
+- pula_wojownika_chwyty_miecz.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_miecz__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_miecz|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_miecz.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- pula_wojownika_chwyty_miecz_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_miecz_przod__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_miecz_przod|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_miecz_przod__kadr_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_miecz_przod|Scene 1-2 -> ZGODNE
+- pula_wojownika_chwyty_miecz_przod.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60, kadr_przod 0-1 -> ZGODNE
+- pula_wojownika_chwyty_rozdzka.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_rozdzka__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_rozdzka|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_rozdzka.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- pula_wojownika_chwyty_rozdzka_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_rozdzka_przod__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_rozdzka_przod|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_rozdzka_przod__kadr_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_rozdzka_przod|Scene 1-2 -> ZGODNE
+- pula_wojownika_chwyty_rozdzka_przod.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60, kadr_przod 0-1 -> ZGODNE
+- pula_wojownika_chwyty_drzewce.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_drzewce__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_drzewce|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_drzewce.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- pula_wojownika_chwyty_drzewce_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_drzewce_przod__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_drzewce_przod|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_drzewce_przod__kadr_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_drzewce_przod|Scene 1-2 -> ZGODNE
+- pula_wojownika_chwyty_drzewce_przod.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60, kadr_przod 0-1 -> ZGODNE
+- pula_wojownika_chwyty_proca.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_proca__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_proca|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_proca.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- pula_wojownika_chwyty_proca_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_proca_przod__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_proca_przod|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_proca_przod__kadr_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_proca_przod|Scene 1-2 -> ZGODNE
+- pula_wojownika_chwyty_proca_przod.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60, kadr_przod 0-1 -> ZGODNE
+- pula_wojownika_chwyty_luk.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_luk__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_luk|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_luk.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- pula_wojownika_chwyty_luk_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_luk_przod__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_luk_przod|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_luk_przod__kadr_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_luk_przod|Scene 1-2 -> ZGODNE
+- pula_wojownika_chwyty_luk_przod.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60, kadr_przod 0-1 -> ZGODNE
+- pula_wojownika_chwyty_tarcza.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_tarcza__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_tarcza|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_tarcza.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- pula_wojownika_chwyty_tarcza_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_tarcza_przod__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_tarcza_przod|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_tarcza_przod__kadr_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_tarcza_przod|Scene 1-2 -> ZGODNE
+- pula_wojownika_chwyty_tarcza_przod.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60, kadr_przod 0-1 -> ZGODNE
+- pula_wojownika_chwyty_ksiega.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_ksiega__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_ksiega|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_ksiega.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- pula_wojownika_chwyty_ksiega_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_ksiega_przod__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_ksiega_przod|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_ksiega_przod__kadr_przod.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje pula_wojownika_chwyty_ksiega_przod|Scene 1-2 -> ZGODNE
+- pula_wojownika_chwyty_ksiega_przod.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60, kadr_przod 0-1 -> ZGODNE
+- pula_wojownika_chwyty_helm_kopula.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_helm_kopula__idle.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje pula_wojownika_chwyty_helm_kopula|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_helm_kopula.glb: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE
+- pula_wojownika_chwyty_helm_kopula_przod.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_helm_kopula_przod__idle.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje pula_wojownika_chwyty_helm_kopula_przod|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_helm_kopula_przod__kadr_przod.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje pula_wojownika_chwyty_helm_kopula_przod|Scene 1-2 -> ZGODNE
+- pula_wojownika_chwyty_helm_kopula_przod.glb: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje idle 0-60, kadr_przod 0-1 -> ZGODNE
+- pula_wojownika_chwyty_helm_uszy.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_helm_uszy__idle.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje pula_wojownika_chwyty_helm_uszy|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_helm_uszy.glb: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE
+- pula_wojownika_chwyty_helm_uszy_przod.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje brak -> ZGODNE
+- pula_wojownika_chwyty_helm_uszy_przod__idle.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje pula_wojownika_chwyty_helm_uszy_przod|Scene 1-61 -> ZGODNE
+- pula_wojownika_chwyty_helm_uszy_przod__kadr_przod.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje pula_wojownika_chwyty_helm_uszy_przod|Scene 1-2 -> ZGODNE
+- pula_wojownika_chwyty_helm_uszy_przod.glb: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje idle 0-60, kadr_przod 0-1 -> ZGODNE
+
+PLIKI
+- pula_wojownika_chwyty_miecz_plansza.jpg
+- pula_wojownika_chwyty_miecz_przod_plansza.jpg
+- pula_wojownika_chwyty_rozdzka_plansza.jpg
+- pula_wojownika_chwyty_rozdzka_przod_plansza.jpg
+- pula_wojownika_chwyty_drzewce_plansza.jpg
+- pula_wojownika_chwyty_drzewce_przod_plansza.jpg
+- pula_wojownika_chwyty_proca_plansza.jpg
+- pula_wojownika_chwyty_proca_przod_plansza.jpg
+- pula_wojownika_chwyty_luk_plansza.jpg
+- pula_wojownika_chwyty_luk_przod_plansza.jpg
+- pula_wojownika_chwyty_tarcza_plansza.jpg
+- pula_wojownika_chwyty_tarcza_przod_plansza.jpg
+- pula_wojownika_chwyty_ksiega_plansza.jpg
+- pula_wojownika_chwyty_ksiega_przod_plansza.jpg
+- pula_wojownika_chwyty_helm_kopula_plansza.jpg
+- pula_wojownika_chwyty_helm_kopula_przod_plansza.jpg
+- pula_wojownika_chwyty_helm_uszy_plansza.jpg
+- pula_wojownika_chwyty_helm_uszy_przod_plansza.jpg
+- ../_pula_wojownika/d2611_chwyty.jpg
+- ../_pula_wojownika/d2611_helm_uszy_porownanie.jpg
+- raport.json
+- raport.txt

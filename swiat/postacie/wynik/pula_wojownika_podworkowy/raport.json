@@ -322,48 +322,6 @@
      ]
     },
     {
-     "nazwa": "LeftEar_Geo",
-     "kosc": "LeftEar",
-     "trojkaty": 40,
-     "wierzcholki": 24,
-     "wymiary": [
-      0.581,
-      0.69,
-      0.343
-     ],
-     "min": [
-      0.392,
-      3.132,
-      -0.203
-     ],
-     "max": [
-      0.973,
-      3.822,
-      0.14
-     ]
-    },
-    {
-     "nazwa": "RightEar_Geo",
-     "kosc": "RightEar",
-     "trojkaty": 40,
-     "wierzcholki": 24,
-     "wymiary": [
-      0.581,
-      0.69,
-      0.343
-     ],
-     "min": [
-      -0.973,
-      3.132,
-      -0.203
-     ],
-     "max": [
-      -0.392,
-      3.822,
-      0.14
-     ]
-    },
-    {
      "nazwa": "Tail_Geo",
      "kosc": "Tail",
      "trojkaty": 88,
@@ -411,19 +369,19 @@
      "trojkaty": 652,
      "wierzcholki": 376,
      "wymiary": [
-      2.28,
-      1.313,
-      1.74
+      2.54,
+      1.658,
+      1.83
      ],
      "min": [
-      -1.14,
+      -1.27,
       2.322,
-      -0.88
+      -0.92
      ],
      "max": [
-      1.14,
-      3.635,
-      0.86
+      1.27,
+      3.98,
+      0.91
      ]
     },
     {
@@ -432,49 +390,49 @@
      "trojkaty": 412,
      "wierzcholki": 238,
      "wymiary": [
-      0.746,
-      2.39,
-      0.334
+      1.022,
+      2.231,
+      0.618
      ],
      "min": [
-      -1.313,
-      0.51,
-      -0.07
+      -1.689,
+      0.533,
+      -0.127
      ],
      "max": [
-      -0.567,
-      2.9,
-      0.264
+      -0.667,
+      2.764,
+      0.491
      ]
     }
    ],
-   "trojkaty_razem": 5076,
+   "trojkaty_razem": 4996,
    "tekstury": {
     "rozmiar_px": 64,
-    "kolory_materialy": 33
+    "kolory_materialy": 32
    },
    "typ": "r15",
    "skala": 1.0,
    "wymiary_ciala": [
     2.22,
-    3.827,
+    3.155,
     2.114
    ],
    "wymiary_z_akcesoriami": [
-    2.453,
-    3.827,
-    2.114
+    2.959,
+    3.985,
+    2.149
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.313,
+     -1.689,
      -0.005,
      -1.239
     ],
     [
-     1.14,
-     3.822,
-     0.875
+     1.27,
+     3.98,
+     0.91
     ]
    ],
    "kosci": [
@@ -625,7 +583,7 @@
     }
    },
    "ostrzezenia": [
-    "ciało razem: wys 3.83 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+    "ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
    ]
   },
   {
@@ -639,19 +597,19 @@
      "trojkaty": 652,
      "wierzcholki": 376,
      "wymiary": [
-      2.28,
-      1.313,
-      1.74
+      2.54,
+      1.658,
+      1.83
      ],
      "min": [
-      -1.14,
+      -1.27,
       -0.848,
-      -0.88
+      -0.92
      ],
      "max": [
-      1.14,
-      0.465,
-      0.86
+      1.27,
+      0.81,
+      0.91
      ]
     }
    ],
@@ -664,20 +622,20 @@
    "typ_roblox": "Hat",
    "zakres_od_zaczepu": [
     [
-     -1.14,
+     -1.27,
      -0.848,
-     -0.88
+     -0.92
     ],
     [
-     1.14,
-     0.465,
-     0.86
+     1.27,
+     0.81,
+     0.91
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    -0.191,
-    -0.01
+    -0.019,
+    -0.005
    ],
    "ostrzezenia": []
   },
@@ -739,11 +697,11 @@
   "pula_wojownika_podworkowy: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15"
  ],
  "kontrola": [
-  "pula_wojownika_podworkowy.fbx: siatki 40, kości 23, trójkąty 4264, wzrost 3.83 st., akcje brak -> ZGODNE",
-  "pula_wojownika_podworkowy__idle.fbx: siatki 40, kości 23, trójkąty 4264, wzrost 3.83 st., akcje pula_wojownika_podworkowy|Scene 1-61 -> ZGODNE",
-  "pula_wojownika_podworkowy.glb: siatki 40, kości 23, trójkąty 4264, wzrost 3.83 st., akcje idle 0-60 -> ZGODNE",
-  "kot_rycerz_podworkowy_helm.fbx: siatki 1, kości 0, trójkąty 652, wzrost 1.31 st., akcje brak -> ZGODNE",
-  "kot_rycerz_podworkowy_helm.glb: siatki 1, kości 0, trójkąty 652, wzrost 1.31 st., akcje brak -> ZGODNE",
+  "pula_wojownika_podworkowy.fbx: siatki 38, kości 23, trójkąty 4184, wzrost 3.15 st., akcje brak -> ZGODNE",
+  "pula_wojownika_podworkowy__idle.fbx: siatki 38, kości 23, trójkąty 4184, wzrost 3.15 st., akcje pula_wojownika_podworkowy|Scene 1-61 -> ZGODNE",
+  "pula_wojownika_podworkowy.glb: siatki 38, kości 23, trójkąty 4184, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
+  "kot_rycerz_podworkowy_helm.fbx: siatki 1, kości 0, trójkąty 652, wzrost 1.66 st., akcje brak -> ZGODNE",
+  "kot_rycerz_podworkowy_helm.glb: siatki 1, kości 0, trójkąty 652, wzrost 1.66 st., akcje brak -> ZGODNE",
   "kot_rycerz_podworkowy_miecz.fbx: siatki 1, kości 0, trójkąty 412, wzrost 2.39 st., akcje brak -> ZGODNE",
   "kot_rycerz_podworkowy_miecz.glb: siatki 1, kości 0, trójkąty 412, wzrost 2.39 st., akcje brak -> ZGODNE",
   "ekwipunek: pula_wojownika_podworkowy_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",

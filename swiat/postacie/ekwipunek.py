@@ -10,7 +10,10 @@ rycerz.py (15.11), bez zmiany zachowania i nazw:
   ubierz()           kopia ciała z założonymi przedmiotami (klipy ciała bez zmian);
   kopiuj_klipy()     klipy postaci odniesienia na inną postać (kanały = deepcopy);
   zaczep_ekwipunku() nazwa zaczepu segmentu kostnego: Ekw<Kosc>Attachment;
-  SKROTY_KOSCI       kość R15 -> skrót w id segmentu (<przedmiot>_<skrót>), ZACZEPY_CHWYTU — zaczepy broni w dłoni.
+  SKROTY_KOSCI       kość R15 -> skrót w id segmentu (<przedmiot>_<skrót>), ZACZEPY_CHWYTU — zaczepy broni w dłoni;
+  ZNACZNIKI_CIALA    znaczniki części ciała dla `ukrywa` (od 26.11.2026: „Uszy” — hełm zakrywający kocie uszy);
+  korekta()          korekta chwytu segmentu na zaczepie: najpierw według rodzaju chwytu broni (Akcesorium.chwyt,
+                     od 26.11.2026, tabela rodzajów w swiat/postacie/chwyty.py), potem według zaczepu — jak dotąd.
 Moduł biblioteczny, bez uruchamiania wprost (testy: --kontrola w modułach bohaterów).
 """
 import copy
@@ -25,6 +28,21 @@ SKROTY_KOSCI = {"Head": "glowa", "UpperTorso": "tulow", "LowerTorso": "biodra",
                 "LeftFoot": "stopa_l", "RightFoot": "stopa_p"}
 _ID_OK = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 ZACZEPY_CHWYTU = ("RightGripAttachment", "LeftGripAttachment")
+# Znaczniki CZĘŚCI CIAŁA dla `ukrywa` (EKWIPUNEK.md pkt 14): przedmiot z ukrywa=("Uszy",) zdejmuje gołe bryły tych
+# kości (jak powłoka, ale bez własnych brył na tych kościach). Inne znaczniki (np. „Wlosy”) dalej oznaczają
+# akcesoria ciała o atrybucie `znacznik`. Ciało bez tych kości: znacznik nic nie robi.
+ZNACZNIKI_CIALA = {"Uszy": ("LeftEar", "RightEar")}
+
+
+def korekta(korekty, s):
+    """(zaczep, pos, obrot) segmentu na zaczepie po korekcie bohatera: korekty = {klucz: (zaczep, pos, obrot)}, klucz
+    = rodzaj chwytu broni (`Akcesorium.chwyt`, np. „miecz”) albo zaczep przedmiotu (np. „RightGripAttachment”).
+    Rodzaj ma pierwszeństwo; bez rodzaju albo bez wpisu dla niego — korekta zaczepu albo brak korekty (jak dotąd)."""
+    k = korekty or {}
+    rodzaj = getattr(s["akc"], "chwyt", None)
+    if rodzaj is not None and rodzaj in k:
+        return k[rodzaj]
+    return k.get(s["zaczep"], (s["zaczep"], s["pos"], s["obrot"]))
 
 
 def zaczep_ekwipunku(kosc):
@@ -75,9 +93,12 @@ class Przedmiot:
                 czesci.append({"id": s["akc"].id, "kosc": s["kosc"], "zakrywa": s["zakrywa"],
                                "zaczep": zaczep_ekwipunku(s["kosc"]), "pos": [0, 0, 0], "rot": [0, 0, 0]})
             else:
-                z, pos, obrot = (korekty or {}).get(s["zaczep"], (s["zaczep"], s["pos"], s["obrot"]))
-                czesci.append({"id": s["akc"].id, "kosc": self.miara.zaczepy[z]["kosc"], "zakrywa": False,
-                               "zaczep": z, "pos": [round(v, 4) for v in pos], "rot": [round(v, 3) for v in obrot]})
+                z, pos, obrot = korekta(korekty, s)
+                cz = {"id": s["akc"].id, "kosc": self.miara.zaczepy[z]["kosc"], "zakrywa": False,
+                      "zaczep": z, "pos": [round(v, 4) for v in pos], "rot": [round(v, 3) for v in obrot]}
+                if getattr(s["akc"], "chwyt", None) is not None:     # rodzaj chwytu broni (chwyty.py) — tylko gdy jest
+                    cz["chwyt"] = s["akc"].chwyt
+                czesci.append(cz)
         # broń trzymana w dłoni (same segmenty na zaczepach chwytu) pasuje do każdego ciała (EKWIPUNEK.md pkt 1)
         w_dloni = all(s["kosc"] is None and s["zaczep"] in ZACZEPY_CHWYTU for s in self.segmenty)
         return {"id": self.id, "nazwa": self.nazwa, "slot": self.slot, "kategoria": self.kategoria,
@@ -106,11 +127,12 @@ class Przedmiot:
 
 def ubierz(cialo, przedmioty, id=None, nazwa=None, korekty=None):
     """Kopia ciała z założonymi przedmiotami (klipy ciała zostają bez zmian):
-    1. hełm (ukrywa) zdejmuje akcesoria ciała o tym znaczniku (włosy);
+    1. hełm (ukrywa) zdejmuje akcesoria ciała o tym znaczniku (włosy), a znacznik części ciała z ZNACZNIKI_CIALA
+       (uszy) — gołe bryły tych kości;
     2. segment z zakrywa=True zdejmuje gołe bryły swojej kości (najwyżej jedna powłoka na kość — inaczej ValueError);
     3. bryły segmentów kostnych są wtapiane do brył kości (te same siatki <Kosc>_Geo co w dawnym modelu);
     4. segment na zaczepie — Postac.zaloz(..., eksport=False) z korektą chwytu bohatera (korekty = {zaczep:
-       (zaczep, pos, obrot)});
+       (zaczep, pos, obrot)} — klucz to rodzaj chwytu broni albo zaczep, patrz korekta());
     5. kasuje pamięć podręczną geometrii (_bryly, _pkt)."""
     p = copy.deepcopy(cialo)
     if id is not None:
@@ -132,7 +154,8 @@ def ubierz(cialo, przedmioty, id=None, nazwa=None, korekty=None):
                 wlasciciel[s["kosc"]] = prz.id
     ukryj = {u for prz in przedmioty for u in prz.ukrywa}
     p.zalozone = [z for z in p.zalozone if getattr(z[0], "znacznik", None) not in ukryj]
-    p.czesci = [c for c in p.czesci if not (c.get("golas") and c["kosc"] in wlasciciel)]
+    schowane = {k for u in ukryj for k in ZNACZNIKI_CIALA.get(u, ())}
+    p.czesci = [c for c in p.czesci if not (c.get("golas") and (c["kosc"] in wlasciciel or c["kosc"] in schowane))]
     for prz in przedmioty:
         for s in prz.segmenty:
             if s["kosc"]:
@@ -143,7 +166,7 @@ def ubierz(cialo, przedmioty, id=None, nazwa=None, korekty=None):
                     d["p"] = (sr[0] + c["p"][0], sr[1] + c["p"][1], sr[2] + c["p"][2])
                     p.czesci.append(d)
             else:
-                z, pos, obrot = (korekty or {}).get(s["zaczep"], (s["zaczep"], s["pos"], s["obrot"]))
+                z, pos, obrot = korekta(korekty, s)
                 p.zaloz(s["akc"], z, pos, obrot, eksport=False)
     p._bryly = None
     p._pkt = None
