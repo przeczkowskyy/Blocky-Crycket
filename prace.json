@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T13:17:03+01:00",
+ "aktualizacja": "2026-11-26T13:24:12+01:00",
  "prace": [
   {
    "id": "helmy-oslony-chwyty",
@@ -36,10 +36,10 @@
    "id": "sala-dwa-rzedy",
    "tytul": "Training Center: dwa rzędy po trzy stanowiska z przejściem pośrodku, trzymanie książki",
    "stan": "w_toku",
-   "etap": "Próby regresji: bazar, trening, NPC",
+   "etap": "Próby regresji w Play, opis",
    "start": "2026-11-26T11:53:11+01:00",
-   "koniec_szacowany": "2026-11-26T15:30:00+01:00",
-   "aktualizacja": "2026-11-26T13:15:57+01:00",
+   "koniec_szacowany": "2026-11-26T15:00:00+01:00",
+   "aktualizacja": "2026-11-26T13:24:12+01:00",
    "obszary": [
     "mapa:miasteczko_bazar",
     "studio:MiasteczkoBazar",
