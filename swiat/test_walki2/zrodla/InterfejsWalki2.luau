@@ -8,7 +8,7 @@
 		• pod paskiem ikony aktywnych efektów z licznikiem tur (i zapasem tarczy);
 		• licznik tury pod „VS”, wstęga z nazwą użytej umiejętności;
 		• przyciski tempa ×1 / ×2 / ×4 (wybór gracza, D-068) obok „POMIŃ” — duże, czytelne na telefonie;
-		• panel wyniku z łupem z dziennika: Złoto, doświadczenie, tokeny krainy, Gem, Shard Ewolucji.
+		• panel wyniku z łupem z dziennika: Rybki (atrybut Gold, D-146), doświadczenie, tokeny krainy, Gem, Shard Ewolucji.
 
 	Użycie: local ui = InterfejsWalki2.nowy(playerGui, Ustawienia) … ui:zniszcz()
 ]]
@@ -927,7 +927,7 @@ function Interfejs:_zbudujWynik()
 		Font = KOMIKS, Text = "", TextColor3 = K.ciemny, ZIndex = 62,
 	}, 0)
 	local kafle = {}
-	local opisy = { { "moneta", "ZŁOTO" }, { "gwiazda", "DOŚWIADCZ." }, { "zeton", "TOKENY LASU" }, { "gem", "GEM" }, { "shard", "SHARD EWOL." } }
+	local opisy = { { "moneta", "RYBKI" }, { "gwiazda", "DOŚWIADCZ." }, { "zeton", "TOKENY LASU" }, { "gem", "GEM" }, { "shard", "SHARD EWOL." } }
 	for i, opis in opisy do
 		local kafel = self:_ramka(karta, {
 			Name = "Kafel" .. i, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.11 + (i - 1) * 0.195, 0.315),

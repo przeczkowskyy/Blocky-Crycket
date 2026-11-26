@@ -119,7 +119,7 @@
   "szyld_podpis": "próba",
   "zamknij": "X",
   "materialy": "Materiały: %d",
-  "zloto": "Złoto: %d",
+  "zloto": "Rybki: %d",
   "bohater": "Twój bohater: %s",
   "nie_masz": "Jeszcze nie masz — wypada z walk",
   "zalozony": "założony",
@@ -130,17 +130,19 @@
   "ulepsz": "Ulepsz",
   "rozbierz": "Rozbierz zapas",
   "nastepny": "Ulepszenie: %s",
-  "koszt": "Koszt: %d Złota + %s",
+  "koszt": "Koszt: %s + %s",
   "rozbiorka": "Rozbiórka zapasu: +%s",
   "bez_statystyk": "liczy się jak dziś (broń i pancerz z poziomu)",
   "blok_wzoru": "blok %d%% z poziomu",
   "bez_tarczy": "Bez tarczy: brak bloku tarczy w walce",
   "ok_ulepsz": "Ulepszono: %s +%d!",
   "ok_rozbierz": "Rozebrano zapas: +%s.",
-  "za_malo_zlota": "Brakuje ci %d Złota.",
+  "za_malo_zlota": "Brakuje ci %s.",
   "za_malo_materialow": "Brakuje ci %s — rozbierz zapasowe przedmioty z walk.",
   "formy_materialu": ["materiał", "materiały", "materiałów"],
   "formy_materialu_dopelniacz": ["materiału", "materiałów", "materiałów"],
+  "formy_rybki": ["Rybka", "Rybki", "Rybek"],
+  "formy_rybki_dopelniacz": ["Rybki", "Rybek", "Rybek"],
   "brak_zapasu": "Nie masz zapasowego egzemplarza do rozbiórki.",
   "nie_masz_przedmiotu": "Nie masz tego przedmiotu.",
   "najwyzszy": "To już najwyższy poziom.",
@@ -150,6 +152,6 @@
   "blad": "Coś poszło nie tak — spróbuj jeszcze raz.",
   "lup_nowy": "Nowy przedmiot: %s! Założony.",
   "lup_zapas": "Zapasowy przedmiot: %s — rozbierz go u kowala w bazarze.",
-  "wskazowka": "Przedmioty wypadają z walk. Zapasowe rozbierasz na materiały, a za materiały i Złoto ulepszasz swoje."
+  "wskazowka": "Przedmioty wypadają z walk. Zapasowe rozbierasz na materiały, a za materiały i Rybki ulepszasz swoje."
  }
 }

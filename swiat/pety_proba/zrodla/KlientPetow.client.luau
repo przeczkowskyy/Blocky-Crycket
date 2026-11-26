@@ -5,7 +5,7 @@
 	Co robi (wszystko u tego gracza; obiekty w świecie tylko lokalne, w folderze PetyLokalne kontenera):
 		1. Inkubatory (jeden na jajko z D.jajka — las-pas, Bagno): jajko z serwera (widać je w Edit) chowa u siebie
 		   i stawia lokalną, animowaną kopię (kołysanie); napis z ceną dla tego gracza (atrybut jajko.atrybuty.cena)
-		   i tekst podpowiedzi E „Kup za N Złota”.
+		   i tekst podpowiedzi E „Kup za N Rybek”.
 		2. "wyklucie" od serwera → jajko tego inkubatora trzęsie się, pęka (kolor rzadkości w środku, błysk, iskry,
 		   dźwięk), pet wyskakuje i ląduje przed gniazdem, radość, napis NOWY PET! / KOPIA +1 z nazwą, rzadkością i skillem.
 		   Reset postaci w trakcie nie przerywa animacji (pet jest już u gracza — zdecydował serwer).
@@ -21,7 +21,7 @@
 		   tablica „TWOJE PETY · PRÓBA” w dwóch kolumnach (jajko po jajku) z liczbą kopii (= shardy peta, D-058), okno
 		   wyboru aktywnego peta „PRÓBA” (przewijane, podzielone na jajka) — otwiera je E opiekunki
 		   (ReplicatedStorage.OknoMiejsca, id zagrody — pakiet swiat/miasteczko_bazar_gra) albo zapasowe E tablicy.
-		5. Premia peta przy łupie: komunikat "premia" od StanGracza → krótki napis „+N Złota od peta: …”.
+		5. Premia peta przy łupie: komunikat "premia" od StanGracza → krótki napis „+N Rybek od peta: …”.
 	Haczyk testowy: Sygnaly/SterowanieKlienta ("stan" | "okno" | "zamknij" | "wybierz", id | "do_zagrody", id
 	| "z_zagrody", id | "ulepsz" | "najrzadsze" (jak przyciski okna, 25.11.2026) | "wyklucie", pet, nowy,
 	jajko? | "pokaz", pet, Vector3 | "pokaz_usun").
@@ -388,20 +388,20 @@ local function odswiezCene()
 			local stac = type(zloto) == "number" and zloto >= cena
 			local lok = jajkaLok[j.id]
 			if lok then
-				-- cena stała (domyślna, decyzja 17.11): „Cena: 300 Złota”; rosnąca (przełącznik): twoja i następna
+				-- cena stała (domyślna, decyzja 17.11): „Cena: 300 Rybek”; rosnąca (przełącznik): twoja i następna
 				local c = j.cena
 				if c.tryb == "rosnaca" then
 					local nast = math.min(c.maks, cena + c.krok)
-					lok.napis.Text = string.format(T.twoja_cena, cena)
+					lok.napis.Text = string.format(T.twoja_cena, L.ileRybek(D, cena))
 						.. (if nast ~= cena then "  ·  " .. string.format(T.nastepna, nast) else "")
 				else
-					lok.napis.Text = string.format(T.cena, cena)
+					lok.napis.Text = string.format(T.cena, L.ileRybek(D, cena))
 				end
 				lok.napis.TextColor3 = if stac then kolor("9CFF8A") else kolor("FFF6E0")
 			end
 			local pp = znajdzPodpowiedz(j)
 			if pp then
-				pp.ActionText = string.format(D.inkubator.napis_akcja_cena, cena) -- tylko u tego gracza
+				pp.ActionText = string.format(D.inkubator.napis_akcja_cena, L.ileRybek(D, cena, "b")) -- tylko u tego gracza
 			end
 		end
 	end
@@ -775,9 +775,7 @@ local function plusZagrody(ile: any)
 	t.TextColor3 = kolor("FFD54A")
 	t.TextStrokeTransparency = 0.2
 	-- odmiana (26.11): 1 Rybka, 2–4 / 22–24… Rybki, reszta Rybek
-	local d, s = ile % 10, ile % 100
-	local wzor = if ile == 1 then T.plus_1 elseif d >= 2 and d <= 4 and (s < 12 or s > 14) then T.plus_2_4 else T.plus
-	t.Text = string.format(wzor or T.plus, ile)
+	t.Text = string.format(L.forma({ T.plus_1, T.plus_2_4, T.plus }, ile), ile)
 	t.Parent = napis
 	local czas = D.zagroda.plus_s
 	TweenService:Create(napis, TweenInfo.new(czas, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -1041,7 +1039,7 @@ local function rysujOkno()
 		ulepsz.Font = CZCIONKA
 		ulepsz.TextScaled = true
 		ulepsz.TextColor3 = kolor("FFFFFF")
-		ulepsz.Text = if z.cena then string.format(T.ulepsz, L.miejscaZagrody(D, z.poziom + 1), z.cena)
+		ulepsz.Text = if z.cena then string.format(T.ulepsz, L.miejscaZagrody(D, z.poziom + 1), L.ileRybek(D, z.cena, "b"))
 			else string.format(T.ulepsz_max, z.miejsc)
 		ulepsz.Parent = f
 		local ru = Instance.new("UICorner")
@@ -1236,7 +1234,7 @@ local function podepnijStanGracza()
 		local nazwa = if p then p.nazwa else "?"
 		local czesci = {}
 		if type(zloto) == "number" and zloto > 0 then
-			table.insert(czesci, string.format("+%d Złota", zloto))
+			table.insert(czesci, "+" .. L.ileRybek(D, zloto))
 		end
 		if type(xp) == "number" and xp > 0 then
 			table.insert(czesci, string.format("+%d doświadczenia", xp))

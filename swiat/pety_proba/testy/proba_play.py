@@ -21,8 +21,8 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
   P00 w Edit: kontenery na miejscu; script_grep po innych piszących PetAktywny / PetyLiczba (i)
   P01 gotowość: SerwerPetowGotowy, ZgodnoscLogikiPetow „OK n/n”, KlientPetowGotowy, StanGracza gotowy, jajko lokalne
   P02 klasa wybrana (ekran wyboru zamknięty — HUD widać)
-  P03 brak Złota: Gold = 0, prawdziwe E przy inkubatorze → odmowa „Brakuje ci … Złota”, Gold bez zmian, bez peta
-  P04 kupno prawdziwym E (Gold = 2000): Złoto − cena, PetyLiczba 1, PetAktywny, napis ceny „Kup za N Złota”; zrzuty
+  P03 brak Złota: Gold = 0, prawdziwe E przy inkubatorze → odmowa „Brakuje ci … Rybek”, Gold bez zmian, bez peta
+  P04 kupno prawdziwym E (Gold = 2000): Złoto − cena, PetyLiczba 1, PetAktywny, napis ceny „Kup za N Rybek”; zrzuty
       wyklucia: trzęsienie, pęknięcie, wyskok, napis
   P05 drugi E w trakcie wyklucia → odmowa „trwa wyklucie”, Złoto bez zmian
   P06 pet za graczem: marsz postacią ~40 st (character_navigation) — odległość peta ≤ 12 st w marszu, ≤ 6 po
@@ -472,7 +472,7 @@ def main():
             zapisz("B04", {"przed": kl0, "po": po4, "modyfikatory": mod4})
             punkt("B04", po4.get("Gold") == 3000 - LP.cena(D, JB, 0) and po4.get(KB) == 1 and po4.get(CB) == LP.cena(D, JB, 1)
                   and po4.get(CL) == LP.cena(D, JL, 0) and po4.get("PetAktywny") in JB["pula"]
-                  and "Kup za %d" % LP.cena(D, JB, 0) in str((kl0.get("akcjeE") or {}).get(JB["id"])),
+                  and "Kup za %s" % LP.ile_rybek(D, LP.cena(D, JB, 0), "b") in str((kl0.get("akcjeE") or {}).get(JB["id"])),
                   "E %r → Gold %s, pet %s, cena Bagna %s, cena lasu %s (bez zmian)" % (
                       (kl0.get("akcjeE") or {}).get(JB["id"]), po4.get("Gold"), po4.get("PetAktywny"), po4.get(CB),
                       po4.get(CL)))
@@ -648,14 +648,21 @@ def main():
                 bool(okno), k5.get("wierszZagrodyWOknie")))
             # ================================================================ Z06 ulepszenie bez Rybek
             luau(KOD["ustaw_atr"] % ("Gold", "0"), "Server")
+            t6 = time.time()
             time.sleep(0.4)
             klient('"ulepsz"')
             time.sleep(1.0)
             odm = kont("PetyProba", ["OstatniaOdmowa"])
             k6 = klient('"stan"')
             g6 = atr("Gold").get("Gold")
-            punkt("Z06", odm.get("OstatniaOdmowa") == "za_malo" and "Brakuje" in str(k6.get("komunikat")) and g6 == 0,
-                  "odmowa %s, napis %r, Gold %s" % (odm.get("OstatniaOdmowa"), k6.get("komunikat"), g6))
+            c6 = Z["poziomy"][1]["cena"]  # 26.11 (Rybki, D-146): pełny napis z odmianą, nie samo „Brakuje”
+            # odmowa nic nie zabiera (napis „masz 0”); zagroda nalicza dalej w trakcie punktu (26.11: raz Gold 1) —
+            # dopuszczalne Rybki z tików od ustawienia Gold, jak w Z07
+            g6_hi = int(((zagroda().get("stan") or {}).get("stawka_s") or 0) * (time.time() - t6 + Z["tik_s"])) + 1
+            punkt("Z06", odm.get("OstatniaOdmowa") == "za_malo" and isinstance(g6, (int, float)) and 0 <= g6 <= g6_hi
+                  and str(k6.get("komunikat")) == LP.tekst_braku_ulepszenia(D, c6, 0, c6),
+                  "odmowa %s, napis %r, Gold %s (oczekiwane 0…%d)" % (odm.get("OstatniaOdmowa"), k6.get("komunikat"),
+                                                                     g6, g6_hi))
             # ================================================================ Z07 ulepszenie za Rybki
             cena = Z["poziomy"][1]["cena"]
             luau(KOD["ustaw_atr"] % ("Gold", str(cena + 50)), "Server")
@@ -787,7 +794,7 @@ def main():
                 cena0 = LP.cena(D, JL, 0)
                 zapisz("P04", {"akcja_przed": kl0.get("akcjaE"), "napis": kl0.get("napisCeny"), "po": po4, "zakup": zak})
                 punkt("P04", po4.get("Gold") == 2000 - cena0 and po4.get("PetyLiczba") == 1 and bool(po4.get("PetAktywny"))
-                      and "Kup za %d" % cena0 in str(kl0.get("akcjaE")),
+                      and "Kup za %s" % LP.ile_rybek(D, cena0, "b") in str(kl0.get("akcjaE")),
                       "E %r, napis %r → Gold %s, pet %s, następna cena %s" % (kl0.get("akcjaE"), kl0.get("napisCeny"),
                                                                            po4.get("Gold"), po4.get("PetAktywny"),
                                                                            po4.get(JL["atrybuty"]["cena"])))

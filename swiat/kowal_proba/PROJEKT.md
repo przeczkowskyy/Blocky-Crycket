@@ -160,7 +160,9 @@ Bez kontenera `KowalProba` (albo bez atrybutu `KowalDostepne`) krok się nie pok
 
 ## Napisy z liczbą (18.11.2026)
 Liczba przy „materiał” odmienia się: koszt i zysk z rozbiórki — „1 materiał / 2–4 materiały / 5 materiałów”
-(22–24 jak 2–4, 12–14 i 0 jak 5+), „Brakuje ci 1 materiału / 2 materiałów”. Złoto zostaje „N Złota” (jak w całej grze).
+(22–24 jak 2–4, 12–14 i 0 jak 5+), „Brakuje ci 1 materiału / 2 materiałów”. Waluta od 26.11.2026 to Rybki (D-146):
+„Koszt: 150 Rybek + 1 materiał”, „Koszt: 22 Rybki + 2 materiały”, „Brakuje ci 1 Rybki / 500 Rybek.”, nagłówek „Rybki: N”
+(`teksty.formy_rybki`, `formy_rybki_dopelniacz`, funkcje `L.ileRybek` / `L.ileRybekDop`, lustro `ile_rybek` / `ile_rybek_dop`).
 Formy w `ustawienia.json` (`teksty.formy_materialu`, `formy_materialu_dopelniacz`), funkcje `L.ileMaterialow` /
 `L.ileMaterialowDop` (lustro w Pythonie), test 1f i przypadki wzorcowe.
 

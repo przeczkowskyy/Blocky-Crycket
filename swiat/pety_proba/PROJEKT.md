@@ -16,7 +16,9 @@ Ewolucji i tokeny krainy), D-060 (inkubator w biomie, wyklucie od razu z animacj
 > napis „NOWY PET!” albo „KOPIA +1”. **Aktywny pet chodzi za graczem** (widzą go wszyscy), znika w walce, przelocie,
 > chmurach i mini-grze. **W zagrodzie w bazarze** stoją posiadane pety, tablica „TWOJE PETY · PRÓBA” z liczbą kopii,
 > a E opiekunki otwiera tymczasowe okno wyboru aktywnego peta. **Pet daje premię do Złota albo doświadczenia z walk**
-> (liczy ją StanGracza, napis „+N Złota od peta” przy łupie). Wskazówka celu: „Masz dość Złota na jajko…”.
+> (liczy ją StanGracza, napis „+N Rybek od peta” przy łupie). Wskazówka celu: „Masz dość Rybek na jajko…”.
+> Od 26.11.2026 waluta w napisach to **Rybki** (D-146; atrybut `Gold`, pola zapisu i nazwy w kodzie bez zmian): odmiana przy liczbie „1 Rybka / 2–4 Rybki / 5 Rybek”, w dopełniaczu „Brakuje ci 1 Rybki / 150 Rybek”. Helper `L.ileRybek(D, n, "m"|"b"|"d")` (lustro `ile_rybek`): „cena: 1 Rybka”, „Kup za 1 Rybkę”,
+> „od 1 Rybki”; przychód zagrody „+3 Rybki/min”, „+2,4 Rybki/min”, „+12 Rybek/min”.
 >
 > **Od 17.11 (wieczór) drugie jajko — Jajko Bagna** (D-060: inkubator w każdym biomie): na tym samym stanowisku przy
 > Pomoście Przybycia Bagna stoi **błotne gniazdo z trzcin na palach z latarenką-ognikiem** i tablicą szans; pięć petów
@@ -195,8 +197,9 @@ paski siatki) i brył jest mniej: jajko leśne 16 zamiast 22, Bagna 21. Para „
 (dotychczasowe ceny startowe; liczby zostawione do doboru — trzymają pierwsze jajko w 5–10 minutach gry w biomie).
 Cena nie rośnie z zakupami; rośnie tylko między biomami. W `ustawienia.json` → `jajka[].cena`: `tryb` = `"stala"`
 (domyślny, pole `stala`); `"rosnaca"` (`start`, `krok`, `maks`) i `"kalkulator"` (stała z `tools/walka/progresja.py`)
-zostają jako przełącznik. Gracz widzi cenę przy E („Kup za 300 Złota”), nad jajkiem („Cena: 300 Złota”, bez
-„następne…”) i na tablicy („cena: 300 Złota”). Premii petów (+% Złota) symulacja nie liczy — to dolna granica tempa.
+zostają jako przełącznik. Gracz widzi cenę przy E („Kup za 300 Rybek”), nad jajkiem („Cena: 300 Rybek”, bez
+„następne…”) i na tablicy („cena: 300 Rybek”; do 26.11.2026 „Złota”). Premii petów (+% Rybek) symulacja nie liczy — to
+dolna granica tempa.
 
 **Las** (`ekonomia_jajek.py`, 100 graczy na klasę, gracz jak w `swiat/stan_gracza/symulacja_lasu.py`, las-pas po
 skróceniu; minuty od wejścia do lasu, mediana i 10–90% graczy):

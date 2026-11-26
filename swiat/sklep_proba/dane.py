@@ -80,7 +80,7 @@ def podstawa():
     for stan in LS.STANY:
         if "stan_" + stan not in U["teksty"]:
             raise BladDanych("brak tekstu stanu %s" % stan)
-    for k in set(LS._MAPA.values()) | {"blad", "za_malo_zlota", "za_niski_poziom"}:
+    for k in set(LS._MAPA.values()) | {"blad", "za_malo_zlota", "za_niski_poziom", "formy_rybki", "formy_rybki_dopelniacz"}:
         if k not in U["teksty"]:
             raise BladDanych("brak tekstu %s" % k)
     return {
@@ -109,7 +109,7 @@ def _oferta_probna(D, zmiana=0):
 
 
 def przypadki(D):
-    P = {"uklad": [], "oferta": [], "komunikat": [], "naglowek": []}
+    P = {"uklad": [], "oferta": [], "komunikat": [], "naglowek": [], "odmiana": []}
     for W, H in ((667, 375), (812, 375), (1024, 768), (1366, 768), (1920, 1080), (2560, 1440), (320, 240)):
         P["uklad"].append({"W": W, "H": H, "wynik": LS.uklad(D, W, H)})
     for zmiana in (0, 2, 3):
@@ -122,6 +122,8 @@ def przypadki(D):
            ("zaloz", {"ok": True, "nazwa": "Dębowa Tarcza", "zalozony": True}),
            ("oferta", {"ok": True}),
            ("kup", {"ok": False, "powod": "za_malo_zlota", "brakuje": 150}),
+           ("kup", {"ok": False, "powod": "za_malo_zlota", "brakuje": 1}),
+           ("kup", {"ok": False, "powod": "za_malo_zlota", "brakuje": 22}),
            ("kup", {"ok": False, "powod": "za_niski_poziom", "brakuje": 4, "wymagany": 13}),
            ("kup", {"ok": False, "powod": "za_niski_poziom", "brakuje": 4}),
            ("kup", "zle")]
@@ -131,6 +133,8 @@ def przypadki(D):
         P["komunikat"].append({"akcja": akcja, "r": r, "wynik": LS.komunikat(D, akcja, r)})
     for zloto, poziom in ((0, 1), (1234, 17)):
         P["naglowek"].append({"zloto": zloto, "poziom": poziom, "wynik": LS.naglowek(D, zloto, poziom)})
+    for n in (0, 1, 2, 4, 5, 11, 12, 14, 21, 22, 25, 100, 101, 102, 112):
+        P["odmiana"].append({"n": n, "rybki": LS.ile_rybek(D, n), "rybkiDop": LS.ile_rybek_dop(D, n)})
     return P
 
 

@@ -636,7 +636,8 @@ def main():
                               gp.get("Level"), gpo.get("Level")))
                     # S13: komunikat po przegranej (tekst z danych, liczby z S06)
                     if lup and lup[0] == "przegrana":
-                        oczek = (D["kara"]["komunikat"] % (kara, lup[2]) if kara > 0 else D["kara"]["komunikat_bez_zlota"] % lup[2])
+                        oczek = (D["kara"]["komunikat"] % (LS.ile_rybek(D, kara), lup[2]) if kara > 0
+                                 else D["kara"]["komunikat_bez_zlota"] % lup[2])
                         ok13 = (kara > 0 and kom.get("ostatni") == oczek and (kary.get("LicznikKar") or 0) == kary0 + 1)
                         punkt("S13", ok13, "komunikat %r (oczekiwany %r), LicznikKar %s→%s, OstatniaKara %s" % (
                             kom.get("ostatni"), oczek, kary0, kary.get("LicznikKar"), kary.get("OstatniaKara")))

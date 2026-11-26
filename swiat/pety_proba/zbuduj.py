@@ -323,7 +323,7 @@ local function inkubator(J)
 		s.Parent = papier
 		local tt = tekst(s, J.tytul, UDim2.fromScale(0.03, 0.02), UDim2.fromScale(0.94, 0.15), "3E2A16", "LuckiestGuy", 40)
 		tt.TextXAlignment = Enum.TextXAlignment.Center
-		local tc = tekst(s, L.opisCeny(D, J), -- „cena: 300 Złota” (stała) albo „od … · rośnie …” (rosnąca)
+		local tc = tekst(s, L.opisCeny(D, J), -- „cena: 300 Rybek” (stała) albo „od … · rośnie …” (rosnąca)
 			UDim2.fromScale(0.03, 0.17), UDim2.fromScale(0.94, 0.08), "5E3A22", nil, 17)
 		tc.TextXAlignment = Enum.TextXAlignment.Center
 		tekst(s, D.teksty.szanse_tytul, UDim2.fromScale(0.03, 0.27), UDim2.fromScale(0.94, 0.08), "3E2A16", nil, 17)

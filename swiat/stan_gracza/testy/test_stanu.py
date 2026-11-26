@@ -1370,7 +1370,7 @@ class TestKlientaOffline(unittest.TestCase):
         return [o for o in self.nowe if o.klasa == "ScreenGui" and o.t.get("Name") == "StanGraczaKomunikat"]
 
     def test_9d_komunikat_przegranej(self):
-        # propozycja D-098: „Przegrana: −N Złota, +M doświadczenia” dopiero przy widocznym HUD; bez Złota — sam XP
+        # propozycja D-098: „Przegrana: −N Rybek, +M doświadczenia” dopiero przy widocznym HUD; bez Rybek — sam XP
         self.uruchom(hud_wlaczony=False)
         self.do_klienta.odpal("przegrana", 12.0, 7.0)
         self.do_klienta.odpal("przegrana", "x", 7.0)  # złe dane — pominięte
@@ -1379,12 +1379,20 @@ class TestKlientaOffline(unittest.TestCase):
         self.wlacz_hud(True)
         self.sw.krok(D["baner"]["opoznienie_po_hud_s"] + 0.1)
         self.assertEqual(len(self.komunikaty()), 1)
-        tekst = D["kara"]["komunikat"] % (12, 7)
+        tekst = "Przegrana: −12 Rybek, +7 doświadczenia"
         self.assertIn("  %s  " % tekst, self.napisy())
-        self.assertEqual(tekst, "Przegrana: −12 Złota, +7 doświadczenia")
         self.do_klienta.odpal("przegrana", 0.0, 3.0)
         self.assertIn("  %s  " % (D["kara"]["komunikat_bez_zlota"] % 3), self.napisy())
         self.assertEqual(len(self.komunikaty()), 2)
+        # waluta to Rybki (D-146): odmiana przy liczbie w napisie klienta (0 = napis bez Rybek, wyżej)
+        formy = {1: "Rybka", 2: "Rybki", 4: "Rybki", 5: "Rybek", 11: "Rybek", 12: "Rybek", 14: "Rybek", 21: "Rybek",
+                 22: "Rybki", 25: "Rybek", 100: "Rybek", 101: "Rybek", 102: "Rybki", 112: "Rybek"}
+        for n, slowo in formy.items():
+            self.do_klienta.odpal("przegrana", float(n), 7.0)
+            self.assertIn("  Przegrana: −%d %s, +7 doświadczenia  " % (n, slowo), self.napisy(), n)
+            self.assertEqual(LS.ile_rybek(D, n), "%d %s" % (n, slowo), "lustro w Pythonie (próba w Play)")
+        self.assertEqual(len(self.komunikaty()), 2 + len(formy))
+        self.assertFalse([t for t in self.napisy() if "Złot" in t], "waluta to Rybki, nie Złoto")
         self.assertEqual(self.banery(), [], "przegrana bez awansu — bez banera")
         self.assertEqual(self.sw.ostrzezenia, [])
 

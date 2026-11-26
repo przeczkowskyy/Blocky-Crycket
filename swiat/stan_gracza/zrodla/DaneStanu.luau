@@ -78,9 +78,10 @@ return {
 		limit_lupu = { baza = 22, na_poziom = 9 },
 		zrodla = { "LasPotwory", "LasPasGra", "BagnoPasGra", "DzunglaPasGra" },
 		atrybut_wylacznika = "KaraPrzegranej",
-		komunikat = "Przegrana: −%d Złota, +%d doświadczenia",
+		komunikat = "Przegrana: −%s, +%d doświadczenia",
 		komunikat_bez_zlota = "Przegrana: +%d doświadczenia",
 		czas_s = 3.5,
+		formy_rybki = { "Rybka", "Rybki", "Rybek" },
 	},
 	modyfikatory = {
 		zrodel_maks = 16,
@@ -2270,5 +2271,5 @@ return {
 			{ znana = 9999, nowa = 10000, pula = 5, wynik = { 9999, 5, "ok" } },
 		},
 	},
-	skrot = "9218589c072c",
+	skrot = "8229cfce501d",
 }

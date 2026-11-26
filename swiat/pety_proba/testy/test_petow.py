@@ -130,7 +130,8 @@ class TestDanych(unittest.TestCase):
     def test_1d_teksty_dla_gracza(self):
         tworcy = re.compile(r"D-0\d\d|Paweł|Karol|\btest|placeholder|atrybut|lorem|TODO", re.I)
         for k, t in U["teksty"].items():
-            self.assertIsNone(tworcy.search(t), (k, t))
+            for x in (t if isinstance(t, list) else [t]):
+                self.assertIsNone(tworcy.search(x), (k, x))
         for p in U["pety"]:
             self.assertIsNone(tworcy.search(p["nazwa"] + p["skill"]["nazwa"]), p["id"])
         self.assertEqual(U["zagroda"]["napis_proby"], "PRÓBA")
@@ -289,9 +290,9 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(LP.cena(D, dict(las, cena=dict(las["cena"], tryb="kalkulator")), 3), las["cena"]["kalkulator"])
         self.assertGreater(bagno["cena"]["stala"], las["cena"]["stala"], "w Bagnie więcej Złota — droższe jajko")
         # napis ceny na tablicy i nad jajkiem
-        self.assertEqual(LP.opis_ceny(D, las), "cena: 300 Złota")
-        self.assertEqual(LP.opis_ceny(D, bagno), "cena: 750 Złota")
-        self.assertEqual(LP.opis_ceny(D, las, "rosnaca"), "od 300 Złota · rośnie z każdym jajkiem")
+        self.assertEqual(LP.opis_ceny(D, las), "cena: 300 Rybek")
+        self.assertEqual(LP.opis_ceny(D, bagno), "cena: 750 Rybek")
+        self.assertEqual(LP.opis_ceny(D, las, "rosnaca"), "od 300 Rybek · rośnie z każdym jajkiem")
 
     def test_3b2_licznik_osobny_i_wspolny(self):
         las, bagno = D["jajka"][:2]
@@ -314,14 +315,36 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(LP.decyzja(D, {"stan_gracza": True, "jajko": "xx"})["powod"], "nieznane_jajko")
         self.assertEqual(LP.decyzja(D, {"stan_gracza": True, "jajko": "jajko_lesne", "zajety": True})["powod"],
                          "trwa_wyklucie")
-        self.assertEqual(LP.tekst_braku(D, 120, 180, 300), "Brakuje ci 120 Złota (masz 180, jajko kosztuje 300)")
+        self.assertEqual(LP.tekst_braku(D, 120, 180, 300), "Brakuje ci 120 Rybek (masz 180, jajko kosztuje 300)")
+        self.assertEqual(LP.tekst_braku(D, 1, 299, 300), "Brakuje ci 1 Rybki (masz 299, jajko kosztuje 300)")
+        self.assertEqual(LP.tekst_braku_ulepszenia(D, 1, 999, 1000),
+                         "Brakuje ci 1 Rybki (masz 999, ulepszenie kosztuje 1000)")
         self.assertEqual([LP.procent(x) for x in (0.5, 0.02, 0.005)], ["50%", "2%", "0,5%"])
-        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "zoledziak")), "+2% Złota z walk")
+        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "zoledziak")), "+2% Rybek z walk")
         self.assertEqual(LP.opis_skilla(D, LP.pet(D, "lisciolis")), "+15% Zręczności i Szczęścia")
         self.assertEqual(LP.opis_skilla(D, LP.pet(D, "ognik")), "Ogień: podpala wroga przy ciosie (25%)")
         self.assertEqual(LP.opis_skilla(D, LP.pet(D, "wazeczka")), "Jad: zatruwa wroga przy ciosie (30%)")
         self.assertEqual(LP.opis_skilla(D, LP.pet(D, "jelonek_gaju")),
-                         "Kryształ: ciosy mocniej trafiają, +20% Siły, +5% Złota i doświadczenia z walk")
+                         "Kryształ: ciosy mocniej trafiają, +20% Siły, +5% Rybek i doświadczenia z walk")
+        # waluta to Rybki (D-146, atrybut Gold): odmiana przy liczbie w mianowniku, bierniku i dopełniaczu
+        oczek = {0: ("Rybek", "Rybek", "Rybek"), 1: ("Rybka", "Rybkę", "Rybki"), 2: ("Rybki", "Rybki", "Rybek"),
+                 4: ("Rybki", "Rybki", "Rybek"), 5: ("Rybek", "Rybek", "Rybek"), 11: ("Rybek", "Rybek", "Rybek"),
+                 12: ("Rybek", "Rybek", "Rybek"), 14: ("Rybek", "Rybek", "Rybek"), 21: ("Rybek", "Rybek", "Rybek"),
+                 22: ("Rybki", "Rybki", "Rybek"), 25: ("Rybek", "Rybek", "Rybek"), 100: ("Rybek", "Rybek", "Rybek"),
+                 101: ("Rybek", "Rybek", "Rybek"), 102: ("Rybki", "Rybki", "Rybek"), 112: ("Rybek", "Rybek", "Rybek")}
+        for n, (m, b, d) in oczek.items():
+            self.assertEqual([LP.ile_rybek(D, n), LP.ile_rybek(D, n, "b"), LP.ile_rybek(D, n, "d")],
+                             ["%d %s" % (n, m), "%d %s" % (n, b), "%d %s" % (n, d)], n)
+        T = D["teksty"]
+        self.assertEqual(D["inkubator"]["napis_akcja_cena"] % LP.ile_rybek(D, 1, "b"), "Kup za 1 Rybkę")
+        self.assertEqual(D["inkubator"]["napis_akcja_cena"] % LP.ile_rybek(D, 750, "b"), "Kup za 750 Rybek")
+        self.assertEqual(T["ulepsz"] % (4, LP.ile_rybek(D, 1000, "b")), "Więcej miejsc: 4 za 1000 Rybek")
+        self.assertEqual([LP.opis_przychodu(D, s) for s in (0, 1 / 60.0, 0.05, 0.1, 0.04, 0.2, 22 / 60.0, 0.25)],
+                         ["+0 Rybek/min", "+1 Rybka/min", "+3 Rybki/min", "+6 Rybek/min", "+2,4 Rybki/min",
+                          "+12 Rybek/min", "+22 Rybki/min", "+15 Rybek/min"])
+        teksty = [x for t in list(T.values()) + [D["inkubator"]["napis_akcja_cena"]]
+                  for x in (t if isinstance(t, list) else [t])]
+        self.assertFalse([t for t in teksty if "Złot" in t or "złot" in t], "waluta to Rybki, nie Złoto")
         self.assertEqual((LP.opis_skilla_krotki(D, LP.pet(D, "ognik")), LP.opis_skilla_krotki(D, LP.pet(D, "lisciolis"))),
                          ("Ogień", "+15% Zręczności i Szczęścia"))
         self.assertEqual(LP.mod_peta(D, "ognik"), {"pasywki": ["ognista_rozdzka"], "zaklecie": "podpalenie"})
@@ -665,7 +688,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.uruchom(zloto=120)
         self.e_jajka()
         odm = self.od_serwera("odmowa")
-        self.assertEqual(odm, [["odmowa", "Brakuje ci 180 Złota (masz 120, jajko kosztuje 300)", "za_malo"]])
+        self.assertEqual(odm, [["odmowa", "Brakuje ci 180 Rybek (masz 120, jajko kosztuje 300)", "za_malo"]])
         self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba"), self.atr("PetAktywny")), (120, 0, None))
         self.assertEqual(self.od_serwera("wyklucie"), [])
         # od razu można spróbować znowu (blokada zdjęta po odmowie)
@@ -686,7 +709,8 @@ class TestSerweraOffline(unittest.TestCase):
         self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
         self.e_jajka()
         odm = self.od_serwera("odmowa")[-1]
-        self.assertEqual(odm[1:], ["Brakuje ci %d Złota (masz %d, jajko kosztuje %d)" % (3 * c - 700, 700 - 2 * c, c),
+        self.assertNotEqual(3 * c - 700, 1)
+        self.assertEqual(odm[1:], ["Brakuje ci %d Rybek (masz %d, jajko kosztuje %d)" % (3 * c - 700, 700 - 2 * c, c),
                                    "za_malo"])
         self.assertEqual((self.atr("PetyLiczba"), self.atr(D["jajka"][0]["atrybuty"]["kupione"])), (2, 2))
         self.assertEqual(self.sw.ostrzezenia, [])
@@ -820,7 +844,8 @@ class TestSerweraOffline(unittest.TestCase):
         # drugie jajko Bagna: za mało Złota — odmowa z kwotą braku
         self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
         self.assertEqual(self.hak("kup", self.gracz.t, bagno["id"], 0.995)["powod"], "za_malo")
-        self.assertEqual(self.od_serwera("odmowa")[-1][1], "Brakuje ci %d Złota (masz %d, jajko kosztuje %d)" % (
+        self.assertNotEqual(cb - self.atr("Gold"), 1)
+        self.assertEqual(self.od_serwera("odmowa")[-1][1], "Brakuje ci %d Rybek (masz %d, jajko kosztuje %d)" % (
             cb - self.atr("Gold"), self.atr("Gold"), cb))
         self.assertEqual(self.sw.ostrzezenia, [])
 

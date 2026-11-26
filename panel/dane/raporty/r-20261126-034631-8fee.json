@@ -1,0 +1,15 @@
+{
+ "id": "r-20261126-034631-8fee",
+ "tytul": "Regresja całej gry po nocy: naprawy i trzy sprawy do decyzji",
+ "opis_md": "Regresja 24 prób wykryła niezaliczenia w czterech próbach. Po naprawach ponowne próby (kowal, sklep, bazar, stan gracza, NPC, trening) przeszły bez niezaliczeń.\n\n**Co naprawione**\n- Manekin w sali Training Center zasłaniał kamerę przy trenerze. Stoi teraz po prawej stronie izby (zrzuty 1 i 2).\n- Tabliczka „Nowe miasteczko (E)” w starym miasteczku stała 5 studów od bramy BONK i postać lądowała w BONK. Tabliczka jest odsunięta (zrzut 3).\n- Okna próbne sklepu i kowala nie otwierają się już razem z oknami Pawła.\n- Próby sprawdzają okna Pawła; punkty bez pokrycia mają wynik „?”, nie „OK”.\n- Utwory Bagna i Dżungli grają w swoich krainach (gra dostała do nich prawa).\n\n**Do decyzji**\n- Brama BONK w starym miasteczku: pytanie 108.\n- Diamenty za poziom (D-140) nie są w grze: dopisek pod pytaniem 89.\n- Manekin: patrząc od wejścia stoi teraz przed trenerem. Zostaje czy przestawić?\n\n**Nie sprawdzono**\n- Okien Pawła (sklep, kowal) na ekranie telefonu.\n- Próby dymnej, petów, strojów i bohatera po naprawach.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T03:46:31+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "gra": "bc"
+}

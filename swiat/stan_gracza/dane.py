@@ -222,8 +222,10 @@ def podstawa():
         # `zrodla` (las-pas, stary las, Bagno — nie tablica próby, nie tryb testowy TestBohater, który łupu nie wysyła);
         # atrybut kontenera StanGracza `atrybut_wylacznika` = false wyłącza karę w czasie gry (próby, testy)
         "kara": {"procent": KARA_PROCENT, "limit_lupu": limit_lupu_zwyklego(), "zrodla": list(PAKIETY_BIOMOW),
-                 "atrybut_wylacznika": "KaraPrzegranej", "komunikat": "Przegrana: −%d Złota, +%d doświadczenia",
-                 "komunikat_bez_zlota": "Przegrana: +%d doświadczenia", "czas_s": 3.5},
+                 "atrybut_wylacznika": "KaraPrzegranej", "komunikat": "Przegrana: −%s, +%d doświadczenia",
+                 "komunikat_bez_zlota": "Przegrana: +%d doświadczenia", "czas_s": 3.5,
+                 # waluta to Rybki (atrybut Gold, D-146): odmiana przy liczbie — 1 Rybka, 2–4 / 22–24… Rybki, reszta Rybek
+                 "formy_rybki": ["Rybka", "Rybki", "Rybek"]},
         # modyfikatory bohatera (18.11.2026, Sygnaly/Modyfikatory — pety D-101, Kowal D-102): granice jednego wpisu
         # źródła i złożenia; pasywki = nazwy z silnika z ich modyfikatorami (pole premie opisu postaci)
         "modyfikatory": {"zrodel_maks": 16, "statystyka_maks": 1000, "procent_maks": 1, "procent_suma_maks": 3,

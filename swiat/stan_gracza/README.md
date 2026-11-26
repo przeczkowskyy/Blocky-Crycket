@@ -236,7 +236,8 @@ liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyK
    potworem na poziomie przeciwnika** (łup Cierniowego Wilka z silnika: 22 + 9 × (poziom − 1)), nigdy poniżej zera.
    Bez kary czasowej, Gemy zostają. Tylko walki lasu-pasa, starego lasu i Bagna (`D.kara.zrodla`); tablica próby
    i tryb testowy `TestBohater` łupu nie wysyłają, więc kary tam nie ma. Złoto znika przy pokazaniu łupu (koniec
-   ekranu walki), a gracz widzi napis „Przegrana: −N Złota, +M doświadczenia” (na dole ekranu, tuż nad napisem
+   ekranu walki), a gracz widzi napis „Przegrana: −N Rybek, +M doświadczenia” (od 26.11.2026 Rybki, D-146, z odmianą
+   „−1 Rybka / −3 Rybki / −5 Rybek”; formy w `D.kara.formy_rybki`) (na dole ekranu, tuż nad napisem
    premii peta; bez Złota — sam XP). Profil bez zmian (wersja 2). Liczby z `kara_przegranej.py` (gracze z ekonomii
    jajek, jajko 300 w lesie i 750 w Bagnie, kupują od razu):
 

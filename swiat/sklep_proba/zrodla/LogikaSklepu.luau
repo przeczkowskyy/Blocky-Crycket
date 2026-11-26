@@ -9,6 +9,7 @@
 	L.uklad(D, W, H) → rozmiary okna · L.grupy(D, oferta) → { { id, nazwa, kolor, wiersze, doKupienia } }
 	L.pierwszaZakladka(D, oferta) → id stopnia · L.wiersz(D, o) → teksty wiersza i przycisk
 	L.naglowek(D, zloto, poziom) · L.komunikat(D, akcja, odpowiedz) → zdanie dla gracza
+	L.ileRybek(D, n) / L.ileRybekDop(D, n) → „3 Rybki” / „3 Rybek” (waluta Rybki = atrybut Gold, D-146)
 	L.sprawdzPrzypadki(D) → ok, n, zle
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -73,6 +74,27 @@ function L.pierwszaZakladka(D, oferta)
 	return wynik
 end
 
+-- odmiana przy liczbie: formy = { 1, 2–4, 5+ }; 0 i 12–14 jak 5+, 22–24, 32–34… jak 2–4 (jak u kowala)
+function L.forma(formy, n)
+	n = math.floor(math.abs(n))
+	if n == 1 then
+		return formy[1]
+	end
+	local j, d = n % 10, n % 100
+	if j >= 2 and j <= 4 and not (d >= 12 and d <= 14) then
+		return formy[2]
+	end
+	return formy[3]
+end
+
+function L.ileRybek(D, n)
+	return string.format("%d %s", n, L.forma(D.teksty.formy_rybki, n))
+end
+
+function L.ileRybekDop(D, n)
+	return string.format("%d %s", n, L.forma(D.teksty.formy_rybki_dopelniacz, n))
+end
+
 function L.wiersz(D, o)
 	local T = D.teksty
 	local posiadany = o.stan == "masz" or o.stan == "zalozone"
@@ -81,7 +103,7 @@ function L.wiersz(D, o)
 		nazwa = string.format("%s %s", nazwa, string.format(T.ulepszenie, o.ulepszenie))
 	end
 	local staty = if o.staty ~= "" then o.staty else T.bez_dodatkow
-	local cena = if o.cena > 0 then string.format(T.cena, o.cena) else T.cena_zero
+	local cena = if o.cena > 0 then string.format(T.cena, L.ileRybek(D, o.cena)) else T.cena_zero
 	local w = { id = o.id, nazwa = nazwa, opis = string.format("%s · %s", o.slotNazwa, staty),
 		wymaga = string.format("%s · %s", string.format(T.wymaga, o.poziom), cena), stan = T["stan_" .. o.stan],
 		akcja = "", przycisk = "", aktywny = false, powod = "" }
@@ -90,7 +112,7 @@ function L.wiersz(D, o)
 	elseif o.stan == "masz" then
 		w.akcja, w.przycisk, w.aktywny = "zaloz", T.zaloz, true
 	elseif o.stan == "za_drogie" then
-		w.przycisk, w.powod = T.kup, string.format(T.za_malo_zlota, o.brakuje)
+		w.przycisk, w.powod = T.kup, string.format(T.za_malo_zlota, L.ileRybekDop(D, o.brakuje))
 	elseif o.stan == "za_niski_poziom" then
 		w.przycisk, w.powod = T.kup, string.format(T.za_niski_poziom, o.poziom)
 	end
@@ -123,7 +145,7 @@ function L.komunikat(D, akcja, r)
 	end
 	local ile = if type(r.brakuje) == "number" then r.brakuje else 0
 	if r.powod == "za_malo_zlota" then
-		return string.format(T.za_malo_zlota, ile)
+		return string.format(T.za_malo_zlota, L.ileRybekDop(D, ile))
 	elseif r.powod == "za_niski_poziom" then
 		return string.format(T.za_niski_poziom, if type(r.wymagany) == "number" then r.wymagany else ile)
 	end
@@ -181,6 +203,9 @@ function L.sprawdzPrzypadki(D)
 	end
 	for i, p in P.naglowek do
 		sprawdz("naglowek", i, p.wynik, L.naglowek(D, p.zloto, p.poziom))
+	end
+	for i, p in P.odmiana or {} do
+		sprawdz("odmiana", i, { p.rybki, p.rybkiDop }, { L.ileRybek(D, p.n), L.ileRybekDop(D, p.n) })
 	end
 	return #zle == 0, n, zle
 end

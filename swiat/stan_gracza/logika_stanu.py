@@ -324,6 +324,16 @@ def kara_przegranej(D, zloto, poziom_potwora, procent):
     return min(k, lup_zwyklego(D, poziom_potwora), z)
 
 
+def ile_rybek(D, n):
+    """Waluta Rybki (atrybut Gold, D-146) w napisie po przegranej: „1 Rybka”, „3 Rybki”, „5 Rybek” (0 i 12–14 jak 5+,
+    22–24, 32–34… jak 2–4). Lustro funkcji ileRybek w KlientStanu.client.luau (napis buduje tylko klient)."""
+    f = D["kara"]["formy_rybki"]
+    n = int(n)
+    d, s = n % 10, n % 100
+    slowo = f[0] if n == 1 else (f[1] if 2 <= d <= 4 and not 12 <= s <= 14 else f[2])
+    return "%d %s" % (n, slowo)
+
+
 # ------------------------------------------------------------------ modyfikatory bohatera (18.11.2026, pety D-101, Kowal D-102)
 # Sygnaly/Modyfikatory: każdy pakiet (źródło) ma jeden wpis na gracza; bohater walki i premia do łupu biorą złożenie.
 def _liczba(v):

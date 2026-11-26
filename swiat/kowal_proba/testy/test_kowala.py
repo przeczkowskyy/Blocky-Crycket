@@ -161,6 +161,24 @@ class TestDanych(unittest.TestCase):
         teksty = [t for t in D["teksty"].values() if isinstance(t, str)]
         self.assertFalse(any(re.search(r"%d (materia|mat\.)", t) for t in teksty), "liczba przy rzeczowniku bez odmiany")
 
+    def test_1g_rybki_przy_liczbie(self):
+        """Waluta to Rybki (D-146, atrybut Gold): odmiana przy liczbie, dopełniacz po „Brakuje ci”, bez „Złota”."""
+        oczek = {0: ("Rybek", "Rybek"), 1: ("Rybka", "Rybki"), 2: ("Rybki", "Rybek"), 4: ("Rybki", "Rybek"),
+                 5: ("Rybek", "Rybek"), 11: ("Rybek", "Rybek"), 12: ("Rybek", "Rybek"), 14: ("Rybek", "Rybek"),
+                 21: ("Rybek", "Rybek"), 22: ("Rybki", "Rybek"), 25: ("Rybek", "Rybek"), 100: ("Rybek", "Rybek"),
+                 101: ("Rybek", "Rybek"), 102: ("Rybki", "Rybek"), 112: ("Rybek", "Rybek")}
+        for n, (m, d) in oczek.items():
+            self.assertEqual(LK.ile_rybek(D, n), "%d %s" % (n, m))
+            self.assertEqual(LK.ile_rybek_dop(D, n), "%d %s" % (n, d))
+        self.assertEqual(LK.komunikat(D, "za_malo_zlota", 1), "Brakuje ci 1 Rybki.")
+        self.assertEqual(LK.komunikat(D, "za_malo_zlota", 150), "Brakuje ci 150 Rybek.")
+        self.assertEqual(LK.komunikat(D, "za_malo_zlota", 22), "Brakuje ci 22 Rybek.")
+        self.assertEqual(D["teksty"]["zloto"] % 150, "Rybki: 150")
+        self.assertEqual(D["teksty"]["koszt"] % (LK.ile_rybek(D, 22), LK.ile_materialow(D, 2)), "Koszt: 22 Rybki + 2 materiały")
+        teksty = [x for t in D["teksty"].values() for x in (t if isinstance(t, list) else [t])]
+        self.assertFalse([t for t in teksty if re.search(r"złot|Złot|ZŁOT", t)], "waluta to Rybki, nie Złoto")
+        self.assertFalse(any(re.search(r"%d Ryb", t) for t in teksty), "liczba przy Rybkach bez odmiany")
+
 
 # ------------------------------------------------------------------------------------------------ 2. balans
 def _zestaw(klasa, poziom=0, tylko_podstawowy=False, bez=()):

@@ -481,8 +481,9 @@ def przypadki(D):
     for o in ({"bron": {"obrazenia": 30.4}, "pancerz_przedmiotow": 13.5, "tarcza": {"blok": 0.2828}},
               {"bron": {"obrazenia": 12}}, "zle"):
         P["opis"].append({"opis": o, "wynik": LK.opis_bohatera(D, o)})
-    for n in (0, 1, 2, 4, 5, 11, 12, 14, 21, 22, 25, 104, 112):
-        P["odmiana"].append({"n": n, "mianownik": LK.ile_materialow(D, n), "dopelniacz": LK.ile_materialow_dop(D, n)})
+    for n in (0, 1, 2, 4, 5, 11, 12, 14, 21, 22, 25, 100, 101, 102, 104, 112):
+        P["odmiana"].append({"n": n, "mianownik": LK.ile_materialow(D, n), "dopelniacz": LK.ile_materialow_dop(D, n),
+                             "rybki": LK.ile_rybek(D, n), "rybkiDop": LK.ile_rybek_dop(D, n)})
     return P
 
 

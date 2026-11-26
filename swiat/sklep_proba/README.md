@@ -50,7 +50,7 @@ przy zbroi startowej). Odpowiedź kupna podaje ją w polu `czesc`.
 | `inna_klasa` | przedmiot innej klasy niż klasa gracza | „Ten przedmiot jest dla innej klasy.” |
 | `masz` | gracz już go ma | „Masz już ten przedmiot.” |
 | `za_niski_poziom` (+ `brakuje` poziomów, `wymagany`) | poziom gracza < poziom przedmiotu | „Potrzebujesz poziomu 13.” |
-| `za_malo_zlota` (+ `brakuje`) | Złoto < cena (także odmowa `WydajZloto`) | „Brakuje ci 150 Złota.” |
+| `za_malo_zlota` (+ `brakuje`) | Rybki (atrybut `Gold`) < cena (także odmowa `WydajZloto`) | „Brakuje ci 150 Rybek.” („1 Rybki”, od 26.11.2026 — D-146) |
 | `daleko` | postać dalej niż 16 st od stoiska | „Podejdź bliżej zbrojmistrza.” |
 | `za_szybko` | drugie zapytanie przed upływem 0,25 s albo w trakcie kupna | „Chwileczkę…” |
 | `nieczynny` | brak kowala albo stanu gracza | „Sklep nieczynny (próba).” |

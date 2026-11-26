@@ -81,14 +81,33 @@ def cena(D, j, kupione, tryb=None):
     return min(c["maks"], c["start"] + c["krok"] * int(n))
 
 
+def forma(formy, n):
+    """Odmiana przy liczbie: formy = [1, 2–4, 5+]; 0 i 12–14 jak 5+, 22–24, 32–34… jak 2–4."""
+    n = int(abs(n))
+    if n == 1:
+        return formy[0]
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return formy[1]
+    return formy[2]
+
+
+_PRZYPADKI_RYBEK = {"m": "formy_rybki", "b": "formy_rybki_biernik", "d": "formy_rybki_dopelniacz"}
+
+
+def ile_rybek(D, n, przypadek="m"):
+    """Waluta Rybki (atrybut Gold, D-146) przy liczbie: przypadek "m" (mianownik: „cena: 1 Rybka / 3 Rybki / 5 Rybek”),
+    "b" (biernik: „Kup za 1 Rybkę / 3 Rybki / 5 Rybek”), "d" (dopełniacz: „Brakuje ci 1 Rybki / 3 Rybek”, „od …”)."""
+    return "%d %s" % (n, forma(D["teksty"][_PRZYPADKI_RYBEK[przypadek]], n))
+
+
 def opis_ceny(D, j, tryb=None):
-    """Napis ceny na tablicy i nad jajkiem: „cena: 300 Złota” (stała, kalkulator) albo „od 300 Złota · rośnie z każdym
+    """Napis ceny na tablicy i nad jajkiem: „cena: 300 Rybek” (stała, kalkulator) albo „od 300 Rybek · rośnie z każdym
     jajkiem” (rosnąca)."""
     T = D["teksty"]
     tryb = tryb or j["cena"]["tryb"]
     if tryb == "rosnaca":
-        return (T["cena_od"] % cena(D, j, 0, tryb)) + " · " + T["rosnie"]
-    return T["cena_tablica"] % cena(D, j, 0, tryb)
+        return (T["cena_od"] % ile_rybek(D, cena(D, j, 0, tryb), "d")) + " · " + T["rosnie"]
+    return T["cena_tablica"] % ile_rybek(D, cena(D, j, 0, tryb))
 
 
 def losuj(D, j, r):
@@ -126,7 +145,7 @@ def _lista(nazwy):
 
 def czesci_skilla(D, p):
     """Części opisu skilla (D-101): żywioł („Ogień: mocniejsze zwykłe ciosy”), premie do statystyk (równe wartości
-    razem, w stałej kolejności statystyk) i premia do łupu — np. „+8% Zręczności”, „+2% Złota z walk”."""
+    razem, w stałej kolejności statystyk) i premia do łupu — np. „+8% Zręczności”, „+2% Rybek z walk”."""
     s = p["skill"]
     T = D["teksty"]
     m = s["mod"]
@@ -205,7 +224,7 @@ def premia_peta(D, pid):
 
 
 def tekst_braku(D, brakuje, zloto, c):
-    return D["teksty"]["za_malo"] % (brakuje, zloto, c)
+    return D["teksty"]["za_malo"] % (ile_rybek(D, brakuje, "d"), zloto, c)
 
 
 def wiersze_szans(D, j):
@@ -355,7 +374,8 @@ def przychod_s(D, lista):
 
 
 def opis_przychodu(D, stawka_s):
-    """Rybki na sekundę → „+2,4 Rybek/min” (do 10 na minutę z jednym miejscem po przecinku, wyżej całe)."""
+    """Rybki na sekundę → „+2,4 Rybki/min”, „+3 Rybki/min”, „+12 Rybek/min” (do 10 na minutę z jednym miejscem po
+    przecinku, wyżej całe; przy ułamku dopełniacz liczby pojedynczej „Rybki”, przy całej liczbie odmiana jak zwykle)."""
     dobra = isinstance(stawka_s, (int, float)) and not isinstance(stawka_s, bool) and stawka_s > 0
     v = stawka_s * 60.0 if dobra else 0.0
     if v >= 10:
@@ -363,7 +383,9 @@ def opis_przychodu(D, stawka_s):
     else:
         dz = int(math.floor(v * 10 + 0.5))
         t = "%d" % (dz // 10) if dz % 10 == 0 else "%d,%d" % (dz // 10, dz % 10)
-    return D["teksty"]["przychod_min"] % t
+    T = D["teksty"]
+    slowo = T["formy_rybki_dopelniacz"][0] if "," in t else forma(T["formy_rybki"], int(t))
+    return T["przychod_min"] % (t, slowo)
 
 
 def stan_zagrody(D, kopie, aktywny, wybor, wydatki, poza=None):
@@ -440,7 +462,7 @@ def tik(D, reszta, stawka_s, dt):
 
 
 def tekst_braku_ulepszenia(D, brakuje, zloto, c):
-    return D["teksty"]["za_malo_ulepszenie"] % (brakuje, zloto, c)
+    return D["teksty"]["za_malo_ulepszenie"] % (ile_rybek(D, brakuje, "d"), zloto, c)
 
 
 # ------------------------------------------------------------------------------------------------ przypadki
@@ -515,7 +537,12 @@ def przypadki_zagrody(D, P):
     P["miejsca_zagrody"] = [_bez_none({"poziom": v, "wynik": miejsca_zagrody(D, v), "cena": cena_ulepszenia(D, v)})
                             for v in (1, 2, 3, 4, 5, 0, -2, 2.5)]
     P["opis_przychodu"] = [{"s": s, "wynik": opis_przychodu(D, s)}
-                           for s in (0, 0.02, 0.05, 0.1, 0.1234, 0.16666, 0.5, 1.0, 2.75, -1)]
+                           for s in (0, 0.02, 0.05, 0.1, 0.1234, 0.16666, 0.5, 1.0, 2.75, -1, 1 / 60.0, 2 / 60.0,
+                                     0.2, 22 / 60.0, 0.25)]
+    # waluta Rybki (D-146): odmiana przy liczbie w trzech przypadkach i oba teksty braku
+    P["rybki"] = [{"n": n, "m": ile_rybek(D, n), "b": ile_rybek(D, n, "b"), "d": ile_rybek(D, n, "d"),
+                   "brak": tekst_braku(D, n, 7, 300), "brakUlepszenia": tekst_braku_ulepszenia(D, n, 7, 1000)}
+                  for n in (0, 1, 2, 4, 5, 11, 12, 14, 21, 22, 25, 100, 101, 102, 112)]
     wszystkie = {x: 1 + i % 3 for i, x in enumerate(ids)}
     las = {x: 1 for x in ids[:5]}
     scen = [({}, None, None, {}), (las, ids[4], None, {}), (las, None, None, {cel: 1}),

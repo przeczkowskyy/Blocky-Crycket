@@ -1,7 +1,7 @@
 --[[
 	DaneWskazowek — WYGENEROWANE przez swiat/wskazowki_gry/dane.py z ustawienia.json. Nie edytuj
 	ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 81d79130297c
+	Skrót danych: 74af6a5d1040
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -37,10 +37,10 @@ return {
 		c_straznik_dzungla = { tekst = "Wąż Stu Lian czeka na końcu Dżungli", cel = "straznik" },
 		e_brama_pustynia = { tekst = "Brama do Pustyni otwarta — Pustynia już wkrótce", cel = "brama" },
 		e_koniec_dzungla = { tekst = "Pustynia już wkrótce — na dziś to koniec drogi" },
-		f_jajko = { tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu", cel = "jajko" },
-		f_jajko_miasto = { tekst = "Masz dość Złota na jajko: TELEPORT → Las (inkubator)", cel = "teleport" },
-		f_jajko_bagno = { tekst = "Masz dość Złota na jajko Bagna — inkubator przy pomoście", cel = "jajko" },
-		f_jajko_dzungla = { tekst = "Masz dość Złota na jajko Dżungli — inkubator na tarasie", cel = "jajko" },
+		f_jajko = { tekst = "Masz dość Rybek na jajko — inkubator przy wejściu do lasu", cel = "jajko" },
+		f_jajko_miasto = { tekst = "Masz dość Rybek na jajko: TELEPORT → Las (inkubator)", cel = "teleport" },
+		f_jajko_bagno = { tekst = "Masz dość Rybek na jajko Bagna — inkubator przy pomoście", cel = "jajko" },
+		f_jajko_dzungla = { tekst = "Masz dość Rybek na jajko Dżungli — inkubator na tarasie", cel = "jajko" },
 		g_kowal_zapas = { tekst = "Masz zapasowy przedmiot — rozbierz go u kowala w bazarze", cel = "kowal" },
 		g_kowal_ulepsz = { tekst = "Możesz ulepszyć przedmiot u kowala w bazarze", cel = "kowal" },
 		g_kowal_zapas_las = { tekst = "Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal", cel = "kamien" },
@@ -466,14 +466,14 @@ return {
 					kupione = 0,
 				},
 				id = "f_jajko",
-				tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu",
+				tekst = "Masz dość Rybek na jajko — inkubator przy wejściu do lasu",
 				cel = "jajko",
 			},
 			{
 				opis = "Złoto na jajko w mieście: TELEPORT",
 				stan = { klasa = true, miejsce = "miasto", wygrane = 3, przegrane = 0, ostatni = "wygrana", jajko = true },
 				id = "f_jajko_miasto",
-				tekst = "Masz dość Złota na jajko: TELEPORT → Las (inkubator)",
+				tekst = "Masz dość Rybek na jajko: TELEPORT → Las (inkubator)",
 				cel = "teleport",
 			},
 			{
@@ -489,7 +489,7 @@ return {
 					trening_wzmacnia = true,
 				},
 				id = "f_jajko",
-				tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu",
+				tekst = "Masz dość Rybek na jajko — inkubator przy wejściu do lasu",
 				cel = "jajko",
 			},
 			{
@@ -513,7 +513,7 @@ return {
 					kupione = 0,
 				},
 				id = "f_jajko_bagno",
-				tekst = "Masz dość Złota na jajko Bagna — inkubator przy pomoście",
+				tekst = "Masz dość Rybek na jajko Bagna — inkubator przy pomoście",
 				cel = "jajko",
 			},
 			{
@@ -641,7 +641,7 @@ return {
 					dzungla = true,
 				},
 				id = "f_jajko_dzungla",
-				tekst = "Masz dość Złota na jajko Dżungli — inkubator na tarasie",
+				tekst = "Masz dość Rybek na jajko Dżungli — inkubator na tarasie",
 				cel = "jajko",
 			},
 			{
@@ -838,7 +838,7 @@ return {
 					kowal_ulepszen = 0,
 				},
 				id = "f_jajko",
-				tekst = "Masz dość Złota na jajko — inkubator przy wejściu do lasu",
+				tekst = "Masz dość Rybek na jajko — inkubator przy wejściu do lasu",
 				cel = "jajko",
 			},
 			{
@@ -972,5 +972,5 @@ return {
 			{ x = 1500, z = -700, brama = 2034, wynik = "miasto" },
 		},
 	},
-	skrot = "81d79130297c",
+	skrot = "74af6a5d1040",
 }

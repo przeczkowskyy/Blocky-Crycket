@@ -11,7 +11,9 @@
 		kupione(D, jajko, wydatki, tryb?)         → ile jajek liczy się do ceny (licznik osobny / wspólny)
 		cena(D, jajko, kupione, tryb?)            → cena NASTĘPNEGO jajka: "stala" (domyślnie, decyzja 17.11),
 		                                            "rosnaca" (rośnie z kupionymi do maks) albo "kalkulator"
-		opisCeny(D, jajko, tryb?)                 → „cena: 300 Złota” albo „od 300 Złota · rośnie z każdym jajkiem”
+		opisCeny(D, jajko, tryb?)                 → „cena: 300 Rybek” albo „od 300 Rybek · rośnie z każdym jajkiem”
+		forma(formy, n), ileRybek(D, n, przypadek?) → „3 Rybki” (waluta Rybki = atrybut Gold, D-146; przypadek "m"
+		                                            mianownik — domyślnie, "b" biernik „Kup za 1 Rybkę”, "d" dopełniacz)
 		losuj(D, jajko, r)                        → id peta (r ∈ [0, 1), jawne szanse po kolei)
 		procent(szansa), opisSkilla(D, pet), premiaPeta(D, id), tekstBraku(D, brakuje, zloto, cena)
 		modPeta(D, id)                            → modyfikator bohatera od peta (Sygnaly/Modyfikatory stanu gracza)
@@ -115,13 +117,33 @@ function L.cena(D, j, kupione, tryb): number
 	return math.min(c.maks, c.start + c.krok * n)
 end
 
+-- odmiana przy liczbie: formy = { 1, 2–4, 5+ }; 0 i 12–14 jak 5+, 22–24, 32–34… jak 2–4
+function L.forma(formy, n: number)
+	n = math.floor(math.abs(n))
+	if n == 1 then
+		return formy[1]
+	end
+	local j, d = n % 10, n % 100
+	if j >= 2 and j <= 4 and not (d >= 12 and d <= 14) then
+		return formy[2]
+	end
+	return formy[3]
+end
+
+local PRZYPADKI_RYBEK = { m = "formy_rybki", b = "formy_rybki_biernik", d = "formy_rybki_dopelniacz" }
+
+-- waluta Rybki (atrybut Gold, D-146): „1 Rybka / 3 Rybki / 5 Rybek” (m), „Kup za 1 Rybkę” (b), „Brakuje ci 1 Rybki” (d)
+function L.ileRybek(D, n: number, przypadek: string?): string
+	return string.format("%d %s", n, L.forma(D.teksty[PRZYPADKI_RYBEK[przypadek or "m"]], n))
+end
+
 function L.opisCeny(D, j, tryb): string
 	local T = D.teksty
 	local t = tryb or j.cena.tryb
 	if t == "rosnaca" then
-		return string.format(T.cena_od, L.cena(D, j, 0, t)) .. " · " .. T.rosnie
+		return string.format(T.cena_od, L.ileRybek(D, L.cena(D, j, 0, t), "d")) .. " · " .. T.rosnie
 	end
-	return string.format(T.cena_tablica, L.cena(D, j, 0, t))
+	return string.format(T.cena_tablica, L.ileRybek(D, L.cena(D, j, 0, t)))
 end
 
 function L.losuj(D, j, r): string
@@ -279,7 +301,7 @@ function L.premiaPeta(D, id)
 end
 
 function L.tekstBraku(D, brakuje: number, zloto: number, c: number): string
-	return string.format(D.teksty.za_malo, brakuje, zloto, c)
+	return string.format(D.teksty.za_malo, L.ileRybek(D, brakuje, "d"), zloto, c)
 end
 
 function L.wierszeSzans(D, j)
@@ -464,7 +486,11 @@ function L.opisPrzychodu(D, s): string
 		t = if dz % 10 == 0 then string.format("%d", math.floor(dz / 10))
 			else string.format("%d,%d", math.floor(dz / 10), dz % 10)
 	end
-	return string.format(D.teksty.przychod_min, t)
+	-- przy ułamku dopełniacz liczby pojedynczej („+2,4 Rybki/min”), przy całej liczbie odmiana („+3 Rybki”, „+12 Rybek”)
+	local T = D.teksty
+	local slowo = if string.find(t, ",", 1, true) then T.formy_rybki_dopelniacz[1]
+		else L.forma(T.formy_rybki, tonumber(t) or 0)
+	return string.format(T.przychod_min, t, slowo)
 end
 
 function L.stanZagrody(D, kopie, aktywny, wybor, wydatki, poza)
@@ -555,7 +581,7 @@ function L.tik(D, reszta, s, dt): (number, number)
 end
 
 function L.tekstBrakuUlepszenia(D, brakuje: number, zloto: number, c: number): string
-	return string.format(D.teksty.za_malo_ulepszenie, brakuje, zloto, c)
+	return string.format(D.teksty.za_malo_ulepszenie, L.ileRybek(D, brakuje, "d"), zloto, c)
 end
 
 function L.rowne(a, b): boolean
@@ -646,6 +672,10 @@ function L.sprawdzPrzypadki(D)
 	end
 	for i, c in P.opis_przychodu do
 		sprawdz("opis_przychodu", i, L.opisPrzychodu(D, c.s) == c.wynik)
+	end
+	for i, c in P.rybki or {} do
+		sprawdz("rybki", i, L.ileRybek(D, c.n) == c.m and L.ileRybek(D, c.n, "b") == c.b and L.ileRybek(D, c.n, "d") == c.d
+			and L.tekstBraku(D, c.n, 7, 300) == c.brak and L.tekstBrakuUlepszenia(D, c.n, 7, 1000) == c.brakUlepszenia)
 	end
 	for i, c in P.stan_zagrody do
 		sprawdz("stan_zagrody", i, L.rowne(L.stanZagrody(D, c.kopie, c.aktywny, c.wybor, c.wydatki, c.poza), c.wynik))
