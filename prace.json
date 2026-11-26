@@ -2,8 +2,24 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T06:27:42+01:00",
+ "aktualizacja": "2026-11-26T11:53:11+01:00",
  "prace": [
+  {
+   "id": "sala-dwa-rzedy",
+   "tytul": "Training Center: dwa rzędy po trzy stanowiska z przejściem pośrodku, trzymanie książki",
+   "stan": "w_toku",
+   "start": "2026-11-26T11:53:11+01:00",
+   "koniec_szacowany": "2026-11-26T13:33:11+01:00",
+   "aktualizacja": "2026-11-26T11:53:11+01:00",
+   "obszary": [
+    "mapa:miasteczko_bazar",
+    "studio:MiasteczkoBazar",
+    "studio:Play",
+    "swiat/miasteczko_bazar/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
   {
    "id": "smok-mapa2-gra",
    "tytul": "Gra o smoku: mapa v2 w grze — etap płaski, potem teren z wysokościami za przełącznikiem",
