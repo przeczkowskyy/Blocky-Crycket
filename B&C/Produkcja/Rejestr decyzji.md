@@ -743,19 +743,22 @@ Paweł (opinia do raportu z nocy): „na pewno trzeba by było poprawić hełmy,
 - **Potwierdzenie Pawła (26.11.2026):** „1 tak” w odpowiedzi na punkt „1) Potwierdź D-156” listy zadań z grupy zespołu na Telegramie (15:42). Zrzut wiadomości przekazał Karol na czacie; podpis zapisał agent Karola na tej podstawie. Do punktu o broni w upadku Paweł dodał: „poprawić, żeby nie były pod ziemią” (w toku 26.11).
 
 ### D-157 Zagroda: pety chodzą luzem po wybiegu, legowiska znikają
-✅ zatwierdzona · game design / świat · 2026-11-26 · źródło: odpowiedź Pawła na grupie zespołu na Telegramie 26.11.2026, 15:42 (zrzut wiadomości przekazał Karol na czacie, z poleceniem „go”) · zaproponował: Paweł (pety luzem, opinia do raportu z nocy), Claude Code (wybieg i pytanie, czy legowiska zostają) · zdecydował: Paweł 2026-11-26 (jeden podpis — Karol zlecił wykonanie, formalnie nie potwierdził; D-043)
+✅ zatwierdzona · game design / świat · 2026-11-26 · źródło: odpowiedź Pawła na grupie zespołu na Telegramie 26.11.2026, 15:42 (zrzut wiadomości przekazał Karol na czacie, z poleceniem „go”) · zaproponował: Paweł (pety luzem, opinia do raportu z nocy), Claude Code (wybieg i pytanie, czy legowiska zostają) · zdecydował: Paweł 2026-11-26 · potwierdził: Karol 2026-11-26
 Gra: bc
 Pytanie z listy zadań (punkt 5): „Pety luzem: czy ruch i tempo są OK; legowiska zostają czy znikają?”. Paweł: „5 legowiska znikają, tempo okej”.
 - Pety odstawione do zagrody chodzą luzem po wybiegu (obraz u gracza; o tym, kto stoi w zagrodzie i ile daje Rybek, dalej decyduje serwer — D-153 bez zmian).
 - Na wybiegu nie ma legowisk. Liczba miejsc (2 → 4 → 6 → 8) zostaje; widać ją w oknie zagrody u Jagody.
 - Tempo spaceru z próby 26.11 zostaje (prędkość 1,8–3 studa na sekundę, postoje 2–6 s).
 - **Stan:** w Studio od 26.11 (`swiat/pety_proba`, mapa `swiat/miasteczko_bazar`). Uwaga agenta: bez legowisk nic na samym wybiegu nie pokazuje, ile miejsc ma zagroda — tylko okno.
+- **Potwierdzenie Karola (26.11.2026):** „Potwierdzam obie” (D-157 i D-158) w oknie pytania agenta na czacie.
+- **Dopisek — „czysta zagroda” (zdecydował: Karol 2026-11-26, czeka na Pawła):** Karol po zrzucie zagrody bez legowisk: „Usuń też tą wiatę furtkę. Czysta zagroda” — z zagrody zniknęła bramka: dwa słupki, poprzeczka, łapa-szyld i chorągiewka. Przejście w płotku, koryto, siano i miski zostają (agent zostawił je, bo zlecenie mówiło o wiacie).
 
 ### D-158 Sala Training Center: dwa rzędy po trzy stanowiska AFK, przejście środkiem; podpowiedź E sięga 4,5 studa
-✅ zatwierdzona · świat / technika · 2026-11-26 · źródło: odpowiedź Pawła na grupie zespołu na Telegramie 26.11.2026, 15:42 (zrzut wiadomości przekazał Karol na czacie, z poleceniem „go”) · zaproponował: Paweł (układ, opinia do raportu z nocy), Claude Code (zasięg ok. 4,5 studa) · zdecydował: Paweł 2026-11-26 (jeden podpis — Karol zlecił wykonanie, formalnie nie potwierdził; D-043)
+✅ zatwierdzona · świat / technika · 2026-11-26 · źródło: odpowiedź Pawła na grupie zespołu na Telegramie 26.11.2026, 15:42 (zrzut wiadomości przekazał Karol na czacie, z poleceniem „go”) · zaproponował: Paweł (układ, opinia do raportu z nocy), Claude Code (zasięg ok. 4,5 studa) · zdecydował: Paweł 2026-11-26 · potwierdził: Karol 2026-11-26
 Gra: bc
 Pytania z listy zadań (punkty 2 i 3): czy o taki układ sali chodziło i czy zasięg podpowiedzi E skrócić z 10 do ok. 4,5 studa. Paweł: „2 tak, ale jak to będzie działać w przypadku kilku graczy, czy nie będą się widzieć nawzajem? 3 4.5 git”.
 - Stanowiska AFK stoją w dwóch rzędach po trzy wzdłuż bocznych ścian, przejście środkiem (układ z 26.11; zmienia rozmieszczenie z propozycji D-151, której status zostaje bez zmian).
 - Podpowiedź E stanowiska sięga 4,5 studa — żeby zacząć trening, trzeba podejść do maty.
 - **Otwarte:** pytanie Pawła o kilku graczy przy jednym stanowisku — pytanie 109 w [[Pytania otwarte]].
 - **Stan:** w Studio od 26.11 (`src/server/TreningAFK.server.luau` — jedna liczba, za zgodą Pawła; próba `swiat/trening_proba/testy/proba_afk_zasieg.py`: 22 punkty bez niezaliczeń).
+- **Potwierdzenie Karola (26.11.2026):** „Potwierdzam obie” (D-157 i D-158) w oknie pytania agenta na czacie.

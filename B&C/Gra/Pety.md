@@ -39,7 +39,7 @@ tags: [gra, mechanika, postacie]
 ## Co pet daje graczowi
 - Pety chodzą za bohaterem i dają mu bazowe, pasywne premie do statystyk (D-059).
 - Nie biorą udziału w walce gracza. W walce liczonej na serwerze pet jest tylko mnożnikiem statystyk gracza (D-059).
-- Peta można odstawić do zagrody w Krzywym Miasteczku. Do tego jest okno petów w HUD (D-085), a w zestawie przycisków HUD jest przycisk Pets (D-092). W zagrodzie pety chodzą luzem po wybiegu, bez legowisk (D-157 — decyzja Pawła z 26.11.2026, czeka na potwierdzenie Karola).
+- Peta można odstawić do zagrody w Krzywym Miasteczku. Do tego jest okno petów w HUD (D-085), a w zestawie przycisków HUD jest przycisk Pets (D-092). W zagrodzie pety chodzą luzem po wybiegu, bez legowisk (D-157, Paweł i Karol 26.11.2026).
 - Drzewko petów zwiększa liczbę petów, które naraz chodzą z graczem (D-056).
 
 ## Umiejętność, poziom i karmienie
