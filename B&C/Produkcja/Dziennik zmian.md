@@ -6,13 +6,74 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-26 · Claude Code u Karola (noc, część czwarta: napisy „Rybki” zamiast „Złota”)
+- **D-146 w naszych pakietach** (agent na Opus, ok. 0,37 mln tokenów, 50 min): 25 tekstów źródłowych w pakietach kowala, sklepu, petów, stanu gracza, wskazówek i na karcie wyniku walki mówi „Rybki” zamiast „Złota”. Odmiana przy liczbie: „+1 Rybka”, „+3 Rybki”, „750 Rybek”, „Kup za 1 Rybkę”, „Brakuje ci 1 Rybki”. Identyfikatory i atrybut `Gold` bez zmian (bez migracji zapisu).
+- **Jak:** każdy pakiet ma jedną funkcję odmiany w Luau i jej lustro w Pythonie, z testami dla 15 liczb. Zmienione źródła, pliki generowane odtworzone generatorami pakietów.
+- **Sprawdzone:** testy bez Studio (kowal 35, sklep 26, pety 51, stan gracza 59 i zapis 14, wskazówki 26), próby w Play bez niezaliczeń (próba dymna, stan gracza, pety trzech krain, zagroda, kowal, sklep, walka 111 z 111). W dwóch próbach poprawione oczekiwania, nie napisy: wzór napisu o przegranej (S13) i dopuszczalny stan Rybek przy odmowie w zagrodzie (Z06, zagroda dopisuje Rybki w trakcie punktu).
+- **Zostawione:** nazwy przedmiotów z przymiotnikiem „złoty”, „ZŁOTA ×2!” w treningu (złota koniczyna), teksty dla twórców. Ikona na karcie wyniku walki to dalej moneta ([[Zadania]]).
+- **Dla Pawła:** jego okna kowala, petów i jajka podmieniają w naszych tekstach „Złota” na „Rybek”; teraz to zbędne i psuje nazwy przedmiotów ([[Zadania]]).
+- `DOKUMENTACJA.md`: dopisek o nazwie waluty przy kanonie walut.
+- W Studio wdrożone kontenery `StanGracza`, `KowalProba`, `SklepProba`, `PetyProba`, `TestWalki2`, `WskazowkiGry`. Pełna regresja całej gry ruszyła po tej zmianie o 04:38.
+
+## 2026-11-26 · Claude Code u Karola (noc, część trzecia: regresja całej gry i naprawy)
+- **Regresja całej gry (01:06–02:34, 24 próby w Play):** 19 prób bez niezaliczeń. Niezaliczenia: kowal 3, sklep 4, bazar 4, stan gracza 1 oraz znane od 18.11 za małe napisy w próbie walki na telefonie. Poprzednia pełna regresja była 19.11.
+- **Przyczyny** (agent na Opus, ok. 0,37 mln tokenów, 55 min):
+  - z tej nocy: manekin w nowej sali Training Center zasłaniał kamerę przy trenerze — przeniesiony na prawą stronę izby;
+  - od 20.11: tabliczka „Nowe miasteczko (E)” w starym miasteczku stała 5 studów od bramy BONK i postać lądowała w BONK — tabliczka odsunięta, brama została ([[Pytania otwarte]], pytanie 108);
+  - po zmianach Pawła z 23–25.11: jego okna sklepu, kowala i mistrza gier zastąpiły nasze okna próbne, a przyciski „+” statystyk zniknęły — próby czekały na stare okna.
+- **Zmiany w naszych pakietach:** okna próbne sklepu i kowala nie otwierają się na E, gdy działa okno Pawła (bez dwóch okien naraz). Próby kupują i zakładają przedmioty kliknięciami w jego oknie, a skutki sprawdzają na naszym serwerze. Punkty bez pokrycia mają wynik „?”, nie „OK”: okna Pawła na telefonie (S08, K12) i punkty statystyk bez sposobu wydania (S14). Trzy testy bez Studio dostosowane do HUD z „Index” i szufladą questów.
+- **Ponowne próby w Play:** kowal 12, sklep 11, bazar 14, stan gracza 13, NPC 14, trening 31 — bez niezaliczeń. Testy bez Studio: bazar 38, stan gracza 59, kowal 34, sklep 26, pety 51. Nie powtórzono próby dymnej, petów, strojów ani bohatera.
+- **Znalezione przy okazji:** Diamenty za poziom (D-140) nie są w grze (gałąź `pawel/diamenty-afk`), a punktów statystyk za poziom nie ma jak wydać — dopisek pod pytaniem 89. W karczmie E otwiera szufladę questów i dymek naraz ([[Zadania]]).
+- **Dźwięk:** gra dostała zgodę „Use” na utwory Bagna i Dżungli (wgrane 18.11). Próba dźwięku po nadaniu zgody (11 punktów, bez niezaliczeń): oba utwory wczytują się i grają w swoich krainach zamiast zastępczego utworu lasu.
+- Studio w trybie Edit; zmienione kontenery `MiasteczkoBazar`, `MiasteczkoBazarGra`, `SklepProba`, `KowalProba`. Zrzuty sali i starego miasteczka obejrzane po zmianie.
+
+## 2026-11-26 · Claude Code u Karola (noc po sesji, część druga: pety w Studio, przedmioty wojownika, jajka wstrzymane)
+- **Pety w Studio** (dwóch agentów na Opus: przebudowa modeli ok. 0,44 mln tokenów, wdrożenie ok. 0,37 mln): Rybki z zagrody i miejsca 2 → 4 → 6 → 8 u Jagody działają w grze jako próba z liczbami roboczymi (propozycja D-153 niezatwierdzona — wdrożone z wyprzedzeniem na polecenie Karola z sesji, do zmiany); pięć petów leśnego jajka przebudowanych według arkuszy Pawła; pety stoją na ośmiu nowych legowiskach. Próby w Play bez niezaliczeń (zagroda 12, las 14, Bagno 10, Dżungla 10); trzy warunki prób dostosowane do nowej zasady. Poprawiony błąd po przebudowie miasta: podpowiedź E Jagody stała w starym miejscu.
+- **Przedmioty wojownika** (ok. 0,52 mln): 30 modeli w pięciu zestawach na kocie-wojowniku według arkuszy Pawła, w `swiat/postacie/` (`pula_wojownika*.py`); nie w Studio. Do gry wejdą z kotem-wojownikiem w walce.
+- **Jajka Bagna i Dżungli w Studio** (ok. 0,26 mln): wgrane dwie maski blasku, poprawione miejsca jajek na mapach, animacja spoczynku sprawdzona w Play na atrapach. Modeli nie wgrano: Studio wymaga zatwierdzenia folderu do wgrywania i agent tego nie obchodził — decyzja Karola (zadanie).
+- **Skutek uboczny:** Pet Arena i BONK budują pety z tych samych plików co B&C; po przebudowie ich testy aktualności danych nie przechodzą (zadanie do decyzji, obie gry wstrzymane).
+- **Raporty w panelu:** miasto i Training Center, jajka, pety leśnego jajka, przedmioty wojownika, zagroda z Rybkami — wszystkie czekają na decyzję.
+- **Tryb nocny:** ekran zaciemniony do 07:30, wygaszanie i usypianie na zasilaniu wyłączone (do przywrócenia rano).
+- Koszt nocy: ok. 3,5 mln tokenów agentów (dziewięć prac).
+
+## 2026-11-25 · Claude Code u Karola (noc po sesji głównej: miasto, jajka, Rybki z zagrody — stan na północ)
+- **Po sesji:** lista prac dla Pawła w [[Po sesji 2026-11-25 — podział prac]]; wiadomość do Pawła na grupie Telegram, że lista jest na GitHubie (prośba Karola z końca sesji).
+- **Miasto w Studio** (agent na Opus, ok. 0,59 mln tokenów, 22:27–23:50): zagroda bez psa, smoka, slime'a i budek, Jagoda przed bramką, osiem legowisk; Training Center z salą treningową w miejscu niebieskiego domu przy placyku; sześć stanowisk treningu AFK w sali; poprawki animacji w trzech plikach treningu Pawła (zgoda z sesji). Kontrola miasta 0 błędów; raport ze zrzutami w panelu.
+- **Zatrzymany tryb Play:** agent miasta zastał o 22:28 Studio w trybie Play z prawdziwym zapisem (gracz stał w miejscu od ok. 18 minut) i o 22:48 dał Stop; postęp zapisał się jak przy zwykłym wyjściu.
+- **Jajka Bagna i Dżungli** (ok. 0,36 mln): modele na wzór leśnego jajka Pawła w `swiat/jajka_biomow/`, raport z planszami w panelu; wstawianie do Studio w toku. Scenka wyklucia to pliki Pawła — potrzebna jego zgoda (zadanie).
+- **Rybki z zagrody** (ok. 0,40 mln): pety w zagrodzie dają Rybki, pet za graczem nie, miejsca 2 → 4 → 6 → 8 u Jagody; zaprogramowane i sprawdzone bez Studio (51 z 51 testów petów), liczby robocze: zagroda daje zwykle 3–14% Rybek z walk, najwyżej ok. 26%. Wdrożenie w Studio po przebudowie modeli petów. To propozycja D-153, niezatwierdzona.
+- **Nazwa gry** (ok. 0,16 mln): pięć propozycji w [[Nazwa gry — propozycje z „Cat” (propozycja)]], dopisek pod pytaniem 97.
+- **Wzory Pawła:** na arkuszach obrotów petów i zestawach przedmiotów wojownika pracują dwaj kolejni agenci (modele, bez Studio).
+- **Połączenie z GitHubem:** konflikt w tym dzienniku rozwiązany za zgodą Karola („połącz”) — zostały oba wpisy; pytania z sesji mają numery 106 (lochy) i 107 (konto klipów), bo 104 i 105 zajął Paweł. Podpisane przez panel wiersze (potwierdzenia Pawła z Telegrama, odhaczone tematy sesji) czekają na komputerze Karola na zapis.
+- Sprzeciw agenta zapisany w [[Po sesji 2026-11-25 — podział prac]]: nowa mechanika w rozmowie, która przycinała zakres; wydanie nadal blokuje pytanie 90.
+
 ## 2026-11-25 · Claude Code u Karola (ustalenia z sesji głównej: powrót do Blocky & Crycket)
 - **Nowa notatka:** [[Sesja główna 2026-11-25 — zapis ustaleń]] (status propozycja) — sesja Karola i Pawła 21:53–22:20, temat: pomysł [[Blocky & Crycket]] po D-139 z dwoma podpisami. Zapis rozmowy zostaje lokalnie u gospodarza panelu.
 - **Rejestr decyzji:** propozycje D-148 (nazwa bez Blocky'ego, z „Cat”), D-149 (pierwsza wersja bez Twierdzy i walk petów), D-150 (drzewko: postać i pety, gałąź Twierdzy schowana), D-151 (stanowiska AFK w rozszerzonym Training Center), D-152 (kuźnia: rozbiórka i sklep składników), D-153 (pety: zagroda daje Rybki, założony pet premie, miejsca u Jagody), D-154 (sklep petów znika), D-155 (rzadkość: ≥1,5×, unikalna zdolność). Nic nie zatwierdzone; przy D-149, D-152 i D-153 uwagi agenta (zakres i liczby).
-- **Pytania otwarte:** odpowiedzi z sesji pod 97 (nazwa) i 99 (dolna siatka kowala); dopiski pod 96 i 103; nowe 104 (lochy w pierwszej wersji) i 105 (marketing: jawnie czy „pod przykrywką” — rozjazd z zatwierdzoną dziś D-126). Pytania zamknięte jako nieaktualne (58, 59, 63, 67–69) bez zmian.
+- **Pytania otwarte:** odpowiedzi z sesji pod 97 (nazwa) i 99 (dolna siatka kowala); dopiski pod 96 i 103; nowe 106 (lochy w pierwszej wersji) i 107 (marketing: jawnie czy „pod przykrywką” — rozjazd z zatwierdzoną dziś D-126). Pytania zamknięte jako nieaktualne (58, 59, 63, 67–69) bez zmian.
 - **Zadania:** trzy nocne dla agenta Karola (jajka biomów, pety i zagroda, Training Center), nazwy gry, lista dla Pawła (referencje broni i petów, okno kowala, UI questów, mistrz gier, modele kotów), drzewko i sklep petów po zatwierdzeniu. Prośba z nagrania o push na GitHub i wiadomość na Telegramie nie została wykonana — polecenie panelu dla sesji mówi „nie commituj”.
 - **Sesje główne:** 19 tematów odhaczonych przez Karola dostało wyniki i odnośnik; do agendy — poradnik i pierwsza godzina gracza oraz lochy i termin pierwszej wersji.
 - Karta [[Blocky & Crycket]]: etap z „wstrzymana” na „prototyp” (D-139 ma oba podpisy), dopisek z sesji. Raport w panelu: „Sesja główna 2026-11-25 — do zatwierdzenia” (plik raportu zapisany ręcznie, bo narzędzia terminala były w tej sesji zablokowane).
+
+## 2026-11-25 · Claude Code u Pawła (tablica questów, kowal z zakładkami, mistrz gier 3D, drzewko bez fortecy)
+- **Tablica questów** (polecenie Pawła): E przy tablicy ogłoszeń otwiera okno z questami dziennymi i osiągnięciami; TRACK przypina do szuflady HUD (do 3), CLAIM wypłaca nagrodę. Notatka [[Tablica questów (propozycja)]], pytanie 105. Bez zapisu — postęp do wyjścia z gry.
+- **Kowal:** nad górną siatką zakładki ITEMS / INGREDIENTS (składniki, o które prosił Karol); dziś jeden składnik „Scrap” z danych kuźni Karola. Dopisek do pytania 99.
+- **Mistrz gier:** plansza 3D na stole w karczmie zamiast płaskiego okna — kamera od strony gracza (kąt poprawiony dwa razy po teście Pawła: w kadrze cała plansza i cały mistrz, postać gracza ukryta u niego na czas gry), rzucana kostka, pionek skacze po 26 polach; interfejs z grafiki Higgsfield (tabliczka tytułu, ROLL z kostką, LEAVE, plakietka ceny, wstęga komunikatu, gwiazda nagrody — `tools/mistrz_gier_ui.py`); zasady i nagrody bez zmian (serwer z 24.11). Plansza powstaje u gracza w czasie gry, ozdoby Karola na stole są u niego ukrywane. Dopisek do pytania 98.
+- **Drzewko:** zakładka FORTRESS wyłączona (nie usunięta), zostają PLAYER i PETS — [[Okno drzewka umiejętności]].
+- **Sprawdzone w Play:** rzut (kostka 2, pionek 1 → 3, +28 Rybek), przyciski ROLL i LEAVE, tablica (2 questy w szufladzie, odbiór +3 Diamenty), zakładki kowala, drzewko z nową ramką. Paweł testował sam i zaakceptował kąt kamery. **Nie sprawdzone:** telefon.
+- **Wgrane do Roblox po „tak” Pawła (18 obrazów):** 11 elementów okna questów, ramka drzewka bez środkowej zakładki, 6 elementów interfejsu mistrza gier. Higgsfield: 3 generacje (okno questów dwa razy — pierwszą odrzucił filtr — i interfejs mistrza gier). **Figma:** dwie ramki makiet na stronie „HUD Buttons” (58:115, 58:130) z wgranymi obrazkami, niedokończone — limit wywołań planu Starter.
+- **Zostało z listy Pawła:** modele kotów ras (Blender), przyciski HUD podłużne i bez gildii — w [[Zadania]].
+- Pliki: `src/server/Questy.server.luau`, `src/server/JajkoKorowe.server.luau`, `src/server/SkillTree.server.luau`, `src/client/OknoQuestowClient.client.luau`, `src/client/QuestyClient.client.luau`, `src/client/MistrzGier3DClient.client.luau`, `src/client/OknoMistrzaGierClient.client.luau`, `src/client/OknoKowalaClient.client.luau`, `src/client/SkillTreeClient.client.luau`, `src/shared/SkillTreeData.luau`, `src/gui/OknoQuestow.model.json`, `src/gui/OknoKowala.model.json`, `src/gui/SkillTree.model.json`, `tools/okno_questow_ui.py`, `tools/okno_questow_build_gui.py`, `tools/okna_build_gui.py`, `tools/skilltree_bez_fortecy.py`, `tools/skilltree_build_gui.py`, `tools/mistrz_gier_ui.py`, `assets/processed/OknoQuestow/`, `assets/processed/MistrzGierUI/`, `assets/processed/SkillTree/SkillTreeFrameDwie.png`, `assets/manifest.json`.
+
+## 2026-11-25 · Claude Code u Pawła (wojownik: komplet 5 arkuszy zestawów, wzór dla modeli Karola)
+- **Trzy nowe arkusze** zestawów wojownika z puli Lv 1–10 (polecenie Pawła): Podwórkowy, Targowy, Mleczarz — te same ustawienia co Giermek i Kuchenny z 24.11 (Nano Banana 2.1, 16:9, 4k, jedna wersja). Higgsfield: 3 generacje.
+- **Bez powtórek:** pięć nazw w tabeli Rycerza zastąpionych nowymi (rysunki już były w „Leśnym Złomie” albo trzeci raz kubeł) — lista w [[Przedmioty — pula Lv 1–10, 5 na slot (propozycja)]].
+- **Dla agenta Karola:** wszystkie 5 arkuszy w `assets/refs/przedmioty_rycerz/` jako wzór dla modeli 3D przedmiotów (sekcja „Dla agenta Karola” w notatce, zadanie w [[Zadania]]). Nic nie wgrano do Roblox, ikony niepocięte.
+
+## 2026-11-25 · Claude Code u Pawła (rysunki referencyjne petów leśnego jajka dla Karola)
+- Paweł dał arkusze obrotów pięciu petów z leśnego jajka (Żołędziak, Mchowy Ślimak, Liściolis, Świetlikówka, Jelonek Gaju), wygenerowane z promptów Glossy Ink. W repozytorium: `assets/refs/pety_las/<pet>_obroty.jpg` + `CZYTAJ.md`.
+- **Dla agenta Karola:** przy przebudowie modeli tych petów korzysta z arkuszy — zasady w [[Pety leśnego jajka — arkusze obrotów (propozycja)]]; zadanie w [[Zadania]], zakres w [[Pytania otwarte]] 104. Ślimakowi brakuje widoku z tyłu, sówce z boku.
+- Pliki Karola (`swiat/`) bez zmian.
 
 ## 2026-11-25 · Claude Code u Karola (miasto: tekstury i kreska jak w sali wyboru rasy — D-147 w Studio)
 - Agent na Opus (ok. 50 min, ok. 0,45–0,5 mln tokenów) nałożył na miasteczko-bazar 25 własnych materiałów i brązową kreskę; opis w [[Klocki — Blender i Roblox]]. Liczba obiektów miasta bez zmian, w emulacji telefonu 16,7 ms na klatkę. Nic nie przebudowano ani nie przesunięto.

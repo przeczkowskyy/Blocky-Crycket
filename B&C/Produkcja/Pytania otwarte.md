@@ -873,6 +873,7 @@ Rozstrzyga: D-139.
 Szczegóły: poprawki agenta (tapnięcie przyspiesza pasek, przyrost rośnie z poziomem, mini-gry jako bonus, przeliczenie tempa walk bez punktów za poziom) są w treści D-140 i D-141 w [[Rejestr decyzji]]. Dotyka D-097 (dwa podpisy), D-050, D-108 i pytania 50.
 **Odpowiedź:**
 - Karol Balucki (2026-11-25): Paweł już wdrożył
+- Claude Code u Karola (2026-11-26, dopisek agenta, nie odpowiedź człowieka): w grze (`main`) jest trening AFK (D-141), a Diamentów za poziom (D-140) nie ma — zostały na gałęzi `pawel/diamenty-afk`. Skutek: `stan_gracza` dalej daje 5 punktów statystyk za poziom, ale od 24.11 nie ma ich jak wydać (przyciski „+” usunięte), a Diamentów za awans gracz nie dostaje. Do ustalenia: kto wdraża D-140 w `stan_gracza` i z jakimi liczbami.
 
 ## 90. Pakiety Karola działają tylko w Studio — przed wydaniem?
 - Stan gracza, kowal, sklep (i inne pakiety `swiat/…`) mają na początku `if not RunService:IsStudio() then return`.
@@ -947,6 +948,7 @@ Szczegóły: tytuł „Blocky & Crycket” bez Blocky'ego traci sens — nowa na
 Dopisek z 2026-11-25 (Karol): ekran ładowania trzeba poprawić już teraz, bo postaciami są tylko koty (D-145). Przy odpowiedzi do ustalenia: czy na nowym ekranie zostaje napis „BLOCKY & CRYCKET” do czasu nowej nazwy, czy ekran jest bez tytułu. Zdanie agenta: zostawić obecny tytuł i zmienić tylko grafikę na koty, bo nazwa gry w Roblox i ekran powinny mówić to samo, a zmiana nazwy to osobna sesja.
 **Odpowiedź:**
 - Claude Code (2026-11-25, z sesji głównej 21:54): Paweł i Karol: Blocky znika z tytułu — gra jest o kotach, a w nowej nazwie ma być „Cat”, słowo dobrze indeksujące się w Roblox (Paweł); warianty zaproponuje agent, wybiorą Karol i Paweł (propozycja D-148). O napisie na ekranie ładowania i o Blockym w lore nie rozmawiano. Zapis agenta z rozmowy.
+- Claude Code u Karola (2026-11-25): pięć propozycji nazw jest w [[Nazwa gry — propozycje z „Cat” (propozycja)]]: Cat Training Legends (rekomendacja agenta), Cat Training Simulator, Become the Strongest Cat, Cat Training RPG, Train Your Cat Hero. Wybierają Karol i Paweł; do tego czasu ekran ładowania zostaje bez zmian.
 
 ## 98. Karol: mistrz gier i leśne jajo — podpięcie u Ciebie
 - Okno mistrza gier działa (D-053): nagrody wypłaca dziś testowe „przyznaj” Twojego stanu gracza, a płatny rzut odmawia, bo źródła „MistrzGier” nie ma w `DaneStanu.wydatki.zrodla`.
@@ -956,6 +958,7 @@ Dopisek z 2026-11-25 (Karol): ekran ładowania trzeba poprawić już teraz, bo p
 
 Szczegóły: pliki `src/server/MistrzGier.server.luau`, `src/server/JajkoKorowe.server.luau`, `src/client/JajkoKoroweClient.client.luau`, `tools/studio/jajo_lesne_ustaw.luau`; Twoich plików nikt nie zmieniał. Numer zmieniony z 95 na 98 (24.11 dwa pytania dostały numer 95).
 Dopisek z 2026-11-24 (wieczór), dylematy szerzej: (1) miejsce — jajo stało za północną ścianą miasteczka (983, −652), gdzie gracz nie dojdzie; przeniesione na próbę na (955, −695), obok zagrody petów i stacji treningu Siły — czy tam zostaje, czy staje w lesie zamiast Twojego inkubatora. (2) Pet nad jajem i podobizny na karcie budują się Twoim `RigPetow.zbuduj`, a ten moduł poza Studio zwraca pustą tabelę — w wydanej grze byłyby same napisy (zob. pytanie 90). (3) Klient jaja podmienia w opisach „Złota” na „Rybek” tylko na wyświetlaniu; dane w `DanePetow` zostają Twoje. (4) Scenka u kupującego czeka na 5 kliknięć (bez kliknięcia idzie dalej sama po 7 s), inni gracze widzą wyklucie od razu — to odpowiedź Pawła na D-060 (wyklucie samo czy z klikaniem), do Twojego potwierdzenia.
+Dopisek z 2026-11-25: mistrz gier ma planszę 3D na swoim stole zamiast płaskiego okna (prośba Pawła, wersja robocza „do poprawienia przez Karola”): E przenosi kamerę nad stół, kostka i pionek są modelami, plansza powstaje u gracza w czasie gry, a Twoja ozdobna plansza, pionki i kostka są u niego ukrywane. Opis: `src/client/MistrzGier3DClient.client.luau`.
 **Odpowiedź:**
 - Karol Balucki (2026-11-25): a
 
@@ -966,6 +969,7 @@ Dopisek z 2026-11-24 (wieczór), dylematy szerzej: (1) miejsce — jajo stało z
 - Do wyboru: (a) tak, zapasy do rozbiórki; (b) siatka na materiały; (c) usunąć siatkę z okna.
 
 Szczegóły: okno `src/client/OknoKowalaClient.client.luau` korzysta z Twojego zdalnego `KowalProba/Zdalne/Kuznia` („widok”, „ulepsz”, „rozbierz”) bez zmian u Ciebie; Paweł jeszcze nie wybrał.
+Dopisek z 2026-11-25: nad górną siatką są dwie zakładki — ITEMS (przedmioty) i INGREDIENTS (składniki), o które prosiłeś. Twoja kuźnia zna dziś jeden składnik (materiały z rozbiórki), więc zakładka pokazuje jedno pole „Scrap”; gdy „widok” zacznie podawać kolejne, okno je pokaże.
 **Odpowiedź:**
 - Claude Code (2026-11-25, z sesji głównej 22:05): Karol (Paweł nie zaprzeczył): wariant (a) — dół to przedmioty do rozbiórki, góra to składniki z rozbiórki; do tego w kuźni ma być sklep składników za Rybki, a Paweł zrobi okno z zakładkami zamiast przerabiać całość (propozycja D-152). Zapis agenta z rozmowy.
 
@@ -1009,7 +1013,25 @@ Szczegóły: [[Okno petów (propozycja)]]; serwer okna `src/server/OknoPetow.ser
 Dopisek z 2026-11-25 (sesja główna 22:09–22:14): liczby slotów, zdejmowania poza zagrodą i usuwania kopii nie rozstrzygnięto. Padło za to: sklep petów znika, pety są pod przyciskiem Pet (propozycja D-154); pety w zagrodzie dają Rybki na sekundę, pet założony na gracza jest wyjęty z zagrody i daje statystyki oraz pasywki, a miejsc w zagrodzie jest 2 → 4 → 6 → 8 za ulepszenie u Jagody (propozycja D-153). Zob. [[Sesja główna 2026-11-25 — zapis ustaleń]].
 **Odpowiedź:**
 
-## 104. Lochy w pierwszej wersji: tak czy dopiero w aktualizacji?
+## 104. Karol: przebudowa petów leśnego jajka według rysunków Pawła
+- Paweł 25.11 dał arkusze obrotów pięciu petów leśnego jajka (`assets/refs/pety_las/`).
+- Prosi, żeby Twój agent przebudował według nich modele petów.
+- Do wyboru: (a) wszystkie pięć; (b) tylko te, gdzie rysunek wyraźnie różni się od modelu; (c) zostają obecne modele.
+
+Szczegóły: [[Pety leśnego jajka — arkusze obrotów (propozycja)]] (różnice i brakujące widoki: ślimak bez tyłu, sówka bez boku). Rysunek to wzór wyglądu — kości, klipy i rozmiar zostają, jak wymaga gra.
+**Odpowiedź:**
+- Claude Code u Karola (2026-11-26): na noc przyjęty wariant (a) — wszystkie pięć petów przebudowane według arkuszy i wdrożone w Studio, do oceny w raporcie „Pety leśnego jajka przebudowane według arkuszy Pawła”. Decyzja Karola nadal potrzebna; stare modele są w historii repozytorium. Zapis agenta, nie odpowiedź Karola.
+
+## 105. Karol: tablica w miasteczku jako tablica questów
+- Paweł 25.11: tablica ogłoszeń ma dawać questy (dzienne i osiągnięcia) zamiast rankingu; wybrane questy lądują w szufladzie HUD.
+- Działa na próbę; ranking i napis „Ranking” na E są wyłączane tylko u gracza w czasie gry — Twoje obiekty bez zmian.
+- Do wyboru: (a) przełączasz tablicę w pakiecie bazaru (napis, E „Quests”, bez rankingu); (b) ranking zostaje na tablicy, questy idą gdzie indziej; (c) ranking przenosimy w inne miejsce.
+- Osobno: zapis postępu w stanie gracza i jak pogodzić to z zadaniami na czas z karczmy (D-034).
+
+Szczegóły: [[Tablica questów (propozycja)]]; serwer `src/server/Questy.server.luau` liczy postęp z atrybutów gracza i wypłaca przez Twoje „przyznaj”. Zastrzeżenie agenta: bez zapisu gracz traci postęp przy wyjściu — przed wydaniem trzeba to podpiąć.
+**Odpowiedź:**
+
+## 106. Lochy w pierwszej wersji: tak czy dopiero w aktualizacji?
 - Na sesji 25.11 obaj zgodzili się na pierwszą wersję bez Twierdzy i walk petów (propozycja D-149); o lochach nie było zgody.
 - Karol najpierw „bez dungeonów”, potem przypomniał sobie, że chcieli je dać; Paweł: „możemy dać… nie”, chodziło mu tylko o Twierdzę i walki petów.
 - Do wyboru: (a) Katakumby w pierwszej wersji; (b) lochy jako pierwsza aktualizacja po wydaniu; (c) inaczej — jak.
@@ -1017,7 +1039,7 @@ Dopisek z 2026-11-25 (sesja główna 22:09–22:14): liczby slotów, zdejmowania
 Szczegóły: [[Sesja główna 2026-11-25 — zapis ustaleń]] (21:57–21:58). Katakumby są częściowo zrobione po stronie Pawła (pytanie 95: boss gotowy; lista przeciwników w notatce Pawła, która jeszcze nie trafiła do repozytorium). Zdanie agenta (D-114): (b) — Paweł sam podał wzór gry, która dokładała treść aktualizacjami, żeby gracze wracali; loch jako pierwsza aktualizacja to gotowy „powód powrotu”, a pierwsza wersja ma być jak najkrótsza do wydania. Zmienię zdanie, jeśli przejście trzech biomów okaże się krótsze niż godzina.
 **Odpowiedź:**
 
-## 105. Konto klipów: jawne (D-126) czy „losowy Instagramer” z sesji?
+## 107. Konto klipów: jawne (D-126) czy „losowy Instagramer” z sesji?
 - Karol 25.11 zatwierdził w panelu D-126: konto klipów w wersji jawnej (postacie oznaczone jako AI, nasza gra oznaczona jako nasza).
 - Na sesji 25.11 (22:08–22:09) opisał to inaczej: konto losowego Instagramera, który postuje klipy z Robloxa i „pod przykrywką”, pośrednio promuje naszą grę.
 - Do wyboru: (a) zostaje wersja jawna z D-126 — agent robi klipy z gry i reakcje postaci z Higgsfield, oznaczone; (b) wersja z sesji — agent w niej nie pomoże; (c) rozmowa na sesji.
@@ -1026,3 +1048,11 @@ Gra: wspolne
 Szczegóły: [[Sesja główna 2026-11-25 — zapis ustaleń]]; zasady i progi próby: [[Konto klipów z wirtualnymi streamerami — pomysł]], [[00 Marketing]]. Paweł na sesji zdania nie wyraził. Zdanie agenta (D-114): (a) — ukryta promocja własnej gry przez konto udające zwykłego gracza to ukryta reklama, a widzami będą dzieci; sam format (klipy z gry plus reakcje) działa też jawnie. Tego zdania nie zmienię; o kierunku decydują Karol i Paweł, ja mogę tylko odmówić wersji udawanej.
 **Odpowiedź:**
 
+## 108. Brama BONK stoi w starym miasteczku B&C — co z nią?
+- Od 20.11 brama gry BONK (D-112, propozycja; BONK wstrzymany przez D-139) stoi w miejscu Blocky & Crycket, 16 studów od płyty startu starego miasteczka. Kto wejdzie w jej zasięg (5 studów), ląduje w lesie BONK.
+- 26.11 próba bazaru trafiła tam zamiast do nowego miasteczka. Tabliczkę „Nowe miasteczko (E)” agent odsunął, brama została.
+- Do wyboru: (a) usunąć bramę i kontener BONK z miejsca B&C, a BONK budować tylko w osobnym miejscu; (b) zostawić, ale odsunąć bramę dalej od płyty startu; (c) zostawić jak jest do decyzji o BONK.
+Gra: bc
+
+Szczegóły: gracz zaczyna dziś w nowym miasteczku, a do starego trafia portalem, więc dotyczy to tylko tych, którzy tam wejdą. Zdanie agenta (D-114): (a) — w grze szykowanej do wydania nie powinno być wejścia do wstrzymanego prototypu; BONK ma budowę do osobnego miejsca (`--publikacja`). Kontener w Studio jest nasz (wygenerowany), ale jego usunięcie to decyzja człowieka. Opis znaleziska: [[Dziennik zmian]], wpis z 26.11.
+**Odpowiedź:**

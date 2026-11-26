@@ -188,6 +188,11 @@ local LABELS = {
 	PetLuck = "pet luck", PetAll = "all pet stats", PetDexterity = "pet dexterity", PetIntelligence = "pet intelligence",
 }
 
+-- Paweł 25.11.2026: forteca na razie wyłączona (nie usunięta) — w oknie zostają PLAYER i PETS.
+-- Ukryta zakładka: brak przycisku, nie liczy się do wykrzyknika, serwer nie sprzedaje jej węzłów.
+-- Powrót: usuń wpis stąd i przywróć grafikę ramki z trzema zakładkami (SkillTreeFrame).
+SkillTreeData.HiddenTabs = { Fortress = true } :: { [string]: boolean }
+
 SkillTreeData.ROOT_COST = 10 -- Diamenty za węzeł startowy zakładki (polecenie Pawła: „niewielka ilość”)
 SkillTreeData.Tabs = {} :: { { id: string, title: string } }
 SkillTreeData.Branches = {} :: { [string]: { { id: string, title: string, x: number, y: number } } }

@@ -28,7 +28,7 @@ tags: [produkcja, sesja, bc, game-design]
 - Karol [21:54]: skupiamy się na grywalności, **biomów teraz nie robimy** (zgodne z D-106).
 - Paweł [21:56–21:58]: nie dawać wszystkiego na start — gracz, który dostanie od razu Twierdzę i wszystko, zmaksuje grę w 4–5 dni i nie wróci; przykład z rynku: gra o kurczakach zaczynała od wyklucia i walki na arenie, resztę (shardy, ewolucje) dokładała aktualizacjami, żeby ludzie wracali. Twierdza i walki petów to „na razie zbędne funkcje”.
 - Karol [21:57]: „wypuszczamy pierwszą wersję beta na testowanie rynku” bez Twierdzy; [21:58] „ja się z tym zgadzam, niechaj tak będzie”.
-- **Lochy — bez rozstrzygnięcia.** Karol [21:57] najpierw „bez dungeonów”, potem przypomniał sobie, że chcieli; Paweł [21:58] „możemy dać, jakiś… nie” i że chodziło tylko o Twierdzę i walki petów. Pytanie 104.
+- **Lochy — bez rozstrzygnięcia.** Karol [21:57] najpierw „bez dungeonów”, potem przypomniał sobie, że chcieli; Paweł [21:58] „możemy dać, jakiś… nie” i że chodziło tylko o Twierdzę i walki petów. Pytanie 106.
 - Daty pierwszej wersji i progów testu nie padły.
 
 ## Drzewko umiejętności: tylko postać i pety (Paweł, Karol zgadza się) → D-150
@@ -74,7 +74,7 @@ tags: [produkcja, sesja, bc, game-design]
 - „Czym gracz zajmuje się najpierw” [22:00] i „ile ekranów przed pierwszą walką” [22:15]: Karol — wszystko pokaże **poradnik**; rozmowa o tym przy tutorialu. Nowy temat w [[Sesje główne]].
 - Walka [22:15]: Karol — zostaje **automatyczna jak w Shakes & Fidget** (w zapisie „Sword and Sandals”); zaraz potem pomylił temat z BONK i przeszedł dalej. Paweł nie zabrał głosu; bez nowej decyzji (D-068 bez zmian).
 
-## Marketing: konto klipów (Karol) — rozjazd z D-126 → pytanie 105
+## Marketing: konto klipów (Karol) — rozjazd z D-126 → pytanie 107
 - Karol [22:08–22:09]: konta na TikToku i Instagramie; agent nagrywa klipy z gry, gdy dzieje się coś mocnego albo śmiesznego; Higgsfield generuje postać „influencera”, który reaguje (drze się, ekscytuje). Konto ma wyglądać jak **losowy Instagramer postujący klipy z Robloxa**, który „niekoniecznie marketinguje naszą grę, a pośrednio ją marketinguje”, „pod przykrywką”.
 - To wersja udawana, którą D-126 (zatwierdzona dziś przez Karola w panelu) świadomie odrzuciła na rzecz jawnej. Paweł słuchał („no?”), zdania nie wyraził. Workflow do mózgu w Obsidianie, zapowiadany 20.11, nie padł.
 
@@ -85,11 +85,11 @@ tags: [produkcja, sesja, bc, game-design]
 
 ## Czego nie rozstrzygnięto
 - Nowa nazwa gry — czeka na warianty (D-148); czy kot gracza nazywa się Crycket.
-- Lochy w pierwszej wersji (pytanie 104) i data pierwszej publicznej wersji.
+- Lochy w pierwszej wersji (pytanie 106) i data pierwszej publicznej wersji.
 - Pierwsza godzina gracza, liczba ekranów przed pierwszą walką, poradnik — odłożone.
 - Okno petów: liczba slotów, zdejmowanie, usuwanie (pytanie 103); czy pet w zagrodzie z czasem rośnie w poziomie.
 - Chwyt broni na rasę — Paweł niepewny, skłania się do „bez różnicy”.
-- Marketing: jawnie czy „pod przykrywką” (pytanie 105).
+- Marketing: jawnie czy „pod przykrywką” (pytanie 107).
 - Karol o ilości mechanik: „za dużo będzie” — poszedł za Pawłem, obawa została.
 - Wszystkie liczby: Rybki na sekundę z peta, ceny miejsc u Jagody, ceny składników, mnożniki rzadkości poza „co najmniej 1,5×”.
 
@@ -97,7 +97,7 @@ tags: [produkcja, sesja, bc, game-design]
 - **Beta bez Twierdzy i walk petów — zgoda.** To najtańsze z możliwych cięć i to, o co prosiła karta (koszt 0/3, [[Diagnoza 2026-11-19 — prostota i szansa na hit]]). Poprawka: w tej samej rozmowie doszły trzy nowe mechaniki (Rybki na sekundę z zagrody, miejsca u Jagody, sklep składników), a Karol sam powiedział, że mechanik jest za dużo. Zdjęcie Twierdzy nic nie da, jeśli jej miejsce zajmie mini-tycoon petów. Zmienię zdanie, jeśli próba z ludźmi spoza zespołu pokaże, że nowy gracz w pierwszych 10 minutach rozumie, co robić.
 - **Rybki z zagrody — nie wdrażać bez liczb.** Od D-146 Rybki są jedyną miękką walutą: kupują przedmioty, jajka, ulepszenia u kowala i (od dziś) składniki i miejsca w zagrodzie. Pasywny dochód z zagrody plus pętla „Rybki → więcej miejsc → więcej Rybek” to klasyczny tycoon, który bez limitu rozsadza ceny w sklepach. Przed budową policzyć w kalkulatorze walki (`tools/walka/`), ile Rybek na godzinę daje walka, a ile zagroda, i czy zagroda nie zastępuje grania. Pet Tamer z gry, który Paweł uznał za „zbyt broken”, robił dokładnie to.
 - **Nazwa z „Cat” — zgoda.** Jeden rozpoznawalny bohater w tytule pomaga w wyszukiwarce i na miniaturze. Poprawka: sprawdzić wolne tytuły w wyszukiwarce Roblox przed wyborem (jak przy „Dragon Lair Evolution”); tytuł gry w Roblox, ekran ładowania i strona gry mają mówić to samo, więc zmiana nazwy to jedna paczka, nie trzy. „Crycket” może zostać imieniem kota gracza albo maskotki — to nie wymaga tytułu.
-- **Marketing „pod przykrywką” — nie.** Powtarzam zdanie z D-126: pomagam w wersji jawnej (postacie oznaczone jako AI, nasza gra oznaczona jako nasza); konto udające losowego gracza i ukrywające, że promuje własną grę, to ukryta reklama, a widzami będą dzieci. Sam format — klipy z gry plus reakcje — działa też jawnie i tak go zrobię. Rozjazd z zatwierdzoną dziś D-126 opisuje pytanie 105; to Karol i Paweł decydują, ja mogę tylko odmówić wersji udawanej.
+- **Marketing „pod przykrywką” — nie.** Powtarzam zdanie z D-126: pomagam w wersji jawnej (postacie oznaczone jako AI, nasza gra oznaczona jako nasza); konto udające losowego gracza i ukrywające, że promuje własną grę, to ukryta reklama, a widzami będą dzieci. Sam format — klipy z gry plus reakcje — działa też jawnie i tak go zrobię. Rozjazd z zatwierdzoną dziś D-126 opisuje pytanie 107; to Karol i Paweł decydują, ja mogę tylko odmówić wersji udawanej.
 - **Walka automatyczna a klipy.** Karol chce nagrywać „mocarne walki” do klipów, a karta daje „momentowi do nagrania” 1/3 właśnie przez walkę, która toczy się sama. Jedno z drugim się nie spina bez efektów z D-082 i cutscenek z D-033 — to argument, żeby je zrobić przed pierwszą wersją, albo żeby klipy pokazywały co innego (pety, zagrodę, koty).
 - **Lochy.** Katakumby są częściowo zrobione po stronie Pawła (pytanie 95: boss gotowy). Moje zdanie: pierwsza wersja bez lochów, Katakumby jako pierwsza aktualizacja — to dokładnie „powód powrotu”, o którym mówił Paweł na przykładzie gry o kurczakach. Zmienię zdanie, jeśli przejście trzech biomów okaże się krótsze niż godzina.
 
@@ -114,7 +114,7 @@ Słowa z nagrania nie uruchamiają pracy: prace nocne ruszą po poleceniu Karola
 
 ## Co trafiło do sejfu
 - **Propozycje** w [[Rejestr decyzji]]: D-148 (nazwa bez Blocky'ego, z „Cat”), D-149 (pierwsza wersja bez Twierdzy i walk petów, treść aktualizacjami), D-150 (drzewko: postać i pety, gałąź Twierdzy schowana), D-151 (stanowiska AFK w rozszerzonym Training Center), D-152 (kuźnia: rozbiórka i sklep składników, okno z zakładkami), D-153 (pety: zagroda daje Rybki, założony pet premie, miejsca u Jagody), D-154 (sklep petów znika, pety pod przyciskiem Pet), D-155 (rzadkość: co najmniej 1,5×, unikalna zdolność epickich i legendarnych).
-- **Pytania** w [[Pytania otwarte]]: odpowiedzi z sesji pod 97 (nazwa) i 99 (dolna siatka kowala); dopiski pod 96 (rzadkość) i 103 (pety — niepełne); nowe 104 (lochy w pierwszej wersji) i 105 (marketing: jawnie czy pod przykrywką). Pytania 58, 59, 63, 67–69 są zamknięte jako nieaktualne — nic pod nimi nie dopisano.
+- **Pytania** w [[Pytania otwarte]]: odpowiedzi z sesji pod 97 (nazwa) i 99 (dolna siatka kowala); dopiski pod 96 (rzadkość) i 103 (pety — niepełne); nowe 106 (lochy w pierwszej wersji) i 107 (marketing: jawnie czy pod przykrywką). Pytania 58, 59, 63, 67–69 są zamknięte jako nieaktualne — nic pod nimi nie dopisano.
 - **Zadania** w [[Zadania]]: trzy nocne dla agenta Karola (jajka biomów, pety i zagroda, Training Center), nazwy gry, lista dla Pawła (referencje broni i petów, okno kowala, mistrz gier, UI questów, modele kotów), drzewko i sklep petów po zatwierdzeniu.
 - **Agenda** w [[Sesje główne]]: 19 tematów z 25.11 z wynikami; do „Do omówienia” — poradnik i pierwsza godzina gracza; lochy i termin pierwszej wersji.
 - Dopisek w karcie [[Blocky & Crycket]] (etap wraca z „wstrzymana” na „prototyp” po D-139 z dwoma podpisami).
