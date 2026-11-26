@@ -7,6 +7,10 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Paweł: usunąć podmianę „Złota → Rybek” w `OknoKowalaClient`, `OknoPetowClient` i `JajkoKoroweClient` — nasze teksty mówią już „Rybki”, a podmiana psuje nazwy przedmiotów („Złota Zbroja Słońca” wychodzi jako „Rybek Zbroja Słońca”) · Paweł · #średni
+- [ ] Karta wyniku walki: napis mówi „RYBKI”, ale ikona to dalej moneta — podmienić na rybkę z HUD · agent Karola · #niski
+- [ ] Napis „+N Gemów za pierwsze pokonanie strażnika” nie ma odmiany (przy jednym wychodzi „+1 Gemów”) i mówi „Gemów”, a nie „Diamentów” — poprawić przy okazji D-140 · agent Karola · #niski
+- [ ] Stary prototyp walki (`Workspace/TestWalki` w Studio): żaden pakiet gry go nie używa, jego karta mówi jeszcze „ZŁOTA” — zostawić czy usunąć · Karol · #niski
 - [ ] Brama BONK w starym miasteczku B&C: odpowiedzieć na pytanie 108 (usunąć, odsunąć albo zostawić) · Karol · #średni
 - [ ] Diamenty za poziom (D-140) nie są w grze: na `main` jest tylko trening AFK, a punktów statystyk za poziom nie ma jak wydać — ustalić, kto wdraża i z jakimi liczbami (dopisek pod pytaniem 89) · Karol, Paweł · #wysoki
 - [ ] Okna Pawła na telefonie: „Shop” i „OknoKowala” nie mają próby w emulacji 667 × 375 (punkty S08 i K12 prób mają wynik „?”) — dopisać pomiar razem z pytaniem 101 · agent Karola · #średni
@@ -16,7 +20,7 @@ tags: [produkcja, zadania]
 - [ ] Próba kowala: rozbiórka i ulepszenie (K07, K08) klikają w okno próbne, a nie w okno Pawła — przenieść na jego okno · agent Karola · #niski
 - [ ] Jajka Bagna i Dżungli: Karol — zatwierdzić w Studio folder `swiat/jajka_biomow/modele` do wgrywania (Assistant → Settings → MCP Permissions) albo zgodzić się na drogę przez folder postaci; potem `python -B swiat/jajka_biomow/wdroz.py wszystko` wgrywa i wstawia oba jajka · Karol · #wysoki
 - [ ] Rybki z zagrody (propozycja D-153): stoją w Studio jako próba z liczbami roboczymi — zatwierdzić albo zmienić (raport „Zagroda daje Rybki: nowe legowiska i przebudowane pety w Studio”); w lesie zagroda daje ok. 4 Rybki na minutę, czyli prawie niewidocznie · Karol, Paweł · #wysoki
-- [ ] Zagroda po wdrożeniu, do ustalenia: E przy Jagodzie otwiera naraz okno Pets Pawła i tymczasowe okno zagrody; jajko Pawła stoi ok. 3 study od miejsca przed Jagodą; tablica „TWOJE PETY” 14 studów przed bramą; starsze napisy mówią „Złota” zamiast „Rybek”; sówka ma żółtawe oczy, a jelonek oliwkowe nogi · Karol, Paweł · #średni
+- [ ] Zagroda po wdrożeniu, do ustalenia: E przy Jagodzie otwiera naraz okno Pets Pawła i tymczasowe okno zagrody; jajko Pawła stoi ok. 3 study od miejsca przed Jagodą; tablica „TWOJE PETY” 14 studów przed bramą; sówka ma żółtawe oczy, a jelonek oliwkowe nogi · Karol, Paweł · #średni
 - [ ] Przedmioty wojownika: ocenić modele (raport „Przedmioty wojownika 3D: pięć zestawów na kocie według arkuszy Pawła”); do gry wejdą dopiero z kotem-wojownikiem w walce i jego klipami z mieczem — dziś walka i przymierzalnia używają wojownika z ciałem człowieka · Karol, Paweł · #średni
 - [ ] Pet Arena i BONK: po przebudowie leśnych petów ich budowa odmawia (dane nieaktualne, po 2 testy) — zdecydować: nowe pety także tam (`dane.py` obu gier) albo stare zostają (zmiana kodu tych gier) · Karol · #niski · #gra/pet-arena
 - [ ] Rejestr zasobów: dopisać dwie maski blasku jajek do `assets/manifest.json` — wpisy czekają na komputerze Karola, bo ten sam plik zmienił Paweł (konflikt do rozwiązania z Karolem) · agent Karola · #niski
@@ -190,6 +194,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Napisy waluty: „Rybki” zamiast „Złota” (D-146) w pakietach kowala, sklepu, petów, stanu gracza, wskazówek i na karcie wyniku walki — 25 tekstów z odmianą przy liczbie, w Studio; próby bez niezaliczeń · agent Karola · 2026-11-26
 - [x] Regresja całej gry po nocy 25/26.11 (24 próby) i naprawy: manekin w sali Training Center, tabliczka przy bramie BONK, okna próbne sklepu i kowala ustępują oknom Pawła, próby dostosowane do jego okien; ponowne próby bez niezaliczeń · agent Karola · 2026-11-26
 - [x] Bazar: testy pakietu `miasteczko_bazar_gra` dostosowane do HUD Pawła z 25.11 („Index”, szuflada questów, sygnał okien) — 38 z 38 · agent Karola · 2026-11-26
 - [x] Dźwięk: gra dostała zgodę „Use” na utwory Bagna i Dżungli wgrane 18.11 — oba wczytują się w grze · agent Karola · 2026-11-26

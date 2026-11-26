@@ -87,6 +87,7 @@ Kanon wspomina tylko zakładkę Arena (ikona mieczy) w HUD. Pomysł: pojedynki z
 
 ### Waluty
 - ✅ Kanon: **Złoto** i **Magiczne Kryształy**.
+- Od 24.11.2026 (D-146, oba podpisy): waluta liczona atrybutem `Gold` nazywa się w grze **Rybki** i ma ikonę rybki; w kodzie zostaje `Gold`. Od 26.11.2026 tak mówią też napisy pakietów w `swiat/` (z odmianą: 1 Rybka, 3 Rybki, 5 Rybek).
 - HUD z Figmy pokazuje **Złoto** i **Diamenty (Gems)**, opisane jako waluta premium. Czy Diamenty to Magiczne Kryształy, i czy są płatne? ❓ (pytanie otwarte #6).
 
 ## 4. Kierunek artystyczny

@@ -6,6 +6,15 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-26 · Claude Code u Karola (noc, część czwarta: napisy „Rybki” zamiast „Złota”)
+- **D-146 w naszych pakietach** (agent na Opus, ok. 0,37 mln tokenów, 50 min): 25 tekstów źródłowych w pakietach kowala, sklepu, petów, stanu gracza, wskazówek i na karcie wyniku walki mówi „Rybki” zamiast „Złota”. Odmiana przy liczbie: „+1 Rybka”, „+3 Rybki”, „750 Rybek”, „Kup za 1 Rybkę”, „Brakuje ci 1 Rybki”. Identyfikatory i atrybut `Gold` bez zmian (bez migracji zapisu).
+- **Jak:** każdy pakiet ma jedną funkcję odmiany w Luau i jej lustro w Pythonie, z testami dla 15 liczb. Zmienione źródła, pliki generowane odtworzone generatorami pakietów.
+- **Sprawdzone:** testy bez Studio (kowal 35, sklep 26, pety 51, stan gracza 59 i zapis 14, wskazówki 26), próby w Play bez niezaliczeń (próba dymna, stan gracza, pety trzech krain, zagroda, kowal, sklep, walka 111 z 111). W dwóch próbach poprawione oczekiwania, nie napisy: wzór napisu o przegranej (S13) i dopuszczalny stan Rybek przy odmowie w zagrodzie (Z06, zagroda dopisuje Rybki w trakcie punktu).
+- **Zostawione:** nazwy przedmiotów z przymiotnikiem „złoty”, „ZŁOTA ×2!” w treningu (złota koniczyna), teksty dla twórców. Ikona na karcie wyniku walki to dalej moneta ([[Zadania]]).
+- **Dla Pawła:** jego okna kowala, petów i jajka podmieniają w naszych tekstach „Złota” na „Rybek”; teraz to zbędne i psuje nazwy przedmiotów ([[Zadania]]).
+- `DOKUMENTACJA.md`: dopisek o nazwie waluty przy kanonie walut.
+- W Studio wdrożone kontenery `StanGracza`, `KowalProba`, `SklepProba`, `PetyProba`, `TestWalki2`, `WskazowkiGry`. Pełna regresja całej gry ruszyła po tej zmianie o 04:38.
+
 ## 2026-11-26 · Claude Code u Karola (noc, część trzecia: regresja całej gry i naprawy)
 - **Regresja całej gry (01:06–02:34, 24 próby w Play):** 19 prób bez niezaliczeń. Niezaliczenia: kowal 3, sklep 4, bazar 4, stan gracza 1 oraz znane od 18.11 za małe napisy w próbie walki na telefonie. Poprzednia pełna regresja była 19.11.
 - **Przyczyny** (agent na Opus, ok. 0,37 mln tokenów, 55 min):
