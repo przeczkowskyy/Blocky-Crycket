@@ -1,0 +1,14 @@
+{
+ "id": "r-20261126-165553-fb4e",
+ "tytul": "Czysta zagroda: bez bramki z łapą nad wejściem",
+ "opis_md": "Karol po zrzucie zagrody bez legowisk: „Usuń też tą wiatę furtkę. Czysta zagroda”.\n\n**Co się zmieniło (Studio)**\n- Zniknęła bramka nad wejściem: dwa słupki, poprzeczka, łapa-szyld i chorągiewka.\n- Wejście to teraz przerwa w płotku. Koryto, siano i miski zostały.\n- Pety chodzą luzem jak wcześniej; Jagoda stoi przed wejściem.\n\n**Sprawdzone w Play:** próba zagrody 15 punktów bez niezaliczeń; pełna zagroda — osiem z ośmiu petów w ruchu, żaden poza wybiegiem.\n\n**Uwaga agenta:** łapa nad bramką była znakiem zagrody widocznym z placu. Teraz zagrodę poznaje się po płotku, petach i Jagodzie.\n\nPaweł jeszcze tej zmiany nie widział (dopisek pod D-157).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T16:55:53+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ],
+ "gra": "bc"
+}

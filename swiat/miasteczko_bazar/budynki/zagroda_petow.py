@@ -4,16 +4,16 @@ wybieg za płotkiem z bramką na uliczkę, osiem miejsc na odstawione pety (znac
 litery U wokół przejścia od bramki: po trzy przy bocznych płotach, dwa przy tylnym — tu pety pojawiają się w zagrodzie
 i stąd liczony jest wybieg, po którym chodzą luzem), miski, koryto i siano. Opiekunka Jagoda stoi PRZED zagrodą, obok bramki od strony uliczki (E → okno zagrody, okno
 w HUD robi Paweł), więc nie zasłania petów. Jajek tu nie ma: jajka są w inkubatorach biomów (D-060).
-Szyld: wielka łapa nad bramką.
+Bez szyldu i bez bramki (od 26.11.2026): wejście to przerwa w płotku.
 
 Zmiana 25.11.2026 (sesja główna Karola i Pawła, „zagroda ma być tylko zagrodą”): bez ozdobnego psa, smoka, slime'a,
 budki opiekunki i psiej budy; osiem miejsc zamiast sześciu; obrys zagrody bez zmian (26 × 20).
 
 Zmiana 26.11.2026 (Paweł na Telegramie, po obejrzeniu petów chodzących luzem: „legowiska znikają, tempo okej”):
 bez legowisk — pety chodzą po całym wybiegu, więc kolorowe poduchy nie są już ich miejscami. Znaczniki miejsc zostają
-(niewidoczne dane): liczba miejsc i punkty startu petów.
+(niewidoczne dane): liczba miejsc i punkty startu petów. Tego samego dnia Karol, po zrzucie z gry: „Usuń też tą wiatę
+furtkę. Czysta zagroda” — zniknęły słupki bramki, poprzeczka, łapa-szyld i chorągiewka; przejście w płotku zostaje.
 """
-import math
 import os
 import sys
 
@@ -51,7 +51,6 @@ def buduj(s, rnd):
     zestaw.plot(s, [(-W / 2.0 + 0.5, D / 2.0 - 0.6), (-W / 2.0 + 0.5, -D / 2.0 + 0.5)], rnd)
     zestaw.plot(s, [(W / 2.0 - 0.5, D / 2.0 - 0.6), (W / 2.0 - 0.5, -D / 2.0 + 0.5)], rnd)
     zestaw.plot(s, [(-W / 2.0 + 0.5, -D / 2.0 + 0.5), (W / 2.0 - 0.5, -D / 2.0 + 0.5)], rnd, wys=3.4)
-    _bramka(s)
     # opiekunka PRZED zagrodą, przy bramce (na bruku), lekko zwrócona ku przejściu
     ox, oz = OPIEKUNKA
     postacie.postac(s, "opiekunka", NAZWA + "/Opiekunka", (ox, 0.0, oz), ry=-14)
@@ -74,27 +73,3 @@ def buduj(s, rnd):
         wspolne.znacznik(s, "miejsce_peta", "zagroda_miejsce_%d" % (i + 1), (x, Y_WYBIEGU, z),
                          opis="miejsce na odstawionego peta (Zagroda petów)")
     zestaw.wypadniety_klocek(s, (-W / 2.0 + 2.5, 1.6, D / 2.0 - 0.3), (-W / 2.0 + 3.0, 0, D / 2.0 + 0.9), "biel")
-
-
-def _lapa(s):
-    """Wielka łapa (szyld) w płaszczyźnie XY: poduszka i cztery palce w pomarańczu przechodzą przez płetwę tuszem, więc
-    łapę widać z obu stron (jak szyld dzisiejszej wylęgarni). Bez liter."""
-    s.walec("Łapa obrys", (0, -1.0, -0.3), 2.9, 0.4, "tusz", os="z")
-    s.walec("Łapa poduszka", (0, -1.0, -0.3), 2.5, 1.4, "pomarancz", os="z")
-    for a in (-55, -20, 20, 55):
-        r = math.radians(a)
-        p = (3.2 * math.sin(r), -1.0 + 3.3 * math.cos(r))
-        s.walec("Łapa obrys", (p[0], p[1], -0.3), 1.3, 0.4, "tusz", os="z")
-        s.walec("Łapa palec", (p[0], p[1], -0.3), 0.95, 1.4, "pomarancz", os="z")
-
-
-def _bramka(s):
-    """Dwa słupki bramki, krzywa poprzeczka i łapa-szyld nad przejściem 10 (prześwit 9)."""
-    z = OBRYS[1] / 2.0 - 0.6
-    for x, k in ((-5.4, 4), (5.4, -5)):
-        s.blok("Słupek bramki", (x, 4.6, z), (0.9, 9.2, 0.9), "drewno", "Wood", rot=(0, 0, k))
-    with s.cechy(kolizja=False):
-        s.blok("Poprzeczka", (0, 9.4, z), (12.4, 0.9, 1.0), "drewno_ciemne", "Wood", rot=(0, 0, -3))
-        with s.uklad(pos=(0.4, 12.6, z + 0.2), obrot=(-6, 0, 9)):
-            _lapa(s)
-        zestaw.choragiewka_duetu(s, (-5.8, 9.4, z), "kot", przechyl=-12)

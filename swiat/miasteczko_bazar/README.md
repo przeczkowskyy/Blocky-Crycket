@@ -40,7 +40,7 @@ w płytę Baseplate — jak w dzisiejszym miasteczku; 31 drobiazgów mniejszych 
 Zlecenie z sesji głównej Karola i Pawła 25.11 (zgoda obu na głos; status zmian: **propozycja** do obejrzenia).
 
 **Zagroda petów** (`budynki/zagroda_petow.py`): bez ozdobnego psa, smoka, slime'a (także tego na dachu), budki opiekunki
-i psiej budy. Opiekunka Jagoda stoi **przed zagrodą**, na bruku obok prawego słupka bramki (punkt E przed nią, od strony
+i psiej budy. Opiekunka Jagoda stoi **przed zagrodą**, na bruku obok wejścia do zagrody (punkt E przed nią, od strony
 uliczki), więc nie zasłania petów. Obrys bez zmian (26 × 20). **Osiem miejsc** na pety w kształcie litery U wokół przejścia
 od bramki (od 26.11.2026 bez legowisk — decyzja Pawła „legowiska znikają”; miejsca to niewidoczne znaczniki, pety
 chodzą luzem po wybiegu), miski przy bramce, koryto przy tylnym płocie, siano w tylnych narożnikach.
