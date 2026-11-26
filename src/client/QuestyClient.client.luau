@@ -4,9 +4,8 @@
 	(src/gui/HUD.model.json, tools/hud_pety_build_gui.py). Zakładka ze strzałką wysuwa panel zza krawędzi ekranu
 	i chowa go z powrotem; zastępuje dawny przycisk „Quests” w HUD.
 
-	Treść: na razie TRZY PRZYKŁADOWE questy wpisane niżej (bez postępu i nagród po stronie serwera). Kanon mówi
-	o zadaniach na czas z karczmy z licznikiem w HUD (B&C/Gra/Karczma (Questy).md, D-034) — ta szuflada jest na nie
-	miejscem; podpięcie prawdziwych zadań czeka na decyzję (Pytania otwarte).
+	Treść: questy wybrane przez gracza na tablicy questów (do 3) — podaje je src/client/OknoQuestowClient.client.luau
+	z serwera src/server/Questy.server.luau. Bez wybranych questów szuflada mówi, gdzie je wziąć.
 
 	Dla innych skryptów: ReplicatedStorage.QuestyPanel (BindableFunction, tylko klient)
 	  :Invoke("ustaw", { { nazwa, opis, postep, cel, nagroda, waluta = "fish" | "gems", gotowe } … })  — do 3 wierszy
@@ -27,18 +26,21 @@ local MARGINES = 8
 local RUCH = TweenInfo.new(0.28, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 
 type Quest = { nazwa: string, opis: string, postep: number, cel: number, nagroda: number, waluta: string, gotowe: boolean? }
-local questy: { Quest } = {
-	{ nazwa = "FOREST PATROL", opis = "Defeat monsters", postep = 0, cel = 10, nagroda = 120, waluta = "fish" },
-	{ nazwa = "EGG HUNTER", opis = "Hatch eggs", postep = 0, cel = 2, nagroda = 300, waluta = "fish" },
-	{ nazwa = "LUCKY ROLL", opis = "Roll the dice", postep = 0, cel = 3, nagroda = 5, waluta = "gems" },
-}
+local questy: { Quest } = {}
 
 local function rysuj()
 	for i = 1, 3 do
 		local w = drawer:WaitForChild("Quest" .. i) :: Frame
 		local q = questy[i]
-		w.Visible = q ~= nil
-		if q then
+		w.Visible = q ~= nil or i == 1
+		if not q and i == 1 then
+			-- pusta szuflada: podpowiedź, skąd wziąć questy
+			(w:WaitForChild("Name") :: TextLabel).Text = "NO QUESTS YET";
+			(w:WaitForChild("Progress") :: TextLabel).Text = "Pick up to 3 at the quest board";
+			(w:WaitForChild("Check") :: TextLabel).Text = "";
+			(w:WaitForChild("Reward") :: TextLabel).Text = "";
+			(w:WaitForChild("RewardIcon") :: ImageLabel).Image = ""
+		elseif q then
 			local gotowe = q.gotowe or q.postep >= q.cel;
 			(w:WaitForChild("Name") :: TextLabel).Text = q.nazwa;
 			(w:WaitForChild("Progress") :: TextLabel).Text = string.format("%s  %d/%d", q.opis, math.min(q.postep, q.cel), q.cel);
