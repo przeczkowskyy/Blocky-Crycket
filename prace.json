@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T19:42:46+01:00",
+ "aktualizacja": "2026-11-26T19:45:04+01:00",
  "prace": [
   {
    "id": "pety-jajka-sprzedaz",
    "tytul": "Pety: tylko nowe jajka, zarobek na sekundę, sprzedaż petów",
    "stan": "w_toku",
+   "etap": "Wdrożone w Studio, próby w grze",
    "start": "2026-11-26T18:59:24+01:00",
-   "koniec_szacowany": "2026-11-26T22:19:24+01:00",
-   "aktualizacja": "2026-11-26T18:59:24+01:00",
+   "koniec_szacowany": "2026-11-26T22:30:00+01:00",
+   "aktualizacja": "2026-11-26T19:45:04+01:00",
    "obszary": [
     "studio:PetyProba",
     "studio:WskazowkiGry",
@@ -39,10 +40,10 @@
    "id": "sprzatanie-mapy",
    "tytul": "Sprzątanie mapy: start w miasteczku, bez starej wioski, portali i starego lasu",
    "stan": "w_toku",
-   "etap": "Usuwanie starych kontenerów w Studio",
+   "etap": "Próby w grze po sprzątaniu",
    "start": "2026-11-26T18:59:20+01:00",
    "koniec_szacowany": "2026-11-26T22:30:00+01:00",
-   "aktualizacja": "2026-11-26T19:42:46+01:00",
+   "aktualizacja": "2026-11-26T19:45:04+01:00",
    "obszary": [
     "studio:DemoLesnaBaza",
     "studio:BiomLas",
