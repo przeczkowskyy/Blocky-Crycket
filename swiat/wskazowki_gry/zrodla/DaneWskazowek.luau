@@ -1,7 +1,7 @@
 --[[
 	DaneWskazowek — WYGENEROWANE przez swiat/wskazowki_gry/dane.py z ustawienia.json. Nie edytuj
 	ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 173bfe296ae0
+	Skrót danych: a64c47b16691
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -18,7 +18,7 @@ return {
 		c_straznik = { tekst = "Strażnik Gaju czeka na końcu lasu", cel = "straznik" },
 		c_straznik_miasto = { tekst = "Strażnik Gaju czeka na końcu lasu: TELEPORT → Las", cel = "teleport" },
 		d_trening = { tekst = "Wróć do miasta i potrenuj u trenera", cel = "kamien" },
-		d_trening_miasto = { tekst = "Potrenuj u trenera — mini-gry wzmacniają walkę", cel = "trener" },
+		d_trening_miasto = { tekst = "Potrenuj u trenera — E i wybierz ćwiczenie", cel = "trener" },
 		d_slabszy = { tekst = "Spróbuj słabszego potwora — poziom widać nad głową", cel = "potwor" },
 		e_brama = { tekst = "Brama otwarta — idź dalej, za arenę Strażnika", cel = "brama" },
 		e_brama_miasto = { tekst = "Brama do Bagna otwarta: TELEPORT → Las i dalej za Strażnika", cel = "teleport" },
@@ -242,7 +242,7 @@ return {
 					trening_wzmacnia = true,
 				},
 				id = "d_trening_miasto",
-				tekst = "Potrenuj u trenera — mini-gry wzmacniają walkę",
+				tekst = "Potrenuj u trenera — E i wybierz ćwiczenie",
 				cel = "trener",
 			},
 			{
@@ -972,5 +972,5 @@ return {
 			{ x = 1500, z = -700, brama = 2034, wynik = "miasto" },
 		},
 	},
-	skrot = "173bfe296ae0",
+	skrot = "a64c47b16691",
 }

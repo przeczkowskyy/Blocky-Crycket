@@ -470,7 +470,9 @@ def wczytaj():
         "zdarzenie_okien": K["zdarzenie_okien"],
         "id_miejsca_bazaru": K["id_miejsca_bazaru"],
         "bazar": {"kontener": K["bazar"]["kontener"], "podpowiedz": K["bazar"]["podpowiedz"],
-                  "punkt_zapasowy": z["podpowiedz"]},
+                  "punkt_zapasowy": z["podpowiedz"],
+                  # 26.11.2026: false = E przy trenerze otwiera okno stanowisk AFK, nie tymczasowy wybór mini-gry
+                  "wybor_od_trenera": K["bazar"].get("wybor_od_trenera", True) is not False},
         "arena": K["arena"],
         "scenerie": {g: {"kraina": K["scenerie"][g]["kraina"], "nazwa": K["scenerie"][g]["nazwa"]} for g in K["scenerie"]["kolejnosc"]},
         "kolejnosc_scenerii": K["scenerie"]["kolejnosc"],

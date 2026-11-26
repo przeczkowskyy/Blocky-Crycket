@@ -1,5 +1,28 @@
 # Training Center — próba sześciu mini-gier
 
+> **Wejście przez trenera do stanowisk AFK (26.11.2026, zlecenie Karola: „podchodzimy do trenera, E, klikamy, w co
+> chcemy wejść, i nas teleportuje”; D-141 — statystyki trenuje się na stanowiskach AFK).** Etap 1 zrobiony bez Studio
+> (pliki gotowe, testy offline zielone na kopii z odświeżonymi danymi); etap 2 (wdrożenie, próba w Play, zrzuty) —
+> w toku. Co się zmienia:
+> - **E przy trenerze** (bazar, punkt `training_center`, podpowiedź teraz „Train”) otwiera **okno sześciu ćwiczeń**
+>   w skrypcie Pawła `src/client/TreningAFKClient.client.luau` (ScreenGui `TreningAFKMenu`: kafelki z ikoną, nazwą,
+>   czynnością, obecną wartością statystyki i kolorem stanowiska; zajęte — szare z BUSY; X, stuknięcie obok, B pada,
+>   Escape i odejście od trenera zamykają). Klik → serwer (`src/server/TreningAFK.server.luau`, `"wybierz", id`)
+>   sprawdza odległość od trenera (16 st), czy gracz już nie trenuje i limit 0,5 s, a potem stawia go na stanowisku
+>   tak samo jak E przy macie. Dane w `src/shared/TreningAFKDane.luau` → `D.trener`.
+> - **Bez tabliczek** przy stanowiskach (zasłaniały przejście) — co jest czym, mówi okno trenera.
+> - **Tymczasowy wybór mini-gry nie otwiera się już od trenera:** `ustawienia.json → bazar.wybor_od_trenera = false`
+>   (→ `DaneTreningu.bazar.wybor_od_trenera`, klient: `wyborOdTrenera()`). Mini-gry i kontener zostają; wejść do nich
+>   można tylko haczykiem testowym (`"wybor"`) — **z gry są dziś nieosiągalne** (pytanie do Karola). `true` = jak dawniej.
+> - Próby: `testy/proba_play.py` T03 sprawdza nową drogę (okno AFK zamiast wyboru; poprawka 26.11: pusta tabela Luau
+>   „[]” nie wywraca już T02 — `js()` zwraca wtedy `{}`); nowa `testy/proba_afk_trener.py` (B00–B50: bez tabliczek,
+>   E → okno, sześć ćwiczeń kliknięciem, zajęte, z daleka, limit, w trakcie, zamykanie, trzy zrzuty); offline
+>   `testy/test_afk_trener.py` (20 testów: serwer, klient, dane, układ okna na sześciu ekranach, bazar, mapa);
+>   wdrożenie skryptów Pawła: `wdroz_trening_afk.py` (najpierw porównuje Source w Studio z wersją sprzed zmiany —
+>   inna wersja = STOP).
+> - Układ okna (piksele, bez paska Robloxa): poziomo 3 × 2, pionowo 2 × 3; telefon 667 × 375 → okno 635 × 315,
+>   kafelek 199 × 123 px (przy pasku 58 px: 199 × 112), pionowo 375 × 667 → 157 × 101, X 44 × 44.
+
 > **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** tablica wejścia `TablicaWejscia` przy starym starcie zniknęła — `ustawienia.json → tablica_wejscia.w_grze = false` (budowa stawiała ją przy pierwszym `SpawnLocation`, czyli dziś stanęłaby w bazarze). Do mini-gier wchodzi się tylko przez trenera w bazarze (`MiasteczkoBazarGra`, punkt E `training_center`); `Podpowiedzi = 0`. Kod tablicy zostaje w `zbuduj.py`. Próba w Play: T01 liczy 0 podpowiedzi, T02 sprawdza, że tablicy nie ma. Usuwanie z miejsca: `python -B tools/studio/sprzatanie_mapy.py` (najpierw `--sucho`); start gry na starcie bazaru: `python -B tools/studio/start_w_miasteczku.py`.
 
 *Status: **propozycja** (17.11.2026). **Siła i Pancerz wdrożone w Studio i sprawdzone w trybie Play 17.11.2026 przed
@@ -91,6 +114,8 @@ zmienia.
 - **Bazar** (`swiat/miasteczko_bazar_gra`): E przy trenerze wysyła `ReplicatedStorage.OknoMiejsca("training_center")`.
   Klient próby słucha każdego zdarzenia o tej nazwie i otwiera tymczasowy wybór. Ustawia też na zdarzeniu atrybut
   `training_center = true` — to opisany w README bazaru sposób wyłączenia dymku „Trener: mini-gry w budowie”.
+  **Od 26.11.2026 (`bazar.wybor_od_trenera = false`) tego nie robi** — zdarzenie obsługuje okno stanowisk AFK
+  w `src/client/TreningAFKClient.client.luau` (ono też ustawia atrybut `training_center`).
 - **Okno Pawła** (gdy powstanie): w Edit `WyborTymczasowy = false`, a w jego skrypcie klienta:
   ```lua
   bindable("OknoMiejsca").Event:Connect(function(id) if id == "training_center" then open() end end)
@@ -125,6 +150,10 @@ python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>   # próba 
 python -B swiat/trening_proba/testy/proba_play.py <folder> --nowe      # tylko T01 i T15–T22 (ok. 8 min)
 python -B swiat/trening_proba/testy/proba_play.py <folder> --walka     # tylko T01, T22 i T23–T27 — wygląd jak w walce (ok. 7 min)
 python -B swiat/trening_proba/testy/proba_afk_zasieg.py <folder>       # stanowiska AFK w sali: zasięg podpowiedzi E (ok. 2 min)
+python -B swiat/trening_proba/testy/test_afk_trener.py                 # 20 testów offline okna trenera, sali i mapy (bez Studio)
+python -B swiat/trening_proba/wdroz_trening_afk.py --sucho             # Studio Edit: czy w Studio stoją skrypty AFK sprzed 26.11
+python -B swiat/trening_proba/wdroz_trening_afk.py                     # podmiana Source trzech skryptów AFK (inna wersja = STOP)
+python -B swiat/trening_proba/testy/proba_afk_trener.py <folder>       # Play: okno trenera, sześć ćwiczeń, odmowy, zrzuty (ok. 7 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py                      # 24 zrzuty do klatki/ (ok. 7 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py --nowe               # tylko 09–24 (cztery nowe gry, ok. 5 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py --telefon            # 26–37: sześć gier na telefonie (ok. 5 min)

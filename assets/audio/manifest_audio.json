@@ -2287,6 +2287,246 @@
         }
       },
       "status": "do odsłuchu (18.11.2026)"
+    },
+    {
+      "id": "muzyka_16_bazar_targ_kotow",
+      "przeznaczenie": "Miasteczko-bazar — tło, wariant A „targ kotów” (wybór Karola 26.11.2026: najlepsza)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Loopable instrumental background music for the hub town of a cute cartoon fantasy RPG where all the heroes are cats. Cozy medieval market square: bouncy lute and pizzicato strings, a playful wooden flute melody you can hum, light hand drum and tambourine, warm and cheerful, medium tempo around 110 BPM. No vocals. The ending flows seamlessly back into the beginning.",
+      "parametry": {
+        "duration": 60,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "7de3d42e-4352-475e-96e4-26b6f8e7fe25",
+      "koszt_kredyty": 8.67,
+      "data": "2026-11-25",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_16_bazar_targ_kotow.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_16_bazar_targ_kotow.mp3",
+        "petla": "muzyka/muzyka_16_bazar_targ_kotow_petla.ogg"
+      },
+      "wzmocnienie_db": -0.1,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 60.029,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -15.9,
+          "lra_lu": 2.7,
+          "true_peak_dbtp": -1.5,
+          "szczyt_dbfs": -1.47,
+          "srednia_rms_dbfs": -17.74,
+          "glosnosc_chwilowa_max_lufs": -12.3,
+          "cisza_poczatek_s": 0.009,
+          "cisza_koniec_s": 0.004,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -17.9,
+            "rms_ostatnie_2s_db": -25.4,
+            "roznica_rms_db": -7.5,
+            "podobienstwo_widma_poczatek_koniec": 0.899,
+            "centroid_poczatek_hz": 968,
+            "centroid_koniec_hz": 1265,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -37.1,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 2.6
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 60.029,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 237,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 2.7,
+          "true_peak_dbtp": -1.6,
+          "szczyt_dbfs": -1.56,
+          "srednia_rms_dbfs": -17.84,
+          "glosnosc_chwilowa_max_lufs": -12.4,
+          "cisza_poczatek_s": 0.009,
+          "cisza_koniec_s": 0.004,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.0,
+            "rms_ostatnie_2s_db": -25.5,
+            "roznica_rms_db": -7.5,
+            "podobienstwo_widma_poczatek_koniec": 0.899,
+            "centroid_poczatek_hz": 970,
+            "centroid_koniec_hz": 1269,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -37.1,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 2.6
+          }
+        },
+        "petla": {
+          "dlugosc_s": 52.36,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 172,
+          "lufs_zintegrowana": -15.7,
+          "lra_lu": 2.6,
+          "true_peak_dbtp": -1.4,
+          "szczyt_dbfs": -1.44,
+          "srednia_rms_dbfs": -17.64,
+          "glosnosc_chwilowa_max_lufs": -12.4,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -17.7,
+            "rms_ostatnie_2s_db": -18.9,
+            "roznica_rms_db": -1.2,
+            "podobienstwo_widma_poczatek_koniec": 0.942,
+            "centroid_poczatek_hz": 912,
+            "centroid_koniec_hz": 954,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -9.0,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": 1.5
+          },
+          "skok_probki_na_szwie": 0.0007,
+          "skok_sasiednich_probek_p95": 0.0033,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.979,
+            "rytm": 0.979,
+            "harmonia": 0.968,
+            "barwa": 0.999,
+            "start_s": 2.996,
+            "koniec_s": 55.356,
+            "koniec_zywej_muzyki_s": 59.0,
+            "kara_glosnosci": 0.0
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.74,
+            "przesuniecie_probki": 36,
+            "dlugosc_petli_s": 52.36
+          }
+        }
+      },
+      "status": "wybrane przez Karola 26.11.2026 (próbka 60 s; koszt = trzecia część partii trzech próbek za 26 kredytów); wgrane w arkuszu muzyka_arkusz_c"
+    },
+    {
+      "id": "muzyka_17_bazar_psotny",
+      "przeznaczenie": "Miasteczko-bazar — tło, wariant B „psotny” (wybór Karola 26.11.2026: druga)",
+      "model": "elevenlabs_music_v2_5",
+      "model_nazwa": "ElevenLabs Music v2.5",
+      "prompt": "Loopable instrumental background music for the hub town of a cute cartoon fantasy RPG where all the heroes are cats. Whimsical and mischievous: marimba and glockenspiel, a sneaky cat-like clarinet lead, soft accordion, upright bass, brushed percussion, swingy and playful, around 100 BPM, light and funny but not silly. No vocals. The ending flows seamlessly back into the beginning.",
+      "parametry": {
+        "duration": 60,
+        "force_instrumental": true
+      },
+      "zlecenie_higgsfield": "c5626f95-b3cf-4810-8841-e9a2e07f5141",
+      "koszt_kredyty": 8.67,
+      "data": "2026-11-25",
+      "pliki": {
+        "oryginal": "muzyka/oryginaly/muzyka_17_bazar_psotny.mp3",
+        "pelna_wyrownana": "muzyka/muzyka_17_bazar_psotny.mp3",
+        "petla": "muzyka/muzyka_17_bazar_psotny_petla.ogg"
+      },
+      "wzmocnienie_db": -1.6,
+      "pomiary": {
+        "oryginal": {
+          "dlugosc_s": 60.029,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 128,
+          "lufs_zintegrowana": -14.4,
+          "lra_lu": 3.7,
+          "true_peak_dbtp": -1.1,
+          "szczyt_dbfs": -1.11,
+          "srednia_rms_dbfs": -17.14,
+          "glosnosc_chwilowa_max_lufs": -11.4,
+          "cisza_poczatek_s": 0.022,
+          "cisza_koniec_s": 0.506,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -18.6,
+            "rms_ostatnie_2s_db": -39.6,
+            "roznica_rms_db": -21.0,
+            "podobienstwo_widma_poczatek_koniec": 0.754,
+            "centroid_poczatek_hz": 1548,
+            "centroid_koniec_hz": 1719,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -53.4,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -2.0
+          }
+        },
+        "pelna_wyrownana": {
+          "dlugosc_s": 60.029,
+          "format": "mp3",
+          "kodek": "mp3",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 241,
+          "lufs_zintegrowana": -16.0,
+          "lra_lu": 3.7,
+          "true_peak_dbtp": -2.7,
+          "szczyt_dbfs": -2.69,
+          "srednia_rms_dbfs": -18.74,
+          "glosnosc_chwilowa_max_lufs": -13.0,
+          "cisza_poczatek_s": 0.022,
+          "cisza_koniec_s": 0.508,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.2,
+            "rms_ostatnie_2s_db": -41.2,
+            "roznica_rms_db": -21.0,
+            "podobienstwo_widma_poczatek_koniec": 0.754,
+            "centroid_poczatek_hz": 1551,
+            "centroid_koniec_hz": 1719,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -53.4,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -2.0
+          }
+        },
+        "petla": {
+          "dlugosc_s": 52.808,
+          "format": "ogg",
+          "kodek": "vorbis",
+          "czestotliwosc_hz": 44100,
+          "kanaly": 2,
+          "bitrate_kbps": 186,
+          "lufs_zintegrowana": -16.1,
+          "lra_lu": 3.7,
+          "true_peak_dbtp": -3.0,
+          "szczyt_dbfs": -3.05,
+          "srednia_rms_dbfs": -18.64,
+          "glosnosc_chwilowa_max_lufs": -13.2,
+          "cisza_poczatek_s": 0.0,
+          "cisza_koniec_s": 0.0,
+          "poczatek_a_koniec": {
+            "rms_pierwsze_2s_db": -20.7,
+            "rms_ostatnie_2s_db": -19.2,
+            "roznica_rms_db": 1.5,
+            "podobienstwo_widma_poczatek_koniec": 0.885,
+            "centroid_poczatek_hz": 1526,
+            "centroid_koniec_hz": 1675,
+            "rms_ostatnie_0_5s_wzgl_mediany_db": -0.9,
+            "rms_pierwsze_0_5s_wzgl_mediany_db": -1.9
+          },
+          "skok_probki_na_szwie": 0.0046,
+          "skok_sasiednich_probek_p95": 0.0283,
+          "wybor_miejsca": {
+            "wynik_dopasowania": 0.927,
+            "rytm": 0.921,
+            "harmonia": 0.913,
+            "barwa": 0.966,
+            "start_s": 1.573,
+            "koniec_s": 54.381,
+            "koniec_zywej_muzyki_s": 58.0,
+            "kara_glosnosci": 0.008
+          },
+          "budowa": {
+            "przenikanie_s": 1.0,
+            "ksztalt_przenikania": "liniowe",
+            "korelacja_fali_w_przenikaniu": 0.445,
+            "przesuniecie_probki": -258,
+            "dlugosc_petli_s": 52.808
+          }
+        }
+      },
+      "status": "wybrane przez Karola 26.11.2026 (próbka 60 s; koszt = trzecia część partii trzech próbek za 26 kredytów); wgrane w arkuszu muzyka_arkusz_c"
     }
   ],
   "dzwieki": [

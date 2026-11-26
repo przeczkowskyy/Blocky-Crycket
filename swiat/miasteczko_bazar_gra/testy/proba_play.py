@@ -508,10 +508,37 @@ def main():
                           ("w starym miasteczku" if wrocil else "NIE WRÓCIŁ (%s)" % wybor_m)))
 
             # ---------------------------------------------------------------- B08 Brama Leśna → Las
+            # 26.11.2026 (próba po sprzątaniu mapy, Studio w tle — 15 kl./s): oba prawdziwe E przy Bramie nie dotarły
+            # do serwera (OstatnieE zostało z B04), bo zaraz po B07 u klienta trwało jeszcze coś, co wyłącza podpowiedzi
+            # E albo pochłania klawisze — przelot pierwszego wejścia do Lasu (KlientPasa / KlientCutscenki: kamera
+            # skryptowa, ProximityPromptService.Enabled = false, blokada wszystkich akcji gracza) albo koniec przejścia
+            # przez chmury. Przed E czekamy (do 40 s), aż klient jest gotowy: podpowiedzi włączone, kamera Custom, postać
+            # nie zakotwiczona, bez chmur i bez przelotu; stan przed i po E idzie do wyników (B08.gotowosc).
+            def gotowosc_e():
+                return js('local p = game:GetService("Players").LocalPlayer local c = p.Character '
+                          'local h = c and c:FindFirstChild("HumanoidRootPart") local t = workspace:FindFirstChild("TeleportChmury") '
+                          'local l = workspace:FindFirstChild("LasPasGra") local f = l and l:FindFirstChild("Sygnaly") '
+                          'f = f and f:FindFirstChild("SterowaniePasaKlienta") local ok, st = pcall(function() return f and f:Invoke("stan") end) '
+                          'st = if ok and type(st) == "table" then st else {} '
+                          'local e = k.Punkty:FindFirstChild("E brama_lesna") local q = e and e:FindFirstChild("Podpowiedz") '
+                          'return H:JSONEncode({ pps = game:GetService("ProximityPromptService").Enabled, '
+                          'kamera = workspace.CurrentCamera.CameraType.Name, kotwica = h ~= nil and h.Anchored, '
+                          'chmury = t ~= nil and t:GetAttribute("Trwa") == true, przelot = st.przelot ~= nil and st.przelot ~= false, '
+                          'podpowiedz = q ~= nil and q.Enabled })', "Client")
+
+            def gotowy(g):
+                return (g.get("pps") is True and g.get("kamera") == "Custom" and not g.get("kotwica")
+                        and not g.get("chmury") and not g.get("przelot") and g.get("podpowiedz") is True)
+
             hak("przenies", "bazar")
             time.sleep(3.5)
-            ost, wpis, _ = e_w("brama_lesna", 0.3)
+            t8 = time.time()
+            g8 = czekaj_na(lambda: (lambda g: g if gotowy(g) else None)(gotowosc_e()), 40, 1.0)
+            gotowosc = {"przed": g8 or gotowosc_e(), "czekanie_s": round(time.time() - t8, 1)}
+            ost, wpis, _ = e_w("brama_lesna", 0.6)
             p8 = czekaj_na(lambda: (lambda q: q if q[0] >= 1066 else None)(poz()), 6, 0.3)
+            if not p8:
+                gotowosc["po_E"] = gotowosc_e()
             dymek_las = (klient().get("dymki") or {}).get("brama_lesna")
             # drugie E zaraz po przejściu (blokada czasu 3 s): od razu, bez zerowania odstępu, haczykiem serwera „e”
             # (ta sama decyzja co po podpowiedzi, bez sprawdzania odległości) — prawdziwe E z ustawieniem kamery i zrzutem
@@ -523,10 +550,13 @@ def main():
             dymek2 = (klient().get("dymki") or {}).get("brama_lesna")
             if p8:
                 zrzut("07_las_po_bramie")
-            zapisz("B08", {"e": ost, "w_lesie": p8, "dymek": dymek_las, "drugie": drugie, "dymek2": dymek2, "las": edit["las"]})
+            zapisz("B08", {"e": ost, "w_lesie": p8, "dymek": dymek_las, "drugie": drugie, "dymek2": dymek2, "las": edit["las"],
+                           "gotowosc": gotowosc})
             if edit["las"]:
                 punkt("B08", p8 is not None and str(drugie).endswith("dymek/za_szybko") and str(dymek2).startswith("Chwila"),
-                      "Brama Leśna → %s; drugie E: %s „%s”" % (p8, drugie, dymek2))
+                      "Brama Leśna → %s; drugie E: %s „%s”; klient przed E (po %.1f s): %s%s" % (
+                          p8, drugie, dymek2, gotowosc["czekanie_s"], gotowosc["przed"],
+                          "" if p8 else "; E nie dotarło do serwera, stan po E: %s" % gotowosc.get("po_E")))
             else:
                 punkt("B08", str(ost).endswith("dymek/brak_lasu") and dymek_las is not None,
                       "bez LasPasGra: %s „%s”" % (ost, dymek_las))

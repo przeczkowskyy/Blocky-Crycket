@@ -1,7 +1,7 @@
 --[[
 	DaneBazaru — WYGENEROWANE przez swiat/miasteczko_bazar_gra/dane.py z miejsca.json i swiat/miasteczko_bazar/
 	znaczniki.json (+ uklad.json bazaru). Nie edytuj ręcznie: zmień źródła i uruchom dane.py.
-	Skrót danych: 05c5a305e776
+	Skrót danych: 412fa646c57a
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -142,9 +142,9 @@ return {
 			id = "training_center",
 			akcja = "okno",
 			obiekt = "Trener",
-			akcja_tekst = "Mini-gry",
+			akcja_tekst = "Train",
 			postac = "Trener",
-			dymek = "Trener: mini-gry jeszcze nieczynne.",
+			dymek = "Trainer: training is closed right now.",
 			zasieg = 10,
 			znacznik = "training_center",
 			znacznik_id = "training_center",
@@ -1643,5 +1643,5 @@ return {
 			wynik = false,
 		},
 	},
-	skrot = "05c5a305e776",
+	skrot = "412fa646c57a",
 }

@@ -20,9 +20,14 @@
 	wprost do atrybutu gracza — tylko do prób.
 
 	Zdalne: ReplicatedStorage.TreningAFK (RemoteEvent)
-		klient → serwer: "check", numer | "stop"
+		klient → serwer: "check", numer | "stop" | "wybierz", id
 		serwer → klient: "start", id, postep, przyrost | "postep", postep, tempo | "punkt", atrybut, ile, postep
-		                 | "skillcheck", numer, okno | "trafiony", czas | "koniec"
+		                 | "skillcheck", numer, okno | "trafiony", czas | "koniec" | "odmowa", powod, id
+
+	Agent Karola, 26.11 (polecenie Karola): bez tabliczek z nazwami przy stanowiskach; wejście przez trenera — okno
+	sześciu ćwiczeń u klienta (E przy trenerze), klik = "wybierz", id. Serwer przyjmuje prośbę tylko od gracza przy
+	trenerze (D.trener.zasieg), który jeszcze nie trenuje, nie częściej niż co D.trener.odstep s; zajęte stanowisko =
+	"odmowa", "zajete". Atrybut Zajete na modelu stanowiska (Workspace/TreningAFK/<id>) mówi oknu, które są zajęte.
 ]]
 
 local Players = game:GetService("Players")
@@ -256,29 +261,11 @@ local function zbuduj()
 		local m = Instance.new("Model")
 		m.Name = s.id
 		m:SetAttribute("Atrybut", s.atrybut)
+		m:SetAttribute("Zajete", false)
 		local mata = czesc(m, "Mata", Vector3.new(4, 0.3, 4), o * CFrame.new(0, 0.15, 0), s.kolor)
 		czesc(m, "Mata rant", Vector3.new(4.4, 0.2, 4.4), o * CFrame.new(0, 0.1, 0), CIEMNY)
-		-- tabliczka z nazwą statystyki (z przodu stanowiska, czytelna z placu)
-		local tab = czesc(m, "Tabliczka", Vector3.new(3.6, 1.2, 0.3), o * CFrame.new(-2.6, 3.6, 3.2), DREWNO)
-		czesc(m, "Tabliczka słup", Vector3.new(0.3, 3, 0.3), o * CFrame.new(-2.6, 1.5, 3.2), DREWNO)
-		for _, strona in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back }) do
-			local sg = Instance.new("SurfaceGui")
-			sg.Face = strona
-			sg.PixelsPerStud = 60
-			sg.LightInfluence = 0
-			local t = Instance.new("TextLabel")
-			t.Size = UDim2.fromScale(1, 1)
-			t.BackgroundTransparency = 1
-			t.Text = s.nazwa
-			t.TextScaled = true
-			t.FontFace = Font.new("rbxasset://fonts/families/LuckiestGuy.json")
-			t.TextColor3 = Color3.new(1, 1, 1)
-			local st = Instance.new("UIStroke")
-			st.Thickness = 3
-			st.Parent = t
-			t.Parent = sg
-			sg.Parent = tab
-		end
+		-- agent Karola, 26.11 (Karol: „usuń tabliczki, ma ich tu w ogóle nie być”): tabliczki z nazwą statystyki zasłaniały
+		-- przejście; co jest czym, pokazuje okno trenera
 		local rek = REKWIZYTY[s.id]
 		if rek then
 			rek(m, o, s.kolor)
@@ -352,6 +339,17 @@ local function korzen(gracz: Player): (BasePart?, Humanoid?)
 	return char and char:FindFirstChild("HumanoidRootPart") :: BasePart?, char and char:FindFirstChildOfClass("Humanoid")
 end
 
+-- agent Karola, 26.11: atrybut Zajete na modelach stanowisk (okno trenera u klienta szarzy zajęte)
+local function oznaczZajete()
+	local zajete: { [string]: boolean } = {}
+	for _, t in pairs(trwa) do
+		zajete[t.id] = true
+	end
+	for _, m in ipairs(kontener:GetChildren()) do
+		m:SetAttribute("Zajete", zajete[m.Name] == true)
+	end
+end
+
 local function zakoncz(gracz: Player)
 	local t = trwa[gracz]
 	if not t then
@@ -360,6 +358,7 @@ local function zakoncz(gracz: Player)
 	postepy[gracz] = postepy[gracz] or {}
 	postepy[gracz][t.id] = t.postep
 	trwa[gracz] = nil
+	oznaczZajete()
 	gracz:SetAttribute("TreningAFK", nil)
 	local hrp, hum = korzen(gracz)
 	if hrp and hum then
@@ -390,8 +389,56 @@ local function zacznij(gracz: Player, id: string)
 	hrp.Anchored = true
 	local p = (postepy[gracz] and postepy[gracz][id]) or 0
 	trwa[gracz] = { id = id, postep = p, nastepnyCheck = losujCheck(), check = nil, checkDo = 0, szybkoDo = 0 }
+	oznaczZajete()
 	gracz:SetAttribute("TreningAFK", id)
 	Z:FireClient(gracz, "start", id, p, przyrostDla(gracz))
+end
+
+------------------------------------------------------------------ wejście przez trenera (agent Karola, 26.11)
+-- okno trenera u klienta → "wybierz", id. Te same sprawdzenia i ten sam start co E przy macie (zacznij), a do tego:
+-- gracz stoi przy trenerze, jeszcze nie trenuje i nie prosi częściej niż co D.trener.odstep s.
+local ostatniWybor: { [Player]: number } = {}
+
+local function punktTrenera(): Vector3
+	local o: Instance? = workspace
+	for _, n in ipairs(string.split(D.trener.punkt, "/")) do
+		o = o and o:FindFirstChild(n)
+	end
+	if o and o:IsA("BasePart") then
+		return o.Position
+	end
+	return D.trener.pozycja -- bez pakietu bazaru: punkt trenera z danych
+end
+
+local function wybierzOdTrenera(gracz: Player, id: unknown)
+	local teraz = os.clock()
+	if teraz - (ostatniWybor[gracz] or -math.huge) < D.trener.odstep then
+		return -- za często: bez odpowiedzi
+	end
+	ostatniWybor[gracz] = teraz
+	if typeof(id) ~= "string" or not D.stanowisko(id) or not miejsca[id] then
+		return
+	end
+	if trwa[gracz] then
+		Z:FireClient(gracz, "odmowa", "trening", trwa[gracz].id)
+		return
+	end
+	local hrp, hum = korzen(gracz)
+	if not (hrp and hum and hum.Health > 0) then
+		return
+	end
+	local p = punktTrenera()
+	if Vector2.new(hrp.Position.X - p.X, hrp.Position.Z - p.Z).Magnitude > D.trener.zasieg then
+		Z:FireClient(gracz, "odmowa", "daleko", id)
+		return
+	end
+	for g, t in pairs(trwa) do
+		if t.id == id and g ~= gracz then
+			Z:FireClient(gracz, "odmowa", "zajete", id)
+			return
+		end
+	end
+	zacznij(gracz, id)
 end
 
 for _, m in ipairs(kontener:GetChildren()) do
@@ -410,6 +457,10 @@ for _, m in ipairs(kontener:GetChildren()) do
 end
 
 Z.OnServerEvent:Connect(function(gracz: Player, akcja: unknown, numer: unknown)
+	if akcja == "wybierz" then
+		wybierzOdTrenera(gracz, numer)
+		return
+	end
 	local t = trwa[gracz]
 	if not t then
 		return
@@ -469,4 +520,6 @@ end)
 Players.PlayerRemoving:Connect(function(gracz)
 	trwa[gracz] = nil
 	postepy[gracz] = nil
+	ostatniWybor[gracz] = nil
+	oznaczZajete()
 end)

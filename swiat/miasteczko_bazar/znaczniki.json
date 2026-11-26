@@ -901,17 +901,17 @@
    "swiat": [
     926.0,
     0.27,
-    -700.0
+    -694.0
    ],
    "stoisko": [
     926.0,
     0.27,
-    -700.0
+    -694.0
    ],
    "podpowiedz": [
     925.0,
     4.87,
-    -700.0
+    -694.0
    ],
    "grupa_zaczepu": "Workspace/MiasteczkoBazar/StudniaPomnik/_Interakcja",
    "czesc_stoiska": "Punkt interakcji",
@@ -924,17 +924,17 @@
    "bazar": [
     -68.0,
     0.27,
-    0.0
+    6.0
    ],
    "stoisko_bazar": [
     -68.0,
     0.27,
-    0.0
+    6.0
    ],
    "podpowiedz_bazar": [
     -69.0,
     4.87,
-    0.0
+    6.0
    ]
   }
  ],
@@ -958,7 +958,7 @@
   "Rekwizyty": 290,
   "Kulisy i tło": 271,
   "Niewidzialne": 4,
-  "Uliczka (bruk)": 287,
+  "Uliczka (bruk)": 290,
   "Start": 7,
   "Uliczka (kody)": 57
  },
@@ -1750,17 +1750,17 @@
    "swiat": [
     926.0,
     0.27,
-    -700.0
+    -694.0
    ],
    "stoisko": [
     926.0,
     0.27,
-    -700.0
+    -694.0
    ],
    "podpowiedz": [
     925.0,
     4.87,
-    -700.0
+    -694.0
    ],
    "grupa_zaczepu": "Workspace/MiasteczkoBazar/StudniaPomnik/_Interakcja",
    "czesc_stoiska": "Punkt interakcji",
@@ -1773,17 +1773,17 @@
    "bazar": [
     -68.0,
     0.27,
-    0.0
+    6.0
    ],
    "stoisko_bazar": [
     -68.0,
     0.27,
-    0.0
+    6.0
    ],
    "podpowiedz_bazar": [
     -69.0,
     4.87,
-    0.0
+    6.0
    ]
   },
   {

@@ -27,8 +27,11 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
   T02 tablica wejścia: gdy ustawienia.json → tablica_wejscia.w_grze = false (od 26.11.2026) — w kontenerze NIE ma
       TablicaWejscia (wejście tylko przez trenera w bazarze, T03); inaczej jak dawniej: prawdziwe E przed tablicą →
       tymczasowy wybór na ekranie (zrodlo = "tablica")
-  T03 E przy trenerze w bazarze: zdarzenie OknoMiejsca("training_center") → wybór (zrodlo = "bazar"); gdy stoi
-      MiasteczkoBazarGra — prawdziwe E przy trenerze, wybór otwarty, dymek „Trener: mini-gry w budowie” NIE pokazany
+  T03 E przy trenerze w bazarze. Od 26.11.2026 (ustawienia.json → bazar.wybor_od_trenera = false, D-141): zdarzenie
+      OknoMiejsca("training_center") NIE otwiera tymczasowego wyboru mini-gry, otwiera okno stanowisk AFK
+      (PlayerGui.TreningAFKMenu, atrybut Otwarte); gdy stoi MiasteczkoBazarGra — prawdziwe E przy trenerze: okno AFK
+      otwarte, wybór mini-gry zamknięty, bez dymka bazaru; okno AFK zamykane prawdziwym kliknięciem X. Przy
+      wybor_od_trenera = true jak dawniej: wybór (zrodlo = "bazar") i bez dymka
   T04 wejście do Siły prawdziwym kliknięciem GRAJ: postać na podeście (≤ 1,5 st), TreningGra = "sila", kamera
       Scriptable, sterowanie dotykowe wyłączone, punkt powrotu = miejsce przy tablicy
   T05 runda Siły grana bezbłędnie (autograj 1,0): trafienia = liczba zdarzeń, pudła 0, jednostki paska = Σ przyrost(1..n),
@@ -152,6 +155,9 @@ KOD = {
     "stan_bazaru": ('local b = workspace:FindFirstChild("%s") local s = b and b.Sygnaly.SterowanieKlienta:Invoke("stan") '
                     'return H:JSONEncode(J(s))', ("MiasteczkoBazarGra",)),
     "poziom": (GR + 'return H:JSONEncode({ l = gracz:GetAttribute("Level") })', ()),
+    # okno stanowisk AFK przy trenerze (src/client/TreningAFKClient.client.luau, 26.11.2026) — tylko odczyt
+    "menu_afk": ('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TreningAFKMenu") '
+                 'return H:JSONEncode({ jest = g ~= nil, otwarte = g ~= nil and g:GetAttribute("Otwarte") == true })', ()),
     "klatka": ('local k = workspace.TreningProba task.spawn(function() local RS = game:GetService("RunService") '
                'task.wait(%r) local t = {} local t0 = os.clock() while os.clock() - t0 < %r do table.insert(t, RS.RenderStepped:Wait()) end '
                'table.sort(t) local s = 0 for _, x in t do s += x end k:SetAttribute("%sSr", s / #t * 1000) '
@@ -380,7 +386,10 @@ def main():
                     time.sleep(8)
 
         def js(kod_, dm):
-            return json.loads(luau(KP + J + kod_, dm))
+            # pusta tabela Luau przychodzi z JSONEncode jako „[]” — dla prób to „brak danych”, czyli {} (26.11.2026:
+            # T02 padał na tab.get przy pustej odpowiedzi „tablica”, gdy tablicy wejścia nie ma)
+            w = json.loads(luau(KP + J + kod_, dm))
+            return {} if w == [] else w
 
         def stan_studio():
             return call("get_studio_state")["text"]
@@ -594,11 +603,31 @@ def main():
 
             # ---------------------------------------------------------------- T03 E przy trenerze (OknoMiejsca)
             if chce("T03"):
+                # 26.11.2026: E przy trenerze otwiera okno stanowisk AFK, nie wybór mini-gry (bazar.wybor_od_trenera)
+                od_trenera = D["bazar"].get("wybor_od_trenera", True) is not False
+
+                def menu_afk():
+                    return js(kod("menu_afk"), "Client")
+
+                def zamknij_menu_afk():
+                    if menu_afk().get("otwarte"):
+                        call("user_mouse_input", {"datamodel_type": "Client", "actions": [
+                            {"action": "moveTo", "instance_path": "LocalPlayer.PlayerGui.TreningAFKMenu.Okno.Zamknij"},
+                            {"action": "mouseButtonClick", "mouse_button": "left"}]})
+                        time.sleep(0.8)
+                    return not menu_afk().get("otwarte")
+
                 hak("zamknij", dm="Client")
                 hak("okno", dm="Client")
+                time.sleep(0.6)
                 kl = klient()
-                wynik3 = {"zdarzenie": {"wybor": kl.get("wybor"), "zrodlo": kl.get("zrodlo")}}
-                ok3 = kl.get("wybor") is True and kl.get("zrodlo") == "bazar"
+                m0 = menu_afk()
+                wynik3 = {"zdarzenie": {"wybor": kl.get("wybor"), "zrodlo": kl.get("zrodlo"), "menu_afk": m0}}
+                if od_trenera:
+                    ok3 = kl.get("wybor") is True and kl.get("zrodlo") == "bazar"
+                else:
+                    ok3 = not kl.get("wybor") and m0.get("otwarte") is True
+                wynik3["zdarzenie"]["menu_zamkniete_X"] = zamknij_menu_afk()
                 if edit.get("bazar"):
                     hak("zamknij", dm="Client")
                     zn = DANE._czytaj_json(DANE.ZNACZNIKI)["training_center"]
@@ -614,8 +643,16 @@ def main():
                     bz = js(kod("stan_bazaru", D["bazar"]["kontener"]), "Client")
                     hist = bz.get("historia") if isinstance(bz, dict) else None
                     ost = hist[-1] if isinstance(hist, list) and hist else {}
-                    wynik3["bazar"] = {"wybor": kl.get("wybor"), "zrodlo": kl.get("zrodlo"), "historia_bazaru": ost}
-                    ok3 = ok3 and kl.get("wybor") is True and kl.get("zrodlo") == "bazar" and not ost.get("dymek")
+                    m1 = menu_afk()
+                    wynik3["bazar"] = {"wybor": kl.get("wybor"), "zrodlo": kl.get("zrodlo"), "historia_bazaru": ost,
+                                       "menu_afk": m1}
+                    if od_trenera:
+                        ok3 = ok3 and kl.get("wybor") is True and kl.get("zrodlo") == "bazar" and not ost.get("dymek")
+                    else:
+                        ok3 = ok3 and not kl.get("wybor") and m1.get("otwarte") is True and not ost.get("dymek")
+                        zrzut("03_okno_trenera_afk")
+                    wynik3["bazar"]["menu_zamkniete_X"] = zamknij_menu_afk()
+                    ok3 = ok3 and (od_trenera or wynik3["bazar"]["menu_zamkniete_X"])
                 zapisz("T03", wynik3)
                 punkt("T03", ok3, json.dumps(wynik3, ensure_ascii=False)[:220])
                 if P0 is not None and tab.get("p"):
@@ -1232,6 +1269,7 @@ def main():
                     if w27:
                         stan_k, pr = w27
                         zs = json.loads(luau(kod("zastepczy_stan"), "Client"))
+                        zs = zs if isinstance(zs, dict) else {}
                         klipy = zs.get("klipy") or ""
                         dobrze = ((pr.get("ProbaStawyAwatara") or 0) == 0 and "skok" in klipy and (zs.get("maxY") or 0) > 1.0
                                   and (zs.get("minY") or 0) >= 0 and (stan_k.get("bohater") or {}).get("aktywny") is True)

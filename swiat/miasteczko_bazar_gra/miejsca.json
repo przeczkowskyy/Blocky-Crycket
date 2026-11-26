@@ -28,7 +28,7 @@
     {"id": "zbrojownia", "znacznik": "sklepy/zbrojownia", "akcja": "okno", "hud": "Shop", "gui": null, "npc": "zbrojmistrz",
      "obiekt": "Zbrojmistrz", "akcja_tekst": "Sklep", "postac": "Zbrojmistrz", "dymek": "Zbrojmistrz: broń i zbroje już wkrótce."},
     {"id": "training_center", "znacznik": "training_center", "akcja": "okno", "hud": null, "gui": null, "npc": "trener",
-     "obiekt": "Trener", "akcja_tekst": "Mini-gry", "postac": "Trener", "dymek": "Trener: mini-gry jeszcze nieczynne."},
+     "obiekt": "Trener", "akcja_tekst": "Train", "postac": "Trener", "dymek": "Trainer: training is closed right now."},
     {"id": "zagroda_petow", "znacznik": "zagroda/punkt_e", "akcja": "okno", "hud": "Pets", "gui": null, "npc": "opiekunka",
      "obiekt": "Opiekunka", "akcja_tekst": "Zagroda petów", "postac": "Opiekunka", "dymek": "Opiekunka: zagroda petów jeszcze zamknięta."},
     {"id": "tablica", "znacznik": "tablica/tablica", "akcja": "okno", "hud": null, "gui": null,

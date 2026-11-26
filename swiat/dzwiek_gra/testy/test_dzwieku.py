@@ -95,7 +95,9 @@ class TestKatalogu(unittest.TestCase):
         self.assertEqual([las[0][0], las[0][2], las[0][3]], [1066.0, -784.0, -616.0])
         self.assertEqual(las[0][1], bagno[0][0])
         self.assertGreater(bagno[0][1], bagno[0][0] + 300)
-        self.assertEqual(len(k["muzyka"]["strefy"]["bazar"]["utwory"]), 3)
+        # 26.11.2026: miasteczko gra dwa nowe utwory (wybór Karola), trzy dotychczasowe zostają jako zastępcze
+        self.assertEqual(len(k["muzyka"]["strefy"]["bazar"]["utwory"]), 2)
+        self.assertEqual(len(k["muzyka"]["strefy"]["bazar"]["zastepcze"]["utwory"]), 3)
         self.assertEqual(len(k["muzyka"]["strefy"]["las"]["utwory"]), 2)
         self.assertFalse(k["muzyka"]["strefy"]["menu"]["podpiete"])
 
@@ -164,11 +166,17 @@ class TestMuzykiArkuszaIKontekstow(unittest.TestCase):
                 else:
                     self.assertEqual(sorted(u), ["id", "nazwa"], u)                # osobny plik: bez odcinka
                     self.assertEqual(u["id"], IDENT["muzyka"][u["nazwa"]])
-        self.assertEqual(sorted(znalezione), sorted(Z_ARKUSZA))
+        self.assertEqual(sorted(n for n, u in znalezione.items() if u["arkusz"] == "muzyka_arkusz_b"), sorted(Z_ARKUSZA))
+        # arkusz C: dwa utwory miasteczka wybrane przez Karola 26.11.2026
+        self.assertEqual(sorted(n for n, u in znalezione.items() if u["arkusz"] == "muzyka_arkusz_c"),
+                         ["muzyka_16_bazar_targ_kotow_petla", "muzyka_17_bazar_psotny_petla"])
+        mapy = {"muzyka_arkusz_b": MAPA_M,
+                "muzyka_arkusz_c": json.loads(czytaj("assets", "audio", "arkusz", "muzyka_arkusz_c.json"))}
         for n, u in znalezione.items():
-            e = MAPA_M["utwory"][n]
-            self.assertEqual((u["arkusz"], u["poczatek"], u["koniec"], u["id"]),
-                             ("muzyka_arkusz_b", e["graj_od"], e["graj_do"], IDENT["arkusze_muzyki"]["muzyka_arkusz_b"]), n)
+            self.assertIn(u["arkusz"], mapy, n)
+            e = mapy[u["arkusz"]]["utwory"][n]
+            self.assertEqual((u["poczatek"], u["koniec"], u["id"]),
+                             (e["graj_od"], e["graj_do"], IDENT["arkusze_muzyki"][u["arkusz"]]), n)
 
     def test_bagno_i_dzungla_wlasne_i_zastepcze(self):
         k = ZB.katalog(UST, IDENT)
@@ -314,7 +322,9 @@ class TestIdentyfikatorow(unittest.TestCase):
             {"plik": "assets/audio/muzyka/muzyka_06_bagno_petla.ogg", "assetId": "912"},
             {"plik": "assets/audio/muzyka/muzyka_07_dzungla_petla.ogg", "assetId": "913"},
             {"plik": "assets/audio/muzyka/muzyka_08_pustynia_petla.ogg", "assetId": "914"}]}), ident)   # nieznany: pominięty
-        self.assertEqual(ident["arkusze_muzyki"], {"muzyka_arkusz_b": 911})
+        self.assertEqual(ident["arkusze_muzyki"]["muzyka_arkusz_b"], 911)
+        # arkusz C (muzyka miasteczka z 26.11) nie był w rejestrze tej próby — zostaje bez zmian
+        self.assertEqual(ident["arkusze_muzyki"]["muzyka_arkusz_c"], IDENT["arkusze_muzyki"]["muzyka_arkusz_c"])
         self.assertEqual((ident["muzyka"]["muzyka_06_bagno_petla"], ident["muzyka"]["muzyka_07_dzungla_petla"]), (912, 913))
         self.assertEqual(ident["arkusz"], IDENT["arkusz"])         # arkusz efektów nie pomylony z arkuszem muzyki
         self.assertNotIn("muzyka_08_pustynia_petla", ident["muzyka"])

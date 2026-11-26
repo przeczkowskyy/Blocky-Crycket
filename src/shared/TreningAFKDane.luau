@@ -33,6 +33,18 @@ D.miejsca = {
 	Kondycja = { pozycja = Vector3.new(921.574, 0.5, -731.782), obrot = 3 },
 }
 
+-- agent Karola, 26.11 (polecenie Karola: „podchodzimy do trenera, klikamy E i klikamy, w co chcemy wejść — i nas
+-- teleportuje”): E przy trenerze w Training Center otwiera okno sześciu ćwiczeń; klik = serwer stawia gracza na
+-- stanowisku i zaczyna trening tak samo jak E przy macie. Tabliczek z nazwami przy stanowiskach już nie ma.
+D.trener = {
+	miejsce = "training_center", -- id miejsca bazaru (swiat/miasteczko_bazar_gra/miejsca.json); po E przy trenerze
+	-- bazar woła :Fire(miejsce) na zdarzeniu okien w ReplicatedStorage (klient: bindable jak w innych oknach Pawła)
+	punkt = "MiasteczkoBazarGra/Punkty/E training_center", -- część z podpowiedzią E trenera (w Workspace)
+	pozycja = Vector3.new(942.323, 5.1, -729.465), -- zapas, gdy punktu nie ma (znaczniki.json bazaru → training_center)
+	zasieg = 16, -- studów w poziomie od punktu E (podpowiedź sięga 10): dalej serwer odmawia, a okno samo się zamyka
+	odstep = 0.5, -- s między prośbami gracza o stanowisko (częstsze serwer pomija)
+}
+
 D.stanowiska = {
 	{ id = "Sila", ikona = "rbxassetid://80829675491231", atrybut = "Strength", nazwa = "STRENGTH", skrot = "STR", czynnosc = "DUMBBELLS", kolor = Color3.fromRGB(236, 96, 86) },
 	{ id = "Kondycja", ikona = "rbxassetid://129848880606537", atrybut = "Constitution", nazwa = "HEALTH", skrot = "CON", czynnosc = "BENCH PRESS", kolor = Color3.fromRGB(120, 210, 120) },

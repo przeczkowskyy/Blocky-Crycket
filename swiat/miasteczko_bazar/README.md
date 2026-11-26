@@ -19,7 +19,7 @@ przejściem na działkę, zagrodą petów, tablicą z rankingiem i Bramą Leśn�
 | `tekstury.py` | kafelki z arkusza, mapy do barwienia, wgrywanie do Roblox, raport przypisania, pomiar w emulacji telefonu |
 | `ujecia_tekstury.json`, `podglad/tekstury_*` | cztery kadry przed/po (plac, uliczka, karczma z bliska, całość z góry) i wyniki pomiaru `tekstury_pomiar.json` |
 
-**Liczby:** 4318 części (po wydłużeniu sali Training Center 26.11.2026; 25.11 po sali i zagrodzie 4312, wcześniej 4410; cel ok. 8000, twardy limit 12 000), 84 grupy. Kontener `Workspace/MiasteczkoBazar`.
+**Liczby:** 4289 części (26.11.2026 wieczorem, po przesunięciu studni i ławek; tuż przed tym generator dawał 4286 — po sprzątaniu mapy; wcześniej 4318 po wydłużeniu sali Training Center, 25.11 po sali i zagrodzie 4312, jeszcze wcześniej 4410; cel ok. 8000, twardy limit 12 000), 84 grupy. Kontener `Workspace/MiasteczkoBazar`.
 Świat = (994 + x; y; −700 + z), bez obrotu: części stoją w pliku już tam, gdzie mają stanąć (X 882…1066,
 Z −790…−610), więc przy budowie i zrzutach **nie podaje się `--przesun`**. Wschodni brzeg (X 1066) to początek pasa
 Lasu. Bazar stoi na wschodnim końcu płyty Baseplate (PROJEKT.md, wybór 1).
@@ -82,6 +82,32 @@ Kontrola: `sprawdz.py` **0 błędów, 2 ostrzeżenia** (te same co wcześniej), 
 zaktualizowane do HUD i okien Pawła — 38/38). Zrzuty przed/po:
 `podglad/noc2511_*.jpg` (zagroda, Training Center z zewnątrz i w środku, sześć stanowisk w trakcie treningu — Kot-Mag
 i Wojownik).
+
+## Wolne wejście do sali Training Center (26.11.2026 wieczorem, zlecenie Karola)
+
+Karol: „fontanna zasłania teraz sporo i ciężko tu przejść, krzesło przy siłowni też przeszkadza”. Status:
+**propozycja**, etap 1 bez Studio (mapa wygenerowana i sprawdzona w kopii poza repo; `czesci.json` i `znaczniki.json`
+w repo odświeża etap 2 — w tej chwili są jeszcze sprzed zmiany). „Krzesło” odczytane jako ławka placyku przy froncie
+sali (w sali nie ma żadnych mebli z mapy — stanowiska stawia skrypt Pawła).
+
+| Co | Było (bazar x; z → świat) | Jest | Dlaczego |
+|---|---|---|---|
+| studnia-pomnik (`uklad.json`, `studnia_pomnik`) | (−81; 0) → świat (913; −700), cembrowina z −8,2…8,3 | (−81; 6) → (913; −694), cembrowina z −2,2…14,3 | stała 8 st od frontu sali, na osi przejścia |
+| ławka placyku pn. (`generuj.py`, `rekwizyty`) | (−81; −14,5), ry 0 — 2 st przed frontem sali, na osi przejścia | (−76,5; 18), ry 180 | stała w otwartym froncie sali |
+| ławka placyku pd. | (−81; 14,5), ry 180 | (−85,5; 18), ry 180 | jej miejsce zajęła cembrowina; obie ławki stoją teraz rzędem w pd. części placyku, twarzą do studni |
+| latarnia placyku pn. (`uklad.json`, `latarnie`) | (−75,3; −15,5) — w otwartym froncie sali, przed prawym rzędem | (−66; −15,5) — przed filarem budynku, poza frontem sali | bez kolizji, ale stała w wejściu |
+
+Wynik (siatka chodzenia `siatka.py`, ta sama co `sprawdz.py`): przed frontem sali (front z ≈ −16…−17) wolny pas
+**na całą szerokość otwarcia: x −91,5…−69,5 (22 st) od frontu do z −2,5 (ok. 14 st w głąb)**, a pas 8 × 10 st na osi
+przejścia (`testy/test_afk_trener.py` 6a w `swiat/trening_proba`) jest pusty. Wcześniej na osi przejścia stała ławka
+(z −15,3…−13,7), a od z −8,2 cembrowina. `sprawdz.py`: 0 błędów, 2 ostrzeżenia (jak przed zmianą); wszystkie punkty E
+osiągalne ze startu z tymi samymi czasami (studnia 4,1 s, Training Center 4,3 s), sześć stanowisk AFK i trener
+osiągalne, start wolny, pas 8 st przez uliczkę wolny. Części: 4286 → 4289 (+3 płyty bruku — bruk wypełnia teraz miejsce
+po ławce i po przesuniętej cembrowinie). W `znaczniki.json` zmienia się tylko znacznik `studnia_pomnik` (ozdoba,
+bez E w grze); od znaczników zależne dane innych pakietów (bazar, NPC, wskazówki, pety, kowal, sklep, pasy, chmury)
+po przeliczeniu w kopii zostały aktualne — zmieniają się tylko z powodu tekstów trenera (DaneBazaru, DaneNpc,
+DaneWskazowek) i przełącznika mini-gier (DaneTreningu). NPC rzucający pomidorami przy Pancerzu (skrypt Pawła, 11 st
+przed matą, z ≈ −8,4) stoi teraz na gruncie, 6 st przed cembrowiną.
 
 ## Sala Training Center: dwa rzędy po trzy z przejściem pośrodku (26.11.2026)
 

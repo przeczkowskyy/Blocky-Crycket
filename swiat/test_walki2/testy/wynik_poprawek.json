@@ -1,5 +1,5 @@
 {
- "data": "2026-11-26 06:06",
+ "data": "2026-11-26 21:13",
  "wynik": "27/27",
  "testy": [
   {
@@ -40,7 +40,7 @@
   {
    "test": "kadr rozszarpanie (wojownik/cierniowy_wilk/1, zd. 5, wrecz)",
    "ok": true,
-   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.73 | cel w kadrze 0.70 odsł. 0.70"
+   "opis": "zaBroniacym: atak w kadrze 1.00 odsł. 0.72 | cel w kadrze 0.68 odsł. 0.68"
   },
   {
    "test": "kadr chmura_zarodnikow (wojownik/muchomornik/1, zd. 5, chmura)",

@@ -416,7 +416,10 @@ def main():
                       'return H:JSONEncode({ gestosc = a and a.Density or -1 })', "Server")
             zrzut("18_mgla_pas")
             zapisz("P13", {"pas": mg, "serwer": mg_s, "miasteczko": waga_miasto, "edit": edit["gestosc"]})
-            punkt("P13", mg.get("waga") == 1 and abs(mg.get("gestosc", 0) - 0.36) < 0.01 and waga_miasto == 0
+            # 26.11.2026: „miasteczko” to dziś start bazaru, 86 studów od brzegu mgły lasu — w pasie przejścia mgły
+            # (DanePasa.mgla.pas = 120 st), więc waga jest tam mała, ale nie zerowa (stare miasteczko stało daleko)
+            punkt("P13", mg.get("waga") == 1 and abs(mg.get("gestosc", 0) - 0.36) < 0.01
+                  and waga_miasto is not None and waga_miasto <= 0.35
                   and abs(mg_s["gestosc"] - edit["gestosc"]) < 1e-6,
                   "waga w pasie %s (gęstość %.3f), w miasteczku %s; serwer %.3f = Edit %.3f"
                   % (mg.get("waga"), mg.get("gestosc", -1), waga_miasto, mg_s["gestosc"], edit["gestosc"]))

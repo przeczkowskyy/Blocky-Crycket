@@ -1,7 +1,7 @@
 --[[
 	DaneTreningu — WYGENEROWANE przez swiat/trening_proba/dane.py z ustawienia.json (oraz punktu
 	trenera ze swiat/miasteczko_bazar/znaczniki.json). Nie edytuj ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 04a7ee8c056d
+	Skrót danych: 5997793f8ed4
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -17,6 +17,7 @@ return {
 		kontener = "MiasteczkoBazarGra",
 		podpowiedz = "Punkty/E training_center",
 		punkt_zapasowy = { 942.323, 5.1, -729.465 },
+		wybor_od_trenera = false,
 	},
 	arena = {
 		srodek = { 3000, 300, 3000 },
@@ -3133,5 +3134,5 @@ return {
 			{ 1024, 768, 1.535232383808096 },
 		},
 	},
-	skrot = "04a7ee8c056d",
+	skrot = "5997793f8ed4",
 }

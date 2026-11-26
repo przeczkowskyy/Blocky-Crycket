@@ -997,3 +997,300 @@ end)
 stop.Activated:Connect(function()
 	Z:FireServer("stop")
 end)
+
+------------------------------------------------------------ okno trenera (agent Karola, 26.11, polecenie Karola)
+--[[ E przy trenerze w Training Center (pakiet bazaru woła ReplicatedStorage.OknoMiejsca:Fire(D.trener.miejsce)) otwiera
+	okno sześciu ćwiczeń: ikona i nazwa statystyki, czynność, obecna wartość gracza, w kolorze stanowiska; stanowisko
+	zajęte przez kogoś innego (atrybut Zajete z serwera) — szare z napisem BUSY. Klik = "wybierz", id; serwer sprawdza
+	odległość od trenera i stawia gracza na stanowisku tak jak E przy macie ("start" zamyka okno). Zamykanie: X,
+	przycisk B pada, Escape, stuknięcie obok okna, odejście od trenera dalej niż D.trener.zasieg.
+	Układ w pikselach z rozmiaru ekranu (bez paska Robloxa): poziomo 3 × 2 kafelki, pionowo 2 × 3. Telefon 667 × 375
+	(pasek 36): okno 635 × 315, kafelek 199 × 123 px; przy pasku 58 — 199 × 112; pionowo 375 × 667 — 157 × 101. ]]
+local GuiService = game:GetService("GuiService")
+local UIS = game:GetService("UserInputService")
+
+local function bindable(nazwa: string): BindableEvent
+	local e = RS:FindFirstChild(nazwa)
+	if not e then
+		e = Instance.new("BindableEvent")
+		e.Name = nazwa
+		e.Parent = RS
+	end
+	return e :: BindableEvent
+end
+local okna = bindable("OknoMiejsca")
+okna:SetAttribute(D.trener.miejsce, true) -- okno jest: bazar nie pokazuje dymka trenera
+
+local ZLOTY = Color3.fromRGB(252, 227, 176)
+local NAPIS_MENU = "CHOOSE YOUR TRAINING"
+local MENU = { pasek = 48, margines = 10, odstep = 8, maksSzer = 640, maksWys = 380, brzegX = 16, brzegY = 12 }
+
+local menu = Instance.new("ScreenGui")
+menu.Name = "TreningAFKMenu"
+menu.ResetOnSpawn = false
+menu.IgnoreGuiInset = false -- okno pod paskiem Robloxa
+menu.DisplayOrder = 16
+menu.Enabled = false
+menu:SetAttribute("Otwarte", false)
+
+local tlo = Instance.new("TextButton") -- stuknięcie obok okna zamyka
+tlo.Name = "Tlo"
+tlo.Text = ""
+tlo.AutoButtonColor = false
+tlo.Selectable = false
+tlo.BackgroundColor3 = Color3.new(0, 0, 0)
+tlo.BackgroundTransparency = 0.5
+tlo.BorderSizePixel = 0
+tlo.Size = UDim2.fromScale(1, 1)
+tlo.Parent = menu
+
+local okno = Instance.new("TextButton") -- przycisk bez akcji: stuknięcie w okno nie trafia w tło
+okno.Name = "Okno"
+okno.Text = ""
+okno.AutoButtonColor = false
+okno.Selectable = false
+okno.BackgroundColor3 = Color3.fromRGB(58, 42, 32)
+okno.BorderSizePixel = 0
+okno.AnchorPoint = Vector2.new(0.5, 0.5)
+okno.Position = UDim2.fromScale(0.5, 0.5)
+okno.ZIndex = 2
+okno.Parent = menu
+rog(okno, 0.06)
+obrys(okno, 3).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local tytulMenu = napis(okno, "Tytul", UDim2.new(), UDim2.new(), ZLOTY)
+tytulMenu.Text = NAPIS_MENU
+tytulMenu.TextXAlignment = Enum.TextXAlignment.Left
+tytulMenu.ZIndex = 3
+
+local zamknijB = Instance.new("TextButton")
+zamknijB.Name = "Zamknij"
+zamknijB.Text = "X"
+zamknijB.FontFace = FONT
+zamknijB.TextScaled = true
+zamknijB.TextColor3 = Color3.new(1, 1, 1)
+zamknijB.BackgroundColor3 = Color3.fromRGB(214, 70, 64)
+zamknijB.AnchorPoint = Vector2.new(1, 0)
+zamknijB.ZIndex = 3
+zamknijB.Parent = okno
+rog(zamknijB, 0.25)
+obrys(zamknijB, 2).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+local zp = Instance.new("UIPadding")
+zp.PaddingTop, zp.PaddingBottom = UDim.new(0.18, 0), UDim.new(0.14, 0)
+zp.Parent = zamknijB
+
+local cwiczenia = Instance.new("Frame")
+cwiczenia.Name = "Cwiczenia"
+cwiczenia.BackgroundTransparency = 1
+cwiczenia.ZIndex = 2
+cwiczenia.Parent = okno
+local siatkaM = Instance.new("UIGridLayout")
+siatkaM.SortOrder = Enum.SortOrder.LayoutOrder
+siatkaM.HorizontalAlignment = Enum.HorizontalAlignment.Center
+siatkaM.VerticalAlignment = Enum.VerticalAlignment.Center
+siatkaM.Parent = cwiczenia
+
+local function maksTekst(t: TextLabel, px: number)
+	local c = Instance.new("UITextSizeConstraint")
+	c.MaxTextSize = px
+	c.Parent = t
+end
+maksTekst(tytulMenu, 32)
+
+type Kafel = { b: TextButton, ikona: ImageLabel, wartosc: TextLabel, zajete: Frame, s: any }
+local kafle: { Kafel } = {}
+for i, s in ipairs(D.stanowiska) do
+	local b = Instance.new("TextButton")
+	b.Name = s.id
+	b.Text = ""
+	b.LayoutOrder = i
+	b.BackgroundColor3 = s.kolor
+	b.BorderSizePixel = 0
+	b.ZIndex = 3
+	b.Parent = cwiczenia
+	rog(b, 0.12)
+	obrys(b, 2.5).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	local ik = Instance.new("ImageLabel")
+	ik.Name = "Ikona"
+	ik.BackgroundTransparency = 1
+	ik.Image = s.ikona
+	ik.ScaleType = Enum.ScaleType.Fit
+	ik.Position, ik.Size = UDim2.fromScale(0.05, 0.06), UDim2.fromScale(0.4, 0.42)
+	ik.ZIndex = 4
+	ik.Parent = b
+	local w = napis(b, "Wartosc", UDim2.fromScale(0.45, 0.08), UDim2.fromScale(0.5, 0.38), Color3.new(1, 1, 1))
+	w.TextXAlignment = Enum.TextXAlignment.Right
+	w.ZIndex = 4
+	maksTekst(w, 40)
+	local n = napis(b, "Nazwa", UDim2.fromScale(0.05, 0.5), UDim2.fromScale(0.9, 0.26), Color3.new(1, 1, 1))
+	n.Text = s.nazwa
+	n.ZIndex = 4
+	maksTekst(n, 30)
+	local c = napis(b, "Czynnosc", UDim2.fromScale(0.05, 0.76), UDim2.fromScale(0.9, 0.18), ZLOTY)
+	c.Text = s.czynnosc
+	c.ZIndex = 4
+	maksTekst(c, 22)
+	local z = Instance.new("Frame")
+	z.Name = "Zajete"
+	z.BackgroundColor3 = Color3.fromRGB(40, 40, 44)
+	z.BackgroundTransparency = 0.35
+	z.Size = UDim2.fromScale(1, 1)
+	z.Visible = false
+	z.ZIndex = 5
+	z.Parent = b
+	rog(z, 0.12)
+	local zn = napis(z, "Napis", UDim2.fromScale(0.1, 0.3), UDim2.fromScale(0.8, 0.4), Color3.new(1, 1, 1))
+	zn.Text = "BUSY"
+	zn.Rotation = -8
+	zn.ZIndex = 6
+	table.insert(kafle, { b = b, ikona = ik, wartosc = w, zajete = z, s = s })
+end
+
+local function uloz()
+	local ekran = menu.AbsoluteSize
+	if ekran.X < 50 or ekran.Y < 50 then
+		ekran = workspace.CurrentCamera.ViewportSize
+	end
+	local M = MENU
+	local kol = if ekran.X >= ekran.Y then 3 else 2
+	local rzedy = math.ceil(#kafle / kol)
+	local w = math.floor(math.min(ekran.X - 2 * M.brzegX, M.maksSzer))
+	local h = math.floor(math.min(ekran.Y - 2 * M.brzegY, M.maksWys))
+	okno.Size = UDim2.fromOffset(w, h)
+	zamknijB.Position, zamknijB.Size = UDim2.new(1, -4, 0, 2), UDim2.fromOffset(M.pasek - 4, M.pasek - 4)
+	tytulMenu.Position = UDim2.fromOffset(M.margines + 4, 8)
+	tytulMenu.Size = UDim2.fromOffset(w - 2 * M.margines - M.pasek - 8, M.pasek - 14)
+	local sw, sh = w - 2 * M.margines, h - M.pasek - 2 - M.margines
+	cwiczenia.Position, cwiczenia.Size = UDim2.fromOffset(M.margines, M.pasek + 2), UDim2.fromOffset(sw, sh)
+	siatkaM.CellPadding = UDim2.fromOffset(M.odstep, M.odstep)
+	siatkaM.CellSize = UDim2.fromOffset(math.floor((sw - (kol - 1) * M.odstep) / kol),
+		math.floor((sh - (rzedy - 1) * M.odstep) / rzedy))
+end
+
+local function punktTrenera(): Vector3
+	local o: Instance? = workspace
+	for _, n in ipairs(string.split(D.trener.punkt, "/")) do
+		o = o and o:FindFirstChild(n)
+	end
+	return if o and o:IsA("BasePart") then o.Position else D.trener.pozycja
+end
+
+local menuOtwarte = false
+local komunikatDo = 0
+local czekaDo = 0
+
+local function odswiezMenu()
+	local k = workspace:FindFirstChild("TreningAFK")
+	for _, kf in ipairs(kafle) do
+		local m = k and k:FindFirstChild(kf.s.id)
+		local zajete = m ~= nil and m:GetAttribute("Zajete") == true and aktywne ~= kf.s.id
+		local v = player:GetAttribute(kf.s.atrybut)
+		kf.wartosc.Text = tostring(if typeof(v) == "number" then math.floor(v) else 0)
+		kf.zajete.Visible = zajete
+		kf.b.AutoButtonColor = not zajete
+		kf.b.BackgroundColor3 = if zajete then Color3.fromRGB(120, 120, 126) else kf.s.kolor
+		kf.ikona.ImageTransparency = if zajete then 0.5 else 0
+		kf.b:SetAttribute("Zajete", zajete)
+	end
+	if os.clock() > komunikatDo then
+		tytulMenu.Text = NAPIS_MENU
+		tytulMenu.TextColor3 = ZLOTY
+	end
+end
+
+local function komunikatMenu(tekst: string)
+	tytulMenu.Text = tekst
+	tytulMenu.TextColor3 = Color3.fromRGB(255, 140, 120)
+	komunikatDo = os.clock() + 1.8
+end
+
+local function zamknijMenu()
+	if not menuOtwarte then
+		return
+	end
+	menuOtwarte = false
+	menu.Enabled = false
+	menu:SetAttribute("Otwarte", false)
+	local wybrany = GuiService.SelectedObject
+	if wybrany and wybrany:IsDescendantOf(menu) then
+		GuiService.SelectedObject = nil
+	end
+end
+
+local function otworzMenu()
+	if menuOtwarte then
+		return
+	end
+	menuOtwarte = true
+	komunikatDo = 0
+	uloz()
+	odswiezMenu()
+	menu.Enabled = true
+	menu:SetAttribute("Otwarte", true)
+	if UIS.GamepadEnabled then
+		for _, kf in ipairs(kafle) do
+			if not kf.zajete.Visible then
+				GuiService.SelectedObject = kf.b
+				break
+			end
+		end
+	end
+end
+
+for _, kf in ipairs(kafle) do
+	kf.b.Activated:Connect(function()
+		if not menuOtwarte or os.clock() < czekaDo then
+			return
+		end
+		if kf.zajete.Visible then
+			komunikatMenu(kf.s.nazwa .. " IS BUSY")
+			return
+		end
+		czekaDo = os.clock() + D.trener.odstep + 0.1
+		Z:FireServer("wybierz", kf.s.id)
+	end)
+end
+tlo.Activated:Connect(zamknijMenu)
+zamknijB.Activated:Connect(zamknijMenu)
+UIS.InputBegan:Connect(function(input)
+	if menuOtwarte and (input.KeyCode == Enum.KeyCode.ButtonB or input.KeyCode == Enum.KeyCode.Escape) then
+		zamknijMenu()
+	end
+end)
+okna.Event:Connect(function(id)
+	if id == D.trener.miejsce then
+		otworzMenu()
+	end
+end)
+Z.OnClientEvent:Connect(function(akcja, powod)
+	if akcja == "start" then
+		zamknijMenu()
+	elseif akcja == "odmowa" and menuOtwarte then
+		komunikatMenu(if powod == "zajete" then "SOMEONE IS TRAINING THERE"
+			elseif powod == "daleko" then "COME CLOSER TO THE TRAINER"
+			elseif powod == "trening" then "STOP YOUR TRAINING FIRST"
+			else "TRY AGAIN")
+	end
+end)
+menu:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+	if menuOtwarte then
+		uloz()
+	end
+end)
+player.CharacterAdded:Connect(zamknijMenu)
+task.spawn(function()
+	while true do
+		task.wait(0.5)
+		if menuOtwarte then
+			local char = player.Character
+			local hrp = char and char:FindFirstChild("HumanoidRootPart") :: BasePart?
+			local p = punktTrenera()
+			if not hrp or Vector2.new(hrp.Position.X - p.X, hrp.Position.Z - p.Z).Magnitude > D.trener.zasieg then
+				zamknijMenu()
+			else
+				odswiezMenu()
+			end
+		end
+	end
+end)
+menu.Parent = player:WaitForChild("PlayerGui")

@@ -700,6 +700,7 @@ class TestKod(unittest.TestCase):
         self.assertIs(D["stojak"]["w_grze"], False)
         self.assertFalse(ZB.stojak_w_grze(D))
         self.assertIn("nie powstaje", ZB.plan(D)[0])
+        self.assertIn("if podpowiedzi ~= 0 then", ZB.kod_konca(D))   # bez stojaka budowa oczekuje 0 podpowiedzi E
         for o in D["stojak"]["omijaj"]:
             self.assertNotIn("LasTeleport", json.dumps(o))
             self.assertNotIn("PunktStaregoMiasteczka", json.dumps(o))

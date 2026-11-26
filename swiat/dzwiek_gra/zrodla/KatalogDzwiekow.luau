@@ -16,7 +16,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "e97e018849cb",
+	skrot = "51095923bf43",
 	arkusz = {
 		id = 93573204965127,
 		plik = "sfx_arkusz_a.ogg",
@@ -300,6 +300,12 @@ return {
 				sha256 = "00f1167bc9e0abc12fe973c7eea518a91656fe6de15c5084520d70df27f986dc",
 				dlugosc = 395.388,
 			},
+			muzyka_arkusz_c = {
+				id = 106850257173626,
+				plik = "muzyka_arkusz_c.ogg",
+				sha256 = "477964b94f8f4f2c65af5eddfe5f12588efe1abab8f7fb6b93eaff6ae6a678eb",
+				dlugosc = 107.668,
+			},
 		},
 		konteksty = {
 			walka = {
@@ -347,16 +353,35 @@ return {
 				podpiete = true,
 				utwory = {
 					{
-						nazwa = "muzyka_02_bazar_targ_petla",
-						id = 94425435537814,
+						nazwa = "muzyka_16_bazar_targ_kotow_petla",
+						id = 106850257173626,
+						arkusz = "muzyka_arkusz_c",
+						poczatek = 0.55,
+						koniec = 52.8102,
 					},
 					{
-						nazwa = "muzyka_03_bazar_rzemieslnicy_petla",
-						id = 116217836078354,
+						nazwa = "muzyka_17_bazar_psotny_petla",
+						id = 106850257173626,
+						arkusz = "muzyka_arkusz_c",
+						poczatek = 54.4102,
+						koniec = 107.1182,
 					},
-					{
-						nazwa = "muzyka_04_bazar_wieczor_petla",
-						id = 75722490819761,
+				},
+				zastepcze = {
+					glosnosc = 0.8,
+					utwory = {
+						{
+							nazwa = "muzyka_02_bazar_targ_petla",
+							id = 94425435537814,
+						},
+						{
+							nazwa = "muzyka_03_bazar_rzemieslnicy_petla",
+							id = 116217836078354,
+						},
+						{
+							nazwa = "muzyka_04_bazar_wieczor_petla",
+							id = 75722490819761,
+						},
 					},
 				},
 				kontener = "MiasteczkoBazar",

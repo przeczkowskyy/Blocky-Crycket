@@ -67,7 +67,7 @@ w Edit i przenoszone przy odbudowie: `DymkiWylaczone`, `BezDymku` (np. `"zbrojow
 | `mistrz_gier` | `sklepy/mistrz_gier` | Mistrz gier / Zagraj | `OknoMiejsca`, dymek „Mistrz gier: plansza w budowie” | — |
 | `sklep_magiczny` | `sklepy/sklep_magiczny` | Mag / Sklep | `OknoMiejsca` + HUD, dymek „Mag: sklep w budowie” | `Shop` |
 | `zbrojownia` | `sklepy/zbrojownia` | Zbrojmistrz / Sklep | `OknoMiejsca` + HUD, dymek „Zbrojmistrz: sklep w budowie” | `Shop` |
-| `training_center` | `training_center` | Trener / Mini-gry | `OknoMiejsca`, dymek „Trener: mini-gry w budowie” | — |
+| `training_center` | `training_center` | Trener / Train (od 26.11.2026; wcześniej „Mini-gry”) | `OknoMiejsca` → okno sześciu stanowisk AFK w `src/client/TreningAFKClient.client.luau` (zgłasza się atrybutem, więc dymku nie ma; zapasowy dymek „Trainer: training is closed right now.”) | — |
 | `zagroda_petow` | `zagroda/punkt_e` | Opiekunka / Zagroda petów | `OknoMiejsca` + HUD, dymek „Opiekunka: zagroda w budowie” | `Pets` |
 | `tablica` | `tablica/tablica` | Tablica ogłoszeń / Ranking | `OknoMiejsca`, dymek „Pełny ranking — wkrótce” | — |
 | `dzialka` | `dzialka` (Brama Twierdzy) | Brama Twierdzy / Na działkę | `OknoMiejsca`, dymek „Działka — wkrótce” | — |

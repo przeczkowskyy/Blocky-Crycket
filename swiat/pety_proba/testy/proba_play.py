@@ -707,7 +707,10 @@ def main():
                            "ostatnia": (probki[-1].get("petyWybiegu") if probki else None)})
             zrzut("z10_pety_luzem")
             punkt("Z10", czynny and len(droga) == n_st and poza == 0 and rozjazd <= 1.0
-                  and max(droga.values() or [0.0]) >= 2.0 and marszow > 0 and chodow >= 0.9 * marszow,
+                  # 26.11.2026: przy dwóch petach próbek marszu jest kilkanaście — pojedyncza próbka z początku kroku
+                  # (klip jeszcze nie ruszył) zrzucała wynik pod 90%; przy małej próbie dopuszczamy dwie takie próbki
+                  and max(droga.values() or [0.0]) >= 2.0 and marszow > 0
+                  and (chodow >= 0.9 * marszow or (marszow < 30 and marszow - chodow <= 2)),
                   "petów %d z %d, najdłuższa droga %.1f st, poza wybiegiem %d próbek, model od spaceru najwyżej %.2f st, "
                   "klip chodu w %d z %d próbek marszu, najbliżej siebie %s st" % (
                       len(droga), n_st, max(droga.values() or [0.0]), poza, rozjazd, chodow, marszow,

@@ -24,6 +24,9 @@ z prawym bokiem za budynkiem (ściana w linii jego lewej ściany). Lewy rząd (o
 z pomidorami 11 st przed graczem stoi na placyku), Szczęście i Zręczność twarzą do lewej ściany (stolik i bieżnia pod
 ścianą — przodem do tyłu nie zmieściłyby się jeden za drugim); prawy rząd: Siła, Inteligencja, Kondycja twarzą do tylnej
 ściany jak dotąd. Przejście 8,2 st (x −26,1 … −17,9 modułu, zmierzone na stanowiskach zbudowanych w Play), lampy nad nim.
+26.11.2026 wieczorem (zlecenie Karola): bez tabliczek przy stanowiskach, wejście przez trenera (E → okno sześciu
+ćwiczeń, klik → stanowisko; src/client/TreningAFKClient.client.luau), a studnia i ławki placyku odsunięte od frontu
+sali (uklad.json, generuj.py) — README pakietu, „Wolne wejście do sali Training Center”. Zasięg E stanowisk to dziś 4,5.
 Uwaga: podpowiedzi E stanowisk mają zasięg 10 st (skrypt Pawła), więc gracz podchodzący do Siły albo Inteligencji od
 frontu dostaje podpowiedź następnego stanowiska w rzędzie; z przejścia każde startuje dobrze (README pakietu).
 """

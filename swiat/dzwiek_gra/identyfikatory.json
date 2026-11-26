@@ -2,7 +2,8 @@
  "opis": "Identyfikatory zasobów audio w Roblox (0 = jeszcze nie wgrane → cisza albo utwory zastępcze i wbudowane dźwięki walki). arkusz = arkusz efektów; arkusze_muzyki = pliki z kilkoma utworami (odcinki); muzyka = utwory wgrane jako osobne pliki. Wpisuje je: python -B swiat/dzwiek_gra/zbuduj.py --identyfikatory <plik.json>",
  "arkusz": 93573204965127,
  "arkusze_muzyki": {
-  "muzyka_arkusz_b": 0
+  "muzyka_arkusz_b": 0,
+  "muzyka_arkusz_c": 106850257173626
  },
  "muzyka": {
   "muzyka_01_menu_a_petla": 0,

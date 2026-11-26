@@ -41,8 +41,9 @@
   {"id": "brama_lochow", "modul": "stare:brama_lochow", "x": 44.5, "z": 24.0, "ry": 180, "rzad": "południe",
    "interakcja": [0.0, 14.0], "wejscie": {"szer": 12.0, "wys": 14.0}, "typ": "lochy",
    "nazwa": "Wrota lochów z kłódką → hala portali do dungeonów (D-042)"},
-  {"id": "studnia_pomnik", "modul": "stare:studnia_pomnik", "x": -81.0, "z": 0.0, "ry": 90, "rzad": "placyk studni",
-   "interakcja": [0.0, 13.0], "typ": "ozdoba", "nazwa": "Studnia-pomnik Pierwszego Klocka (punkt orientacyjny)"},
+  {"id": "studnia_pomnik", "modul": "stare:studnia_pomnik", "x": -81.0, "z": 6.0, "ry": 90, "rzad": "placyk studni",
+   "interakcja": [0.0, 13.0], "typ": "ozdoba", "nazwa": "Studnia-pomnik Pierwszego Klocka (punkt orientacyjny)",
+   "zmiana": "26.11.2026 (zlecenie Karola: „fontanna zasłania wejście do siłowni”): z 0 → 6, cembrowina od z −2,2 zamiast −8,2 — przed otwartym frontem sali Training Center wolny pas ok. 15 st głębokości na całą szerokość sali"},
   {"id": "brama_lesna", "modul": "brama_lesna", "x": 64.5, "z": 0.0, "ry": -90, "rzad": "koniec wschodni"}
  ],
  "stragany": [
@@ -98,7 +99,7 @@
  ],
  "latarnie": [
   {"x": -46.25, "z": -16.4, "strona": "pn"}, {"x": -17.6, "z": -16.0, "strona": "pn"}, {"x": 18.6, "z": -15.8, "strona": "pn"},
-  {"x": 39.0, "z": -16.4, "strona": "pn"}, {"x": -75.3, "z": -15.5, "strona": "pn"},
+  {"x": 39.0, "z": -16.4, "strona": "pn"}, {"x": -66.0, "z": -15.5, "strona": "pn"},
   {"x": -46.6, "z": 16.2, "strona": "pd"}, {"x": -17.5, "z": 16.4, "strona": "pd"}, {"x": 16.8, "z": 16.4, "strona": "pd"},
   {"x": 61.6, "z": 15.6, "strona": "pd"}, {"x": -71.3, "z": 16.4, "strona": "pd"}
  ],

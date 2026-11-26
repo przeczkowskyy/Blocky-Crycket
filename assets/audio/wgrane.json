@@ -104,6 +104,19 @@
       "assetId": "78060184641141",
       "moderacja": "Reviewing",
       "blad": null
+    },
+    {
+      "plik": "assets/audio/arkusz/muzyka_arkusz_c.ogg",
+      "sha256": "477964b94f8f4f2c65af5eddfe5f12588efe1abab8f7fb6b93eaff6ae6a678eb",
+      "nazwa": "BC muzyka miasteczka C",
+      "droga": "studio",
+      "kiedy": "2026-11-26 20:13",
+      "etap": "gotowe",
+      "operacja": "ee74757f-7046-479c-93bb-98e898cd923c",
+      "gotowe": true,
+      "assetId": "106850257173626",
+      "moderacja": "Reviewing",
+      "blad": null
     }
   ]
 }

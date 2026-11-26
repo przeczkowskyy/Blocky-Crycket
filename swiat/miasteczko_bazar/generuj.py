@@ -243,8 +243,11 @@ def rekwizyty(s, U, rnd):
         zestaw.skrzynia(s, (-17.0, y, -30.5), ry=-15, dl=3.4, a=3.0, przechyl=6)
         zestaw.beczka(s, (-13.6, y, -29.0), "woda", przechyl=(0, -7))
     with s.grupa("Rekwizyty/Placyk"):
-        zestaw.lawka(s, (-81.0, y, -14.5), ry=0)
-        zestaw.lawka(s, (-81.0, y, 14.5), ry=180)
+        # 26.11.2026 (zlecenie Karola: „ławka przy siłowni przeszkadza”): ławka z (−81; −14,5) stała w otwartym froncie
+        # sali Training Center na osi przejścia — obie ławki stoją teraz w południowej części placyku, twarzą do studni
+        # (studnia przesunięta na z = 6, uklad.json)
+        zestaw.lawka(s, (-76.5, y, 18.0), ry=180)
+        zestaw.lawka(s, (-85.5, y, 18.0), ry=180)
         # drzewo z kąta pn.-zach. placyku (−92; −29,5) usunięte 25.11.2026: w tym miejscu stoi sala Training Center
         zestaw.drzewo_lisciaste(s, (-92.0, y, 29.5), random.Random(12), skala=0.95, owoce=True)
         zestaw.kwiaty(s, (-92.0, y, -3.0), ry=90, kolory=("czerwien", "biel"))

@@ -128,6 +128,14 @@ Pliki: `dzwieki/<nazwa>.wav` (A) i `dzwieki/<nazwa>_b.wav` (B). Cisza na począt
 - Czy efekty brzmią tak, jak opisano, i czy w efektach Seed nie ma czegoś podobnego do mowy (troll, kolos, wilk).
 - Czy coś nie przypomina istniejącego utworu.
 
+## Nowa muzyka miasteczka (26.11.2026)
+Karol 25.11: dotychczasowa muzyka miasteczka jest „dosyć słaba”. Trzy próbki po 60 s z Higgsfield (ElevenLabs Music v2.5, razem 26 kredytów) poszły do odsłuchu; 26.11 Karol wybrał: **A najlepsza, potem B** (C odpada).
+- `muzyka/muzyka_16_bazar_targ_kotow` (A) i `muzyka/muzyka_17_bazar_psotny` (B): pełne wersje MP3 i pętle OGG (52,4 s i 52,8 s) z `tools/audio_petla.py`; wpisy w `manifest_audio.json`.
+- Arkusz `arkusz/muzyka_arkusz_c.ogg` + mapa `.json`: obie pętle w jednym pliku (1 min 47 s, 2,27 MB) — jedno wgranie zamiast dwóch.
+- **Wgrane 26.11.2026** za zgodą Karola (przez Studio, z zatwierdzonego folderu): zasób 106850257173626, moderacja w toku; to 9. wgranie audio w listopadzie (limit 10). Zgoda w `zgoda_wgrania.json`, wynik w `wgrane.json`.
+- W grze (`swiat/dzwiek_gra/ustawienia.json`, strefa `bazar`): A i B to utwory miasteczka, trzy dotychczasowe zostają jako zastępcze — grają, dopóki nowy plik się nie wczyta (prawa gry do zasobu w Creator Hub nadaje człowiek, moderacja).
+- To próbki 60-sekundowe: pętla jest krótsza niż w pierwszej partii (ok. 80 s). Dłuższe wersje wymagają nowego generowania.
+
 ## Zanim wgramy do Roblox
 
 **Zasady Roblox dla wgrywanego audio** (stan na 16.11.2026):

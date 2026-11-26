@@ -1,0 +1,35 @@
+{
+  "opis": "Arkusz muzyki: kilka pętli w jednym pliku, odcinki w sekundach. Buduje tools/audio_arkusz_muzyki.py. poczatek / koniec = dokładne granice utworu w pliku; graj_od / graj_do = odcinek do grania (zwężony o margines na przesunięcie po przekodowaniu w Roblox).",
+  "plik": "muzyka_arkusz_c.ogg",
+  "sha256": "477964b94f8f4f2c65af5eddfe5f12588efe1abab8f7fb6b93eaff6ae6a678eb",
+  "dlugosc_s": 107.668,
+  "rozmiar_bajtow": 2382062,
+  "odstep_s": 1.5,
+  "margines_s": 0.05,
+  "kolejnosc": [
+    "muzyka_16_bazar_targ_kotow_petla",
+    "muzyka_17_bazar_psotny_petla"
+  ],
+  "utwory": {
+    "muzyka_16_bazar_targ_kotow_petla": {
+      "poczatek": 0.5,
+      "koniec": 52.8602,
+      "graj_od": 0.55,
+      "graj_do": 52.8102,
+      "dlugosc": 52.3602,
+      "plik": "muzyka/muzyka_16_bazar_targ_kotow_petla.ogg",
+      "sha256_pliku": "8c37b77f6744fcd131ae1dadb56b5dfeec58cc2cd635375894d7b7d711942c80",
+      "zrodlo": "flac"
+    },
+    "muzyka_17_bazar_psotny_petla": {
+      "poczatek": 54.3602,
+      "koniec": 107.1682,
+      "graj_od": 54.4102,
+      "graj_do": 107.1182,
+      "dlugosc": 52.808,
+      "plik": "muzyka/muzyka_17_bazar_psotny_petla.ogg",
+      "sha256_pliku": "17c5a02f068131843363d79ba7f78027d66628c36bb0d9ffeb89bd6d3086d9d4",
+      "zrodlo": "flac"
+    }
+  }
+}

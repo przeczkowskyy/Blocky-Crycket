@@ -5,8 +5,8 @@
 
 Droga gracza (od 26.11.2026 start w bazarze — tools/studio/start_w_miasteczku.py): Play → postać na starcie bazaru →
 ekran wyboru klasy (Enter) → HUD TELEPORT → chmury (strzałka w prawo + Enter = Las) →
-pierwsza walka ze slime'em (prawdziwe E, tempo ×4, ZAMKNIJ) → Kamień Powrotu (E) → bazar → trener (E) → Siła
-(kliknięcie GRAJ, spacja = START, cała runda) → WYJDŹ → koniec. Na każdy punkt wynik OK / NIE (albo „?” — tylko
+pierwsza walka ze slime'em (prawdziwe E, tempo ×4, ZAMKNIJ) → Kamień Powrotu (E) → bazar → trener (E) → okno
+stanowisk AFK (od 26.11.2026, D-141) → kliknięcie STRENGTH → trening na stanowisku Siły, pierwszy punkt → STOP → koniec. Na każdy punkt wynik OK / NIE (albo „?” — tylko
 pomiar bez progu). Na końcu Studio wraca do trybu Edit.
 
 Warunki: Studio w trybie Edit, otwarte miejsce gry, zbudowane kontenery TeleportChmury, LasPas + LasPasGra,
@@ -32,9 +32,12 @@ LISTA KONTROLNA:
   D04 nagroda: złoto gracza (atrybut Gold) po wygranej większe niż przed — 17.11.2026 NIE (znana dziura w pętli:
       łup z karty walki nie trafia do gracza); wynik informacyjny, nie przerywa próby
   D05 powrót: E przy Kamieniu Powrotu → start bazaru (≤ 4 st; od 26.11.2026 innego miasteczka nie ma)
-  D06 trener: E przy trenerze w bazarze → okno wyboru mini-gry (TreningProba: wybor = true, zrodlo = bazar)
-  D07 runda Siły: klik GRAJ → stanowisko, spacja → runda, po rundzie panel podsumowania (≤ 75 s)
-  D08 wyjście: klik WYJDŹ → ekran „brak”, kamera Custom, postać przy trenerze (≤ 3 st od miejsca sprzed wejścia)
+  D06 trener (od 26.11.2026): E przy trenerze w bazarze → okno stanowisk AFK (PlayerGui.TreningAFKMenu, atrybut
+      Otwarte), tymczasowy wybór mini-gry NIE otwarty (TreningProba: wybor = false), w sali bez tabliczek stanowisk
+  D07 trening Siły: klik STRENGTH w oknie → okno zamknięte, atrybut TreningAFK = „Sila”, postać zakotwiczona na macie
+      Siły (≤ 1,5 st w poziomie), stanowisko Zajete; atrybut Strength rośnie (pierwszy pełny pasek, ≤ 15 s)
+  D08 wyjście: klik STOP → TreningAFK pusty, postać bez kotwicy, panel treningu schowany, kamera Custom, stanowisko
+      wolne
   D09 czas klatki: 3 s RenderStepped w lesie i w bazarze (śr. / p95) — „?” gdy okno Studio w tle (> 50 ms)
   D10 konsola: brak śladów błędów (wiersze „Workspace.…:<linia>” / „error” / „błąd”) ze skryptów gry; ślady
       narzędzia Studio (AssistantCommand) pomijane; ostrzeżenia policzone osobno
@@ -237,6 +240,22 @@ def main():
                  'return "ok"', "Client")
             time.sleep(0.5)
 
+        def stan_afk():   # odczyt (26.11.2026): trening AFK na serwerze, stanowisko Siły i okno trenera u klienta
+            s = js(GR + 'local hrp = gracz.Character and gracz.Character:FindFirstChild("HumanoidRootPart") '
+                   'local k = workspace:FindFirstChild("TreningAFK") local m = k and k:FindFirstChild("Sila") '
+                   'local mata = m and m.PrimaryPart local n = 0 if k then for _, d in k:GetDescendants() do '
+                   'if string.find(d.Name, "Tabliczka") or d:IsA("SurfaceGui") then n += 1 end end end '
+                   'return H:JSONEncode({ afk = gracz:GetAttribute("TreningAFK") or false, '
+                   'sila = gracz:GetAttribute("Strength") or 0, kotwica = hrp ~= nil and hrp.Anchored, '
+                   'poz = hrp and J(hrp.Position), mata = mata and J(mata.Position), '
+                   'zajete = m ~= nil and m:GetAttribute("Zajete") == true, tabliczki = if k then n else -1 })', "Server")
+            c = js(LP + 'local g = lp.PlayerGui:FindFirstChild("TreningAFKMenu") local t = lp.PlayerGui:FindFirstChild("TreningAFK") '
+                   'return H:JSONEncode({ menu = g ~= nil and g:GetAttribute("Otwarte") == true, menu_jest = g ~= nil, '
+                   'panel = t ~= nil and t.Enabled, kamera = workspace.CurrentCamera.CameraType.Name })', "Client")
+            s = s if isinstance(s, dict) else {}
+            s.update(c if isinstance(c, dict) else {})
+            return s
+
         def stan_treningu():   # odczyt: klient Training Center
             return js('local k = workspace:FindFirstChild("TreningProba") if not k then return "{}" end '
                       'local s = k.Sygnaly.SterowanieKlienta:Invoke("stan") return H:JSONEncode({ ekran = s.ekran, '
@@ -425,51 +444,52 @@ def main():
             # -------------------------------------------------------------- D06 trener
             przestaw(TRENER[0], TRENER[1])
             time.sleep(1.5)
-            p_trener = klient().get("poz") or list(TRENER[0])
+            # 26.11.2026 (zlecenie Karola, D-141): E przy trenerze otwiera okno stanowisk AFK, nie wybór mini-gry
             tr, proby6 = {}, 0
             for proby6 in range(1, 4):   # bazar ma krótką blokadę po przeniesieniu („Chwila…”) — do 3 naciśnięć
                 kamera_za()
                 klawisz("E")
-                tr = czekaj_na(lambda: (lambda t: t if t.get("wybor") else None)(stan_treningu()), 3, 0.4) or stan_treningu()
-                if tr.get("wybor"):
+                tr = czekaj_na(lambda: (lambda t: t if t.get("menu") else None)(stan_afk()), 3, 0.4) or stan_afk()
+                if tr.get("menu"):
                     break
                 time.sleep(1.5)
             hist = js('local b = workspace:FindFirstChild("MiasteczkoBazarGra") local s = b and '
                       'b.Sygnaly.SterowanieKlienta:Invoke("stan") local h = s and s.historia return H:JSONEncode('
                       'J(h and h[#h] or {}))', "Client")
-            tr["proby_E"], tr["historia_bazaru"] = proby6, hist
+            mini = stan_treningu()
+            tr["proby_E"], tr["historia_bazaru"], tr["wybor_mini_gry"] = proby6, hist, mini.get("wybor")
             zapisz("D06", tr)
-            punkt("D06", tr.get("wybor") is True and tr.get("zrodlo") == "bazar",
-                  "okno wyboru %s, źródło %s, naciśnięć E %s, ostatnie E w bazarze %s" % (
-                      tr.get("wybor"), tr.get("zrodlo"), proby6, json.dumps(hist, ensure_ascii=False)[:120]))
-            zrzut("08_wybor_minigry")
+            punkt("D06", tr.get("menu") is True and not mini.get("wybor") and tr.get("tabliczki") == 0,
+                  "okno stanowisk AFK %s, wybór mini-gry %s, tabliczek w sali %s, naciśnięć E %s, ostatnie E w bazarze %s" % (
+                      tr.get("menu"), mini.get("wybor"), tr.get("tabliczki"), proby6,
+                      json.dumps(hist, ensure_ascii=False)[:120]))
+            zrzut("08_okno_trenera")
 
-            # -------------------------------------------------------------- D07 runda Siły
-            klik("TreningProba.Ekran.Wybor.Kafelek_sila.Graj")
-            stan0 = czekaj_na(lambda: (lambda t: t if t.get("ekran") == "stanowisko" else None)(stan_treningu()), 10, 0.5)
-            time.sleep(1.0)
-            klawisz("Space")
-            runda = czekaj_na(lambda: (lambda t: t if t.get("ekran") == "runda" else None)(stan_treningu()), 8, 0.4)
-            time.sleep(6)
-            zrzut("09_runda_sila")
-            for kod in ("Up", "Left", "Right", "Down"):      # kilka prawdziwych naciśnięć w trakcie rundy
-                klawisz(kod)
-                time.sleep(0.4)
-            podsum = czekaj_na(lambda: (lambda t: t if t.get("ekran") == "podsumowanie" else None)(stan_treningu()), 75, 1.0)
-            zapisz("D07", {"stanowisko": bool(stan0), "runda": bool(runda), "podsumowanie": bool(podsum)})
-            punkt("D07", bool(stan0) and bool(runda) and bool(podsum),
-                  "stanowisko %s, runda %s, podsumowanie %s" % (bool(stan0), bool(runda), bool(podsum)))
-            zrzut("10_podsumowanie")
+            # -------------------------------------------------------------- D07 trening Siły (stanowisko AFK)
+            sila0 = tr.get("sila") or 0
+            klik("TreningAFKMenu.Okno.Cwiczenia.Sila")
+            st7 = czekaj_na(lambda: (lambda t: t if t.get("afk") == "Sila" else None)(stan_afk()), 6, 0.4) or stan_afk()
+            od_maty = odl_xz(st7.get("poz") or [0, 0, 0], st7.get("mata") or [9999, 0, 9999])
+            time.sleep(2.0)
+            zrzut("09_trening_sila")
+            st7b = czekaj_na(lambda: (lambda t: t if (t.get("sila") or 0) > sila0 else None)(stan_afk()), 15, 0.5) or stan_afk()
+            zapisz("D07", {"po_kliknieciu": st7, "po_pasku": st7b, "od_maty": od_maty, "sila_przed": sila0})
+            punkt("D07", st7.get("afk") == "Sila" and not st7.get("menu") and st7.get("kotwica") is True and od_maty <= 1.5
+                  and st7.get("zajete") is True and (st7b.get("sila") or 0) > sila0,
+                  "trening %s, okno %s, kotwica %s, %.1f st od maty, zajęte %s, Strength %s → %s" % (
+                      st7.get("afk"), "zamknięte" if not st7.get("menu") else "OTWARTE", st7.get("kotwica"), od_maty,
+                      st7.get("zajete"), sila0, st7b.get("sila")))
 
-            # -------------------------------------------------------------- D08 wyjście
-            klik("TreningProba.Ekran.Podsumowanie.Wyjdz")
-            wyj8 = czekaj_na(lambda: (lambda t: t if t.get("ekran") == "brak" else None)(stan_treningu()), 8, 0.5) or {}
+            # -------------------------------------------------------------- D08 wyjście (STOP)
+            klik("TreningAFK.Panel.Stop")
+            st8 = czekaj_na(lambda: (lambda t: t if not t.get("afk") else None)(stan_afk()), 6, 0.4) or stan_afk()
             time.sleep(1.0)
-            k8 = klient()
-            od = odl_xz(k8.get("poz") or [0, 0, 0], p_trener)
-            zapisz("D08", {"trening": wyj8, "klient": k8, "od_trenera": od})
-            punkt("D08", wyj8.get("ekran") == "brak" and k8.get("kamera") == "Custom" and od <= 3,
-                  "ekran %s, kamera %s, %.1f st od miejsca sprzed wejścia" % (wyj8.get("ekran"), k8.get("kamera"), od))
+            st8 = stan_afk()
+            zapisz("D08", st8)
+            punkt("D08", not st8.get("afk") and st8.get("kotwica") is False and st8.get("panel") is False
+                  and st8.get("kamera") == "Custom" and st8.get("zajete") is False,
+                  "trening %s, kotwica %s, panel %s, kamera %s, zajęte %s" % (
+                      st8.get("afk"), st8.get("kotwica"), st8.get("panel"), st8.get("kamera"), st8.get("zajete")))
 
             # -------------------------------------------------------------- D09 klatka
             zapisz("D09", kl9)

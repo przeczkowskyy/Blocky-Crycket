@@ -350,7 +350,7 @@ for _, d in f:GetDescendants() do
 	if d:IsA("ProximityPrompt") then podpowiedzi += 1 end
 end
 game:GetService("ChangeHistoryService"):SetWaypoint("__KONTENER__: __PUNKT_HISTORII__")
-local uwaga = if podpowiedzi ~= 1 then " | UWAGA: podpowiedzi " .. podpowiedzi .. " zamiast 1" else ""
+local uwaga = if podpowiedzi ~= __OCZEKIWANE__ then " | UWAGA: podpowiedzi " .. podpowiedzi .. " zamiast __OCZEKIWANE__" else ""
 return "instancji: " .. razem .. ", skryptów: " .. skrypty .. ", części: " .. czesci .. ", podpowiedzi E: " .. podpowiedzi
 	.. ", Skrot = " .. tostring(f:GetAttribute("Skrot")) .. uwaga
 '''
@@ -445,7 +445,9 @@ def kod_skryptu(kontener, sciezka, klasa, kontekst, tekst, tylko_istniejacy=Fals
 
 
 def kod_konca(D, punkt_historii="zbudowano"):
-    return KONIEC.replace("__KONTENER__", D["kontener"]).replace("__PUNKT_HISTORII__", punkt_historii)
+    # podpowiedź E ma tylko stojak — bez niego (stojak.w_grze = false, 26.11.2026) oczekujemy 0
+    return (KONIEC.replace("__KONTENER__", D["kontener"]).replace("__PUNKT_HISTORII__", punkt_historii)
+            .replace("__OCZEKIWANE__", "1" if stojak_w_grze(D) else "0"))
 
 
 def wszystkie_kody(D):
