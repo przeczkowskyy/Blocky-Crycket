@@ -180,6 +180,7 @@ Negative Prompt: realistic 3D, photorealism, plastic texture, blurry, external d
 - Ile węzłów na gałąź i czy węzły mają rangi (na razie 6 ikon na gałąź).
 
 ## Stan implementacji
+- [x] 2026-11-25 (Paweł): **zakładka FORTRESS wyłączona, nie usunięta** — zostają PLAYER i PETS (forteca na razie nie powstaje). `SkillTreeData.HiddenTabs`: brak przycisku, bez wykrzyknika, serwer nie sprzedaje jej węzłów. Ramka bez środkowej zakładki (`tools/skilltree_bez_fortecy.py` → `SkillTreeFrameDwie`, `rbxassetid://139040733340029`) wgrana po „tak” Pawła i podpięta; powrót do trzech zakładek: obraz `SkillTreeFrame` w `tools/skilltree_build_gui.py`.
 - [x] Specyfikacja i prompty (2026-11-15)
 - [x] Grafiki wygenerowane (Paweł z promptów; 4 ikony startowe i „?” dogenerowane przez Claude, 1 wariant) (2026-11-15)
 - [x] Pocięte (`tools/skilltree_assets.py`), w Figmie (strona „Equipment Panel”, sekcja „Skill Tree — Assets”), w Roblox po „tak” Pawła — 74 grafiki (2026-11-15)
