@@ -2,8 +2,24 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T14:11:56+01:00",
+ "aktualizacja": "2026-11-26T15:48:05+01:00",
  "prace": [
+  {
+   "id": "odpowiedzi-pawla-2611",
+   "tytul": "Po odpowiedzi Pawła: zasięg E stanowisk AFK, zagroda bez legowisk",
+   "stan": "w_toku",
+   "start": "2026-11-26T15:48:05+01:00",
+   "koniec_szacowany": "2026-11-26T17:13:05+01:00",
+   "aktualizacja": "2026-11-26T15:48:05+01:00",
+   "obszary": [
+    "studio:PetyProba",
+    "swiat/pety_proba/**",
+    "swiat/miasteczko_bazar/**",
+    "src/server/TreningAFK.server.luau"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
   {
    "id": "smok-mapa2-gra",
    "tytul": "Gra o smoku: mapa v2 w grze — etap płaski, potem teren z wysokościami za przełącznikiem",
