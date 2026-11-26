@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T16:57:22+01:00",
+ "aktualizacja": "2026-11-26T17:10:11+01:00",
  "prace": [
   {
    "id": "jajka-scenka",
@@ -32,22 +32,6 @@
    "obszary": [
     "swiat/ewolucja/**",
     "studio:EwolucjaGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "upadek-przedmioty",
-   "tytul": "Przedmioty wojownika: broń i hełm po upadku nie wchodzą pod ziemię",
-   "stan": "w_toku",
-   "start": "2026-11-26T15:48:53+01:00",
-   "koniec_szacowany": "2026-11-26T17:23:53+01:00",
-   "aktualizacja": "2026-11-26T15:48:53+01:00",
-   "obszary": [
-    "swiat/postacie/pula_wojownika*.py",
-    "swiat/postacie/chwyty.py",
-    "swiat/postacie/ekwipunek.py",
-    "swiat/postacie/EKWIPUNEK.md"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
