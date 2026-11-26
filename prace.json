@@ -2,8 +2,24 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-26T20:44:43+01:00",
+ "aktualizacja": "2026-11-26T20:45:43+01:00",
  "prace": [
+  {
+   "id": "koty-ras-w-swiecie-2",
+   "tytul": "Kot rasy jako postac gracza: klipy ruchu, bron, inni gracze",
+   "stan": "w_toku",
+   "start": "2026-11-26T20:45:43+01:00",
+   "koniec_szacowany": "2026-11-26T22:45:43+01:00",
+   "aktualizacja": "2026-11-26T20:45:43+01:00",
+   "obszary": [
+    "studio:KotyWgRzutowPodglad",
+    "studio:KotyRasSwiat",
+    "src/client/KotRasySwiatClient.client.luau",
+    "src/server/KotRasySwiat.server.luau"
+   ],
+   "kto": "Claude (przeczkowskyy)",
+   "komputer": "0c03c4ec"
+  },
   {
    "id": "koty-rasy-dopracowanie",
    "tytul": "Koty ras: dopracowanie modeli do referencji",
