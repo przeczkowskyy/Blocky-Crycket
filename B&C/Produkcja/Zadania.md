@@ -8,7 +8,8 @@ tags: [produkcja, zadania]
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] Paweł: usunąć podmianę „Złota → Rybek” w `OknoKowalaClient`, `OknoPetowClient` i `JajkoKoroweClient` — nasze teksty mówią już „Rybki”, a podmiana psuje nazwy przedmiotów („Złota Zbroja Słońca” wychodzi jako „Rybek Zbroja Słońca”) · Paweł · #średni
-- [ ] Karta wyniku walki: napis mówi „RYBKI”, ale ikona to dalej moneta — podmienić na rybkę z HUD · agent Karola · #niski
+- [ ] Walka: łup wysypywany na arenie po wygranej to dalej złote monety, a waluta nazywa się Rybki (D-146) — zamienić monety na rybki albo zostawić; do oceny przy przeglądzie walki · agent Karola · #niski
+- [ ] Zrzuty raportu walki: kadr spowolnienia (`raport_4_spowolnienie`) nie odświeża się — po zmianach silnika w przeszukiwanych ziarnach nie ma utraty tury po lodowym pocisku; dobrać nowe ziarno albo inną chwilę · agent Karola · #niski
 - [ ] Napis „+N Gemów za pierwsze pokonanie strażnika” nie ma odmiany (przy jednym wychodzi „+1 Gemów”) i mówi „Gemów”, a nie „Diamentów” — poprawić przy okazji D-140 · agent Karola · #niski
 - [ ] Stary prototyp walki (`Workspace/TestWalki` w Studio): żaden pakiet gry go nie używa, jego karta mówi jeszcze „ZŁOTA” — zostawić czy usunąć · Karol · #niski
 - [ ] Brama BONK w starym miasteczku B&C: odpowiedzieć na pytanie 108 (usunąć, odsunąć albo zostawić) · Karol · #średni
@@ -195,6 +196,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Karta wyniku walki: ikona rybki zamiast monety przy napisie „RYBKI” (D-146), w Studio; próba walki bez niezaliczeń · agent Karola · 2026-11-26
 - [x] Końcowa regresja całej gry po nocy 25/26.11 (24 próby, po napisach „Rybki”): 22 próby bez niezaliczeń; kowal, sklep, bazar i stan gracza czysto; zostają znane małe napisy w próbie walki na telefonie i niestabilny punkt B20 bohatera · agent Karola · 2026-11-26
 - [x] Napisy waluty: „Rybki” zamiast „Złota” (D-146) w pakietach kowala, sklepu, petów, stanu gracza, wskazówek i na karcie wyniku walki — 25 tekstów z odmianą przy liczbie, w Studio; próby bez niezaliczeń · agent Karola · 2026-11-26
 - [x] Regresja całej gry po nocy 25/26.11 (24 próby) i naprawy: manekin w sali Training Center, tabliczka przy bramie BONK, okna próbne sklepu i kowala ustępują oknom Pawła, próby dostosowane do jego okien; ponowne próby bez niezaliczeń · agent Karola · 2026-11-26
