@@ -20,6 +20,7 @@ Kota-Maga (−90, 0, 0) to pochylenie (0, 0, 0).
 
     python -B swiat/postacie/chwyty.py        # tabela rodzajów i korekt kota (bez Blendera)
 """
+import math
 import os
 import sys
 
@@ -54,13 +55,14 @@ RODZAJE = {
 # Kot (ciało Kota-Maga i kotów z tym samym szkieletem): pochylenie broni w ramce dłoni w stopniach
 # (do_przodu, na_zewnatrz, skret[, wlasny]) i przesunięcie w ramce zaczepu (x — bok łapy, y — przód łapy,
 # z — w dół łapy). Prawa łapa — kość nośna StaffPivot (KosturAttachment: w upadku broń wypada z łapy), lewa łapa —
-# zwykły LeftGripAttachment (kot nie ma kości nośnej lewej łapy: łuk, tarcza i księga zostają w łapie w upadku).
+# zwykły LeftGripAttachment (kot nie ma kości nośnej lewej łapy: łuk, tarcza i księga zostają przy łapie w upadku —
+# korekta upadku kładzie je płasko pod łapą, niżej).
 # Liczby dobrane 26.11.2026 kontrolą `pula_wojownika.py --ruch` (broń względem WSZYSTKICH brył ciała i ziemi,
 # klatka po klatce): kryterium — chód i spoczynek czyste z zapasem ≥ 0,05 studa (Karol: „miecz ma być tak
 # wychylony, że podczas animacji chodzenia się nie bugował”), ziemia w klipach walki czysta. Miecz: więcej niż 20° do
 # przodu wbija długie ostrza (pogrzebacz) w ziemię w klipie kula_ognia (25° → −0,06), mniej niż 15° — ostrze dotyka
 # przedramienia w chodzie. W klipie upadku każdy stopień do przodu wbija czubek w ziemię (oś dłoni „do przodu” leży
-# wtedy pionowo w dół); poprawka tylko dla upadku — patrz EKWIPUNEK.md pkt 15.
+# wtedy pionowo w dół); poprawka tylko dla upadku — KOREKTA UPADKU niżej (EKWIPUNEK.md pkt 15).
 POCHYLENIE_KOTA = {
     "miecz": ("KosturAttachment", (-0.08, 0.08, 0.03), (20.0, 10.0, 0.0, -45.0)),
     "rozdzka": ("KosturAttachment", (-0.08, 0.0, 0.0), (60.0, 10.0, 0.0)),
@@ -100,11 +102,123 @@ KOREKTY_KOTA = korekty_kota()
 
 def dla_gry(korekty):
     """Rodzaje chwytu do danych gry (ekwipunek.json): {rodzaj: {lapa, zaczep_standardowy, opis, kot: {zaczep, pos,
-    rot}}} — ta sama tabela, której używa budowa modeli."""
+    rot}, upadek}} — ta sama tabela, której używa budowa modeli; „upadek” = grupa korekty upadku (UPADEK_KOTA;
+    liczby korekty ma każda część broni w polu „korekta_upadku”)."""
     return {r: {"lapa": o["lapa"], "zaczep_standardowy": o["zaczep"], "opis": o["opis"],
                 "kot": ({"zaczep": korekty[r][0], "pos": list(korekty[r][1]), "rot": list(korekty[r][2])}
-                        if r in korekty else None)}
+                        if r in korekty else None),
+                "upadek": grupa_upadku(korekty[r][0]) if r in korekty else None}
             for r, o in RODZAJE.items()}
+
+
+# ------------------------------------------------------------------------------------- KOREKTA UPADKU (26.11.2026)
+# Paweł 26.11.2026 po planszach przedmiotów kota-wojownika: „poprawić, żeby nie były pod ziemią”. Klip `upadek` kota
+# jest wspólny dla każdego stroju (Kot-Mag, koty klas, kot-wojownik): kości nośne StaffPivot (broń w prawej łapie)
+# i HatPivot (nakrycie głowy) lecą w nim po torach policzonych dla kostura i kapelusza Kota-Maga
+# (kot_mag.UPADEK_LOT), a lewa łapa kości nośnej nie ma. Broń o innym chwycie i kształcie, hełm z osłonami poniżej
+# obręczy i łuk albo tarcza w lewej łapie kończyły więc upadek pod ziemią (do 0,79 studa).
+# Poprawka jest DANĄ PRZEDMIOTU, nie nowym klipem: KOREKTA UPADKU — druga korekta (pos, rot) w ramce TEGO SAMEGO
+# zaczepu co korekta chwytu; w klipie upadku gra przechodzi z jednej na drugą:
+#     a = clamp((klatka − od_klatki) / (do_klatki − od_klatki), 0, 1)        klatka = czas klipu × 30 (fps klipu)
+#     C0 = C0_chwytu:Lerp(C0_upadku, a)          (CFrame:Lerp: pozycja liniowo, obrót po najkrótszym łuku)
+# gdzie C0_x = CFrame zaczepu kości · CFrame.new(pos) · CFrame.fromOrientation(rot) (rot w stopniach, kolejność
+# Y·X·Z jak macierz_obrotu); przed od_klatki i po wyjściu z klipu (wstawanie, odrodzenie) — korekta chwytu.
+# Liczby liczy budowa z geometrii przedmiotu (pula_wojownika.korekta_upadku): ułożenie z tabeli niżej, najniższy
+# punkt ZAPAS_UPADKU nad ziemią po lądowaniu; kontrola (pula_wojownika.py --ruch) sprawdza KAŻDĄ klatkę i pół
+# klatki klipu: nic, co kot nosi na zaczepie, nie schodzi niżej niż PROG_UPADKU. Rendery plansz upadku liczą pozę
+# przedmiotu tą samą funkcją (miesz_korekte), więc pokazują to samo, co zrobi gra.
+ZAPAS_UPADKU = 0.02        # studa: najniższy punkt leżącego przedmiotu nad ziemią (leży, nie wisi)
+PROG_UPADKU = 0.01         # studa: kontrola — w żadnej klatce (ani pół klatce) upadku nic nie jest niżej
+UPADEK_KOTA = {
+    "prawa": {"zaczep": "KosturAttachment", "kosc": "StaffPivot", "od_klatki": 22, "do_klatki": 33,
+              "ulozenie": "broń wypada z łapy w kl. 22 (jak kostur Kota-Maga) i w locie obraca się do ułożenia "
+                          "kostura: leży płasko przed kotem, oś broni poziomo wzdłuż leżącego kota, lico (+Z) do "
+                          "ziemi, rękojeść w miejscu lądowania kostura (kl. 33), podniesiona tak, żeby najniższy "
+                          "punkt był 0,02 nad ziemią"},
+    "helm": {"zaczep": "KapeluszAttachment", "kosc": "HatPivot", "od_klatki": 30, "do_klatki": 40,
+             "ulozenie": "hełm zsuwa się z głowy w kl. 30 (jak kapelusz Kota-Maga) i w locie prostuje się: stoi "
+                         "na ziemi obok głowy kopułą do góry (obrót wokół pionu jak kapelusz, −30°), odsunięty od "
+                         "głowy, najniższy punkt 0,02 nad ziemią; okno przejścia (domyślnie kl. 30→40) dobiera "
+                         "budowa dla każdego hełmu — krótsze, gdy hełm szybciej schodzi z głowy"},
+    "lewa": {"zaczep": "LeftGripAttachment", "kosc": "LeftHand", "od_klatki": 20, "do_klatki": 32,
+             "ulozenie": "lewa łapa nie ma kości nośnej: przedmiot zostaje przy łapie i w czasie upadania "
+                         "(domyślnie kl. 20, kolana miękną, → kl. 32, kot leży; okno dobiera budowa tak, żeby w "
+                         "żadnej klatce nie zszedł pod ziemię) kładzie się płasko na ziemi pod łapą (najcieńszą "
+                         "osią pionowo), skręcony wokół pionu tak, żeby jak najmniej wchodził w leżącego kota; "
+                         "tylko przedmiot, który w stałym chwycie schodzi pod ziemię"},
+}
+
+
+def grupa_upadku(zaczep):
+    """Grupa korekty upadku dla zaczepu kota („prawa”, „helm”, „lewa”) albo None."""
+    return next((g for g, d in UPADEK_KOTA.items() if d["zaczep"] == zaczep), None)
+
+
+def alfa_upadku(klatka, od_klatki, do_klatki):
+    """Postęp przejścia z korekty chwytu na korektę upadku w klatce klipu upadku (0…1, liniowo)."""
+    return min(1.0, max(0.0, (float(klatka) - od_klatki) / float(do_klatki - od_klatki)))
+
+
+def _kwaternion(R):
+    """Macierz obrotu 3×3 -> kwaternion (w, x, y, z)."""
+    t = R[0][0] + R[1][1] + R[2][2]
+    if t > 0:
+        s = math.sqrt(t + 1.0) * 2
+        return (0.25 * s, (R[2][1] - R[1][2]) / s, (R[0][2] - R[2][0]) / s, (R[1][0] - R[0][1]) / s)
+    if R[0][0] > R[1][1] and R[0][0] > R[2][2]:
+        s = math.sqrt(1.0 + R[0][0] - R[1][1] - R[2][2]) * 2
+        return ((R[2][1] - R[1][2]) / s, 0.25 * s, (R[0][1] + R[1][0]) / s, (R[0][2] + R[2][0]) / s)
+    if R[1][1] > R[2][2]:
+        s = math.sqrt(1.0 + R[1][1] - R[0][0] - R[2][2]) * 2
+        return ((R[0][2] - R[2][0]) / s, (R[0][1] + R[1][0]) / s, 0.25 * s, (R[1][2] + R[2][1]) / s)
+    s = math.sqrt(1.0 + R[2][2] - R[0][0] - R[1][1]) * 2
+    return ((R[1][0] - R[0][1]) / s, (R[0][2] + R[2][0]) / s, (R[1][2] + R[2][1]) / s, 0.25 * s)
+
+
+def _macierz_kwaternionu(q):
+    w, x, y, z = q
+    return ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
+            (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
+            (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
+
+
+def miesz_obrot(R0, R1, a):
+    """Obrót pośredni (jak CFrame:Lerp): po najkrótszym łuku między R0 i R1, a = 0…1."""
+    q0, q1 = _kwaternion(R0), _kwaternion(R1)
+    d = sum(q0[i] * q1[i] for i in range(4))
+    if d < 0:
+        q1, d = tuple(-v for v in q1), -d
+    if d > 0.9995:
+        q = tuple(q0[i] + (q1[i] - q0[i]) * a for i in range(4))
+    else:
+        th = math.acos(min(1.0, d))
+        s0, s1 = math.sin((1 - a) * th) / math.sin(th), math.sin(a * th) / math.sin(th)
+        q = tuple(s0 * q0[i] + s1 * q1[i] for i in range(4))
+    n = math.sqrt(sum(v * v for v in q))
+    return _macierz_kwaternionu(tuple(v / n for v in q))
+
+
+def miesz_korekte(k0, k1, a):
+    """Korekta (pos, rot) pośrednia między korektą chwytu k0 i korektą upadku k1 (a = alfa_upadku): pozycja
+    liniowo, obrót po najkrótszym łuku — to samo, co CFrame:Lerp w grze. Zwraca (pos, rot w stopniach)."""
+    if a <= 0.0:
+        return tuple(k0[0]), tuple(k0[1])
+    if a >= 1.0:
+        return tuple(k1[0]), tuple(k1[1])
+    pos = tuple(k0[0][i] + (k1[0][i] - k0[0][i]) * a for i in range(3))
+    R = miesz_obrot(macierz_obrotu(*k0[1]), macierz_obrotu(*k1[1]), a)
+    return pos, tuple(katy_z_macierzy(R))
+
+
+def upadek_dla_gry():
+    """Zasada korekty upadku do danych gry (ekwipunek.json, pole „upadek”): grupy (łapa / hełm) z zaczepem, kością,
+    domyślnymi klatkami przejścia i opisem ułożenia; liczby (pos, rot, klatki) ma każda część w „korekta_upadku”."""
+    return {"klip": "upadek", "fps": 30, "zapas": ZAPAS_UPADKU,
+            "przejscie": "a = clamp((klatka - od_klatki) / (do_klatki - od_klatki), 0, 1); "
+                         "C0 = C0_chwytu:Lerp(C0_upadku, a); C0_x = zaczep * CFrame.new(pos) * "
+                         "CFrame.fromOrientation(rot w radianach); po klipie z powrotem korekta chwytu",
+            "grupy": {g: {"zaczep": d["zaczep"], "kosc": d["kosc"], "od_klatki": d["od_klatki"],
+                          "do_klatki": d["do_klatki"], "ulozenie": d["ulozenie"]} for g, d in UPADEK_KOTA.items()}}
 
 
 if __name__ == "__main__":

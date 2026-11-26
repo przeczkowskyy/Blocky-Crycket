@@ -1,0 +1,15 @@
+{
+ "id": "r-20261126-171114-8f0a",
+ "tytul": "Przedmioty wojownika: broń i hełm po upadku leżą na ziemi",
+ "opis_md": "Paweł 26.11 na Telegramie: „poprawić, żeby nie były pod ziemią”. To modele i plansze — w grze jeszcze tego nie ma.\n\n**Co się zmieniło**\n- W klipie upadku miecz wypada z łapy i ląduje płasko przed kotem. Hełm zsuwa się z głowy i staje obok niej.\n- Łuk i tarcza kładą się płasko pod lewą łapą. Księga już wcześniej leżała nad ziemią.\n- Chwyt w chodzie, spoczynku i walce (D-156) jest bez zmian.\n\n**Liczby (najniższy punkt względem ziemi w upadku, w studach)**\n- Miecze pięciu zestawów: było od −0,24 do −0,54, jest +0,02.\n- Hełmy: było od −0,25 do −0,79, jest +0,02.\n- Różdżka −0,69 → +0,02; łuk −0,63 → +0,01; tarcza −0,15 → +0,02.\n\n**Jak to trafi do gry:** każdy przedmiot ma w danych drugą pozycję „na upadek”. Skrypt gry w chwili wypuszczenia przedmiotu płynnie przestawia go z chwytu na tę pozycję. Tego skryptu jeszcze nie ma — to wspólna praca z chwytem według rodzaju w grze.\n\n**Znane słabości**\n- Hełm w trakcie zsuwania przechodzi przez głowę (0,21–0,41 studa; przed poprawką do 0,58). Pełna poprawka wymaga innego toru hełmu we wspólnym klipie kota.\n- Łuk po upadku leży pod brodą i dotyka przedramienia.\n- Stroje w upadku schodzą do 0,03 studa pod ziemię — to klip ciała, nie przedmiot.\n\n**Sprawdzone:** kontrola ruchu co pół klatki dla pięciu zestawów i siedmiu rodzajów chwytu — żaden przedmiot pod ziemią; pozostałe kontrole przedmiotów bez zmian. Nie sprawdzono w Studio.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T17:11:14+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "gra": "bc"
+}

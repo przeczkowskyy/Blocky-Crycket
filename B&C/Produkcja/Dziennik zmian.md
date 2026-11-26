@@ -6,6 +6,16 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-26 · Claude Code u Karola (przedmioty wojownika po upadku leżą na ziemi)
+- **Zlecenie:** Paweł na Telegramie 26.11 (punkt 7 listy zadań): „poprawić, żeby nie były pod ziemią”.
+- **Korekta upadku** (modele i plansze, nie w grze): poprawka jest daną przedmiotu, nie nowym klipem. Każda część na zaczepie ma drugą korektę (pozycja i obrót) i okno klatek, w którym spaw płynnie przechodzi z korekty chwytu na korektę upadku. Prawa łapa (klatki 22→33): broń obraca się w locie i ląduje płasko przed kotem. Hełm (od klatki 30) prostuje się i staje obok głowy. Lewa łapa: łuk i tarcza kładą się płasko pod łapą; księga bez korekty. Korekty liczy budowa z geometrii (ziemia sprawdzana co pół klatki).
+- **Liczby** (najniższy punkt względem ziemi w upadku, studa): miecze pięciu zestawów z −0,24…−0,54 na +0,02; hełmy z −0,25…−0,79 na +0,02; różdżka −0,69 → +0,02; łuk −0,63 → +0,01; tarcza −0,15 → +0,02; księga +0,035 bez zmian.
+- **Kontrole:** `pula_wojownika.py --ruch` kod 0 (sekcja upadku: 0 przedmiotów pod progiem; chód, spoczynek i walka z tymi samymi liczbami co przed zmianą) — powtórzone przez sesję główną; `--kontrola`, `--uszy`, `--przenikanie` bez zmian; chwyt z D-156 nietknięty. Kot-Mag, Rycerz i Zwiadowca bez zmian.
+- **Dane dla gry:** w `ekwipunek.json` pięciu zestawów puli pola `korekta_upadku` (część) i `upadek` (bohater, rodzaj chwytu); wzór w `swiat/postacie/EKWIPUNEK.md` pkt 15. Skryptu w grze nie ma — zadanie w [[Zadania]].
+- **Znane słabości:** hełm w trakcie zsuwania przechodzi przez głowę 0,21–0,41 studa (przed poprawką do 0,58; pełna poprawka wymaga innego toru hełmu we wspólnym klipie kota); łuk po upadku leży pod brodą i dotyka przedramienia; stroje schodzą w upadku do 0,03 studa pod ziemię (klip ciała). Nie sprawdzono w Studio.
+- **Pliki:** `swiat/postacie/chwyty.py`, `pula_wojownika.py`, `pula_wojownika_chwyty.py`, `EKWIPUNEK.md`, `wynik/pula_wojownika_*/ekwipunek/ekwipunek.json`, plansze `wynik/_pula_wojownika/d2611_upadek_*.jpg`. Raport w panelu: „Przedmioty wojownika: broń i hełm po upadku leżą na ziemi”. Dopisek pod D-156 w [[Rejestr decyzji]].
+- **Koszt:** agent na Opus ok. 0,44 mln tokenów (zapowiedziane 0,3–0,4 mln).
+
 ## 2026-11-26 · Claude Code u Karola (jajka Bagna i Dżungli w grze ze scenką Pawła; czysta zagroda; podpisy Karola)
 - **Podpisy Karola:** na pytanie agenta w oknie na czacie Karol odpowiedział „Potwierdzam obie” — D-157 i D-158 mają `potwierdził: Karol 2026-11-26` w [[Rejestr decyzji]].
 - **„Czysta zagroda”** (Karol na czacie po zrzucie zagrody bez legowisk: „Usuń też tą wiatę furtkę. Czysta zagroda”): z zagrody zniknęła bramka — dwa słupki, poprzeczka, łapa-szyld i chorągiewka (16 części, `swiat/miasteczko_bazar/budynki/zagroda_petow.py`; mapa 4286 części, 0 błędów, testy bazaru 38 z 38). Przejście w płotku, koryto, siano i miski zostają. Dopisek pod D-157 (jeden podpis — Karol; Paweł jeszcze nie widział). Próba zagrody w Play 15 punktów bez niezaliczeń (osiem z ośmiu petów w ruchu).

@@ -9,6 +9,13 @@
    w Zestawie Giermka w 8 równo rozłożonych klatkach klipu chod, z przodu i z prawego boku (łapa z mieczem).
 3. „Chód z każdym rodzajem”: goły kot z każdą bronią z planszy chwytów w 4 klatkach chodu, z boku łapy z bronią.
    Liczby (odstęp broni od ciała i ziemi w każdej klatce): python -B swiat/postacie/pula_wojownika.py --ruch.
+4. „Upadek” (Paweł 26.11.2026: „poprawić, żeby nie były pod ziemią”): przedmioty w klipie upadku z KOREKTĄ UPADKU
+   (chwyty.py, pula_wojownika.korekta_upadku) — poza przedmiotu w kadrze liczona tą samą funkcją co w kontroli
+   (pula_wojownika.korekty_w_klatce_upadku), więc kadr pokazuje to, co zrobi gra. Pod postacią płyta ziemi (zielona;
+   w widoku z boku to linia ziemi): pięć zestawów w ostatniej klatce (z boku i z góry-skosa), Giermek w 6 klatkach
+   upadku (z boku i z góry-skosa), każdy rodzaj chwytu w ostatniej klatce (z boku i z góry-skosa). Widok z góry-skosa = kadr
+   bohaterski postaci przechylonej razem z płytą (korzeń szkieletu obrócony i podniesiony, żeby podłoże renderu
+   zostało poza kadrem); widok z boku = rzut prostokątny z tyłu postaci obróconej o 180° (czyli od przodu kota).
 
     python -B swiat/postacie/przebuduj.py pula_wojownika_chwyty          # plansze + krótki film chodu Giermka
 
@@ -45,7 +52,10 @@ SLABOSCI = [
     "Plansza propozycji: rodzaje chwytu i ich korekty kota (chwyty.py) czekają na ocenę ludzi.",
     "Różdżka i księga to atrapy (nie ma ich modeli); łuk, proca i tarcza to modele ludzkich bohaterów i broni "
     "startowej przeskalowane na kota tylko do tej planszy.",
-    "Lewa łapa kota nie ma kości nośnej (jak StaffPivot w prawej): łuk, tarcza i księga w upadku zostają w łapie.",
+    "Lewa łapa kota nie ma kości nośnej (jak StaffPivot w prawej): łuk, tarcza i księga w upadku zostają przy łapie; "
+    "łuk i tarcza kładą się płasko pod łapą (korekta upadku), księga i bez tego jest nad ziemią.",
+    "Upadek: przedmioty w kadrach mają korektę upadku (chwyty.py) — w grze przejście robi skrypt (CFrame:Lerp spawu "
+    "w klipie upadku), w eksporcie FBX/GLB jest tylko korekta chwytu.",
     "Klipy kota są pisane pod kostur; wszystkie rodzaje sprawdza liczbowo pula_wojownika.py --ruch (całe ciało "
     "i ziemia, klatka po klatce); w klipach walki lewa łapa zbliża się do tułowia i głowy, więc łuk, tarcza "
     "i księga wchodzą w ciało — jedna stała korekta tego nie naprawi.",
@@ -171,6 +181,85 @@ def postac_chodu_mieczem():
     return p
 
 
+# --------------------------------------------------------------------------- upadek (Paweł 26.11.2026)
+KLATKI_UPADKU_GIERMEK = (22, 27, 31, 33, 40, 60)   # wypuszczenie miecza, lot, hełm się zsuwa, miecz na ziemi,
+#                                                   hełm na ziemi, koniec klipu
+KONIEC_UPADKU = 60
+PRZECHYL_GORA = 42.0          # stopnie: o tyle widok „z góry-skosa” patrzy z wyżej niż kadr bohaterski (ok. 8°)
+WZNIES_GORA = 40.0            # studa: postać z płytą ziemi nad podłożem renderu (podłoże wypada z kadru)
+GRUB_ZIEMI = 0.08             # grubość płyty ziemi kadru (w widoku z boku: pas ok. 4 px)
+PALETA_ZIEMI = {"ziemia": "6E9A4A"}
+
+
+def _ziemia_i_widok(k, widok):
+    """Płyta ziemi pod całą postacią kadru k (górna ściana 0,002 pod ziemią y = 0, zapas 0,45 studa wokół) jako
+    akcesorium na kości korzenia; widok „gora” — korzeń (a z nim postać i płyta) przechylony o PRZECHYL_GORA ku
+    kamerze kadru bohaterskiego i podniesiony o WZNIES_GORA."""
+    import numpy as np
+    kl = k.klipy[0]
+    W = PW.KM._fk(k, PW.KM._poza_klatki(k, kl, 0))
+    pts = np.concatenate([np.asarray(b["pkt"]) @ np.asarray(W[b["kosc"]][0]).T + np.asarray(W[b["kosc"]][1])
+                          for b in PW.KM._bryly(k)])
+    lo, hi = pts.min(axis=0) - 0.45, pts.max(axis=0) + 0.45
+    korzen = next(n for n, kk in k.kosci.items() if kk["rodzic"] is None)
+    st = k.kosci[korzen]["staw"]
+    a = Akcesorium("ziemia_kadru", "Ziemia (kadr planszy)", zaczep="ZiemiaAttachment", typ="Inne",
+                   paleta=PALETA_ZIEMI, przymierz=False)
+    a.blok("Ziemia", ((lo[0] + hi[0]) / 2 - st[0], -0.002 - GRUB_ZIEMI / 2 - st[1], (lo[2] + hi[2]) / 2 - st[2]),
+           (hi[0] - lo[0], GRUB_ZIEMI, hi[2] - lo[2]), "ziemia", "matowy", faza=0.0)
+    k.zaczep("ZiemiaAttachment", korzen, (0, 0, 0), (0, 0, 0))
+    k.zaloz(a, "ZiemiaAttachment", eksport=False)
+    if widok == "gora":
+        # oś przechyłu: pozioma, prostopadła do kierunku kamery kadru bohaterskiego (KAT_KADRU od przodu)
+        R = PW.macierz_obrotu(0, KAT_KADRU, 0)
+        R = CH.mnoz(R, CH.mnoz(PW.macierz_obrotu(PRZECHYL_GORA, 0, 0), PW.macierz_obrotu(0, -KAT_KADRU, 0)))
+        ob = tuple(round(v, 4) for v in CH.katy_z_macierzy(R))
+        for f in (0, 1):
+            kl.klucz(f, korzen, obrot=ob, przes=(0.0, WZNIES_GORA, 0.0))
+    k._bryly = None
+    k._pkt = None
+    return k
+
+
+def kadr_upadku(przedmioty, klatka, widok, id_kadru, nazwa):
+    """Kot w przedmiotach `przedmioty` w klatce klipu upadku, z korektą upadku tej klatki (ta sama funkcja co
+    kontrola: PW.korekty_w_klatce_upadku), jako kadr: widok „bok” — postać obrócona o 180° (rzut prostokątny z tyłu
+    planszy = od przodu kota), „gora” — kadr bohaterski z góry-skosa (przechył i płyta ziemi)."""
+    q = ubierz(PW.cialo(), przedmioty, id=id_kadru, nazwa=nazwa,
+               korekty=PW.korekty_w_klatce_upadku(przedmioty, klatka))
+    q.klipy = [k for k in q.klipy if k.nazwa == PW.KLIP_UPADKU]
+    k = _kadr_klipu(q, PW.KLIP_UPADKU, klatka, 180.0 if widok == "bok" else 0.0, widok)
+    k.id = id_kadru
+    return _ziemia_i_widok(k, widok)
+
+
+def _bron_przedmiot(r, a):
+    prz = Przedmiot("chwyt_" + r, a.nazwa, "Weapon", "Weapons", PW.MIARA, cialo=PW.KM.CIALO_TYP)
+    prz.na_zaczepie(a)
+    return prz
+
+
+def kadry_upadku():
+    """Kadry plansz upadku: (a) pięć zestawów w ostatniej klatce, z boku i z góry-skosa; (b) Giermek w klatkach
+    KLATKI_UPADKU_GIERMEK, z boku i z góry-skosa; (c) każdy rodzaj chwytu na gołym kocie w ostatniej klatce, z boku i z góry."""
+    wynik = []
+    for z in PW.zrobione():
+        prz = PW.przedmioty(z)
+        for widok in ("bok", "gora"):
+            wynik.append(kadr_upadku(prz, KONIEC_UPADKU, widok, "%s_upadek_%s_%s" % (ID, z, widok),
+                                     "%s — upadek, kl. %d" % (PW.ZESTAWY[z]["nazwa"], KONIEC_UPADKU)))
+    prz = PW.przedmioty("giermek")
+    for f in KLATKI_UPADKU_GIERMEK:
+        for widok in ("bok", "gora"):
+            wynik.append(kadr_upadku(prz, f, widok, "%s_upadek_giermek_kl%02d_%s" % (ID, f, widok),
+                                     "Zestaw Giermka — upadek, kl. %d" % f))
+    for r, a in sorted(bronie().items(), key=lambda kv: KOLEJNOSC.index(kv[0])):
+        for widok in ("bok", "gora"):
+            wynik.append(kadr_upadku([_bron_przedmiot(r, a)], KONIEC_UPADKU, widok,
+                                     "%s_upadek_%s_%s" % (ID, r, widok), "Chwyt %s — upadek" % r))
+    return wynik
+
+
 def zbuduj():
     wynik = []
     for r, p in postacie_chwytow():
@@ -186,26 +275,33 @@ def zbuduj():
     film = copy.deepcopy(g)
     film.id, film.nazwa = ID + "_film_giermek", g.nazwa + " (film chodu)"
     wynik.append(film)
-    return wynik
+    return wynik + kadry_upadku()
 
 
 # --------------------------------------------------------------------------- plansze zbiorcze (PIL, po przebudowie)
-def _kadr(cel, id_postaci):
+CWIARTKI = {"bohater": (0, 0), "przod": (1, 0), "bok": (0, 1), "tyl": (1, 1)}   # układ <id>_plansza.jpg
+
+
+def _kadr(cel, id_postaci, cwiartka="bohater"):
     """Kadr bohaterski postaci: <id>_bohater.jpg, a gdy go nie ma (przebudowa bez eksportu zostawia same plansze) —
-    lewa górna ćwiartka <id>_plansza.jpg (tam jest kadr bohaterski)."""
+    lewa górna ćwiartka <id>_plansza.jpg (tam jest kadr bohaterski). cwiartka = inny widok z planszy: „przod”
+    (z manekinem skali), „bok” (rzut z prawego boku postaci), „tyl” (rzut z tyłu)."""
     from PIL import Image
     pl = os.path.join(cel, "%s_bohater.jpg" % id_postaci)
-    if os.path.isfile(pl):
+    if cwiartka == "bohater" and os.path.isfile(pl):
         return Image.open(pl).convert("RGB")
     pl = os.path.join(cel, "%s_plansza.jpg" % id_postaci)
     if not os.path.isfile(pl):
         return None
     im = Image.open(pl).convert("RGB")
-    return im.crop((0, 0, im.width // 2, im.height // 2))
+    cx, cy = CWIARTKI[cwiartka]
+    w, h = im.width // 2, im.height // 2
+    return im.crop((cx * w, cy * h, (cx + 1) * w, (cy + 1) * h))
 
 
 def _siatka(cel, kolumny, wiersze, tytul, stopka, plik, K=360):
-    """Plansza: kolumny = (podpis, [id postaci w każdym wierszu]); wiersze = podpisy wierszy (lewy górny róg kafla)."""
+    """Plansza: kolumny = (podpis, [id postaci w każdym wierszu — albo (id, ćwiartka planszy)]); wiersze = podpisy
+    wierszy (lewy górny róg kafla)."""
     from PIL import Image, ImageDraw
     fn, fb, fm = PW._czcionki()
     n = len(wiersze)
@@ -217,7 +313,7 @@ def _siatka(cel, kolumny, wiersze, tytul, stopka, plik, K=360):
         for j, (nazwa, wid) in enumerate(zip(wiersze, ids)):
             y = 76 + j * K
             dr.rounded_rectangle((x + 4, y + 4, x + K - 4, y + K - 4), radius=14, fill=PW.KAFEL)
-            ob = _kadr(cel, wid)
+            ob = _kadr(cel, *wid) if isinstance(wid, tuple) else _kadr(cel, wid)
             if ob is not None:
                 ob.thumbnail((K - 16, K - 16))
                 im.paste(ob, (x + (K - ob.width) // 2, y + (K - ob.height) // 2))
@@ -264,7 +360,50 @@ def po_przebudowie(cel):
             ["Prawa łapa: widok z prawego boku; lewa (łuk, tarcza, księga): z lewego. Lewa łapa w chodzie sama "
              "zahacza o ogon (klip ciała), więc to, co w niej, też bywa przy ogonie — szczegóły w raporcie --ruch."],
             p3, K=260)
-    return ["../_pula_wojownika/" + os.path.basename(p) for p in (p1, p2, p3)]
+    return ["../_pula_wojownika/" + os.path.basename(p) for p in [p1, p2, p3] + plansze_upadku(cel)]
+
+
+def plansze_upadku(cel):
+    """Trzy plansze upadku (wynik/_pula_wojownika/<prefiks>upadek_*.jpg): zestawy w ostatniej klatce, Giermek
+    w klatkach upadku, rodzaje chwytu w ostatniej klatce; zwraca ścieżki."""
+    ziemia = "Zielona płyta = ziemia (w widoku z boku jej pas to linia ziemi); nic, co kot nosi, nie schodzi pod nią."
+    gra = ("W grze: w klipie upadku skrypt przestawia spaw przedmiotu z korekty chwytu na korektę upadku "
+           "(CFrame:Lerp w oknie klatek z ekwipunek.json); kadr liczy pozę tą samą funkcją co kontrola --ruch.")
+    kol = [("%s\n%s" % (PW.ZESTAWY[z]["nazwa"], PW.ZESTAWY[z]["przedmioty"]["miecz"]),
+            [("%s_upadek_%s_bok" % (ID, z), "tyl"), "%s_upadek_%s_gora" % (ID, z)]) for z in PW.zrobione()]
+    p1 = os.path.join(PW.PODGLADY, PW.PREFIKS_PLANSZ + "upadek_zestawy.jpg")
+    _siatka(cel, kol, ("z boku (od przodu kota)", "z góry, ze skosu"),
+            "Upadek — koniec klipu (kl. %d): miecz i hełm leżą na ziemi (propozycja)" % KONIEC_UPADKU,
+            ["Miecz w locie obraca się do ułożenia kostura Kota-Maga i leży płasko przed kotem; hełm zsuwa się "
+             "z głowy, prostuje się i stoi obok niej.", ziemia, gra], p1, K=360)
+    g = ID + "_upadek_giermek"
+    opisy = {22: "miecz wypada z łapy", 27: "miecz w locie", 31: "hełm się zsuwa", 33: "miecz na ziemi",
+             40: "hełm na ziemi", 60: "koniec klipu"}
+    kol = [("kl. %d\n%s" % (f, opisy.get(f, "")), [("%s_kl%02d_bok" % (g, f), "tyl"), "%s_kl%02d_gora" % (g, f)])
+           for f in KLATKI_UPADKU_GIERMEK]
+    okna = {r: PW.korekta_upadku(PW.przedmioty("giermek")[PW.RZECZY.index(r)].segmenty[0]["akc"])
+            for r in ("miecz", "helm")}
+    p2 = os.path.join(PW.PODGLADY, PW.PREFIKS_PLANSZ + "upadek_giermek.jpg")
+    _siatka(cel, kol, ("z boku (od przodu kota)", "z góry, ze skosu"),
+            "Upadek — Zestaw Giermka, klip upadek (%d klatek, 30 kl./s)" % KONIEC_UPADKU,
+            [ziemia, "Przejście na korektę upadku: miecz kl. %d→%d, hełm kl. %d→%d (kości nośne lecą tym samym torem "
+                     "co kostur i kapelusz Kota-Maga: miecz ląduje w kl. 33, hełm w kl. 40)."
+             % (okna["miecz"]["od_klatki"], okna["miecz"]["do_klatki"], okna["helm"]["od_klatki"],
+                okna["helm"]["do_klatki"])], p2, K=300)
+    kol = []
+    for r in KOLEJNOSC:
+        a = bronie()[r]
+        kor = PW.korekta_upadku(a)
+        kol.append(("%s\n%s" % (PODPISY[r], ("korekta kl. %d→%d" % (kor["od_klatki"], kor["do_klatki"])) if kor
+                                 else "bez korekty (nad ziemią)"),
+                    [("%s_upadek_%s_bok" % (ID, r), "tyl"), "%s_upadek_%s_gora" % (ID, r)]))
+    p3 = os.path.join(PW.PODGLADY, PW.PREFIKS_PLANSZ + "upadek_chwyty.jpg")
+    _siatka(cel, kol, ("z boku (od przodu kota)", "z góry, ze skosu"),
+            "Upadek — każdy rodzaj chwytu, koniec klipu (kl. %d), goły kot" % KONIEC_UPADKU,
+            ["Prawa łapa (miecz, różdżka, drzewce, proca): broń wypada i leży płasko przed kotem. Lewa łapa nie ma "
+             "kości nośnej: łuk i tarcza zostają przy łapie i kładą się płasko pod nią; księga i bez tego jest nad "
+             "ziemią.", ziemia], p3, K=300)
+    return [p1, p2, p3]
 
 
 if __name__ == "__main__":
