@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T16:56:25+01:00",
+ "aktualizacja": "2026-11-26T16:57:16+01:00",
  "prace": [
   {
    "id": "jajka-scenka",
    "tytul": "Jajka Bagna i Dżungli: scenka wyklucia na wzór jaja lasu",
    "stan": "w_toku",
+   "etap": "Modele w grze, próba 30 OK; poprawka: komunikat nie zdradza peta przed otwarciem",
    "start": "2026-11-26T16:07:52+01:00",
-   "koniec_szacowany": "2026-11-26T17:57:52+01:00",
-   "aktualizacja": "2026-11-26T16:07:52+01:00",
+   "koniec_szacowany": "2026-11-26T17:50:00+01:00",
+   "aktualizacja": "2026-11-26T16:57:16+01:00",
    "obszary": [
     "studio:JajkaBiomowPodglad",
     "src/client/JajkoKoroweClient.client.luau",
