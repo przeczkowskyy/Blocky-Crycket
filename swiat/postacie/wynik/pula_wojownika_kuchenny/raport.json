@@ -366,22 +366,22 @@
     {
      "nazwa": "kot_rycerz_kuchenny_helm_Akc",
      "kosc": "HatPivot",
-     "trojkaty": 512,
-     "wierzcholki": 288,
+     "trojkaty": 568,
+     "wierzcholki": 328,
      "wymiary": [
-      2.28,
-      1.581,
-      1.843
+      2.134,
+      1.521,
+      1.754
      ],
      "min": [
-      -1.14,
+      -1.067,
       2.513,
-      -0.92
+      -0.861
      ],
      "max": [
-      1.14,
-      4.094,
-      0.923
+      1.067,
+      4.034,
+      0.893
      ]
     },
     {
@@ -390,23 +390,23 @@
      "trojkaty": 400,
      "wierzcholki": 230,
      "wymiary": [
-      1.3,
-      2.429,
-      0.593
+      0.876,
+      2.518,
+      0.968
      ],
      "min": [
-      -2.009,
-      0.495,
-      -0.168
+      -1.597,
+      0.465,
+      -0.151
      ],
      "max": [
-      -0.709,
-      2.924,
-      0.425
+      -0.721,
+      2.983,
+      0.817
      ]
     }
    ],
-   "trojkaty_razem": 4804,
+   "trojkaty_razem": 4860,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 31
@@ -419,20 +419,20 @@
     2.084
    ],
    "wymiary_z_akcesoriami": [
-    3.149,
-    4.099,
-    2.162
+    2.692,
+    4.039,
+    2.132
    ],
    "zakres_z_akcesoriami": [
     [
-     -2.009,
+     -1.597,
      -0.005,
      -1.239
     ],
     [
-     1.14,
-     4.094,
-     0.923
+     1.095,
+     4.034,
+     0.893
     ]
    ],
    "kosci": [
@@ -594,26 +594,26 @@
     {
      "nazwa": "kot_rycerz_kuchenny_helm",
      "kosc": null,
-     "trojkaty": 512,
-     "wierzcholki": 288,
+     "trojkaty": 568,
+     "wierzcholki": 328,
      "wymiary": [
-      2.28,
-      1.581,
-      1.843
+      2.134,
+      1.521,
+      1.754
      ],
      "min": [
-      -1.14,
+      -1.067,
       -0.657,
-      -0.92
+      -0.861
      ],
      "max": [
-      1.14,
-      0.924,
-      0.923
+      1.067,
+      0.864,
+      0.893
      ]
     }
    ],
-   "trojkaty_razem": 512,
+   "trojkaty_razem": 568,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 6
@@ -622,20 +622,20 @@
    "typ_roblox": "Hat",
    "zakres_od_zaczepu": [
     [
-     -1.14,
+     -1.067,
      -0.657,
-     -0.92
+     -0.861
     ],
     [
-     1.14,
-     0.924,
-     0.923
+     1.067,
+     0.864,
+     0.893
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    0.134,
-    0.002
+    0.103,
+    0.016
    ],
    "ostrzezenia": []
   },
@@ -700,8 +700,8 @@
   "pula_wojownika_kuchenny.fbx: siatki 38, kości 23, trójkąty 4144, wzrost 3.15 st., akcje brak -> ZGODNE",
   "pula_wojownika_kuchenny__idle.fbx: siatki 38, kości 23, trójkąty 4144, wzrost 3.15 st., akcje pula_wojownika_kuchenny|Scene 1-61 -> ZGODNE",
   "pula_wojownika_kuchenny.glb: siatki 38, kości 23, trójkąty 4144, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
-  "kot_rycerz_kuchenny_helm.fbx: siatki 1, kości 0, trójkąty 512, wzrost 1.58 st., akcje brak -> ZGODNE",
-  "kot_rycerz_kuchenny_helm.glb: siatki 1, kości 0, trójkąty 512, wzrost 1.58 st., akcje brak -> ZGODNE",
+  "kot_rycerz_kuchenny_helm.fbx: siatki 1, kości 0, trójkąty 568, wzrost 1.52 st., akcje brak -> ZGODNE",
+  "kot_rycerz_kuchenny_helm.glb: siatki 1, kości 0, trójkąty 568, wzrost 1.52 st., akcje brak -> ZGODNE",
   "kot_rycerz_kuchenny_miecz.fbx: siatki 1, kości 0, trójkąty 400, wzrost 2.68 st., akcje brak -> ZGODNE",
   "kot_rycerz_kuchenny_miecz.glb: siatki 1, kości 0, trójkąty 400, wzrost 2.68 st., akcje brak -> ZGODNE",
   "ekwipunek: pula_wojownika_kuchenny_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",

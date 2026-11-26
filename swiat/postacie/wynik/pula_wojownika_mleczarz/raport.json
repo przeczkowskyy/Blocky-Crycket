@@ -366,22 +366,22 @@
     {
      "nazwa": "kot_rycerz_mleczarz_helm_Akc",
      "kosc": "HatPivot",
-     "trojkaty": 676,
-     "wierzcholki": 368,
+     "trojkaty": 732,
+     "wierzcholki": 408,
      "wymiary": [
-      2.54,
-      1.56,
-      1.82
+      2.3,
+      1.2,
+      1.76
      ],
      "min": [
-      -1.27,
+      -1.15,
       2.885,
-      -0.92
+      -0.89
      ],
      "max": [
-      1.27,
-      4.445,
-      0.9
+      1.15,
+      4.085,
+      0.87
      ]
     },
     {
@@ -390,23 +390,23 @@
      "trojkaty": 496,
      "wierzcholki": 300,
      "wymiary": [
-      1.629,
-      1.879,
-      0.512
+      1.003,
+      2.165,
+      0.779
      ],
      "min": [
-      -2.191,
-      0.569,
-      -0.161
+      -1.76,
+      0.541,
+      -0.243
      ],
      "max": [
-      -0.562,
-      2.448,
-      0.351
+      -0.757,
+      2.706,
+      0.536
      ]
     }
    ],
-   "trojkaty_razem": 5008,
+   "trojkaty_razem": 5064,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 37
@@ -419,20 +419,20 @@
     2.099
    ],
    "wymiary_z_akcesoriami": [
-    3.461,
-    4.45,
-    2.139
+    2.91,
+    4.09,
+    2.109
    ],
    "zakres_z_akcesoriami": [
     [
-     -2.191,
+     -1.76,
      -0.005,
      -1.239
     ],
     [
-     1.27,
-     4.445,
-     0.9
+     1.15,
+     4.085,
+     0.87
     ]
    ],
    "kosci": [
@@ -594,26 +594,26 @@
     {
      "nazwa": "kot_rycerz_mleczarz_helm",
      "kosc": null,
-     "trojkaty": 676,
-     "wierzcholki": 368,
+     "trojkaty": 732,
+     "wierzcholki": 408,
      "wymiary": [
-      2.54,
-      1.56,
-      1.82
+      2.3,
+      1.2,
+      1.76
      ],
      "min": [
-      -1.27,
+      -1.15,
       -0.285,
-      -0.92
+      -0.89
      ],
      "max": [
-      1.27,
-      1.275,
-      0.9
+      1.15,
+      0.915,
+      0.87
      ]
     }
    ],
-   "trojkaty_razem": 676,
+   "trojkaty_razem": 732,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 4
@@ -622,19 +622,19 @@
    "typ_roblox": "Hat",
    "zakres_od_zaczepu": [
     [
-     -1.27,
+     -1.15,
      -0.285,
-     -0.92
+     -0.89
     ],
     [
-     1.27,
-     1.275,
-     0.9
+     1.15,
+     0.915,
+     0.87
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    0.495,
+    0.315,
     -0.01
    ],
    "ostrzezenia": []
@@ -650,7 +650,7 @@
      "trojkaty": 496,
      "wierzcholki": 300,
      "wymiary": [
-      0.977,
+      0.887,
       2.202,
       0.2
      ],
@@ -660,7 +660,7 @@
       -0.1
      ],
      "max": [
-      0.3,
+      0.21,
       1.821,
       0.1
      ]
@@ -680,13 +680,13 @@
      -0.1
     ],
     [
-     0.3,
+     0.21,
      1.821,
      0.1
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
-    -0.189,
+    -0.234,
     0.72,
     0.0
    ],
@@ -701,8 +701,8 @@
   "pula_wojownika_mleczarz.fbx: siatki 38, kości 23, trójkąty 4088, wzrost 3.15 st., akcje brak -> ZGODNE",
   "pula_wojownika_mleczarz__idle.fbx: siatki 38, kości 23, trójkąty 4088, wzrost 3.15 st., akcje pula_wojownika_mleczarz|Scene 1-61 -> ZGODNE",
   "pula_wojownika_mleczarz.glb: siatki 38, kości 23, trójkąty 4088, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
-  "kot_rycerz_mleczarz_helm.fbx: siatki 1, kości 0, trójkąty 676, wzrost 1.56 st., akcje brak -> ZGODNE",
-  "kot_rycerz_mleczarz_helm.glb: siatki 1, kości 0, trójkąty 676, wzrost 1.56 st., akcje brak -> ZGODNE",
+  "kot_rycerz_mleczarz_helm.fbx: siatki 1, kości 0, trójkąty 732, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "kot_rycerz_mleczarz_helm.glb: siatki 1, kości 0, trójkąty 732, wzrost 1.20 st., akcje brak -> ZGODNE",
   "kot_rycerz_mleczarz_miecz.fbx: siatki 1, kości 0, trójkąty 496, wzrost 2.20 st., akcje brak -> ZGODNE",
   "kot_rycerz_mleczarz_miecz.glb: siatki 1, kości 0, trójkąty 496, wzrost 2.20 st., akcje brak -> ZGODNE",
   "ekwipunek: pula_wojownika_mleczarz_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",

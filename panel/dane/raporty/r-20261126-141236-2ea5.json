@@ -1,0 +1,16 @@
+{
+ "id": "r-20261126-141236-2ea5",
+ "tytul": "Przedmioty wojownika: hełmy z osłonami uszu, miecz dobrany do chodu",
+ "opis_md": "Druga runda po wyborze Karola (26.11): „Hełm wygląda dobrze zostawiając sylwetkę. Miecz ma być tak wychylony, że podczas animacji chodzenia się nie bugował. Dograj resztę pozycji”. Modele i plansze, jeszcze nie w grze.\n\n**Hełmy**\n- Wszystkie pięć hełmów ma niską kopułę jak na arkuszach Pawła i dwie osłony w kształcie uszu z materiału hełmu — hełm zasłania uszy, a sylwetka kota zostaje.\n- Komplet ma 166–184 części (limit 220).\n\n**Miecz**\n- Wychylony 20° do przodu i obrócony wokół własnej osi, żeby klinga nie dotykała przedramienia.\n- W chodzie i w spoczynku nie wchodzi w nic: ciało, strój, hełm, ogon, ziemia (zapas co najmniej 0,07 studa we wszystkich pięciu zestawach).\n- Nowa kontrola sprawdza broń z całym ciałem i ziemią klatka po klatce w każdym klipie kota.\n\n**Pozostałe chwyty**\n- Różdżka, kostur i proca: czyste w chodzie i spoczynku.\n- Tarcza: czysta w chodzie i spoczynku.\n- Łuk i księga (lewa łapa): w chodzie zahaczają o ogon — lewa łapa kota sama zahacza o ogon w tym klipie.\n\n**Czego jeden stały chwyt nie naprawi (do decyzji)**\n- W trzech klipach walki koniec rękojeści wchodzi w ramię, gdy łapa jest przy barku (miecze do 0,11 studa, proca 0,21).\n- Przedmioty w lewej łapie wchodzą w ciało w klipach walki — klipy były pisane dla pustej lewej łapy. Łuk i tarcza potrzebują własnych klipów.\n- W upadku broń kończy 0,24–0,54 studa pod ziemią; tania poprawka jest po stronie gry (przełączenie chwytu w chwili wypuszczenia broni).\n- Z ukosa klinga bywa widziana kantem i wygląda cienko; z przodu i z boku czyta się dobrze.\n\nZrzuty: zestawy z osłonami uszu, klatki chodu z mieczem (przód i bok), chwyty według rodzaju, klatki chodu z każdym chwytem.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T14:12:36+01:00",
+ "rodzaj": "informacja",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "gra": "bc"
+}

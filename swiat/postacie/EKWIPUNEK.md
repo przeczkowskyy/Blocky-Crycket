@@ -588,7 +588,12 @@ pkt 9) ich nie obejmowało. Najmniejsze rozszerzenie, bez nowego pola:
   a nie ucinamy je hełmowi za małemu. Pomiar: `python -B swiat/postacie/pula_wojownika.py --uszy` (zapas = o ile każdy
   punkt brył uszu da się przesunąć w 26 kierunkach, nie wychodząc z hełmu; walce jak gładkie walce Roblox; kod 1, gdy
   zapas < 0,04). Uszy w ramce `HatAttachment` kota: x 0,35…0,98 (na zewnątrz głowy 0,825), y −0,04…0,70 nad czubkiem
-  głowy, z −0,21…0,14 — hełm mieszczący uszy ma ok. 2,2 szerokości i sięga ok. 0,8–1,0 nad głowę.
+  głowy, z −0,21…0,14.
+- **Kształt (Karol 26.11.2026: „hełm wygląda dobrze zostawiając sylwetkę”):** hełm ma niską kopułę jak na arkuszu
+  i dwie osłony w kształcie kocich uszu w materiale hełmu (`pula_wojownika._oslony_uszu`: trójkątne graniastosłupy
+  z dwóch klinów w ramce kości ucha, 0,8 u podstawy, 0,98 wysokości, 0,5 grubości) — zapas 0,065 we wszystkich pięciu
+  hełmach puli. Odrzucony wariant z rundy 1: kopuła ok. 2,2 szerokości i 0,8–1,3 nad głową (plansza
+  `d2611_helm_uszy_porownanie.jpg` z historii).
 - **Dane dla gry:** `ukrywa: ["Uszy"]` w przedmiocie i `znaczniki_ciala: {"Uszy": ["LeftEar", "RightEar"]}` w
   `ekwipunek.json` bohatera (pula wojownika). Rig z części: `Transparency = 1` części kości uszu, gdy przedmiot jest
   założony (jak włosy); rig z siatek: siatki `LeftEar_Geo`/`RightEar_Geo`.
@@ -618,30 +623,68 @@ kostur. Teraz broń deklaruje rodzaj, a ciało ma korektę na każdy rodzaj:
   świata. Na dziś korekty ma tylko kot (pula wojownika: `KOREKTY_CHWYTU = KM.KOREKTY_CHWYTU + chwyty.KOREKTY_KOTA`);
   Kot-Mag (`kot_mag.py`, zamrożony) i koty klas Pawła (`kot_klasy.py`) mają dawne korekty.
 
-| rodzaj | łapa | zaczep kota | pochylenie (przód, zewnątrz, skręt) | pos | rot korekty |
-|---|---|---|---|---|---|
-| `miecz` — miecz, tasak, pałka, pogrzebacz | prawa | `KosturAttachment` (StaffPivot) | 10°, 20°, 0 | (−0,08, 0, 0) | (−80, 20, 0) |
-| `rozdzka` — różdżka | prawa | `KosturAttachment` | 60°, 10°, 0 | (−0,08, 0, 0) | (−30, 10, 0) |
-| `drzewce` — kostur, włócznia (dzisiejszy chwyt) | prawa | `KosturAttachment` | 0, 0, 0 | (−0,08, 0, 0) | (−90, 0, 0) |
-| `proca` | prawa | `KosturAttachment` | 5°, 30°, 0 | (−0,08, 0, 0) | (−85, 30, 0) |
-| `luk` | lewa | `LeftGripAttachment` | 45°, 30°, −55° (łuk bokiem do patrzącego z przodu) | (0,15, 0,2, 0) | (−6,66, −51,94, 45,58) |
-| `tarcza` | lewa | `LeftGripAttachment` | jak u człowieka | (−0,12, 0, 0) | (0, 0, 0) |
-| `ksiega` | lewa | `LeftGripAttachment` | jak u człowieka (atrapa wisi pod łapą) | (0, 0, 0) | (0, 0, 0) |
+**Kryterium (Karol 26.11.2026: „miecz ma być tak wychylony, że podczas animacji chodzenia się nie bugował”):**
+w chodzie (`chod`) i spoczynku (`idle`) broń nie wchodzi w żadną bryłę ciała, stroju ani hełmu i nie schodzi pod
+ziemię — zapas ≥ 0,05 studa w każdej klatce; ziemia czysta także w klipach walki; głowa, nakrycie i tułów w klipach
+walki jak dotąd (`--przenikanie`). Kot nie ma klipu biegu (bieg w świecie liczy gra, `swiat/bohater_swiat`) —
+niesprawdzany. Kontrola: `python -B swiat/postacie/pula_wojownika.py --ruch` (`bron_w_ruchu`): punkty broni co
+0,04 studa względem wszystkich brył postaci (skrzynki dokładnie, walce i kule jak w Roblox) i ziemi, klatka po
+klatce, w każdym klipie kota. Nie liczą się: punkty broni schowane w łapie, która ją trzyma (pięść), i styk
+z przedramieniem tej łapy w promieniu 0,45 od środka łapy (rękojeść i jelec przy nadgarstku; kanoniczny kostur
+Kota-Maga siedzi w mankiecie na 0,24 w każdym klipie) — ten styk raport pokazuje osobno („chwyt”); tarcza: całe
+przedramię to chwyt (pasy).
 
-- **Dlaczego miecz odchyla się głównie na zewnątrz, a nie do przodu:** w klipie `upadek` kość `StaffPivot` kładzie
-  broń na ziemi tak, że oś dłoni „do przodu” patrzy w dół. Każdy stopień pochylenia do przodu wbija czubek w ziemię
-  (miecz 2 studa: 30° → 0,74–0,84 studa pod ziemią, 10° → do 0,19). Odchylenie na zewnątrz leży w płaszczyźnie ziemi.
-  Różdżka (60° do przodu) w upadku wchodzi w ziemię — do decyzji, gdy różdżka trafi na kota w grze.
+| rodzaj | łapa | zaczep kota | pochylenie (przód, zewnątrz, skręt, wokół osi broni) | pos | rot korekty |
+|---|---|---|---|---|---|
+| `miecz` — miecz, tasak, pałka, pogrzebacz | prawa | `KosturAttachment` (StaffPivot) | 20°, 10°, 0, −45° | (−0,08, 0,08, 0,03) | (−41,64, −61,12, 62,76) |
+| `rozdzka` — różdżka | prawa | `KosturAttachment` | 60°, 10°, 0 | (−0,08, 0, 0) | (−30, 10, 0) |
+| `drzewce` — kostur, włócznia | prawa | `KosturAttachment` | 0, 5°, 0 | (−0,12, 0,03, 0) | (−90, 5, 0) |
+| `proca` | prawa | `KosturAttachment` | 5°, 30°, 0 | (−0,12, 0,03, 0) | (−85, 30, 0) |
+| `luk` | lewa | `LeftGripAttachment` | 50°, 30°, −55° (łuk bokiem do patrzącego z przodu) | (0,2, 0,25, 0) | (−3,15, −48,36, 45,27) |
+| `tarcza` | lewa | `LeftGripAttachment` | jak u człowieka | (0, 0, 0,08) | (0, 0, 0) |
+| `ksiega` | lewa | `LeftGripAttachment` | jak u człowieka (mała atrapa wisi przed bokiem) | (0,2, 0,4, −0,2) | (0, 0, 0) |
+
+Wynik `--ruch` 26.11.2026 (najmniejszy odstęp w studach; ciało / ziemia):
+- **miecz** (5 mieczy puli na swoich kotach): chód i spoczynek +0,070…+0,080 / ≥ +0,49 — czysto; walka: ziemia
+  ≥ +0,077 (kula_ognia, pogrzebacz), głowa/hełm/tułów 0 (`--przenikanie`), ale głowica albo koniec rękojeści wchodzi
+  w ramię (rękaw) do 0,11 w `atak`, `kula_ognia`, `lodowy_pocisk` — łapa stoi tam przy barku, a wszystko, co
+  wystaje pod pięść, idzie w ramię (wcześniej do 0,18). Upadek: czubek do 0,54 pod ziemią.
+- **Pochylenie miecza:** 25° do przodu (zapas w chodzie +0,075) wbija pogrzebacz w ziemię w `kula_ognia`
+  (−0,06), 15° jest czyste (+0,058 / +0,22), ale mniej wychylone — wybrane 20°. Obrót −45° wokół osi broni odsuwa
+  wewnętrzną krawędź ostrza od przedramienia (bez niego 20° daje w chodzie tylko +0,02…+0,04).
+- **rozdzka:** czysto w każdym klipie poza upadkiem (+0,15…+0,25; upadek −0,69 pod ziemią).
+- **drzewce:** chód/spoczynek +0,083; walka do −0,04 (drzewce w ramię, `kula_ognia`).
+- **proca:** chód/spoczynek +0,076; walka do −0,21 (stopka rękojeści w ramię w `atak`, `kula_ognia`,
+  `lodowy_pocisk`).
+- **luk:** spoczynek +0,050, chód −0,048 (owijka majdanu przy zawijasie ogona); walka do −0,42 (łuk w głowę
+  i tułów — lewa łapa idzie w klipach walki przed ciało).
+- **tarcza:** chód/spoczynek +0,068…+0,105; walka do −0,28 (tarcza w tułów i głowę).
+- **ksiega:** spoczynek +0,124, chód +0,029 (zawijas ogona); walka do −0,18.
+- **Czego nie naprawi jedna stała korekta:** (1) lewa łapa sama wchodzi w ogon — goła łapa −0,138 w `chod` (kl. 14)
+  i −0,052 w `idle` (kl. 45); to klip ciała (zamach lewej łapy ±24° i kołysanie ogona), więc wszystko w lewej łapie
+  bywa przy ogonie; (2) w klipach walki (pisanych pod kostur) lewa łapa idzie przed tułów i do głowy — łuk, tarcza
+  i księga wchodzą w ciało w każdym klipie walki; (3) w `atak`, `kula_ognia`, `lodowy_pocisk` prawa łapa stoi przy
+  barku — to, co wystaje pod pięść (głowica, stopka procy, dół drzewca), wchodzi w ramię. Propozycje (gra albo
+  klipy klasy, nie wspólne klipy kota): mniejszy zamach lewej łapy z przedmiotem (np. ±7° jak prawa z bronią)
+  i odchylenie jej w barku o ok. 15° na zewnątrz; własne klipy walki dla łuku i tarczy.
+- **Upadek (poprawka tylko dla upadku, propozycja):** tor lotu `StaffPivot` liczono dla kostura (oś dłoni „do
+  przodu” leży na ziemi pionowo w dół), więc broń pochylona do przodu wbija się w ziemię. Tanio i bez ruszania
+  pozy w chodzie: w grze, w chwili wypuszczenia broni w klipie upadku (kl. 22, `kot_mag.UPADEK_LOT`), przestawić
+  spaw broni na korektę rodzaju `drzewce` (ułożenie kostura) — broń położy się płasko po tym samym torze. W
+  eksporcie FBX/GLB tego nie da się zapisać (korekta jest stała).
 - **Lewa łapa kota nie ma kości nośnej** (jak `StaffPivot` w prawej): łuk, tarcza i księga zostają w łapie także
-  w upadku (nie sprawdzane w klipach).
+  w upadku.
 - **Dane dla gry:** część broni w `ekwipunek.json` ma pole `chwyt` (tylko gdy broń je deklaruje), `zaczep`/`pos`/`rot`
   już po korekcie rodzaju; bohater ma `korekty_chwytu` (klucze: zaczepy i rodzaje) i `rodzaje_chwytu` (rodzaj →
   łapa, zaczep standardowy, opis, korekta kota) — `chwyty.dla_gry()`.
 - **Jak nowa broń deklaruje rodzaj:** `chwyt="<rodzaj>"` w `Akcesorium`; nowy rodzaj — wpis w `chwyty.RODZAJE` i
-  w `chwyty.POCHYLENIE_KOTA`, potem `--przenikanie` puli i plansza `pula_wojownika_chwyty`.
-- **Sprawdzenie:** `pula_wojownika.py --przenikanie` (miecz w głowie, hełmie i tułowiu w klipach walki kota; próg
-  głowy 0,02, tułowia 0,10; odniesienie Kot-Mag z kosturem), plansza `wynik/_pula_wojownika/d2611_chwyty.jpg`
-  (przód i 3/4 każdego rodzaju: `python -B swiat/postacie/przebuduj.py pula_wojownika_chwyty --bez-filmow`).
+  w `chwyty.POCHYLENIE_KOTA` (pochylenie może mieć 4. liczbę: obrót wokół osi broni), potem `--ruch` i
+  `--przenikanie` puli i plansze `pula_wojownika_chwyty`.
+- **Sprawdzenie:** `pula_wojownika.py --ruch` (całe ciało i ziemia, każdy klip; kod 1, gdy miecz zestawu nie ma
+  zapasu w chodzie albo spoczynku), `pula_wojownika.py --przenikanie` (głowa, nakrycie, tułów w klipach walki, próg
+  głowy 0,02, tułowia 0,10), plansze `wynik/_pula_wojownika/d2611_chwyty.jpg` (przód i 3/4 każdego rodzaju),
+  `d2611_chod_miecz.jpg` (Giermek w 8 klatkach chodu, przód i bok) i `d2611_chod_chwyty.jpg` (każdy rodzaj w 4
+  klatkach chodu): `python -B swiat/postacie/przebuduj.py pula_wojownika_chwyty` (z krótkim filmem chodu).
 - **Uwaga dla katalogu:** `zestawienie.py` odwraca `korekty_chwytu` po zaczepie ciała (`{v["zaczep"]: …}`); gdy
   kiedyś obejmie bohatera z rodzajami, kilka kluczy ma ten sam `KosturAttachment` — trzeba będzie brać rodzaj z pola
   `chwyt` części. Dziś katalog czyta tylko Rycerza, Kota-Maga i Zwiadowcę (bez rodzajów).

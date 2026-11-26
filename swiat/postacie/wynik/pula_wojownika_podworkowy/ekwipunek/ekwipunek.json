@@ -58,13 +58,13 @@
    "zaczep": "KosturAttachment",
    "pos": [
     -0.08,
-    0.0,
-    0.0
+    0.08,
+    0.03
    ],
    "rot": [
-    -80.0,
-    20.0,
-    0.0
+    -41.641,
+    -61.118,
+    62.764
    ]
   },
   "rozdzka": {
@@ -83,21 +83,21 @@
   "drzewce": {
    "zaczep": "KosturAttachment",
    "pos": [
-    -0.08,
-    0.0,
+    -0.12,
+    0.03,
     0.0
    ],
    "rot": [
     -90.0,
-    0.0,
+    5.0,
     0.0
    ]
   },
   "proca": {
    "zaczep": "KosturAttachment",
    "pos": [
-    -0.08,
-    0.0,
+    -0.12,
+    0.03,
     0.0
    ],
    "rot": [
@@ -109,22 +109,22 @@
   "luk": {
    "zaczep": "LeftGripAttachment",
    "pos": [
-    0.1,
-    0.15,
+    0.2,
+    0.25,
     0.0
    ],
    "rot": [
-    -53.058,
-    14.233,
-    -48.937
+    -3.149,
+    -48.362,
+    45.274
    ]
   },
   "tarcza": {
    "zaczep": "LeftGripAttachment",
    "pos": [
-    -0.12,
     0.0,
-    0.0
+    0.0,
+    0.08
    ],
    "rot": [
     0.0,
@@ -135,9 +135,9 @@
   "ksiega": {
    "zaczep": "LeftGripAttachment",
    "pos": [
-    0.0,
-    0.0,
-    0.0
+    0.2,
+    0.4,
+    -0.2
    ],
    "rot": [
     0.0,
@@ -150,18 +150,18 @@
   "miecz": {
    "lapa": "prawa",
    "zaczep_standardowy": "RightGripAttachment",
-   "opis": "broń jednoręczna (miecz, tasak, pałka, pogrzebacz): pięść na rękojeści, ostrze w górę, odchylone na zewnątrz (z dala od twarzy) i lekko do przodu, płaz widać z przodu",
+   "opis": "broń jednoręczna (miecz, tasak, pałka, pogrzebacz): pięść na rękojeści, ostrze w górę, pochylone 20° do przodu i 10° na zewnątrz, obrócone o 45° wokół własnej osi (wewnętrzna krawędź z dala od przedramienia), rękojeść nisko i z przodu łapy",
    "kot": {
     "zaczep": "KosturAttachment",
     "pos": [
      -0.08,
-     0.0,
-     0.0
+     0.08,
+     0.03
     ],
     "rot": [
-     -80.0,
-     20.0,
-     0.0
+     -41.641,
+     -61.118,
+     62.764
     ]
    }
   },
@@ -186,17 +186,17 @@
   "drzewce": {
    "lapa": "prawa",
    "zaczep_standardowy": "RightGripAttachment",
-   "opis": "kostur, włócznia, chorągiew: drzewce pionowo wzdłuż łapy, dół przy ziemi (dzisiejszy chwyt kostura Kota-Maga; nazwa „drzewce” jak w bibliotece)",
+   "opis": "kostur, włócznia, chorągiew: drzewce pionowo wzdłuż łapy, dół przy ziemi (chwyt kostura Kota-Maga, odsunięty o 0,04 na zewnątrz i 5° od rękawa; nazwa „drzewce” jak w bibliotece)",
    "kot": {
     "zaczep": "KosturAttachment",
     "pos": [
-     -0.08,
-     0.0,
+     -0.12,
+     0.03,
      0.0
     ],
     "rot": [
      -90.0,
-     0.0,
+     5.0,
      0.0
     ]
    }
@@ -208,8 +208,8 @@
    "kot": {
     "zaczep": "KosturAttachment",
     "pos": [
-     -0.08,
-     0.0,
+     -0.12,
+     0.03,
      0.0
     ],
     "rot": [
@@ -222,18 +222,18 @@
   "luk": {
    "lapa": "lewa",
    "zaczep_standardowy": "LeftGripAttachment",
-   "opis": "łuk: majdan w lewej łapie, łuk prawie pionowo (górne ramię pochylone do przodu i na zewnątrz, z dala od przedramienia), brzuch łuku do przodu i na zewnątrz, cięciwa ku ciału",
+   "opis": "łuk: majdan w lewej łapie, górne ramię pochylone do przodu i na zewnątrz (z dala od przedramienia), łuk obrócony bokiem do patrzącego z przodu — widać jego wygięcie",
    "kot": {
     "zaczep": "LeftGripAttachment",
     "pos": [
-     0.1,
-     0.15,
+     0.2,
+     0.25,
      0.0
     ],
     "rot": [
-     -53.058,
-     14.233,
-     -48.937
+     -3.149,
+     -48.362,
+     45.274
     ]
    }
   },
@@ -244,9 +244,9 @@
    "kot": {
     "zaczep": "LeftGripAttachment",
     "pos": [
-     -0.12,
      0.0,
-     0.0
+     0.0,
+     0.08
     ],
     "rot": [
      0.0,
@@ -258,13 +258,13 @@
   "ksiega": {
    "lapa": "lewa",
    "zaczep_standardowy": "LeftGripAttachment",
-   "opis": "księga: zamknięta, trzymana za górną krawędź w lewej łapie, wisi wzdłuż boku, okładką do przodu i na zewnątrz",
+   "opis": "księga: mała, zamknięta, trzymana za górną krawędź w lewej łapie, wisi przed bokiem (odsunięta do przodu i na zewnątrz, z dala od ogona), okładką do przodu i na zewnątrz",
    "kot": {
     "zaczep": "LeftGripAttachment",
     "pos": [
-     0.0,
-     0.0,
-     0.0
+     0.2,
+     0.4,
+     -0.2
     ],
     "rot": [
      0.0,
@@ -313,11 +313,11 @@
      ],
      "fbx": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_helm.fbx",
      "glb": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_helm.glb",
-     "trojkaty": 652,
+     "trojkaty": 708,
      "attachment_pos": [
       0.0,
-      0.019,
-      0.005
+      -0.008,
+      0.01
      ]
     }
    ],
@@ -599,13 +599,13 @@
      "zaczep": "KosturAttachment",
      "pos": [
       -0.08,
-      0.0,
-      0.0
+      0.08,
+      0.03
      ],
      "rot": [
-      -80.0,
-      20.0,
-      0.0
+      -41.641,
+      -61.118,
+      62.764
      ],
      "chwyt": "miecz",
      "fbx": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_miecz.fbx",

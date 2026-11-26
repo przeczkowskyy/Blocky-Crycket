@@ -366,22 +366,22 @@
     {
      "nazwa": "kot_rycerz_targowy_helm_Akc",
      "kosc": "HatPivot",
-     "trojkaty": 776,
-     "wierzcholki": 448,
+     "trojkaty": 856,
+     "wierzcholki": 504,
      "wymiary": [
-      2.54,
-      1.701,
-      1.84
+      2.3,
+      1.645,
+      1.8
      ],
      "min": [
-      -1.27,
+      -1.15,
       2.389,
-      -0.93
+      -0.91
      ],
      "max": [
-      1.27,
-      4.09,
-      0.91
+      1.15,
+      4.034,
+      0.89
      ]
     },
     {
@@ -390,23 +390,23 @@
      "trojkaty": 292,
      "wierzcholki": 168,
      "wymiary": [
-      1.219,
-      1.667,
-      0.411
+      0.839,
+      1.689,
+      0.872
      ],
      "min": [
-      -1.953,
-      0.597,
-      -0.135
+      -1.623,
+      0.573,
+      -0.224
      ],
      "max": [
-      -0.734,
-      2.264,
-      0.276
+      -0.784,
+      2.262,
+      0.648
      ]
     }
    ],
-   "trojkaty_razem": 5896,
+   "trojkaty_razem": 5976,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 31
@@ -419,19 +419,19 @@
     2.242
    ],
    "wymiary_z_akcesoriami": [
-    3.223,
-    4.095,
+    2.773,
+    4.039,
     2.242
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.953,
+     -1.623,
      -0.005,
      -1.239
     ],
     [
-     1.27,
-     4.09,
+     1.15,
+     4.034,
      1.003
     ]
    ],
@@ -595,26 +595,26 @@
     {
      "nazwa": "kot_rycerz_targowy_helm",
      "kosc": null,
-     "trojkaty": 776,
-     "wierzcholki": 448,
+     "trojkaty": 856,
+     "wierzcholki": 504,
      "wymiary": [
-      2.54,
-      1.701,
-      1.84
+      2.3,
+      1.645,
+      1.8
      ],
      "min": [
-      -1.27,
+      -1.15,
       -0.781,
-      -0.93
+      -0.91
      ],
      "max": [
-      1.27,
-      0.92,
-      0.91
+      1.15,
+      0.864,
+      0.89
      ]
     }
    ],
-   "trojkaty_razem": 776,
+   "trojkaty_razem": 856,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 6
@@ -623,19 +623,19 @@
    "typ_roblox": "Hat",
    "zakres_od_zaczepu": [
     [
-     -1.27,
+     -1.15,
      -0.781,
-     -0.93
+     -0.91
     ],
     [
-     1.27,
-     0.92,
-     0.91
+     1.15,
+     0.864,
+     0.89
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    0.07,
+    0.041,
     -0.01
    ],
    "ostrzezenia": []
@@ -701,8 +701,8 @@
   "pula_wojownika_targowy.fbx: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje brak -> ZGODNE",
   "pula_wojownika_targowy__idle.fbx: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje pula_wojownika_targowy|Scene 1-61 -> ZGODNE",
   "pula_wojownika_targowy.glb: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
-  "kot_rycerz_targowy_helm.fbx: siatki 1, kości 0, trójkąty 776, wzrost 1.70 st., akcje brak -> ZGODNE",
-  "kot_rycerz_targowy_helm.glb: siatki 1, kości 0, trójkąty 776, wzrost 1.70 st., akcje brak -> ZGODNE",
+  "kot_rycerz_targowy_helm.fbx: siatki 1, kości 0, trójkąty 856, wzrost 1.65 st., akcje brak -> ZGODNE",
+  "kot_rycerz_targowy_helm.glb: siatki 1, kości 0, trójkąty 856, wzrost 1.65 st., akcje brak -> ZGODNE",
   "kot_rycerz_targowy_miecz.fbx: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE",
   "kot_rycerz_targowy_miecz.glb: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE",
   "ekwipunek: pula_wojownika_targowy_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",

@@ -31,41 +31,44 @@ from swiat.postacie.biblioteka.postac import katy_z_macierzy, macierz_obrotu, mn
 RODZAJE = {
     "miecz": {"lapa": "prawa", "zaczep": "RightGripAttachment",
               "opis": "broń jednoręczna (miecz, tasak, pałka, pogrzebacz): pięść na rękojeści, ostrze w górę, "
-                      "odchylone na zewnątrz (z dala od twarzy) i lekko do przodu, płaz widać z przodu"},
+                      "pochylone 20° do przodu i 10° na zewnątrz, obrócone o 45° wokół własnej osi (wewnętrzna "
+                      "krawędź z dala od przedramienia), rękojeść nisko i z przodu łapy"},
     "rozdzka": {"lapa": "prawa", "zaczep": "RightGripAttachment",
                 "opis": "różdżka: lekki chwyt przy końcu, czubek do przodu i w górę"},
     "drzewce": {"lapa": "prawa", "zaczep": "RightGripAttachment",
-                "opis": "kostur, włócznia, chorągiew: drzewce pionowo wzdłuż łapy, dół przy ziemi (dzisiejszy chwyt "
-                        "kostura Kota-Maga; nazwa „drzewce” jak w bibliotece)"},
+                "opis": "kostur, włócznia, chorągiew: drzewce pionowo wzdłuż łapy, dół przy ziemi (chwyt kostura "
+                        "Kota-Maga, odsunięty o 0,04 na zewnątrz i 5° od rękawa; nazwa „drzewce” jak w bibliotece)"},
     "proca": {"lapa": "prawa", "zaczep": "RightGripAttachment",
               "opis": "proca: rękojeść w pięści, widełki w górę, skórka z kamykiem do przodu"},
     "luk": {"lapa": "lewa", "zaczep": "LeftGripAttachment",
             "opis": "łuk: majdan w lewej łapie, górne ramię pochylone do przodu i na zewnątrz (z dala od "
                     "przedramienia), łuk obrócony bokiem do patrzącego z przodu — widać jego wygięcie"},
     "tarcza": {"lapa": "lewa", "zaczep": "LeftGripAttachment",
-               "opis": "tarcza: na lewym przedramieniu (pasy na łapie), lico na zewnątrz — jak tarcza Rycerza"},
+               "opis": "tarcza: na lewym przedramieniu (pasy na łapie), lico na zewnątrz — jak tarcza Rycerza",
+               "przedramie_w_chwycie": True},      # pasy obejmują przedramię: styk z nim to chwyt (--ruch)
     "ksiega": {"lapa": "lewa", "zaczep": "LeftGripAttachment",
-               "opis": "księga: zamknięta, trzymana za górną krawędź w lewej łapie, wisi wzdłuż boku, okładką do "
-                       "przodu i na zewnątrz"},
+               "opis": "księga: mała, zamknięta, trzymana za górną krawędź w lewej łapie, wisi przed bokiem "
+                       "(odsunięta do przodu i na zewnątrz, z dala od ogona), okładką do przodu i na zewnątrz"},
 }
 
 # Kot (ciało Kota-Maga i kotów z tym samym szkieletem): pochylenie broni w ramce dłoni w stopniach
-# (do_przodu, na_zewnatrz, skret) i przesunięcie w ramce zaczepu. Prawa łapa — kość nośna StaffPivot
-# (KosturAttachment: w upadku broń wypada z łapy), lewa łapa — zwykły LeftGripAttachment (kot nie ma kości nośnej
-# lewej łapy: łuk, tarcza i księga zostają w łapie także w upadku).
-# Pochylenie DO PRZODU prawej łapy jest małe z konieczności: w klipie upadku kość StaffPivot kładzie broń na ziemi
-# tak, że oś dłoni „do przodu” patrzy w dół — każdy stopień pochylenia do przodu wbija czubek w ziemię (miecz 2 studa:
-# 30° → 0,74–0,84 studa pod ziemią, 10° → do 0,19; pomiar 26.11.2026). Odchylenie na zewnątrz leży w płaszczyźnie
-# ziemi i nic nie wbija, więc miecz i proca odchylają się głównie na zewnątrz. Różdżka (60° do przodu) w upadku
-# wchodzi w ziemię — do decyzji, jeśli różdżki trafią do gry na kocie.
+# (do_przodu, na_zewnatrz, skret[, wlasny]) i przesunięcie w ramce zaczepu (x — bok łapy, y — przód łapy,
+# z — w dół łapy). Prawa łapa — kość nośna StaffPivot (KosturAttachment: w upadku broń wypada z łapy), lewa łapa —
+# zwykły LeftGripAttachment (kot nie ma kości nośnej lewej łapy: łuk, tarcza i księga zostają w łapie w upadku).
+# Liczby dobrane 26.11.2026 kontrolą `pula_wojownika.py --ruch` (broń względem WSZYSTKICH brył ciała i ziemi,
+# klatka po klatce): kryterium — chód i spoczynek czyste z zapasem ≥ 0,05 studa (Karol: „miecz ma być tak
+# wychylony, że podczas animacji chodzenia się nie bugował”), ziemia w klipach walki czysta. Miecz: więcej niż 20° do
+# przodu wbija długie ostrza (pogrzebacz) w ziemię w klipie kula_ognia (25° → −0,06), mniej niż 15° — ostrze dotyka
+# przedramienia w chodzie. W klipie upadku każdy stopień do przodu wbija czubek w ziemię (oś dłoni „do przodu” leży
+# wtedy pionowo w dół); poprawka tylko dla upadku — patrz EKWIPUNEK.md pkt 15.
 POCHYLENIE_KOTA = {
-    "miecz": ("KosturAttachment", (-0.08, 0.0, 0.0), (10.0, 20.0, 0.0)),
+    "miecz": ("KosturAttachment", (-0.08, 0.08, 0.03), (20.0, 10.0, 0.0, -45.0)),
     "rozdzka": ("KosturAttachment", (-0.08, 0.0, 0.0), (60.0, 10.0, 0.0)),
-    "drzewce": ("KosturAttachment", (-0.08, 0.0, 0.0), (0.0, 0.0, 0.0)),
-    "proca": ("KosturAttachment", (-0.08, 0.0, 0.0), (5.0, 30.0, 0.0)),
-    "luk": ("LeftGripAttachment", (0.15, 0.2, 0.0), (45.0, 30.0, -55.0)),
-    "tarcza": ("LeftGripAttachment", (-0.12, 0.0, 0.0), None),        # None: model ma własny obrót (jak u człowieka)
-    "ksiega": ("LeftGripAttachment", (0.0, 0.0, 0.0), None),
+    "drzewce": ("KosturAttachment", (-0.12, 0.03, 0.0), (0.0, 5.0, 0.0)),
+    "proca": ("KosturAttachment", (-0.12, 0.03, 0.0), (5.0, 30.0, 0.0)),
+    "luk": ("LeftGripAttachment", (0.2, 0.25, 0.0), (50.0, 30.0, -55.0)),
+    "tarcza": ("LeftGripAttachment", (0.0, 0.0, 0.08), None),         # None: model ma własny obrót (jak u człowieka)
+    "ksiega": ("LeftGripAttachment", (0.2, 0.4, -0.2), None),
 }
 
 
@@ -73,12 +76,13 @@ def _zaokr(v, n=3):
     return tuple(0.0 if abs(round(x, n)) == 0 else round(x, n) for x in v)
 
 
-def obrot_korekty(do_przodu=0.0, na_zewnatrz=0.0, skret=0.0, lapa="prawa"):
+def obrot_korekty(do_przodu=0.0, na_zewnatrz=0.0, skret=0.0, wlasny=0.0, lapa="prawa"):
     """Obrót korekty w ramce zaczepu chwytu dla pochylenia broni w ramce dłoni (stopnie). „Na zewnątrz” = od ciała:
     dla prawej łapy ku −X, dla lewej ku +X; „skręt” = obrót wokół osi pionowej (dodatni: lico ku lewej stronie
-    postaci, +X)."""
+    postaci, +X); „własny” = obrót broni wokół jej własnej osi (+Y broni) przed pochyleniem."""
     zn = 1.0 if lapa == "prawa" else -1.0
-    R = mnoz(macierz_obrotu(0, skret, 0), mnoz(macierz_obrotu(0, 0, zn * na_zewnatrz), macierz_obrotu(do_przodu, 0, 0)))
+    R = mnoz(macierz_obrotu(0, skret, 0), mnoz(macierz_obrotu(0, 0, zn * na_zewnatrz),
+                                               mnoz(macierz_obrotu(do_przodu, 0, 0), macierz_obrotu(0, wlasny, 0))))
     return _zaokr(katy_z_macierzy(mnoz(macierz_obrotu(-90, 0, 0), R)))
 
 

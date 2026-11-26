@@ -366,22 +366,22 @@
     {
      "nazwa": "kot_rycerz_giermek_helm_Akc",
      "kosc": "HatPivot",
-     "trojkaty": 700,
-     "wierzcholki": 398,
+     "trojkaty": 744,
+     "wierzcholki": 430,
      "wymiary": [
-      2.2,
-      2.44,
-      1.852
+      2.134,
+      2.11,
+      1.802
      ],
      "min": [
-      -1.1,
+      -1.067,
       2.508,
-      -0.932
+      -0.902
      ],
      "max": [
-      1.1,
-      4.948,
-      0.92
+      1.067,
+      4.618,
+      0.9
      ]
     },
     {
@@ -390,23 +390,23 @@
      "trojkaty": 372,
      "wierzcholki": 212,
      "wymiary": [
-      1.073,
-      2.421,
-      0.533
+      0.703,
+      2.42,
+      1.018
      ],
      "min": [
-      -1.697,
-      0.396,
-      -0.146
+      -1.397,
+      0.375,
+      -0.211
      ],
      "max": [
-      -0.624,
-      2.817,
-      0.387
+      -0.694,
+      2.795,
+      0.807
      ]
     }
    ],
-   "trojkaty_razem": 4452,
+   "trojkaty_razem": 4496,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 24
@@ -419,20 +419,20 @@
     2.114
    ],
    "wymiary_z_akcesoriami": [
-    2.837,
-    4.953,
-    2.159
+    2.537,
+    4.623,
+    2.139
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.697,
+     -1.397,
      -0.005,
      -1.239
     ],
     [
      1.14,
-     4.948,
-     0.92
+     4.618,
+     0.9
     ]
    ],
    "kosci": [
@@ -594,26 +594,26 @@
     {
      "nazwa": "kot_rycerz_giermek_helm",
      "kosc": null,
-     "trojkaty": 700,
-     "wierzcholki": 398,
+     "trojkaty": 744,
+     "wierzcholki": 430,
      "wymiary": [
-      2.2,
-      2.44,
-      1.852
+      2.134,
+      2.11,
+      1.802
      ],
      "min": [
-      -1.1,
+      -1.067,
       -0.662,
-      -0.932
+      -0.902
      ],
      "max": [
-      1.1,
-      1.778,
-      0.92
+      1.067,
+      1.448,
+      0.9
      ]
     }
    ],
-   "trojkaty_razem": 700,
+   "trojkaty_razem": 744,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 6
@@ -622,20 +622,20 @@
    "typ_roblox": "Hat",
    "zakres_od_zaczepu": [
     [
-     -1.1,
+     -1.067,
      -0.662,
-     -0.932
+     -0.902
     ],
     [
-     1.1,
-     1.778,
-     0.92
+     1.067,
+     1.448,
+     0.9
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    0.558,
-    -0.006
+    0.393,
+    -0.001
    ],
    "ostrzezenia": []
   },
@@ -700,8 +700,8 @@
   "pula_wojownika_giermek.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje brak -> ZGODNE",
   "pula_wojownika_giermek__idle.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje pula_wojownika_giermek|Scene 1-61 -> ZGODNE",
   "pula_wojownika_giermek.glb: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
-  "kot_rycerz_giermek_helm.fbx: siatki 1, kości 0, trójkąty 700, wzrost 2.44 st., akcje brak -> ZGODNE",
-  "kot_rycerz_giermek_helm.glb: siatki 1, kości 0, trójkąty 700, wzrost 2.44 st., akcje brak -> ZGODNE",
+  "kot_rycerz_giermek_helm.fbx: siatki 1, kości 0, trójkąty 744, wzrost 2.11 st., akcje brak -> ZGODNE",
+  "kot_rycerz_giermek_helm.glb: siatki 1, kości 0, trójkąty 744, wzrost 2.11 st., akcje brak -> ZGODNE",
   "kot_rycerz_giermek_miecz.fbx: siatki 1, kości 0, trójkąty 372, wzrost 2.58 st., akcje brak -> ZGODNE",
   "kot_rycerz_giermek_miecz.glb: siatki 1, kości 0, trójkąty 372, wzrost 2.58 st., akcje brak -> ZGODNE",
   "ekwipunek: pula_wojownika_giermek_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",

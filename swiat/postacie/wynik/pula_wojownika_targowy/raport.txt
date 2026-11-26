@@ -17,15 +17,15 @@ ZNANE SŁABOŚCI
 - Ciało to goły Kot-Mag (rasa Człowiek), tak jak Koci Rycerz z kot_klasy.py; inne rasy kota mają te same klocki, więc przedmioty pasują na każdą z nich (sprawdzone tylko na rudym kocie).
 - Hełm i miecz siedzą na kościach nośnych kota (HatPivot, StaffPivot): w klipie upadku hełm zsuwa się z głowy, a miecz wypada z łapy — jak kapelusz i kostur Kota-Maga.
 - Cholewy butów to nakładka na łydce (kot nie ma właściciela powłoki na LowerLeg) — futro łydki zostaje pod cholewą; to jedyne rozszerzenie względem tabeli właścicieli w EKWIPUNEK.md.
-- Hełmy (26.11.2026) mieszczą całe uszy kota (zapas 0,07–0,09 studa w spoczynku, --uszy) i chowają je (ukrywa „Uszy”); dlatego są szersze od głowy (ok. 2,2) i wyższe (0,8–1,3 nad głową). W klipie upadku hełm zsuwa się, a uszu nie ma przez cały klip (eksport nie przełącza widoczności) — w grze odsłoni je dopiero skrypt.
+- Hełmy (26.11.2026): niska kopuła i dwie osłony w kształcie kocich uszu, które mieszczą uszy (zapas 0,065 studa w spoczynku, --uszy); uszy schowane (ukrywa „Uszy”). W klipie upadku hełm zsuwa się, a uszu nie ma przez cały klip (eksport nie przełącza widoczności) — w grze odsłoni je dopiero skrypt.
 - W klipie upadku hełm leży do 0,25–0,79 studa pod ziemią (tak było już przed 26.11: tor lotu liczono dla kapelusza Kota-Maga, a hełmy mają części poniżej obręczy — osłony, pasek, makaron, kabłąk).
-- Miecze trzyma chwyt „miecz” (chwyty.py): ostrze odchylone 20° na zewnątrz i 10° do przodu. Większe pochylenie do przodu wbijałoby czubek w ziemię w upadku (30° → do 0,84 studa); przy 10° czubek schodzi do 0,19 studa pod ziemię (przed 26.11 miecz leżał 0,03–0,20 nad ziemią).
-- Przenikanie miecza w głowę, hełm i tułów w klipach walki kota: --przenikanie (dane walki maga, próg głowy 0,02, tułowia 0,10). Plansze pokazują pozę spoczynku.
+- Miecze trzyma chwyt „miecz” (chwyty.py, --ruch): w chodzie i spoczynku broń nie dotyka ciała (zapas ≥ 0,07) ani ziemi. W klipach walki atak, kula_ognia i lodowy_pocisk głowica (Giermek, Mleczarz) wchodzi do 0,11 studa w rękaw ramienia, gdy łapa jest przy barku (przed 26.11 do 0,18); w upadku czubek schodzi do 0,54 studa pod ziemię (pochylenie do przodu leży wtedy pionowo w dół).
+- Przenikanie broni w głowę, hełm i tułów w klipach walki: --przenikanie (dane walki maga, próg głowy 0,02, tułowia 0,10); całe ciało i ziemia klatka po klatce: --ruch. Kot nie ma klipu biegu — bieg w świecie liczy gra (swiat/bohater_swiat), tu niesprawdzany.
 - W Roblox Studio nic z tego nie było budowane ani oglądane; nic nie zostało wgrane.
 
 MODEL pula_wojownika_targowy „Kot-wojownik — Targowy” (r15)
-  wymiary ciała: 2,20 × 3,15 × 2,24; z akcesoriami: 3,22 × 4,09 × 2,24
-  trójkąty: 5896 (siatek: 19)
+  wymiary ciała: 2,20 × 3,15 × 2,24; z akcesoriami: 2,77 × 4,04 × 2,24
+  trójkąty: 5976 (siatek: 19)
   budżety ciała R15: Head 680/4000, Torso 2376/1750, LeftArm 452/1248, RightArm 344/1248, LeftLeg 312/1248, RightLeg 312/1248
   kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
   klipy: idle 60 kl. 2,00 s pętla
@@ -36,7 +36,7 @@ MODEL pula_wojownika_targowy „Kot-wojownik — Targowy” (r15)
 
 PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
 id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
-kot_rycerz_targowy_helm HatAttachment              Hat          776  2,54 × 1,70 × 1,84   (-0,00; -0,07; 0,01)  
+kot_rycerz_targowy_helm HatAttachment              Hat          856  2,30 × 1,65 × 1,80   (-0,00; -0,04; 0,01)  
 kot_rycerz_targowy_miecz RightGripAttachment        Bron         292  0,75 × 1,72 × 0,19   (0,26; -0,50; -0,01)  
 attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
 importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
@@ -59,8 +59,8 @@ KONTROLA EKSPORTÓW
 - pula_wojownika_targowy.fbx: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje brak -> ZGODNE
 - pula_wojownika_targowy__idle.fbx: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje pula_wojownika_targowy|Scene 1-61 -> ZGODNE
 - pula_wojownika_targowy.glb: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE
-- kot_rycerz_targowy_helm.fbx: siatki 1, kości 0, trójkąty 776, wzrost 1.70 st., akcje brak -> ZGODNE
-- kot_rycerz_targowy_helm.glb: siatki 1, kości 0, trójkąty 776, wzrost 1.70 st., akcje brak -> ZGODNE
+- kot_rycerz_targowy_helm.fbx: siatki 1, kości 0, trójkąty 856, wzrost 1.65 st., akcje brak -> ZGODNE
+- kot_rycerz_targowy_helm.glb: siatki 1, kości 0, trójkąty 856, wzrost 1.65 st., akcje brak -> ZGODNE
 - kot_rycerz_targowy_miecz.fbx: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE
 - kot_rycerz_targowy_miecz.glb: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE
 - ekwipunek: pula_wojownika_targowy_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE

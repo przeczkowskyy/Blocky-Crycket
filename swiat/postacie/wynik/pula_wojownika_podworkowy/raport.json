@@ -366,22 +366,22 @@
     {
      "nazwa": "kot_rycerz_podworkowy_helm_Akc",
      "kosc": "HatPivot",
-     "trojkaty": 652,
-     "wierzcholki": 376,
+     "trojkaty": 708,
+     "wierzcholki": 416,
      "wymiary": [
-      2.54,
-      1.658,
-      1.83
+      2.28,
+      1.712,
+      1.74
      ],
      "min": [
-      -1.27,
+      -1.14,
       2.322,
-      -0.92
+      -0.88
      ],
      "max": [
-      1.27,
-      3.98,
-      0.91
+      1.14,
+      4.034,
+      0.86
      ]
     },
     {
@@ -390,23 +390,23 @@
      "trojkaty": 412,
      "wierzcholki": 238,
      "wymiary": [
-      1.022,
-      2.231,
-      0.618
+      0.712,
+      2.229,
+      0.976
      ],
      "min": [
-      -1.689,
-      0.533,
-      -0.127
+      -1.396,
+      0.514,
+      -0.147
      ],
      "max": [
-      -0.667,
-      2.764,
-      0.491
+      -0.684,
+      2.743,
+      0.829
      ]
     }
    ],
-   "trojkaty_razem": 4996,
+   "trojkaty_razem": 5052,
    "tekstury": {
     "rozmiar_px": 64,
     "kolory_materialy": 32
@@ -419,20 +419,20 @@
     2.114
    ],
    "wymiary_z_akcesoriami": [
-    2.959,
-    3.985,
-    2.149
+    2.536,
+    4.039,
+    2.114
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.689,
+     -1.396,
      -0.005,
      -1.239
     ],
     [
-     1.27,
-     3.98,
-     0.91
+     1.14,
+     4.034,
+     0.875
     ]
    ],
    "kosci": [
@@ -594,26 +594,26 @@
     {
      "nazwa": "kot_rycerz_podworkowy_helm",
      "kosc": null,
-     "trojkaty": 652,
-     "wierzcholki": 376,
+     "trojkaty": 708,
+     "wierzcholki": 416,
      "wymiary": [
-      2.54,
-      1.658,
-      1.83
+      2.28,
+      1.712,
+      1.74
      ],
      "min": [
-      -1.27,
+      -1.14,
       -0.848,
-      -0.92
+      -0.88
      ],
      "max": [
-      1.27,
-      0.81,
-      0.91
+      1.14,
+      0.864,
+      0.86
      ]
     }
    ],
-   "trojkaty_razem": 652,
+   "trojkaty_razem": 708,
    "tekstury": {
     "rozmiar_px": 32,
     "kolory_materialy": 5
@@ -622,20 +622,20 @@
    "typ_roblox": "Hat",
    "zakres_od_zaczepu": [
     [
-     -1.27,
+     -1.14,
      -0.848,
-     -0.92
+     -0.88
     ],
     [
-     1.27,
-     0.81,
-     0.91
+     1.14,
+     0.864,
+     0.86
     ]
    ],
    "srodek_skrzynki_od_zaczepu": [
     0.0,
-    -0.019,
-    -0.005
+    0.008,
+    -0.01
    ],
    "ostrzezenia": []
   },
@@ -700,8 +700,8 @@
   "pula_wojownika_podworkowy.fbx: siatki 38, kości 23, trójkąty 4184, wzrost 3.15 st., akcje brak -> ZGODNE",
   "pula_wojownika_podworkowy__idle.fbx: siatki 38, kości 23, trójkąty 4184, wzrost 3.15 st., akcje pula_wojownika_podworkowy|Scene 1-61 -> ZGODNE",
   "pula_wojownika_podworkowy.glb: siatki 38, kości 23, trójkąty 4184, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
-  "kot_rycerz_podworkowy_helm.fbx: siatki 1, kości 0, trójkąty 652, wzrost 1.66 st., akcje brak -> ZGODNE",
-  "kot_rycerz_podworkowy_helm.glb: siatki 1, kości 0, trójkąty 652, wzrost 1.66 st., akcje brak -> ZGODNE",
+  "kot_rycerz_podworkowy_helm.fbx: siatki 1, kości 0, trójkąty 708, wzrost 1.71 st., akcje brak -> ZGODNE",
+  "kot_rycerz_podworkowy_helm.glb: siatki 1, kości 0, trójkąty 708, wzrost 1.71 st., akcje brak -> ZGODNE",
   "kot_rycerz_podworkowy_miecz.fbx: siatki 1, kości 0, trójkąty 412, wzrost 2.39 st., akcje brak -> ZGODNE",
   "kot_rycerz_podworkowy_miecz.glb: siatki 1, kości 0, trójkąty 412, wzrost 2.39 st., akcje brak -> ZGODNE",
   "ekwipunek: pula_wojownika_podworkowy_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",
