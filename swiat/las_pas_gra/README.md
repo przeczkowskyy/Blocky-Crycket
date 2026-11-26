@@ -1,5 +1,7 @@
 # Las-pas w grze — potwory w przegrodach, brama, teleport, mgła, przelot kamery
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** bramy starego miasteczka `Workspace/LasTeleport` i starego lasu (`BiomLas`, `LasPotwory`, `LasMgla`) nie ma już w miejscu. `SerwerPasa` niczego nie przekierowuje (atrybut `Przekierowanie = "nie_ten_biom"` we wszystkich biomach, `biom.przekieruj = false`), nie czyta atrybutów `LasTeleport`, a zapasowy cel Kamienia Powrotu (bez uchwytu bazaru) to start bazaru ze `swiat/miasteczko_bazar/znaczniki.json` (`DanePasa.miasteczko`). Do lasu prowadzą Brama Leśna bazaru i przejście przez chmury — oba przez `Sygnaly/PrzeniesDoLasu`. Kod potworów nadal dzieli źródła ze `swiat/las_potwory/` (źródła zostają). Usuwanie z miejsca: `python -B tools/studio/sprzatanie_mapy.py` (najpierw `--sucho`); start gry na starcie bazaru: `python -B tools/studio/start_w_miasteczku.py`.
+
 *Status: **propozycja** (16–17.11.2026). Kod sprawdzony bez Studio, a 17.11.2026 w nocy **wdrożony do Studio
 i sprawdzony w trybie Play** (jeden gracz, komputer; wyniki niżej, rozdz. „Co sprawdzone w grze”). Źródło wymagań:
 plan `swiat/biom_las/pas/PLAN_PASA.md` (zaakceptowany plan lasu) i decyzje D-075,

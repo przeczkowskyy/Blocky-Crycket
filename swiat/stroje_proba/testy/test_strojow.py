@@ -694,6 +694,22 @@ class TestKlipy(unittest.TestCase):
 
 # ============================================================================================== 4. kod
 class TestKod(unittest.TestCase):
+    def test_4_bez_przymierzalni_przy_starym_starcie(self):
+        # 26.11.2026 (Karol, sprzątanie mapy): przymierzalnia stała przy starym starcie — nie stawiamy jej, a klient
+        # działa bez niej (bez okna i podglądu); strój dalej zmienia serwer
+        self.assertIs(D["stojak"]["w_grze"], False)
+        self.assertFalse(ZB.stojak_w_grze(D))
+        self.assertIn("nie powstaje", ZB.plan(D)[0])
+        for o in D["stojak"]["omijaj"]:
+            self.assertNotIn("LasTeleport", json.dumps(o))
+            self.assertNotIn("PunktStaregoMiasteczka", json.dumps(o))
+        klient = czytaj("KlientStrojow.client.luau")
+        self.assertIn('if D.stojak.w_grze == false then kontener:FindFirstChild("Przymierzalnia")', klient)
+        self.assertIn("if stan.okno or not podest then", klient)
+        self.assertIn("stojak = podest ~= nil", klient)
+        zb = open(os.path.join(PAKIET, "zbuduj.py"), encoding="utf-8").read()
+        self.assertRegex(zb, r'if stojak_w_grze\(D\):\s+print\("  stojak:", wykonaj\(kod_stojaka\(D\)\)\)')
+
     def test_4a_kontrola_luau(self):
         bledy, parser = SLS.sprawdz_pliki(SLS.pliki_pakietu(), wypisz=lambda *_: None)
         self.assertEqual(bledy, [])

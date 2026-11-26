@@ -26,7 +26,7 @@ LISTA (OK / BŁĄD / ?):
   x7 pet: napis nad petem = nazwa z wyklucia, model peta ze słupa, pet z puli TEGO jajka, cena zakupu = cena jajka
   x8 koniec: Wyklucie zdjęte, kino zamknięte, kamera Custom, ruch przywrócony, jajo z powrotem całe
   x9 (Bagno, Dżungla) ozdoby grają finał (odchylenie liści / trzcin, błysk kryształów, bąble)
-  xA zakup „bez pokazu”: stary inkubator nie gra animacji, napis „Wykluł się…” dopiero po wyłonieniu peta
+  xA zakup „bez pokazu”: żadnej animacji pakietu petów (inkubatorów od 26.11 nie ma), napis „Wykluł się…” dopiero po wyłonieniu peta
   xB po scence aktywny pet idzie za graczem (model „Pet <PetAktywny>” bliżej niż 12 st)
   xZ zrzuty: jajo świeci / pęka, rozpad ze słupem, pet (ocena człowieka: „?”)
   K01 konsola bez błędów skryptów jajek (JajkoKorowe*, JajkaBiomow*)

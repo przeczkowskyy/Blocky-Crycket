@@ -4,13 +4,13 @@
     python -B swiat/miasteczko_bazar_gra/testy/test_bazaru.py        (unittest; kod 1 przy błędzie)
 
 1. Dane: dane.py deterministyczny i aktualny, bez dat i ścieżek lokalnych; błędne ustawienia → BladDanych;
-   przesunięcie starego miasteczka zgodne z jego README; przyciski HUD zgodne z src/gui/HUD.model.json.
+   bez starego miasteczka (26.11.2026); przyciski HUD zgodne z src/gui/HUD.model.json.
 2. Znaczniki: każdy punkt z podpowiedzią ze swiat/miasteczko_bazar/znaczniki.json ma E (albo jest na liście
    „pominiete” z powodem), położenia 1:1 ze znaczników, identyfikatory unikalne, wszystkie okna z zadania; ze stoiska
-   widać tylko własną podpowiedź; przejście „Stare miasteczko” na wolnym miejscu siatki, poza zasięgiem ze startu;
+   widać tylko własną podpowiedź; ze startu bazaru (miejsca startu gry) nie widać żadnej podpowiedzi;
    tablica na powierzchni ze znacznika; czasy biegu planu w celach; żadnych liczb położeń w kodzie.
 3. Logika (lustro w Pythonie): akcje wszystkich miejsc, odległość, spam, lochy (flaga, poziom), chmury, Las,
-   blokada czasu (symulacja 400 przebiegów), odmowy uchwytu Lasu, ranking, kandydaci w starym miasteczku, dymek.
+   blokada czasu (symulacja 400 przebiegów), odmowy uchwytu Lasu, ranking, dymek.
 4. Luau w luau_mini (tools/walka/luau_mini.py, gdy jest): pliki parsują się; przypadki wzorcowe OK; losowe
    wywołania dają to samo co lustro; DaneBazaru w Luau = dane z Pythona; kod wysyłany do Studio parsuje się.
 5. Punkty styku (czytane jak tekst): nazwy instancji, wiadomości zdalne, atrybuty, uchwyty LasPasGra i TeleportChmury,
@@ -172,19 +172,16 @@ class TestDanych(unittest.TestCase):
                 with self.assertRaises(DANE.BladDanych):
                     z_konfiguracja(zmien)
 
-    def test_1c_przesuniecie_starego_miasteczka_z_jego_dokumentacji(self):
-        readme = czytaj(REPO, "swiat", "krzywe_miasteczko", "README.md")
-        m = re.search(r"--przesun\s+(-?[\d.]+),(-?[\d.]+),(-?[\d.]+)", readme)
-        self.assertIsNotNone(m)
-        self.assertEqual([float(x) for x in m.groups()], [float(x) for x in K["stare_miasteczko"]["przesuniecie"]])
-        uk = json.loads(czytaj(REPO, "swiat", "krzywe_miasteczko", "uklad.json"))
-        self.assertEqual(D["stare"]["znacznik"], [uk["spawn"][0], 0.0, uk["spawn"][1] - 700.0])
-        # kierunki: pierwszy = patrzenie + 45°, wszystkie jednostkowe i różne
-        for k in D["stare"]["kierunki"]:
-            self.assertAlmostEqual(k[0] ** 2 + k[1] ** 2, 1.0, delta=1e-5)
-        self.assertEqual(len({tuple(k) for k in D["stare"]["kierunki"]}), len(D["stare"]["kierunki"]))
-        a = math.radians(uk["patrz"] + 45)
-        self.assertAlmostEqual(D["stare"]["kierunki"][0][0], math.sin(a), delta=1e-6)
+    def test_1c_bez_starego_miasteczka(self):
+        # 26.11.2026 (Karol): stare miasteczko i stary start zniknęły z miejsca — pakiet ich nie zna i nie czyta
+        self.assertNotIn("stare_miasteczko", K)
+        self.assertNotIn("stare", D)
+        self.assertEqual([m["id"] for m in K["miejsca"] if m["akcja"] == "przenies"], [])
+        kod = "\n".join(czytaj(PAKIET, *s) for s in (("dane.py",), ("zbuduj.py",), ("zrodla", "SerwerBazaru.server.luau"),
+                                                         ("zrodla", "KlientBazaru.client.luau"), ("zrodla", "LogikaBazaru.luau")))
+        for zakazane in ("krzywe_miasteczko/uklad.json", "KrzyweMiasteczko", "LasTeleport", "PunktPowrotuStare",
+                         "nowe_miasteczko", "stare_miasteczko", "BonkGra", "celStarego"):
+            self.assertNotIn(zakazane, kod, zakazane)
 
     def test_1d_przyciski_hud_jak_w_gui_pawla(self):
         hud = json.loads(czytaj(REPO, "src", "gui", "HUD.model.json"))
@@ -234,8 +231,6 @@ class TestZnacznikow(unittest.TestCase):
     def test_2b_polozenia_jeden_do_jednego_ze_znacznikow(self):
         for mid in D["kolejnosc"]:
             m = M[mid]
-            if not m.get("znacznik") or m["znacznik"] == "start":
-                continue
             z = DANE.znajdz(ZN, m["znacznik"])
             with self.subTest(miejsce=mid):
                 self.assertEqual(m["punkt"], [float(x) for x in z["podpowiedz"]])
@@ -246,20 +241,16 @@ class TestZnacznikow(unittest.TestCase):
                     self.assertEqual(m["model"], z["model"])
         st = ZN["start"]
         self.assertEqual(D["start"]["punkt"], [float(x) for x in st["swiat"]])
-        self.assertEqual(M["stare_miasteczko"]["stoisko"],
-                         [st["swiat"][i] + K["miejsca"][[x["id"] for x in K["miejsca"]].index("stare_miasteczko")]["od_startu_bazar"][i]
-                          for i in range(3)])
 
     def test_2c_identyfikatory_unikalne_i_wszystkie_okna(self):
         self.assertEqual(len(D["kolejnosc"]), len(set(D["kolejnosc"])))
-        self.assertEqual(len(D["kolejnosc"]), 13)
+        self.assertEqual(len(D["kolejnosc"]), 11)   # 26.11.2026: 13 → 11 (bez przejść stare ↔ nowe miasteczko)
         okna = {mid for mid in M if M[mid]["akcja"] in ("okno", "lochy")}
         self.assertEqual(okna, {"karczma", "mistrz_gier", "sklep_magiczny", "zbrojownia", "training_center",
                                 "zagroda_petow", "tablica", "dzialka", "lochy"})
         self.assertEqual({mid for mid in M if M[mid]["akcja"] == "chmury"}, {"portal_krain"})
         self.assertEqual({mid for mid in M if M[mid]["akcja"] == "las"}, {"brama_lesna"})
-        self.assertEqual({mid: M[mid].get("cel") for mid in M if M[mid]["akcja"] == "przenies"},
-                         {"stare_miasteczko": "stare", "nowe_miasteczko": "bazar"})
+        self.assertEqual({M[mid]["akcja"] for mid in M}, {"okno", "lochy", "chmury", "las"})
         for mid in M:
             self.assertRegex(mid, r"^[a-z_]+$")
 
@@ -275,17 +266,22 @@ class TestZnacznikow(unittest.TestCase):
                     if b != a:
                         self.assertGreater(odl(korzen, M[b]["punkt"]), M[b]["zasieg"], "%s widzi E %s" % (a, b))
 
-    def test_2e_przejscie_stare_miasteczko_w_bazarze(self):
-        m = M["stare_miasteczko"]
+    def test_2e_start_bazaru_jako_start_gry(self):
+        # 26.11.2026: start bazaru jest miejscem startu gry (SpawnLocation przenosi tools/studio/start_w_miasteczku.py
+        # z tego samego znacznika) — na polu gry, na wolnym miejscu siatki i poza zasięgiem każdej podpowiedzi E
+        st = D["start"]["punkt"]
         B = D["bazar"]
-        self.assertTrue(B["pole_x"][0] + 2 < m["stoisko"][0] < B["pole_x"][1] - 2)
-        self.assertTrue(B["pole_z"][0] + 2 < m["stoisko"][2] < B["pole_z"][1] - 2)
-        # gracz, który przyszedł ze starego miasteczka, nie stoi od razu w zasięgu powrotu
-        self.assertGreater(odl(D["start"]["korzen"], m["punkt"]), m["zasieg"])
-        wolne = czasy_biegu.wolne_w_siatce(m["stoisko"][0], m["stoisko"][2])
+        self.assertTrue(B["pole_x"][0] + 2 < st[0] < B["pole_x"][1] - 2)
+        self.assertTrue(B["pole_z"][0] + 2 < st[2] < B["pole_z"][1] - 2)
+        for mid in D["kolejnosc"]:
+            self.assertGreater(odl(D["start"]["korzen"], M[mid]["punkt"]), M[mid]["zasieg"], mid)
+        narzedzie = czytaj(REPO, "tools", "studio", "start_w_miasteczku.py")
+        self.assertIn('"swiat", "miasteczko_bazar", "znaczniki.json"', narzedzie)
+        self.assertNotRegex(narzedzie, r"\b990\b")
+        wolne = czasy_biegu.wolne_w_siatce(st[0], st[2])
         if wolne is None:
             self.skipTest("brak numpy/Pillow — siatka chodzenia mapy niedostępna")
-        self.assertTrue(wolne, "punkt „Stare miasteczko” w przeszkodzie siatki")
+        self.assertTrue(wolne, "start bazaru w przeszkodzie siatki")
 
     def test_2f_tablica_na_powierzchni_ze_znacznika(self):
         T = D["tablica"]
@@ -312,7 +308,7 @@ class TestZnacznikow(unittest.TestCase):
 
     def test_2h_bez_liczb_polozen_w_kodzie(self):
         for nazwa, kod in (("SPRAWDZ", ZB.SPRAWDZ), ("START", ZB.START), ("PUNKT", ZB.PUNKT), ("CZESCI", ZB.CZESCI),
-                           ("STARE", ZB.STARE), ("KONIEC", ZB.KONIEC)):
+                           ("KONIEC", ZB.KONIEC)):
             with self.subTest(kod=nazwa):
                 bez = SLB.SL.rozbierz(kod)[1]
                 duze = [x for x in re.findall(r"(?<![\w.])(\d+(?:\.\d+)?)(?![\w.])", bez) if float(x) >= 100]
@@ -323,7 +319,7 @@ class TestZnacznikow(unittest.TestCase):
 
 # ============================================================================================== 3. logika
 def swiat(**kw):
-    w = {"odleglosc": 5, "chmury": True, "las": True, "poziom": 1, "cel": True}
+    w = {"odleglosc": 5, "chmury": True, "las": True, "poziom": 1}
     for k, v in kw.items():
         if v is None:
             w.pop(k, None)
@@ -334,7 +330,7 @@ def swiat(**kw):
 
 class TestLogiki(unittest.TestCase):
     def test_3a_akcje_wszystkich_miejsc(self):
-        oczekiwane = {"okno": "okno", "lochy": "dymek", "chmury": "chmury", "las": "las", "przenies": "przenies"}
+        oczekiwane = {"okno": "okno", "lochy": "dymek", "chmury": "chmury", "las": "las"}
         for mid in D["kolejnosc"]:
             w = LB.decyzja(D, mid, LB.nowy_stan(), 10.0, swiat())
             with self.subTest(miejsce=mid):
@@ -389,8 +385,6 @@ class TestLogiki(unittest.TestCase):
         w = LB.decyzja(D, "brama_lesna", LB.nowy_stan(), 10.0, swiat(las=False))
         self.assertEqual((w["akcja"], w["powod"]), ("dymek", "brak_lasu"))
         self.assertIn("Las", w["tekst"])
-        w = LB.decyzja(D, "stare_miasteczko", LB.nowy_stan(), 10.0, swiat(cel=False))
-        self.assertEqual(w["powod"], "brak_celu")
 
     def test_3e_odmowy_uchwytu_lasu_maja_tekst(self):
         serwer_pasa = bez_komentarzy(czytaj(REPO, "swiat", "las_pas_gra", "zrodla", "SerwerPasa.server.luau"))
@@ -400,7 +394,7 @@ class TestLogiki(unittest.TestCase):
         powody |= set(re.findall(r'return false, "(\w+)"', przenies))
         self.assertTrue({"brak_mapy", "za_szybko", "brak_postaci"} <= powody, powody)
         self.assertEqual(sorted(powody - set(D["teksty"])), [])
-        for p in powody | {"trwa", "brak_lasu", "brak_celu", "blad"}:
+        for p in powody | {"trwa", "brak_lasu", "blad"}:
             self.assertTrue(LB.tekst_odmowy(D, p, 1.2))
         self.assertEqual(LB.tekst_odmowy(D, "cos_nowego"), D["teksty"]["blad"])
         self.assertEqual(LB.tekst_odmowy(D, "za_szybko", 2.2), "Chwila… jeszcze 3 s")
@@ -408,7 +402,7 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(LB.tekst_odmowy(D, "za_szybko", 0), "Chwila… jeszcze 1 s")
 
     def test_3f_blokada_czasu_symulacja(self):
-        """400 losowych przebiegów: E co chwila w trzech przejściach; przejście trwa losowo i czasem się nie udaje.
+        """400 losowych przebiegów: E co chwila w Bramie Leśnej (i w sklepie obok); przejście trwa losowo i czasem się nie udaje.
         Nigdy dwa przejścia naraz, a między udanym końcem a kolejnym startem ≥ odstep_przejsc_s."""
         rnd = random.Random(7)
         odstep = D["czasy"]["odstep_przejsc_s"]
@@ -422,9 +416,9 @@ class TestLogiki(unittest.TestCase):
                     if koniec_przejscia[1]:
                         ostatni_udany = koniec_przejscia[0]
                     koniec_przejscia = None
-                mid = rnd.choice(["brama_lesna", "stare_miasteczko", "nowe_miasteczko", "zbrojownia"])
+                mid = rnd.choice(["brama_lesna", "brama_lesna", "brama_lesna", "zbrojownia"])
                 w = LB.decyzja(D, mid, s, t, swiat())
-                if w["akcja"] in ("las", "przenies"):
+                if w["akcja"] == "las":
                     self.assertIsNone(koniec_przejscia, "dwa przejścia naraz")
                     if ostatni_udany is not None:
                         self.assertGreaterEqual(t - ostatni_udany, odstep - 1e-9)
@@ -465,32 +459,6 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(sorted(set(D["tablica"]["statystyki"]) - klucze), [])
         self.assertIn("PLACEHOLDER", domyslne)
 
-    def test_3h_kandydaci_w_starym_miasteczku(self):
-        S = D["stare"]
-        rnd = random.Random(9)
-        sp = {"x": S["znacznik"][0], "z": S["znacznik"][2]}
-        bez = LB.kandydaci(D, sp, None)
-        self.assertEqual(len(bez), len(S["promienie"]) * len(S["kierunki"]))
-        self.assertAlmostEqual(math.hypot(bez[0]["x"] - sp["x"], bez[0]["z"] - sp["z"]), S["promienie"][0], delta=1e-4)
-        for _ in range(300):
-            spawn = {"x": rnd.uniform(-200, 300), "z": rnd.uniform(-900, -500)}
-            a = rnd.uniform(0, math.tau)
-            r = rnd.uniform(14, 34)
-            portal = {"x": spawn["x"] + math.sin(a) * r, "z": spawn["z"] + math.cos(a) * r}
-            k = LB.kandydaci(D, spawn, portal)
-            self.assertGreater(len(k), 0)
-            for c in k:
-                self.assertGreaterEqual(math.hypot(c["x"] - spawn["x"], c["z"] - spawn["z"]), S["min_od_startu"] - 1e-9)
-                self.assertGreaterEqual(math.hypot(c["x"] - portal["x"], c["z"] - portal["z"]), S["min_od_portalu"] - 1e-9)
-                self.assertGreaterEqual(LB.odl_od_odcinka(c["x"], c["z"], spawn["x"], spawn["z"], portal["x"], portal["z"]),
-                                        S["min_od_odcinka"] - 1e-9)
-        # portal LasTeleport stoi na pierwszym wolnym miejscu kręgu 16 wokół startu (swiat/biom_las/teleport.py: kąt 0
-        # = +Z): pierwszy kandydat nie może leżeć obok niego
-        teleport = czytaj(REPO, "swiat", "biom_las", "teleport.py")
-        self.assertIn("for _, promien in { 16, 20, 24, 28, 34 } do", teleport)
-        k = LB.kandydaci(D, sp, {"x": sp["x"], "z": sp["z"] + 16})
-        self.assertGreaterEqual(math.hypot(k[0]["x"] - sp["x"], k[0]["z"] - (sp["z"] + 16)), S["min_od_portalu"])
-
     def test_3i_dymek_okna(self):
         self.assertTrue(LB.dymek_okna("zbrojownia", None, None, None, None))
         self.assertFalse(LB.dymek_okna("zbrojownia", "EquipmentPanel", None, None, None))
@@ -522,7 +490,7 @@ class TestLuau(unittest.TestCase):
         self.assertIn(self.py(bledy), ({}, []))
         self.assertTrue(ok)
         self.assertEqual(int(n), len(D["przypadki"]))
-        self.assertGreaterEqual(len(D["przypadki"]), 60)
+        self.assertGreaterEqual(len(D["przypadki"]), 55)   # 26.11.2026: 70 → 59 (bez kandydatów i przejść starego miasteczka)
         # zepsuty przypadek musi zostać wykryty
         Dz = copy.deepcopy(D)
         Dz["przypadki"][0]["wynik"]["akcja"] = "cos_innego"
@@ -560,14 +528,6 @@ class TestLuau(unittest.TestCase):
             for w in LB.ranking(gracze, n):
                 self.assertEqual(wolaj(self.it, self.L, "wiersz", w)[0], LB.wiersz(w))
         for _ in range(150):
-            sp = {"x": rnd.uniform(-300, 300), "z": rnd.uniform(-900, -500)}
-            portal = rnd.choice([None, {"x": sp["x"] + rnd.uniform(-30, 30), "z": sp["z"] + rnd.uniform(-30, 30)}])
-            argi = [self.D, sp] + ([portal] if portal else [])
-            lu = self.it.wywolaj(self.L.get("kandydaci"), [do_luau(a) if not isinstance(a, LM.Tabela) else a for a in argi])[0]
-            self.assertEqual(norm(self.py(lu)), norm(LB.kandydaci(D, sp, portal)))
-            c = [rnd.uniform(-10, 10) for _ in range(6)]
-            self.assertAlmostEqual(wolaj(self.it, self.L, "odlegloscOdOdcinka", *c)[0], LB.odl_od_odcinka(*c), delta=1e-9)
-        for _ in range(150):
             powod = rnd.choice(sorted(D["teksty"]) + ["inne"])
             z = rnd.uniform(0, 6)
             self.assertEqual(wolaj(self.it, self.L, "tekstOdmowy", self.D, powod, z)[0], LB.tekst_odmowy(D, powod, z))
@@ -593,7 +553,7 @@ class TestLuau(unittest.TestCase):
 
     def test_4f_kod_wysylany_do_studio_parsuje_sie(self):
         kody = {"sprawdz": ZB.kod_sprawdz(D), "start": ZB.kod_start(D, czas="x", skrot="x"), "usun": ZB.kod_start(D, True),
-                "czesci": ZB.kod_czesci(D), "stare": ZB.kod_stare(D), "koniec": ZB.kod_konca(D),
+                "czesci": ZB.kod_czesci(D), "koniec": ZB.kod_konca(D),
                 "skrypt": ZB.kod_skryptu(D, "Moduly/DaneBazaru", "ModuleScript", None, "return {}")}
         for nazwa, kod in kody.items():
             with self.subTest(kod=nazwa):
@@ -620,7 +580,7 @@ class TestStyku(unittest.TestCase):
             self.assertIn(n, ZB.PUNKT + ZB.CZESCI)
         self.assertIn('"W" .. i', SERWER)
         self.assertIn('"E " .. id', KLIENT)
-        self.assertIn('"E nowe_miasteczko"', ZB.STARE)
+        self.assertFalse(hasattr(ZB, "STARE"), "26.11.2026: budowa nie stawia już punktu w starym miasteczku")
 
     def test_5b_wiadomosci_zdalne_zgodne(self):
         do_klienta = set(re.findall(r'zdarzenia:FireClient\(gracz, "(\w+)"', bez_komentarzy(SERWER)))
@@ -636,14 +596,14 @@ class TestStyku(unittest.TestCase):
 
     def test_5c_atrybuty_ktos_ustawia(self):
         serwer_ustawia = napisy(SERWER, r"kontener:SetAttribute")
-        budowa_ustawia = set(re.findall(r':SetAttribute\("(\w+)"', ZB.START + ZB.PUNKT + ZB.STARE))
+        budowa_ustawia = set(re.findall(r':SetAttribute\("(\w+)"', ZB.START + ZB.PUNKT))
         klient_ustawia = napisy(KLIENT, r"kontener:SetAttribute")
         testowe = set(ZB.ATRYBUTY_TESTOWE)
         domyslne = czytaj(REPO, "src", "server", "PlayerStatsDefaults.server.luau")
         gracza = set(re.findall(r"\b([A-Z][A-Za-z]+)\s*=", domyslne.split("local DEFAULTS = {", 1)[1].split("\n}", 1)[0]))
         self.assertEqual(sorted(napisy(KLIENT, "GetAttribute") - klient_ustawia - serwer_ustawia - testowe), [])
         self.assertEqual(sorted(napisy(SERWER, "GetAttribute") - serwer_ustawia - budowa_ustawia - gracza), [])
-        for a in ("PunktPowrotuStare", "PatrzPowrotuStare", "PunktStartuBazaru", "PatrzStartuBazaru", "Miejsce"):
+        for a in ("PunktStartuBazaru", "PatrzStartuBazaru", "Miejsce"):
             self.assertIn(a, budowa_ustawia)
         # atrybut gracza z lochami ustawia serwer, a czyta klient (oba przez D.lochy.atrybut_gracza)
         self.assertIn("gracz:SetAttribute(D.lochy.atrybut_gracza, otwarte)", SERWER)
@@ -737,7 +697,7 @@ class TestStyku(unittest.TestCase):
         self.assertEqual(ZB.START.count("SetWaypoint"), 3)  # przed usunięciem, usunięto, przed budową
         self.assertIn("SetWaypoint", ZB.KONIEC)
         self.assertIn("for _, d in stare do d:Destroy() end", ZB.START)
-        self.assertNotIn("workspace:ClearAllChildren", ZB.START + ZB.CZESCI + ZB.STARE)
+        self.assertNotIn("workspace:ClearAllChildren", ZB.START + ZB.CZESCI)
         zb = czytaj(PAKIET, "zbuduj.py")
         self.assertIn('"Current Studio Mode: Edit" not in stan', zb)
         self.assertIn('"datamodel_type": "Edit"', zb)
@@ -745,10 +705,10 @@ class TestStyku(unittest.TestCase):
             self.assertNotIn(zakaz, zb.split("def main", 1)[1])
 
     def test_5h_bez_lighting_i_cudzych_zmian(self):
-        for kod in (SERWER, KLIENT, LOGIKA, ZB.SPRAWDZ, ZB.START, ZB.PUNKT, ZB.CZESCI, ZB.STARE, ZB.KONIEC):
+        for kod in (SERWER, KLIENT, LOGIKA, ZB.SPRAWDZ, ZB.START, ZB.PUNKT, ZB.CZESCI, ZB.KONIEC):
             self.assertNotIn("Lighting", bez_komentarzy(kod))
         # budowa tworzy tylko w kontenerze f (Parent = f / jego potomkowie / własne obiekty)
-        for nazwa, kod in (("START", ZB.START), ("CZESCI", ZB.CZESCI), ("STARE", ZB.STARE), ("PUNKT", ZB.PUNKT)):
+        for nazwa, kod in (("START", ZB.START), ("CZESCI", ZB.CZESCI), ("PUNKT", ZB.PUNKT)):
             for m in re.finditer(r"(\w+)\.Parent = (\w[\w.]*)", bez_komentarzy(kod)):
                 with self.subTest(kod=nazwa, linia=m.group(0)):
                     self.assertIn(m.group(2), {"f", "workspace", "rodzic", "p", "b", "t", "tlo", "sg", "e", "model",

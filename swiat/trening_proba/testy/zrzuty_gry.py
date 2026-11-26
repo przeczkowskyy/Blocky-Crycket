@@ -458,15 +458,17 @@ def main():
             hak("zamknij")
 
             if not tylko_nowe:
-                # 01 tablica wejścia (kamera gracza za plecami)
-                tab = json.loads(luau(kod("tablica"), "Server"))
-                p, f = tab["p"], tab["f"]
-                P0 = [p[0] + f[0] * 5, p[1] + 0.5, p[2] + f[2] * 5]
-                przestaw(P0, p)
-                time.sleep(1.5)
-                kamera_za(12, 7)
-                time.sleep(0.8)
-                zrzut("01_tablica_wejscia")
+                # 01 tablica wejścia (kamera gracza za plecami) — od 26.11.2026 tablicy nie ma (w_grze = false): bez zrzutu
+                tab = json.loads(luau(kod("tablica"), "Server")) if luau(
+                    KP + 'return tostring(k:FindFirstChild("TablicaWejscia") ~= nil)', "Server") == "true" else {}
+                if tab.get("p"):
+                    p, f = tab["p"], tab["f"]
+                    P0 = [p[0] + f[0] * 5, p[1] + 0.5, p[2] + f[2] * 5]
+                    przestaw(P0, p)
+                    time.sleep(1.5)
+                    kamera_za(12, 7)
+                    time.sleep(0.8)
+                    zrzut("01_tablica_wejscia")
 
                 # 02 wybór przy trenerze w bazarze (prawdziwe E)
                 zn = DANE._czytaj_json(DANE.ZNACZNIKI)["training_center"]

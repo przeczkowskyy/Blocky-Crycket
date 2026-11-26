@@ -6,7 +6,7 @@ najkrótsza droga z omijaniem przeszkód), czesci.json i uklad.json mapy. Potrze
 plan() zwraca None (testy pomijają tę część z uwagą, próba w Studio porównuje wtedy tylko z celami czasu).
 
     from czasy_biegu import plan
-    p = plan(D)   # → { id: { "droga": st, "czas": s, "cel": s albo None } } (bez nowe_miasteczko — stoi poza bazarem)
+    p = plan(D)   # → { id: { "droga": st, "czas": s, "cel": s albo None } }
 """
 import json
 import math

@@ -13,9 +13,9 @@
 		{ akcja = "dymek", id, tekst, powod }       — krótki dymek w świecie (odmowa albo „zamknięte”)
 		{ akcja = "chmury", id }                    — przejście przez chmury (klient: TeleportChmury/Otworz)
 		{ akcja = "las", id }                       — serwer przenosi uchwytem LasPasGra/Sygnaly/PrzeniesDoLasu
-		{ akcja = "przenies", id, cel }             — serwer przenosi sam ("bazar" | "stare")
 		{ akcja = "nic", powod }                    — za daleko / za szybko po poprzednim E / nieznane miejsce
-	swiat = { odleglosc = st od podpowiedzi (nil = nie sprawdzaj), chmury, las, cel (bool), poziom }
+	(do 26.11.2026 była też akcja „przenies” — przejścia stare ↔ nowe miasteczko; stare miasteczko zniknęło z miejsca)
+	swiat = { odleglosc = st od podpowiedzi (nil = nie sprawdzaj), chmury, las, poziom }
 	s (stan gracza, zmieniany): { ostatnieE, ostatniePrzejscie, wTrakcie, lochy }
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -84,7 +84,7 @@ function L.decyzja(D, id, s, teraz, swiat)
 		end
 		return { akcja = "chmury", id = id }
 	end
-	if a == "las" or a == "przenies" then
+	if a == "las" then
 		if s.wTrakcie then
 			return { akcja = "dymek", id = id, tekst = L.tekstOdmowy(D, "trwa"), powod = "trwa" }
 		end
@@ -92,14 +92,8 @@ function L.decyzja(D, id, s, teraz, swiat)
 		if zostalo > 0 then
 			return { akcja = "dymek", id = id, tekst = L.tekstOdmowy(D, "za_szybko", zostalo), powod = "za_szybko" }
 		end
-		if a == "las" and not swiat.las then
+		if not swiat.las then
 			return { akcja = "dymek", id = id, tekst = L.tekstOdmowy(D, "brak_lasu"), powod = "brak_lasu" }
-		end
-		if a == "przenies" and not swiat.cel then
-			return { akcja = "dymek", id = id, tekst = L.tekstOdmowy(D, "brak_celu"), powod = "brak_celu" }
-		end
-		if a == "przenies" then
-			return { akcja = a, id = id, cel = m.cel }
 		end
 		return { akcja = a, id = id }
 	end
@@ -215,45 +209,6 @@ function L.wiersz(w): string
 	return string.format("%d. %s — poz. %s · moc %s", w.miejsce, w.nazwa, L.liczba(w.poziom), L.liczba(w.moc))
 end
 
------------------------------------------------------------------- „Nowe miasteczko (E)” w starym miasteczku
-function L.odlegloscOdOdcinka(px, pz, ax, az, bx, bz): number
-	local dx, dz = bx - ax, bz - az
-	local l2 = dx * dx + dz * dz
-	if l2 <= 1e-12 then
-		return math.sqrt((px - ax) * (px - ax) + (pz - az) * (pz - az))
-	end
-	local t = ((px - ax) * dx + (pz - az) * dz) / l2
-	t = math.max(0, math.min(1, t))
-	local qx, qz = ax + t * dx, az + t * dz
-	return math.sqrt((px - qx) * (px - qx) + (pz - qz) * (pz - qz))
-end
-
--- kolejność kandydatów: pierścienie D.stare.promienie × kierunki D.stare.kierunki (od patrzenia na starcie),
--- bez tych blisko portalu LasTeleport/PortalStart i blisko odcinka start → portal (portal nil = brak portalu)
-function L.kandydaci(D, spawn, portal)
-	local S = D.stare
-	local wynik = {}
-	for _, r in S.promienie do
-		for _, k in S.kierunki do
-			local x = spawn.x + k[1] * r
-			local z = spawn.z + k[2] * r
-			local dobry = true
-			if portal ~= nil then
-				local dx, dz = x - portal.x, z - portal.z
-				if math.sqrt(dx * dx + dz * dz) < S.min_od_portalu then
-					dobry = false
-				elseif L.odlegloscOdOdcinka(x, z, spawn.x, spawn.z, portal.x, portal.z) < S.min_od_odcinka then
-					dobry = false
-				end
-			end
-			if dobry then
-				table.insert(wynik, { x = x, z = z })
-			end
-		end
-	end
-	return wynik
-end
-
 ------------------------------------------------------------------ zgodność z lustrem w Pythonie
 function L.rowne(a, b): boolean
 	if type(a) == "number" and type(b) == "number" then
@@ -303,11 +258,6 @@ function L.wykonajPrzypadek(D, p)
 		return L.ranking(p.gracze, p.n), nil
 	elseif p.f == "wiersz" then
 		return L.wiersz(p.w), nil
-	elseif p.f == "kandydaci" then
-		return L.kandydaci(D, p.spawn, p.portal), nil
-	elseif p.f == "odcinek" then
-		local a = p.argi
-		return L.odlegloscOdOdcinka(a[1], a[2], a[3], a[4], a[5], a[6]), nil
 	elseif p.f == "dymek" then
 		return L.dymekOkna(p.id, p.otwarto, p.zgloszone, p.wylaczone, p.bez), nil
 	end

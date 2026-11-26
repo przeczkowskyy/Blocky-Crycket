@@ -127,27 +127,6 @@
     "utwory": ["muzyka_07_dzungla_petla", "muzyka_07_dzungla_b_petla"],
     "zastepcze": {"glosnosc": 0.7, "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]}
    },
-   "start": {
-    "glosnosc": 0.8,
-    "uwaga": "plac startowy (Workspace/DemoLesnaBaza) — utwory miasteczka; granice podane wprost, bo to miejsce nie ma mapy z bryłą gruntu w czesci.json",
-    "kontener": "DemoLesnaBaza",
-    "prostokaty": [[-125, 125, -125, 125]],
-    "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]
-   },
-   "miasteczko": {
-    "glosnosc": 0.8,
-    "uwaga": "stare Krzywe Miasteczko (Workspace/KrzyweMiasteczko) — utwory miasteczka; grunt ma dwie części, więc granice podane wprost",
-    "kontener": "KrzyweMiasteczko",
-    "prostokaty": [[-300, 400, -960, -440]],
-    "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]
-   },
-   "bor": {
-    "glosnosc": 0.8,
-    "uwaga": "stary las (Workspace/BiomLas) — utwory lasu",
-    "mapy": ["swiat/biom_las/czesci.json"],
-    "kontener": "BiomLas",
-    "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
-   },
    "menu": {
     "glosnosc": 0.35,
     "podpiete": false,

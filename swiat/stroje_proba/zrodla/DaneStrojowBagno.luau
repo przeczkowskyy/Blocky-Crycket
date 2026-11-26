@@ -1,5 +1,5 @@
 --[[
-	DaneStrojowBagno — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót 7a3275db36ae.
+	DaneStrojowBagno — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót eab733f216f3.
 	Przedmioty stopnia „bagno” (D-106, swiat/postacie/stopnie.py): 20 sztuk, zapis jak w DaneStrojow.
 	Nie czytaj tego modułu wprost — scala go DaneStrojow (materiały brył to indeksy w jego D.materialy).
 ]]

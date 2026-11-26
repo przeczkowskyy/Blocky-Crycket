@@ -40,6 +40,7 @@ import makieta  # noqa: E402
 
 DANE_JSON = os.path.join(TU, "krainy.json")
 PLAN_PASA = os.path.join(REPO, "swiat", "las_pas", "krotki", "plan_pasa.json")   # krótki pas gry (D-096)
+ZNACZNIKI_BAZARU = os.path.join(REPO, "swiat", "miasteczko_bazar", "znaczniki.json")   # start bazaru = start gry (26.11.2026)
 ZRODLA = os.path.join(TU, "zrodla")
 DANE_LUAU = os.path.join(ZRODLA, "Dane.luau")
 STRAZNIK = 'if not game:GetService("RunService"):IsStudio() then'
@@ -358,6 +359,22 @@ def sprawdz_dane(dane):
                 uwagi.append("%s: obszar x %r, plan pasa %r" % (k["id"], k["obszary_xz"][0][:2], b["swiat_x"]))
     else:
         uwagi.append("brak swiat/las_pas/krotki/plan_pasa.json — bez porównania z planem pasa")
+    # 26.11.2026: Miasteczko = bazar — zapasowy punkt przybycia (xz) to start bazaru ze znaczników jego mapy;
+    # wpisów starego miasteczka, starego lasu i Workspace/LasTeleport nie ma już w miejscu
+    for k in dane["krainy"]:
+        for p in k["przybycie"]:
+            if "LasTeleport" in (p.get("atrybut") or []) or p.get("gdy_jest") in ("LasTeleport", "BiomLas", "KrzyweMiasteczko"):
+                bledy.append("%s: wpis przybycia do usuniętego kontenera: %r" % (k["id"], p))
+    if os.path.isfile(ZNACZNIKI_BAZARU):
+        with open(ZNACZNIKI_BAZARU, encoding="utf-8-sig") as f:
+            st = json.load(f)["start"]
+        oczek = [st["swiat"][0], st["swiat"][2]]
+        patrz = [st["swiat"][0] + st["kier"][0] * 10, st["swiat"][2] + st["kier"][2] * 10]
+        mi = next(k for k in dane["krainy"] if k["id"] == "miasteczko")
+        jest = next((p for p in mi["przybycie"] if "xz" in p), None)
+        if not jest or jest["xz"] != oczek or jest["patrz_xz"] != patrz:
+            bledy.append("miasteczko: zapasowe przybycie %r, a start bazaru (znaczniki.json) to xz %r, patrz %r"
+                         % (jest, oczek, patrz))
     return bledy, uwagi, jedna
 
 

@@ -3,7 +3,8 @@
 
     python -B swiat/przejscie_gry/proba_dymna.py <folder wyjściowy POZA repo> [--studio <studio_id>] [--bez-zrzutow]
 
-Droga gracza: Play → ekran wyboru klasy (Enter) → HUD TELEPORT → chmury (strzałka w prawo + Enter = Las) →
+Droga gracza (od 26.11.2026 start w bazarze — tools/studio/start_w_miasteczku.py): Play → postać na starcie bazaru →
+ekran wyboru klasy (Enter) → HUD TELEPORT → chmury (strzałka w prawo + Enter = Las) →
 pierwsza walka ze slime'em (prawdziwe E, tempo ×4, ZAMKNIJ) → Kamień Powrotu (E) → bazar → trener (E) → Siła
 (kliknięcie GRAJ, spacja = START, cała runda) → WYJDŹ → koniec. Na każdy punkt wynik OK / NIE (albo „?” — tylko
 pomiar bez progu). Na końcu Studio wraca do trybu Edit.
@@ -22,12 +23,15 @@ na <gracz> (repo jest publiczne) — mimo to folder wyjściowy ma być poza repo
 LISTA KONTROLNA:
   D00 Edit: stoją wszystkie potrzebne kontenery
   D01 start: ekran ładowania znika, ekran wyboru klasy, Enter → atrybut Class, kamera Custom, HUD włączony (≤ 60 s)
+  D14 start w miasteczku (26.11.2026): pierwsza pozycja postaci po wejściu ≤ 4 st (w poziomie) od startu bazaru
+      (swiat/miasteczko_bazar/znaczniki.json → start), a w Workspace nie ma starego startu ani starego miasteczka
+      (DemoLesnaBaza, KrzyweMiasteczko, BonkGra, LasTeleport, RasyProba)
   D02 teleport do lasu: klik TELEPORT → chmury (TeleportChmury.Trwa), → + Enter → postać w lesie (x ≥ 1066) ≤ 12 s,
       po przelocie (jeśli był) kamera Custom i postać nie zakotwiczona ≤ 30 s
   D03 walka: prawdziwe E przy slime → walka (SerwerLicznikWalk +1), klik ×4, karta wyniku, klik ZAMKNIJ → kamera Custom
   D04 nagroda: złoto gracza (atrybut Gold) po wygranej większe niż przed — 17.11.2026 NIE (znana dziura w pętli:
       łup z karty walki nie trafia do gracza); wynik informacyjny, nie przerywa próby
-  D05 powrót: E przy Kamieniu Powrotu → start bazaru (≤ 4 st od (990; 3; −697)) albo stare miasteczko, gdy bazaru brak
+  D05 powrót: E przy Kamieniu Powrotu → start bazaru (≤ 4 st; od 26.11.2026 innego miasteczka nie ma)
   D06 trener: E przy trenerze w bazarze → okno wyboru mini-gry (TreningProba: wybor = true, zrodlo = bazar)
   D07 runda Siły: klik GRAJ → stanowisko, spacja → runda, po rundzie panel podsumowania (≤ 75 s)
   D08 wyjście: klik WYJDŹ → ekran „brak”, kamera Custom, postać przy trenerze (≤ 3 st od miejsca sprzed wejścia)
@@ -65,7 +69,16 @@ GR = 'local gracz = game:GetService("Players"):GetPlayers()[1] '
 LP = 'local lp = game:GetService("Players").LocalPlayer '
 KONTENERY = ["TeleportChmury", "LasPas", "LasPasGra", "TestWalki2", "MiasteczkoBazar", "MiasteczkoBazarGra",
              "TreningProba"]
-START_BAZARU = (990.0, 3.0, -697.0)
+STARE = ["DemoLesnaBaza", "KrzyweMiasteczko", "BonkGra", "LasTeleport", "RasyProba"]   # nie ma ich od 26.11.2026
+
+
+def _start_bazaru():
+    """Start bazaru ze znacznika mapy (ten sam, na który tools/studio/start_w_miasteczku.py stawia SpawnLocation)."""
+    with open(os.path.join(REPO, "swiat", "miasteczko_bazar", "znaczniki.json"), encoding="utf-8-sig") as f:
+        return tuple(float(x) for x in json.load(f)["start"]["swiat"])
+
+
+START_BAZARU = _start_bazaru()
 KAMIEN = ((1106.5, 6.5, -712.3), (1106.5, -717.0))        # stoisko i punkt, na który patrzy postać (krótki pas D-096)
 TRENER = ((942.0, 6.5, -724.0), (942.0, -729.0))
 WYNIKI = {}
@@ -252,7 +265,7 @@ def main():
 
         # ------------------------------------------------------------------ D00 Edit
         edit = js('local o = {} for _, n in { %s } do o[n] = workspace:FindFirstChild(n) ~= nil end return H:JSONEncode(o)'
-                  % ", ".join('"%s"' % n for n in KONTENERY), "Edit")
+                  % ", ".join('"%s"' % n for n in KONTENERY + STARE), "Edit")
         zapisz("D00", edit)
         brak = [n for n in KONTENERY if not edit.get(n)]
         punkt("D00", not brak, "brak kontenerów: %s" % (", ".join(brak) if brak else "—"))
@@ -266,6 +279,14 @@ def main():
             czekaj_na(lambda: "Client" in stan_studio() and luau(
                 LP + 'return tostring(lp ~= nil and lp.Character ~= nil)', "Client") == "true", 90, 1)
             nazwa_gracza[0] = luau(LP + 'return lp.Name', "Client")
+            # -------------------------------------------------------------- D14 start w miasteczku (pierwsza pozycja)
+            pierwsza = klient().get("poz")
+            d14 = odl_xz(pierwsza, START_BAZARU) if pierwsza else None
+            stare = [n for n in STARE if edit.get(n)]
+            zapisz("D14", {"pierwsza_pozycja": pierwsza, "od_startu_bazaru": d14, "stare_kontenery": stare})
+            punkt("D14", d14 is not None and d14 <= 4 and not stare,
+                  "pierwsza pozycja %s, %s st od startu bazaru; stare kontenery w miejscu: %s" % (
+                      pierwsza, d14 and round(d14, 1), ", ".join(stare) or "brak"))
             ekran_wyboru = czekaj_na(lambda: klient().get("wybor"), 30, 1)
             zrzut("01_wybor_klasy")
             kl = {}
@@ -395,7 +416,7 @@ def main():
             dom = czekaj_na(lambda: (lambda k: k if (k.get("poz") or [9999])[0] < 1066 else None)(klient()), 6, 0.5) or {}
             pz = dom.get("poz") or [0, 0, 0]
             zapisz("D05", dom)
-            punkt("D05", bool(dom) and (odl_xz(pz, START_BAZARU) <= 4 or pz[0] < 500),
+            punkt("D05", bool(dom) and odl_xz(pz, START_BAZARU) <= 4,
                   "po E przy Kamieniu: (%.0f; %.0f; %.0f), od startu bazaru %.1f st" % (pz[0], pz[1], pz[2],
                                                                                          odl_xz(pz, START_BAZARU)))
             kl9.append(klatka("bazar (start)"))

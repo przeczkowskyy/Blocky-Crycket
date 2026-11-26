@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Buduje w Roblox Studio kontener Workspace/PetyProba — jajka i pety na próbę (inkubatory w lesie-pasie i w Bagnie,
-wyklucie, pet przy graczu, zagroda w bazarze). Status: propozycja (PROJEKT.md).
+"""Buduje w Roblox Studio kontener Workspace/PetyProba — jajka i pety na próbę (serwer zakupu jajek dla jajek ze scenką
+Pawła, pet przy graczu, zagroda w bazarze, sprzedaż petów). Status: propozycja (PROJEKT.md). Od 26.11.2026 BEZ
+starych inkubatorów (jajko z klocków, tablica szans, punkt E): pełna budowa usuwa je ze Studio razem ze starym
+kontenerem (zostaje tylko to, co niżej).
 
     python -B swiat/pety_proba/zbuduj.py --sucho      # bez Studio: dane, kontrola Luau, strażniki, plan budowy
     python -B swiat/pety_proba/zbuduj.py              # buduje / odbudowuje kontener (Studio w trybie Edit)
@@ -10,21 +12,16 @@ wyklucie, pet przy graczu, zagroda w bazarze). Status: propozycja (PROJEKT.md).
     python -B swiat/pety_proba/zbuduj.py --studio <studio_id>   # gdy otwartych jest kilka okien Studio
 
 Co powstaje (tylko w Workspace/PetyProba z atrybutem Wygenerowane = true; cudzych obiektów budowa NIE zmienia —
-mapę lasu-pasa i bazaru tylko czyta promieniem w dół, żeby postawić jajko na mchu gniazda; w Bagnie jajko leży
-w gnieździe na palach z modelu inkubatora, postawionym we własnym kontenerze na stanowisku z mapy):
+mapę bazaru tylko czyta promieniem w dół, żeby postawić tablicę zagrody na gruncie):
   Moduly/DanePetow, Moduly/LogikaPetow, Moduly/RigPetow, Moduly/Rigi/*   ModuleScript (zrodla/; dane i rigi
                                                                           wygenerowane przez dane_petow.py)
   SerwerPetow (RunContext = Server), KlientPetow (RunContext = Client)
   Zdalne/ZdarzeniaPetow             RemoteEvent ("wyklucie", "odmowa", "lista", "wybrany", "okno" do klienta;
                                     "lista", "wybierz", "odstaw", "czekaj" do serwera)
-  Sygnaly/SterowanieSerwera, Sygnaly/SterowanieKlienta   BindableFunction — haczyki testowe
-  <folder jajka>/Jajko (rig z klocków, ×1,8 las / ×1,7 Bagno), <folder jajka>/<kość> <bryła> (stałe bryły z modelu
-  inkubatora: tablica z szansami w SurfaceGui, w Bagnie też gniazdo na palach i latarenka), Slup (słup światła
-  widoczny z daleka), Swiatlo (światło i iskry), Napis (napis nad jajkiem); foldery: Inkubator (las), InkubatorBagna
-  Punkty/<jajko.punkt_e> („E inkubator”, „E inkubator Bagna”: ProximityPrompt „Podpowiedz”, Enabled = false w Edit —
-  włącza serwer w Play)
+  Zdalne/SprzedajPety               RemoteFunction (26.11.2026): klient (okno Pets) → serwer, lista petów do sprzedania
+  Sygnaly/SterowanieSerwera, Sygnaly/SterowanieKlienta   BindableFunction — haczyki (zakup ze scenki jajka, testy)
   Zagroda/Tablica (+ słupki, daszek), Zagroda/E wybor (zapasowe E — gdy nie ma MiasteczkoBazarGra)
-Atrybuty kontenera: Wygenerowane, Zrodlo, Zbudowano, Skrot; folder jajka: PodstawaJajka (CFrame), SkalaJajka, Jajko.
+Atrybuty kontenera: Wygenerowane, Zrodlo, Zbudowano, Skrot.
 
 Zasady (wspólne miejsce Team Create): okno wybiera swiat/test_walki_roblox/cel_studio.py (jedno okno albo --studio,
 zawsze placeId gry); KAŻDY wysyłany kod sprawdza game.PlaceId i tryb Edit; ruszany jest tylko własny kontener (obiekt
@@ -59,11 +56,11 @@ SKRYPTY_STALE = [
     ("SerwerPetow.server.luau", "Script", "SerwerPetow", "Server"),
     ("KlientPetow.client.luau", "Script", "KlientPetow", "Client"),
 ]
-FOLDERY_JAJEK = [j["folder"] for j in DANE.ustawienia()["jajka"]]   # Inkubator (las), InkubatorBagna, …
-FOLDERY = ["Moduly", "Moduly/Rigi", "Zdalne", "Sygnaly", "Punkty", "Zagroda"] + FOLDERY_JAJEK
-TRWALE = ["Punkty", "Zagroda"] + FOLDERY_JAJEK   # Model z ModelStreamingMode = Persistent (streaming nie wypycha)
+FOLDERY = ["Moduly", "Moduly/Rigi", "Zdalne", "Sygnaly", "Zagroda"]
+TRWALE = ["Zagroda"]   # Model z ModelStreamingMode = Persistent (streaming nie wypycha)
 INNE = [
     ("RemoteEvent", "Zdalne/ZdarzeniaPetow"),
+    ("RemoteFunction", "Zdalne/SprzedajPety"),
     ("BindableFunction", "Sygnaly/SterowanieSerwera"),
     ("BindableFunction", "Sygnaly/SterowanieKlienta"),
 ]
@@ -168,9 +165,7 @@ if not f or f:GetAttribute("Wygenerowane") ~= true then
 end
 local M = f.Moduly
 local D = require(M.DanePetow)
-local L = require(M.LogikaPetow)
-local Rig = require(M.RigPetow)
-local I, Z = D.inkubator, D.zagroda
+local Z = D.zagroda
 local wyklucz = RaycastParams.new()
 wyklucz.FilterType = Enum.RaycastFilterType.Exclude
 wyklucz.FilterDescendantsInstances = { f }
@@ -210,24 +205,6 @@ local function punktE(rodzic, nazwa, poz, akcja, obiekt, zasieg, przytrzymaj)
 	return p
 end
 
-local function tekst(rodzic, t, poz, rozmiar, kolor, czcionka, maks)
-	local l = Instance.new("TextLabel")
-	l.BackgroundTransparency = 1
-	l.Position = poz
-	l.Size = rozmiar
-	l.Font = Enum.Font[czcionka or "GothamBold"]
-	l.TextScaled = true
-	l.TextColor3 = Color3.fromHex(kolor)
-	l.TextXAlignment = Enum.TextXAlignment.Left
-	l.Text = t
-	l.Parent = rodzic
-	if maks then -- jednakowa wielkość w wierszach tablicy (dłuższy tekst może się tylko zmniejszyć)
-		local o = Instance.new("UITextSizeConstraint")
-		o.MaxTextSize = maks
-		o.Parent = l
-	end
-	return l
-end
 
 local function grunt(x, z, domyslny)
 	local r = workspace:Raycast(Vector3.new(x, 60, z), Vector3.new(0, -120, 0), wyklucz)
@@ -235,172 +212,6 @@ local function grunt(x, z, domyslny)
 		return r.Position.Y, r.Instance:GetFullName()
 	end
 	return domyslny, "dane (promień nic nie trafił)"
-end
-
------------------------------------------------------------------- inkubatory (jeden na jajko z D.jajka: las-pas, Bagno)
-local function inkubator(J)
-	local ink = f[J.folder]
-	local PJ = J.polozenie
-	local stan = CFrame.new(PJ.gniazdo[1], PJ.gniazdo[2], PJ.gniazdo[3]) * CFrame.Angles(0, math.rad(PJ.obrot), 0)
-	-- jajko na mchu gniazda z mapy (las: promień w dół) albo w gnieździe z modelu inkubatora (wysokość z modelu)
-	local y, zrodloY = J.y_jajka, "model inkubatora"
-	if J.jajko_na_mchu then
-		local r = workspace:Raycast(stan.Position + Vector3.new(0, 12, 0), Vector3.new(0, -24, 0), wyklucz)
-		if r and r.Position.Y - PJ.gniazdo[2] > I.mech_od and r.Position.Y - PJ.gniazdo[2] < I.mech_do then
-			y, zrodloY = r.Position.Y - PJ.gniazdo[2], r.Instance:GetFullName()
-		end
-	end
-	local podstawa = stan * CFrame.new(0, y, 0)
-	ink:SetAttribute("PodstawaJajka", podstawa)
-	ink:SetAttribute("SkalaJajka", J.skala_jajka)
-	ink:SetAttribute("Jajko", J.id)
-	local dj = require(M.Rigi[J.rig])
-	local jajko, u = Rig.zbuduj(dj, J.skala_jajka, "Jajko")
-	jajko.Parent = ink
-	jajko:PivotTo(podstawa * u.korzen.CFrame)
-	table.insert(raporty, string.format("%s: jajko na y %.2f (%s)", J.id, y, zrodloY))
-	local gora = dj.wysokosc * J.skala_jajka -- wierzch jajka nad podstawą
-
-	-- stałe bryły z modelu inkubatora (tablica z jawnymi szansami; w Bagnie też gniazdo na palach i latarenka);
-	-- wiersz: kość, kształt, nazwa, poz, obrót, rozmiar, kolor, materiał, siatka
-	local T = J.stale
-	local papier
-	local kolizja = {}
-	for _, n in I.kolizja do
-		kolizja[n] = true
-	end
-	for _, c in T.czesci do
-		local p
-		if c[2] == 3 then
-			p = Instance.new("WedgePart")
-		elseif c[2] == 4 then
-			p = Instance.new("CornerWedgePart")
-		else
-			p = Instance.new("Part")
-			if c[2] == 1 then
-				p.Shape = Enum.PartType.Ball
-			elseif c[2] == 2 then
-				p.Shape = Enum.PartType.Cylinder
-			end
-		end
-		p.Name = c[1] .. " " .. c[3]
-		p.Anchored = true
-		p.Size = Vector3.new(c[10], c[11], c[12])
-		p.CFrame = stan * CFrame.new(c[4], c[5], c[6]) * CFrame.fromOrientation(c[7], c[8], c[9])
-		p.Color = Color3.fromHex(c[13])
-		local mat = T.materialy[c[14] + 1]
-		p.Material = Enum.Material[mat[1]]
-		p.Reflectance = mat[2]
-		p.CanCollide = kolizja[c[3]] == true
-		p.CanQuery = p.CanCollide
-		p.CanTouch = false
-		p.TopSurface = Enum.SurfaceType.Smooth
-		p.BottomSurface = Enum.SurfaceType.Smooth
-		if c[15] ~= "" then
-			local sm = Instance.new("SpecialMesh")
-			sm.MeshType = Enum.MeshType[c[15]]
-			sm.Parent = p
-		end
-		if p.Material == Enum.Material.Neon and math.min(p.Size.X, p.Size.Y, p.Size.Z) >= 0.3 then
-			local pl = Instance.new("PointLight") -- ognik w latarence świeci naprawdę
-			pl.Color = p.Color
-			pl.Range = 9
-			pl.Brightness = 1.2
-			pl.Parent = p
-		end
-		p.Parent = ink
-		if c[3] == D.modele.papier then
-			papier = p
-		end
-	end
-	if papier then
-		local s = Instance.new("SurfaceGui")
-		s.Name = "Szanse"
-		s.Face = Enum.NormalId.Back -- przód tablicy w modelu (+Z danych) to po zamianie układu ściana Back części
-		s.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-		s.PixelsPerStud = 120
-		s.LightInfluence = 0
-		s.Parent = papier
-		local tt = tekst(s, J.tytul, UDim2.fromScale(0.03, 0.02), UDim2.fromScale(0.94, 0.15), "3E2A16", "LuckiestGuy", 40)
-		tt.TextXAlignment = Enum.TextXAlignment.Center
-		local tc = tekst(s, L.opisCeny(D, J), -- „cena: 300 Rybek” (stała) albo „od … · rośnie …” (rosnąca)
-			UDim2.fromScale(0.03, 0.17), UDim2.fromScale(0.94, 0.08), "5E3A22", nil, 17)
-		tc.TextXAlignment = Enum.TextXAlignment.Center
-		tekst(s, D.teksty.szanse_tytul, UDim2.fromScale(0.03, 0.27), UDim2.fromScale(0.94, 0.08), "3E2A16", nil, 17)
-		for i, w in L.wierszeSzans(D, J) do
-			local yy = 0.36 + (i - 1) * 0.126
-			local kw = Instance.new("Frame")
-			kw.Position = UDim2.fromScale(0.03, yy + 0.02)
-			kw.Size = UDim2.fromScale(0.045, 0.075)
-			kw.BackgroundColor3 = Color3.fromHex(w.kolor)
-			kw.BorderSizePixel = 0
-			kw.Parent = s
-			local o = Instance.new("UIStroke")
-			o.Color = Color3.fromHex("3E2A16")
-			o.Thickness = 1
-			o.Parent = kw
-			-- wiersz: szansa i nazwa, pod nimi skill na całą szerokość (skille D-101 są dłuższe: żywioł + premie)
-			tekst(s, w.szansa, UDim2.fromScale(0.09, yy - 0.005), UDim2.fromScale(0.12, 0.075), "2B2118", nil, 22)
-			tekst(s, w.nazwa, UDim2.fromScale(0.21, yy - 0.005), UDim2.fromScale(0.76, 0.075), "2B2118", nil, 22)
-			tekst(s, w.skill, UDim2.fromScale(0.21, yy + 0.068), UDim2.fromScale(0.76, 0.05), "5E3A22", "Gotham", 14)
-		end
-		table.insert(raporty, string.format("%s: %d stałych brył, szanse w SurfaceGui", J.id, #T.czesci))
-	else
-		table.insert(raporty, J.id .. ": UWAGA brak tablicy szans")
-	end
-
-	-- słup światła (widać z daleka), światło i iskry, napis nad jajkiem — w kolorze jajka
-	local slup = czesc("Slup", Vector3.new(I.wysokosc_slupa, I.promien_slupa * 2, I.promien_slupa * 2),
-		CFrame.new(podstawa.Position + Vector3.new(0, gora + 1 + I.wysokosc_slupa / 2, 0)) * CFrame.Angles(0, 0, math.rad(90)),
-		J.kolor_swiatla, "Neon", ink, false)
-	slup.Shape = Enum.PartType.Cylinder
-	slup.Transparency = I.przezroczystosc_slupa
-	slup.CastShadow = false
-	local swiatlo = czesc("Swiatlo", Vector3.new(0.4, 0.4, 0.4), CFrame.new(podstawa.Position + Vector3.new(0, gora * 0.55, 0)),
-		J.kolor_swiatla, "SmoothPlastic", ink, false)
-	swiatlo.Transparency = 1
-	swiatlo.CastShadow = false
-	local pl = Instance.new("PointLight")
-	pl.Color = Color3.fromHex(J.kolor_swiatla)
-	pl.Range = 16
-	pl.Brightness = 1.4
-	pl.Parent = swiatlo
-	local iskry = Instance.new("ParticleEmitter")
-	iskry.Name = "Iskry"
-	iskry.Color = ColorSequence.new(Color3.fromHex(J.kolor_swiatla))
-	iskry.LightEmission = 1
-	iskry.Rate = 5
-	iskry.Lifetime = NumberRange.new(1.5, 2.5)
-	iskry.Speed = NumberRange.new(1, 2.5)
-	iskry.SpreadAngle = Vector2.new(180, 180)
-	iskry.Size = NumberSequence.new(0.35, 0)
-	iskry.Parent = swiatlo
-	local napis = czesc("Napis", Vector3.new(0.4, 0.4, 0.4), CFrame.new(podstawa.Position + Vector3.new(0, gora + 2.4, 0)),
-		J.kolor_swiatla, "SmoothPlastic", ink, false)
-	napis.Transparency = 1
-	napis.CastShadow = false
-	local b = Instance.new("BillboardGui")
-	b.Name = "Tytul"
-	b.Size = UDim2.fromOffset(320, 64)
-	b.LightInfluence = 0
-	b.MaxDistance = I.widac_z_daleka
-	b.StudsOffsetWorldSpace = Vector3.new(0, 0.6, 0)
-	b.Parent = napis
-	local tt = tekst(b, J.tytul, UDim2.fromScale(0, 0), UDim2.fromScale(1, 0.62), J.kolor_swiatla, "LuckiestGuy")
-	tt.TextXAlignment = Enum.TextXAlignment.Center
-	tt.TextStrokeTransparency = 0.2
-	local tc = tekst(b, L.opisCeny(D, J) .. " · " .. D.teksty.szanse_na_tablicy,
-		UDim2.fromScale(0, 0.62), UDim2.fromScale(1, 0.38), "FFF6E0")
-	tc.TextXAlignment = Enum.TextXAlignment.Center
-	tc.TextStrokeTransparency = 0.2
-
-	local e = PJ.e
-	punktE(f.Punkty, J.punkt_e, Vector3.new(e[1], e[2] + I.e_wyzej, e[3]), I.napis_akcja, J.tytul, I.promien_e,
-		I.przytrzymaj_s)
-	table.insert(raporty, string.format("%s: E (%.1f; %.1f; %.1f)", J.punkt_e, e[1], e[2] + I.e_wyzej, e[3]))
-end
-for _, J in D.jajka do
-	inkubator(J)
 end
 
 ------------------------------------------------------------------ zagroda w bazarze: tablica i zapasowe E
@@ -546,10 +357,9 @@ def main():
                                                            plik, len(tekst)))
         G = D["polozenia"]
         for j in D["jajka"]:
-            print("  %s (%s): gniazdo %s (obrót %s°), E %s „%s”, jajko y %.2f ×%s, stałych brył %d, cena %d (%s; licznik %s)"
-                  % (j["id"], j["folder"], j["polozenie"]["gniazdo"], j["polozenie"]["obrot"], j["polozenie"]["e"],
-                     j["punkt_e"], j["y_jajka"], j["skala_jajka"], len(j["stale"]["czesci"]),
-                     DANE.LP.cena(D, j, 0), j["cena"]["tryb"], D["licznik_ceny"]["tryb"]))
+            print("  %s: cena %d (%s; licznik %s), podłoga %d, sprzedaż kopii: %s" % (
+                j["id"], DANE.LP.cena(D, j, 0), j["cena"]["tryb"], D["licznik_ceny"]["tryb"], j["podloga_ceny"],
+                ", ".join("%s %d" % (p, DANE.LP.cena_sprzedazy(D, p)) for p in j["pula"])))
         print("  zagroda: E %s, tablica %s, miejsc na pety %d" % (G["zagroda_e"], G["zagroda_tablica"],
                                                                  len(G["miejsca_petow"])))
         kody = wszystkie_kody()

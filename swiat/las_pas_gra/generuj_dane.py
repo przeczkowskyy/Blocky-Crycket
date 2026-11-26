@@ -82,7 +82,17 @@ ZASIEG_ZAPAS = 4               # zasiegGraczy = pół przekątnej pola + 4
 STRAZNIK_R_ZAPAS = 0           # promień strefy Strażnika = promień kręgu areny
 PUNKTY_STRUMIENIA_U = [200, 450, 700, 874]   # plan, przelot_kamery.streaming (tekst sprawdzany niżej)
 WYS_POSTACI = 3.2              # HumanoidRootPart nad gruntem po teleporcie (jak swiat/biom_las/teleport.py)
-MIASTECZKO_SRODEK = [0.3, 0, -698.7]   # środek układu Krzywego Miasteczka (swiat/biom_las/teleport.py)
+# start bazaru (miejsce startu gry od 26.11.2026): zapasowy cel Kamienia Powrotu, gdy w miejscu nie ma uchwytu bazaru
+ZNACZNIKI_BAZARU = os.path.join(REPO, "swiat", "miasteczko_bazar", "znaczniki.json")
+
+
+def start_bazaru():
+    """(punkt, patrz) startu bazaru ze swiat/miasteczko_bazar/znaczniki.json → „start” (punkt na gruncie, kierunek
+    patrzenia). Do 26.11.2026 zapasem było stare miasteczko (plan pasa + Workspace/LasTeleport) — zniknęło z miejsca."""
+    with open(ZNACZNIKI_BAZARU, encoding="utf-8-sig") as f:
+        st = json.load(f)["start"]
+    p, k = st["swiat"], st["kier"]
+    return [k2(p[0]), 0, k2(p[2])], [k2(p[0] + k[0] * 10), 0, k2(p[2] + k[2] * 10)]
 
 # mgła: te same wartości co MglaLasu w starym lesie (zgoda Karola z 15.11.2026), prostokąt pasa zamiast kwadratu
 MGLA_CEL = {"Density": 0.36, "Offset": 0.15, "Haze": 1.4, "Glare": 0, "Color": "D6E4DA", "Decay": "8FAF9A"}
@@ -390,7 +400,7 @@ def dane_pasa(m, skrot_danych, konf=None):
         raise Blad("przelot: czas_s %s ≠ czas ostatniego punktu %s" % (k["czas_s"], punkty[-1]["t"]))
     przyb = m["przybycie"]
     zu1, zu2 = pas["zakres_u"]
-    pp = next(p for p in plan["punkty_przybycia"] if p["id"] == "miasteczko")
+    punkt_bazaru, patrz_bazaru = start_bazaru()
     stale = dict(PRZELOT_STALE)
     stale.update({"czas": k["czas_s"], "zatrzymanieOd": k["zatrzymanie_od_s"], "rykOd": k["ryk_od_s"],
                   "rykDl": plan["straznik"]["ryk"]["dl_s"], "klip": plan["straznik"]["ryk"]["klip"],
@@ -414,10 +424,9 @@ def dane_pasa(m, skrot_danych, konf=None):
         "przedBrama": {"punkt": sw(m, b["u"] - PRZED_BRAMA_U, 0, 0), "patrz": sw(m, b["u"], 0, 0)},
         "zaBrama": {"punkt": sw(m, b["u"] + ZA_BRAMA_U, 0, 0), "patrz": sw(m, b["u"] + 40, 0, 0)},
         "powrot": {"punkt": [k2(c) for c in m["kamien_powrotu"]], "zasieg": 10},
-        # Kamień Powrotu: nowe miasteczko (bazar, uchwyt swiat/miasteczko_bazar_gra), gdy jest jego kontener;
-        # inaczej stare miasteczko (punkt LasTeleport albo z planu) — D-075: miasteczko to pierwszy blok pasa
-        "miasteczko": {"punkt": [k2(pp["swiat_xz"][0]), 0, k2(pp["swiat_xz"][1])], "patrz": MIASTECZKO_SRODEK,
-                       "teleport": "LasTeleport",
+        # Kamień Powrotu: bazar (uchwyt swiat/miasteczko_bazar_gra), gdy jest jego kontener; inaczej sam pas przenosi
+        # na start bazaru ze znaczników mapy bazaru (26.11.2026: bez starego miasteczka i Workspace/LasTeleport)
+        "miasteczko": {"punkt": punkt_bazaru, "patrz": patrz_bazaru,
                        "bazar": {"kontener": "MiasteczkoBazarGra", "uchwyt": "PrzeniesDoBazaru", "punkt": "start"}},
         "brama": {"x": xb, "z1": k2(Z0 - MGLA_POL_Z), "z2": k2(Z0 + MGLA_POL_Z), "tolerancja": BRAMA_TOLERANCJA,
                   "glebokosc": BRAMA_GLEBOKOSC, "otwarcie": [k2(Z0 + b["otwarcie_v"][0]), k2(Z0 + b["otwarcie_v"][1])]},
@@ -481,7 +490,7 @@ BIOM_LASU = {
     "atrybutPunktu": "PunktPrzybyciaLasu", "atrybutPatrz": "PatrzPrzybyciaLasu",       # atrybuty kontenera
     "straznik": "Strażnika Gaju",
     "komunikatBramy": "Brama do Bagna jest zamknięta — pokonaj Strażnika Gaju.",
-    "przekieruj": True,                              # brama w miasteczku (LasTeleport) prowadzi tutaj (tylko las)
+    "przekieruj": False,                             # 26.11.2026: bramy starego miasteczka (LasTeleport) już nie ma
     "podpisBramy": "Brama do Bagna otwarta — idź za arenę",
     "banerBramy": "BRAMA DO BAGNA OTWARTA!",
     "podpisBanera": "Idź za arenę — dalej Bagno",

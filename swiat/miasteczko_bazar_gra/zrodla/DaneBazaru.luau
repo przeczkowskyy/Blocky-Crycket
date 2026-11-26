@@ -1,7 +1,7 @@
 --[[
-	DaneBazaru — WYGENEROWANE przez swiat/miasteczko_bazar_gra/dane.py z miejsca.json, swiat/miasteczko_bazar/
-	znaczniki.json i swiat/krzywe_miasteczko/uklad.json. Nie edytuj ręcznie: zmień źródła i uruchom dane.py.
-	Skrót danych: e79f61d19616
+	DaneBazaru — WYGENEROWANE przez swiat/miasteczko_bazar_gra/dane.py z miejsca.json i swiat/miasteczko_bazar/
+	znaczniki.json (+ uklad.json bazaru). Nie edytuj ręcznie: zmień źródła i uruchom dane.py.
+	Skrót danych: 05c5a305e776
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -37,7 +37,6 @@ return {
 		brak_mapy = "Las jeszcze niegotowy — wróć później.",
 		przelot_trwa = "Poczekaj, aż skończy się przelot",
 		brak_postaci = "Brak postaci — spróbuj po odrodzeniu",
-		brak_celu = "Tego przejścia jeszcze nie ma.",
 		nieznany_punkt = "Nie udało się — spróbuj jeszcze raz",
 		zly_gracz = "Nie udało się — spróbuj jeszcze raz",
 		zamkniete = "Ta kraina jest jeszcze zamknięta.",
@@ -70,7 +69,7 @@ return {
 		czesci_x = { 882, 1066 },
 		czesci_z = { -790, -610 },
 	},
-	kolejnosc = { "karczma", "mistrz_gier", "sklep_magiczny", "zbrojownia", "training_center", "zagroda_petow", "tablica", "dzialka", "lochy", "portal_krain", "brama_lesna", "stare_miasteczko", "nowe_miasteczko" },
+	kolejnosc = { "karczma", "mistrz_gier", "sklep_magiczny", "zbrojownia", "training_center", "zagroda_petow", "tablica", "dzialka", "lochy", "portal_krain", "brama_lesna" },
 	miejsca = {
 		karczma = {
 			id = "karczma",
@@ -246,32 +245,6 @@ return {
 			dymek_nad = { 1057.3, 8.3, -700 },
 			czesc_mapy = "Workspace/MiasteczkoBazar/BramaLesna/_Interakcja/Podpowiedź E brama_lesna",
 		},
-		stare_miasteczko = {
-			id = "stare_miasteczko",
-			akcja = "przenies",
-			obiekt = "Stare miasteczko",
-			akcja_tekst = "Przejdź",
-			postac = "Stare miasteczko",
-			dymek = "Stare miasteczko",
-			zasieg = 8,
-			cel = "stare",
-			tabliczka = "STARE MIASTECZKO  (E)",
-			znacznik = "start",
-			stoisko = { 974, 0.3, -697 },
-			punkt = { 974, 3.8, -697 },
-			dymek_nad = { 974, 7.2, -697 },
-		},
-		nowe_miasteczko = {
-			id = "nowe_miasteczko",
-			akcja = "przenies",
-			obiekt = "Nowe miasteczko",
-			akcja_tekst = "Przejdź",
-			postac = "Nowe miasteczko",
-			dymek = "Nowe miasteczko",
-			zasieg = 8,
-			cel = "bazar",
-			tabliczka = "NOWE MIASTECZKO  (E)",
-		},
 	},
 	tablica = {
 		srodek = { 979.518, 5.9, -718.158 },
@@ -301,39 +274,6 @@ return {
 		zdarzenie = "Otworz",
 		atrybut_trwa = "Trwa",
 	},
-	stare = {
-		znacznik = { 21.4, 0, -682 },
-		patrz_deg = 58,
-		obszar_xz = { -293, 392, -954, -442 },
-		promienie = { 12, 15, 18, 22, 26 },
-		kierunki = {
-			{ 0.97437, -0.224951 },
-			{ 0.224951, 0.97437 },
-			{ 0.814116, -0.580703 },
-			{ -0.165048, 0.986286 },
-			{ 0.986286, 0.165048 },
-			{ 0.580703, 0.814116 },
-			{ 0.529919, -0.848048 },
-			{ -0.529919, 0.848048 },
-			{ 0.165048, -0.986286 },
-			{ -0.814116, 0.580703 },
-			{ -0.224951, -0.97437 },
-			{ -0.97437, 0.224951 },
-			{ -0.580703, -0.814116 },
-			{ -0.986286, -0.165048 },
-			{ 0.848048, 0.529919 },
-			{ -0.848048, -0.529919 },
-		},
-		min_od_portalu = 12,
-		min_od_odcinka = 6,
-		min_od_startu = 9,
-		wolne = { 4, 6, 4 },
-		roznica_wysokosci = 3,
-		rzut_od = 40,
-		rzut_dlugosc = 120,
-		powrot = 9,
-		wysokosc_podpowiedzi = 3.5,
-	},
 	przypadki = {
 		{
 			f = "decyzja",
@@ -351,7 +291,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -380,7 +319,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -409,7 +347,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -438,7 +375,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -467,7 +403,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -496,7 +431,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -525,7 +459,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -554,7 +487,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -583,7 +515,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "dymek",
@@ -614,7 +545,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "chmury",
@@ -643,71 +573,10 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "las",
 				id = "brama_lesna",
-			},
-			stan_po = {
-				ostatnieE = 10,
-				ostatniePrzejscie = -1000000000,
-				wTrakcie = false,
-				lochy = false,
-			},
-		},
-		{
-			f = "decyzja",
-			opis = "E: stare_miasteczko",
-			id = "stare_miasteczko",
-			stan = {
-				ostatnieE = -1000000000,
-				ostatniePrzejscie = -1000000000,
-				wTrakcie = false,
-				lochy = false,
-			},
-			teraz = 10,
-			swiat = {
-				odleglosc = 5,
-				chmury = true,
-				las = true,
-				poziom = 1,
-				cel = true,
-			},
-			wynik = {
-				akcja = "przenies",
-				id = "stare_miasteczko",
-				cel = "stare",
-			},
-			stan_po = {
-				ostatnieE = 10,
-				ostatniePrzejscie = -1000000000,
-				wTrakcie = false,
-				lochy = false,
-			},
-		},
-		{
-			f = "decyzja",
-			opis = "E: nowe_miasteczko",
-			id = "nowe_miasteczko",
-			stan = {
-				ostatnieE = -1000000000,
-				ostatniePrzejscie = -1000000000,
-				wTrakcie = false,
-				lochy = false,
-			},
-			teraz = 10,
-			swiat = {
-				odleglosc = 5,
-				chmury = true,
-				las = true,
-				poziom = 1,
-				cel = true,
-			},
-			wynik = {
-				akcja = "przenies",
-				id = "nowe_miasteczko",
-				cel = "bazar",
 			},
 			stan_po = {
 				ostatnieE = 10,
@@ -732,7 +601,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "nic",
@@ -761,7 +629,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -790,7 +657,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "nic",
@@ -819,7 +685,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "las",
@@ -848,7 +713,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "nic",
@@ -877,7 +741,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -906,7 +769,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "nic",
@@ -934,7 +796,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -963,7 +824,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "okno",
@@ -992,7 +852,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 99,
-				cel = true,
 			},
 			wynik = {
 				akcja = "dymek",
@@ -1023,7 +882,6 @@ return {
 				chmury = false,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "dymek",
@@ -1054,7 +912,6 @@ return {
 				chmury = true,
 				las = false,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "dymek",
@@ -1085,7 +942,6 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "dymek",
@@ -1102,8 +958,8 @@ return {
 		},
 		{
 			f = "decyzja",
-			opis = "stare miasteczko: blokada, zostało 1.5 s",
-			id = "stare_miasteczko",
+			opis = "Brama Leśna: blokada, zostało 1.5 s",
+			id = "brama_lesna",
 			stan = {
 				ostatnieE = -1000000000,
 				ostatniePrzejscie = 8.5,
@@ -1116,11 +972,10 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "dymek",
-				id = "stare_miasteczko",
+				id = "brama_lesna",
 				tekst = "Chwila… jeszcze 2 s",
 				powod = "za_szybko",
 			},
@@ -1133,8 +988,8 @@ return {
 		},
 		{
 			f = "decyzja",
-			opis = "stare miasteczko: blokada, zostało 0.1 s",
-			id = "stare_miasteczko",
+			opis = "Brama Leśna: blokada, zostało 0.1 s",
+			id = "brama_lesna",
 			stan = {
 				ostatnieE = -1000000000,
 				ostatniePrzejscie = 8.5,
@@ -1147,11 +1002,10 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "dymek",
-				id = "stare_miasteczko",
+				id = "brama_lesna",
 				tekst = "Chwila… jeszcze 1 s",
 				powod = "za_szybko",
 			},
@@ -1164,8 +1018,8 @@ return {
 		},
 		{
 			f = "decyzja",
-			opis = "stare miasteczko: blokada, zostało 2.9 s",
-			id = "stare_miasteczko",
+			opis = "Brama Leśna: blokada, zostało 2.9 s",
+			id = "brama_lesna",
 			stan = {
 				ostatnieE = -1000000000,
 				ostatniePrzejscie = 8.5,
@@ -1178,11 +1032,10 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
 				akcja = "dymek",
-				id = "stare_miasteczko",
+				id = "brama_lesna",
 				tekst = "Chwila… jeszcze 3 s",
 				powod = "za_szybko",
 			},
@@ -1195,8 +1048,8 @@ return {
 		},
 		{
 			f = "decyzja",
-			opis = "stare miasteczko: blokada, zostało 0.0 s",
-			id = "stare_miasteczko",
+			opis = "Brama Leśna: blokada, zostało 0.0 s",
+			id = "brama_lesna",
 			stan = {
 				ostatnieE = -1000000000,
 				ostatniePrzejscie = 7,
@@ -1209,47 +1062,14 @@ return {
 				chmury = true,
 				las = true,
 				poziom = 1,
-				cel = true,
 			},
 			wynik = {
-				akcja = "przenies",
-				id = "stare_miasteczko",
-				cel = "stare",
+				akcja = "las",
+				id = "brama_lesna",
 			},
 			stan_po = {
 				ostatnieE = 10,
 				ostatniePrzejscie = 7,
-				wTrakcie = false,
-				lochy = false,
-			},
-		},
-		{
-			f = "decyzja",
-			opis = "nowe miasteczko bez celu",
-			id = "nowe_miasteczko",
-			stan = {
-				ostatnieE = -1000000000,
-				ostatniePrzejscie = -1000000000,
-				wTrakcie = false,
-				lochy = false,
-			},
-			teraz = 10,
-			swiat = {
-				odleglosc = 5,
-				chmury = true,
-				las = true,
-				poziom = 1,
-				cel = false,
-			},
-			wynik = {
-				akcja = "dymek",
-				id = "nowe_miasteczko",
-				tekst = "Tego przejścia jeszcze nie ma.",
-				powod = "brak_celu",
-			},
-			stan_po = {
-				ostatnieE = 10,
-				ostatniePrzejscie = -1000000000,
 				wTrakcie = false,
 				lochy = false,
 			},
@@ -1267,7 +1087,6 @@ return {
 						chmury = true,
 						las = true,
 						poziom = 1,
-						cel = true,
 					},
 				},
 				{
@@ -1282,7 +1101,6 @@ return {
 						chmury = true,
 						las = true,
 						poziom = 1,
-						cel = true,
 					},
 				},
 				{
@@ -1292,14 +1110,13 @@ return {
 				},
 				{
 					typ = "e",
-					id = "stare_miasteczko",
+					id = "brama_lesna",
 					teraz = 1.5,
 					swiat = {
 						odleglosc = 5,
 						chmury = true,
 						las = true,
 						poziom = 1,
-						cel = true,
 					},
 				},
 				{
@@ -1311,19 +1128,17 @@ return {
 						chmury = true,
 						las = true,
 						poziom = 1,
-						cel = true,
 					},
 				},
 				{
 					typ = "e",
-					id = "nowe_miasteczko",
+					id = "brama_lesna",
 					teraz = 4.1,
 					swiat = {
 						odleglosc = 5,
 						chmury = true,
 						las = true,
 						poziom = 1,
-						cel = true,
 					},
 				},
 				{
@@ -1336,14 +1151,13 @@ return {
 				},
 				{
 					typ = "e",
-					id = "nowe_miasteczko",
+					id = "brama_lesna",
 					teraz = 5,
 					swiat = {
 						odleglosc = 5,
 						chmury = true,
 						las = true,
 						poziom = 1,
-						cel = true,
 					},
 				},
 			},
@@ -1366,7 +1180,7 @@ return {
 				},
 				{
 					akcja = "dymek",
-					id = "stare_miasteczko",
+					id = "brama_lesna",
 					tekst = "Chwila… jeszcze 3 s",
 					powod = "za_szybko",
 				},
@@ -1375,9 +1189,8 @@ return {
 					id = "zbrojownia",
 				},
 				{
-					akcja = "przenies",
-					id = "nowe_miasteczko",
-					cel = "bazar",
+					akcja = "las",
+					id = "brama_lesna",
 				},
 				{
 					krok = "poczatek",
@@ -1386,9 +1199,8 @@ return {
 					krok = "koniec",
 				},
 				{
-					akcja = "przenies",
-					id = "nowe_miasteczko",
-					cel = "bazar",
+					akcja = "las",
+					id = "brama_lesna",
 				},
 			},
 			stan_po = {
@@ -1404,13 +1216,6 @@ return {
 			powod = "blad",
 			zostalo = 2.2,
 			wynik = "Nie udało się — spróbuj jeszcze raz",
-		},
-		{
-			f = "tekst",
-			opis = "tekst brak_celu",
-			powod = "brak_celu",
-			zostalo = 2.2,
-			wynik = "Tego przejścia jeszcze nie ma.",
 		},
 		{
 			f = "tekst",
@@ -1776,910 +1581,6 @@ return {
 			wynik = "7. Duch — poz. — · moc —",
 		},
 		{
-			f = "kandydaci",
-			opis = "kandydaci bez portalu",
-			spawn = {
-				x = 21.4,
-				z = -682,
-			},
-			wynik = {
-				{
-					x = 33.092439999999996,
-					z = -684.699412,
-				},
-				{
-					x = 24.099411999999997,
-					z = -670.30756,
-				},
-				{
-					x = 31.169392,
-					z = -688.968436,
-				},
-				{
-					x = 19.419424,
-					z = -670.164568,
-				},
-				{
-					x = 33.235432,
-					z = -680.019424,
-				},
-				{
-					x = 28.368436,
-					z = -672.230608,
-				},
-				{
-					x = 27.759028,
-					z = -692.176576,
-				},
-				{
-					x = 15.040971999999998,
-					z = -671.823424,
-				},
-				{
-					x = 23.380575999999998,
-					z = -693.835432,
-				},
-				{
-					x = 11.630607999999999,
-					z = -675.031564,
-				},
-				{
-					x = 18.700588,
-					z = -693.69244,
-				},
-				{
-					x = 9.707559999999999,
-					z = -679.300588,
-				},
-				{
-					x = 14.431563999999998,
-					z = -691.769392,
-				},
-				{
-					x = 9.564567999999998,
-					z = -683.980576,
-				},
-				{
-					x = 31.576576,
-					z = -675.640972,
-				},
-				{
-					x = 11.223423999999998,
-					z = -688.359028,
-				},
-				{
-					x = 36.01555,
-					z = -685.374265,
-				},
-				{
-					x = 24.774265,
-					z = -667.38445,
-				},
-				{
-					x = 33.61174,
-					z = -690.710545,
-				},
-				{
-					x = 18.92428,
-					z = -667.20571,
-				},
-				{
-					x = 36.194289999999995,
-					z = -679.52428,
-				},
-				{
-					x = 30.110545,
-					z = -669.78826,
-				},
-				{
-					x = 29.348785,
-					z = -694.72072,
-				},
-				{
-					x = 13.451214999999998,
-					z = -669.27928,
-				},
-				{
-					x = 23.875719999999998,
-					z = -696.79429,
-				},
-				{
-					x = 9.18826,
-					z = -673.289455,
-				},
-				{
-					x = 18.025734999999997,
-					z = -696.61555,
-				},
-				{
-					x = 6.78445,
-					z = -678.625735,
-				},
-				{
-					x = 12.689454999999999,
-					z = -694.21174,
-				},
-				{
-					x = 6.605709999999998,
-					z = -684.47572,
-				},
-				{
-					x = 34.12072,
-					z = -674.051215,
-				},
-				{
-					x = 8.679279999999999,
-					z = -689.948785,
-				},
-				{
-					x = 38.93866,
-					z = -686.049118,
-				},
-				{
-					x = 25.449118,
-					z = -664.46134,
-				},
-				{
-					x = 36.054088,
-					z = -692.452654,
-				},
-				{
-					x = 18.429136,
-					z = -664.246852,
-				},
-				{
-					x = 39.153148,
-					z = -679.029136,
-				},
-				{
-					x = 31.852653999999998,
-					z = -667.345912,
-				},
-				{
-					x = 30.938541999999998,
-					z = -697.264864,
-				},
-				{
-					x = 11.861457999999999,
-					z = -666.735136,
-				},
-				{
-					x = 24.370863999999997,
-					z = -699.753148,
-				},
-				{
-					x = 6.745911999999999,
-					z = -671.547346,
-				},
-				{
-					x = 17.350882,
-					z = -699.53866,
-				},
-				{
-					x = 3.8613399999999984,
-					z = -677.950882,
-				},
-				{
-					x = 10.947346,
-					z = -696.654088,
-				},
-				{
-					x = 3.646851999999999,
-					z = -684.970864,
-				},
-				{
-					x = 36.664864,
-					z = -672.461458,
-				},
-				{
-					x = 6.1351359999999975,
-					z = -691.538542,
-				},
-				{
-					x = 42.83614,
-					z = -686.948922,
-				},
-				{
-					x = 26.348921999999998,
-					z = -660.56386,
-				},
-				{
-					x = 39.310552,
-					z = -694.775466,
-				},
-				{
-					x = 17.768943999999998,
-					z = -660.301708,
-				},
-				{
-					x = 43.098292,
-					z = -678.368944,
-				},
-				{
-					x = 34.175466,
-					z = -664.089448,
-				},
-				{
-					x = 33.058218,
-					z = -700.657056,
-				},
-				{
-					x = 9.741781999999997,
-					z = -663.342944,
-				},
-				{
-					x = 25.031056,
-					z = -703.698292,
-				},
-				{
-					x = 3.4894479999999994,
-					z = -669.224534,
-				},
-				{
-					x = 16.451078,
-					z = -703.43614,
-				},
-				{
-					x = -0.03613999999999962,
-					z = -677.051078,
-				},
-				{
-					x = 8.624533999999999,
-					z = -699.910552,
-				},
-				{
-					x = -0.298292,
-					z = -685.631056,
-				},
-				{
-					x = 40.057056,
-					z = -670.341782,
-				},
-				{
-					x = 2.742943999999998,
-					z = -693.658218,
-				},
-				{
-					x = 46.73362,
-					z = -687.848726,
-				},
-				{
-					x = 27.248725999999998,
-					z = -656.66638,
-				},
-				{
-					x = 42.567015999999995,
-					z = -697.098278,
-				},
-				{
-					x = 17.108752,
-					z = -656.356564,
-				},
-				{
-					x = 47.043436,
-					z = -677.708752,
-				},
-				{
-					x = 36.498278,
-					z = -660.832984,
-				},
-				{
-					x = 35.177893999999995,
-					z = -704.049248,
-				},
-				{
-					x = 7.622105999999999,
-					z = -659.950752,
-				},
-				{
-					x = 25.691247999999998,
-					z = -707.643436,
-				},
-				{
-					x = 0.2329839999999983,
-					z = -666.901722,
-				},
-				{
-					x = 15.551274,
-					z = -707.33362,
-				},
-				{
-					x = -3.9336200000000012,
-					z = -676.151274,
-				},
-				{
-					x = 6.301722,
-					z = -703.167016,
-				},
-				{
-					x = -4.243436000000003,
-					z = -686.291248,
-				},
-				{
-					x = 43.449248,
-					z = -668.222106,
-				},
-				{
-					x = -0.6492480000000036,
-					z = -695.777894,
-				},
-			},
-		},
-		{
-			f = "kandydaci",
-			opis = "kandydaci portal na +z 16",
-			spawn = {
-				x = 21.4,
-				z = -682,
-			},
-			portal = {
-				x = 21.4,
-				z = -666,
-			},
-			wynik = {
-				{
-					x = 33.092439999999996,
-					z = -684.699412,
-				},
-				{
-					x = 31.169392,
-					z = -688.968436,
-				},
-				{
-					x = 33.235432,
-					z = -680.019424,
-				},
-				{
-					x = 27.759028,
-					z = -692.176576,
-				},
-				{
-					x = 23.380575999999998,
-					z = -693.835432,
-				},
-				{
-					x = 11.630607999999999,
-					z = -675.031564,
-				},
-				{
-					x = 18.700588,
-					z = -693.69244,
-				},
-				{
-					x = 9.707559999999999,
-					z = -679.300588,
-				},
-				{
-					x = 14.431563999999998,
-					z = -691.769392,
-				},
-				{
-					x = 9.564567999999998,
-					z = -683.980576,
-				},
-				{
-					x = 31.576576,
-					z = -675.640972,
-				},
-				{
-					x = 11.223423999999998,
-					z = -688.359028,
-				},
-				{
-					x = 36.01555,
-					z = -685.374265,
-				},
-				{
-					x = 33.61174,
-					z = -690.710545,
-				},
-				{
-					x = 36.194289999999995,
-					z = -679.52428,
-				},
-				{
-					x = 29.348785,
-					z = -694.72072,
-				},
-				{
-					x = 23.875719999999998,
-					z = -696.79429,
-				},
-				{
-					x = 9.18826,
-					z = -673.289455,
-				},
-				{
-					x = 18.025734999999997,
-					z = -696.61555,
-				},
-				{
-					x = 6.78445,
-					z = -678.625735,
-				},
-				{
-					x = 12.689454999999999,
-					z = -694.21174,
-				},
-				{
-					x = 6.605709999999998,
-					z = -684.47572,
-				},
-				{
-					x = 34.12072,
-					z = -674.051215,
-				},
-				{
-					x = 8.679279999999999,
-					z = -689.948785,
-				},
-				{
-					x = 38.93866,
-					z = -686.049118,
-				},
-				{
-					x = 36.054088,
-					z = -692.452654,
-				},
-				{
-					x = 39.153148,
-					z = -679.029136,
-				},
-				{
-					x = 30.938541999999998,
-					z = -697.264864,
-				},
-				{
-					x = 24.370863999999997,
-					z = -699.753148,
-				},
-				{
-					x = 6.745911999999999,
-					z = -671.547346,
-				},
-				{
-					x = 17.350882,
-					z = -699.53866,
-				},
-				{
-					x = 3.8613399999999984,
-					z = -677.950882,
-				},
-				{
-					x = 10.947346,
-					z = -696.654088,
-				},
-				{
-					x = 3.646851999999999,
-					z = -684.970864,
-				},
-				{
-					x = 36.664864,
-					z = -672.461458,
-				},
-				{
-					x = 6.1351359999999975,
-					z = -691.538542,
-				},
-				{
-					x = 42.83614,
-					z = -686.948922,
-				},
-				{
-					x = 39.310552,
-					z = -694.775466,
-				},
-				{
-					x = 43.098292,
-					z = -678.368944,
-				},
-				{
-					x = 34.175466,
-					z = -664.089448,
-				},
-				{
-					x = 33.058218,
-					z = -700.657056,
-				},
-				{
-					x = 25.031056,
-					z = -703.698292,
-				},
-				{
-					x = 3.4894479999999994,
-					z = -669.224534,
-				},
-				{
-					x = 16.451078,
-					z = -703.43614,
-				},
-				{
-					x = -0.03613999999999962,
-					z = -677.051078,
-				},
-				{
-					x = 8.624533999999999,
-					z = -699.910552,
-				},
-				{
-					x = -0.298292,
-					z = -685.631056,
-				},
-				{
-					x = 40.057056,
-					z = -670.341782,
-				},
-				{
-					x = 2.742943999999998,
-					z = -693.658218,
-				},
-				{
-					x = 46.73362,
-					z = -687.848726,
-				},
-				{
-					x = 42.567015999999995,
-					z = -697.098278,
-				},
-				{
-					x = 47.043436,
-					z = -677.708752,
-				},
-				{
-					x = 36.498278,
-					z = -660.832984,
-				},
-				{
-					x = 35.177893999999995,
-					z = -704.049248,
-				},
-				{
-					x = 7.622105999999999,
-					z = -659.950752,
-				},
-				{
-					x = 25.691247999999998,
-					z = -707.643436,
-				},
-				{
-					x = 0.2329839999999983,
-					z = -666.901722,
-				},
-				{
-					x = 15.551274,
-					z = -707.33362,
-				},
-				{
-					x = -3.9336200000000012,
-					z = -676.151274,
-				},
-				{
-					x = 6.301722,
-					z = -703.167016,
-				},
-				{
-					x = -4.243436000000003,
-					z = -686.291248,
-				},
-				{
-					x = 43.449248,
-					z = -668.222106,
-				},
-				{
-					x = -0.6492480000000036,
-					z = -695.777894,
-				},
-			},
-		},
-		{
-			f = "kandydaci",
-			opis = "kandydaci portal na −x 20",
-			spawn = {
-				x = 21.4,
-				z = -682,
-			},
-			portal = {
-				x = 1.3999999999999986,
-				z = -680,
-			},
-			wynik = {
-				{
-					x = 33.092439999999996,
-					z = -684.699412,
-				},
-				{
-					x = 24.099411999999997,
-					z = -670.30756,
-				},
-				{
-					x = 31.169392,
-					z = -688.968436,
-				},
-				{
-					x = 19.419424,
-					z = -670.164568,
-				},
-				{
-					x = 33.235432,
-					z = -680.019424,
-				},
-				{
-					x = 28.368436,
-					z = -672.230608,
-				},
-				{
-					x = 27.759028,
-					z = -692.176576,
-				},
-				{
-					x = 15.040971999999998,
-					z = -671.823424,
-				},
-				{
-					x = 23.380575999999998,
-					z = -693.835432,
-				},
-				{
-					x = 18.700588,
-					z = -693.69244,
-				},
-				{
-					x = 14.431563999999998,
-					z = -691.769392,
-				},
-				{
-					x = 31.576576,
-					z = -675.640972,
-				},
-				{
-					x = 11.223423999999998,
-					z = -688.359028,
-				},
-				{
-					x = 36.01555,
-					z = -685.374265,
-				},
-				{
-					x = 24.774265,
-					z = -667.38445,
-				},
-				{
-					x = 33.61174,
-					z = -690.710545,
-				},
-				{
-					x = 18.92428,
-					z = -667.20571,
-				},
-				{
-					x = 36.194289999999995,
-					z = -679.52428,
-				},
-				{
-					x = 30.110545,
-					z = -669.78826,
-				},
-				{
-					x = 29.348785,
-					z = -694.72072,
-				},
-				{
-					x = 13.451214999999998,
-					z = -669.27928,
-				},
-				{
-					x = 23.875719999999998,
-					z = -696.79429,
-				},
-				{
-					x = 18.025734999999997,
-					z = -696.61555,
-				},
-				{
-					x = 12.689454999999999,
-					z = -694.21174,
-				},
-				{
-					x = 34.12072,
-					z = -674.051215,
-				},
-				{
-					x = 8.679279999999999,
-					z = -689.948785,
-				},
-				{
-					x = 38.93866,
-					z = -686.049118,
-				},
-				{
-					x = 25.449118,
-					z = -664.46134,
-				},
-				{
-					x = 36.054088,
-					z = -692.452654,
-				},
-				{
-					x = 18.429136,
-					z = -664.246852,
-				},
-				{
-					x = 39.153148,
-					z = -679.029136,
-				},
-				{
-					x = 31.852653999999998,
-					z = -667.345912,
-				},
-				{
-					x = 30.938541999999998,
-					z = -697.264864,
-				},
-				{
-					x = 11.861457999999999,
-					z = -666.735136,
-				},
-				{
-					x = 24.370863999999997,
-					z = -699.753148,
-				},
-				{
-					x = 17.350882,
-					z = -699.53866,
-				},
-				{
-					x = 10.947346,
-					z = -696.654088,
-				},
-				{
-					x = 36.664864,
-					z = -672.461458,
-				},
-				{
-					x = 6.1351359999999975,
-					z = -691.538542,
-				},
-				{
-					x = 42.83614,
-					z = -686.948922,
-				},
-				{
-					x = 26.348921999999998,
-					z = -660.56386,
-				},
-				{
-					x = 39.310552,
-					z = -694.775466,
-				},
-				{
-					x = 17.768943999999998,
-					z = -660.301708,
-				},
-				{
-					x = 43.098292,
-					z = -678.368944,
-				},
-				{
-					x = 34.175466,
-					z = -664.089448,
-				},
-				{
-					x = 33.058218,
-					z = -700.657056,
-				},
-				{
-					x = 9.741781999999997,
-					z = -663.342944,
-				},
-				{
-					x = 25.031056,
-					z = -703.698292,
-				},
-				{
-					x = 16.451078,
-					z = -703.43614,
-				},
-				{
-					x = 8.624533999999999,
-					z = -699.910552,
-				},
-				{
-					x = 40.057056,
-					z = -670.341782,
-				},
-				{
-					x = 2.742943999999998,
-					z = -693.658218,
-				},
-				{
-					x = 46.73362,
-					z = -687.848726,
-				},
-				{
-					x = 27.248725999999998,
-					z = -656.66638,
-				},
-				{
-					x = 42.567015999999995,
-					z = -697.098278,
-				},
-				{
-					x = 17.108752,
-					z = -656.356564,
-				},
-				{
-					x = 47.043436,
-					z = -677.708752,
-				},
-				{
-					x = 36.498278,
-					z = -660.832984,
-				},
-				{
-					x = 35.177893999999995,
-					z = -704.049248,
-				},
-				{
-					x = 7.622105999999999,
-					z = -659.950752,
-				},
-				{
-					x = 25.691247999999998,
-					z = -707.643436,
-				},
-				{
-					x = 0.2329839999999983,
-					z = -666.901722,
-				},
-				{
-					x = 15.551274,
-					z = -707.33362,
-				},
-				{
-					x = 6.301722,
-					z = -703.167016,
-				},
-				{
-					x = 43.449248,
-					z = -668.222106,
-				},
-				{
-					x = -0.6492480000000036,
-					z = -695.777894,
-				},
-			},
-		},
-		{
-			f = "odcinek",
-			opis = "odcinek (0, 0, 0, 0, 10, 0)",
-			argi = { 0, 0, 0, 0, 10, 0 },
-			wynik = 0,
-		},
-		{
-			f = "odcinek",
-			opis = "odcinek (5, 3, 0, 0, 10, 0)",
-			argi = { 5, 3, 0, 0, 10, 0 },
-			wynik = 3,
-		},
-		{
-			f = "odcinek",
-			opis = "odcinek (-4, 3, 0, 0, 10, 0)",
-			argi = { -4, 3, 0, 0, 10, 0 },
-			wynik = 5,
-		},
-		{
-			f = "odcinek",
-			opis = "odcinek (14, -3, 0, 0, 10, 0)",
-			argi = { 14, -3, 0, 0, 10, 0 },
-			wynik = 5,
-		},
-		{
-			f = "odcinek",
-			opis = "odcinek (2, 2, 1, 1, 1, 1)",
-			argi = { 2, 2, 1, 1, 1, 1 },
-			wynik = 1.4142135623730951,
-		},
-		{
 			f = "dymek",
 			opis = "dymek: nic się nie otworzyło",
 			id = "zbrojownia",
@@ -2742,5 +1643,5 @@ return {
 			wynik = false,
 		},
 	},
-	skrot = "e79f61d19616",
+	skrot = "05c5a305e776",
 }

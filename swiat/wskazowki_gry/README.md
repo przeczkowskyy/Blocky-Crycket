@@ -26,7 +26,7 @@ w pierwszej minucie”). Teksty i kolejność kroków nie są kanonem — do dec
 | za bramą | Bagno już wkrótce… (albo „Idź dalej — przed tobą Bagno”, gdy stoi `BagnoPasGra`) | — |
 | (e) po Strażniku lasu, gdy stoi Bagno | Brama otwarta — idź do Bagna / w mieście: Bagno otwarte: TELEPORT → Bagno | ▼ za bramą lasu / strzałka |
 | w Bagnie | jak w lesie: potwór → „Zdobywaj poziomy (masz N) — Strażnik Topieli na końcu Bagna” → po Strażniku Topieli „Brama do Dżungli otwarta — Dżungla już wkrótce” | ▼ nad potworem / Strażnikiem Topieli / bramą |
-| (f) Złoto ≥ cena jajka biomu, w którym jest gracz (w mieście: lasu), i jeszcze żadnego jajka tego biomu (17.11.2026, stoi `PetyProba`) — przed innymi krokami, nie za bramą | Masz dość Rybek na jajko — inkubator przy wejściu do lasu / w Bagnie: Masz dość Rybek na jajko Bagna — inkubator przy pomoście / w Dżungli (18.11): Masz dość Rybek na jajko Dżungli — inkubator na tarasie (do 26.11.2026 „Złota”, D-146) / w mieście: …: TELEPORT → Las (inkubator) | ▼ nad punktem E inkubatora biomu / strzałka |
+| (f) Rybki ≥ cena jajka biomu, w którym jest gracz (w mieście: lasu), i jeszcze żadnego jajka tego biomu (17.11.2026, stoi `PetyProba`) — przed innymi krokami, nie za bramą | od 26.11.2026 (stare inkubatory usunięte, jajka ze scenką Pawła): w mieście: Masz dość Rybek na jajko — stoi przy zagrodzie petów / w lesie: Masz dość Rybek na jajko: Kamień Powrotu → jajko przy zagrodzie / w Bagnie: Masz dość Rybek na jajko Bagna — stoi przy pomoście / w Dżungli: Masz dość Rybek na jajko Dżungli — stoi na tarasie | ▼ nad leśnym jajkiem w mieście / nad Kamieniem Powrotu lasu / nad jajkiem biomu (punkt E jajka, a gdy streaming go nie dał — model) |
 | (g) kowal (18.11.2026, stoi `KowalProba`): zapasowy przedmiot (`KowalZapasy` > 0) albo Złoto i materiały na ulepszenie (`KowalMoznaUlepszyc`), jeszcze żadnego ulepszenia (`KowalUlepszen` = 0) — **tylko zamiast (c)**, więc nigdy przed TELEPORT, pierwszą walką, jajkiem, treningiem po przegranej ani bramą | Masz zapasowy przedmiot — rozbierz go u kowala w bazarze / Możesz ulepszyć przedmiot u kowala w bazarze; w lesie i Bagnie: Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal / Możesz ulepszyć przedmiot: Kamień Powrotu → kowal | ▼ nad punktem E kowala (`KowalProba/Kuznia/E`) / nad Kamieniem Powrotu |
 
 Biomy (las-pas, Bagno) są w `ustawienia.json` → `zrodla.biomy`: kontener, moduł danych (`Moduly/DanePasa`), Kamień
@@ -44,7 +44,8 @@ liczyć się do (d), gdy gracz wejdzie na stanowisko Training Center albo wygra 
 ## Skąd stan (tylko odczyt)
 
 - atrybuty gracza: `Class`, `Level`, `PokonalStraznikaLasu`, `TreningGra` (stanowisko mini-gry); `Gold`; dla każdego
-  biomu z inkubatorem (`zrodla.biomy[].atrybut_ceny_jajka` i `atrybut_kupionych_jajek`): `PetyCenaJajka` /
+  biomu z jajkiem (`zrodla.biomy[].atrybut_ceny_jajka` i `atrybut_kupionych_jajek`; punkt celu `zrodla.biomy[].jajko` —
+  punkt E jajka ze scenką i jego model, 26.11.2026): `PetyCenaJajka` /
   `PetyCenaJajkaBagna` / `PetyCenaJajkaDzungli` (cena następnego jajka) i `PetyKupioneJajka` / `PetyKupioneJajkaBagna` /
   `PetyKupioneJajkaDzungli` (ile jajek biomu gracz kupił) — pisze je `swiat/pety_proba`; `KowalDostepne`, `KowalZapasy`, `KowalMoznaUlepszyc`, `KowalUlepszen` — pisze je
   `swiat/kowal_proba` (bez kontenera `KowalProba` krok (g) się nie pokazuje);
@@ -54,7 +55,8 @@ liczyć się do (d), gdy gracz wejdzie na stanowisko Training Center albo wygra 
 - położenie: prostokąt `wejscie` i `brama.x` z modułu `LasPasGra/Moduly/DanePasa` (bez niego wskazówki zakładają
   „miasto”);
 - cele: `LasPasGra/Stan` (potwory, Strażnik), `DanePasa.zaBrama`, `LasPasGra/Punkty/KamienPowrotu`,
-  `MiasteczkoBazarGra/Punkty/E training_center`, `TreningProba/TablicaWejscia/E`;
+  `MiasteczkoBazarGra/Punkty/E training_center` (tablica wejścia treningu zniknęła z mapy 26.11.2026),
+  `JajkoKorowePodglad/PunktJajka` (leśne jajko w mieście), `JajkaBiomowPodglad/Punkt Jajko Bagna` / `… Dżungli`;
 - ekrany: `HUD` (Pawła — tylko położenie przycisku TELEPORT), `TestWalki2Cutscenka`, `ClassSelect`;
   `TeleportChmury.Trwa`, typ kamery.
 
@@ -81,7 +83,7 @@ python -B swiat/wskazowki_gry/zbuduj.py --usun        # gra wraca do stanu sprze
 ```
 
 Haczyk testowy (klient): `workspace.WskazowkiGry.Sygnaly.SterowanieKlienta:Invoke("stan" | "wylacz" | "wlacz" |
-"zeruj" | "ustaw", pole, wartość)`. Próba w Play: `swiat/przejscie_gry/proba_dymna.py` (punkty D11, D12).
+"zeruj" | "ustaw", pole, wartość)`; „stan” podaje też `znacznikNad` (punkt znacznika w świecie, 26.11.2026). Próba w Play: `swiat/przejscie_gry/proba_dymna.py` (punkty D11, D12).
 
 ## Czego nie sprawdzono (pakiet napisany bez Studio)
 

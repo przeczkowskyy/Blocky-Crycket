@@ -23,13 +23,14 @@ import sys
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
+# 26.11.2026 (sprzątanie mapy): bez prób „stary las” (Workspace/LasPotwory, BiomLas) i „rasy” (Workspace/RasyProba) —
+# tych kontenerów nie ma już w miejscu (tools/studio/sprzatanie_mapy.py); ich próby zostają w pakietach na wypadek powrotu
 PROBY = [
     ("okno na wierzch", ["tools/studio_okno.py", "--na-wierzch"], 60),
     ("proba dymna", ["swiat/przejscie_gry/proba_dymna.py", "{w}/dymna"], 900),
     ("las-pas", ["swiat/las_pas_gra/testy/proba_play.py", "{w}/las_pas", "--bez-zrzutow"], 1500),
     ("bagno", ["swiat/bagno_pas_gra/testy/proba_play.py", "{w}/bagno", "--bez-zrzutow"], 1800),
     ("dzungla", ["swiat/dzungla_pas_gra/testy/proba_play.py", "{w}/dzungla", "--bez-zrzutow"], 1800),
-    ("stary las", ["swiat/las_potwory/testy/proba_play.py", "{w}/stary_las", "--bez-zrzutow"], 1200),
     ("stan gracza", ["swiat/stan_gracza/testy/proba_play.py", "{w}/stan", "--bez-m6", "--bez-zrzutow"], 1500),
     ("pety", ["swiat/pety_proba/testy/proba_play.py", "{w}/pety", "--bez-zrzutow"], 1500),
     ("pety bagno", ["swiat/pety_proba/testy/proba_play.py", "{w}/pety_bagno", "--bagno", "--bez-zrzutow"], 1500),
@@ -38,7 +39,6 @@ PROBY = [
     ("stroje", ["swiat/stroje_proba/testy/proba_play.py", "--bez-zrzutow"], 1500),
     ("trening", ["swiat/trening_proba/testy/proba_play.py", "{w}/trening", "--bez-zrzutow"], 1200),
     ("bohater", ["swiat/bohater_swiat/testy/proba_play.py", "{w}/bohater", "--bez-zrzutow"], 1200),
-    ("rasy", ["swiat/rasy_proba/testy/proba_play.py", "{w}/rasy", "--bez-zrzutow"], 600),
     ("cutscenka", ["swiat/cutscenka_biomu/testy/proba_play.py", "{w}/cutscenka", "--bez-zrzutow"], 900),
     ("npc", ["swiat/npc_gra/testy/proba_play.py", "{w}/npc", "--bez-zrzutow"], 600),
     ("sklep", ["swiat/sklep_proba/testy/proba_play.py", "--bez-zrzutow", "--wynik", "{w}/sklep/wynik_play.json"], 1200),

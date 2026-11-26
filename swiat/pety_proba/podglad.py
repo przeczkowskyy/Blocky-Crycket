@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Podgląd do raportu: pięć petów jajka obok siebie (portrety z Blendera) z rzadkością, szansą i skillem, a pod nimi
-podgląd inkubatora i jajka. Ten sam układ dla każdego jajka; przy jajku dalszego biomu pod skillem stoi skill peta tej
+(od 26.11.2026 bez podglądu inkubatora). Ten sam układ dla każdego jajka; przy jajku dalszego biomu pod skillem stoi skill peta tej
 samej rzadkości z jajka leśnego (porównanie). Tylko składa gotowe obrazy z swiat/postacie/wynik/ (Pillow) — Blender
 niepotrzebny.
 
@@ -50,20 +50,15 @@ def zawin(rys, tekst, font, szer):
     return wiersze
 
 
-def podglad_jajka(D, U, j, lesne):
+def podglad_jajka(D, _U, j, lesne):
     from PIL import Image, ImageDraw
-    ju = next(x for x in U["jajka"] if x["id"] == j["id"])
-    M = ju["model"]
     wiersze = LP.wiersze_szans(D, j)
     porownanie = lesne is not None and lesne["id"] != j["id"]
     bok = 360
     szer = bok * len(wiersze)
     wys_opis = 250 if porownanie else 190   # skille D-101 bywają dłuższe — zawijane w kolumnie
-    ink = Image.open(os.path.join(WYNIK, M["modul"], M["inkubator"] + "_bohater.jpg")).convert("RGB")
-    ink = ink.resize((520, 520), Image.LANCZOS)
-    jaj = Image.open(os.path.join(WYNIK, M["modul"], M["jajko"] + "_bohater.jpg")).convert("RGB").resize((520, 520),
-                                                                                                         Image.LANCZOS)
-    obraz = Image.new("RGB", (szer, 70 + bok + wys_opis + 540), (43, 33, 24))
+    # 26.11.2026: bez podglądu starego inkubatora i jajka z klocków (jajka mają scenkę Pawła) — same pety
+    obraz = Image.new("RGB", (szer, 70 + bok + wys_opis), (43, 33, 24))
     rys = ImageDraw.Draw(obraz)
     # cena stała (decyzja 17.11): „cena 300 Złota”; przy przełączniku „rosnaca”: „cena od 300 Złota”
     cena = ("cena od %d Złota" if j["cena"]["tryb"] == "rosnaca" else "cena %d Złota") % LP.cena(D, j, 0)
@@ -90,11 +85,6 @@ def podglad_jajka(D, U, j, lesne):
             for linia in zawin(rys, "las: %s — %s" % (p_las["nazwa"], skill), czcionka(17), bok - 28):
                 rys.text((x + 14, yy), linia, fill=(160, 150, 135), font=czcionka(17))
                 yy += 21
-    y = 70 + bok + wys_opis + 10
-    obraz.paste(ink, (szer // 2 - 540, y))
-    obraz.paste(jaj, (szer // 2 + 20, y))
-    rys.text((szer // 2 - 530, y + 6), "Inkubator (podgląd z Blendera)", fill=(43, 33, 24), font=czcionka(20))
-    rys.text((szer // 2 + 30, y + 6), "%s (pęka przy wykluciu)" % j["nazwa"], fill=(43, 33, 24), font=czcionka(20))
     cel = os.path.join(PODGLAD, PLIKI.get(j["kraina"], "pety_%s.jpg" % j["kraina"]))
     os.makedirs(PODGLAD, exist_ok=True)
     obraz.save(cel, "JPEG", quality=88)

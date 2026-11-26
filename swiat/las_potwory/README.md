@@ -1,5 +1,7 @@
 # Las Potworów — potwory w ruchu w Borze Pod Ukłonem
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** kontener `Workspace/LasPotwory` (potwory starego lasu) **usunięty z miejsca** razem z `BiomLas`. Źródła zostają — ten sam kod (Stale, Logika, SerwerPotworow, KlientPotworow) buduje potwory lasu-pasa, Bagna i Dżungli. Próba „stary las” wypadła z `swiat/przejscie_gry/regresja_calosci.py`.
+
 Ten pakiet sprawia, że po 16 strefach lasu `Workspace/BiomLas` chodzą potwory. Przy jednym graczu jest ich 35, przy
 ośmiu 64, a przy dwudziestu 86. Do tego w Kamiennym Kręgu stoi Strażnik Gaju, który jest celem strefy. Gracz
 podchodzi do potwora i naciska E (na telefonie stuka podpowiedź). Wtedy serwer liczy walkę silnikiem v3 (od 17.11.2026; wcześniej v2), a klient

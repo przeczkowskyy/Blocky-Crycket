@@ -71,6 +71,10 @@
 		                  → { ok, aktywny } | ("stan", gracz) → { ok, kopie, aktywny, premia, wydatki, zloto }
 		                  | ("przychod", gracz, { ile, zrodlo, cel }) → { ok, zloto, ile } — 25.11.2026: Rybki
 		                  spoza walki (zagroda petów; źródło z listy D.przychody.zrodla, dopisane jak łup, bez premii)
+		                  | ("sprzedaj", gracz, { pety = { [id] = n }, ile, zrodlo, cel }) → { ok, zloto, ile, kopie }
+		                  | { ok = false, powod ("nie_masz", pet | "aktywny", pet | walidacja) } — 26.11.2026: sprzedaż
+		                  petów (swiat/pety_proba): kopie zabrane i Rybki dopisane jednym wywołaniem, bez przerwy;
+		                  ostatniej kopii peta za graczem nie sprzedaje (PetAktywny zawsze wskazuje posiadanego peta)
 	Zdalne/ZdarzeniaStanu (RemoteEvent): serwer → klient "awans", poziom, ile; "premia", zloto, doswiadczenie, pet
 	(dodatek peta w pokazanym łupie); "przegrana", kara, doswiadczenie (kara za przegraną w pokazanym łupie);
 	klient → serwer "pokaz" (bez liczb; najwyżej raz na D.publikacja.odstep_pokaz_s —
@@ -865,6 +869,32 @@ local function pety(polecenie: any, gracz: any, info: any)
 		dolicz("LicznikPrzychodow")
 		kontener:SetAttribute("OstatniPrzychod", string.format("%s:%s:%s:+%dz", gracz.Name, w.zrodlo, w.cel, w.ile))
 		return { ok = true, zloto = p.zloto, ile = w.ile }
+	elseif polecenie == "sprzedaj" then
+		-- 26.11.2026 (swiat/pety_proba, sprzedaż petów): najpierw wszystko sprawdzone, potem kopie i Rybki razem —
+		-- bez przerwy, więc dwa wywołania naraz nie sprzedadzą tej samej kopii
+		local w, powod = L.czystaSprzedaz(D, info)
+		if not w then
+			return { ok = false, powod = powod }
+		end
+		for id, n in w.pety do
+			local ma = p.pety.kopie[id] or 0
+			if ma < n then
+				return { ok = false, powod = "nie_masz", pet = id }
+			end
+			if ma == n and p.pety.aktywny == id then
+				return { ok = false, powod = "aktywny", pet = id }
+			end
+		end
+		for id, n in w.pety do
+			local zostaje = p.pety.kopie[id] - n
+			p.pety.kopie[id] = if zostaje > 0 then zostaje else nil
+		end
+		dopisz(gracz, A.zloto, w.ile)
+		p.zloto = liczba(gracz, A.zloto, 0)
+		publikujPety(gracz)
+		dolicz("LicznikSprzedazy")
+		kontener:SetAttribute("OstatniaSprzedaz", string.format("%s:%s:+%dz", gracz.Name, w.zrodlo, w.ile))
+		return { ok = true, zloto = p.zloto, ile = w.ile, kopie = skopiuj(p.pety.kopie) }
 	end
 	return { ok = false, powod = "nieznane_polecenie" }
 end

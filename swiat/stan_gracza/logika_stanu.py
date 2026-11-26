@@ -270,6 +270,30 @@ def czysty_przychod(D, info):
     return {"ile": int(ile), "zrodlo": info["zrodlo"], "cel": info["cel"]}, "ok"
 
 
+def czysta_sprzedaz(D, info):
+    """Sygnał Pety "sprzedaj" (26.11.2026, sprzedaż petów — swiat/pety_proba): {pety: {id: n}, ile, zrodlo, cel} →
+    kopia albo (None, powód). Bez zaufania do wołającego: 1..rodzajow_maks petów, id z liter, cyfr i „_”, kopie
+    całkowite 1..kopii_maks; kwota całkowita 1..kwota_maks przychodów, źródło z listy D["przychody"]["zrodla"], cel —
+    nazwa. Kopie i obecność peta sprawdza dopiero właściciel stanu (z profilu)."""
+    if not isinstance(info, dict):
+        return None, "zla_sprzedaz"
+    pety = info.get("pety")
+    if not isinstance(pety, dict) or not 1 <= len(pety) <= D["pety"]["rodzajow_maks"]:
+        return None, "zle_pety"
+    for k, v in pety.items():
+        if not nazwa_ok(D, k) or not _calkowita(v, D["pety"]["kopii_maks"]) or v < 1:
+            return None, "zle_pety"
+    ile = info.get("ile")
+    if not _calkowita(ile, D["przychody"]["kwota_maks"]) or ile < 1:
+        return None, "zla_kwota"
+    if not isinstance(info.get("zrodlo"), str) or info["zrodlo"] not in D["przychody"]["zrodla"]:
+        return None, "zle_zrodlo"
+    if not nazwa_ok(D, info.get("cel")):
+        return None, "zly_cel"
+    return {"pety": {k: int(v) for k, v in pety.items()}, "ile": int(ile), "zrodlo": info["zrodlo"],
+            "cel": info["cel"]}, "ok"
+
+
 def wydaj(D, zloto, ile):
     """Złoto gracza (atrybut Gold — może nie być liczbą) minus kwota → (Złoto po, brakuje). Nigdy poniżej zera: gdy
     Złota za mało, zostaje bez zmian, a brakuje > 0. Ułamki Złota obcinamy (atrybut jest całkowity)."""

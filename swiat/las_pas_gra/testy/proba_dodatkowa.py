@@ -5,13 +5,14 @@
                                                         [--studio <studio_id>]
 
 Warunki jak w proba_play.py: Studio w trybie Edit, zbudowane Workspace/LasPas i Workspace/LasPasGra, do dróg także
-Workspace/LasTeleport (brama w miasteczku) i Workspace/TeleportChmury (przejście przez chmury). Skrypt sam włącza
+Workspace/MiasteczkoBazarGra (Brama Leśna bazaru; do 26.11.2026 była to brama starego miasteczka Workspace/LasTeleport,
+dziś usunięta) i Workspace/TeleportChmury (przejście przez chmury). Skrypt sam włącza
 i wyłącza Play (tylko swoje), niczego nie zapisuje w miejscu i niczego nie publikuje. Wyniki: JSON w
 swiat/las_pas_gra/wyniki/proba_dodatkowa_<czas>.json — zapisywany po każdym kroku (przerwana próba nie przepada);
 zrzuty (bez filmów) w <folder zrzutów>.
 
 CZĘŚCI (kolejność wykonania):
-  drogi   świeży gracz: brama w miasteczku prawdziwym E → przelot (oś czasu klienta: kamera, czarna zasłona,
+  drogi   świeży gracz: Brama Leśna bazaru prawdziwym E → przelot (oś czasu klienta: kamera, czarna zasłona,
           klatki), Kamień Powrotu prawdziwym E → miasteczko, brama jeszcze raz → bez przelotu; potem
           „odtwórz ponownie” w miasteczku (gracz znów świeży) i przejście przez chmury → przelot, drugie przejście
           przez chmury → bez przelotu; po każdym przelocie kamera Custom i ruch klawiszem W
@@ -329,7 +330,8 @@ def main():
             return w
 
         def w_miasteczku(p):
-            return abs(p[0]) < 600 and -1100 < p[2] < -300
+            # 26.11.2026: miasteczko = bazar (x 884…1063), starego miasteczka przy (0; 0; −700) już nie ma
+            return 880 < p[0] < 1066 and -800 < p[2] < -600
 
         def w_pasie(p):
             return PAS[0] <= p[0] <= PAS[1] and PAS[2] <= p[2] <= PAS[3]
@@ -356,32 +358,25 @@ def main():
             # ================================================================ DROGI DO LASU I PRZELOT
             if "drogi" in tylko:
                 drogi = {}
-                # a) brama w miasteczku: podpowiedź E Bramy Miejskiej (LasTeleport, atrybut Cel = "las")
-                bramy = js('local t = workspace:FindFirstChild("LasTeleport") local o = {} if t then for _, d in t:GetDescendants() do '
-                           'if d:IsA("ProximityPrompt") then local c = d.Parent local p = c:IsA("BasePart") and c.Position '
-                           'or (c:IsA("Attachment") and c.WorldPosition) or nil table.insert(o, { nazwa = c:GetFullName(), cel = d:GetAttribute("Cel"), '
-                           'p = J(p), zasieg = d.MaxActivationDistance, wlaczona = d.Enabled }) end end end return H:JSONEncode(o)', "Server")
-                drogi["podpowiedzi_LasTeleport"] = bramy
-                brama = None
-                for b in bramy:
-                    if b["cel"] == "las" and b["p"] and abs(b["p"][0]) < 600 and "Port" not in b["nazwa"]:
-                        brama = b
-                if not brama:
-                    brama = next((b for b in bramy if b["cel"] == "las" and b["p"]), None)
+                # a) Brama Leśna bazaru: podpowiedź E (MiasteczkoBazarGra/Punkty/E brama_lesna, uchwyt PrzeniesDoLasu)
+                brama = js('local b = workspace:FindFirstChild("MiasteczkoBazarGra") local c = b and b.Punkty:FindFirstChild("E brama_lesna") '
+                           'local d = c and c:FindFirstChild("Podpowiedz") return H:JSONEncode(if d then { nazwa = c:GetFullName(), '
+                           'p = J(c.Position), start = J(b:GetAttribute("PunktStartuBazaru")), zasieg = d.MaxActivationDistance, '
+                           'wlaczona = d.Enabled } else {})', "Server")
+                drogi["podpowiedz_bramy_lesnej"] = brama
                 pasa("przenies", None, "miasteczko")
                 time.sleep(2.5)
 
                 def wejdz_brama(etykieta, os_s):
-                    """Staje przy bramie miasteczka, E; zwraca (pozycja po, oś czasu, fazy)."""
-                    bp = brama["p"]
-                    pm = js('local t = workspace.LasTeleport return H:JSONEncode(J(t:GetAttribute("PunktMiasteczka")))', "Server")
-                    # 4 st od podpowiedzi, od strony miasteczka
+                    """Staje przy Bramie Leśnej bazaru, E; zwraca (pozycja po, oś czasu, fazy)."""
+                    bp, pm = brama["p"], brama["start"]
+                    # 4 st od podpowiedzi, od strony startu bazaru (grunt bazaru: start ma środek korzenia postaci)
                     dx, dz = pm[0] - bp[0], pm[2] - bp[2]
                     d = max(0.1, (dx * dx + dz * dz) ** 0.5)
                     przestaw(bp[0] + dx / d * 4, pm[1], bp[2] + dz / d * 4, (-dx / d, -dz / d))
                     time.sleep(1.5)
-                    widac = js('local n = 0 for _, d in workspace.LasTeleport:GetDescendants() do if d:IsA("ProximityPrompt") and d.Enabled '
-                               'and d:GetAttribute("Cel") == "las" then n += 1 end end return H:JSONEncode({ n = n, '
+                    widac = js('local n = 0 local c = workspace.MiasteczkoBazarGra.Punkty:FindFirstChild("E brama_lesna") '
+                               'local d = c and c:FindFirstChild("Podpowiedz") if d and d.Enabled then n = 1 end return H:JSONEncode({ n = n, '
                                'pps = game:GetService("ProximityPromptService").Enabled })', "Client")
                     if os_s:
                         os_start(os_s)

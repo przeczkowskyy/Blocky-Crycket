@@ -1,5 +1,5 @@
 --[[
-	DaneStrojow — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót 7a3275db36ae.
+	DaneStrojow — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót eab733f216f3.
 	Źródła: swiat/postacie/przedmioty.json, moduły bohaterów (cialo(), przedmioty()), ustawienia.json;
 	przedmioty stopni (swiat/postacie/stopnie.py, sklep_przedmioty.json) w modułach DaneStrojowLas, DaneStrojowBagno, DaneStrojowDzungla — scalane na końcu.
 	Bryła = { kształt (0 klocek, 1 kula, 2 walec, 3 klin, 4 narożnik), nazwa, x, y, z, rx, ry, rz, sx, sy, sz,
@@ -13,7 +13,7 @@ end
 
 local D = {}
 D.wersja = 1
-D.skrot = "7a3275db36ae"
+D.skrot = "eab733f216f3"
 D.kontener = "StrojeProba"
 D.atrybut = "StrojProba_"
 D.dobor = "klasa"
@@ -55,14 +55,12 @@ D.nazwyRuchow = {
 	bariera = "Bariera",
 }
 D.stojak = {
+	w_grze = false,
+	opis = "26.11.2026 (sprzątanie mapy, Karol): przymierzalni przy starym starcie (punkt niżej) już nie ma — gracz zaczyna w bazarze. w_grze = false: zbuduj.py jej nie stawia, KlientStrojow działa bez niej (bez okna i podglądu), a strój dalej zmienia serwer (Zdalne/ZmienStroj, haczyki kowala i prób) i widać go w walce. Gdzie w bazarze przebierać się od teraz — pytanie do Karola.",
 	punkt = { 28.6, 0.8, -16.5 },
 	promienie = { 24, 30, 36, 42 },
 	kierunki = 16,
-	omijaj = {
-		{ atrybut = { "TreningProba", "PunktTablicy" }, promien = 14 },
-		{ atrybut = { "MiasteczkoBazarGra", "PunktStaregoMiasteczka" }, promien = 12 },
-		{ sciezka = "Workspace/LasTeleport/PortalStart", promien = 16 },
-	},
+	omijaj = {},
 	wolne = { 13, 9, 11 },
 	roznica_wysokosci = 1.5,
 	rzut_od = 12,

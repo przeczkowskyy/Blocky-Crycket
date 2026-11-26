@@ -21,10 +21,12 @@ testu, życie postaci w T20) i używa haczyków pakietu; niczego nie zapisuje w 
 Nazwa konta w zapisach zamieniana na <gracz> (repo jest publiczne).
 
 LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
-  T01 gotowość: SerwerTreninguGotowy, ZgodnoscLogikiTreningu „OK n/n”, Podpowiedzi = 1, KlientTreninguGotowy,
-      6 kafelków wyboru (6 grywalnych), zdarzenie OknoMiejsca podpięte
-  T02 tablica wejścia, prawdziwe E: postać przed TablicaWejscia twarzą do niej → tymczasowy wybór na ekranie
-      (zrodlo = "tablica"), dymek bazaru nie jest potrzebny
+  T01 gotowość: SerwerTreninguGotowy, ZgodnoscLogikiTreningu „OK n/n”, Podpowiedzi = liczba podpowiedzi, które budowa
+      stawia (od 26.11.2026: 0 — bez tablicy wejścia), KlientTreninguGotowy, 6 kafelków wyboru (6 grywalnych),
+      zdarzenie OknoMiejsca podpięte
+  T02 tablica wejścia: gdy ustawienia.json → tablica_wejscia.w_grze = false (od 26.11.2026) — w kontenerze NIE ma
+      TablicaWejscia (wejście tylko przez trenera w bazarze, T03); inaczej jak dawniej: prawdziwe E przed tablicą →
+      tymczasowy wybór na ekranie (zrodlo = "tablica")
   T03 E przy trenerze w bazarze: zdarzenie OknoMiejsca("training_center") → wybór (zrodlo = "bazar"); gdy stoi
       MiasteczkoBazarGra — prawdziwe E przy trenerze, wybór otwarty, dymek „Trener: mini-gry w budowie” NIE pokazany
   T04 wejście do Siły prawdziwym kliknięciem GRAJ: postać na podeście (≤ 1,5 st), TreningGra = "sila", kamera
@@ -314,6 +316,9 @@ def main():
     import logika_treningu as LT  # noqa: E402
     import kamera_treningu as KT  # noqa: E402
     K_UST, D = DANE.dane_z_przypadkami()
+    # 26.11.2026: tablica wejścia przy starym starcie wyłączona (ustawienia.json → tablica_wejscia.w_grze = false)
+    TABLICA_W_GRZE = D["tablica_wejscia"].get("w_grze", True) is not False
+    PODP_OCZEK = 1 if TABLICA_W_GRZE else 0
 
     for _s in (os.path.join(REPO, "tools"), os.path.join(REPO, "swiat", "test_walki_roblox"),
                os.path.join(REPO, "swiat", "test_walki2", "testy")):
@@ -552,7 +557,7 @@ def main():
             klg = atrybuty(["KlientTreninguGotowy"], "Client")
             zapisz("T01", {"serwer": at, "klient": kl, "klient_atr": klg})
             ok = (at.get("SerwerTreninguGotowy") is True and str(at.get("ZgodnoscLogikiTreningu", "")).startswith("OK")
-                  and at.get("Podpowiedzi") == 1 and klg.get("KlientTreninguGotowy") is True
+                  and at.get("Podpowiedzi") == PODP_OCZEK and klg.get("KlientTreninguGotowy") is True
                   and kl.get("kafelki") == 6 and kl.get("grywalne") == 6 and (kl.get("zdarzeniaOkien") or 0) >= 1)
             punkt("T01", ok, "%s, podpowiedzi %s, kafelki %s/%s, zdarzeń OknoMiejsca %s, arkusz dźwięku %s" % (
                 at.get("ZgodnoscLogikiTreningu"), at.get("Podpowiedzi"), kl.get("grywalne"), kl.get("kafelki"),
@@ -563,7 +568,13 @@ def main():
             if chce("T02") or chce("T11"):
                 # ---------------------------------------------------------------- T02 tablica wejścia (prawdziwe E)
                 tab = js(kod("tablica"), "Server")
-                if tab.get("p"):
+                if not TABLICA_W_GRZE:
+                    zapisz("T02", {"tablica": tab, "w_grze": False})
+                    punkt("T02", not tab.get("p"), "tablica wejścia %s (w_grze = false — wejście tylko przez trenera w bazarze)"
+                          % ("JEST — nie powinno jej być (pełna przebudowa albo tools/studio/sprzatanie_mapy.py)" if tab.get("p")
+                             else "nie stoi, zgodnie z ustawieniami"))
+                    tab = {}
+                elif tab.get("p"):
                     p, f = tab["p"], tab["przod"]
                     stoisko = [p[0] + f[0] * 4, p[1] + 0.5, p[2] + f[2] * 4]
                     przestaw(stoisko, p)
@@ -598,6 +609,8 @@ def main():
                     klawisz("E")
                     time.sleep(1.2)
                     kl = klient()
+                    if P0 is None:
+                        P0 = poz()   # bez tablicy wejścia punkt powrotu to stanowisko przy trenerze
                     bz = js(kod("stan_bazaru", D["bazar"]["kontener"]), "Client")
                     hist = bz.get("historia") if isinstance(bz, dict) else None
                     ost = hist[-1] if isinstance(hist, list) and hist else {}

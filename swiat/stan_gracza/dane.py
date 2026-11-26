@@ -353,6 +353,16 @@ def przypadki(D):
                  dict(dobry_p, cel="zagroda petow"), dict(dobry_p, cel=None), "x"):
         w, powod = LS.czysty_przychod(D, info)
         P["przychod"].append({"info": info, "wynik": nil(w), "powod": powod})
+    # sprzedaż petów (26.11.2026, Pety "sprzedaj"): kopie i Rybki jednym wywołaniem
+    P["sprzedaz"] = []
+    dobry_s = {"pety": {"zoledziak": 2, "ognik": 1}, "ile": 373, "zrodlo": D["przychody"]["zrodla"][0],
+               "cel": "sprzedaz_petow"}
+    for info in (dobry_s, dict(dobry_s, pety={}), dict(dobry_s, pety={"zly pet": 1}), dict(dobry_s, pety={"ognik": 0}),
+                 dict(dobry_s, pety={"ognik": 1.5}), dict(dobry_s, pety=["ognik"]), dict(dobry_s, ile=0),
+                 dict(dobry_s, ile=D["przychody"]["kwota_maks"] + 1), dict(dobry_s, zrodlo="KowalProba"),
+                 dict(dobry_s, cel="sprzedaz petow"), "x"):
+        w, powod = LS.czysta_sprzedaz(D, info)
+        P["sprzedaz"].append({"info": info, "wynik": nil(w), "powod": powod})
     P["wydaj"] = [{"zloto": z, "ile": i, "wynik": list(LS.wydaj(D, z, i))}
                   for z, i in ((500, 300), (300, 300), (299, 300), (0, 300), (-40, 10), (12.7, 12), (None, 5), ("9", 5))]
     P["premia"] = []

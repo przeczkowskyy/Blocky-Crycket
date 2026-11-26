@@ -16,7 +16,7 @@ end
 
 return {
 	wersja = 1,
-	skrot = "8e29bdddeca1",
+	skrot = "e97e018849cb",
 	arkusz = {
 		id = 93573204965127,
 		plik = "sfx_arkusz_a.ogg",
@@ -448,68 +448,6 @@ return {
 				kontener = "DzunglaPas",
 				prostokaty = {
 					{ 1963.92, 2386.0, -784.0, -616.0 },
-				},
-			},
-			start = {
-				glosnosc = 0.8,
-				podpiete = true,
-				utwory = {
-					{
-						nazwa = "muzyka_02_bazar_targ_petla",
-						id = 94425435537814,
-					},
-					{
-						nazwa = "muzyka_03_bazar_rzemieslnicy_petla",
-						id = 116217836078354,
-					},
-					{
-						nazwa = "muzyka_04_bazar_wieczor_petla",
-						id = 75722490819761,
-					},
-				},
-				kontener = "DemoLesnaBaza",
-				prostokaty = {
-					{ -125.0, 125.0, -125.0, 125.0 },
-				},
-			},
-			miasteczko = {
-				glosnosc = 0.8,
-				podpiete = true,
-				utwory = {
-					{
-						nazwa = "muzyka_02_bazar_targ_petla",
-						id = 94425435537814,
-					},
-					{
-						nazwa = "muzyka_03_bazar_rzemieslnicy_petla",
-						id = 116217836078354,
-					},
-					{
-						nazwa = "muzyka_04_bazar_wieczor_petla",
-						id = 75722490819761,
-					},
-				},
-				kontener = "KrzyweMiasteczko",
-				prostokaty = {
-					{ -300.0, 400.0, -960.0, -440.0 },
-				},
-			},
-			bor = {
-				glosnosc = 0.8,
-				podpiete = true,
-				utwory = {
-					{
-						nazwa = "muzyka_05_las_a_petla",
-						id = 70497074484606,
-					},
-					{
-						nazwa = "muzyka_05_las_b_petla",
-						id = 106582652985449,
-					},
-				},
-				kontener = "BiomLas",
-				prostokaty = {
-					{ -700.0, 700.0, -2700.0, -1300.0 },
 				},
 			},
 			menu = {

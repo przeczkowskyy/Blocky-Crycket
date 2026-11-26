@@ -1,7 +1,7 @@
 --[[
 	DaneTreningu — WYGENEROWANE przez swiat/trening_proba/dane.py z ustawienia.json (oraz punktu
 	trenera ze swiat/miasteczko_bazar/znaczniki.json). Nie edytuj ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 8cb084e88ddf
+	Skrót danych: 04a7ee8c056d
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -658,12 +658,11 @@ return {
 		tablica_wejscia = "TablicaWejscia/E",
 	},
 	tablica_wejscia = {
+		w_grze = false,
+		opis = "26.11.2026 (sprzątanie mapy, Karol): tablicy Training Center przy starym starcie już nie ma — gracz zaczyna w bazarze, a do mini-gier wchodzi tylko przez trenera w bazarze (MiasteczkoBazarGra, punkt E training_center). w_grze = false: zbuduj.py jej nie stawia (stawiała się przy pierwszym SpawnLocation, czyli dziś stanęłaby w bazarze). Kod tablicy zostaje w zbuduj.py na wypadek powrotu.",
 		promienie = { 14, 18, 22, 26 },
 		kierunki = 16,
-		omijaj = {
-			{ atrybut = { "MiasteczkoBazarGra", "PunktStaregoMiasteczka" }, promien = 10 },
-			{ sciezka = "Workspace/LasTeleport/PortalStart", promien = 14 },
-		},
+		omijaj = {},
 		wolne = { 7, 8, 7 },
 		roznica_wysokosci = 1.5,
 		rzut_od = 12,
@@ -3134,5 +3133,5 @@ return {
 			{ 1024, 768, 1.535232383808096 },
 		},
 	},
-	skrot = "8cb084e88ddf",
+	skrot = "04a7ee8c056d",
 }

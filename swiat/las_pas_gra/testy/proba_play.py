@@ -7,22 +7,24 @@ gatunki, koszt przy pełnym zestawie).
     python -B swiat/las_pas_gra/testy/proba_play.py <folder wyjściowy> [--studio <studio_id>] [--bez-zrzutow]
 
 Warunki: Studio w trybie Edit, otwarte miejsce gry (placeId sprawdza cel_studio), zbudowane Workspace/LasPas
-(swiat/las_pas) i Workspace/LasPasGra (python -B swiat/las_pas_gra/zbuduj.py); najlepiej też TestWalki2, LasTeleport,
-LasPotwory i LasMgla (stary las ma dalej działać). Skrypt sam włącza i wyłącza Play (tylko swoje), niczego nie
+(swiat/las_pas) i Workspace/LasPasGra (python -B swiat/las_pas_gra/zbuduj.py); najlepiej też TestWalki2 i
+MiasteczkoBazarGra (start bazaru). Od 26.11.2026 starego lasu (BiomLas, LasPotwory, LasMgla) ani bramy starego
+miasteczka (LasTeleport) nie ma w miejscu. Skrypt sam włącza i wyłącza Play (tylko swoje), niczego nie
 zapisuje w miejscu i niczego nie publikuje. Wyniki: <wyj>/wyniki.json, lista kontrolna na ekranie i w
 <wyj>/lista.txt, zrzuty <wyj>/<nazwa>.jpg (bez filmów). Przy wygaszonym ekranie Studio nie rysuje — skrypt budzi go
 przed każdym zrzutem (swiat/test_walki2/testy/czuwanie.py).
 
 LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
   P01 serwery gotowe: SerwerGotowy (potwory pasa), SerwerPasaGotowy, StanMapy ok, StanBiomu ok, SzablonyGotowe,
-      Potworow = 20 przy 1 graczu, ZgodnoscLogiki „OK 70/70”, ZgodnoscLogikiPasa „OK 39/39”, Przekierowanie „tak”;
-      stary las: LasPotwory SerwerGotowy, Potworow 36
+      Potworow = 20 przy 1 graczu, ZgodnoscLogiki „OK 70/70”, ZgodnoscLogikiPasa „OK 39/39”, Przekierowanie
+      „nie_ten_biom” (26.11.2026: bramy starego miasteczka już nie ma); w miejscu nie ma Workspace/LasPotwory
   P02 klienci gotowi: KlientGotowy i KlientTryb „aktorzy” (potwory pasa), KlientPasaGotowy
-  P03 przybycie: z miasteczka przez dzisiejszą bramę (LasTeleport.Steruj „las”, przekierowana) → Polana Przybycia
+  P03 przybycie: ze startu bazaru przez uchwyt Sygnaly/PrzeniesDoLasu (ten sam, którego używają Brama Leśna bazaru
+      i przejście przez chmury) → Polana Przybycia
   P04 pierwszy przelot: fazy uspokaja → laduje → trwa → brak, kamera skryptowa, czas lotu z krótkiego planu (D-096) ± 1,5 s, ryk Strażnika
       zagrał, postać nie ruszyła się (zakotwiczona), walka w trakcie odrzucona (licznik walk bez zmian), po locie
       kamera Custom, postać i walki odblokowane, WidzialPrzelotLasu = true
-  P05 brak drugiego przelotu: miasteczko → brama → las, 6 s — faza „brak”, LicznikPrzelotow bez zmian
+  P05 brak drugiego przelotu: miasteczko → uchwyt PrzeniesDoLasu → las, 6 s — faza „brak”, LicznikPrzelotow bez zmian
   P05t TELEPORT „Las” z głębi lasu (D-096, „Kliknąć Las jeszcze raz?”): przeniesienie na Polanę Przybycia (inkubator,
       Kamień Powrotu), bez odmowy i bez drugiego przelotu; bez Workspace/TeleportChmury „?”
   P06 uchwyt „odtwórz ponownie”: przelot jeszcze raz i znów kończy się czysto
@@ -49,8 +51,8 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
   P12 Kamień Powrotu: podpowiedź E przy kamieniu, prawdziwe E → miasteczko
   P13 mgła: waga 1 w pasie, 0 w miasteczku; Atmosphere u klienta zmieniona, NA SERWERZE taka jak w miejscu
   P14 koszt: serwer potworów, serwer pasa, klient potworów (ms) i klatki klienta w trzech miejscach pasa
-  P15 stary las działa: widoki potworów starego lasu i jego mgła po przeniesieniu do Boru; w Borze widać tylko
-      panel bohatera starego lasu
+  P15 stary las (tylko gdy Workspace/LasPotwory jeszcze stoi — od 26.11.2026 usunięty, więc „?” pominięte): widoki
+      potworów starego lasu i jego mgła po przeniesieniu do Boru; w Borze widać tylko panel bohatera starego lasu
   P16 konsola: bez błędów [LasPasGra]
   (ręcznie, poza skryptem: telefon w emulatorze Studio — przelot, przycisk E, Kamień Powrotu, panel bohatera;
    dwóch graczy (Test → Clients and Servers, 2) — brama otwarta tylko dla zwycięzcy, drugi cofany)
@@ -304,7 +306,7 @@ def main():
             punkt("P01", bool(gotowe) and gotowe.get("StanMapy") == "ok" and gotowe.get("StanBiomu") == "ok"
                   and gotowe.get("SzablonyGotowe") is True and gotowe.get("Potworow") == G["potworow_1"]
                   and gotowe.get("ZgodnoscLogiki") == "OK 70/70" and gotowe.get("ZgodnoscLogikiPasa") == "OK 39/39"
-                  and gotowe.get("Przekierowanie") == "tak" and (stary.get("brak") or stary.get("Potworow") == 36),
+                  and gotowe.get("Przekierowanie") == "nie_ten_biom" and stary.get("brak") is True,
                   "serwery: %s | stary las: %s" % (gotowe, stary))
             kl = czekaj_na(lambda: (lambda a: a if a.get("KlientGotowy") and a.get("KlientPasaGotowy") else None)(
                 atrybuty("LasPasGra", ["KlientGotowy", "KlientTryb", "KlientPasaGotowy"], "Client")), 60, 1.0) or {}
@@ -327,18 +329,18 @@ def main():
             # ---------------------------------------------------------------- P03–P04 przybycie i pierwszy przelot
             nowa = PP.dopasuj(luau, "las", G)     # nowa cutscenka (CutscenkaBiomu) albo stary przelot pasa
             log("przelot lasu gra: %s" % ("nowa cutscenka (CutscenkaBiomu)" if nowa else "stary przelot pasa"))
-            luau(HRP + 'local t = workspace:FindFirstChild("LasTeleport") local p = t and t:GetAttribute("PunktMiasteczka") '
+            luau(HRP + 'local b = workspace:FindFirstChild("MiasteczkoBazarGra") local p = b and b:GetAttribute("PunktStartuBazaru") '
                        'if p then hrp.Parent:PivotTo(CFrame.new(p)) end return "ok"', "Server")
             time.sleep(3)
             licznik_walk = atrybuty("LasPasGra", ["SerwerLicznikWalk"]).get("SerwerLicznikWalk") or 0
-            wynik_bramy = luau('local t = workspace:FindFirstChild("LasTeleport") local s = t and t:FindFirstChild("Steruj") '
-                               'return tostring(s and s:Invoke("las"))', "Server")
+            wynik_bramy = luau('local g = game:GetService("Players"):GetPlayers()[1] local f = workspace.LasPasGra.Sygnaly.PrzeniesDoLasu '
+                               'local r = f:Invoke(g, { punkt = "las", przelotPo = 0 }) return tostring(type(r) == "table" and r.ok == true)', "Server")
             time.sleep(0.4)
             p_przyb = poz()
             cel = gotowe.get("PunktPrzybyciaLasu") or [1114, 3.2, -700]
             d = ((p_przyb[0] - cel[0]) ** 2 + (p_przyb[2] - cel[2]) ** 2) ** 0.5
             zapisz("P03", {"steruj": wynik_bramy, "pozycja": p_przyb, "cel": cel, "odleglosc": d})
-            punkt("P03", wynik_bramy == "true" and d < 3, "brama miasteczka → (%.1f; %.1f; %.1f), %.1f st od przybycia" % (
+            punkt("P03", wynik_bramy == "true" and d < 3, "start bazaru → PrzeniesDoLasu → (%.1f; %.1f; %.1f), %.1f st od przybycia" % (
                 p_przyb[0], p_przyb[1], p_przyb[2], d))
             zrzut("01_przybycie")
             # próba walki w czasie przelotu (serwer ma odmówić: postać zablokowana)
@@ -374,7 +376,8 @@ def main():
             time.sleep(3)
             zrzut("19_miasteczko_bez_mgly")
             waga_miasto = atrybuty("LasPasGra", ["WagaMglyPasa"], "Client").get("WagaMglyPasa")
-            luau('return tostring(workspace.LasTeleport.Steruj:Invoke("las"))', "Server")
+            luau('local g = game:GetService("Players"):GetPlayers()[1] local f = workspace.LasPasGra.Sygnaly.PrzeniesDoLasu '
+                 'local r = f:Invoke(g, { punkt = "las", przelotPo = 0 }) return tostring(type(r) == "table" and r.ok == true)', "Server")
             fazy2 = []
             for _ in range(12):
                 fazy2.append(gracz_serwer()["faza"])

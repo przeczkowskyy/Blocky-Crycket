@@ -1,5 +1,7 @@
 # Training Center — próba sześciu mini-gier
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** tablica wejścia `TablicaWejscia` przy starym starcie zniknęła — `ustawienia.json → tablica_wejscia.w_grze = false` (budowa stawiała ją przy pierwszym `SpawnLocation`, czyli dziś stanęłaby w bazarze). Do mini-gier wchodzi się tylko przez trenera w bazarze (`MiasteczkoBazarGra`, punkt E `training_center`); `Podpowiedzi = 0`. Kod tablicy zostaje w `zbuduj.py`. Próba w Play: T01 liczy 0 podpowiedzi, T02 sprawdza, że tablicy nie ma. Usuwanie z miejsca: `python -B tools/studio/sprzatanie_mapy.py` (najpierw `--sucho`); start gry na starcie bazaru: `python -B tools/studio/start_w_miasteczku.py`.
+
 *Status: **propozycja** (17.11.2026). **Siła i Pancerz wdrożone w Studio i sprawdzone w trybie Play 17.11.2026 przed
 południem** (etap B): lista T01–T14 zaliczona, zrzuty z gry w `klatki/`, wyniki w „Co sprawdzone w grze”. **Cztery
 nowe mini-gry (Kondycja „Bieżnia”, Zręczność „Kłody”, Inteligencja „Runy”, Szczęście „Koniczyny”) — noc 17/18.11:
@@ -70,7 +72,7 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `Sygnaly/WybierzGre` | BindableFunction (klient) | **uchwyt dla docelowego okna 2D Pawła** |
 | `Sygnaly/SterowanieSerwera`, `Sygnaly/SterowanieKlienta` | BindableFunction | haczyki testowe |
 | `Arena` (Model, `ModelStreamingMode = Persistent`) | części | od D-108 (w Studio od 19.11.2026): pas sześciu scenerii krain — podłoże komórek, niewidzialne ściany 16 st wokół pasa, sześć stanowisk i `Dekoracje/<Gra>` ze scenerią każdej gry, 2797 części; bez lobby (gracz przechodzi z okna wyboru prosto do scenerii) |
-| `TablicaWejscia` (Model, Persistent) | części | tablica „TRAINING CENTER / MINI-GRY” z podpowiedzią E 14–26 st od pierwszego SpawnLocation, na wolnym gruncie, z dala od „Nowe miasteczko (E)” bazaru i portalu startowego; miejsce wybiera budowa w Studio |
+| `TablicaWejscia` (Model, Persistent) | części | tablica „TRAINING CENTER / MINI-GRY” z podpowiedzią E 14–26 st od pierwszego SpawnLocation, na wolnym gruncie, z dala od „Nowe miasteczko (E)” bazaru i portalu startowego; miejsce wybiera budowa w Studio — **od 26.11.2026 nie powstaje** (`tablica_wejscia.w_grze = false`) |
 
 Atrybuty kontenera: `Wygenerowane`, `Zrodlo`, `Zbudowano`, `Skrot`, `PunktTablicy`, **`WyborTymczasowy`** (true; false
 = tymczasowy wybór się nie otwiera, bo jest okno Pawła). Ręczne w Edit i przenoszone przy odbudowie:

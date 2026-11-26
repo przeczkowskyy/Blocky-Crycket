@@ -548,7 +548,8 @@ def main():
             # ================================================================ B04 chmury → Bagno, bez drugiego przelotu
             t = teleport("stan", "gracz")
             przel0 = PP.licznik(luau, "bagno", kont("BagnoPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0)
-            luau(HRP + 'local t = workspace:FindFirstChild("LasTeleport") local p = t and t:GetAttribute("PunktMiasteczka") '
+            # start bazaru (26.11.2026: starego miasteczka z Workspace/LasTeleport już nie ma)
+            luau(HRP + 'local b = workspace:FindFirstChild("MiasteczkoBazarGra") local p = b and b:GetAttribute("PunktStartuBazaru") '
                        'if p then hrp.Parent:PivotTo(CFrame.new(p)) end return "ok"', "Server")
             time.sleep(2.5)
             w04 = teleport("przenies", '"bagno", gracz')

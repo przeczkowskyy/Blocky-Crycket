@@ -8,16 +8,17 @@ Uzupełnienie: testy/proba_dodatkowa.py (kamera odwrócona, dymki 13 miejsc, Kam
 
 Warunki: Studio w trybie Edit, otwarte miejsce gry (placeId sprawdza cel_studio), zbudowane Workspace/MiasteczkoBazar
 (swiat/miasteczko_bazar, tools/studio_buduj.py) i Workspace/MiasteczkoBazarGra (python -B swiat/miasteczko_bazar_gra/
-zbuduj.py); najlepiej też TeleportChmury, LasPas + LasPasGra i LasTeleport (portal, Las). Skrypt sam włącza i wyłącza
+zbuduj.py); najlepiej też TeleportChmury, LasPas + LasPasGra (portal, Las) i start gry przeniesiony na start bazaru
+(tools/studio/start_w_miasteczku.py — B09). Skrypt sam włącza i wyłącza
 Play, w trybie Play zmienia tylko atrybuty WŁASNEGO kontenera (DymkiWylaczone, BezDymku, Proba*) i stan graczy
 haczykami pakietu; niczego nie zapisuje w miejscu i niczego nie publikuje. Wyniki: <wyj>/wyniki.json, lista kontrolna
 na ekranie i w <wyj>/lista.txt, zrzuty <wyj>/<nazwa>.jpg (tylko zrzuty, bez filmów).
 
 LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
-  B01 gotowość: SerwerBazaruGotowy, ZgodnoscLogikiBazaru „OK n/n”, Podpowiedzi = 13, KlientBazaruGotowy, punkt
-      w starym miasteczku (PunktPowrotuStare), atrybuty Las / Chmury (jest / brak — zapisane)
+  B01 gotowość: SerwerBazaruGotowy, ZgodnoscLogikiBazaru „OK n/n”, Podpowiedzi = 11 (26.11.2026: bez przejść stare ↔
+      nowe miasteczko), KlientBazaruGotowy, atrybuty Las / Chmury (jest / brak — zapisane)
   B02 start bazaru: haczyk „przenies bazar” → postać ≤ 1,5 st od PunktStartuBazaru, patrzy na +X; podpowiedzi E
-      włączone; tabliczka „STARE MIASTECZKO (E)” za plecami
+      włączone
   B03 czasy biegu: ze startu do każdego punktu E (character_navigation, pomiar w grze od ruszenia do 2,5 st od
       stoiska) — porównanie z planem siatki (czasy_biegu.plan) i celami: sklepy ≤ 5 s, portal ≤ 6 s
   B04 E przy każdym sprzedawcy i bramie (prawdziwe E z klawiatury, postać na stoisku twarzą do podpowiedzi):
@@ -33,13 +34,13 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       — odległość kamery od głowy (domyślnie ok. 12,5; < 6 = kamera ściśnięta) i czy promień kamera → głowa trafia
       w część (obrócona kamera: testy/proba_dodatkowa.py, D01)
   B07 portal → chmury → Las i powrót: E przy portalu → TeleportChmury (Trwa), wybór „las” haczykiem klienta →
-      postać w Lesie; potem Otworz → „miasteczko” → gdzie wylądowała (stare miasteczko albo bazar — zależy od wpisu
-      w krainy.json, README: jednolinijkowa zmiana)
+      postać w Lesie; potem Otworz → „miasteczko” → postać na starcie bazaru (≤ 3 st; od 26.11.2026 krainy.json nie zna
+      starego miasteczka)
   B08 Brama Leśna → Las: E na stoisku Bramy Leśnej → postać w Lesie (X ≥ 1066) w ≤ 6 s; bez LasPasGra — dymek
       „Las jeszcze niegotowy”; drugie E zaraz po przejściu → dymek „Chwila…” (blokada czasu)
-  B09 stare ↔ nowe miasteczko: E przy „Stare miasteczko (E)” → postać przy PunktPowrotuStare; po 3,2 s E przy
-      „Nowe miasteczko (E)” → postać na starcie bazaru; od razu drugie E → „Chwila…”; tabliczka w starym miasteczku
-      nie zasłania PortalStart (odległość zapisana)
+  B09 start gry w bazarze (26.11.2026, zamiast dawnych przejść stare ↔ nowe miasteczko): pierwsza pozycja postaci po
+      wejściu do gry ≤ 4 st (w poziomie) od startu bazaru; w Punkty nie ma „E stare_miasteczko” ani „E nowe_miasteczko”;
+      w Workspace nie ma starego startu (DemoLesnaBaza) ani starego miasteczka (KrzyweMiasteczko)
   B10 tablica: SurfaceGui pokazuje gracza („1. <nazwa> — poz. …”), wiersze = liczba graczy
   B11 działka i lochy: E przy Bramie Twierdzy → dymek działki z danych; E przy wrotach → dymek lochów z danych; haczyk
       „lochy true” → BazarLochyOtwarte = true i kłódka niewidoczna TYLKO u klienta (LocalTransparencyModifier = 1,
@@ -56,7 +57,7 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
    Clients and Servers, 2) — dymki i lochy tylko u tego, kto nacisnął E, tablica z dwoma wierszami)
 
 ZRZUTY (w <wyj>, 8 sztuk): 01_start_bazar, 02_podpowiedz_zbrojownia, 03_dymek_zbrojmistrz, 04_karczma_kamera,
-  05_tablica_ranking, 06_chmury_makieta, 07_las_po_bramie, 08_stare_miasteczko_nowe.
+  05_tablica_ranking, 06_chmury_makieta, 07_las_po_bramie, 08_start_gry.
 """
 import io
 import json
@@ -200,8 +201,8 @@ def main():
             """Postać na punkcie p (grunt + 3,2), twarzą do patrz (poziomo)."""
             x, y, z = p
             px, pz = (patrz[0], patrz[2]) if patrz else (x + 1, z)
-            # stoisko „Stare miasteczko” = jego punkt E (ten sam X, Z): CFrame.lookAt na punkt w tym samym miejscu daje
-            # NaN i postać ginie pod mapą (próba 17.11.2026: B09 „przechodziło” dzięki odrodzeniu przy SpawnLocation)
+            # stoisko = punkt E (ten sam X, Z): CFrame.lookAt na punkt w tym samym miejscu daje NaN i postać ginie pod
+            # mapą (próba 17.11.2026)
             if math.hypot(px - x, pz - z) < 0.1:
                 px, pz = x + 1, z
             luau(HRP + 'local p = Vector3.new(%f, %f, %f) hrp.Parent:PivotTo(CFrame.lookAt(p, Vector3.new(%f, p.Y, %f))) '
@@ -279,8 +280,8 @@ def main():
                                'chmury = workspace:FindFirstChild("TeleportChmury") ~= nil, '
                                'sklep = workspace:FindFirstChild("SklepProba") ~= nil, '
                                'las = workspace:FindFirstChild("LasPasGra") ~= nil, '
-                               'stare = k and k:GetAttribute("PunktStaregoMiasteczka") and { k:GetAttribute("PunktStaregoMiasteczka").X, '
-                               'k:GetAttribute("PunktStaregoMiasteczka").Z } or nil })', "Edit"))
+                               'stary_start = workspace:FindFirstChild("DemoLesnaBaza") ~= nil, '
+                               'stare_miasteczko = workspace:FindFirstChild("KrzyweMiasteczko") ~= nil })', "Edit"))
         zapisz("edit", edit)
         if not edit["kontener"] or not edit["mapa"]:
             sys.exit("Brak Workspace/MiasteczkoBazarGra albo Workspace/MiasteczkoBazar w trybie Edit: %s" % edit)
@@ -290,6 +291,8 @@ def main():
             czekaj_na(lambda: "Client" in stan_studio() and luau(
                 'local p = game:GetService("Players").LocalPlayer return tostring(p ~= nil and p.Character ~= nil)', "Client") == "true",
                 90, 1.0)
+            # pierwsza pozycja postaci po wejściu = miejsce startu gry (B09) — zanim cokolwiek ją przestawi
+            pierwsza = js(HRP + 'return H:JSONEncode(J(hrp.Position))', "Server")
             time.sleep(3)
             # ekran wyboru klasy (src/client/ClassSelectClient) trzyma kamerę i wyłącza podpowiedzi E — Enter jak gracz
             wybor = {}
@@ -318,13 +321,13 @@ def main():
 
             # ---------------------------------------------------------------- B01 gotowość
             gotowe = czekaj_na(lambda: (lambda a: a if a.get("SerwerBazaruGotowy") else None)(
-                atrybuty(["SerwerBazaruGotowy", "ZgodnoscLogikiBazaru", "Podpowiedzi", "Las", "Chmury", "PunktPowrotuStare",
-                          "PunktStartuBazaru", "PunktStaregoMiasteczka", "ZrodloStartuStarego"])), 40, 1.0) or {}
+                atrybuty(["SerwerBazaruGotowy", "ZgodnoscLogikiBazaru", "Podpowiedzi", "Las", "Chmury",
+                          "PunktStartuBazaru"])), 40, 1.0) or {}
             kl = atrybuty(["KlientBazaruGotowy"], "Client")
             zapisz("B01", {"serwer": gotowe, "klient": kl})
             n = len(D["przypadki"])
             punkt("B01", gotowe.get("ZgodnoscLogikiBazaru") == "OK %d/%d" % (n, n) and gotowe.get("Podpowiedzi") == len(D["kolejnosc"])
-                  and kl.get("KlientBazaruGotowy") is True and gotowe.get("PunktPowrotuStare") is not None,
+                  and kl.get("KlientBazaruGotowy") is True,
                   "serwer %s | klient %s" % (gotowe, kl))
 
             # ---------------------------------------------------------------- B02 start bazaru
@@ -498,7 +501,7 @@ def main():
                                "powrot": {"wybor": wybor_m, "pozycja": p_m, "w_bazarze": w_bazarze, "od_startu": d_start},
                                "wpis_bazaru_w_krainy": wpis_bazaru})
                 wrocil = odl_xz(p_m, p_las) > 50
-                punkt("B07", bool(ok_wybor) and p_las[0] >= 1066 and wrocil and (w_bazarze and d_start < 3 if wpis_bazaru else not w_bazarze),
+                punkt("B07", bool(ok_wybor) and p_las[0] >= 1066 and wrocil and w_bazarze and d_start < 3 and wpis_bazaru is True,
                       "portal → chmury → Las (%.0f; %.0f; %.0f) → powrót (%.0f; %.0f; %.0f) %s" % (
                           p_las[0], p_las[1], p_las[2], p_m[0], p_m[1], p_m[2],
                           ("W BAZARZE, %.1f st od startu" % d_start) if w_bazarze else
@@ -528,38 +531,22 @@ def main():
                 punkt("B08", str(ost).endswith("dymek/brak_lasu") and dymek_las is not None,
                       "bez LasPasGra: %s „%s”" % (ost, dymek_las))
 
-            # ---------------------------------------------------------------- B09 stare ↔ nowe miasteczko
+            # ---------------------------------------------------------------- B09 start gry w bazarze
+            # 26.11.2026 (Karol): gracz zaczyna od razu w bazarze — SpawnLocation na starcie bazaru
+            # (tools/studio/start_w_miasteczku.py), przejść stare ↔ nowe miasteczko i starego startu już nie ma
+            d_pierwsza = odl_xz(pierwsza, D["start"]["punkt"]) if pierwsza else None
+            resztki = js('local o = {} for _, n in { "E stare_miasteczko", "E nowe_miasteczko" } do '
+                         'if k.Punkty:FindFirstChild(n) then table.insert(o, n) end end return H:JSONEncode(o)', "Server")
+            resztki = resztki if isinstance(resztki, list) else []
             hak("przenies", "bazar")
-            time.sleep(3.5)
-            hak("zeruj")
-            przed9 = atrybuty(["ProbaOdrodzen", "ProbaSmierci", "ProbaOstatniaSmierc", "OstatnieE"])
-            ost, wpis, _ = e_w("stare_miasteczko", 2.5)
-            p_st = poz()
-            cel_st = gotowe.get("PunktPowrotuStare")
-            d_st = odl_xz(p_st, cel_st) if cel_st else None
-            po9 = atrybuty(["ProbaOdrodzen", "ProbaSmierci", "ProbaOstatniaSmierc", "OstatniePrzejscie"])
-            zapisz("B09_diagnoza", {"przed": przed9, "po": po9})
             time.sleep(1.0)
-            zrzut("08_stare_miasteczko_nowe")
-            nowe = js('local c = k.Punkty:FindFirstChild("E nowe_miasteczko") local lt = workspace:FindFirstChild("LasTeleport") '
-                      'local ps = lt and lt:FindFirstChild("PortalStart") return H:JSONEncode({ punkt = c and J(c.Position), '
-                      'portal = ps and J(ps:GetPivot().Position) })', "Server")
-            time.sleep(1.0)
-            przestaw([nowe["punkt"][0] + 1.5, nowe["punkt"][1] - 3.5, nowe["punkt"][2] + 1.5], nowe["punkt"])
-            time.sleep(0.8)
-            nacisnij("E")
-            time.sleep(1.5)  # krócej niż odstep_przejsc_s (3 s) — drugie E niżej ma trafić w blokadę czasu
-            p_nowe = poz()
-            d_nowe = odl_xz(p_nowe, D["start"]["korzen"])
-            hak_e = hak("e", "stare_miasteczko")
-            zapisz("B09", {"do_starego": {"e": ost, "pozycja": p_st, "odleglosc": d_st}, "nowe": nowe,
-                           "do_bazaru": {"pozycja": p_nowe, "odleglosc": d_nowe}, "zaraz_drugie": hak_e})
-            od_portalu = odl_xz(nowe["punkt"], nowe["portal"]) if nowe.get("portal") and nowe.get("punkt") else None
-            punkt("B09", d_st is not None and d_st < 3 and d_nowe < 2 and hak_e.get("powod") == "za_szybko"
-                  and str(po9.get("OstatniePrzejscie")).endswith("stare_miasteczko:ok")
-                  and po9.get("ProbaSmierci") == przed9.get("ProbaSmierci"),
-                  "do starego: %s st od PunktPowrotuStare; do bazaru: %.1f st od startu; zaraz drugie: %s; tabliczka %s st od PortalStart"
-                  % (d_st and round(d_st, 1), d_nowe, hak_e.get("powod"), od_portalu and round(od_portalu, 1)))
+            zrzut("08_start_gry")
+            zapisz("B09", {"pierwsza_pozycja": pierwsza, "od_startu_bazaru": d_pierwsza, "resztki_przejsc": resztki,
+                           "stary_start": edit.get("stary_start"), "stare_miasteczko": edit.get("stare_miasteczko")})
+            punkt("B09", d_pierwsza is not None and d_pierwsza <= 4 and not resztki and not edit.get("stary_start")
+                  and not edit.get("stare_miasteczko"),
+                  "pierwsza pozycja postaci %s st od startu bazaru; resztki przejść: %s; DemoLesnaBaza %s, KrzyweMiasteczko %s"
+                  % (d_pierwsza and round(d_pierwsza, 1), resztki or "brak", edit.get("stary_start"), edit.get("stare_miasteczko")))
 
             # ---------------------------------------------------------------- B10 tablica
             wiersze = hak("tablica")

@@ -581,6 +581,59 @@ return {
 			{ info = { ile = 3, zrodlo = "PetyProba" }, wynik = false, powod = "zly_cel" },
 			{ info = "x", wynik = false, powod = "zly_przychod" },
 		},
+		sprzedaz = {
+			{
+				info = { pety = { zoledziak = 2, ognik = 1 }, ile = 373, zrodlo = "PetyProba", cel = "sprzedaz_petow" },
+				wynik = { pety = { zoledziak = 2, ognik = 1 }, ile = 373, zrodlo = "PetyProba", cel = "sprzedaz_petow" },
+				powod = "ok",
+			},
+			{
+				info = { pety = {}, ile = 373, zrodlo = "PetyProba", cel = "sprzedaz_petow" },
+				wynik = false,
+				powod = "zle_pety",
+			},
+			{
+				info = { pety = { ["zly pet"] = 1 }, ile = 373, zrodlo = "PetyProba", cel = "sprzedaz_petow" },
+				wynik = false,
+				powod = "zle_pety",
+			},
+			{
+				info = { pety = { ognik = 0 }, ile = 373, zrodlo = "PetyProba", cel = "sprzedaz_petow" },
+				wynik = false,
+				powod = "zle_pety",
+			},
+			{
+				info = { pety = { ognik = 1.5 }, ile = 373, zrodlo = "PetyProba", cel = "sprzedaz_petow" },
+				wynik = false,
+				powod = "zle_pety",
+			},
+			{
+				info = { pety = { "ognik" }, ile = 373, zrodlo = "PetyProba", cel = "sprzedaz_petow" },
+				wynik = false,
+				powod = "zle_pety",
+			},
+			{
+				info = { pety = { zoledziak = 2, ognik = 1 }, ile = 0, zrodlo = "PetyProba", cel = "sprzedaz_petow" },
+				wynik = false,
+				powod = "zla_kwota",
+			},
+			{
+				info = { pety = { zoledziak = 2, ognik = 1 }, ile = 100001, zrodlo = "PetyProba", cel = "sprzedaz_petow" },
+				wynik = false,
+				powod = "zla_kwota",
+			},
+			{
+				info = { pety = { zoledziak = 2, ognik = 1 }, ile = 373, zrodlo = "KowalProba", cel = "sprzedaz_petow" },
+				wynik = false,
+				powod = "zle_zrodlo",
+			},
+			{
+				info = { pety = { zoledziak = 2, ognik = 1 }, ile = 373, zrodlo = "PetyProba", cel = "sprzedaz petow" },
+				wynik = false,
+				powod = "zly_cel",
+			},
+			{ info = "x", wynik = false, powod = "zla_sprzedaz" },
+		},
 		wydaj = {
 			{ zloto = 500, ile = 300, wynik = { 200, 0 } },
 			{ zloto = 300, ile = 300, wynik = { 0, 0 } },
@@ -2271,5 +2324,5 @@ return {
 			{ znana = 9999, nowa = 10000, pula = 5, wynik = { 9999, 5, "ok" } },
 		},
 	},
-	skrot = "8229cfce501d",
+	skrot = "78a9a0863430",
 }

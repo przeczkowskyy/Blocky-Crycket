@@ -238,17 +238,22 @@ def wiersze_szans(D, j):
     return w
 
 
-def wiersze_zagrody(D, kopie, aktywny):
-    """Tablica i okno zagrody: posiadane pety w kolejności katalogu (jajko po jajku), z liczbą kopii (= shardy peta,
-    D-058) i id jajka peta (klient dzieli listę na jajka)."""
+def wiersze_zagrody(D, kopie, aktywny, stoja=None):
+    """Tablica, okno zagrody i okno Pets: posiadane pety w kolejności katalogu (jajko po jajku), z liczbą kopii
+    (= shardy peta, D-058) i id jajka peta (klient dzieli listę na jajka). 26.11.2026: też Rybki na sekundę peta
+    w zagrodzie (rybki_s — ta sama liczba, którą płaci serwer; rybki — napis „+0.04/s”), czy pet stoi teraz w zagrodzie
+    (w_zagrodzie — `stoja` = lista id ze stanu zagrody, bez niej False) i cena sprzedaży jednej kopii (sprzedaz)."""
     w = []
+    st = stoja if isinstance(stoja, list) else []
     for p in D["pety"]:
         n = (kopie or {}).get(p["id"])
         if _calkowita_nieujemna(n) and n > 0:
             r = rzadkosc(D, p["rzadkosc"])
             w.append({"pet": p["id"], "nazwa": p["nazwa"], "rzadkosc": r["nazwa"], "kolor": r["kolor"],
                       "kopie": int(n), "skill": opis_skilla(D, p), "krotko": opis_skilla_krotki(D, p),
-                      "aktywny": p["id"] == aktywny, "jajko": p["jajko"]})
+                      "aktywny": p["id"] == aktywny, "jajko": p["jajko"], "rybki_s": p["rybki_s"],
+                      "rybki": rybki_tekst(p["rybki_s"]), "w_zagrodzie": p["id"] in st,
+                      "sprzedaz": cena_sprzedazy(D, p["id"])})
     return w
 
 
@@ -262,11 +267,6 @@ def decyzja(D, stan):
     if stan.get("zajety"):
         return {"ok": False, "powod": "trwa_wyklucie", "tekst": T["trwa"]}
     return {"ok": True, "powod": "ok", "tekst": ""}
-
-
-def czas_wyklucia(D):
-    W = D["wyklucie"]
-    return W["trzesienie_s"] + W["pekniecie_s"] + W["wyskok_s"] + W["radosc_s"]
 
 
 # ------------------------------------------------------------------------------------------------ zagroda: Rybki
@@ -465,6 +465,93 @@ def tekst_braku_ulepszenia(D, brakuje, zloto, c):
     return D["teksty"]["za_malo_ulepszenie"] % (ile_rybek(D, brakuje, "d"), zloto, c)
 
 
+# ------------------------------------------------------------------------------------------------ sprzedaż (26.11.2026)
+def rybki_tekst(v):
+    """Rybki na sekundę peta w zagrodzie jako krótki napis na kafelek okna (HUD po angielsku, kropka dziesiętna):
+    „+0.015/s”, „+0.04/s”, „+0.25/s”, „+1.2/s” — do 0,1: tysięczne, do 1: setne, wyżej dziesiąte, bez zer na końcu."""
+    if not _skonczona(v) or v <= 0:
+        return "+0/s"
+    t = None
+    if v < 0.1:
+        m = int(math.floor(v * 1000 + 0.5))
+        if m < 100:
+            t = "0.%03d" % m
+    if t is None and v < 1:
+        h = int(math.floor(v * 100 + 0.5))
+        if h < 100:
+            t = "0.%02d" % h
+    if t is None:
+        d = int(math.floor(v * 10 + 0.5))
+        t = "%d.%d" % (d // 10, d % 10)
+    while t.endswith("0"):
+        t = t[:-1]
+    if t.endswith("."):
+        t = t[:-1]
+    return "+%s/s" % t
+
+
+def cena_sprzedazy(D, pid):
+    """Rybki za jedną kopię peta (policzone przez dane_petow.py z podłogi ceny jajka i rzadkości); obcy pet = 0."""
+    p = pet(D, pid)
+    return p["sprzedaz"] if p else 0
+
+
+def sprzedaz(D, kopie, aktywny, stoja, lista):
+    """Decyzja sprzedaży (serwer; StanGracza i tak sprawdza kopie jeszcze raz). lista = [id | {"pet": id, "ile": n}]
+    (1..D["sprzedaz"]["maks_pozycji"] pozycji; samo id = jedna kopia). Pozycje po kolei, z kopiami, które zostały:
+    nieznany pet, za mało kopii, ostatnia kopia aktywnego peta, ostatnia kopia peta stojącego w zagrodzie (`stoja`),
+    ostatni pet gracza i suma ponad maks_kwoty — odmowa tej pozycji, reszta przechodzi.
+    → {"ok", "powod", "pozycje": {id: ile}, "suma", "sztuk", "wyniki": [{"pet", "ile", "ok", "powod", "cena"}]}."""
+    S = D["sprzedaz"]
+    if not isinstance(lista, list) or not 1 <= len(lista) <= S["maks_pozycji"]:
+        return {"ok": False, "powod": "zla_lista", "pozycje": {}, "suma": 0, "sztuk": 0, "wyniki": []}
+    zostalo = {}
+    for k, v in (kopie if isinstance(kopie, dict) else {}).items():
+        if isinstance(k, str) and _calkowita_nieujemna(v) and v > 0:
+            zostalo[k] = int(v)
+    razem = sum(zostalo.values())
+    st = stoja if isinstance(stoja, list) else []
+    pozycje, wyniki, suma, sztuk = {}, [], 0, 0
+    for x in lista:
+        if isinstance(x, str):
+            pid, ile = x, 1
+        elif isinstance(x, dict) and isinstance(x.get("pet"), str):
+            pid, ile = x["pet"], x.get("ile")
+        else:
+            wyniki.append({"pet": "", "ile": 0, "ok": False, "powod": "zly_wpis", "cena": 0})
+            continue
+        if not (_calkowita_nieujemna(ile) and ile >= 1):
+            wyniki.append({"pet": pid, "ile": 0, "ok": False, "powod": "zly_wpis", "cena": 0})
+            continue
+        ile = int(ile)
+        ma = zostalo.get(pid, 0)
+        cena1 = cena_sprzedazy(D, pid)
+        powod = "ok"
+        if pet(D, pid) is None:
+            powod = "nieznany"
+        elif ma < ile:
+            powod = "nie_masz"
+        elif ma == ile and pid == aktywny:
+            powod = "aktywny"
+        elif ma == ile and pid in st:
+            powod = "w_zagrodzie"
+        elif razem - ile < 1:
+            powod = "ostatni"
+        elif suma + cena1 * ile > S["maks_kwoty"]:
+            powod = "za_duzo"
+        if powod != "ok":
+            wyniki.append({"pet": pid, "ile": ile, "ok": False, "powod": powod, "cena": 0})
+            continue
+        zostalo[pid] = ma - ile
+        razem -= ile
+        pozycje[pid] = pozycje.get(pid, 0) + ile
+        suma += cena1 * ile
+        sztuk += ile
+        wyniki.append({"pet": pid, "ile": ile, "ok": True, "powod": "ok", "cena": cena1 * ile})
+    return {"ok": sztuk > 0, "powod": "ok" if sztuk > 0 else (wyniki[0]["powod"] if wyniki else "zla_lista"),
+            "pozycje": pozycje, "suma": suma, "sztuk": sztuk, "wyniki": wyniki}
+
+
 # ------------------------------------------------------------------------------------------------ przypadki
 def przypadki(D):
     P = {"cena": [], "opis_ceny": [], "kupione": [], "losuj": [], "procent": [], "skill": [], "jajko_peta": [],
@@ -571,3 +658,23 @@ def przypadki_zagrody(D, P):
                      (0.3, 0, 5), (0.999, 0.0002, 5), (0, 0.29, 5)):
         ile, reszta = tik(D, r, s, dt)
         P["tik"].append({"r": r, "s": s, "dt": dt, "ile": ile, "reszta": reszta})
+    # sprzedaż (26.11.2026): napis Rybek na sekundę, cena kopii i decyzja serwera
+    P["rybki_tekst"] = [{"v": v, "wynik": rybki_tekst(v)}
+                        for v in [p["rybki_s"] for p in D["pety"]] + [0, -1, 0.0995, 0.1, 0.999, 1.0, 1.25, 12.34]]
+    P["cena_sprzedazy"] = [{"pet": x, "wynik": cena_sprzedazy(D, x)} for x in ids + ["obcy"]]
+    P["sprzedaz"] = []
+    kop = {ids[0]: 3, ids[4]: 1, ids[9]: 2, ids[7]: 1}
+    maks = D["sprzedaz"]["maks_pozycji"]
+    for kopie, akt, stoja, lista in (
+            (kop, ids[0], [ids[4]], [ids[0], {"pet": ids[9], "ile": 2}]),
+            (kop, ids[0], [ids[4]], [{"pet": ids[0], "ile": 3}]),
+            (kop, ids[0], [ids[4]], [ids[4]]),
+            (kop, ids[0], [], [ids[4], ids[7], {"pet": ids[9], "ile": 2}, {"pet": ids[0], "ile": 2}]),
+            (kop, None, [], [ids[4], ids[7], {"pet": ids[9], "ile": 2}, {"pet": ids[0], "ile": 3}]),
+            (kop, ids[0], [], [ids[1], "obcy", {"pet": ids[9], "ile": 0}, {"pet": ids[9], "ile": 1.5}, 7, {"ile": 1}]),
+            (kop, ids[0], [], [ids[9], ids[9], ids[9]]),
+            (kop, ids[0], [], []), (kop, ids[0], [], "x"), (kop, ids[0], [], [ids[9]] * (maks + 1)),
+            ({ids[14]: 500}, None, [], [{"pet": ids[14], "ile": 499}]),
+            ({}, None, None, [ids[0]])):
+        P["sprzedaz"].append(_bez_none({"kopie": kopie, "aktywny": akt, "stoja": stoja, "lista": lista,
+                                        "wynik": sprzedaz(D, kopie, akt, stoja, lista)}))

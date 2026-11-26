@@ -20,7 +20,7 @@
 		end)
 	Atrybutów statystyk gracza (Strength, Armor… z src/server/PlayerStatsDefaults) ten pakiet NIE zmienia.
 
-	Wejście: podpowiedź E na własnej tablicy (TablicaWejscia, przy miejscu startu) i w arenie (Akcja = "wybor") →
+	Wejście: podpowiedź E w arenie (Akcja = "wybor"; od 26.11.2026 bez tablicy TablicaWejscia przy starym starcie) →
 	klient pokazuje TYMCZASOWY wybór; E przy trenerze w bazarze obsługuje klient (zdarzenie OknoMiejsca).
 	"wejdz" sprawdza odległość od tablicy, od podpowiedzi trenera w bazarze (tylko odczyt) albo pobyt w arenie,
 	zapamiętuje punkt powrotu (CFrame), przenosi na stanowisko. Wyjście (E przy bramie, przycisk WYJDŹ, Q) wraca

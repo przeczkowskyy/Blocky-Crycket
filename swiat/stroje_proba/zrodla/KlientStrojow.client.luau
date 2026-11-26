@@ -34,8 +34,11 @@ local Ubieranie = require(moduly:WaitForChild("Ubieranie"))
 local Okno = require(moduly:WaitForChild("OknoStrojow"))
 local zmien = kontener:WaitForChild("Zdalne"):WaitForChild("ZmienStroj")
 local sterowanie = kontener:WaitForChild("Sygnaly"):WaitForChild("SterowanieKlienta")
-local stojak = kontener:WaitForChild("Przymierzalnia")
-local podest = stojak:WaitForChild("Podest")
+-- 26.11.2026 (sprzątanie mapy): przymierzalni przy starym starcie już nie ma (D.stojak.w_grze = false) — wtedy klient
+-- nie buduje podglądu i nie otwiera okna, tylko odpowiada haczykowi testowemu; strój gracza dalej zmienia serwer
+-- (Zdalne/ZmienStroj) i widać go w walce
+local stojak = if D.stojak.w_grze == false then kontener:FindFirstChild("Przymierzalnia") else kontener:WaitForChild("Przymierzalnia")
+local podest = stojak and stojak:WaitForChild("Podest")
 local gracz = Players.LocalPlayer
 local T = D.teksty
 
@@ -154,6 +157,9 @@ local function szablonGotowy(klasa)
 end
 
 local function zbudujPodglad()
+	if not podest then
+		return -- bez przymierzalni nie ma podglądu (26.11.2026)
+	end
 	stan.wersja += 1
 	local moja = stan.wersja
 	stan.pokaz += 1
@@ -359,7 +365,7 @@ local function klasaGracza()
 end
 
 local function otworz()
-	if stan.okno then
+	if stan.okno or not podest then
 		return
 	end
 	-- 17.11.2026: okno otwiera się na klasie gracza (u Maga — zakładka Maga); bez klasy — jak dawniej
@@ -528,7 +534,7 @@ sterowanie.OnInvoke = function(polecenie, a, b, c)
 		return { okno = stan.okno ~= nil, klasa = stan.klasa, stroj = Ubieranie.strojGracza(gracz, stan.klasa),
 			model = stan.model and stan.model.Name, strojModelu = stan.model and stan.model:GetAttribute("Stroj"),
 			bryly = stan.model and widoczne(stan.model) or 0, zRuchem = stan.aktor ~= nil, ruchy = ruchy(stan.klasa),
-			skrot = D.skrot }
+			skrot = D.skrot, stojak = podest ~= nil }
 	elseif polecenie == "otworz" then
 		otworz()
 	elseif polecenie == "zamknij" then

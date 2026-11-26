@@ -7,12 +7,12 @@ serwera i klienta. Gracz przechodzi z okna wyboru prosto do scenerii wybranej gr
 
     python -B swiat/trening_proba/zbuduj.py --sucho      # bez Studio: dane, kontrola Luau, strażniki, plan budowy
     python -B swiat/trening_proba/zbuduj.py              # buduje / odbudowuje kontener (Studio w trybie Edit)
-    python -B swiat/trening_proba/zbuduj.py --skrypty    # tylko moduły i skrypty (arena i tablica zostają)
+    python -B swiat/trening_proba/zbuduj.py --skrypty    # tylko moduły i skrypty (arena zostaje)
     python -B swiat/trening_proba/zbuduj.py --usun       # usuwa Workspace/TreningProba
     python -B swiat/trening_proba/zbuduj.py --studio <studio_id>   # gdy otwartych jest kilka okien Studio
 
 Co powstaje (tylko w Workspace/TreningProba z atrybutem Wygenerowane = true; cudzych kontenerów budowa NIE zmienia —
-SpawnLocation, MiasteczkoBazarGra i LasTeleport tylko czyta):
+SpawnLocation i MiasteczkoBazarGra tylko czyta):
   Moduly/DaneTreningu, Moduly/LogikaTreningu      ModuleScript (zrodla/; DaneTreningu wygenerowany przez dane.py)
   Moduly/KameraTreningu, EfektyTreningu, KomiksTreningu   ModuleScript — wygląd jak w walce (kamera, efekty, napisy)
   SerwerTreningu (RunContext = Server), KlientTreningu (RunContext = Client)
@@ -22,6 +22,8 @@ SpawnLocation, MiasteczkoBazarGra i LasTeleport tylko czyta):
   Sygnaly/WybierzGre                               BindableFunction (klient) — uchwyt dla docelowego okna 2D Pawła
   Arena (Model, ModelStreamingMode Persistent)     elementy gier (scena.py) i scenerie krain (scenerie.json), ok. 2800 części
   TablicaWejscia (Model, Persistent)               tablica z podpowiedzią E przy pierwszym SpawnLocation (wybór w Studio)
+                                                   — od 26.11.2026 NIE powstaje (ustawienia.json → tablica_wejscia.w_grze =
+                                                   false): gracz zaczyna w bazarze i wchodzi przez trenera w bazarze
 Atrybuty kontenera: Wygenerowane, Zrodlo, Zbudowano, Skrot, WyborTymczasowy (true; false = okno Pawła zamiast
 tymczasowego wyboru), PunktTablicy. Atrybuty ustawione ręcznie w Edit (WyborTymczasowy, RecznyPunktTablicy — Vector3
 na gruncie) przechodzą na odbudowany kontener.
@@ -536,8 +538,18 @@ def kod_skryptu(D, sciezka, klasa, kontekst, tekst):
     return kod.replace("__ZRODLO__", dlugi_napis(tekst))
 
 
+def tablica_w_grze(D):
+    """Czy budować tablicę wejścia (26.11.2026: nie — ustawienia.json → tablica_wejscia.w_grze = false)."""
+    return D["tablica_wejscia"].get("w_grze", True) is not False
+
+
+def podpowiedzi_w_grze(D):
+    """Podpowiedzi E, które budowa naprawdę stawia (bez tablicy wejścia, gdy jest wyłączona)."""
+    return [p for p in PODPOWIEDZI if tablica_w_grze(D) or not p[0].startswith("TablicaWejscia")]
+
+
 def kod_konca(D, punkt_historii="zbudowano"):
-    return (KONIEC.replace("__KONTENER__", D["kontener"]).replace("__OCZEKIWANE__", str(len(PODPOWIEDZI)))
+    return (KONIEC.replace("__KONTENER__", D["kontener"]).replace("__OCZEKIWANE__", str(len(podpowiedzi_w_grze(D))))
             .replace("__PUNKT_HISTORII__", punkt_historii))
 
 
@@ -560,11 +572,15 @@ def plan(D):
                 "  " + st["id"], st["nazwa"], st["gra"], _w(W["podest"]), _w(W["oko"])))
         else:
             linie.append("  %-26s → zapowiedź %s „%s” (%s)" % ("  " + st["id"], st["nazwa"], st["gra"], st["stan"]))
-    for p in PODPOWIEDZI:
+    for p in podpowiedzi_w_grze(D):
         linie.append("  %-26s → podpowiedź E: Akcja=%s%s" % (p[0], p[1], (", Zrodlo=" + p[2]) if p[2] else ""))
     TW = D["tablica_wejscia"]
-    linie.append("  %-26s → przy pierwszym SpawnLocation, pierścienie %s × %d kierunków, omija %d miejsc" % (
-        "TablicaWejscia (Persistent)", TW["promienie"], TW["kierunki"], len(TW["omijaj"])))
+    if tablica_w_grze(D):
+        linie.append("  %-26s → przy pierwszym SpawnLocation, pierścienie %s × %d kierunków, omija %d miejsc" % (
+            "TablicaWejscia (Persistent)", TW["promienie"], TW["kierunki"], len(TW["omijaj"])))
+    else:
+        linie.append("  %-26s → nie powstaje (tablica_wejscia.w_grze = false, 26.11.2026): wejście przez trenera w bazarze"
+                     % "TablicaWejscia")
     return linie
 
 
@@ -650,7 +666,10 @@ def main():
                 return
             for i, k in enumerate(kody_areny(D)):
                 print("  arena %d:" % (i + 1), wykonaj(k))
-            print("  tablica:", wykonaj(kod_tablicy(D)))
+            if tablica_w_grze(D):
+                print("  tablica:", wykonaj(kod_tablicy(D)))
+            else:
+                print("  tablica: pominięta (tablica_wejscia.w_grze = false — wejście tylko przez trenera w bazarze)")
             skrypty()
             print("gotowe: %s (%.0f s)" % (wykonaj(kod_konca(D)), time.time() - t0))
     except StudioError as e:

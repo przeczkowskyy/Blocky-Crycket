@@ -1,5 +1,7 @@
 # swiat/biom_las — Biom Las „Bór Pod Ukłonem” (mapa z klocków)
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** stary las `Workspace/BiomLas` (22,4 tys. części), jego mgła `LasMgla` i portal `LasTeleport` (`teleport.py`) **usunięte z miejsca** — las gry to las-pas (`swiat/las_pas`, `swiat/las_pas_gra`). Źródła w tym folderze zostają (plan pasa w `pas/` dalej jest źródłem dla `swiat/las_pas`).
+
 Pierwszy biom gry: las 1000 × 1000 studów, 6 podbiomów, 24 lokacje, 16 stref potworów, 4 patrole, troll i strażnik.
 **Wersja 2 mapy (15.11):** ten sam układ, nowe faktury z wbudowanych materiałów Roblox i detale tam, gdzie chodzi gracz
 (kontrakt, rozdz. 14–15). **Zbudowana w Studio** (`Workspace/BiomLas`), faktury dobrane na zrzutach ze Studio (rozdz. 16),

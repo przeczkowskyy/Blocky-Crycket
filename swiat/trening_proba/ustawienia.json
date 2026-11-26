@@ -314,12 +314,11 @@
     }
   },
   "tablica_wejscia": {
+    "w_grze": false,
+    "opis": "26.11.2026 (sprzątanie mapy, Karol): tablicy Training Center przy starym starcie już nie ma — gracz zaczyna w bazarze, a do mini-gier wchodzi tylko przez trenera w bazarze (MiasteczkoBazarGra, punkt E training_center). w_grze = false: zbuduj.py jej nie stawia (stawiała się przy pierwszym SpawnLocation, czyli dziś stanęłaby w bazarze). Kod tablicy zostaje w zbuduj.py na wypadek powrotu.",
     "promienie": [14, 18, 22, 26],
     "kierunki": 16,
-    "omijaj": [
-      {"atrybut": ["MiasteczkoBazarGra", "PunktStaregoMiasteczka"], "promien": 10},
-      {"sciezka": "Workspace/LasTeleport/PortalStart", "promien": 14}
-    ],
+    "omijaj": [],
     "wolne": [7, 8, 7],
     "roznica_wysokosci": 1.5,
     "rzut_od": 12,

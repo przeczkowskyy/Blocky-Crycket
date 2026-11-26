@@ -13,19 +13,20 @@ Wzór: swiat/las_potwory/zbuduj.py (te same zasady bezpieczeństwa wspólnego mi
 - wszystko w JEDNYM kontenerze Workspace/LasPasGra z atrybutem Wygenerowane = true; odbudowa i --usun ruszają tylko
   ten kontener; obiekt o tej nazwie bez atrybutu → STOP (nie ruszamy cudzej pracy);
 - przed budową tylko odczyt i ostrzeżenia: mapa Workspace/LasPas (Wygenerowane, Płyta, wrota, zapowiedź Bagna,
-  Kamień Powrotu), prototyp walki TestWalki2 (odtwarzacz, 5 szablonów aktorów), Workspace/LasTeleport;
+  Kamień Powrotu), prototyp walki TestWalki2 (odtwarzacz, 5 szablonów aktorów);
 - przed i po budowie punkt historii (ChangeHistoryService) — całość cofa Ctrl+Z;
 - każdy skrypt i moduł zaczyna się od strażnika Studio (sprawdzane przed wysłaniem); poza Studio SerwerPasa i
   SerwerPotworow usuwają cały kontener;
 - tylko tryb Edit, game.PlaceId gry sprawdzany w KAŻDYM wysyłanym kodzie; niczego nie publikuje, nie zapisuje miejsca,
-  nie zmienia Lighting ani cudzych instancji (przekierowanie bramy miasteczka robi SerwerPasa dopiero w trybie Play);
+  nie zmienia Lighting ani cudzych instancji;
 - --sucho nie importuje studio_mcp ani cel_studio.
 
 Drugi biom (17.11.2026): swiat/bagno_pas_gra/zbuduj.py wczytuje ten moduł, woła ustaw_konfiguracje() z własnym
 kontenerem, mapą, danymi, szablonami i Stale_*, i dalej buduje tym samym kodem (main()). Dla lasu nic się nie zmienia.
 
 Kod potworów jest JEDEN: Stale, Logika, SerwerPotworow, KlientPotworow, Wzorcowe i kopia silnika walki są te same co w
-Workspace/LasPotwory (lista plików z swiat/las_potwory/zbuduj.py); różnią się tylko dane (DanePotworow ← nasz
+dawnym Workspace/LasPotwory (lista plików z swiat/las_potwory/zbuduj.py; stary las zniknął z miejsca 26.11.2026, źródła
+zostają); różnią się tylko dane (DanePotworow ← nasz
 zrodla/DanePotworowPasa.luau) i atrybuty kontenera Stale_* (nazwy szablonów, GUI, mapy, prefiks komunikatów).
 """
 import argparse
@@ -61,7 +62,7 @@ STRAZNIK = ZB_LASU.STRAZNIK
 LIMIT_ZRODLA = ZB_LASU.LIMIT_ZRODLA
 SZABLONY = ["lesny_slime", "cierniowy_wilk", "muchomornik", "lesny_troll", "straznik_lasu"]
 # atrybuty testowe ustawione ręcznie w Edit przechodzą na odbudowany kontener
-ATRYBUTY_TESTOWE = list(ZB_LASU.ATRYBUTY_TESTOWE) + ["PrzekierujBrameMiasteczka", "MglaWylaczona"]
+ATRYBUTY_TESTOWE = list(ZB_LASU.ATRYBUTY_TESTOWE) + ["MglaWylaczona"]
 
 # nadpisania stałych pakietu potworów (Stale.luau, koniec pliku) — ten kontener nie może kolidować ze starym lasem
 STALE = {
@@ -150,14 +151,8 @@ for _, k in { __SZABLONY__ } do
 		table.insert(uwagi, "brak szablonu TestWalki2/Aktorzy/" .. k .. " (klient pokaże bryły zastępcze)")
 	end
 end
-local t = workspace:FindFirstChild("LasTeleport")
-if not t then
-	table.insert(uwagi, "brak Workspace/LasTeleport — brama miasteczka nie zostanie przekierowana (zostaje uchwyt PrzeniesDoLasu)")
-else
-	table.insert(uwagi, "LasTeleport: PunktLas " .. tostring(t:GetAttribute("PunktLas")) .. ", PunktMiasteczka " .. tostring(t:GetAttribute("PunktMiasteczka")))
-end
 if workspace:FindFirstChild("LasPotwory") then
-	table.insert(uwagi, "jest też Workspace/LasPotwory (stary las) — działa obok, osobne szablony i GUI")
+	table.insert(uwagi, "jest jeszcze Workspace/LasPotwory (stary las, od 26.11.2026 do usunięcia: tools/studio/sprzatanie_mapy.py)")
 end
 return if #uwagi == 0 then "OK" else table.concat(uwagi, " | ")
 '''

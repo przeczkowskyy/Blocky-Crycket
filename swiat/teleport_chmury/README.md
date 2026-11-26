@@ -1,5 +1,7 @@
 # Teleport przez chmury — prototyp w Roblox Studio
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** „Miasteczko” to zawsze bazar — przybycie z atrybutu `MiasteczkoBazarGra.PunktStartuBazaru`, a zapas (`gdy_jest: MiasteczkoBazar`) to start bazaru ze znaczników jego mapy (`zbuduj.py` sprawdza zgodność z `swiat/miasteczko_bazar/znaczniki.json`). „Las” to las-pas (uchwyt `LasPasGra/Sygnaly/PrzeniesDoLasu` albo punkt mapy `LasPas`). Wpisy starego miasteczka, starego lasu i `Workspace/LasTeleport` oraz ich obszary usunięte — tych kontenerów nie ma już w miejscu. Usuwanie z miejsca: `python -B tools/studio/sprzatanie_mapy.py` (najpierw `--sucho`); start gry na starcie bazaru: `python -B tools/studio/start_w_miasteczku.py`.
+
 *Status: **propozycja / prototyp** (nie kanon). Wymaganie Karola z 16.11.2026 — doprecyzowanie D-075: pod przyciskiem
 Teleport nie ma okna mapy ani żadnego HUD. Kamera wchodzi w chmury, z chmur wyłania się widziany z góry pas krain, a po
 wyborze znów są chmury i kamera opada z góry na gracza w nowym miejscu. Zbudowane i sprawdzone w Studio w nocy

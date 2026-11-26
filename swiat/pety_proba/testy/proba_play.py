@@ -8,51 +8,55 @@ i wyłącza Play, niczego nie zapisuje i nie publikuje.
     python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> --zagroda # zagroda daje Rybki i wybieg (Z01–Z11)
     python -B swiat/pety_proba/testy/proba_play.py --sprawdz      # bez Studio: parsuje każdy kawałek Luau (luau_mini)
 
-Warunki (tryb Edit): Workspace/PetyProba (swiat/pety_proba/zbuduj.py), Workspace/StanGracza (z sygnałami WydajZloto
-i Pety — swiat/stan_gracza/zbuduj.py), Workspace/LasPas + LasPasGra (inkubator stoi na mapie lasu-pasa),
-Workspace/MiasteczkoBazar + MiasteczkoBazarGra (zagroda i E opiekunki), Workspace/TestWalki2 (walka z petem).
+Warunki (tryb Edit): Workspace/PetyProba (swiat/pety_proba/zbuduj.py — od 26.11.2026 BEZ starych inkubatorów),
+Workspace/StanGracza (z sygnałami WydajZloto i Pety z poleceniem „sprzedaj” — swiat/stan_gracza/zbuduj.py --skrypty),
+jajka ze scenką Pawła: Workspace/JajkoKorowePodglad (leśne, w mieście przy zagrodzie; skrypty src/ JajkoKorowe*) i
+Workspace/JajkaBiomowPodglad (Bagno, Dżungla), Workspace/LasPas + LasPasGra, Workspace/MiasteczkoBazar +
+MiasteczkoBazarGra (zagroda i E opiekunki), Workspace/TestWalki2 (walka z petem). Zakup jajka idzie tak, jak kupuje
+gracz: prawdziwe E przy jajku ze scenką (serwer Pawła woła haczyk serwera petów), 5 kliknięć spacją otwiera jajo —
+pełną scenkę (karta, rozpad, słup, kolory) sprawdza swiat/jajka_biomow/testy/proba_play.py, tu tylko zakup i pet.
 Wyniki (wyniki.json, lista.txt) idą do podanego folderu — mogą zawierać nazwę konta, dlatego folder nie może leżeć
 w repozytorium. Zrzuty (lista graczy i czat schowane) → swiat/pety_proba/klatki/.
 
 Złoto do zakupów próba ustawia wprost w atrybucie Gold (przygotowanie testu — w grze daje je łup z walk). Wszystko
-inne idzie drogą gracza: prawdziwe E (przytrzymanie), prawdziwe chodzenie postacią, E opiekunki w bazarze.
+inne idzie drogą gracza: prawdziwe E, prawdziwe chodzenie postacią, E opiekunki w bazarze.
 
 LISTA KONTROLNA (OK / BŁĄD / ?):
-  P00 w Edit: kontenery na miejscu; script_grep po innych piszących PetAktywny / PetyLiczba (i)
-  P01 gotowość: SerwerPetowGotowy, ZgodnoscLogikiPetow „OK n/n”, KlientPetowGotowy, StanGracza gotowy, jajko lokalne
+  P00 w Edit: kontenery na miejscu, BEZ starych inkubatorów (folderów Inkubator*, Punkty) i z Zdalne/SprzedajPety,
+      leśne jajko ze scenką stoi; script_grep po innych piszących PetAktywny / PetyLiczba (i)
+  P01 gotowość: SerwerPetowGotowy, ZgodnoscLogikiPetow „OK n/n”, KlientPetowGotowy, StanGracza gotowy, 0 lokalnych jajek
   P02 klasa wybrana (ekran wyboru zamknięty — HUD widać)
-  P03 brak Złota: Gold = 0, prawdziwe E przy inkubatorze → odmowa „Brakuje ci … Rybek”, Gold bez zmian, bez peta
-  P04 kupno prawdziwym E (Gold = 2000): Złoto − cena, PetyLiczba 1, PetAktywny, napis ceny „Kup za N Rybek”; zrzuty
-      wyklucia: trzęsienie, pęknięcie, wyskok, napis
-  P05 drugi E w trakcie wyklucia → odmowa „trwa wyklucie”, Złoto bez zmian
+  P03 brak Rybek: Gold = 0, prawdziwe E przy leśnym jajku (miasto) → odmowa „Brakuje ci … Rybek”, Gold bez zmian, bez peta
+  P04 kupno prawdziwym E (Gold = 2000): Złoto − cena, PetyLiczba 1, PetAktywny, zakup „jajko_lesne”; 5 × spacja otwiera
+      jajo, klient petów przestaje czekać na scenkę; zrzut scenki
+  P05 drugi zakup w czasie blokady serwera (haczyk; drugi E w scence sprawdza próba jajek, D4) → „trwa_wyklucie”
   P06 pet za graczem: marsz postacią ~40 st (character_navigation) — odległość peta ≤ 12 st w marszu, ≤ 6 po
       zatrzymaniu; klip chód / spoczynek; zrzut
-  P07 każdy pet w świecie: pięć petów obok siebie przy inkubatorze (haczyk "pokaz"), zrzut całości i każdego z bliska
+  P07 każdy pet w świecie: pięć petów obok siebie przy leśnym jajku (haczyk "pokaz"), zrzut całości i każdego z bliska
   P07b każdy z pięciu petów IDZIE ZA GRACZEM (pety kupione haczykiem "kup" z wymuszonym losem, aktywny wybrany
       haczykiem "wybierz" bez zasięgu — zaznaczone w opisie), marsz postacią, zrzut z kamery za plecami
-  P08 wyklucie każdego peta (haczyk "wyklucie" — sama animacja u klienta), zrzut napisu każdego
+  P08 napis wyklucia każdego peta (haczyk "wyklucie" — od 26.11 bez animacji inkubatora: sam napis z nazwą peta)
   P09 zagroda: pety stojące w zagrodzie (od 25.11 tyle, ile miejsc ma poziom) na miejscach i tablica (lista z kopiami),
       prawdziwe E opiekunki → okno „PRÓBA”; zrzuty
   P10 wybór aktywnego peta z okna (jak przycisk „Wybierz”: Jelonek Gaju) → PetAktywny, pet za graczem zmienia się; zrzut
   P11 premia peta przy łupie (StanGracza "przyznaj") → Złoto + premia (+5%), napis „+N … od peta”; skill peta
       w StanGracza/Sygnaly/Modyfikatory (źródło "pety": +20% Siły, pasywki Kryształu) — gdy stan gracza ma sygnał; zrzut
-  P12 reset postaci w trakcie wyklucia → pet jest u gracza, po odrodzeniu idzie za nim, konsola czysta
+  P12 reset postaci zaraz po zakupie (haczyk) → pet jest u gracza, po odrodzeniu idzie za nim, konsola czysta
   P13 walka z petem przy boku (las-pas, slime): w walce pet znika (u siebie i PetCzeka dla innych), po walce wraca;
       łup z premią; zrzut w walce
-  P14 bez sygnału StanGracza/Sygnaly/Pety (zmiana nazwy) → E daje „Inkubator nieczynny…”, bez błędów; nazwa wraca
+  P14 bez sygnału StanGracza/Sygnaly/Pety (zmiana nazwy) → zakup (haczyk scenki) daje „Jajka nieczynne…”, bez błędów
   P15 konsola: bez błędów naszych skryptów ([PetyProba], „Script …PetyProba”)
 
 LISTA --bagno (17.11 wieczór, jajko Bagna; warunki jak wyżej + Workspace/BagnoPas, BagnoPasGra, WskazowkiGry):
-  B00 gładkie jajko leśne przy inkubatorze lasu (zrzut „po” do pary „przed / po”)
-  B01 dwa inkubatory u klienta (jajka lokalne), ceny obu jajek z serwera (Bagno od ceny startowej)
-  B02 inkubator Bagna: zrzut z daleka i tablicy szans z bliska; Gold = 0, prawdziwe E → odmowa z kwotą braku
-  B03 wskazówka celu: Złota tyle co jajko Bagna, gracz przy Pomoście Przybycia → krok „f_jajko_bagno”; zrzut
-  B04 kupno prawdziwym E (Gold = 3000): Złoto − cena, licznik jajek Bagna 1, cena jajka leśnego bez zmian; zrzuty
-      wyklucia: trzęsienie, pęknięcie, wyskok, napis
-  B05 pięć petów Bagna obok siebie przy inkubatorze (haczyk "pokaz"), zrzut całości i każdego z bliska
+  B00 bez starych inkubatorów; jajko Bagna ze scenką stoi (model z JajkoId w JajkaBiomowPodglad)
+  B01 ceny wszystkich jajek z serwera (Bagno od ceny startowej), 0 lokalnych jajek u klienta
+  B02 jajko Bagna: zrzut z daleka; Gold = 0, prawdziwe E przy nowym jajku → odmowa z kwotą braku
+  B03 wskazówka celu: Rybek tyle co jajko Bagna, gracz przy jajku → krok „f_jajko_bagno”, znacznik nad nowym jajkiem; zrzut
+  B04 kupno prawdziwym E (Gold = 3000): Złoto − cena, licznik jajek Bagna 1, cena jajka leśnego bez zmian; 5 × spacja
+  B05 pięć petów Bagna obok siebie przy jajku (haczyk "pokaz"), zrzut całości i każdego z bliska
   B06 każdy z pięciu petów Bagna IDZIE ZA GRACZEM (kupione haczykiem "kup" z wymuszonym losem, aktywny wybrany
       haczykiem bez zasięgu — zaznaczone w opisie), zrzut z kamery za plecami
-  B07 wyklucie każdego peta Bagna (haczyk "wyklucie" z jajkiem Bagna), zrzut napisu każdego
+  B07 napis wyklucia każdego peta Bagna (haczyk "wyklucie" — sam napis z nazwą peta)
   B08 zagroda z dziesięcioma petami (pięć leśnych dokupionych haczykiem): tablica w dwóch kolumnach, prawdziwe E
       opiekunki → okno „PRÓBA” podzielone na jajka, przewinięte do końca; zrzuty
   B09 wybór peta Bagna z okna → PetAktywny, pet za graczem
@@ -78,6 +82,12 @@ z poleceniem Pety("przychod") — swiat/stan_gracza/zbuduj.py --skrypty; zrzuty 
   Z11 (26.11.2026, na końcu) pełna zagroda: dokupione pety lasu i Bagna (haczyk), 8 miejsc — osiem petów chodzi
       luzem przez 36 s: nikt nie wychodzi z wybiegu, pety nie wchodzą w siebie (środki nie bliżej niż 1,5 st),
       co najmniej sześć z ośmiu przeszło 2 study; trzy zrzuty z góry
+  Z12 (26.11.2026) sprzedaż: kafelki okna Pets mają Rybki/s i cenę kopii (serwer Pawła „stan”: rybki, wZagrodzie,
+      sprzedaz), Zdalne/SprzedajPety istnieje
+  Z13 sprzedaż przez okno Pets (ReplicatedStorage.OknoPetow „sprzedaj”, jak przycisk SELL): nadmiar kopii peta za graczem
+      i pet spoza zagrody → Rybki + suma cen, PetyLiczba − sztuk, odpowiedź „Sold N pets for X fish”
+  Z14 ochrona: ostatnia kopia peta za graczem i pet stojący w zagrodzie → odmowa z powodem, nic nie zabrane
+  Z15 za szybko (druga prośba w czasie odstep_s) → „za_szybko”; licznik LicznikSprzedazy
   (P15) konsola: bez błędów naszych skryptów — jak w każdej próbie
 """
 import io
@@ -171,6 +181,18 @@ KOD = {
     "przewin_okno": ('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("PetyProbaOkno") '
                      'local l = g and g.Ramka:FindFirstChild("Lista") if l then l.CanvasPosition = Vector2.new(0, %d) end '
                      'return tostring(l ~= nil)'),
+    # 26.11.2026: jajka ze scenką Pawła (model, przód) i brak starych inkubatorów
+    "jajko_swiat": ('local k = workspace:FindFirstChild("%s") local m = k and k:FindFirstChild("%s") '
+                    'if not m then return H:JSONEncode({ brak = true }) end local cf = m:GetPivot() local lv = cf.LookVector '
+                    'return H:JSONEncode({ p = J(cf.Position), przod = { lv.X, lv.Z } })'),
+    "bez_inkubatorow": ('local p = workspace:FindFirstChild("PetyProba") local o = {} '
+                        'for _, n in { "Inkubator", "InkubatorBagna", "InkubatorDzungli", "Punkty" } do '
+                        'o[n] = p ~= nil and p:FindFirstChild(n) ~= nil end '
+                        'local z = p and p:FindFirstChild("Zdalne") '
+                        'o.sprzedaz = z ~= nil and z:FindFirstChild("SprzedajPety") ~= nil '
+                        'return H:JSONEncode(o)'),
+    "strumien": GR + 'pcall(function() gracz:RequestStreamAroundAsync(Vector3.new(%f, %f, %f), 8) end) return "ok"',
+    "okno_pets": 'return H:JSONEncode(J(game:GetService("ReplicatedStorage"):WaitForChild("OknoPetow", 10):InvokeServer(%s)))',
     "edit_dzungla": ('local H = game:GetService("HttpService") local function jest(n) local o = workspace:FindFirstChild(n) '
                      'return o ~= nil and o:GetAttribute("Wygenerowane") == true end '
                      'return H:JSONEncode({ bagno = jest("DzunglaPasGra"), mapa = workspace:FindFirstChild("DzunglaPas") ~= nil, '
@@ -342,7 +364,7 @@ def main():
         def przytrzymaj_e():
             call("user_keyboard_input", {"datamodel_type": "Client", "actions": [
                 {"action": "keyDown", "key_code": "E"},
-                {"action": "wait", "wait_time_ms": int(1000 * (D["inkubator"]["przytrzymaj_s"] + 0.35))},
+                {"action": "wait", "wait_time_ms": 850},   # przytrzymanie E (opiekunka zagrody)
                 {"action": "keyUp", "key_code": "E"}]})
 
         def nacisnij(klawisz):
@@ -361,16 +383,43 @@ def main():
             luau(KOD["kamera_zwykla"], "Client")
 
         JL = D["jajka"][0]
-        gniazdo, e = JL["polozenie"]["gniazdo"], JL["polozenie"]["e"]
-        # stanowisko gracza przy E: krok dalej od gniazda niż punkt E, twarzą do jajka
-        kier = (e[0] - gniazdo[0], e[2] - gniazdo[2])
-        dl = math.hypot(*kier)
-        kier = (kier[0] / dl, kier[1] / dl)
-        stoi = (gniazdo[0] + kier[0] * 6.0, e[1] + 3.0, gniazdo[2] + kier[1] * 6.0)
+        # 26.11.2026: starych inkubatorów nie ma — gracz kupuje przy jajkach ze scenką Pawła; ich miejsce i przód czytamy
+        # z modelu w Studio (jak swiat/jajka_biomow/testy/proba_play.py), stanowisko gracza 5 st przed jajem, twarzą do niego
+        JAJKA_SWIAT = {"jajko_lesne": ("JajkoKorowePodglad", "Jajko korowe"),
+                       "jajko_bagienne": ("JajkaBiomowPodglad", "Jajko Bagna"),
+                       "jajko_dzungli": ("JajkaBiomowPodglad", "Jajko Dżungli")}
 
-        def do_inkubatora():
+        def miejsce_jajka(jid, dm):
+            k, m = JAJKA_SWIAT[jid]
+            mj = js(KOD["jajko_swiat"] % (k, m), dm)
+            if mj.get("brak"):
+                return None
+            pz = mj["przod"]
+            n = math.hypot(pz[0], pz[1]) or 1.0
+            return mj["p"], (pz[0] / n, pz[1] / n)
+
+        mj0 = miejsce_jajka(JL["id"], "Edit")
+        if not mj0:
+            sys.exit("Brak leśnego jajka ze scenką (Workspace/JajkoKorowePodglad/Jajko korowe) — ta próba kupuje przy nim")
+        gniazdo, kier = mj0
+        stoi = (gniazdo[0] + kier[0] * 5.0, gniazdo[1] + 3.0, gniazdo[2] + kier[1] * 5.0)
+
+        def do_inkubatora():   # nazwa z czasów inkubatora: dziś stanowisko przy leśnym jajku ze scenką (miasto)
+            luau(KOD["strumien"] % stoi, "Server")
             przestaw(stoi, gniazdo)
             time.sleep(1.2)
+
+        # Polana Przybycia lasu-pasa (dawne stanowisko jajka z mapy) — otwarta przestrzeń do marszu z petem
+        _zl = DP._znaczniki("swiat/las_pas/krotki/znaczniki.json")
+        polana = next(x["punkt_swiat"] for x in _zl["miejsca"] if x["id"] == "jajko")
+        stoi_las = (polana[0] + 6.0, polana[1] + 3.0, polana[2])
+
+        def otworz_scenke():
+            # jak gracz: 5 kliknięć (spacja) otwiera jajo; klient petów czeka na koniec scenki (PokazWyklucia „koniec”)
+            for _ in range(5):
+                nacisnij("Space")
+                time.sleep(0.8)
+            return czekaj_na(lambda: not klient('"stan"').get("czekaNaScenke"), 40, 1.0)
 
         def oko_inkubatora(dal=11.0, wys=5.5, gn=None, kr=None, dy=0.0):
             # z boku (po stronie, na którą ląduje pet) — postać przy E nie zasłania jajka
@@ -383,42 +432,37 @@ def main():
         JB = next(j for j in D["jajka"] if j["kraina"] == kraina_b)
         KONT_B = {"bagno": "BagnoPasGra", "dzungla": "DzunglaPasGra"}[kraina_b]   # przelot kamery biomu
         PX = "b" if kraina_b == "bagno" else "dz"                                     # przedrostek zrzutów
-        gn_b, e_b = JB["polozenie"]["gniazdo"], JB["polozenie"]["e"]
-        kier_b = (e_b[0] - gn_b[0], e_b[2] - gn_b[2])
-        dl_b = math.hypot(*kier_b)
-        kier_b = (kier_b[0] / dl_b, kier_b[1] / dl_b)
-        stoi_b = (gn_b[0] + kier_b[0] * 6.0, e_b[1] + 3.0, gn_b[2] + kier_b[1] * 6.0)
-        dy_b = JB["y_jajka"] - JL["y_jajka"]          # jajko Bagna leży wyżej (gniazdo na palach)
+        dy_b = 0.0
+        gn_b, kier_b, stoi_b = gniazdo, kier, stoi      # nadpisuje proba_bagna() miejscem jajka biomu (Play, serwer)
 
-        def do_inkubatora_bagna():
+        def do_inkubatora_bagna():   # stanowisko przy jajku biomu ze scenką
+            luau(KOD["strumien"] % stoi_b, "Server")
             przestaw(stoi_b, gn_b)
             time.sleep(1.2)
 
-        def swiat_stanowiska(J, x, y, z):
-            """Punkt z układu stanowiska (rig: przód −Z) w świecie — jak zbuduj.py: CFrame(gniazdo) * obrót Y."""
-            a = math.radians(J["polozenie"]["obrot"])
-            g = J["polozenie"]["gniazdo"]
-            return (g[0] + x * math.cos(a) + z * math.sin(a), g[1] + y, g[2] - x * math.sin(a) + z * math.cos(a))
-
         def proba_bagna():
+            nonlocal gn_b, kier_b, stoi_b
             CB, KB, CL = JB["atrybuty"]["cena"], JB["atrybuty"]["kupione"], JL["atrybuty"]["cena"]
-            eb = json.loads(luau(KOD["edit_" + kraina_b] % JB["folder"], "Server"))
-            zapisz("B_edit", eb)
-            # ============================================================ B00 gładkie jajko leśne (para „przed / po”)
-            do_inkubatora()
-            czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "true", 6, 0.4)
-            czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "false", 40, 1.0)
-            do_inkubatora()
-            kamera(*oko_inkubatora(dal=6.5, wys=3.2))
-            zrzut(PX + "00_jajko_lesne_gladkie")
-            punkt("B00", None, "gładkie jajko leśne — zrzut b00 (para z klatkami „przed” w raporcie)")
-            # ============================================================ B01 dwa inkubatory, ceny
+            eb = json.loads(luau(KOD["edit_" + kraina_b] % "Inkubator", "Server"))
+            bi = js(KOD["bez_inkubatorow"], "Server")
+            mjb = miejsce_jajka(JB["id"], "Server")
+            zapisz("B_edit", {"pas": eb, "inkubatory": bi, "jajko": mjb})
+            # ============================================================ B00 bez inkubatorów, jajko biomu stoi
+            stare = [n for n in ("Inkubator", "InkubatorBagna", "InkubatorDzungli", "Punkty") if bi.get(n)]
+            punkt("B00", not stare and mjb is not None and eb.get("bagno") is True,
+                  "stare inkubatory w PetyProba: %s; jajko %s ze scenką: %s; biom: %s" % (
+                      stare or "brak", JB["id"], "stoi" if mjb else "BRAK", eb))
+            if not mjb:
+                return
+            gn_b, kier_b = mjb
+            stoi_b = (gn_b[0] + kier_b[0] * 5.0, gn_b[1] + 3.0, gn_b[2] + kier_b[1] * 5.0)
+            # ============================================================ B01 ceny, bez lokalnych jajek
             kl = klient('"stan"')
             st = serwer('"stan"')
-            zapisz("B01", {"klient": kl, "serwer": st, "edit": eb})
-            punkt("B01", kl.get("jajekLokalnych") == len(D["jajka"]) and (st.get("ceny") or {}).get(JB["id"]) == LP.cena(D, JB, 0)
-                  and eb.get("inkubator") is True, "jajek lokalnych %s, ceny %s, Bagno w miejscu %s"
-                  % (kl.get("jajekLokalnych"), st.get("ceny"), eb))
+            zapisz("B01", {"klient": kl, "serwer": st})
+            punkt("B01", kl.get("lokalnychJajek") == 0 and (st.get("ceny") or {}).get(JB["id"]) == LP.cena(D, JB, 0)
+                  and all((st.get("ceny") or {}).get(j["id"]) == LP.cena(D, j, 0) for j in D["jajka"]),
+                  "lokalnych jajek %s, ceny %s" % (kl.get("lokalnychJajek"), st.get("ceny")))
             # ============================================================ B02 inkubator Bagna, brak Złota
             # wejście do Bagna wymaga pokonanego Strażnika lasu (serwer pasa cofa przed bramę) — haczyk jak w próbach
             # swiat/bagno_pas_gra/testy (otworzBrame); potem przelot kamery Bagna (podpowiedzi E w tym czasie nie działają)
@@ -434,14 +478,10 @@ def main():
             bok_b = (-kier_b[1], kier_b[0])
             kamera((gn_b[0] + kier_b[0] * 26.0 + bok_b[0] * 14.0, gn_b[1] + 13.0, gn_b[2] + kier_b[1] * 26.0 + bok_b[1] * 14.0),
                    (gn_b[0], gn_b[1] + 3.5, gn_b[2]))
-            zrzut(PX + "01_inkubator_bagna_z_daleka")
-            papier = next(c for c in JB["stale"]["czesci"] if c[2] == D["modele"]["papier"])
-            pp = swiat_stanowiska(JB, papier[3], papier[4], papier[5])
-            kamera((pp[0] + kier_b[0] * 5.5 + bok_b[0] * 1.0, pp[1] + 0.4, pp[2] + kier_b[1] * 5.5 + bok_b[1] * 1.0), pp)
-            zrzut(PX + "02_tablica_szans_bagna")
+            zrzut(PX + "01_jajko_z_daleka")
             kamera(*oko_inkubatora(dal=10.0, wys=9.0, gn=gn_b, kr=kier_b, dy=dy_b))
-            przytrzymaj_e()
-            time.sleep(0.8)
+            nacisnij("E")                                 # podpowiedź jajka ze scenką: bez przytrzymania
+            time.sleep(1.2)
             kl = klient('"stan"')
             odm = kont("PetyProba", ["OstatniaOdmowa"])
             po = atr("Gold", KB)
@@ -456,32 +496,32 @@ def main():
                 js(KOD["wskazowka"], "Client")), 6, 0.5) or js(KOD["wskazowka"], "Client")
             zrzut(PX + "04_wskazowka_jajko_bagna")
             zapisz("B03", w3)
-            punkt("B03", w3.get("krok") == "f_jajko_" + kraina_b and w3.get("cel") == "jajko",
-                  "krok %s (%r), kraina %s, jajko %s, kupione %s" % (w3.get("krok"), w3.get("tekst"), w3.get("kraina"),
-                                                                    w3.get("jajko"), w3.get("kupione")))
+            zn = w3.get("znacznikNad")
+            odl_zn = math.hypot(zn[0] - gn_b[0], zn[2] - gn_b[2]) if isinstance(zn, list) else None
+            punkt("B03", w3.get("krok") == "f_jajko_" + kraina_b and w3.get("cel") == "jajko" and odl_zn is not None
+                  and odl_zn < 6.0, "krok %s (%r), kraina %s, jajko %s, kupione %s, znacznik %s st od jajka" % (
+                      w3.get("krok"), w3.get("tekst"), w3.get("kraina"), w3.get("jajko"), w3.get("kupione"),
+                      None if odl_zn is None else round(odl_zn, 1)))
             # ============================================================ B04 kupno prawdziwym E + wyklucie
             luau(KOD["ustaw_atr"] % ("Gold", "3000"), "Server")
             do_inkubatora_bagna()
             kamera(*oko_inkubatora(dal=10.0, wys=9.0, gn=gn_b, kr=kier_b, dy=dy_b))
             time.sleep(0.6)
             kl0 = klient('"stan"')
-            przytrzymaj_e()
-            t0 = time.time()
-            for t, nazwa in ((0.8, PX + "05_wyklucie_trzesienie"), (1.75, PX + "06_wyklucie_pekniecie"),
-                             (2.45, PX + "07_wyklucie_wyskok"), (4.0, PX + "08_wyklucie_napis")):
-                while time.time() - t0 < t:
-                    time.sleep(0.05)
-                zrzut(nazwa)
+            nacisnij("E")
+            time.sleep(1.2)
+            zrzut(PX + "05_scenka_jajka")
             po4 = atr("Gold", "PetyLiczba", "PetAktywny", CB, KB, CL)
             mod4 = (serwer('"stan"') or {}).get("modyfikatory") or {}
             zapisz("B04", {"przed": kl0, "po": po4, "modyfikatory": mod4})
-            punkt("B04", po4.get("Gold") == 3000 - LP.cena(D, JB, 0) and po4.get(KB) == 1 and po4.get(CB) == LP.cena(D, JB, 1)
-                  and po4.get(CL) == LP.cena(D, JL, 0) and po4.get("PetAktywny") in JB["pula"]
-                  and "Kup za %s" % LP.ile_rybek(D, LP.cena(D, JB, 0), "b") in str((kl0.get("akcjeE") or {}).get(JB["id"])),
-                  "E %r → Gold %s, pet %s, cena Bagna %s, cena lasu %s (bez zmian)" % (
-                      (kl0.get("akcjeE") or {}).get(JB["id"]), po4.get("Gold"), po4.get("PetAktywny"), po4.get(CB),
-                      po4.get(CL)))
-            time.sleep(2.5)
+            g4 = po4.get("Gold")
+            koniec4 = otworz_scenke()
+            # zagroda nalicza Rybki także w trakcie punktu (pet za graczem nie stoi w zagrodzie, ale pety lasu mogą)
+            punkt("B04", isinstance(g4, (int, float)) and 0 <= g4 - (3000 - LP.cena(D, JB, 0)) <= 5 and po4.get(KB) == 1
+                  and po4.get(CB) == LP.cena(D, JB, 1) and po4.get(CL) == LP.cena(D, JL, 0)
+                  and po4.get("PetAktywny") in JB["pula"] and bool(koniec4),
+                  "E → Gold %s, pet %s, cena Bagna %s, cena lasu %s (bez zmian), scenka zamknięta %s" % (
+                      g4, po4.get("PetAktywny"), po4.get(CB), po4.get(CL), bool(koniec4)))
             kamera_zwykla()
             # ============================================================ zakupy: komplet petów Bagna (haczyk)
             pety_b = list(JB["pula"])
@@ -489,7 +529,7 @@ def main():
             for r in (0.1, 0.6, 0.8, 0.9, 0.995):             # wymuszony los: każdy pet raz (test, nie gra)
                 serwer('"zwolnij"')
                 serwer('"kup", nil, "%s", %f' % (JB["id"], r))
-                time.sleep(4.8)
+                time.sleep(0.6)
             serwer('"zwolnij"')
             # ============================================================ B05 pięć petów Bagna w świecie
             baza = (gn_b[0] + kier_b[0] * 9.0, gn_b[1] + 0.6, gn_b[2] + kier_b[1] * 9.0)
@@ -528,22 +568,21 @@ def main():
             punkt("B06", all(v["mojPet"] == k for k, v in idzie.items()),
                   "za graczem (pet wymuszony haczykiem): %s" % ", ".join(
                       "%s %s st %s" % (k, v["odleglosc"] and round(v["odleglosc"], 1), v["klip"]) for k, v in idzie.items()))
-            # ============================================================ B07 wyklucie każdego peta Bagna
-            do_inkubatora_bagna()
-            kamera(*oko_inkubatora(dal=11.0, wys=8.5, gn=gn_b, kr=kier_b, dy=dy_b))
+            # ============================================================ B07 napis wyklucia każdego peta Bagna
+            napisy7 = {}
             for pid in pety_b:
-                klient('"wyklucie", "%s", true, "%s"' % (pid, JB["id"]))
-                time.sleep(3.9)
-                zrzut(PX + "12_wyklucie_%s" % pid)
-                czekaj_na(lambda: not klient('"stan"').get("wylegaSie"), 8, 0.5)
-            kamera_zwykla()
-            punkt("B07", None, "wyklucie każdego peta Bagna — zrzuty b12_wyklucie_<id>")
+                klient('"wyklucie", "%s", true' % pid)
+                time.sleep(0.4)
+                napisy7[pid] = klient('"stan"').get("komunikat")
+            zapisz("B07", napisy7)
+            punkt("B07", all(LP.pet(D, k)["nazwa"] in str(v) for k, v in napisy7.items()),
+                  "napisy: %s" % ", ".join("%s → %r" % (k, v) for k, v in napisy7.items()))
             # ============================================================ B08 zagroda z dziesięcioma petami
             luau(KOD["ustaw_atr"] % ("Gold", "20000"), "Server")
             for r in (0.1, 0.6, 0.8, 0.9, 0.995):             # pięć leśnych (haczyk) — razem dziesięć petów
                 serwer('"zwolnij"')
                 serwer('"kup", nil, "%s", %f' % (JL["id"], r))
-                time.sleep(4.8)
+                time.sleep(0.6)
             serwer('"zwolnij"')
             serwer('"wybierz", nil, "%s", true' % JB["pula"][0])
             ez, kz = G["zagroda_e"], G["zagroda_kier"]
@@ -604,7 +643,7 @@ def main():
             for r in (0.0, 0.95, 0.99):                       # Żołędziak (za graczem), Świetlikówka, Jelonek Gaju
                 serwer('"zwolnij"')
                 serwer('"kup", nil, "%s", %f' % (JL["id"], r))
-                time.sleep(4.8)
+                time.sleep(0.6)
             serwer('"zwolnij"')
             z1 = zagroda()
             st1 = z1.get("stan") or {}
@@ -743,7 +782,7 @@ def main():
             for jajko, r in ((JL, 0.6), (JL, 0.8), (JB, 0.1), (JB, 0.6), (JB, 0.8), (JB, 0.9), (JB, 0.995)):
                 serwer('"zwolnij"')
                 serwer('"kup", nil, "%s", %f' % (jajko["id"], r))
-                time.sleep(4.8)
+                time.sleep(0.6)
             serwer('"zwolnij"')
             for _ in range(3):                                # do ośmiu miejsc (po Z07 są cztery)
                 serwer('"ulepsz"')
@@ -803,6 +842,59 @@ def main():
                       n11, z11.get("miejsc"), len(droga), ruszylo, len(droga), poza,
                       ("%.1f" % najblizej) if najblizej is not None else "—",
                       (sum(w_marszu) / float(len(w_marszu))) if w_marszu else 0.0, max(w_marszu or [0]), chodow, marszow))
+            # ================================================================ Z12–Z15 sprzedaż petów (26.11.2026)
+            SP = D["sprzedaz"]
+            serwer('"zwolnij"')
+            for r in (0.0, 0.0):                              # dwie kopie Żołędziaka więcej (haczyk)
+                serwer('"kup", nil, "%s", %f' % (JL["id"], r))
+                serwer('"zwolnij"')
+            serwer('"wybierz", nil, "zoledziak", true')
+            okno12 = js(KOD["okno_pets"] % '"stan"', "Client")
+            bi = js(KOD["bez_inkubatorow"], "Server")
+            wiersze12 = {x["pet"]: x for x in (okno12.get("pety") or [])}
+            z12 = wiersze12.get("zoledziak") or {}
+            zapisz("Z12", {"okno": okno12, "zdalne": bi})
+            punkt("Z12", bi.get("sprzedaz") is True and z12.get("rybki") == LP.rybki_tekst(LP.stawka(D, "zoledziak"))
+                  and z12.get("sprzedaz") == LP.cena_sprzedazy(D, "zoledziak")
+                  and any(x.get("wZagrodzie") for x in wiersze12.values()),
+                  "SprzedajPety %s; Żołędziak: %s, cena kopii %s, kopii %s; w zagrodzie: %s" % (
+                      bi.get("sprzedaz"), z12.get("rybki"), z12.get("sprzedaz"), z12.get("kopie"),
+                      [k for k, x in wiersze12.items() if x.get("wZagrodzie")]))
+            stoja12 = ((serwer('"zagroda"') or {}).get("stan") or {}).get("stoja") or []
+            poza = [k for k in wiersze12 if k not in stoja12 and k != "zoledziak"]
+            przed13 = atr("Gold", "PetyLiczba")
+            n_z = (z12.get("kopie") or 1) - 1
+            lista13 = '{ { pet = "zoledziak", ile = %d }%s }' % (n_z, (', { pet = "%s", ile = 1 }' % poza[0]) if poza else "")
+            w13 = js(KOD["okno_pets"] % ('"sprzedaj", ' + lista13), "Client")
+            po13 = atr("Gold", "PetyLiczba", "PetAktywny")
+            spr = w13.get("sprzedaz") or {}
+            suma13 = n_z * LP.cena_sprzedazy(D, "zoledziak") + (LP.cena_sprzedazy(D, poza[0]) if poza else 0)
+            sztuk13 = n_z + (1 if poza else 0)
+            zapisz("Z13", {"lista": lista13, "odpowiedz": w13, "przed": przed13, "po": po13})
+            dz = (po13.get("Gold") or 0) - (przed13.get("Gold") or 0)
+            punkt("Z13", spr.get("ok") is True and spr.get("suma") == suma13 and suma13 <= dz <= suma13 + 10
+                  and po13.get("PetyLiczba") == (przed13.get("PetyLiczba") or 0) - sztuk13 and po13.get("PetAktywny") == "zoledziak"
+                  and str(w13.get("tekst") or "").startswith("Sold %d pet" % sztuk13),
+                  "sprzedano %s za %s (oczekiwane %d za %d), Gold +%s, pety %s → %s, napis %r" % (
+                      spr.get("sztuk"), spr.get("suma"), sztuk13, suma13, dz, przed13.get("PetyLiczba"),
+                      po13.get("PetyLiczba"), w13.get("tekst")))
+            time.sleep(SP["odstep_s"] + 0.2)
+            przed14 = atr("Gold", "PetyLiczba")
+            lista14 = '{ "zoledziak"%s }' % ((', "%s"' % stoja12[0]) if stoja12 else "")
+            w14 = serwer('"sprzedaj", nil, %s' % lista14)
+            po14 = atr("Gold", "PetyLiczba")
+            powody14 = [(x.get("pet"), x.get("powod")) for x in (w14.get("wyniki") or [])]
+            zapisz("Z14", {"odpowiedz": w14, "przed": przed14, "po": po14})
+            punkt("Z14", w14.get("ok") is False and ("zoledziak", "aktywny") in powody14
+                  and (not stoja12 or (stoja12[0], "w_zagrodzie") in powody14)
+                  and po14.get("PetyLiczba") == przed14.get("PetyLiczba"),
+                  "odmowy %s, pety %s → %s, tekst %r" % (powody14, przed14.get("PetyLiczba"), po14.get("PetyLiczba"),
+                                                       w14.get("tekst")))
+            w15 = serwer('"sprzedaj", nil, { "zoledziak" }')
+            licz = kont("PetyProba", ["LicznikSprzedazy", "OstatniaSprzedaz"])
+            zapisz("Z15", {"odpowiedz": w15, "licznik": licz})
+            punkt("Z15", w15.get("powod") == "za_szybko" and (licz.get("LicznikSprzedazy") or 0) >= 1,
+                  "druga prośba od razu: %s; LicznikSprzedazy %s" % (w15.get("powod"), licz.get("LicznikSprzedazy")))
 
         # ================================================================ P00 Edit
         nie_usypiaj()
@@ -817,7 +909,15 @@ def main():
         if not (edit["pety"] and edit["stan"] and edit["syg"] and edit["mapa"]):
             punkt("P00", False, "brak kontenerów albo sygnału StanGracza/Sygnaly/Pety: %s" % edit)
             sys.exit(2)
-        punkt("P00", None, "kontenery: %s; script_grep w wyniki.json (P00_script_grep)" % edit)
+        bi0 = js(KOD["bez_inkubatorow"], "Edit")
+        zapisz("P00_inkubatory", bi0)
+        stare0 = [n for n in ("Inkubator", "InkubatorBagna", "InkubatorDzungli", "Punkty") if bi0.get(n)]
+        if stare0 or not bi0.get("sprzedaz"):
+            punkt("P00", False, "kontener sprzed 26.11 (stare inkubatory %s, SprzedajPety %s) — pełna budowa "
+                                "swiat/pety_proba/zbuduj.py" % (stare0, bi0.get("sprzedaz")))
+            sys.exit(2)
+        punkt("P00", None, "kontenery: %s; bez inkubatorów, SprzedajPety jest; leśne jajko ze scenką %s; script_grep "
+                           "w wyniki.json (P00_script_grep)" % (edit, gniazdo))
 
         log("Play:", call("start_stop_play", {"is_start": True})["text"][:60])
         try:
@@ -836,8 +936,8 @@ def main():
             kl = klient('"stan"')
             zapisz("P01", {"serwer": sa, "klient": ka, "stan": st, "klient_stan": kl})
             punkt("P01", sa.get("ZgodnoscLogikiPetow") == "OK %d/%d" % (n, n) and ka.get("KlientPetowGotowy") is True
-                  and st.get("SerwerStanuGotowy") is True and kl.get("jajkoLokalne") is True,
-                  "serwer %s | klient %s | stan %s | jajko lokalne %s" % (sa, ka, st, kl.get("jajkoLokalne")))
+                  and st.get("SerwerStanuGotowy") is True and kl.get("lokalnychJajek") == 0,
+                  "serwer %s | klient %s | stan %s | lokalnych jajek %s (ma być 0)" % (sa, ka, st, kl.get("lokalnychJajek")))
             # ================================================================ P02 klasa
             czekaj_na(lambda: js(KOD["wybor_klasy"], "Client").get("ekran"), 30, 1.0)
             wk = js(KOD["wybor_klasy"], "Client")
@@ -859,15 +959,11 @@ def main():
             else:
                 # ================================================================ P03 brak Złota
                 luau(KOD["ustaw_atr"] % ("Gold", "0"), "Server")
-                do_inkubatora()
-                # pierwsze wejście do lasu: przelot kamery (podpowiedzi E w tym czasie nie działają) — czekamy na koniec
-                czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "true", 6, 0.4)
-                czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "false", 40, 1.0)
-                do_inkubatora()
+                do_inkubatora()                                   # leśne jajko ze scenką — w mieście, bez przelotu
                 kamera(*oko_inkubatora())
                 przed = atr("Gold", "PetyLiczba", "PetAktywny")
-                przytrzymaj_e()
-                time.sleep(0.8)
+                nacisnij("E")                                     # podpowiedź jajka Pawła: bez przytrzymania
+                time.sleep(1.2)
                 kl = klient('"stan"')
                 po = atr("Gold", "PetyLiczba", "PetAktywny")
                 odm = kont("PetyProba", ["OstatniaOdmowa", "LicznikOdmow"])
@@ -879,33 +975,39 @@ def main():
                 # ================================================================ P04 kupno prawdziwym E + wyklucie
                 luau(KOD["ustaw_atr"] % ("Gold", "2000"), "Server")
                 time.sleep(0.6)
-                kl0 = klient('"stan"')
-                przytrzymaj_e()
-                t0 = time.time()
-                klatki = [(0.8, "02_wyklucie_trzesienie"), (1.75, "03_wyklucie_pekniecie"), (2.45, "04_wyklucie_wyskok"),
-                          (4.0, "05_wyklucie_napis")]
-                # ================================================================ P05 drugi E w trakcie wyklucia
-                przytrzymaj_e()
-                odm5 = kont("PetyProba", ["OstatniaOdmowa"])
-                for t, nazwa in klatki:
-                    while time.time() - t0 < t:
-                        time.sleep(0.05)
-                    zrzut(nazwa)
+                nacisnij("E")
+                time.sleep(1.2)
+                zrzut("02_scenka_jajka")
                 po4 = atr("Gold", "PetyLiczba", "PetAktywny", JL["atrybuty"]["cena"])
                 zak = kont("PetyProba", ["OstatniZakup", "LicznikZakupow"])
+                kl4 = klient('"stan"')
                 cena0 = LP.cena(D, JL, 0)
-                zapisz("P04", {"akcja_przed": kl0.get("akcjaE"), "napis": kl0.get("napisCeny"), "po": po4, "zakup": zak})
+                koniec4 = otworz_scenke()
+                zapisz("P04", {"po": po4, "zakup": zak, "klient": kl4, "scenka_zamknieta": bool(koniec4)})
                 punkt("P04", po4.get("Gold") == 2000 - cena0 and po4.get("PetyLiczba") == 1 and bool(po4.get("PetAktywny"))
-                      and "Kup za %s" % LP.ile_rybek(D, cena0, "b") in str(kl0.get("akcjaE")),
-                      "E %r, napis %r → Gold %s, pet %s, następna cena %s" % (kl0.get("akcjaE"), kl0.get("napisCeny"),
-                                                                           po4.get("Gold"), po4.get("PetAktywny"),
-                                                                           po4.get(JL["atrybuty"]["cena"])))
-                punkt("P05", odm5.get("OstatniaOdmowa") == "trwa_wyklucie" and po4.get("Gold") == 2000 - cena0,
-                      "odmowa %s, Gold %s" % (odm5, po4.get("Gold")))
-                time.sleep(2.5)
+                      and ":%s:" % JL["id"] in str(zak.get("OstatniZakup")) and kl4.get("czekaNaScenke") is True
+                      and bool(koniec4),
+                      "E → Gold %s, pet %s, zakup %s, klient czeka na scenkę %s, scenka zamknięta %s, następna cena %s" % (
+                          po4.get("Gold"), po4.get("PetAktywny"), zak.get("OstatniZakup"), kl4.get("czekaNaScenke"),
+                          bool(koniec4), po4.get(JL["atrybuty"]["cena"])))
+                # ================================================================ P05 drugi zakup w czasie blokady
+                serwer('"zwolnij"')
+                w5a = serwer('"kup", nil, "%s"' % JL["id"])
+                w5b = serwer('"kup", nil, "%s"' % JL["id"])
+                serwer('"zwolnij"')
+                g5 = atr("Gold").get("Gold")
+                punkt("P05", w5a.get("ok") is True and w5b.get("powod") == "trwa_wyklucie"
+                      and isinstance(g5, (int, float)) and 0 <= g5 - (2000 - 2 * cena0) <= 5,
+                      "pierwszy %s, drugi %s, Gold %s" % (w5a.get("ok"), w5b.get("powod"), g5))
                 kamera_zwykla()
                 # ================================================================ P06 pet za graczem
                 czekaj_na(lambda: klient('"stan"').get("mojPet"), 10, 0.5)
+                przestaw(stoi_las, polana)                         # marsz na otwartej Polanie Przybycia lasu
+                # pierwsze wejście do lasu: przelot kamery — czekamy na koniec
+                czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "true", 6, 0.4)
+                czekaj_na(lambda: luau(KOD["przelot"] % "LasPasGra", "Client") == "false", 40, 1.0)
+                przestaw(stoi_las, polana)
+                time.sleep(1.0)
                 start = js(KOD["pozycja"], "Server")
                 cel = (start[0] + 40.0, start[1], start[2] - 6.0)
                 call("character_navigation", {"datamodel_type": "Client", "x": cel[0], "y": cel[1], "z": cel[2]}, timeout=60)
@@ -933,7 +1035,7 @@ def main():
                 for r in (0.1, 0.6, 0.8, 0.9, 0.995):             # wymuszony los: każdy pet raz (test, nie gra)
                     serwer('"zwolnij"')
                     serwer('"kup", nil, "jajko_lesne", %f' % r)
-                    time.sleep(4.8)                               # klient gra wyklucie (czeka, aż się skończy)
+                    time.sleep(0.6)                               # bez animacji inkubatora — sam napis
                 serwer('"zwolnij"')
                 zapisz("zakupy", serwer('"stan"'))
                 # ================================================================ P07 każdy pet w świecie
@@ -960,7 +1062,7 @@ def main():
                 idzie = {}
                 for i, pid in enumerate(pety):
                     serwer('"wybierz", nil, "%s", true' % pid)    # haczyk: wybór bez podchodzenia do zagrody
-                    przestaw((stoi[0] + 4, stoi[1], stoi[2] - 14 + i * 0.5), (stoi[0] + 60, 0, stoi[2] - 14))
+                    przestaw((stoi_las[0] + 4, stoi_las[1], stoi_las[2] - 14 + i * 0.5), (stoi_las[0] + 60, 0, stoi_las[2] - 14))
                     time.sleep(1.5)
                     p0 = js(KOD["pozycja"], "Server")
                     call("character_navigation", {"datamodel_type": "Client", "x": p0[0] + 26, "y": p0[1], "z": p0[2]},
@@ -975,15 +1077,15 @@ def main():
                 punkt("P07b", all(v["mojPet"] == k for k, v in idzie.items()),
                       "za graczem (pet wymuszony haczykiem): %s" % ", ".join("%s %s st %s" % (k, v["odleglosc"] and round(v["odleglosc"], 1),
                                                                                           v["klip"]) for k, v in idzie.items()))
-                # ================================================================ P08 wyklucie każdego peta
-                kamera(*oko_inkubatora(dal=12.0, wys=5.0))
+                # ================================================================ P08 napis wyklucia każdego peta
+                napisy8 = {}
                 for pid in pety:
                     klient('"wyklucie", "%s", true' % pid)
-                    time.sleep(3.9)
-                    zrzut("09_wyklucie_%s" % pid)
-                    czekaj_na(lambda: not klient('"stan"').get("wylegaSie"), 8, 0.5)
-                kamera_zwykla()
-                punkt("P08", None, "wyklucie każdego peta — zrzuty 09_wyklucie_<id>")
+                    time.sleep(0.4)
+                    napisy8[pid] = klient('"stan"').get("komunikat")
+                zapisz("P08", napisy8)
+                punkt("P08", all(LP.pet(D, k)["nazwa"] in str(v) for k, v in napisy8.items()),
+                      "napisy: %s" % ", ".join("%s → %r" % (k, v) for k, v in napisy8.items()))
                 # ================================================================ P09 zagroda
                 serwer('"wybierz", nil, "zoledziak", true')
                 ez = G["zagroda_e"]
@@ -1047,10 +1149,10 @@ def main():
                           przed.get("Gold"), po.get("Gold"), premia, zapas11, k11.get("komunikat"),
                           {k: mod11.get(k) for k in ("zrodla", "procent", "pasywki", "lup")} if mod11 else "brak sygnału"))
                 # ================================================================ P12 reset w trakcie wyklucia
-                do_inkubatora()
                 przed = atr("Gold", "PetyLiczba")
-                przytrzymaj_e()
-                time.sleep(1.0)
+                serwer('"zwolnij"')
+                serwer('"kup", nil, "%s"' % JL["id"])
+                serwer('"zwolnij"')
                 luau(KOD["reset"], "Server")
                 time.sleep(9.0)
                 czekaj_na(lambda: luau(KOD["gotowy_klient"], "Client") == "true", 20, 1.0)
@@ -1095,12 +1197,11 @@ def main():
                     else:
                         punkt("P13", None, "brak wolnego slime'a w s1 — pominięte")
                 # ================================================================ P14 bez sygnału StanGracza
-                do_inkubatora()
                 luau(KOD["przemianuj"] % ("Pety", "PetyWylaczone"), "Server")
                 time.sleep(0.3)
                 przed = atr("Gold")
                 serwer('"zwolnij"')
-                przytrzymaj_e()
+                serwer('"kup", nil, "%s", { bezPokazu = true }' % JL["id"])   # jak scenka jajka Pawła
                 time.sleep(0.8)
                 k14 = klient('"stan"')
                 odm = kont("PetyProba", ["OstatniaOdmowa"])
@@ -1108,7 +1209,7 @@ def main():
                 luau(KOD["przemianuj"] % ("PetyWylaczone", "Pety"), "Server")
                 zrzut("17_bez_stanu_gracza")
                 punkt("P14", odm.get("OstatniaOdmowa") == "brak_stanu" and po.get("Gold") == przed.get("Gold")
-                      and "nieczynny" in str(k14.get("komunikat")), "odmowa %s, napis %r" % (odm, k14.get("komunikat")))
+                      and "nieczynne" in str(k14.get("komunikat")), "odmowa %s, napis %r" % (odm, k14.get("komunikat")))
             # ================================================================ P15 konsola
             out = call("get_console_output")["text"]
             zle = [l for l in out.splitlines() if ("PetyProba" in l and ("Error" in l or "error" in l or "Script '" in l))

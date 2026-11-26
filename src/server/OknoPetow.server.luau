@@ -12,9 +12,15 @@
 	  - nie ma „odstaw” poza zagrodą ani usuwania petów: zdjęcie peta ze slotu 1 działa tylko wtedy, gdy w slocie 2
 	    jest inny (zamiana), a DELETE odpowiada „jeszcze nie”.
 
+	26.11 (agent Karola, za zgodą Karola): każdy pet ma w wierszu swoje Rybki na sekundę w zagrodzie (rybki_s, napis
+	rybki „+0.04/s”, wZagrodzie — czy stoi tam teraz) i cenę kopii (sprzedaz); "sprzedaj" przekazuje listę do serwera
+	petów Karola (on decyduje, sprawdza i płaci — haczyk "sprzedaj").
+
 	Zdalne: ReplicatedStorage.OknoPetow (RemoteFunction)
-	  "stan"                → { ok, pety = { { pet, nazwa, rzadkosc, rzadkoscNazwa, kolor, kopie, skill, krotko } },
+	  "stan"                → { ok, pety = { { pet, nazwa, rzadkosc, rzadkoscNazwa, kolor, kopie, skill, krotko,
+	                           rybki_s, rybki, wZagrodzie, sprzedaz } },
 	                           zalozone = { pet1?, pet2? }, sloty = 2, wszystkich = 4, razem = liczba kopii }
+	  "sprzedaj", { { pet, ile } } → jak "stan" + sprzedaz = { ok, sztuk, suma, wyniki } (tekst: wynik po angielsku)
 	  "zaloz", pet          → jak "stan" (+ tekst przy odmowie)
 	  "zdejmij", slot       → jak "stan"
 	  "najlepsze"           → jak "stan"
@@ -74,12 +80,14 @@ local function stan(gracz: Player, tekst: string?): any
 	if type(st) ~= "table" or not st.ok then
 		return { ok = false, tekst = "Pets are not available (player state missing)" }
 	end
-	local wiersze = L.wierszeZagrody(D, st.kopie, st.aktywny)
+	local zagroda = if okS and type(w) == "table" and type(w.zagroda) == "table" then w.zagroda.stoja else nil
+	local wiersze = L.wierszeZagrody(D, st.kopie, st.aktywny, zagroda)
 	local pety, razem, mam = {}, 0, {}
 	for _, r in ipairs(wiersze) do
 		local p = L.pet(D, r.pet)
 		table.insert(pety, { pet = r.pet, nazwa = r.nazwa, rzadkosc = p and p.rzadkosc or "", rzadkoscNazwa = r.rzadkosc,
-			kolor = r.kolor, kopie = r.kopie, skill = r.skill, krotko = r.krotko })
+			kolor = r.kolor, kopie = r.kopie, skill = r.skill, krotko = r.krotko,
+			rybki_s = r.rybki_s, rybki = r.rybki, wZagrodzie = r.w_zagrodzie == true, sprzedaz = r.sprzedaz })
 		razem += r.kopie
 		mam[r.pet] = true
 	end
@@ -179,6 +187,36 @@ local function najlepsze(gracz: Player): any
 	return stan(gracz)
 end
 
+-- sprzedaż (26.11): lista { { pet, ile } } idzie do serwera petów Karola — on sprawdza kopie, peta za graczem i pety
+-- w zagrodzie, płaci Rybki (StanGracza) i odpowiada wynikiem dla każdej pozycji
+local function sprzedaj(gracz: Player, lista: any): any
+	local _, _, h = karol()
+	if not h then
+		return stan(gracz, "Pets are not available")
+	end
+	if type(lista) ~= "table" then
+		return stan(gracz, "Nothing selected")
+	end
+	local ok, w = pcall(function()
+		return h:Invoke("sprzedaj", gracz, lista)
+	end)
+	if not ok or type(w) ~= "table" then
+		return stan(gracz, "Something went wrong — try again")
+	end
+	local tekst = if type(w.tekst) == "string" then w.tekst else nil
+	if w.ok == true and type(w.wyniki) == "table" then
+		for _, r in ipairs(w.wyniki) do
+			if type(r) == "table" and r.ok ~= true and type(r.tekst) == "string" then
+				tekst = (tekst or "") .. " · " .. r.tekst -- pierwsza pozycja, której nie sprzedano, i dlaczego
+				break
+			end
+		end
+	end
+	local s = stan(gracz, tekst)
+	s.sprzedaz = { ok = w.ok == true, sztuk = w.sztuk, suma = w.suma, wyniki = w.wyniki }
+	return s
+end
+
 (F :: RemoteFunction).OnServerInvoke = function(gracz: Player, polecenie: any, a: any): any
 	if type(polecenie) ~= "string" then
 		return { ok = false }
@@ -203,6 +241,8 @@ end
 			s.tekst = "Slot 1 pet stays until you visit the Pet Pen"
 		end
 		return s
+	elseif polecenie == "sprzedaj" then
+		return sprzedaj(gracz, a)
 	elseif polecenie == "usun" then
 		return stan(gracz, "Deleting pets is coming soon")
 	end

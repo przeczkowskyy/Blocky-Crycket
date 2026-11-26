@@ -1,5 +1,7 @@
 # Próba ubierania postaci (D-071) — przymierzalnia i strój w walce
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** przymierzalnia stała przy starym starcie, który zniknął z miejsca — `ustawienia.json → stojak.w_grze = false`: `zbuduj.py` jej nie stawia, `KlientStrojow` działa bez niej (bez okna i podglądu, w „stan” zwraca `stojak = false`), a strój dalej zmienia serwer (`Zdalne/ZmienStroj`, haczyki kowala i prób) i widać go w walce. Próba w Play: bez stojaka S02, S03, S05, S06 i S11 kończą się „?”. Gdzie w bazarze przebierać się od teraz — otwarte pytanie do Karola. Usuwanie z miejsca: `python -B tools/studio/sprzatanie_mapy.py` (najpierw `--sucho`); start gry na starcie bazaru: `python -B tools/studio/start_w_miasteczku.py`.
+
 > **Status: propozycja (prototyp w Studio), nie kanon i nie kod gry.** Projekt, zasady i ustawienia „przyjęte, do
 > zmiany”: `PROJEKT.md`. Przed publikacją miejsca: `python -B swiat/stroje_proba/zbuduj.py --usun`.
 

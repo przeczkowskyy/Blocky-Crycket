@@ -7,14 +7,12 @@
 	Co robi, po kolei:
 		1. strażnik Studio: poza Studio niszczy CAŁY kontener (także potwory i silnik) i kończy;
 		2. czeka na mapę Workspace/<DanePasa.mapa.nazwa> (Wygenerowane = true; do 15 s) — bez mapy nic nie robi
-		   (StanMapy = "brak_mapy"), a brama w miasteczku dalej prowadzi do starego lasu; TestBezBiomu = true
-		   (ten sam atrybut co u potworów) pomija kontrolę;
-		3. punkty: przybycie, przed bramą, za bramą (grunt mierzony promieniem w dół), miasteczko (z
-		   Workspace/LasTeleport, gdy jest, inaczej z planu); atrybuty PunktPrzybyciaLasu / PatrzPrzybyciaLasu;
-		4. przekierowanie bramy w miasteczku: dzisiejszy Workspace/LasTeleport (swiat/biom_las/teleport.py) czyta cel
-		   z atrybutów PunktLas / PatrzLas przy każdym E — w trybie Play ustawiamy je na przybycie pasa i oddajemy
-		   stare wartości przy usunięciu kontenera (tylko w czasie gry; w trybie Edit nic się nie zmienia). Wyłączenie:
-		   atrybut kontenera PrzekierujBrameMiasteczka = false;
+		   (StanMapy = "brak_mapy"); TestBezBiomu = true (ten sam atrybut co u potworów) pomija kontrolę;
+		3. punkty: przybycie, przed bramą, za bramą (grunt mierzony promieniem w dół), miasteczko (start bazaru z
+		   danych + promień w dół — zapas, gdy nie ma uchwytu bazaru); atrybuty PunktPrzybyciaLasu / PatrzPrzybyciaLasu;
+		4. (do 26.11.2026: przekierowanie bramy starego miasteczka Workspace/LasTeleport na przybycie pasa — stare
+		   miasteczko i LasTeleport zniknęły z miejsca; do lasu prowadzą Brama Leśna bazaru i przejście przez chmury,
+		   oba przez uchwyt PrzeniesDoLasu; atrybut Przekierowanie = "nie_ten_biom" zostaje dla prób);
 		5. Kamień Powrotu (Punkty/KamienPowrotu, podpowiedź E) → miasteczko;
 		6. Sygnaly/WynikWalki (BindableEvent, strzela SerwerPotworow przy każdej przyjętej walce): wygrana ze
 		   Strażnikiem → PamiecGracza.pokonalStraznikaLasu i atrybut gracza PokonalStraznikaLasu = true;
@@ -42,7 +40,7 @@
 
 	Drugi biom (17.11.2026): ten sam skrypt działa w Workspace/BagnoPasGra (swiat/bagno_pas_gra) — nazwy i teksty
 	biomu są w DanePasa.biom (uchwyt, klucze pamięci, atrybuty gracza, komunikaty; las-pas jako zapas niżej):
-		• biom.przekieruj = false — nie przekierowujemy bramy miasteczka (to robi tylko las);
+		• biom.przekieruj = false — nie przekierowujemy bramy miasteczka (od 26.11.2026 false we wszystkich biomach);
 		• biom.nastepny = { mapa } — gdy stoi mapa następnego biomu, w Play znika ZaBrama (tabliczka „wkrótce” i
 		  zapasowa ściana), a atrybut kontenera NastepnyBiomJest = true (baner klienta mówi „dalej …”); od tej chwili
 		  przelot i ratunek tego biomu kończą się na linii jego bramy (dalej pilnuje serwer następnego biomu);
@@ -147,7 +145,7 @@ if kontener:GetAttribute("TestBezBiomu") == true then
 else
 	local m = workspace:WaitForChild(D.mapa.nazwa, CZEKANIE_NA_MAPE)
 	if not m then
-		warn(P .. "nie ma Workspace/" .. D.mapa.nazwa .. " (czekano " .. CZEKANIE_NA_MAPE .. " s) — brama, przelot i teleport pasa wyłączone; brama w miasteczku prowadzi do starego lasu")
+		warn(P .. "nie ma Workspace/" .. D.mapa.nazwa .. " (czekano " .. CZEKANIE_NA_MAPE .. " s) — brama, przelot i teleport pasa wyłączone")
 	elseif m:GetAttribute("Wygenerowane") ~= true then
 		warn(P .. D.mapa.nazwa .. " nie ma atrybutu Wygenerowane = true — las-pas wyłączony")
 	else
@@ -204,15 +202,9 @@ local function brakWejscia(gracz: Player): boolean
 	return WYMAGANIE ~= nil and gracz:GetAttribute(WYMAGANIE.atrybut) ~= true
 end
 
--- miasteczko: punkt zmierzony przez swiat/biom_las/teleport.py (atrybuty LasTeleport) albo z planu + promień w dół
+-- miasteczko (zapas, gdy nie ma uchwytu bazaru): start bazaru z danych (swiat/miasteczko_bazar/znaczniki.json) + promień
+-- w dół. 26.11.2026: bez starego miasteczka i bez atrybutów Workspace/LasTeleport — tego kontenera nie ma już w miejscu
 local function punktMiasteczka()
-	local t = workspace:FindFirstChild(D.miasteczko.teleport)
-	if t then
-		local p, q = t:GetAttribute("PunktMiasteczka"), t:GetAttribute("PatrzMiasteczko")
-		if typeof(p) == "Vector3" and typeof(q) == "Vector3" then
-			return { punkt = p, patrz = q }
-		end
-	end
 	local x, z = D.miasteczko.punkt[1], D.miasteczko.punkt[3]
 	local par = RaycastParams.new()
 	par.FilterType = Enum.RaycastFilterType.Exclude
@@ -300,39 +292,15 @@ local function komunikat(gracz: Player, tekst: string)
 	zdarzenia:FireClient(gracz, "komunikat", tekst)
 end
 
------------------------------------------------------------------- przekierowanie bramy w miasteczku (tylko w trybie Play)
-local przekierowanie = nil
-
+------------------------------------------------------------------ przekierowanie bramy w miasteczku (do 26.11.2026)
+-- Dawniej las przestawiał w Play cel bramy starego miasteczka (Workspace/LasTeleport) na przybycie pasa. Tej bramy
+-- nie ma już w miejscu (sprzątanie mapy 26.11.2026), więc nic nie przekierowujemy; atrybut zostaje dla prób.
 local function przekieruj(): string
 	if B.przekieruj == false then
-		return "nie_ten_biom" -- bramę miasteczka przekierowuje tylko pierwszy biom pasa (las)
+		return "nie_ten_biom"
 	end
-	if kontener:GetAttribute("PrzekierujBrameMiasteczka") == false then
-		return "wylaczone"
-	end
-	local t = workspace:WaitForChild(D.miasteczko.teleport, 5)
-	if not t then
-		return "brak_teleportu"
-	end
-	if t:GetAttribute("Wygenerowane") ~= true then
-		return "obcy_teleport"
-	end
-	przekierowanie = { teleport = t, punkt = t:GetAttribute("PunktLas"), patrz = t:GetAttribute("PatrzLas") }
-	t:SetAttribute("PunktLas", punkty.las.punkt)
-	t:SetAttribute("PatrzLas", punkty.las.patrz)
-	kontener:SetAttribute("StaryPunktLas", przekierowanie.punkt)
-	return "tak"
+	return "brak_bramy"
 end
-
-local function oddajPrzekierowanie()
-	local p = przekierowanie
-	przekierowanie = nil
-	if p and p.teleport.Parent then
-		p.teleport:SetAttribute("PunktLas", p.punkt)
-		p.teleport:SetAttribute("PatrzLas", p.patrz)
-	end
-end
-kontener.Destroying:Connect(oddajPrzekierowanie)
 
 ------------------------------------------------------------------ przelot: wykonanie akcji automatu
 local function zablokuj(gracz: Player, s)
@@ -595,8 +563,9 @@ end
 przeniesF.OnInvoke = przeniesDoLasu
 
 ------------------------------------------------------------------ Kamień Powrotu → miasteczko
--- Nowe miasteczko (bazar), gdy jest jego kontener z uchwytem (przenosi serwer bazaru: wczytanie okolicy, własna
--- blokada); bez niego — stare miasteczko jak dotąd. Odmowa uchwytu (np. „trwa”) nie przenosi nigdzie indziej.
+-- Bazar, gdy jest jego kontener z uchwytem (przenosi serwer bazaru: wczytanie okolicy, własna blokada); bez niego —
+-- ten serwer sam na start bazaru z danych (26.11.2026: starego miasteczka już nie ma). Odmowa uchwytu (np. „trwa”)
+-- nie przenosi nigdzie indziej.
 local function uchwytBazaru(): BindableFunction?
 	local b = workspace:FindFirstChild(D.miasteczko.bazar.kontener)
 	local s = b and b:FindFirstChild("Sygnaly")
@@ -620,7 +589,7 @@ local function powrotDoMiasteczka(gracz: Player): (boolean, string?)
 		return f:Invoke(gracz, { punkt = D.miasteczko.bazar.punkt })
 	end)
 	if not ok then
-		warn(P .. "Kamień Powrotu: uchwyt bazaru zawiódł (" .. tostring(w) .. ") — stare miasteczko")
+		warn(P .. "Kamień Powrotu: uchwyt bazaru zawiódł (" .. tostring(w) .. ") — start bazaru z danych")
 		return przenies(gracz, punktMiasteczka(), false)
 	end
 	if type(w) == "table" and w.ok == true then
@@ -745,7 +714,7 @@ end
 
 ------------------------------------------------------------------ start
 if not gotowy then
-	return -- bez mapy: uchwyty odpowiadają (brak_mapy), brama w miasteczku zostaje jak była
+	return -- bez mapy: uchwyty odpowiadają (brak_mapy)
 end
 
 kontener:SetAttribute("Przekierowanie", przekieruj())

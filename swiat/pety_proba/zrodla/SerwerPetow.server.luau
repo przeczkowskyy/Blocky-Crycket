@@ -3,10 +3,11 @@
 	swiat/pety_proba/zbuduj.py; status: propozycja, opis w swiat/pety_proba/PROJEKT.md).
 
 	Decyduje WYŁĄCZNIE serwer (klient nie losuje i nie podaje ceny):
-		1. E przy inkubatorze każdego jajka (D.jajka: las-pas, Bagno; ProximityPrompt Punkty/<jajko.punkt_e>/Podpowiedz)
-		   → kup(gracz, jajko tej podpowiedzi): serwer sprawdza, że gracz stoi przy inkubatorze TEGO jajka (promień E +
-		   zapas, inaczej odmowa „za_daleko_jajko”); blokada na czas wyklucia (D.wyklucie.blokada_s) USTAWIONA PRZED wywołaniem stanu
-		   gracza — drugi E w tym czasie (przy którymkolwiek inkubatorze) dostaje odmowę „trwa wyklucie”;
+		1. Zakup jajka (D.jajka: las, Bagno, Dżungla) — od 26.11.2026 TYLKO przy nowych jajkach ze scenką Pawła
+		   (src/server/JajkoKorowe.server.luau sprawdza, że gracz stoi przy jajku, i woła haczyk
+		   Sygnaly/SterowanieSerwera("kup", gracz, id, { bezPokazu = true })); starych inkubatorów z własnym E nie ma.
+		   kup(gracz, jajko): blokada (D.wyklucie.blokada_s) USTAWIONA PRZED wywołaniem stanu gracza — drugi zakup
+		   w tym czasie dostaje odmowę „trwa wyklucie” (scenka zdejmuje ją haczykiem „zwolnij”);
 		   cena = LogikaPetow.cena(…) — od 17.11 stała dla każdego jajka (decyzja Karola; licznik kupionych z profilu
 		   liczy się tylko w trybie „rosnaca”, osobny albo wspólny — D.licznik_ceny);
 		   pet = LogikaPetow.losuj(Random:NextNumber()) z jawnych szans; Złoto i pet — JEDNYM wywołaniem
@@ -29,12 +30,19 @@
 		   D.zagroda.cel_ulepszenia — licznik wydatków na ten cel w profilu JEST poziomem, zakup i poziom w jednym
 		   wywołaniu). Wybór petów do zagrody ("zagroda_dodaj" / "zagroda_zdejmij", id; "zagroda_auto" = najrzadsze)
 		   żyje w profilu przez Sygnaly/DanePakietu (pakiet D.zagroda.pakiet_danych, pole zagroda = lista id).
-	Stan petów żyje w profilu StanGracza (jeden właściciel, pod przyszły zapis). Bez StanGracza: inkubator odmawia
+		6. Sprzedaż petów (26.11.2026, propozycja): Zdalne/SprzedajPety (RemoteFunction, okno Pets) albo haczyk
+		   "sprzedaj" → sprzedaj(gracz, lista): lista = { id | { pet = id, ile = n } }; decyzja LogikaPetow.sprzedaz
+		   (posiadane kopie, nie ostatnia kopia peta za graczem ani peta stojącego w zagrodzie, nie ostatni pet, suma do
+		   D.sprzedaz.maks_kwoty), cena kopii z danych (D.pety[].sprzedaz), kopie i Rybki JEDNYM wywołaniem
+		   StanGracza/Sygnaly/Pety("sprzedaj"); najwyżej raz na D.sprzedaz.odstep_s na gracza, jedna sprzedaż naraz.
+		   Odpowiedź: { ok, powod, tekst (EN, HUD), tekst_pl, suma, sztuk, zloto, wyniki = { { pet, ile, ok, powod,
+		   cena, tekst, tekst_pl } } }.
+	Stan petów żyje w profilu StanGracza (jeden właściciel, pod przyszły zapis). Bez StanGracza: zakup odmawia
 	z komunikatem, zagroda pokazuje „brak”, żadnych błędów. Atrybuty gracza tego pakietu: dla każdego jajka
 	jajko.atrybuty.cena (cena następnego jajka — napis przy E i wskazówki celu) i jajko.atrybuty.kupione (ile takich
 	jajek gracz kupił — wskazówka „stać cię na pierwsze jajko biomu”), oraz D.atrybuty_gracza.czeka.
-	Haczyk testowy: Sygnaly/SterowanieSerwera ("kup", gracz?, jajko, r? | { r?, bezPokazu? }) | ("zwolnij", gracz?)
-	| ("stan", gracz?)
+	Haczyk (scenka jajka, okno Pets i testy): Sygnaly/SterowanieSerwera ("kup", gracz?, jajko, r? | { r?, bezPokazu? })
+	| ("zwolnij", gracz?) | ("stan", gracz?) | ("sprzedaj", gracz?, lista, bezLimitu?)
 	| ("wybierz", gracz?, pet, bezZasiegu?) | ("zgodnosc") | ("zagroda", gracz?) | ("nalicz", gracz?)
 	| ("ulepsz", gracz?) | ("zagroda_zmien", gracz?, pet, tak) | ("zagroda_auto", gracz?) — bez sprawdzania zasięgu.
 	Działa tylko w Roblox Studio: poza Studio usuwa cały kontener, jak pozostałe prototypy.
@@ -64,7 +72,7 @@ end
 
 kontener:SetAttribute("SerwerPetowGotowy", false)
 for _, n in { "LicznikZakupow", "LicznikOdmow", "LicznikWyborow", "LicznikModyfikatorow", "LicznikPrzychodow",
-	"LicznikUlepszen", "LicznikZmianZagrody" } do
+	"LicznikUlepszen", "LicznikZmianZagrody", "LicznikSprzedazy", "LicznikOdmowSprzedazy" } do
 	kontener:SetAttribute(n, 0)
 end
 
@@ -198,28 +206,11 @@ local function polozenie(gracz: Player): Vector3?
 	return if hrp and hrp:IsA("BasePart") then hrp.Position else nil
 end
 
--- serwer sam sprawdza, przy którym inkubatorze stoi gracz (podpowiedź E odpala klient — nie wierzymy jej na słowo):
--- w poziomie najwyżej promien_e + zapas_e od punktu E tego jajka
-local function przyInkubatorze(gracz: Player, j): boolean
-	local p = polozenie(gracz)
-	if not p or not j then
-		return false
-	end
-	local e = j.polozenie.e
-	local r = D.inkubator.promien_e + D.inkubator.zapas_e
-	local dx, dz = p.X - e[1], p.Z - e[3]
-	return dx * dx + dz * dz <= r * r
-end
-
--- zZasiegiem: zakup z podpowiedzi E (gracz musi stać przy inkubatorze TEGO jajka); haczyk testowy go nie wymaga
--- bezPokazu: zakup ze scenki jajka w świecie (src/server/JajkoKorowe.server.luau, 26.11.2026) — klient nie gra animacji
--- inkubatora, a napis „Wykluł się…” pokazuje dopiero, gdy scenka odsłoni peta (Sygnaly/PokazWyklucia u klienta)
-local function kup(gracz: any, idJajka: any, wymuszoneR: any, zZasiegiem: boolean?, bezPokazu: boolean?)
+-- bezPokazu: zakup ze scenki jajka w świecie (src/server/JajkoKorowe.server.luau, 26.11.2026) — klient nie gra
+-- żadnej animacji, a napis „Wykluł się…” pokazuje dopiero, gdy scenka odsłoni peta (Sygnaly/PokazWyklucia u klienta)
+local function kup(gracz: any, idJajka: any, wymuszoneR: any, bezPokazu: boolean?)
 	if not graczOk(gracz) then
 		return { ok = false, powod = "zly_gracz" }
-	end
-	if zZasiegiem and not przyInkubatorze(gracz, L.jajko(D, idJajka)) then
-		return odmowa(gracz, "za_daleko_jajko", D.teksty.za_daleko_jajko)
 	end
 	local t = teraz()
 	local d = L.decyzja(D, { stan_gracza = sygnalPetow() ~= nil, jajko = idJajka,
@@ -494,6 +485,105 @@ local function ulepszZagrode(gracz: Player, bezZasiegu: boolean?)
 	return w
 end
 
+------------------------------------------------------------------ sprzedaż petów (26.11.2026, propozycja)
+local SP = D.sprzedaz
+local sprzedajeTeraz: { [Player]: boolean } = {}
+local ostatniaSprzedaz: { [Player]: number } = {}
+
+local function tekstSprzedazy(powod: string, jezyk: string): string
+	local t = SP.teksty[powod] or SP.teksty.blad
+	return t[jezyk] or ""
+end
+
+local function odmowaSprzedazy(powod: string)
+	dolicz("LicznikOdmowSprzedazy")
+	kontener:SetAttribute("OstatniaOdmowaSprzedazy", powod)
+	return { ok = false, powod = powod, tekst = tekstSprzedazy(powod, "en"), tekst_pl = tekstSprzedazy(powod, "pl"),
+		suma = 0, sztuk = 0, wyniki = {} }
+end
+
+-- „3 pets for 120 fish” / „3 pety za 120 Rybek”
+local function tekstSprzedanych(sztuk: number, suma: number): (string, string)
+	local en = SP.formy_peta.en[if sztuk == 1 then 1 else 2]
+	return string.format(SP.teksty.ok.en, string.format("%d %s", sztuk, en), string.format("%d %s", suma, SP.jednostka_en)),
+		string.format(SP.teksty.ok.pl, string.format("%d %s", sztuk, L.forma(SP.formy_peta.pl, sztuk)),
+			L.ileRybek(D, suma, "b"))
+end
+
+local function sprzedaj(gracz: any, lista: any, bezLimitu: boolean?)
+	if not graczOk(gracz) then
+		return { ok = false, powod = "zly_gracz", wyniki = {}, suma = 0, sztuk = 0 }
+	end
+	local t = os.clock()
+	if sprzedajeTeraz[gracz] then
+		return odmowaSprzedazy("zajete")
+	end
+	if not bezLimitu and ostatniaSprzedaz[gracz] and t - ostatniaSprzedaz[gracz] < SP.odstep_s then
+		return odmowaSprzedazy("za_szybko")
+	end
+	ostatniaSprzedaz[gracz] = t
+	sprzedajeTeraz[gracz] = true -- przed pierwszym wywołaniem stanu: druga sprzedaż w tym czasie dostaje odmowę
+	local ok, w = pcall(function()
+		local st = wolajPety("stan", gracz)
+		if not st or not st.ok or not wczytanyWybor[gracz] then
+			return odmowaSprzedazy("brak_stanu")
+		end
+		local d = L.sprzedaz(D, st.kopie, st.aktywny, stanZagrody(gracz, st).stoja, lista)
+		for _, r in d.wyniki do
+			r.tekst, r.tekst_pl = tekstSprzedazy(r.powod, "en"), tekstSprzedazy(r.powod, "pl")
+		end
+		if not d.ok then
+			local o = odmowaSprzedazy(d.powod)
+			o.wyniki = d.wyniki
+			return o
+		end
+		-- kopie i Rybki jednym wywołaniem właściciela stanu (sprawdza kopie i peta za graczem jeszcze raz)
+		local r = wolajPety("sprzedaj", gracz, { pety = d.pozycje, ile = d.suma, zrodlo = D.kontener, cel = SP.cel })
+		if not r or not r.ok then
+			local powod = if r == nil then "brak_stanu" elseif r.powod == "nie_masz" or r.powod == "aktywny" then r.powod
+				else "blad"
+			if r and powod == "blad" then
+				warn(P .. "StanGracza/Pety sprzedaj odmówił: " .. tostring(r.powod))
+			end
+			return odmowaSprzedazy(powod)
+		end
+		-- wybór ręczny zagrody bez petów, których gracz już nie ma
+		local wyb = wyborZagrody[gracz]
+		if wyb ~= nil and type(r.kopie) == "table" then
+			local nowy = {}
+			for _, id in wyb do
+				if type(r.kopie[id]) == "number" and r.kopie[id] > 0 then
+					table.insert(nowy, id)
+				end
+			end
+			if #nowy ~= #wyb then
+				zapiszWybor(gracz, nowy)
+			end
+		end
+		dolicz("LicznikSprzedazy")
+		kontener:SetAttribute("OstatniaSprzedaz", string.format("%s:%d:%dz", gracz.Name, d.sztuk, d.suma))
+		d.zloto = r.zloto
+		d.tekst, d.tekst_pl = tekstSprzedanych(d.sztuk, d.suma)
+		wyslijListe(gracz) -- tablica, zagroda i tymczasowe okno u klienta
+		return d
+	end)
+	sprzedajeTeraz[gracz] = nil
+	if not ok then
+		warn(P .. "sprzedaż: " .. tostring(w))
+		return odmowaSprzedazy("blad")
+	end
+	return w
+end
+
+local zdalnaSprzedaz = kontener:WaitForChild("Zdalne"):FindFirstChild("SprzedajPety")
+if zdalnaSprzedaz and zdalnaSprzedaz:IsA("RemoteFunction") then
+	zdalnaSprzedaz.OnServerInvoke = function(gracz: Player, lista: any)
+		return sprzedaj(gracz, lista, false) -- bez liczb od klienta: tylko id petów i liczba kopii
+	end
+else
+	warn(P .. "brak Zdalne/SprzedajPety — przebuduj kontener (zbuduj.py); sprzedaż działa tylko przez haczyk")
+end
+
 ------------------------------------------------------------------ zdarzenia od klienta (bez liczb, z limitem)
 local ostatnie: { [Player]: number } = {}
 zdarzenia.OnServerEvent:Connect(function(gracz: Player, polecenie: any, a: any)
@@ -533,30 +623,13 @@ zdarzenia.OnServerEvent:Connect(function(gracz: Player, polecenie: any, a: any)
 	end
 end)
 
------------------------------------------------------------------- podpowiedzi E (części z budowy w Edit)
+------------------------------------------------------------------ zapasowe E zagrody (część z budowy w Edit)
 local function podpowiedz(sciezka: { string }): ProximityPrompt?
 	local o: Instance? = kontener
 	for _, n in sciezka do
 		o = o and o:FindFirstChild(n)
 	end
 	return if o and o:IsA("ProximityPrompt") then o else nil
-end
-
-for _, j in D.jajka do
-	local promptJajka = podpowiedz({ "Punkty", j.punkt_e, "Podpowiedz" })
-	if promptJajka then
-		promptJajka.Enabled = true
-		local id = j.id
-		promptJajka.Triggered:Connect(function(gracz: Player)
-			local ok, blad = pcall(kup, gracz, id, nil, true)
-			if not ok then
-				zajety[gracz] = nil
-				warn(P .. "kup: " .. tostring(blad))
-			end
-		end)
-	else
-		warn(P .. "brak podpowiedzi E inkubatora " .. j.id .. " — przebuduj kontener (zbuduj.py)")
-	end
 end
 
 local promptZagrody = podpowiedz({ "Zagroda", "E wybor", "Podpowiedz" })
@@ -623,6 +696,8 @@ end
 Players.PlayerRemoving:Connect(function(gracz: Player)
 	zajety[gracz] = nil
 	ostatnie[gracz] = nil
+	sprzedajeTeraz[gracz] = nil
+	ostatniaSprzedaz[gracz] = nil
 	-- zagroda: bez przychodu offline — po wyjściu nic się nie nalicza, po powrocie liczy się od nowa
 	wyborZagrody[gracz] = nil
 	wczytanyWybor[gracz] = nil
@@ -650,7 +725,9 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 	if polecenie == "kup" then
 		-- c: wymuszone r (liczba) albo opcje { r = liczba?, bezPokazu = true? } (scenka jajka w świecie)
 		local opcje = if type(c) == "table" then c else nil
-		return kup(g, b or D.jajka[1].id, if opcje then opcje.r else c, nil, opcje ~= nil and opcje.bezPokazu == true)
+		return kup(g, b or D.jajka[1].id, if opcje then opcje.r else c, opcje ~= nil and opcje.bezPokazu == true)
+	elseif polecenie == "sprzedaj" then
+		return sprzedaj(g, b, c == true)
 	elseif polecenie == "zwolnij" then
 		zajety[g] = nil
 		return true
@@ -685,7 +762,9 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		end
 		return { stanGracza = sygnalPetow() ~= nil, modyfikatory = mod, zajety = zajety[g] ~= nil and teraz() < zajety[g],
 			cena = ceny[D.jajka[1].id], ceny = ceny, kupione = kupioneJ, czeka = g:GetAttribute(AG.czeka), pety = st,
-			zapasoweE = kontener:GetAttribute("ZapasoweEZagrody") }
+			zapasoweE = kontener:GetAttribute("ZapasoweEZagrody"),
+			-- 26.11.2026: stan zagrody (kto stoi i daje Rybki) — okno Pets oznacza nim pety „w zagrodzie”
+			zagroda = if st and st.ok then stanZagrody(g, st) else nil }
 	end
 	warn(P .. "SterowanieSerwera: nieznane polecenie " .. tostring(polecenie))
 	return nil
@@ -697,5 +776,5 @@ for _, j in D.jajka do
 	table.insert(opisJajek, string.format("%s od %d", j.id, L.cena(D, j, 0)))
 end
 print(string.format("%sgotowy: logika %s, stan gracza %s, jajka: %s (licznik ceny %s)", P,
-	tostring(kontener:GetAttribute("ZgodnoscLogikiPetow")), if sygnalPetow() then "jest" else "BRAK (inkubator odmawia)",
+	tostring(kontener:GetAttribute("ZgodnoscLogikiPetow")), if sygnalPetow() then "jest" else "BRAK (zakup odmawia)",
 	table.concat(opisJajek, ", "), D.licznik_ceny.tryb))

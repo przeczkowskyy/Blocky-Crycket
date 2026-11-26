@@ -1,7 +1,7 @@
 --[[
 	DaneWskazowek — WYGENEROWANE przez swiat/wskazowki_gry/dane.py z ustawienia.json. Nie edytuj
 	ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 74af6a5d1040
+	Skrót danych: 173bfe296ae0
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -37,10 +37,10 @@ return {
 		c_straznik_dzungla = { tekst = "Wąż Stu Lian czeka na końcu Dżungli", cel = "straznik" },
 		e_brama_pustynia = { tekst = "Brama do Pustyni otwarta — Pustynia już wkrótce", cel = "brama" },
 		e_koniec_dzungla = { tekst = "Pustynia już wkrótce — na dziś to koniec drogi" },
-		f_jajko = { tekst = "Masz dość Rybek na jajko — inkubator przy wejściu do lasu", cel = "jajko" },
-		f_jajko_miasto = { tekst = "Masz dość Rybek na jajko: TELEPORT → Las (inkubator)", cel = "teleport" },
-		f_jajko_bagno = { tekst = "Masz dość Rybek na jajko Bagna — inkubator przy pomoście", cel = "jajko" },
-		f_jajko_dzungla = { tekst = "Masz dość Rybek na jajko Dżungli — inkubator na tarasie", cel = "jajko" },
+		f_jajko = { tekst = "Masz dość Rybek na jajko: Kamień Powrotu → jajko przy zagrodzie", cel = "kamien" },
+		f_jajko_miasto = { tekst = "Masz dość Rybek na jajko — stoi przy zagrodzie petów", cel = "jajko" },
+		f_jajko_bagno = { tekst = "Masz dość Rybek na jajko Bagna — stoi przy pomoście", cel = "jajko" },
+		f_jajko_dzungla = { tekst = "Masz dość Rybek na jajko Dżungli — stoi na tarasie", cel = "jajko" },
 		g_kowal_zapas = { tekst = "Masz zapasowy przedmiot — rozbierz go u kowala w bazarze", cel = "kowal" },
 		g_kowal_ulepsz = { tekst = "Możesz ulepszyć przedmiot u kowala w bazarze", cel = "kowal" },
 		g_kowal_zapas_las = { tekst = "Zapasowy przedmiot do rozbiórki: Kamień Powrotu → kowal", cel = "kamien" },
@@ -55,7 +55,7 @@ return {
 				kamien = "LasPasGra/Punkty/KamienPowrotu",
 				atrybut_straznika = "PokonalStraznikaLasu",
 				pole_straznika = "straznik",
-				inkubator = "PetyProba/Punkty/E inkubator",
+				jajko = { "JajkoKorowePodglad/PunktJajka", "JajkoKorowePodglad/Jajko korowe" },
 				atrybut_ceny_jajka = "PetyCenaJajka",
 				atrybut_kupionych_jajek = "PetyKupioneJajka",
 			},
@@ -66,7 +66,7 @@ return {
 				kamien = "BagnoPasGra/Punkty/KamienPowrotu",
 				atrybut_straznika = "PokonalStraznikaBagna",
 				pole_straznika = "straznik_bagna",
-				inkubator = "PetyProba/Punkty/E inkubator Bagna",
+				jajko = { "JajkaBiomowPodglad/Punkt Jajko Bagna", "JajkaBiomowPodglad/Jajko Bagna" },
 				atrybut_ceny_jajka = "PetyCenaJajkaBagna",
 				atrybut_kupionych_jajek = "PetyKupioneJajkaBagna",
 			},
@@ -77,7 +77,7 @@ return {
 				kamien = "DzunglaPasGra/Punkty/KamienPowrotu",
 				atrybut_straznika = "PokonalStraznikaDzungli",
 				pole_straznika = "straznik_dzungli",
-				inkubator = "PetyProba/Punkty/E inkubator Dzungli",
+				jajko = { "JajkaBiomowPodglad/Punkt Jajko Dżungli", "JajkaBiomowPodglad/Jajko Dżungli" },
 				atrybut_ceny_jajka = "PetyCenaJajkaDzungli",
 				atrybut_kupionych_jajek = "PetyKupioneJajkaDzungli",
 			},
@@ -87,7 +87,7 @@ return {
 		stan_gracza = "StanGracza",
 		trening = "TreningProba",
 		chmury = "TeleportChmury",
-		trenerzy = { "MiasteczkoBazarGra/Punkty/E training_center", "TreningProba/TablicaWejscia/E" },
+		trenerzy = { "MiasteczkoBazarGra/Punkty/E training_center" },
 		hud = "HUD",
 		przycisk_teleportu = "HUD/LeftColumn/TeleportSlot/Teleport",
 		ekran_walki = "TestWalki2Cutscenka",
@@ -454,7 +454,7 @@ return {
 				cel = "potwor",
 			},
 			{
-				opis = "Złoto na jajko w lesie: inkubator",
+				opis = "Złoto na jajko w lesie: Kamień Powrotu (jajko w mieście)",
 				stan = {
 					klasa = true,
 					miejsce = "las",
@@ -466,15 +466,15 @@ return {
 					kupione = 0,
 				},
 				id = "f_jajko",
-				tekst = "Masz dość Rybek na jajko — inkubator przy wejściu do lasu",
-				cel = "jajko",
+				tekst = "Masz dość Rybek na jajko: Kamień Powrotu → jajko przy zagrodzie",
+				cel = "kamien",
 			},
 			{
-				opis = "Złoto na jajko w mieście: TELEPORT",
+				opis = "Złoto na jajko w mieście: jajko przy zagrodzie",
 				stan = { klasa = true, miejsce = "miasto", wygrane = 3, przegrane = 0, ostatni = "wygrana", jajko = true },
 				id = "f_jajko_miasto",
-				tekst = "Masz dość Rybek na jajko: TELEPORT → Las (inkubator)",
-				cel = "teleport",
+				tekst = "Masz dość Rybek na jajko — stoi przy zagrodzie petów",
+				cel = "jajko",
 			},
 			{
 				opis = "Złoto na jajko po przegranej — jajko wygrywa",
@@ -489,8 +489,8 @@ return {
 					trening_wzmacnia = true,
 				},
 				id = "f_jajko",
-				tekst = "Masz dość Rybek na jajko — inkubator przy wejściu do lasu",
-				cel = "jajko",
+				tekst = "Masz dość Rybek na jajko: Kamień Powrotu → jajko przy zagrodzie",
+				cel = "kamien",
 			},
 			{
 				opis = "Złoto na jajko, ale kupił już jajko lasu",
@@ -500,7 +500,7 @@ return {
 				cel = "straznik",
 			},
 			{
-				opis = "Złoto na jajko Bagna w Bagnie: inkubator przy pomoście",
+				opis = "Złoto na jajko Bagna w Bagnie: jajko przy pomoście",
 				stan = {
 					klasa = true,
 					miejsce = "las",
@@ -513,7 +513,7 @@ return {
 					kupione = 0,
 				},
 				id = "f_jajko_bagno",
-				tekst = "Masz dość Rybek na jajko Bagna — inkubator przy pomoście",
+				tekst = "Masz dość Rybek na jajko Bagna — stoi przy pomoście",
 				cel = "jajko",
 			},
 			{
@@ -626,7 +626,7 @@ return {
 				cel = "potwor",
 			},
 			{
-				opis = "Złoto na jajko Dżungli w Dżungli: inkubator na tarasie",
+				opis = "Złoto na jajko Dżungli w Dżungli: jajko na tarasie",
 				stan = {
 					klasa = true,
 					miejsce = "las",
@@ -641,7 +641,7 @@ return {
 					dzungla = true,
 				},
 				id = "f_jajko_dzungla",
-				tekst = "Masz dość Rybek na jajko Dżungli — inkubator na tarasie",
+				tekst = "Masz dość Rybek na jajko Dżungli — stoi na tarasie",
 				cel = "jajko",
 			},
 			{
@@ -838,8 +838,8 @@ return {
 					kowal_ulepszen = 0,
 				},
 				id = "f_jajko",
-				tekst = "Masz dość Rybek na jajko — inkubator przy wejściu do lasu",
-				cel = "jajko",
+				tekst = "Masz dość Rybek na jajko: Kamień Powrotu → jajko przy zagrodzie",
+				cel = "kamien",
 			},
 			{
 				opis = "kowal: po przegranej — trening ważniejszy",
@@ -972,5 +972,5 @@ return {
 			{ x = 1500, z = -700, brama = 2034, wynik = "miasto" },
 		},
 	},
-	skrot = "74af6a5d1040",
+	skrot = "173bfe296ae0",
 }

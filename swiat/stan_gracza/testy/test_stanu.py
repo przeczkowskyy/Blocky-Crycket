@@ -1041,6 +1041,34 @@ class TestSerweraOffline(unittest.TestCase):
         self.g.ustaw("Gold", D["limity"]["waluta_maks"] - 3)
         self.assertEqual(self.pety("przychod", dobry)["zloto"], D["limity"]["waluta_maks"])
 
+    def test_8j3_sprzedaz_petow(self):
+        """26.11.2026: Pety("sprzedaj") — kopie zabrane i Rybki dopisane jednym wywołaniem; za mało kopii albo ostatnia
+        kopia peta za graczem = odmowa bez żadnej zmiany; pet bez kopii znika z profilu; złe dane = odmowa."""
+        self.uruchom()
+        self.g.ustaw("Gold", 1000)
+        kup = {"ile": 100, "zrodlo": "PetyProba", "cel": "jajko_lesne", "pet": "zoledziak", "premia": {"zloto": 0.02}}
+        for pet in ("zoledziak", "zoledziak", "zoledziak", "lisciolis"):
+            self.assertTrue(self.pety("kup", dict(kup, pet=pet))["ok"])
+        self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba"), self.atr("PetAktywny")), (600, 4, "zoledziak"))
+        sprz = {"pety": {"zoledziak": 2, "lisciolis": 1}, "ile": 111, "zrodlo": "PetyProba", "cel": "sprzedaz_petow"}
+        w = self.pety("sprzedaj", sprz)
+        self.assertEqual((w["ok"], w["zloto"], w["ile"], w["kopie"]), (True, 711, 111, {"zoledziak": 1}))
+        self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba"), self.atr("PetAktywny")), (711, 1, "zoledziak"))
+        self.assertEqual(self.k.atrybuty.get("LicznikSprzedazy"), 1)
+        # ostatnia kopia aktywnego peta, za mało kopii, pet spoza profilu — bez zmian
+        for zle, powod in (({"zoledziak": 1}, "aktywny"), ({"zoledziak": 2}, "nie_masz"), ({"lisciolis": 1}, "nie_masz")):
+            w = self.pety("sprzedaj", dict(sprz, pety=zle, ile=5))
+            self.assertEqual((w["ok"], w["powod"]), (False, powod), zle)
+        self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba")), (711, 1))
+        # złe dane
+        for zle, powod in ((dict(sprz, pety={}), "zle_pety"), (dict(sprz, pety={"zoledziak": 0}), "zle_pety"),
+                           (dict(sprz, ile=0), "zla_kwota"), (dict(sprz, zrodlo="KowalProba"), "zle_zrodlo"),
+                           (dict(sprz, cel="zly cel"), "zly_cel")):
+            self.assertEqual(self.pety("sprzedaj", zle)["powod"], powod, zle)
+        st = self.pety("stan")
+        self.assertEqual((st["kopie"], st["zloto"]), ({"zoledziak": 1}, 711))
+        self.assertEqual(self.ostrzezenia(), [])
+
     def test_8m_modyfikatory(self):
         # Sygnaly/Modyfikatory (18.11.2026): jeden wpis na źródło, złożenie w bohaterze walki i w premii do łupu
         self.uruchom()

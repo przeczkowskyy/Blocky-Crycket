@@ -183,6 +183,8 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
   wyglądać inaczej; ocenić dopiero zrzutem ze Studio.
 - Miejsce i przód sprawdzone na mapie 26.11 (wyżej), ale bez prawdziwego modelu — po wstawieniu obejrzeć zrzutem,
   czy liście Dżungli (7,5 studa szerokości) nie wchodzą w kwiaty obok i czy trzcina obok jaja Bagna nie przebija jaja.
+- **Rozstrzygnięte 26.11.2026 (Karol: „usuń stare jajka … i zastąp je nowymi, w 100%”):** stare inkubatory pakietu
+  petów znikają (pełna budowa `swiat/pety_proba/zbuduj.py`), wskazówka celu prowadzi do nowych jajek. Historia:
 - **Stary inkubator z pakietu petów obok nowego jajka (do decyzji ludzi):** spoiler i podwójna animacja poprawione
   26.11 wieczorem („bez pokazu”, wyżej). Zostaje: stary inkubator ma dalej własne E (Bagno ok. 15,5 st od punktu
   nowego jajka, Dżungla ok. 12,6 st) — ta sama cena, pula i zapis, ale dwa miejsca zakupu, quest „jajka” liczą tylko

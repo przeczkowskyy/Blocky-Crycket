@@ -1,5 +1,7 @@
 # Dźwięk gry — własne efekty, muzyka stref i muzyka kontekstów
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** strefy muzyki `start` (`DemoLesnaBaza`), `miasteczko` (`KrzyweMiasteczko`) i `bor` (`BiomLas`) usunięte z `ustawienia.json` i `KatalogDzwiekow.luau` — tych kontenerów nie ma już w miejscu. Zostają strefy bazar, las, Bagno, Dżungla (i pozycja menu).
+
 > **Status: propozycja (17.11.2026, rozszerzona 18.11.2026), prototyp — działa tylko w Roblox Studio.**
 > Stan na 18.11.2026: nowy kod muzyki (arkusz muzyki, utwory zastępcze, konteksty) jest w repozytorium i od 18.11
 > ok. 13:05 stoi w Studio (`Workspace/DzwiekGra`, skrót katalogu `8e29bdddeca1`). Próba w Play: **11/11** (niżej).
@@ -9,8 +11,8 @@
 | Gdzie | Co gra | Plik w Roblox |
 |---|---|---|
 | walka: efekty | 22 efekty jako odcinki arkusza `sfx_arkusz_a.ogg` | wgrany 17.11, identyfikator wpisany, w próbie się wczytuje |
-| bazar, plac startowy, stare miasteczko | trzy utwory miasteczka na zmianę | wgrane 17.11, wpisane, w próbie się wczytują |
-| las-pas, stary las | dwa utwory lasu na zmianę | wgrane 17.11, wpisane, w próbie się wczytują |
+| bazar (plac startowy i stare miasteczko — usunięte 26.11.2026) | trzy utwory miasteczka na zmianę | wgrane 17.11, wpisane, w próbie się wczytują |
+| las-pas (stary las — usunięty 26.11.2026) | dwa utwory lasu na zmianę | wgrane 17.11, wpisane, w próbie się wczytują |
 | Bagno | własne: `muzyka_06_bagno_petla` (osobny plik) i `muzyka_06_bagno_b_petla` (arkusz muzyki); dopóki żaden własny nie jest wczytany — zastępczo dwa utwory lasu, ciszej | osobny plik wgrany 18.11, identyfikator wpisany, ale **gra nie ma jeszcze prawa do pliku** (Studio: „Requester does not have permission for Asset”) → dziś grają zastępcze |
 | Dżungla | własne: `muzyka_07_dzungla_petla` i `muzyka_07_dzungla_b_petla` (arkusz); zastępczo utwory lasu | jak Bagno |
 | walka (kontekst) | `muzyka_13_walka_petla` z arkusza muzyki | **arkusz niewgrany** → muzyka strefy przyciszona, jak dotąd |

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Buduje w Roblox Studio kontener Workspace/StrojeProba — próba ubierania postaci (D-071): stojak „Przymierzalnia”
-z lustrem i podestem przy miejscu startu, moduły danych / logiki / ubierania i okna, skrypty serwera i klienta.
+"""Buduje w Roblox Studio kontener Workspace/StrojeProba — próba ubierania postaci (D-071): moduły danych / logiki /
+ubierania i okna, skrypty serwera i klienta oraz (tylko gdy ustawienia.json → stojak.w_grze nie jest false) stojak
+„Przymierzalnia” z lustrem i podestem. Od 26.11.2026 stojaka nie ma (stał przy starym starcie, który zniknął z miejsca;
+gracz zaczyna w bazarze) — strój dalej zmienia serwer i widać go w walce.
 
     python -B swiat/stroje_proba/zbuduj.py --sucho      # bez Studio: dane, kontrola Luau, strażniki, plan budowy
     python -B swiat/stroje_proba/zbuduj.py              # buduje / odbudowuje kontener (Studio w trybie Edit)
@@ -14,7 +16,7 @@ z lustrem i podestem przy miejscu startu, moduły danych / logiki / ubierania i 
     python -B swiat/stroje_proba/zbuduj.py --studio <studio_id>   # gdy otwartych jest kilka okien Studio
 
 Co powstaje (tylko w Workspace/StrojeProba z atrybutem Wygenerowane = true; cudzych kontenerów budowa NIE zmienia —
-SpawnLocation, TreningProba, MiasteczkoBazarGra i LasTeleport tylko czyta; wyjątek: --walka, opisany wyżej):
+SpawnLocation, TreningProba i MiasteczkoBazarGra tylko czyta; wyjątek: --walka, opisany wyżej):
   Moduly/DaneStrojow i Moduly/DaneStrojow<Stopien> (wygenerowane przez dane.py; moduł główny scala moduły stopni),
   Moduly/LogikaStrojow, Moduly/Ubieranie, Moduly/OknoStrojow
   SerwerStrojow (RunContext = Server), KlientStrojow (RunContext = Client)
@@ -453,10 +455,19 @@ def wszystkie_kody(D):
             "walka": kod_skryptu("TestWalki2", "Moduly/Aktorzy", "ModuleScript", None, "return 1", True)}
 
 
+def stojak_w_grze(D):
+    """Czy budować stojak „Przymierzalnia” (26.11.2026: nie — ustawienia.json → stojak.w_grze = false)."""
+    return D["stojak"].get("w_grze", True) is not False
+
+
 def plan(D):
-    linie = ["  %-26s → %d części + E, przodem do startu, pierścienie %s × %d kierunków, omija %d miejsc"
-             % ("Przymierzalnia (Persistent)", len(CZESCI_STOJAKA), D["stojak"]["promienie"], D["stojak"]["kierunki"],
-                len(D["stojak"]["omijaj"]))]
+    if stojak_w_grze(D):
+        linie = ["  %-26s → %d części + E, przodem do startu, pierścienie %s × %d kierunków, omija %d miejsc"
+                 % ("Przymierzalnia (Persistent)", len(CZESCI_STOJAKA), D["stojak"]["promienie"], D["stojak"]["kierunki"],
+                    len(D["stojak"]["omijaj"]))]
+    else:
+        linie = ["  %-26s → nie powstaje (stojak.w_grze = false, 26.11.2026); strój zmienia serwer, widać go w walce"
+                 % "Przymierzalnia"]
     for linia in DANE.podsumowanie(D):
         linie.append(linia)
     return linie
@@ -553,7 +564,10 @@ def main():
             print("start:", wynik)
             if a.usun or wynik != "OK":
                 return
-            print("  stojak:", wykonaj(kod_stojaka(D)))
+            if stojak_w_grze(D):
+                print("  stojak:", wykonaj(kod_stojaka(D)))
+            else:
+                print("  stojak: pominięty (stojak.w_grze = false — przymierzalni przy starym starcie już nie ma)")
             skrypty()
             print("gotowe: %s (%.0f s)" % (wykonaj(kod_konca(D)), time.time() - t0))
     except StudioError as e:

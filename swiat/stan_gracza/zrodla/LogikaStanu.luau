@@ -20,6 +20,7 @@
 		sumaLupow(D, lista), nowyProfil(D), rowne(a, b), sprawdzPrzypadki(D) → ok, n, bledy
 		czystyWydatek(D, info), czystaPremia(D, premia) → kopia albo nil, powód   (17.11.2026, swiat/pety_proba)
 		czystyPrzychod(D, info)                   → kopia albo nil, powód   (25.11.2026, Pety "przychod" — zagroda)
+		czystaSprzedaz(D, info)                   → kopia albo nil, powód   (26.11.2026, Pety "sprzedaj" — sprzedaż petów)
 		wydaj(D, zloto, ile)                      → Złoto po, brakuje (nigdy poniżej zera)
 		premiaLupu(D, lup, premia)                → { zloto, doswiadczenie } — dodatek od aktywnego peta
 	lupZwyklego(D, poziom)                    → Złoto za wygraną ze zwykłym potworem na tym poziomie (17.11.2026)
@@ -379,6 +380,44 @@ function L.czystyWydatek(D, info)
 		return nil, "zly_cel"
 	end
 	return { ile = ile, zrodlo = info.zrodlo, cel = info.cel }, "ok"
+end
+
+function L.czystaSprzedaz(D, info)
+	if type(info) ~= "table" then
+		return nil, "zla_sprzedaz"
+	end
+	local pety = info.pety
+	if type(pety) ~= "table" or #pety > 0 then
+		return nil, "zle_pety"
+	end
+	local n, kopia = 0, {}
+	for k, v in pety do
+		n += 1
+		if not L.nazwaOk(D, k) or not calkowita(v, D.pety.kopii_maks) or v < 1 then
+			return nil, "zle_pety"
+		end
+		kopia[k] = v
+	end
+	if n < 1 or n > D.pety.rodzajow_maks then
+		return nil, "zle_pety"
+	end
+	local ile = info.ile
+	if not calkowita(ile, D.przychody.kwota_maks) or ile < 1 then
+		return nil, "zla_kwota"
+	end
+	local znane = false
+	for _, z in D.przychody.zrodla do
+		if info.zrodlo == z then
+			znane = true
+		end
+	end
+	if type(info.zrodlo) ~= "string" or not znane then
+		return nil, "zle_zrodlo"
+	end
+	if not L.nazwaOk(D, info.cel) then
+		return nil, "zly_cel"
+	end
+	return { pety = kopia, ile = ile, zrodlo = info.zrodlo, cel = info.cel }, "ok"
 end
 
 function L.czystyPrzychod(D, info)
@@ -1060,6 +1099,10 @@ function L.sprawdzPrzypadki(D)
 	for i, c in P.przychod do
 		local w, powod = L.czystyPrzychod(D, c.info)
 		sprawdz("przychod", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.sprzedaz or {} do
+		local w, powod = L.czystaSprzedaz(D, c.info)
+		sprawdz("sprzedaz", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
 	end
 	for i, c in P.wydaj do
 		local z, brak = L.wydaj(D, c.zloto, c.ile)

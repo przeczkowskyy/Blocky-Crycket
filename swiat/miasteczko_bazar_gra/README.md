@@ -1,5 +1,7 @@
 # Miasteczko-bazar w grze — podpowiedzi E, uchwyt okien 2D, portal krain, przejścia
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** gracz zaczyna od razu na starcie bazaru (wspólny `Workspace/SpawnLocation` przeniesiony na znacznik `start`), więc tymczasowe przejścia **„Stare miasteczko (E)” i „Nowe miasteczko (E)” zniknęły** — pakiet ma **11 miejsc z E** zamiast 13, nie czyta już `swiat/krzywe_miasteczko/uklad.json`, nie stawia punktu w starym miasteczku (`zbuduj.py` bez kroku „stare miasteczko”), a logika nie ma akcji `przenies` ani kandydatów (uchwyt `Sygnaly/PrzeniesDoBazaru` zostaje). Opisy przejść niżej są historią. Próby: `B09` sprawdza teraz start gry w bazarze, `proba_dodatkowa.py D03` — brak starych przejść. Usuwanie z miejsca: `python -B tools/studio/sprzatanie_mapy.py` (najpierw `--sucho`); start gry na starcie bazaru: `python -B tools/studio/start_w_miasteczku.py`.
+
 *Status: **propozycja** (17.11.2026). **Wdrożone w Studio i sprawdzone w trybie Play w nocy 16/17.11.2026** — wyniki
 w „Co sprawdzone w grze” niżej, zrzuty w `klatki/`.
 Wymagania: D-084 (do sklepu się wchodzi, E na sprzedawcy otwiera okno 2D Pawła), D-085 (portal krain, przejście na
@@ -33,7 +35,7 @@ próbie w grze (kolizje dla kamery, nowe postacie) opisuje jej README.*
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
 | `testy/test_bazaru.py` | 38 testów offline (opis w nagłówku pliku) |
 | `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną B01–B15 i 8 zrzutami (uruchomiona 17.11.2026, wyniki niżej) |
-| `testy/proba_dodatkowa.py` | uzupełnienie próby: kamera za plecami i odwrócona na 6 stoiskach (D01), dymki 13 miejsc (D02), stare ↔ nowe prawdziwym E (D03), Kamień Powrotu z bazarem i bez (D04), koszt u klienta (D05), zrzuty z gry do README (Z) |
+| `testy/proba_dodatkowa.py` | uzupełnienie próby: kamera za plecami i odwrócona na 6 stoiskach (D01), dymki 11 miejsc (D02), brak starych przejść (D03; do 26.11.2026: stare ↔ nowe prawdziwym E), Kamień Powrotu z bazarem i bez — w obu przypadkach start bazaru (D04), koszt u klienta (D05), zrzuty z gry do README (Z) |
 | `wyniki/` | zapisy prób w Studio (bez nazwy konta — `<gracz>`) |
 | `klatki/` | zrzuty z gry (tryb Play) — tabela niżej |
 
