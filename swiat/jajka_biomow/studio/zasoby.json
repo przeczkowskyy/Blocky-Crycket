@@ -1,0 +1,22 @@
+{
+  "bagno": {
+    "etap": "zasob",
+    "plik": "modele/jajko_bagno.glb",
+    "sha256": "400fa47052283c6c41df57ada8e41246db16f3e1589586658f0ae8337cf5ddfe",
+    "czas": "2026-11-26T16:46:56",
+    "operacja": "260c0b9f-5308-422e-8252-149fa05bb9c4",
+    "asset": "93451448952125",
+    "moderacja": "Approved",
+    "use": true
+  },
+  "dzungla": {
+    "etap": "zasob",
+    "plik": "modele/jajko_dzungla.glb",
+    "sha256": "4cff6e61108db918392f3655179e28e6be0957a04b826a171deefc1c07b6a1d0",
+    "czas": "2026-11-26T16:47:10",
+    "operacja": "1d3563cd-f0e3-4282-993c-59be0f91e5c4",
+    "asset": "74304827925305",
+    "moderacja": "Approved",
+    "use": true
+  }
+}

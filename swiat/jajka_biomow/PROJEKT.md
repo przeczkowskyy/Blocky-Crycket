@@ -76,6 +76,23 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
 - **Umowa ze scenką:** na czas scenki atrybut modelu `Wyklucie = true` (spoczynek nie rusza wtedy Egg), w chwili BOOM
   `Final += 1` (ozdoby grają finał), opcjonalnie `KolorRzadkosci` (Color3) — błysk kryształów w kolorze trafionego peta.
 
+## Modele w grze (26.11.2026, popołudnie)
+
+- **Modele wgrane i wstawione.** Karol w oknie pytania: „Tak, przez folder modeli” → `wdroz.py wgraj --poczekalnia
+  <folder wyników postaci>` (kopia pliku tylko na czas wysyłki, potem usunięta). Zasoby Model: **Jajko Bagna
+  93451448952125**, **Jajko Dżungli 74304827925305** (moderacja Approved, prawo „Use” dla gry), stan w
+  `studio/zasoby.json`, wpisy `JajkoBagnaModel` / `JajkoDzungliModel` w `assets/manifest.json`. `wdroz.py wstaw`:
+  Bagno 15 części, 6,4 × 4,8 × 6,6 studa; Dżungla 11 części, 8,3 × 4,8 × 6,7 studa; punkty E „Punkt Jajko Bagna”
+  i „Punkt Jajko Dżungli”.
+- **Próba w Play na prawdziwych modelach** (`testy/proba_play.py`): 30 OK, 0 błędów, 3 „?” (zrzuty do oceny) — karta
+  szans i cena każdego jajka (300 / 750 / 1350), odmowa bez Rybek, zakup prawdziwym E, 5 kliknięć, rozpad, słup, pet
+  z właściwej puli, kolor żył z atrybutu, reakcja ozdób w finale, konsola czysta. Zrzuty `podglad/scenka_*.jpg` są
+  z tej próby (prawdziwe modele).
+- **Do poprawy (pakiet petów, zadanie w sejfie):** komunikat „Wykluł się: …” na dole ekranu pojawia się zaraz po E
+  i zdradza peta przed otwarciem jaja (także przy leśnym); stary inkubator biomu stoi obok z własnym E i przy zakupie
+  gra swoją animację. Nie sprawdzono: widoku u drugiego gracza, dotyku i myszy, prawdziwego telefonu.
+- Sekcje niżej opisują stan sprzed wgrania (noc 25/26.11) i kroki etapu — zostają jako historia.
+
 ## Stan w Studio (noc 25/26.11.2026)
 
 - **Maski blasku wgrane** (Studio MCP `upload_image`, konto osoby w Studio; gra ma prawo „Use”): JajkoBagnaBlask
