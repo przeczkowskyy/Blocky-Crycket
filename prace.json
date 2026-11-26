@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T12:32:28+01:00",
+ "aktualizacja": "2026-11-26T12:32:32+01:00",
  "prace": [
   {
    "id": "helmy-chwyty",
@@ -28,6 +28,19 @@
    "aktualizacja": "2026-11-26T12:06:28+01:00",
    "obszary": [
     "swiat/pety_proba/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-pula_wojownika_chwyty",
+   "tytul": "Przebudowa modelu pula_wojownika_chwyty",
+   "stan": "w_toku",
+   "start": "2026-11-26T12:32:32+01:00",
+   "koniec_szacowany": "2026-11-26T12:52:32+01:00",
+   "aktualizacja": "2026-11-26T12:32:32+01:00",
+   "obszary": [
+    "model:pula_wojownika_chwyty"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
