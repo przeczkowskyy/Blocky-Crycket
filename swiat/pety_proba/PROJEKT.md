@@ -333,6 +333,14 @@ pokazywało trzy pety zamiast dziesięciu (okno Pawła — do sprawdzenia przy o
    kopię peta; pierwszy pet od razu idzie za graczem. Atrybuty gracza `PetAktywny` i `PetyLiczba` widzą klienci.
 4. Serwer petów wysyła klientowi „wyklucie”; animację gra **klient** (nic w niej nie decyduje). Reset postaci w trakcie
    niczego nie zabiera — pet jest już w profilu.
+5. **Zakup „bez pokazu” (26.11.2026, jajka w świecie ze scenką Pawła — `src/server/JajkoKorowe.server.luau`):**
+   haczyk `SterowanieSerwera("kup", gracz, jajko, { bezPokazu = true })` (trzeci argument: liczba r jak dotąd albo
+   tabela `{ r?, bezPokazu? }`). Zakup, cena, zapis peta, PetAktywny, liczniki i ceny — bez zmian; „wyklucie” do
+   klienta ma pole `bezPokazu`. Klient wtedy nie gra animacji inkubatora, chowa swojego peta przy graczu (jak w czasie
+   animacji) i trzyma napis „Wykluł się: … — premia” do lokalnego sygnału `Sygnaly/PokazWyklucia` (BindableEvent,
+   tworzy go klient): „odsloniety” → napis (scenka woła go razem z „NEW PET!”), „koniec”, Vector3 jaja → pet rusza za
+   graczem od jaja. Bez sygnału po 45 s napis i pet same. Zakup z inkubatora prawdziwym E — jak dotąd (animacja
+   i napis). Próba: `swiat/jajka_biomow/testy/proba_play.py` (punkty xA, xB).
 
 **Stan petów żyje w profilu StanGracza** (`pety = { kopie, aktywny, premia }`, `wydatki`, wersja profilu 2), nie
 w serwerze petów. Uzasadnienie: StanGracza jest jedynym właścicielem stanu gracza; Złoto i pety muszą się zapisać

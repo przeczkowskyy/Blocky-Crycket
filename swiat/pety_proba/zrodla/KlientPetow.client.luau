@@ -25,6 +25,8 @@
 	Haczyk testowy: Sygnaly/SterowanieKlienta ("stan" | "okno" | "zamknij" | "wybierz", id | "do_zagrody", id
 	| "z_zagrody", id | "ulepsz" | "najrzadsze" (jak przyciski okna, 25.11.2026) | "wyklucie", pet, nowy,
 	jajko? | "pokaz", pet, Vector3 | "pokaz_usun").
+	Sygnał lokalny (tworzy go ten skrypt): Sygnaly/PokazWyklucia (BindableEvent) — "odsloniety" | "koniec", Vector3? —
+	woła go scenka jajka w świecie przy zakupie „bez pokazu” (niżej, przy wyklucie).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return
@@ -504,6 +506,15 @@ local function napisNadPetem(adornee: BasePart, info, kol: Color3, r)
 	return b
 end
 
+-- napis „Wykluł się: …” z premią peta (po animacji inkubatora albo, przy zakupie ze scenki, po odsłonięciu peta)
+local function napisWyklucia(info)
+	local r = rzadkoscPeta(info.pet)
+	local kol = if r then kolor(r.kolor) else Color3.new(1, 1, 1)
+	local p = L.pet(D, info.pet)
+	komunikat(string.format("%s: %s (%s) — %s", if info.nowy then "Wykluł się" else "Kopia peta",
+		p and p.nazwa or info.pet, r and r.nazwa or "", p and L.opisSkilla(D, p) or ""), kol, 4)
+end
+
 local function sekwencjaWyklucia(info)
 	-- jajko z serwera (info.jajko); haczyk testowy bez jajka → jajko, z którego jest pet
 	local j = L.jajko(D, info.jajko) or L.jajkoPeta(D, info.pet) or D.jajka[1]
@@ -580,9 +591,7 @@ local function sekwencjaWyklucia(info)
 	-- 4. radość i napis
 	Rig.graj(pu, "radosc", Rig.dlugosc(dp, "radosc") / W.radosc_s, "spoczynek")
 	local napis = napisNadPetem(pu.korzen, info, kol, r)
-	local p = L.pet(D, info.pet)
-	komunikat(string.format("%s: %s (%s) — %s", if info.nowy then "Wykluł się" else "Kopia peta",
-		p and p.nazwa or info.pet, r and r.nazwa or "", p and L.opisSkilla(D, p) or ""), kol, 4)
+	napisWyklucia(info)
 	task.wait(W.radosc_s + 0.8)
 	-- 5. pet dołącza (aktywny idzie za graczem stąd) albo wraca do zagrody
 	poWykluciu = CFrame.new(cel)
@@ -597,11 +606,54 @@ local function sekwencjaWyklucia(info)
 	pm:Destroy()
 end
 
+-- Zakup ze scenki jajka w świecie (info.bezPokazu, 26.11.2026; scenka: src/client/JajkoKoroweClient.client.luau):
+-- bez animacji inkubatora, własny pet gracza schowany jak w czasie animacji, napis „Wykluł się…” czeka na odsłonięcie
+-- peta w scence. Scenka woła lokalny sygnał Sygnaly/PokazWyklucia: "odsloniety" (napis) i "koniec", Vector3 jaja
+-- (pet rusza za graczem od jaja). Bez sygnału po BEZ_POKAZU_MAX_S — napis i pet same (scenka się nie udała).
+local BEZ_POKAZU_MAX_S = 45
+local czekajacy: any = nil -- { info, napis } zakupu bez pokazu
+
+local function koniecBezPokazu(c: any, skad: any)
+	if czekajacy ~= c then
+		return
+	end
+	czekajacy = nil
+	if not c.napis then
+		napisWyklucia(c.info)
+	end
+	poWykluciu = if typeof(skad) == "Vector3" then CFrame.new(skad) else nil
+	wylegaSie = false
+end
+
+local pokazWyklucia = Instance.new("BindableEvent") -- tylko u tego klienta
+pokazWyklucia.Name = "PokazWyklucia"
+pokazWyklucia.Parent = kontener:WaitForChild("Sygnaly")
+pokazWyklucia.Event:Connect(function(co: any, skad: any)
+	local c = czekajacy
+	if not c then
+		return
+	end
+	if co == "odsloniety" and not c.napis then
+		c.napis = true
+		napisWyklucia(c.info)
+	elseif co == "koniec" then
+		koniecBezPokazu(c, skad)
+	end
+end)
+
 local function wyklucie(info: any)
 	if type(info) ~= "table" or type(info.pet) ~= "string" or wylegaSie then
 		return
 	end
 	wylegaSie = true
+	if info.bezPokazu == true then
+		local c = { info = info, napis = false }
+		czekajacy = c
+		task.delay(BEZ_POKAZU_MAX_S, function()
+			koniecBezPokazu(c, nil)
+		end)
+		return
+	end
 	task.spawn(function()
 		local ok, blad = pcall(sekwencjaWyklucia, info)
 		if not ok then

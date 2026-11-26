@@ -26,6 +26,8 @@ LISTA (OK / BŁĄD / ?):
   x7 pet: napis nad petem = nazwa z wyklucia, model peta ze słupa, pet z puli TEGO jajka, cena zakupu = cena jajka
   x8 koniec: Wyklucie zdjęte, kino zamknięte, kamera Custom, ruch przywrócony, jajo z powrotem całe
   x9 (Bagno, Dżungla) ozdoby grają finał (odchylenie liści / trzcin, błysk kryształów, bąble)
+  xA zakup „bez pokazu”: stary inkubator nie gra animacji, napis „Wykluł się…” dopiero po wyłonieniu peta
+  xB po scence aktywny pet idzie za graczem (model „Pet <PetAktywny>” bliżej niż 12 st)
   xZ zrzuty: jajo świeci / pęka, rozpad ze słupem, pet (ocena człowieka: „?”)
   K01 konsola bez błędów skryptów jajek (JajkoKorowe*, JajkaBiomow*)
 """
@@ -321,6 +323,17 @@ table.insert(pol, RunService.RenderStepped:Connect(function()
 			o.tRdzen, o.rdzenKolor = t, hex(rdzen.Color)
 		end
 	end
+	local pk = pg and pg:FindFirstChild("PetyProba")
+	local kom = pk and pk:FindFirstChild("Komunikat")
+	if kom and kom:IsA("TextLabel") and kom.Visible and not o.tNapisPetow
+		and (string.find(kom.Text, "Wykluł się", 1, true) or string.find(kom.Text, "Kopia peta", 1, true)) then
+		o.tNapisPetow, o.napisPetow = t, kom.Text
+	end
+	local kp = workspace:FindFirstChild("PetyProba")
+	local lok = kp and kp:FindFirstChild("PetyLokalne")
+	if lok and (lok:FindFirstChild("Jajko wyklucie") or lok:FindFirstChild("Pet wyklucie")) and not o.tAnimInkubatora then
+		o.tAnimInkubatora = t
+	end
 	if not o.tPet and workspace:FindFirstChild("PetZJajka") then
 		o.tPet = t
 	end
@@ -367,6 +380,15 @@ task.spawn(function()
 	f:SetAttribute("wynik", H:JSONEncode(o))
 end)
 return H:JSONEncode({ nr = nr })''',
+    "towarzysz": H + r'''
+local lp = game:GetService("Players").LocalPlayer
+local a = lp:GetAttribute("PetAktywny")
+local kp = workspace:FindFirstChild("PetyProba")
+local lok = kp and kp:FindFirstChild("PetyLokalne")
+local m = if a and lok then lok:FindFirstChild("Pet " .. a) else nil
+local hrp = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
+local odl = if m and hrp then (m:GetPivot().Position - hrp.Position).Magnitude else false
+return H:JSONEncode({ aktywny = a or false, model = m ~= nil, odl = odl })''',
     "rejestr_czytaj": ('local f = game:GetService("ReplicatedStorage"):FindFirstChild("ProbaScenkiJajek") '
                        'return f and f:GetAttribute("wynik") or "{}"'),
     "rejestr_stop": ('local f = game:GetService("ReplicatedStorage"):FindFirstChild("ProbaScenkiJajek") '
@@ -691,6 +713,20 @@ def main():
                 punkt(T + "8", ok8, "Wyklucie %s → %s (scenka %.1f s), kino do %s s, kamera %s, ruch w kinie %s → %s, jajo %s" % (
                     r.get("tWyklucie"), r.get("wyklucieAtrPo"), (r.get("tKoniecWyklucia") or 0) - tw, r.get("tKinoKoniec"),
                     r.get("kameraPo"), r.get("predkoscWKinie"), r.get("predkoscPo"), r.get("jajoPo")))
+                # ------------------------------------------------ xA bez spoilera (zakup „bez pokazu”)
+                tn, tp = r.get("tNapisPetow"), r.get("tPet")
+                okA = (r.get("tAnimInkubatora") is None and tn is not None and tp is not None and tn >= tp
+                       and (w or {}).get("nazwa", "?") in (r.get("napisPetow") or ""))
+                anim = "BYŁA od %s s" % r["tAnimInkubatora"] if r.get("tAnimInkubatora") is not None else "brak"
+                punkt(T + "A", okA, "animacja starego inkubatora: %s; napis pakietu petów od %s s (BOOM %s s, pet "
+                      "wyłania się od %s s): %r" % (anim, tn, r.get("tRozpad"), tp, r.get("napisPetow")))
+                # ------------------------------------------------ xB pet za graczem po scence
+                tw_ = czekaj_na(lambda: (lambda a: a if a.get("model") and a.get("odl") and a["odl"] < 12 else None)(
+                    js(KOD["towarzysz"], "Client")), 8, 0.5) or js(KOD["towarzysz"], "Client")
+                zapisz(T + "B", tw_)
+                punkt(T + "B", bool(tw_.get("model")) and bool(tw_.get("odl")) and tw_["odl"] < 12,
+                      "po scence: aktywny pet %s, model za graczem %s, odległość %s st" % (
+                          tw_.get("aktywny"), tw_.get("model"), round(tw_["odl"], 1) if tw_.get("odl") else None))
                 # ------------------------------------------------ x9 ozdoby
                 if J["ozdoby"]:
                     oz = r.get("ozdoby") or {}

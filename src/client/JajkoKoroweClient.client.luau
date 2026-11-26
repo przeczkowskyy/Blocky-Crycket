@@ -766,6 +766,18 @@ local function zachecaj(k: Kino)
 	end)
 end
 
+-- zakup idzie „bez pokazu” (src/server/JajkoKorowe.server.luau): pakiet petów Karola nie gra animacji inkubatora,
+-- a napis „Wykluł się…” i swojego peta za graczem trzyma do sygnału ze scenki (lokalny PetyProba/Sygnaly/PokazWyklucia:
+-- "odsloniety" — pet wyłonił się ze słupa; "koniec", Vector3 jaja — pet rusza za graczem od jaja)
+local function sygnalPetow(co: string, skad: Vector3?)
+	local k = workspace:FindFirstChild("PetyProba")
+	local s = k and k:FindFirstChild("Sygnaly")
+	local e = s and s:FindFirstChild("PokazWyklucia")
+	if e and e:IsA("BindableEvent") then
+		e:Fire(co, skad)
+	end
+end
+
 -- finał jak w artefakcie: całe jajo -> kawałki; prawa górna część odlatuje, po chwili lewa; rdzeń, słup, iskry
 local function finalWyklucia(j: Jajko, wynik: any, kolor: Color3, kino: Kino?)
 	j.trzesienie, j.blask = 0.05, 1.65
@@ -802,6 +814,7 @@ local function finalWyklucia(j: Jajko, wynik: any, kolor: Color3, kino: Kino?)
 	task.wait(WZLOT_S * 0.75)
 	if kino then
 		dymek(kino.gui, if wynik.nowy then "NEW PET!" else "AGAIN!", 0.79, 0.3, if wynik.nowy then "F08A1D" else "2F9BE8", 0.3, true)
+		sygnalPetow("odsloniety") -- napis pakietu petów „Wykluł się: … — premia” dopiero teraz, razem z „NEW PET!”
 	end
 	task.wait(3.1)
 	-- wygaszenie słupa
@@ -834,6 +847,9 @@ local function wyklucie(j: Jajko, wynik: any, zKinem: boolean?)
 		finalWyklucia(j, wynik, kolor, nil)
 		spoczynek(j)
 		j.model:SetAttribute("Wyklucie", nil)
+		if zKinem then
+			sygnalPetow("koniec", j.korzen.Position) -- kupujący bez kina (nie udało się go włączyć)
+		end
 		j.zajete = false
 		return
 	end
@@ -875,6 +891,7 @@ local function wyklucie(j: Jajko, wynik: any, zKinem: boolean?)
 	spoczynek(j)
 	j.model:SetAttribute("Wyklucie", nil)
 	pcall(kinoKoniec, k)
+	sygnalPetow("koniec", j.korzen.Position)
 	pcall(function()
 		Z:FireServer("koniec")
 	end)
@@ -960,6 +977,7 @@ Z.OnClientEvent:Connect(function(rodzaj, a, b)
 			pcall(function()
 				Z:FireServer("koniec") -- bez modelu tego jajka u nas nie ma scenki: od razu zdejmij blokadę
 			end)
+			sygnalPetow("koniec") -- i napis „Wykluł się…” od razu
 		end
 		if a == player.UserId then
 			task.delay(4, function() -- cena następnego jajka

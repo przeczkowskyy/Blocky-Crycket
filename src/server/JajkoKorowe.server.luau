@@ -219,7 +219,8 @@ kup = function(gracz: Player, n: number, st: Stanowisko): any
 	local tekst: string? = nil
 	for _ = 1, ile do
 		local ok, w = pcall(function()
-			return haczyk:Invoke("kup", gracz, st.id)
+			-- „bez pokazu”: inkubator Karola nie gra swojej animacji, napis „Wykluł się…” czeka na odsłonięcie w scence
+			return haczyk:Invoke("kup", gracz, st.id, { bezPokazu = true })
 		end)
 		if not ok or type(w) ~= "table" or not w.ok then
 			tekst = if ok and type(w) == "table" and type(w.tekst) == "string" then w.tekst else "Nie udało się kupić"

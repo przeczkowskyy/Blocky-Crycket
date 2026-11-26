@@ -88,9 +88,19 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
   szans i cena każdego jajka (300 / 750 / 1350), odmowa bez Rybek, zakup prawdziwym E, 5 kliknięć, rozpad, słup, pet
   z właściwej puli, kolor żył z atrybutu, reakcja ozdób w finale, konsola czysta. Zrzuty `podglad/scenka_*.jpg` są
   z tej próby (prawdziwe modele).
-- **Do poprawy (pakiet petów, zadanie w sejfie):** komunikat „Wykluł się: …” na dole ekranu pojawia się zaraz po E
-  i zdradza peta przed otwarciem jaja (także przy leśnym); stary inkubator biomu stoi obok z własnym E i przy zakupie
-  gra swoją animację. Nie sprawdzono: widoku u drugiego gracza, dotyku i myszy, prawdziwego telefonu.
+- **Poprawione 26.11 (wieczór): zakup ze scenki idzie „bez pokazu”.** Wcześniej komunikat „Wykluł się: …” pojawiał
+  się zaraz po E i zdradzał peta przed otwarciem jaja (także przy leśnym), a stary inkubator biomu grał swoją
+  animację. Teraz `JajkoKorowe.server.luau` woła haczyk `SterowanieSerwera("kup", gracz, id, { bezPokazu = true })`;
+  serwer petów dopisuje `bezPokazu` do swojego „wyklucie”, a klient petów nie gra animacji inkubatora, chowa
+  własnego peta gracza (jak w czasie animacji) i trzyma napis. Scenka (`JajkoKoroweClient`) woła lokalny sygnał
+  `PetyProba/Sygnaly/PokazWyklucia`: „odsloniety” razem z dymkiem „NEW PET!” (ok. 0,7 s po wyłonieniu peta ze słupa) →
+  napis „Wykluł się: … — premia”; „koniec” po zamknięciu kina → pet rusza za graczem od jaja. Bez sygnału napis
+  i pet same po 45 s. Zakup ze starego inkubatora prawdziwym E — bez zmian (animacja i napis jak dotąd).
+  Próba `testy/proba_play.py` na prawdziwych modelach: **36 OK / 0 BŁĄD / 3 ?** (nowe punkty: brak animacji inkubatora,
+  napis dopiero po wyłonieniu peta, pet za graczem po scence ok. 4,8 st); zrzuty `podglad/scenka_*.jpg` nadpisane —
+  w kadrze „CLICK!” już bez napisu. Stary inkubator dalej stoi z własnym E (decyzja ludzi; wskazówka celu „kup jajko”
+  w Bagnie i Dżungli prowadzi do niego, nie do nowego jajka). Nie sprawdzono: widoku u drugiego gracza, dotyku
+  i myszy, prawdziwego telefonu.
 - Sekcje niżej opisują stan sprzed wgrania (noc 25/26.11) i kroki etapu — zostają jako historia.
 
 ## Stan w Studio (noc 25/26.11.2026)
@@ -173,14 +183,11 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
   wyglądać inaczej; ocenić dopiero zrzutem ze Studio.
 - Miejsce i przód sprawdzone na mapie 26.11 (wyżej), ale bez prawdziwego modelu — po wstawieniu obejrzeć zrzutem,
   czy liście Dżungli (7,5 studa szerokości) nie wchodzą w kwiaty obok i czy trzcina obok jaja Bagna nie przebija jaja.
-- **Stary inkubator z pakietu petów obok nowego jajka (do decyzji Karola, zmiana w `swiat/pety_proba`):** haczyk
-  `kup` serwera petów wysyła też własne „wyklucie” do klienta petów, więc przy każdym zakupie z nowego jajka (tak samo
-  jak dziś z leśnego) stary inkubator tego jajka gra swoją animację, a na dole ekranu od razu wyskakuje „Wykluł się:
-  <pet> (rzadkość)…” — **zdradza peta, zanim gracz kliknie 5 razy** (widać na `scenka_*_1_pekanie.jpg`). Stary
-  inkubator ma też dalej własne E (Bagno ok. 15,5 st od punktu nowego jajka, Dżungla ok. 12,6 st): ta sama cena, pula
-  i zapis, więc gra się nie psuje, ale są dwa miejsca zakupu, a quest „jajka” liczą tylko nowe stanowiska.
-  Propozycja: w haczyku `kup` flaga „bez pokazu” (bez animacji inkubatora i bez komunikatu), a E i jajko inkubatora
-  biomu chowane, gdy w `JajkaBiomowPodglad` stoi model z tym `JajkoId`.
+- **Stary inkubator z pakietu petów obok nowego jajka (do decyzji ludzi):** spoiler i podwójna animacja poprawione
+  26.11 wieczorem („bez pokazu”, wyżej). Zostaje: stary inkubator ma dalej własne E (Bagno ok. 15,5 st od punktu
+  nowego jajka, Dżungla ok. 12,6 st) — ta sama cena, pula i zapis, ale dwa miejsca zakupu, quest „jajka” liczą tylko
+  nowe stanowiska, a wskazówka celu prowadzi do starego inkubatora. Do decyzji: chować E i jajko inkubatora biomu,
+  gdy w `JajkaBiomowPodglad` stoi model z tym `JajkoId` (zależą od niego próby petów, wskazówki i miejsce z D-076).
 - Napis z nazwą i rzadkością peta nad słupem: tabliczka istnieje (próba czyta „Żołędziak / POSPOLITY”), ale na
   zrzutach jej nie widać — przy leśnym jaju nad jajem wisi tabliczka NPC Jagody; niesprawdzone wzrokowo.
 - Przy leśnym jaju w kadrze scenki stoi Jagoda (NPC zagrody, ok. 3 st za jajem) — scenka chowa tylko gracza, jego
