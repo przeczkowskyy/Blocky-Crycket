@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-26T20:40:27+01:00",
+ "aktualizacja": "2026-11-26T20:44:43+01:00",
  "prace": [
   {
    "id": "koty-rasy-dopracowanie",
@@ -24,9 +24,10 @@
    "id": "ui-index-awans",
    "tytul": "UI: okno Index, awans z konfetti, ikony przedmiotów",
    "stan": "w_toku",
+   "etap": "kod i grafiki gotowe; czeka na zgodę na wgranie i tryb edycji Studio",
    "start": "2026-11-26T20:36:15+01:00",
-   "koniec_szacowany": "2026-11-26T23:06:15+01:00",
-   "aktualizacja": "2026-11-26T20:36:15+01:00",
+   "koniec_szacowany": "2026-11-26T22:14:43+01:00",
+   "aktualizacja": "2026-11-26T20:44:43+01:00",
    "obszary": [
     "src/gui/OknoIndeksu.model.json",
     "src/client/OknoIndeksuClient.client.luau",
