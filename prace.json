@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-26T20:34:26+01:00",
+ "aktualizacja": "2026-11-26T20:36:15+01:00",
  "prace": [
   {
    "id": "koty-rasy-dopracowanie",
@@ -16,6 +16,24 @@
     "swiat/postacie/kot_demon.py",
     "studio:KotRasyPodglad",
     "studio:KotDemonPodglad"
+   ],
+   "kto": "Claude (przeczkowskyy)",
+   "komputer": "0c03c4ec"
+  },
+  {
+   "id": "ui-index-awans",
+   "tytul": "UI: okno Index, awans z konfetti, ikony przedmiotów",
+   "stan": "w_toku",
+   "start": "2026-11-26T20:36:15+01:00",
+   "koniec_szacowany": "2026-11-26T23:06:15+01:00",
+   "aktualizacja": "2026-11-26T20:36:15+01:00",
+   "obszary": [
+    "src/gui/OknoIndeksu.model.json",
+    "src/client/OknoIndeksuClient.client.luau",
+    "src/client/AwansClient.client.luau",
+    "src/server/Indeks.server.luau",
+    "src/shared/IkonyPrzedmiotow.luau",
+    "src/shared/IndeksPrzedmioty.luau"
    ],
    "kto": "Claude (przeczkowskyy)",
    "komputer": "0c03c4ec"
