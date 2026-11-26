@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-26T19:20:57+01:00",
+ "aktualizacja": "2026-11-26T19:24:34+01:00",
  "prace": [
   {
    "id": "hud-przyciski-podluzne",
@@ -16,19 +16,6 @@
     "src/gui/HUD.model.json",
     "src/client/HUDClient.client.luau",
     "tools/hud_pety_build_gui.py"
-   ],
-   "kto": "Claude (przeczkowskyy)",
-   "komputer": "0c03c4ec"
-  },
-  {
-   "id": "kot-demon-wg-rzutow",
-   "tytul": "Kot-Demon (stroj podstawowy) wg rzutow Pawla - proba poza Studio",
-   "stan": "w_toku",
-   "start": "2026-11-26T19:20:57+01:00",
-   "koniec_szacowany": "2026-11-26T20:20:57+01:00",
-   "aktualizacja": "2026-11-26T19:20:57+01:00",
-   "obszary": [
-    "model:kot_demon"
    ],
    "kto": "Claude (przeczkowskyy)",
    "komputer": "0c03c4ec"
