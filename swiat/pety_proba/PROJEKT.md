@@ -286,6 +286,33 @@ Zagroda to dodatek (typowo 3–14% Rybek z walk, najwyżej ok. 26%), pętla „R
 (8 miejsc, jeden pet na gatunek, ulepszenie 2 → 4 zwraca się w lesie po ok. 18 h gry, w Dżungli po 1,5 h).
 Uwaga: zagroda nalicza także stojącemu bez ruchu graczowi (AFK) — do decyzji razem z D-050.
 
+## Pety chodzą luzem po zagrodzie (26.11.2026, propozycja)
+
+Paweł w opinii do raportu z nocy (26.11, przekazał Karol): „z petami nawet okej, ale fajnie by było, jakby chodziły luzem
+po tej zagrodzie, a nie były przyklejone do stanowisk”. Karol: „Wykonaj te zadania”.
+
+- **Co widzi gracz:** pety stojące w zagrodzie spacerują po wybiegu, przystają na 2–6 s, omijają się, a co piąty raz wracają
+  postać na swoim legowisku (5–9 s). Latające (Świetlikówka) unoszą się jak przy graczu. Imię idzie z petem.
+- **Tylko obraz u gracza** (`KlientPetow.client.luau`, tabela `Wybieg`): o tym, kto stoi w zagrodzie i ile daje Rybek,
+  dalej decyduje serwer. Serwer, zapis i liczby D-153 bez zmian. Każdy gracz widzi w zagrodzie swoje pety, jak dotąd.
+- **Wybieg** to prostokąt policzony z legowisk na mapie i marginesów (`dane_petow.py` → `D.polozenia.wybieg`): 20 × 11,8
+  studa; margines 2 do bocznych płotów, 0,4 do koryta, 1 do misek przy bramce. Mapy nie trzeba było zmieniać.
+- **Ustawienia:** `ustawienia.json` → `zagroda.wybieg` (prędkość 1,8–3 st/s, tempo klipu chodu 0,6, postoje, odstęp nowego
+  celu 3,4 st, mijanie 2,6 st). `wlaczony: false` przywraca stanie na legowiskach.
+- **Legowiska zostają** jako miejsca odpoczynku i znak, ile miejsc ma zagroda (2 → 4 → 6 → 8).
+
+**Sprawdzone w Play 26.11** (`testy/proba_play.py --zagroda`, cztery przebiegi, 14 punktów OK, 0 niezaliczeń):
+- Z10 — dwa pety przez 14 s: oba w wybiegu, model dokładnie tam, gdzie liczy go spacer, najdłuższa droga 8,5–11 st.
+- Z11 — pełna zagroda, osiem petów przez 36 s: ruszyło 8 z 8, poza wybiegiem 0 próbek, środki nie bliżej niż 2,6 st,
+  naraz idzie średnio 2–3 pety (najwyżej 6). Zrzuty `klatki/z11_pelna_zagroda_1…3.jpg`.
+
+**Czego nie sprawdzono:** czas klatki na telefonie, dwóch graczy naraz (każdy widzi w zagrodzie tylko swoje pety — tak
+było i przed zmianą), ocena człowieka, czy ruch jest ładny.
+
+**Znane słabości:** pet idzie po prostej i zatrzymuje się przed innym petem (nie obchodzi go łukiem); po odświeżeniu listy
+(np. po zmianie wyboru) pet zostaje na miejscu, ale zaczyna od postoju; okno PETS po dokupieniu petów haczykiem próby
+pokazywało trzy pety zamiast dziesięciu (okno Pawła — do sprawdzenia przy okazji).
+
 ## Jak działa zakup i gdzie żyje stan
 
 1. Gracz przytrzymuje E przy jajku (`ProximityPrompt` na niewidzialnej części w punkcie E mapy, 0,5 s; jeden punkt E

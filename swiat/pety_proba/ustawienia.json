@@ -173,7 +173,24 @@
     "tik_maks_s": 15,
     "pakiet_danych": "PetyProba",
     "cel_przychodu": "zagroda",
-    "plus_s": 1.6
+    "plus_s": 1.6,
+    "wybieg": {
+      "_opis": "26.11.2026 (uwaga Pawła do raportu z nocy, propozycja): pety w zagrodzie chodzą luzem po wybiegu zamiast stać na legowiskach. Tylko obraz u gracza — kto stoi w zagrodzie i ile daje Rybek, liczy serwer jak dotąd. Prostokąt wybiegu liczy dane_petow.py z legowisk na mapie (znaczniki zagroda_miejsce_N) i marginesów niżej (study: bok — ku bocznym płotom, tyl — ku korytu, przod — ku miskom przy bramce). predkosc i postoje: przedziały losowania; tempo_chodu: tempo klipu chodu przy spacerze; drzemka: co któryś raz pet wraca na swoje legowisko i stoi dłużej; odstep: najmniejsza odległość nowego celu od innych petów; mijanie: bliżej niż tyle od peta na drodze — postój i nowy cel. wlaczony = false przywraca stanie na legowiskach.",
+      "wlaczony": true,
+      "margines_bok": 2.0,
+      "margines_tyl": 0.4,
+      "margines_przod": 1.0,
+      "predkosc": [1.8, 3.0],
+      "tempo_chodu": 0.6,
+      "start_s": [0.5, 4.0],
+      "postoj_s": [2.0, 6.0],
+      "drzemka_szansa": 0.2,
+      "drzemka_s": [5.0, 9.0],
+      "odstep": 3.4,
+      "mijanie": 2.6,
+      "mijanie_s": [0.4, 1.2],
+      "prob": 8
+    }
   },
   "wyklucie": {
     "przed_gniazdem": 4.4,

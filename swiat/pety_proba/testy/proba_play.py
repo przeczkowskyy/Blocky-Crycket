@@ -5,7 +5,7 @@ i wyłącza Play, niczego nie zapisuje i nie publikuje.
     python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> [--studio <id>] [--bez-zrzutow] [--bez-walki]
     python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> --bagno   # tylko jajko Bagna (B00–B09)
     python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> --dzungla # jajko Dżungli (te same B00–B09)
-    python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> --zagroda # zagroda daje Rybki (Z01–Z09)
+    python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> --zagroda # zagroda daje Rybki i wybieg (Z01–Z11)
     python -B swiat/pety_proba/testy/proba_play.py --sprawdz      # bez Studio: parsuje każdy kawałek Luau (luau_mini)
 
 Warunki (tryb Edit): Workspace/PetyProba (swiat/pety_proba/zbuduj.py), Workspace/StanGracza (z sygnałami WydajZloto
@@ -73,6 +73,11 @@ z poleceniem Pety("przychod") — swiat/stan_gracza/zbuduj.py --skrypty; zrzuty 
   Z07 „Więcej miejsc” z Rybkami (Gold = cena + 50) → 4 miejsca, Gold = 50, napis „Miejsca w zagrodzie: 4”; zrzut okna
   Z08 „Z zagrody” (Świetlikówka) → nie stoi, wybór ręczny; „Najrzadsze” → wraca wybór domyślny
   Z09 pet za graczem nie stoi w zagrodzie: „Wybierz” Jelonka → Jelonek poza zagrodą, Żołędziak w zagrodzie
+  Z10 (26.11.2026, po Z04) pety chodzą luzem po wybiegu: przez 14 s każdy pet zostaje w prostokącie wybiegu,
+      model jest tam, gdzie liczy go spacer, któryś pet przeszedł co najmniej 2 study, w marszu gra klip chodu; zrzut
+  Z11 (26.11.2026, na końcu) pełna zagroda: dokupione pety lasu i Bagna (haczyk), 8 miejsc — osiem petów chodzi
+      luzem przez 36 s: nikt nie wychodzi z wybiegu, pety nie wchodzą w siebie (środki nie bliżej niż 1,5 st),
+      co najmniej sześć z ośmiu przeszło 2 study; trzy zrzuty z góry
   (P15) konsola: bez błędów naszych skryptów — jak w każdej próbie
 """
 import io
@@ -636,6 +641,38 @@ def main():
                   "modeli w zagrodzie %s, stoi %s, znaczników na mapie %s" % (k4.get("petyWZagrodzie"), n_st,
                                                                              k4.get("miejscNaMapie")))
             zrzut("z04_pety_w_zagrodzie")
+            # ================================================================ Z10 pety chodzą luzem po wybiegu
+            probki, t10 = [], time.time()
+            while time.time() - t10 < 14.0:
+                probki.append((klient('"stan"') or {}))
+                time.sleep(0.5)
+            start, droga, poza, rozjazd, marszow, chodow, najblizej = {}, {}, 0, 0.0, 0, 0, None
+            for k in probki:
+                pety = k.get("petyWybiegu") or []
+                for p in pety:
+                    poza += 1 if abs(p["a"]) > 1.02 or abs(p["b"]) > 1.02 else 0
+                    rozjazd = max(rozjazd, math.hypot(p["kx"] - p["x"], p["kz"] - p["z"]))
+                    start.setdefault(p["id"], (p["x"], p["z"]))
+                    droga[p["id"]] = max(droga.get(p["id"], 0.0),
+                                         math.hypot(p["x"] - start[p["id"]][0], p["z"] - start[p["id"]][1]))
+                    if p["idzie"]:
+                        marszow += 1
+                        chodow += 1 if p["klip"] == "chod" else 0
+                for i in range(len(pety)):
+                    for j in range(i + 1, len(pety)):
+                        d = math.hypot(pety[i]["x"] - pety[j]["x"], pety[i]["z"] - pety[j]["z"])
+                        najblizej = d if najblizej is None else min(najblizej, d)
+            czynny = bool(probki) and all(k.get("wybieg") is True for k in probki)
+            zapisz("Z10", {"probek": len(probki), "czynny": czynny, "droga": droga, "poza": poza, "rozjazd": rozjazd,
+                           "marszow": marszow, "chodow": chodow, "najblizej": najblizej,
+                           "ostatnia": (probki[-1].get("petyWybiegu") if probki else None)})
+            zrzut("z10_pety_luzem")
+            punkt("Z10", czynny and len(droga) == n_st and poza == 0 and rozjazd <= 1.0
+                  and max(droga.values() or [0.0]) >= 2.0 and marszow > 0 and chodow >= 0.9 * marszow,
+                  "petów %d z %d, najdłuższa droga %.1f st, poza wybiegiem %d próbek, model od spaceru najwyżej %.2f st, "
+                  "klip chodu w %d z %d próbek marszu, najbliżej siebie %s st" % (
+                      len(droga), n_st, max(droga.values() or [0.0]), poza, rozjazd, chodow, marszow,
+                      ("%.1f" % najblizej) if najblizej is not None else "—"))
             kamera_zwykla()
             # ================================================================ Z05 okno z wierszem zagrody
             przy_zagrodzie()
@@ -701,6 +738,71 @@ def main():
             punkt("Z09", a9.get("PetAktywny") == "jelonek_gaju" and "jelonek_gaju" not in (z9.get("stoja") or [])
                   and "zoledziak" in (z9.get("stoja") or []), "aktywny %s, w zagrodzie %s" % (a9.get("PetAktywny"),
                                                                                              z9.get("stoja")))
+            # ================================================================ Z11 pełna zagroda: osiem petów luzem
+            luau(KOD["ustaw_atr"] % ("Gold", "90000"), "Server")
+            for jajko, r in ((JL, 0.6), (JL, 0.8), (JB, 0.1), (JB, 0.6), (JB, 0.8), (JB, 0.9), (JB, 0.995)):
+                serwer('"zwolnij"')
+                serwer('"kup", nil, "%s", %f' % (jajko["id"], r))
+                time.sleep(4.8)
+            serwer('"zwolnij"')
+            for _ in range(3):                                # do ośmiu miejsc (po Z07 są cztery)
+                serwer('"ulepsz"')
+                time.sleep(0.6)
+            klient('"najrzadsze"')
+            time.sleep(1.0)
+            przy_zagrodzie()
+            # okno PETS Pawła (otwarte przez E w Z05) zasłania zagrodę — zamknięcie prawdziwym kliknięciem w X
+            otwarte_pets = ('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("OknoPetow") '
+                            'return tostring(g ~= nil and g.Enabled)')
+            if luau(otwarte_pets, "Client") == "true":
+                call("user_mouse_input", {"datamodel_type": "Client", "actions": [
+                    {"action": "moveTo", "instance_path": "LocalPlayer.PlayerGui.OknoPetow.Panel.CloseButton"},
+                    {"action": "mouseButtonClick", "mouse_button": "left"}]})
+                time.sleep(0.6)
+                log("okno PETS po kliknięciu X otwarte:", luau(otwarte_pets, "Client"))
+            z11 = (zagroda().get("stan") or {})
+            n11 = len(z11.get("stoja") or [])
+            czekaj_na(lambda: (klient('"stan"') or {}).get("petyWZagrodzie") == min(n11, 8), 12, 0.5)
+            sr = (G.get("wybieg") or {}).get("srodek") or ez
+            kxz = (kz[2], 0.0, -kz[0])                        # w bok zagrody; ujęcie zza tylnego płotu, z ukosa (łapa-szyld
+            # nad bramką zasłania wybieg od strony uliczki)
+            kamera((sr[0] - kz[0] * 15.0 + kxz[0] * 7.0, sr[1] + 17.0, sr[2] - kz[2] * 15.0 + kxz[2] * 7.0),
+                   (sr[0] + kz[0] * 1.5, sr[1], sr[2] + kz[2] * 1.5))
+            probki, t11, zrzutow = [], time.time(), 0
+            while time.time() - t11 < 36.0:
+                probki.append(klient('"stan"') or {})
+                if zrzutow < 3 and time.time() - t11 >= (4.0, 16.0, 28.0)[zrzutow]:
+                    zrzutow += 1
+                    zrzut("z11_pelna_zagroda_%d" % zrzutow)
+                time.sleep(0.5)
+            start, droga, poza, najblizej, marszow, chodow, w_marszu = {}, {}, 0, None, 0, 0, []
+            for k in probki:
+                pety = k.get("petyWybiegu") or []
+                w_marszu.append(sum(1 for q in pety if q["idzie"]))
+                for q in pety:
+                    poza += 1 if abs(q["a"]) > 1.02 or abs(q["b"]) > 1.02 else 0
+                    start.setdefault(q["id"], (q["x"], q["z"]))
+                    droga[q["id"]] = max(droga.get(q["id"], 0.0),
+                                         math.hypot(q["x"] - start[q["id"]][0], q["z"] - start[q["id"]][1]))
+                    if q["idzie"]:
+                        marszow += 1
+                        chodow += 1 if q["klip"] == "chod" else 0
+                for i in range(len(pety)):
+                    for j in range(i + 1, len(pety)):
+                        d = math.hypot(pety[i]["x"] - pety[j]["x"], pety[i]["z"] - pety[j]["z"])
+                        najblizej = d if najblizej is None else min(najblizej, d)
+            ruszylo = sum(1 for v in droga.values() if v >= 2.0)
+            zapisz("Z11", {"stoja": z11.get("stoja"), "miejsc": z11.get("miejsc"), "probek": len(probki), "droga": droga,
+                           "poza": poza, "najblizej": najblizej, "marszow": marszow, "chodow": chodow,
+                           "w_marszu": w_marszu, "ostatnia": (probki[-1].get("petyWybiegu") if probki else None)})
+            kamera_zwykla()
+            punkt("Z11", n11 == 8 and len(droga) == 8 and poza == 0 and najblizej is not None and najblizej >= 1.5
+                  and ruszylo >= 6 and marszow > 0 and chodow >= 0.9 * marszow,
+                  "w zagrodzie %d (miejsc %s), modeli %d, ruszyło %d z %d, poza wybiegiem %d próbek, najbliżej siebie %s st, "
+                  "naraz w marszu średnio %.1f (najwyżej %d), klip chodu w %d z %d próbek marszu" % (
+                      n11, z11.get("miejsc"), len(droga), ruszylo, len(droga), poza,
+                      ("%.1f" % najblizej) if najblizej is not None else "—",
+                      (sum(w_marszu) / float(len(w_marszu))) if w_marszu else 0.0, max(w_marszu or [0]), chodow, marszow))
 
         # ================================================================ P00 Edit
         nie_usypiaj()

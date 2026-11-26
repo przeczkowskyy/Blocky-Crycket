@@ -1,0 +1,21 @@
+{
+ "id": "r-20261126-135432-a32d",
+ "tytul": "Zagroda: pety chodzą luzem po wybiegu",
+ "opis_md": "Po uwadze Pawła („fajnie by było, jakby chodziły luzem po tej zagrodzie, a nie były przyklejone do stanowisk”) — w Studio.\n\n**Co się zmieniło**\n- Pety w zagrodzie spacerują po wybiegu, przystają, omijają się, a co jakiś czas wracają postać na swoim legowisku.\n- Legowiska zostały jako miejsca odpoczynku i znak, ile miejsc ma zagroda.\n- To tylko obraz u gracza: Rybki z zagrody, miejsca i wybór petów liczą się jak dotąd.\n\n**Sprawdzone w grze**\n- Pełna zagroda, osiem petów przez 36 sekund: ruszyło 8 z 8, żaden nie wyszedł z wybiegu, nie wchodzą w siebie (najbliżej 2,6 studa).\n- Cała próba zagrody: 14 punktów, bez niezaliczeń, cztery przebiegi.\n\n**Do oceny**\n- Czy ruch jest ładny i czy tempo pasuje? Prędkość, postoje i odstępy to ustawienia — zmiana bez przebudowy.\n- Legowiska: zostają, czy je zdjąć albo zmniejszyć (to zmiana mapy)?\n\n**Nie sprawdzono**\n- Prawdziwy telefon, czas klatki, dwóch graczy naraz.\n\nZrzuty: pełna zagroda po zmianie (dwa ujęcia w odstępie 24 sekund), zagroda przed zmianą (pety na legowiskach).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T13:54:32+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/PetyProba",
+   "etykieta": "Pety na próbę"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "gra": "bc"
+}

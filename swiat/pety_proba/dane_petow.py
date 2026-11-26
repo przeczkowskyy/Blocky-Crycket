@@ -111,6 +111,23 @@ def polozenie_jajka(j):
     return {"gniazdo": [_r(v) for v in m["punkt_swiat"]], "obrot": S["obrot"], "e": [_r(v) for v in e["punkt_swiat"]]}
 
 
+def _wybieg(U, e0, kx, kz, miejsca):
+    """Prostokąt wybiegu zagrody (26.11.2026: pety chodzą luzem): obrys legowisk w układzie zagrody (kx — w bok,
+    kz — ku bramce) powiększony o marginesy z ustawień. → {"wybieg": {srodek, os_x, os_z, pol_x, pol_z}} w świecie
+    Studio albo {} (brak ustawień wybiegu albo legowisk — pety stoją na miejscach jak dawniej)."""
+    W = U["zagroda"].get("wybieg")
+    if not W or not miejsca:
+        return {}
+    ab = [((p[0] - e0[0]) * kx[0] + (p[2] - e0[2]) * kx[2], (p[0] - e0[0]) * kz[0] + (p[2] - e0[2]) * kz[2])
+          for p in miejsca]
+    a0, a1 = min(a for a, _ in ab) - W["margines_bok"], max(a for a, _ in ab) + W["margines_bok"]
+    b0, b1 = min(b for _, b in ab) - W["margines_tyl"], max(b for _, b in ab) + W["margines_przod"]
+    sa, sb = (a0 + a1) / 2.0, (b0 + b1) / 2.0
+    srodek = [e0[0] + sa * kx[0] + sb * kz[0], miejsca[0][1], e0[2] + sa * kx[2] + sb * kz[2]]
+    return {"wybieg": {"srodek": [_r(v) for v in srodek], "os_x": [_r(v, 4) for v in kx],
+                       "os_z": [_r(v, 4) for v in kz], "pol_x": _r((a1 - a0) / 2.0), "pol_z": _r((b1 - b0) / 2.0)}}
+
+
 def polozenia(U):
     """Zagroda (bazar) w układzie świata Studio — z mapy, tylko odczyt (stanowiska jajek: polozenie_jajka)."""
     zg = _znaczniki(U["zagroda"]["znaczniki"])["zagroda"]
@@ -128,6 +145,7 @@ def polozenia(U):
         "zagroda_tablica": [_r(v) for v in tablica],
         "miejsca_petow": [[_r(v) for v in x["swiat"]] for x in zg["miejsca_petow"]],
         "zagroda_podpowiedz": [_r(v) for v in pz["podpowiedz"]],
+        **_wybieg(U, e0, kx, kz, [x["swiat"] for x in zg["miejsca_petow"]]),
     }
 
 

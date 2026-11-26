@@ -26,6 +26,7 @@
    brak ścieżek lokalnych.
 """
 import json
+import math
 import os
 import random
 import re
@@ -101,6 +102,46 @@ class TestDanych(unittest.TestCase):
         self.assertIn(D["licznik_ceny"]["tryb"], ("osobny", "wspolny"))
         for p in D["pety"]:
             self.assertEqual(LP.jajko_peta(D, p["id"])["id"], p["jajko"])
+
+    def test_1d_wybieg_z_legowisk(self):
+        """26.11.2026: pety chodzą luzem — prostokąt wybiegu z legowisk mapy i marginesów; klient ma spacer i wyłącznik."""
+        G, W = D["polozenia"], U["zagroda"]["wybieg"]
+        wb = G["wybieg"]
+        s, ox, oz = wb["srodek"], wb["os_x"], wb["os_z"]
+        self.assertAlmostEqual(ox[0] * oz[0] + ox[2] * oz[2], 0.0, places=3)        # osie prostopadłe
+        self.assertAlmostEqual(oz[0], G["zagroda_kier"][0], places=3)                # oś z = przód zagrody (ku bramce)
+        ab = [((m[0] - s[0]) * ox[0] + (m[2] - s[2]) * ox[2], (m[0] - s[0]) * oz[0] + (m[2] - s[2]) * oz[2])
+              for m in G["miejsca_petow"]]
+        for a, b in ab:                                                             # każde legowisko w wybiegu
+            self.assertLessEqual(abs(a), wb["pol_x"] + 0.01)
+            self.assertLessEqual(abs(b), wb["pol_z"] + 0.01)
+        # boki = rozpiętość legowisk + marginesy (z dokładnością zaokrąglenia znaczników)
+        self.assertAlmostEqual(2 * wb["pol_x"], max(a for a, _ in ab) - min(a for a, _ in ab) + 2 * W["margines_bok"],
+                               delta=0.02)
+        self.assertAlmostEqual(2 * wb["pol_z"], max(b for _, b in ab) - min(b for _, b in ab) + W["margines_tyl"]
+                               + W["margines_przod"], delta=0.02)
+        # przód (bramka, miski) dalej od legowisk niż tył (koryto): większy margines z przodu
+        self.assertAlmostEqual(max(b for _, b in ab), wb["pol_z"] - W["margines_przod"], delta=0.02)
+        # w wybiegu mieści się tyle petów, ile jest miejsc: koła o średnicy odstępu nie zajmują więcej niż pół pola
+        n = len(G["miejsca_petow"])
+        self.assertLess(n * math.pi * (W["odstep"] / 2.0) ** 2, 0.5 * 4 * wb["pol_x"] * wb["pol_z"])
+        self.assertLess(W["mijanie"], W["odstep"])
+        for para in ("predkosc", "start_s", "postoj_s", "drzemka_s", "mijanie_s"):
+            self.assertTrue(0 < W[para][0] <= W[para][1], para)
+        self.assertTrue(0 <= W["drzemka_szansa"] <= 1)
+        k = bez_komentarzy(KLIENT)
+        for pole in set(re.findall(r"\bust\.(\w+)", k)) | set(re.findall(r"Wybieg\.ust\.(\w+)", k)):
+            self.assertIn(pole, W, "wybieg.%s" % pole)
+        for pole in set(re.findall(r"\bo\.(\w+)", k.split("local Wybieg = {", 1)[1].split("local function ustawPetyZagrody", 1)[0])):
+            self.assertIn(pole, wb, "polozenia.wybieg.%s" % pole)
+        self.assertIn("pcall(Wybieg.krok, dt, t)", k)
+        self.assertIn("if Wybieg.czynny then", k)
+        # bez ustawień wybiegu dane nie mają prostokąta (klient zostawia pety na legowiskach)
+        stare = U["zagroda"].pop("wybieg")
+        try:
+            self.assertNotIn("wybieg", DP.polozenia(U))
+        finally:
+            U["zagroda"]["wybieg"] = stare
 
     def test_1c_polozenia_ze_znacznikow(self):
         for j, ju in zip(D["jajka"], U["jajka"]):

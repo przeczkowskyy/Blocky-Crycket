@@ -655,7 +655,142 @@ local function stojaWZagrodzie(): { [string]: boolean }?
 	return w
 end
 
+-- WYBIEG (26.11.2026, uwaga Pawła do raportu z nocy: „fajnie by było, jakby chodziły luzem po tej zagrodzie, a nie były
+-- przyklejone do stanowisk”; propozycja): pety zagrody spacerują po prostokącie wybiegu (D.polozenia.wybieg — obrys
+-- legowisk z mapy z marginesami), przystają, a co któryś raz wracają postać na swoim legowisku. To tylko obraz u gracza:
+-- o tym, kto stoi w zagrodzie i ile daje Rybek, decyduje serwer jak dotąd. Bez ustawień wybiegu (starsze dane) albo
+-- z wlaczony = false pety stoją na legowiskach jak przed zmianą. Jedna tabela zamiast wielu zmiennych (limit lokalnych).
+local Wybieg = { ust = D.zagroda.wybieg, obszar = D.polozenia.wybieg, czasBledu = -math.huge }
+Wybieg.czynny = type(Wybieg.ust) == "table" and Wybieg.ust.wlaczony == true and type(Wybieg.obszar) == "table"
+
+function Wybieg.los(p: any): number
+	return p[1] + math.random() * (p[2] - p[1])
+end
+
+-- punkt wybiegu z ułamków połowy boków (a — w bok, b — ku bramce; |a|, |b| ≤ 1 = w prostokącie)
+function Wybieg.punkt(a: number, b: number): Vector3
+	local o = Wybieg.obszar
+	local s, ox, oz = o.srodek, o.os_x, o.os_z
+	return Vector3.new(s[1] + ox[1] * a * o.pol_x + oz[1] * b * o.pol_z, s[2], s[3] + ox[3] * a * o.pol_x + oz[3] * b * o.pol_z)
+end
+
+function Wybieg.poziomo(a: Vector3, b: Vector3): number
+	local dx, dz = a.X - b.X, a.Z - b.Z
+	return math.sqrt(dx * dx + dz * dz)
+end
+
+-- wolny punkt wybiegu: nie bliżej niż odstep od innych petów i ich celów; nil, gdy się nie udało (pet postoi dalej)
+function Wybieg.wolnyCel(kto: any): Vector3?
+	local ust = Wybieg.ust
+	for _ = 1, ust.prob do
+		local p = Wybieg.punkt(math.random() * 2 - 1, math.random() * 2 - 1)
+		local wolny = true
+		for _, inny in petyZagrody do
+			if inny ~= kto then
+				if Wybieg.poziomo(inny.pos, p) < ust.odstep or (inny.cel and Wybieg.poziomo(inny.cel, p) < ust.odstep) then
+					wolny = false
+					break
+				end
+			end
+		end
+		if wolny then
+			return p
+		end
+	end
+	return nil
+end
+
+-- jeden krok spaceru wszystkich petów zagrody (co klatkę): marsz do celu, postój, nowy cel, mijanie innych petów
+function Wybieg.krok(dt: number, t: number)
+	local ust = Wybieg.ust
+	for _, z in petyZagrody do
+		local chce = "spoczynek"
+		local raduje = z.u.klip == "radosc" and not z.u.koniec
+		if z.cel then
+			local dx, dz = z.cel.X - z.pos.X, z.cel.Z - z.pos.Z
+			local d = math.sqrt(dx * dx + dz * dz)
+			local krok = z.predkosc * dt
+			if d <= krok or d < 0.05 then
+				-- na miejscu: postój (na własnym legowisku dłuższy)
+				z.pos = Vector3.new(z.cel.X, z.pos.Y, z.cel.Z)
+				z.postoj = t + Wybieg.los(if z.drzemka then ust.drzemka_s else ust.postoj_s)
+				z.cel = nil
+			else
+				local kx, kz = dx / d, dz / d
+				local blokada = false
+				for _, inny in petyZagrody do
+					if inny ~= z then
+						local rx, rz = inny.pos.X - z.pos.X, inny.pos.Z - z.pos.Z
+						if rx * rx + rz * rz < ust.mijanie * ust.mijanie and rx * kx + rz * kz > 0 then
+							blokada = true
+							break
+						end
+					end
+				end
+				if blokada then
+					-- inny pet na drodze: krótki postój i nowy cel
+					z.cel = nil
+					z.postoj = t + Wybieg.los(ust.mijanie_s)
+				else
+					local x, zz = z.pos.X + kx * krok, z.pos.Z + kz * krok
+					local yCel = ziemia(Vector3.new(x, z.dom.Y, zz)) or z.dom.Y
+					z.pos = Vector3.new(x, z.pos.Y + (yCel - z.pos.Y) * (1 - math.exp(-12 * dt)), zz)
+					z.yaw = kat(z.yaw, math.atan2(-kx, -kz), 1 - math.exp(-8 * dt))
+					chce = "chod"
+				end
+			end
+		elseif t >= z.postoj and not raduje then
+			-- co któryś raz pet wraca na swoje legowisko, inaczej losuje wolny punkt wybiegu
+			local cel = nil
+			if math.random() < ust.drzemka_szansa and Wybieg.poziomo(z.pos, z.dom) > 1 then
+				cel = z.dom
+				z.drzemka = true
+			else
+				cel = Wybieg.wolnyCel(z)
+				z.drzemka = false
+			end
+			if cel then
+				z.cel = cel
+			else
+				z.postoj = t + Wybieg.los(ust.mijanie_s)
+			end
+		end
+		Rig.ustaw(z.u, CFrame.new(z.pos.X, z.pos.Y + z.unoszenie, z.pos.Z) * CFrame.Angles(0, z.yaw, 0))
+		if not raduje and z.u.klip ~= chce then
+			if chce == "chod" then
+				Rig.graj(z.u, "chod", ust.tempo_chodu)
+			else
+				Rig.graj(z.u, "spoczynek")
+			end
+		end
+	end
+end
+
+-- do próby w Play (haczyk "stan"): pety zagrody w układzie wybiegu (a, b — ułamki połowy boków), czy idą, klip
+-- i położenie korzenia modelu (czy model naprawdę jest tam, gdzie liczy go spacer)
+function Wybieg.pozycje()
+	local w = {}
+	for id, z in petyZagrody do
+		local a, b = 0, 0
+		if Wybieg.czynny then
+			local o = Wybieg.obszar
+			local dx, dz = z.pos.X - o.srodek[1], z.pos.Z - o.srodek[3]
+			a = (dx * o.os_x[1] + dz * o.os_x[3]) / o.pol_x
+			b = (dx * o.os_z[1] + dz * o.os_z[3]) / o.pol_z
+		end
+		local k = z.u.korzen.Position
+		table.insert(w, { id = id, x = z.pos.X, y = z.pos.Y, z = z.pos.Z, a = a, b = b, idzie = z.cel ~= nil, klip = z.u.klip,
+			kx = k.X, ky = k.Y, kz = k.Z, domx = z.dom.X, domz = z.dom.Z })
+	end
+	return w
+end
+
 local function ustawPetyZagrody()
+	-- wybieg: pet, który już chodzi po zagrodzie, po odświeżeniu listy zostaje tam, gdzie był (bez skoku na legowisko)
+	local poprzednie = {}
+	for id, z in petyZagrody do
+		poprzednie[id] = { pos = z.pos, yaw = z.yaw }
+	end
 	usunPetyZagrody()
 	if not bliskoZagrody or not wierszeZagrody or not wierszeZagrody.wiersze then
 		return
@@ -701,7 +836,14 @@ local function ustawPetyZagrody()
 				local y = ziemia(poz) or poz.Y
 				local do_e = Vector3.new(e.X - poz.X, 0, e.Z - poz.Z)
 				local yaw = if do_e.Magnitude > 0.01 then math.atan2(-do_e.Unit.X, -do_e.Unit.Z) else 0
-				Rig.ustaw(u, CFrame.new(poz.X, y, poz.Z) * CFrame.Angles(0, yaw, 0))
+				local dom = Vector3.new(poz.X, y, poz.Z)
+				local unoszenie = if Wybieg.czynny then (PP.unoszenie[w.pet] or 0) else 0
+				local stary = if Wybieg.czynny then poprzednie[w.pet] else nil
+				local pos = if stary then stary.pos else dom
+				if stary then
+					yaw = stary.yaw
+				end
+				Rig.ustaw(u, CFrame.new(pos.X, pos.Y + unoszenie, pos.Z) * CFrame.Angles(0, yaw, 0))
 				animowane[u] = true
 				Rig.graj(u, "spoczynek")
 				u.t = math.random() * 2
@@ -722,7 +864,10 @@ local function ustawPetyZagrody()
 				t.TextStrokeTransparency = 0.2
 				t.Text = string.format("%s ×%d", w.nazwa, w.kopie)
 				t.Parent = b
-				petyZagrody[w.pet] = { model = m, u = u, nastepna = os.clock() + 4 + math.random() * 6 }
+				petyZagrody[w.pet] = { model = m, u = u, nastepna = os.clock() + 4 + math.random() * 6, pos = pos, yaw = yaw,
+					dom = dom, cel = nil, drzemka = false, unoszenie = unoszenie,
+					postoj = os.clock() + (if Wybieg.czynny then Wybieg.los(Wybieg.ust.start_s) else 0),
+					predkosc = if Wybieg.czynny then Wybieg.los(Wybieg.ust.predkosc) else 0 }
 			end
 		end
 	end
@@ -1319,9 +1464,16 @@ RunService.RenderStepped:Connect(function(dt: number)
 	end
 	local t = os.clock()
 	for _, z in petyZagrody do
-		if t > z.nastepna then
+		if t > z.nastepna and not z.cel then -- radość tylko na postoju (w marszu pet by się ślizgał)
 			z.nastepna = t + 6 + math.random() * 6
 			Rig.graj(z.u, "radosc", 1, "spoczynek")
+		end
+	end
+	if Wybieg.czynny then
+		local okW, bladW = pcall(Wybieg.krok, dt, t)
+		if not okW and t - Wybieg.czasBledu > 5 then
+			Wybieg.czasBledu = t
+			warn(D.prefiks .. "wybieg zagrody: " .. tostring(bladW))
 		end
 	end
 	for u in animowane do
@@ -1389,6 +1541,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 				and pasekKom.Text or nil,
 			zagroda = wierszeZagrody and wierszeZagrody.zagroda, plusow = plusow, ostatniPlus = ostatniPlus,
 			wierszZagrodyWOknie = przewijane:FindFirstChild("Zagroda") ~= nil, miejscNaMapie = #D.polozenia.miejsca_petow,
+			wybieg = Wybieg.czynny, petyWybiegu = Wybieg.pozycje(),
 		}
 	elseif polecenie == "do_zagrody" and type(a) == "string" then
 		zdarzenia:FireServer("zagroda_dodaj", a)

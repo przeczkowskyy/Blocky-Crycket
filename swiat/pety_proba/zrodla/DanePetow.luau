@@ -472,6 +472,23 @@ return {
 		pakiet_danych = "PetyProba",
 		cel_przychodu = "zagroda",
 		plus_s = 1.6,
+		wybieg = {
+			_opis = "26.11.2026 (uwaga Pawła do raportu z nocy, propozycja): pety w zagrodzie chodzą luzem po wybiegu zamiast stać na legowiskach. Tylko obraz u gracza — kto stoi w zagrodzie i ile daje Rybek, liczy serwer jak dotąd. Prostokąt wybiegu liczy dane_petow.py z legowisk na mapie (znaczniki zagroda_miejsce_N) i marginesów niżej (study: bok — ku bocznym płotom, tyl — ku korytu, przod — ku miskom przy bramce). predkosc i postoje: przedziały losowania; tempo_chodu: tempo klipu chodu przy spacerze; drzemka: co któryś raz pet wraca na swoje legowisko i stoi dłużej; odstep: najmniejsza odległość nowego celu od innych petów; mijanie: bliżej niż tyle od peta na drodze — postój i nowy cel. wlaczony = false przywraca stanie na legowiskach.",
+			wlaczony = true,
+			margines_bok = 2,
+			margines_tyl = 0.4,
+			margines_przod = 1,
+			predkosc = { 1.8, 3 },
+			tempo_chodu = 0.6,
+			start_s = { 0.5, 4 },
+			postoj_s = { 2, 6 },
+			drzemka_szansa = 0.2,
+			drzemka_s = { 5, 9 },
+			odstep = 3.4,
+			mijanie = 2.6,
+			mijanie_s = { 0.4, 1.2 },
+			prob = 8,
+		},
 	},
 	wyklucie = {
 		przed_gniazdem = 4.4,
@@ -584,6 +601,13 @@ return {
 			{ 958.798, 0.5, -670.285 },
 		},
 		zagroda_podpowiedz = { 954.172, 4.9, -688.134 },
+		wybieg = {
+			srodek = { 962.011, 0.5, -675.7 },
+			os_x = { -0.9994, 0, 0.0349 },
+			os_z = { -0.0349, 0, -0.9994 },
+			pol_x = 10,
+			pol_z = 5.9,
+		},
 	},
 	przypadki = {
 		cena = {
@@ -2593,5 +2617,5 @@ return {
 			{ r = 0, s = 0.29, dt = 5, ile = 1, reszta = 0.44999999999999996 },
 		},
 	},
-	skrot = "85c102c59214",
+	skrot = "00d79c98c4f0",
 }
