@@ -36,6 +36,7 @@ implementacja: wersja z Figmy (panel gracza + 6 przycisków) w Roblox, 2026-11-1
 - Pliki: `tools/hud_pety_build_gui.py` (przerabia `src/gui/HUD.model.json`), `src/client/HUDClient.client.luau`, `src/client/QuestyClient.client.luau`. Górny rząd nazywa się nadal `LeftColumn`, bo wskazówki Karola szukają `HUD/LeftColumn/TeleportSlot/Teleport`.
 
 ## Stan implementacji
+- [x] 2026-11-25 (Paweł): szuflada questów pokazuje questy wybrane na tablicy — [[Tablica questów (propozycja)]]; pusta mówi, gdzie je wziąć.
 - [x] 2026-11-25 (Paweł): przyciski w dwóch rzędach po lewej, Index zamiast Quests, szuflada questów po prawej, okno petów pod przyciskiem Pets — sprawdzone w Play (opis wyżej).
 - [x] 2026-11-24 (Paweł): HUD od razu na miejscu (bez wlatywania przycisków), okna bez wjazdu, wczytywanie i podgrzewanie grafik przy starcie (`PreloadUI`); licznik Rybek usunięty (D-146), ikona Złota → rybka po wgraniu `GoldFish`.
 - [x] 2026-11-24 (Paweł): ramki portretu z kotami (`RaceFrame<Id>_v2`): ta sama złota ramka i tor paska co do piksela, nowy portret kota (`tools/raceportraits_koty.py`); wgrane, pasek w Play na miejscu.

@@ -167,6 +167,13 @@ Karol 25.11: „Chcę, żeby dashboard był per gra robiony” — w pytaniach i
 - Starszy kod panelu (np. u Pawła przed pobraniem zmian) znaczników nie psuje i działa jak dawniej.
 - To zmiana narzędzia (panelu), nie kanonu gry.
 
+## Raport ze zdjęciami na Telegram (od 26.11.2026)
+Karol 26.11: „Wyślij wszystkie te zdjęcia opisane na Telegrama i zapytaj Pawła o opinię”. Bot panelu wysyłał dotąd sam tekst.
+- Narzędzie `panel/narzedzia/telegram_zdjecia.py` wysyła na grupę zespołu wstęp, grupy zdjęć z podpisami (zdjęcie albo album) i zakończenie. Treść opisuje plik planu; `--sucho` sprawdza plan bez wysyłania.
+- Korzysta z tych samych ustawień bota co potwierdzanie decyzji (dane lokalne panelu, poza repozytorium).
+- Wysyła agent, tylko na prośbę człowieka. Zdjęcia bez nazw kont, tekst bez linków z kodami.
+- To zmiana narzędzia (panelu), nie kanonu gry.
+
 ## Wejście z telefonu spoza domu (tunel)
 Sprawdzone naprawdę 13.11.2026: przenośny `cloudflared` (bez instalatora i uprawnień administratora) wystawia panel pod losowym adresem https, a wejście wymaga kodu dostępu. Gość z tunelu nie dostaje uprawnień osoby przy komputerze — nie uruchomi agenta, gita ani nowej migawki — nawet jeśli zna klucz lokalny. Przed udostępnieniem adresu drugiej osobie trzeba wyjąć z konfiguracji lokalnej prywatne sejfy podpięte do panelu. Kroki: `panel/INSTALACJA.md`.
 

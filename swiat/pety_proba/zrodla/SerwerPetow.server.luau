@@ -33,7 +33,8 @@
 	z komunikatem, zagroda pokazuje „brak”, żadnych błędów. Atrybuty gracza tego pakietu: dla każdego jajka
 	jajko.atrybuty.cena (cena następnego jajka — napis przy E i wskazówki celu) i jajko.atrybuty.kupione (ile takich
 	jajek gracz kupił — wskazówka „stać cię na pierwsze jajko biomu”), oraz D.atrybuty_gracza.czeka.
-	Haczyk testowy: Sygnaly/SterowanieSerwera ("kup", gracz?, jajko, r?) | ("zwolnij", gracz?) | ("stan", gracz?)
+	Haczyk testowy: Sygnaly/SterowanieSerwera ("kup", gracz?, jajko, r? | { r?, bezPokazu? }) | ("zwolnij", gracz?)
+	| ("stan", gracz?)
 	| ("wybierz", gracz?, pet, bezZasiegu?) | ("zgodnosc") | ("zagroda", gracz?) | ("nalicz", gracz?)
 	| ("ulepsz", gracz?) | ("zagroda_zmien", gracz?, pet, tak) | ("zagroda_auto", gracz?) — bez sprawdzania zasięgu.
 	Działa tylko w Roblox Studio: poza Studio usuwa cały kontener, jak pozostałe prototypy.
@@ -211,7 +212,9 @@ local function przyInkubatorze(gracz: Player, j): boolean
 end
 
 -- zZasiegiem: zakup z podpowiedzi E (gracz musi stać przy inkubatorze TEGO jajka); haczyk testowy go nie wymaga
-local function kup(gracz: any, idJajka: any, wymuszoneR: any, zZasiegiem: boolean?)
+-- bezPokazu: zakup ze scenki jajka w świecie (src/server/JajkoKorowe.server.luau, 26.11.2026) — klient nie gra animacji
+-- inkubatora, a napis „Wykluł się…” pokazuje dopiero, gdy scenka odsłoni peta (Sygnaly/PokazWyklucia u klienta)
+local function kup(gracz: any, idJajka: any, wymuszoneR: any, zZasiegiem: boolean?, bezPokazu: boolean?)
 	if not graczOk(gracz) then
 		return { ok = false, powod = "zly_gracz" }
 	end
@@ -252,7 +255,7 @@ local function kup(gracz: any, idJajka: any, wymuszoneR: any, zZasiegiem: boolea
 	ustawCeny(gracz, poZakupie)
 	local nastepna = L.cena(D, j, L.kupione(D, j, poZakupie))
 	local info = { jajko = j.id, pet = pet, nowy = w.nowy == true, kopie = w.kopie, aktywny = w.aktywny, cena = cena,
-		nastepna = nastepna, zloto = w.zloto }
+		nastepna = nastepna, zloto = w.zloto, bezPokazu = bezPokazu == true }
 	zdarzenia:FireClient(gracz, "wyklucie", info)
 	ustawModyfikator(gracz, if type(w.aktywny) == "string" then w.aktywny else nil)
 	dolicz("LicznikZakupow")
@@ -645,7 +648,9 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		return nil
 	end
 	if polecenie == "kup" then
-		return kup(g, b or D.jajka[1].id, c)
+		-- c: wymuszone r (liczba) albo opcje { r = liczba?, bezPokazu = true? } (scenka jajka w świecie)
+		local opcje = if type(c) == "table" then c else nil
+		return kup(g, b or D.jajka[1].id, if opcje then opcje.r else c, nil, opcje ~= nil and opcje.bezPokazu == true)
 	elseif polecenie == "zwolnij" then
 		zajety[g] = nil
 		return true
