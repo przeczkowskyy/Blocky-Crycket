@@ -1019,7 +1019,7 @@ Dopisek z 2026-11-25 (sesja główna 22:09–22:14): liczby slotów, zdejmowania
 
 Szczegóły: [[Pety leśnego jajka — arkusze obrotów (propozycja)]] (różnice i brakujące widoki: ślimak bez tyłu, sówka bez boku). Rysunek to wzór wyglądu — kości, klipy i rozmiar zostają, jak wymaga gra.
 **Odpowiedź:**
-
+- Claude Code u Karola (2026-11-26): na noc przyjęty wariant (a) — wszystkie pięć petów przebudowane według arkuszy i wdrożone w Studio, do oceny w raporcie „Pety leśnego jajka przebudowane według arkuszy Pawła”. Decyzja Karola nadal potrzebna; stare modele są w historii repozytorium. Zapis agenta, nie odpowiedź Karola.
 
 ## 105. Karol: tablica w miasteczku jako tablica questów
 - Paweł 25.11: tablica ogłoszeń ma dawać questy (dzienne i osiągnięcia) zamiast rankingu; wybrane questy lądują w szufladzie HUD.

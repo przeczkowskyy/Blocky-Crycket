@@ -6,6 +6,15 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-26 · Claude Code u Karola (noc po sesji, część druga: pety w Studio, przedmioty wojownika, jajka wstrzymane)
+- **Pety w Studio** (dwóch agentów na Opus: przebudowa modeli ok. 0,44 mln tokenów, wdrożenie ok. 0,37 mln): Rybki z zagrody i miejsca 2 → 4 → 6 → 8 u Jagody działają w grze jako próba z liczbami roboczymi (propozycja D-153 niezatwierdzona — wdrożone z wyprzedzeniem na polecenie Karola z sesji, do zmiany); pięć petów leśnego jajka przebudowanych według arkuszy Pawła; pety stoją na ośmiu nowych legowiskach. Próby w Play bez niezaliczeń (zagroda 12, las 14, Bagno 10, Dżungla 10); trzy warunki prób dostosowane do nowej zasady. Poprawiony błąd po przebudowie miasta: podpowiedź E Jagody stała w starym miejscu.
+- **Przedmioty wojownika** (ok. 0,52 mln): 30 modeli w pięciu zestawach na kocie-wojowniku według arkuszy Pawła, w `swiat/postacie/` (`pula_wojownika*.py`); nie w Studio. Do gry wejdą z kotem-wojownikiem w walce.
+- **Jajka Bagna i Dżungli w Studio** (ok. 0,26 mln): wgrane dwie maski blasku, poprawione miejsca jajek na mapach, animacja spoczynku sprawdzona w Play na atrapach. Modeli nie wgrano: Studio wymaga zatwierdzenia folderu do wgrywania i agent tego nie obchodził — decyzja Karola (zadanie).
+- **Skutek uboczny:** Pet Arena i BONK budują pety z tych samych plików co B&C; po przebudowie ich testy aktualności danych nie przechodzą (zadanie do decyzji, obie gry wstrzymane).
+- **Raporty w panelu:** miasto i Training Center, jajka, pety leśnego jajka, przedmioty wojownika, zagroda z Rybkami — wszystkie czekają na decyzję.
+- **Tryb nocny:** ekran zaciemniony do 07:30, wygaszanie i usypianie na zasilaniu wyłączone (do przywrócenia rano).
+- Koszt nocy: ok. 3,5 mln tokenów agentów (dziewięć prac).
+
 ## 2026-11-25 · Claude Code u Karola (noc po sesji głównej: miasto, jajka, Rybki z zagrody — stan na północ)
 - **Po sesji:** lista prac dla Pawła w [[Po sesji 2026-11-25 — podział prac]]; wiadomość do Pawła na grupie Telegram, że lista jest na GitHubie (prośba Karola z końca sesji).
 - **Miasto w Studio** (agent na Opus, ok. 0,59 mln tokenów, 22:27–23:50): zagroda bez psa, smoka, slime'a i budek, Jagoda przed bramką, osiem legowisk; Training Center z salą treningową w miejscu niebieskiego domu przy placyku; sześć stanowisk treningu AFK w sali; poprawki animacji w trzech plikach treningu Pawła (zgoda z sesji). Kontrola miasta 0 błędów; raport ze zrzutami w panelu.

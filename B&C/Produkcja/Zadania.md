@@ -7,12 +7,17 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Jajka Bagna i Dżungli: Karol — zatwierdzić w Studio folder `swiat/jajka_biomow/modele` do wgrywania (Assistant → Settings → MCP Permissions) albo zgodzić się na drogę przez folder postaci; potem `python -B swiat/jajka_biomow/wdroz.py wszystko` wgrywa i wstawia oba jajka · Karol · #wysoki
+- [ ] Rybki z zagrody (propozycja D-153): stoją w Studio jako próba z liczbami roboczymi — zatwierdzić albo zmienić (raport „Zagroda daje Rybki: nowe legowiska i przebudowane pety w Studio”); w lesie zagroda daje ok. 4 Rybki na minutę, czyli prawie niewidocznie · Karol, Paweł · #wysoki
+- [ ] Zagroda po wdrożeniu, do ustalenia: E przy Jagodzie otwiera naraz okno Pets Pawła i tymczasowe okno zagrody; jajko Pawła stoi ok. 3 study od miejsca przed Jagodą; tablica „TWOJE PETY” 14 studów przed bramą; starsze napisy mówią „Złota” zamiast „Rybek”; sówka ma żółtawe oczy, a jelonek oliwkowe nogi · Karol, Paweł · #średni
+- [ ] Przedmioty wojownika: ocenić modele (raport „Przedmioty wojownika 3D: pięć zestawów na kocie według arkuszy Pawła”); do gry wejdą dopiero z kotem-wojownikiem w walce i jego klipami z mieczem — dziś walka i przymierzalnia używają wojownika z ciałem człowieka · Karol, Paweł · #średni
+- [ ] Pet Arena i BONK: po przebudowie leśnych petów ich budowa odmawia (dane nieaktualne, po 2 testy) — zdecydować: nowe pety także tam (`dane.py` obu gier) albo stare zostają (zmiana kodu tych gier) · Karol · #niski · #gra/pet-arena
+- [ ] Rejestr zasobów: dopisać dwie maski blasku jajek do `assets/manifest.json` — wpisy czekają na komputerze Karola, bo ten sam plik zmienił Paweł (konflikt do rozwiązania z Karolem) · agent Karola · #niski
 - [ ] Nazwa gry: wybrać z pięciu propozycji ([[Nazwa gry — propozycje z „Cat” (propozycja)]], pytanie 97); po wyborze nowy ekran ładowania z kotami · Karol, Paweł · #wysoki
 - [ ] Training Center i zagroda po nocy 25/26.11: ocenić w panelu (raport „Miasto: zagroda bez dodatków i Training Center ze stanowiskami w środku”) — sala stoi w miejscu niebieskiego domu przy placyku, w sali jest ciasno; animację treningu widzi tylko trenujący gracz · Karol, Paweł · #wysoki
 - [ ] Jajka Bagna i Dżungli: Paweł — zgoda na rozszerzenie scenki wyklucia (pliki JajkoKorowe) z jednego jajka na listę jajek; bez tego nowe jajka są tylko do oglądania (raport „Jajka Bagna i Dżungli: modele do oceny”) · Paweł · #średni
 - [ ] Zagroda: pet z drugiego slotu okna Pets nadal stoi w zagrodzie i daje Rybki (stan gracza zna jednego aktywnego peta) — ustalić z Pawłem: zgłaszanie drugiego slotu haczykiem albo kilku aktywnych petów w stanie gracza · agent Karola, Paweł · #średni
 - [ ] Jajka pozostałych biomów (Bagno, Dżungla) na wzór leśnego jaja Pawła — model, karta petów, scenka wyklucia; Karol na sesji 25.11: „poproszę mojego Clauda, żeby wziął Twoje jajko i zbudował do innych biomów”; start po poleceniu na czacie ([[Sesja główna 2026-11-25 — zapis ustaleń]]) · agent: Karol · #wysoki
-- [ ] Pety i zagroda: poprawić modele i animacje petów (referencje od Pawła), z zagrody usunąć smoka, psa i domek, Jagoda przed zagrodą; po zatwierdzeniu D-153 — miejsca 2 → 4 → 6 → 8 u Jagody i Rybki na sekundę z zagrody (najpierw liczby w kalkulatorze) · agent: Karol · #wysoki
 - [ ] Paweł: obraz referencyjny broni (ma kilka poglądowych z Higgsfield) i referencje petów dla Karola — prośba z sesji 25.11 · Paweł · #wysoki
 - [ ] Paweł: okno kowala z zakładkami — ulepszanie, rozbiórka (dół: przedmioty, góra: składniki), sklep składników za Rybki; poprawić górną siatkę z grafiki (dziś „Kostur Kota-Maga” zamiast składników) (propozycja D-152, pytanie 99) · agent: Paweł · #wysoki
 - [ ] Paweł: UI questów — tablica ogłoszeń w bazarze z wykrzyknikiem, kliknięcie otwiera okno z questami do wyboru (pomysł Pawła z sesji 25.11) · agent: Paweł · #średni
@@ -26,8 +31,6 @@ tags: [produkcja, zadania]
 - [ ] Muzyka miasteczka: nowe propozycje z Higgsfield do odsłuchu (obecna „dosyć słaba” — Karol 25.11), Karol wybiera, wgranie po osobnym „tak” · agent Karola, Karol · #wysoki
 - [ ] Responsywność: lag przy otwieraniu sklepu i ekwipunku — pomiar i poprawka według odpowiedzi na pytanie 101 · agent Karola albo Pawła · #wysoki
 - [ ] Ekran ładowania z kotami zamiast ludzików (D-145; napis tytułu — pytanie 97) · agent Karola · #średni
-- [ ] Modele 3D przedmiotów wojownika (pula Lv 1–10) według arkuszy Pawła: 5 zestawów po 6 przedmiotów w `assets/refs/przedmioty_rycerz/`, opis w [[Przedmioty — pula Lv 1–10, 5 na slot (propozycja)]]; do tego 6 ikon „Leśnego Złomu”. Arkusze zwiadowcy i maga — jeszcze nie ma · agent Karola (Karol 25.11: „przedmiotami zajmuję się ja”) · #średni
-- [ ] Pety leśnego jajka: przebudować modele według arkuszy obrotów Pawła (`assets/refs/pety_las/`, [[Pety leśnego jajka — arkusze obrotów (propozycja)]]); przed przebudową peta agent otwiera jego arkusz — zakres: pytanie 104 · agent Karola · #średni
 - [ ] HUD: usunąć na razie przycisk gildii i przerobić przyciski na podłużne (ikona po lewej, napis po prawej) według referencji Karola (Paweł 25.11, „na ostatnie zadanie”) · agent Pawła · #średni
 - [ ] Koty ras: dopracować modele do referencji z Higgsfield; elf i mroczny elf z jedną parą uszu, goblin zostaje (Paweł 25.11) · agent Pawła (Blender) · #średni
 - [ ] Figma: dokończyć makiety „MistrzGier — stół” (58:115) i „OknoQuestow — tablica” (58:130) na stronie „HUD Buttons”, gdy odnowi się limit wywołań planu Starter · agent Pawła · #niski
@@ -182,6 +185,9 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Pety i zagroda: Rybki z zagrody i miejsca 2 → 4 → 6 → 8 u Jagody wdrożone w Studio jako próba (propozycja D-153, liczby robocze), pety na ośmiu nowych legowiskach; próby w Play bez niezaliczeń · agent Karola · 2026-11-26
+- [x] Pety leśnego jajka: pięć modeli przebudowanych według arkuszy obrotów Pawła i wdrożonych w Studio (pytanie 104 — przyjęty na noc wariant „wszystkie pięć”, do oceny) · agent Karola · 2026-11-26
+- [x] Modele 3D przedmiotów wojownika (pula Lv 1–10) według arkuszy Pawła: pięć zestawów po sześć przedmiotów na kocie, plansze i ikony z renderów; arkuszy zwiadowcy i maga jeszcze nie ma · agent Karola · 2026-11-26
 - [x] Training Center: sala treningowa przy lewym boku, sześć stanowisk AFK w środku, poprawione animacje (bez broni w łapach, sztanga nad ubraniem, książka w łapach); zagroda bez psa, smoka, slime'a i budek, Jagoda przed bramką, osiem legowisk — w Studio, czeka na ocenę (propozycja D-151) · agent Karola · 2026-11-25
 - [x] Nazwa gry: pięć propozycji z „Cat” ze sprawdzeniem wyszukiwarki Roblox i cudzych marek (propozycja D-148, pytanie 97) · agent Karola · 2026-11-25
 - [x] Miasto: tekstury i kreska jak w sali wyboru rasy (D-147) — 25 własnych materiałów, brązowa kreska, w Studio; czeka na ocenę wyglądu (raport w panelu) i odpowiedź na pytanie 100 · agent Karola · 2026-11-25
