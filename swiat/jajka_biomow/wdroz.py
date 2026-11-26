@@ -7,6 +7,7 @@ skrypty ustawiające generuje studio_skrypty.py; ten plik tylko wysyła rzeczy d
     python -B swiat/jajka_biomow/wdroz.py --sucho     # bez Studio: pliki, stan wgrań, plan
     python -B swiat/jajka_biomow/wdroz.py skrypty     # kontener + Moduly/JajkaBiomowDane + JajkaBiomowSpoczynek (Client)
     python -B swiat/jajka_biomow/wdroz.py wgraj       # modele GLB -> zasoby Model (Open Cloud przez Studio), prawo Use
+    python -B swiat/jajka_biomow/wdroz.py wgraj --poczekalnia <folder zatwierdzony w Studio>   # kopia na czas wysyłki
     python -B swiat/jajka_biomow/wdroz.py wstaw       # insert_asset do kontenera + studio/jajko_<biom>_ustaw.luau
     python -B swiat/jajka_biomow/wdroz.py wszystko    # wgraj + wstaw + skrypty
     (--studio <studio_id>, gdy otwartych jest kilka okien Studio)
@@ -34,6 +35,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import re
 import subprocess
 import sys
@@ -232,6 +234,9 @@ def main():
     ap.add_argument("co", nargs="?", default="plan", choices=["plan", "skrypty", "wgraj", "wstaw", "wszystko"])
     ap.add_argument("--sucho", action="store_true", help="bez Studio: sprawdź pliki i pokaż plan")
     ap.add_argument("--studio", default=None, help="studio_id (gdy otwartych jest kilka okien Studio)")
+    ap.add_argument("--poczekalnia", default=None, metavar="FOLDER",
+                    help="wgraj: na czas wysyłki skopiuj GLB do tego folderu (zatwierdzonego w Studio do wgrywania) "
+                         "i usuń kopię po wysyłce — tylko po wyraźnej zgodzie właściciela na tę drogę")
     a = ap.parse_args()
 
     bledy = sprawdz_offline()
@@ -283,7 +288,7 @@ def main():
             return kod_http, dane, r["text"] or "", bool(r["is_error"])
 
         if a.co in ("wgraj", "wszystko"):
-            wgraj(chmura, luau, st, StudioError)
+            wgraj(chmura, luau, st, StudioError, a.poczekalnia)
         if a.co in ("wstaw", "wszystko"):
             wstaw(s, sid, luau, stan())
         if a.co in ("skrypty", "wszystko"):
@@ -295,7 +300,7 @@ def main():
             print("gotowe:", luau(kod(KONIEC_KOD, CO="skrypty")))
 
 
-def wgraj(chmura, luau, st, StudioError):
+def wgraj(chmura, luau, st, StudioError, poczekalnia=None):
     uzytkownik = luau('return tostring(game:GetService("StudioService"):GetUserId())')
     if not uzytkownik.isdigit() or uzytkownik == "0":
         sys.exit("Studio nie podało konta zalogowanej osoby — nic nie wysłano.")
@@ -316,14 +321,26 @@ def wgraj(chmura, luau, st, StudioError):
             z = {"etap": "wysylanie", "plik": d["glb"], "sha256": sha256(plik), "czas": time.strftime("%Y-%m-%dT%H:%M:%S")}
             st[b] = z
             zapisz_stan(st)                                   # BEZ tego zapisu nie wysyłamy
+            # droga przez zatwierdzony folder (zgoda Karola 26.11.2026 „Tak, przez folder modeli”): kopia tylko na czas
+            # wysyłki; do zasobu trafia dokładnie ten sam plik (sha256 liczone z oryginału wyżej)
+            plik_wysylki = plik
+            if poczekalnia:
+                os.makedirs(poczekalnia, exist_ok=True)
+                plik_wysylki = os.path.join(poczekalnia, os.path.basename(plik))
+                shutil.copyfile(plik, plik_wysylki)
             try:
                 kod_http, dane, tekst, blad = chmura("POST", "/assets/v1/assets", {"request": {
                     "assetType": "Model", "displayName": d["manifest"], "description":
                     "Blocky&Crycket: %s (swiat/jajka_biomow)" % d["nazwa"],
                     "creationContext": {"creator": {"userId": uzytkownik}}}},
-                    files=[{"name": "fileContent", "path": plik}], scopes=("asset:read", "asset:write"))
+                    files=[{"name": "fileContent", "path": plik_wysylki}], scopes=("asset:read", "asset:write"))
             except StudioError as e:
                 kod_http, dane, tekst, blad = 0, None, str(e), True
+            finally:
+                if poczekalnia and os.path.isfile(plik_wysylki):
+                    os.remove(plik_wysylki)
+                    if not os.listdir(poczekalnia):
+                        os.rmdir(poczekalnia)
             if blad and folder_niezatwierdzony(tekst):
                 del st[b]
                 if st:

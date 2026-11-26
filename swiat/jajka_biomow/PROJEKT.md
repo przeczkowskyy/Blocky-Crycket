@@ -27,7 +27,8 @@ Całość jednym poleceniem (Blender 5.0 bez okna, jedna instancja naraz; ok. 30
 | `studio/JajkaBiomowDane.luau` | dane animacji (spoczynek, wyklucie, reakcje ozdób) — docelowo `src/shared/` |
 | `studio/JajkaBiomowSpoczynek.client.luau` | ruch w spoczynku i reakcja ozdób na finał — docelowo `src/client/` |
 | `modele/jajko_<biom>.glb`, `.fbx`, `_statystyki.json` | modele do importu (tekstury koloru osadzone) i liczby |
-| `podglad/*.jpg` | plansze: 4 strony każdego jajka, skorupa i rozpad, zestawienie w jednej skali |
+| `podglad/*.jpg` | plansze: 4 strony każdego jajka, skorupa i rozpad, zestawienie w jednej skali; `scenka_*.jpg` — zrzuty scenki wyklucia z Play (26.11; Bagno i Dżungla na atrapach) |
+| `testy/proba_play.py` | próba scenki w Play (leśne + każde jajko biomu, które stoi w kontenerze): karta, spoczynek, odmowa, zakup prawdziwym E, 5 kliknięć, rozpad, słup, pet, kolory, ozdoby, konsola; `--tylko-lesne`, `--bez-zrzutow` |
 
 ## Budowa (zgodna ze scenką Pawła)
 
@@ -75,6 +76,23 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
 - **Umowa ze scenką:** na czas scenki atrybut modelu `Wyklucie = true` (spoczynek nie rusza wtedy Egg), w chwili BOOM
   `Final += 1` (ozdoby grają finał), opcjonalnie `KolorRzadkosci` (Color3) — błysk kryształów w kolorze trafionego peta.
 
+## Modele w grze (26.11.2026, popołudnie)
+
+- **Modele wgrane i wstawione.** Karol w oknie pytania: „Tak, przez folder modeli” → `wdroz.py wgraj --poczekalnia
+  <folder wyników postaci>` (kopia pliku tylko na czas wysyłki, potem usunięta). Zasoby Model: **Jajko Bagna
+  93451448952125**, **Jajko Dżungli 74304827925305** (moderacja Approved, prawo „Use” dla gry), stan w
+  `studio/zasoby.json`, wpisy `JajkoBagnaModel` / `JajkoDzungliModel` w `assets/manifest.json`. `wdroz.py wstaw`:
+  Bagno 15 części, 6,4 × 4,8 × 6,6 studa; Dżungla 11 części, 8,3 × 4,8 × 6,7 studa; punkty E „Punkt Jajko Bagna”
+  i „Punkt Jajko Dżungli”.
+- **Próba w Play na prawdziwych modelach** (`testy/proba_play.py`): 30 OK, 0 błędów, 3 „?” (zrzuty do oceny) — karta
+  szans i cena każdego jajka (300 / 750 / 1350), odmowa bez Rybek, zakup prawdziwym E, 5 kliknięć, rozpad, słup, pet
+  z właściwej puli, kolor żył z atrybutu, reakcja ozdób w finale, konsola czysta. Zrzuty `podglad/scenka_*.jpg` są
+  z tej próby (prawdziwe modele).
+- **Do poprawy (pakiet petów, zadanie w sejfie):** komunikat „Wykluł się: …” na dole ekranu pojawia się zaraz po E
+  i zdradza peta przed otwarciem jaja (także przy leśnym); stary inkubator biomu stoi obok z własnym E i przy zakupie
+  gra swoją animację. Nie sprawdzono: widoku u drugiego gracza, dotyku i myszy, prawdziwego telefonu.
+- Sekcje niżej opisują stan sprzed wgrania (noc 25/26.11) i kroki etapu — zostają jako historia.
+
 ## Stan w Studio (noc 25/26.11.2026)
 
 - **Maski blasku wgrane** (Studio MCP `upload_image`, konto osoby w Studio; gra ma prawo „Use”): JajkoBagnaBlask
@@ -97,6 +115,26 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
   potem usunięte): bujanie, puls blasku 0,41–0,54, wiatr, lilie, bąble, puls kryształów, finał (odchylenie 5,8–7,8°,
   bąble pękają i wracają po 4,5 s, błysk w `KolorRzadkosci`), `Wyklucie = true` zatrzymuje Egg; konsola bez błędów
   tych skryptów. Modele dostają `ModelStreamingMode = Atomic` (StreamingEnabled jest włączone).
+- **Scenka wyklucia w skryptach Pawła (26.11, agent Karola za zgodą Pawła: „niech zrobi agent Karola, wzorując się
+  na animacji jaja lasu”)** — wdrożona w Studio (przed nadpisaniem sprawdzone: Source w Studio = repo, hash po
+  ujednoliceniu końców wierszy). `src/client/JajkoKoroweClient.client.luau`: lista jajek zamiast jednego (leśne
+  + modele z atrybutem `JajkoId` w `JajkaBiomowPodglad`, sprawdzane co sekundę — StreamingEnabled), stan ruchu,
+  blokada scenki i pokazany pet osobno dla każdego jajka, `KolorZyl` / `KolorBlasku` z atrybutów (bez atrybutu —
+  leśne), `Wyklucie = true` na czas scenki, w chwili BOOM `KolorRzadkosci` i `Final += 1`; jajkami biomów ten skrypt
+  rusza tylko w scence (w spoczynku — `JajkaBiomowSpoczynek`); karta szans osobna dla każdego jajka (FOREST / SWAMP /
+  JUNGLE EGG). `src/server/JajkoKorowe.server.luau`: stanowiska z id jajka (leśne + modele z `JajkoId`), podpowiedź E
+  na `Punkt <nazwa modelu>`, zakup tym samym haczykiem `SterowanieSerwera("kup", gracz, id)`, „info” z id jajka,
+  w wyniku wyklucia pole `jajko`, przy odmowie id jajka; poprawka błędu z oryginału: odmowa (np. brak Złota)
+  blokowała gracza na 45 s („Jajko już pęka…” przy następnym E) — teraz bez zakupu nie ma blokady.
+  **Próba w Play** (`testy/proba_play.py`, atrapy: jajo z siatki leśnego + maski biomów + ozdoby z klocków, potem
+  usunięte): **30 OK / 0 BŁĄD / 3 ?** (zrzuty) — dla leśnego, Bagna i Dżungli: karta z ceną 300 / 750 / 1350, jeden
+  „pisarz” CFrame jaja (spoczynek i scenka: 1,0 zmiany na klatkę), odmowa bez Złota bez scenki, zakup prawdziwym E
+  (Złoto − cena, pet z puli tego jajka, quest „jajka” +1), 5 kliknięć (blask do 1,67), rozpad, odlot, słup, pet
+  z napisami, `Final` +1, kolory (światło rdzenia i iskry = `KolorZyl`, `KolorRzadkosci` = kolor peta), ozdoby
+  w finale (Bagno: trzciny, błysk kryształów i cętek, bąble pękają; Dżungla: liście i kwiaty, błysk), drugi E
+  w scence → „Jajko już pęka…”, konsola bez błędów. Po usunięciu atrap krótki Play (`--tylko-lesne`): 12 OK / 0 BŁĄD,
+  konsola czysta. Zrzuty `podglad/scenka_<lesne|bagno|dzungla>_<1_pekanie|2_slup|3_pet>.jpg` (Bagno i Dżungla —
+  atrapy, nie prawdziwe modele).
 
 ## Etap „Studio” (kroki)
 
@@ -110,15 +148,19 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
    (skala ×1,5, kolory, maska, korzeń, miejsce jak wyżej). Niczego cudzego nie usuwa — stare gniazda z klocków zostają.
    Potem zrzuty z gry (każde jajko z dwóch stron i z bliska) i ocena: tekstura, siła Neonu, skala.
 4. **Animacja spoczynku:** zrobione (`wdroz.py skrypty`); po wstawieniu modeli sprawdzić w Play na prawdziwych siatkach.
-5. **Scenka wyklucia (pliki Pawła — za jego zgodą albo przez niego):** w `JajkoKoroweClient` zamiast jednego modelu
-   lista jajek (`Jajko korowe` + modele z `JajkaBiomowPodglad`), `KOLOR_ZYL` i `KOLOR_BLASKU` z atrybutów modelu
-   `KolorZyl` / `KolorBlasku`, ustawianie `Wyklucie` i `Final`; w `JajkoKorowe.server.luau` zamiast stałej
-   `JAJKO = "jajko_lesne"` — id z atrybutu `JajkoId` modelu (`jajko_bagienne`, `jajko_dzungli`), podpowiedź E na
-   `Punkt Jajko Bagna` / `Punkt Jajko Dżungli` (skrypt ustawiający tworzy te punkty bez podpowiedzi). Zakup dalej przez
-   haczyk serwera petów Karola (`SterowanieSerwera("kup", gracz, id)`), bez zmian w `swiat/pety_proba`.
-   Jeden „pisarz” ruchu jaja: w spoczynku Egg nowych jajek rusza `JajkaBiomowSpoczynek`, a klient Pawła tylko
-   w czasie scenki (gdy `Wyklucie = true`) — inaczej dwa skrypty co klatkę ustawiają ten sam CFrame.
-6. Próba w Play (kupno, 5 kliknięć, rozpad, słup, pet), zrzuty, raport w panelu.
+5. **Scenka wyklucia (pliki Pawła, za jego zgodą):** zrobione 26.11 (opis wyżej, „Stan w Studio”). Bez modeli
+   nowych jajek gra działa jak dotąd (stanowiska biomów po prostu nie powstają). Zakup przez haczyk serwera petów,
+   bez zmian w `swiat/pety_proba`. Jeden „pisarz” ruchu jaja sprawdzony w Play.
+6. **Próba w Play:** zrobiona na atrapach 26.11 (30 OK). **Po wgraniu prawdziwych modeli** (człowiek zatwierdza folder
+   `swiat/jajka_biomow/modele` w Studio: Assistant → Settings → MCP Permissions → approved upload directories):
+
+       python -B swiat/jajka_biomow/wdroz.py wgraj      # GLB → zasoby Model, prawo Use, manifest
+       python -B swiat/jajka_biomow/wdroz.py wstaw      # Studio w Edit: modele + punkty E do JajkaBiomowPodglad
+       python -B swiat/jajka_biomow/testy/proba_play.py "%LOCALAPPDATA%\BlockyCrycket\proby\<data>_jajka_modele"
+
+   Potem obejrzeć `podglad/scenka_*.jpg` na prawdziwych siatkach (skala i wysokość kamery — `ujecie()` liczy z
+   wysokości leśnego jaja ze skałami 3,03 m; nowe ok. 3,0 m z ozdobami — powinno pasować; czy skorupy po rozpadzie
+   i słup są w kadrze; czy liście Dżungli nie zasłaniają peta), raport w panelu.
 
 ## Niepewne
 
@@ -131,3 +173,15 @@ Dane w `studio/JajkaBiomowDane.luau` (gotowy ModuleScript), czyta je `studio/Jaj
   wyglądać inaczej; ocenić dopiero zrzutem ze Studio.
 - Miejsce i przód sprawdzone na mapie 26.11 (wyżej), ale bez prawdziwego modelu — po wstawieniu obejrzeć zrzutem,
   czy liście Dżungli (7,5 studa szerokości) nie wchodzą w kwiaty obok i czy trzcina obok jaja Bagna nie przebija jaja.
+- **Stary inkubator z pakietu petów obok nowego jajka (do decyzji Karola, zmiana w `swiat/pety_proba`):** haczyk
+  `kup` serwera petów wysyła też własne „wyklucie” do klienta petów, więc przy każdym zakupie z nowego jajka (tak samo
+  jak dziś z leśnego) stary inkubator tego jajka gra swoją animację, a na dole ekranu od razu wyskakuje „Wykluł się:
+  <pet> (rzadkość)…” — **zdradza peta, zanim gracz kliknie 5 razy** (widać na `scenka_*_1_pekanie.jpg`). Stary
+  inkubator ma też dalej własne E (Bagno ok. 15,5 st od punktu nowego jajka, Dżungla ok. 12,6 st): ta sama cena, pula
+  i zapis, więc gra się nie psuje, ale są dwa miejsca zakupu, a quest „jajka” liczą tylko nowe stanowiska.
+  Propozycja: w haczyku `kup` flaga „bez pokazu” (bez animacji inkubatora i bez komunikatu), a E i jajko inkubatora
+  biomu chowane, gdy w `JajkaBiomowPodglad` stoi model z tym `JajkoId`.
+- Napis z nazwą i rzadkością peta nad słupem: tabliczka istnieje (próba czyta „Żołędziak / POSPOLITY”), ale na
+  zrzutach jej nie widać — przy leśnym jaju nad jajem wisi tabliczka NPC Jagody; niesprawdzone wzrokowo.
+- Przy leśnym jaju w kadrze scenki stoi Jagoda (NPC zagrody, ok. 3 st za jajem) — scenka chowa tylko gracza, jego
+  bohatera i pety.
