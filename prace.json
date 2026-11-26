@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T00:45:07+01:00",
+ "aktualizacja": "2026-11-26T01:00:27+01:00",
  "prace": [
   {
    "id": "pety-zagroda-rybki",
@@ -29,21 +29,6 @@
    "obszary": [
     "swiat/ewolucja/**",
     "studio:EwolucjaGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "zagroda-rybki-studio",
-   "tytul": "Zagroda petów: Rybki, nowe legowiska i nowe modele w Studio",
-   "stan": "w_toku",
-   "etap": "Poprawki wdrożone; ostatnie próby: zagroda, las, Bagno, Dżungla",
-   "start": "2026-11-26T00:13:54+01:00",
-   "koniec_szacowany": "2026-11-26T01:40:00+01:00",
-   "aktualizacja": "2026-11-26T00:45:07+01:00",
-   "obszary": [
-    "studio:StanGracza",
-    "studio:PetyProba"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
