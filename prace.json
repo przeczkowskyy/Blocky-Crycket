@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T16:52:05+01:00",
+ "aktualizacja": "2026-11-26T16:52:10+01:00",
  "prace": [
   {
    "id": "jajka-scenka",
@@ -16,6 +16,19 @@
     "src/client/JajkoKoroweClient.client.luau",
     "src/server/JajkoKorowe.server.luau",
     "swiat/jajka_biomow/**"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-pula_wojownika_giermek",
+   "tytul": "Przebudowa modelu pula_wojownika_giermek",
+   "stan": "w_toku",
+   "start": "2026-11-26T16:52:10+01:00",
+   "koniec_szacowany": "2026-11-26T17:12:10+01:00",
+   "aktualizacja": "2026-11-26T16:52:10+01:00",
+   "obszary": [
+    "model:pula_wojownika_giermek"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
