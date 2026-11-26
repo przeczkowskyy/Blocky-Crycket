@@ -568,7 +568,7 @@ w stronę kamery objazdu (od 17.11 obrót zaczyna się 0,45 s PRZED radością, 
 `OBROT_ZWYCIEZCY` w odtwarzaczu — więc przy cięciu do objazdu twarz jest już do kamery; wcześniej przez 0,1–0,3 s
 objazdu broń zasłaniała twarz; kąt twarzy ok. 35°; wcześniej, gdy leżący wymuszał duży kąt objazdu, wiwat było widać od
 tyłu, a panel wyniku stał na tle pleców) — objazd kamery, baner z krótką melodią, przy wygranej
-wysypany łup (monety, żetony lasu, Gem, kryształ Shardu) i panel wyniku: Rybki (napis „RYBKI” od 26.11.2026, D-146; ikona wciąż moneta), doświadczenie, tokeny krainy, Gem, Shard
+wysypany łup (monety, żetony lasu, Gem, kryształ Shardu) i panel wyniku: Rybki (napis „RYBKI” i ikona rybki od 26.11.2026, D-146; łup wysypywany na arenie to dalej monety), doświadczenie, tokeny krainy, Gem, Shard
 Ewolucji (zera wyszarzone), podtytuł z liczbą tur, stopka z ziarnem i czasem dziennika. Objazd nie wjeżdża w leżącego:
 kąt objazdu jest dobierany tak, żeby kamera była poza obwiednią leżącego (z zapasem), widok na zwycięzcę jej nie
 przecinał, a szczątki były od kamery co najmniej tak daleko jak zwycięzca (0,95) — stos głazów Strażnika nie wchodzi na

@@ -203,9 +203,10 @@ local IKONY = {
 		mapa = { "....W...", "...WW...", "WWWWWR.R", "WWWWW.R.", "WWWWWR.R", "WWWWW...", "...WW...", "....W..." },
 	},
 	-- łup
-	moneta = {
-		paleta = { Y = "#FFD23F", O = "#E79A12", W = "#FFF3B0", D = "#8A5A0A" },
-		mapa = { "..DDDD..", ".DYYYYD.", "DYWYYYOD", "DYWYOYOD", "DYYYOYOD", "DYYYYYOD", ".DOOOOD.", "..DDDD.." },
+	-- Rybki (D-146): waluta z atrybutu Gold; złota rybka jak ikona GoldFish w HUD i sklepie
+	rybka = {
+		paleta = { G = "#F7A823", L = "#FFD45E", O = "#D9730D", K = "#2B1A0A", W = "#FFFFFF" },
+		mapa = { "...OO...", ".GGGGG.O", "GWKGGGOO", "GGGGGOO.", "GLLLGOO.", "GLLLLGOO", ".GLLLG.O", "...OO..." },
 	},
 	gwiazda = {
 		paleta = { P = "#7B4DFF", p = "#B79BFF", D = "#2B1A66" },
@@ -927,7 +928,7 @@ function Interfejs:_zbudujWynik()
 		Font = KOMIKS, Text = "", TextColor3 = K.ciemny, ZIndex = 62,
 	}, 0)
 	local kafle = {}
-	local opisy = { { "moneta", "RYBKI" }, { "gwiazda", "DOŚWIADCZ." }, { "zeton", "TOKENY LASU" }, { "gem", "GEM" }, { "shard", "SHARD EWOL." } }
+	local opisy = { { "rybka", "RYBKI" }, { "gwiazda", "DOŚWIADCZ." }, { "zeton", "TOKENY LASU" }, { "gem", "GEM" }, { "shard", "SHARD EWOL." } }
 	for i, opis in opisy do
 		local kafel = self:_ramka(karta, {
 			Name = "Kafel" .. i, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.11 + (i - 1) * 0.195, 0.315),
