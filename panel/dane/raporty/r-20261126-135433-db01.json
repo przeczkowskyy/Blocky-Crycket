@@ -1,0 +1,25 @@
+{
+ "id": "r-20261126-135433-db01",
+ "tytul": "Training Center: dwa rzędy po trzy stanowiska i trzymanie książki",
+ "opis_md": "Po uwadze Pawła („wydłużyć lekko, stanowiska AFK ze środka przenieść za pozostałe, żeby były 2 rzędy po 3 i przestrzeń po środku”) i Karola („popraw trzymanie książki”) — w Studio.\n\n**Sala**\n- Dwa rzędy po trzy stanowiska wzdłuż bocznych ścian, przejście środkiem od placyku do tylnej ściany (8,2 studa, nic w nim nie stoi).\n- Sala głębsza o 3,2 studa do tyłu; dalej się nie da (dom w tle i granica placu). Front, szerokość i ławka bez zmian.\n- Lewy rząd: Pancerz (twarzą do placyku), Szczęście, Zręczność. Prawy rząd: Siła, Inteligencja, Kondycja.\n- Tak zrozumiałem zdanie Pawła — jeśli chodziło o inny układ, przebudowa jest odwracalna.\n\n**Książka**\n- Kot trzyma większą otwartą książkę w obu łapach przed klatką, stronami do pyszczka; głowa lekko pochylona, kartki się przewracają.\n- Przedtem książka była mała i siedziała w mankietach szaty.\n\n**Sprawdzone w grze**\n- Wszystkie sześć stanowisk startuje z E przy podejściu z przejścia; postać stoi na macie, rekwizyty na siebie nie zachodzą.\n- Próby miasta, treningu i NPC bez niezaliczeń (bazar 14 OK i 1 „?”, trening 31 OK, NPC 14 OK i 1 „?”).\n\n**Do decyzji i znane słabości**\n- Podpowiedź E sięga 10 studów: idąc wzdłuż rzędu od frontu, E przy Sile albo Inteligencji włącza następne stanowisko. Poprawka jest w skrypcie serwera Pawła (krótszy zasięg, ok. 4,5).\n- Na zwykłym awatarze (bez bohatera klasy) ręce nie ruszają się na żadnym stanowisku — było tak przed zmianą.\n- Z kamery dokładnie zza pleców głowa kota zasłania książkę; widać ją z boku i z przejścia.\n- Nie sprawdzono: prawdziwy telefon, dwóch graczy naraz.\n\nZrzuty: sala z placyku po i przed, przejście środkiem, sala z góry, czytanie po zmianie z przodu i z boku, czytanie przed zmianą.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T13:54:33+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/MiasteczkoBazar/TrainingCenter",
+   "etykieta": "Training Center"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg"
+ ],
+ "gra": "bc"
+}

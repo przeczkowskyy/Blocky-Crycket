@@ -506,16 +506,24 @@ local function celuj(r: Rig, strona: string, cel: Vector3, maxWysun: number): (C
 	return CFrame.new(wysun) * CFrame.Angles(poch - alfa, 0, odw), CFrame.Angles(zgiecie, 0, 0)
 end
 
--- książka w łapach przed klatką: środek i nachylenie (układ UpperTorso) i skala (kot ma tułów 0,85 st → 0,45, człowiek ok. 1,5 → 0,8)
+-- agent Karola, 26.11: książka większa i dalej od ciała. Pomiar u Kota-Maga (próba w Play): książka 0,98 × 0,67 st
+-- (skala 0,45) siedziała 0,9 st przed klatką, w środku wielkich mankietów rękawów (nachodziła na nie do 0,18 st), a u
+-- wojownika obracająca się kartka wchodziła w tułów i głowę (do 0,48 st). Teraz: dolna krawędź przed ubraniem klatki,
+-- nisko pod brodą, książka pochylona 50° (strony ku twarzy), łapy trzymają dolne rogi od strony stron (pierścień
+-- mankietu leży wtedy nad stroną, nie przecina jej), skala z wysokości tułowia (kot 0,85 st → 0,85; człowiek 1,5 → 1,08).
+-- Kartka (3/4 szerokości strony) przewraca się, „zwijając się” w połowie obrotu (krótsza w poprzek), żeby nie zahaczać
+-- o twarz ani o mankiety rękawów przy łapach (sprawdzone w Play na Kocie-Magu, wojowniku, zwiadowcy i awatarze).
+local KSIAZKA_TH = math.rad(50) -- nachylenie od poziomu (strony ku twarzy)
+local KARTKA_SZER = 0.75 -- szerokość przewracanej kartki względem strony
+local KARTKA_ZWIJA = 0.7 -- o ile krótsza w poprzek jest kartka w połowie obrotu
 local function ukladKsiazki(M: Miary): (CFrame, number)
-	local k = math.clamp(M.wysTulowia / 1.9, 0.42, 1)
-	local th = math.rad(65) -- strony zwrócone ku twarzy
-	local pol = 0.75 * k -- połowa długości książki (grzbiet wzdłuż Z)
-	-- górna krawędź pod brodą (z zapasem na pochyloną głowę — Neck −12° przy czytaniu)
-	local y = math.min(M.glowaDol - 0.18 - pol * math.sin(th), M.bark.Y - 0.1)
-	y = math.max(y, -M.wysTulowia * 0.45)
-	local z = -(M.klatka + 0.1 + pol * math.cos(th) + 0.07 * k) -- dolna krawędź przed ubraniem
-	return CFrame.new(0, y, z) * CFrame.Angles(th, 0, 0), k
+	local k = M.wysTulowia
+	local s = math.clamp(0.55 + 0.35 * k, 0.6, 1.3) -- skala książki (1 = 2,1 × 1,5 st)
+	local pol = 0.75 * s -- połowa długości (grzbiet wzdłuż Z książki; +Z = dolna krawędź, bliżej ciała)
+	local yD = M.bark.Y - 0.55 * k -- dolna krawędź: nisko pod brodą
+	local zD = -(M.klatka + 0.35 * k) -- … i przed ubraniem klatki
+	local c = Vector3.new(0, yD + pol * math.sin(KSIAZKA_TH), zD - pol * math.cos(KSIAZKA_TH))
+	return CFrame.new(c) * CFrame.Angles(KSIAZKA_TH, 0, 0), s
 end
 
 -- sztanga: odległość dłoni od środka tułowia ku niebu (dół nad ubraniem, góra = wyprost)
@@ -539,21 +547,28 @@ local function zapamietajGrupe(m: Model?)
 		bazowe[m] = m:GetPivot()
 	end
 end
+local rozmiary: { [BasePart]: Vector3 } = {} -- agent Karola, 26.11: części, którym zmieniamy rozmiar (kartka książki)
 local function przywrocRekwizyty()
 	for i, cf in pairs(bazowe) do
-		if i.Parent then
-			if i:IsA("Model") then
-				if i:GetScale() ~= 1 then
-					i:ScaleTo(1) -- agent Karola, sesja 25.11: książka zmniejszona do wzrostu postaci wraca do rozmiaru
-				end
-				i:PivotTo(cf)
-			elseif i:IsA("BasePart") then
-				i.CFrame = cf
-				i.LocalTransparencyModifier = 0
+		if i.Parent and i:IsA("Model") then
+			if i:GetScale() ~= 1 then
+				i:ScaleTo(1) -- agent Karola, sesja 25.11: książka zmniejszona do wzrostu postaci wraca do rozmiaru
 			end
+			i:PivotTo(cf)
+		end
+	end
+	-- agent Karola, 26.11: części po modelach (kartka leży w grupie Kartka — PivotTo grupy przesunąłby ją jeszcze raz)
+	for i, cf in pairs(bazowe) do
+		if i.Parent and i:IsA("BasePart") then
+			if rozmiary[i] then
+				i.Size = rozmiary[i]
+			end
+			i.CFrame = cf
+			i.LocalTransparencyModifier = 0
 		end
 	end
 	bazowe = {}
+	rozmiary = {}
 	for _, p in ipairs(lokalne) do
 		p:Destroy()
 	end
@@ -616,18 +631,22 @@ local POZY: { [string]: (f: number, t: number, r: Rig, M: Miary) -> { [string]: 
 		}
 	end,
 	Inteligencja = function(f, _, r, M)
-		-- agent Karola, sesja 25.11: łapy trzymają dolne rogi książki, która leży przed klatką pod brodą (ukladKsiazki)
+		-- agent Karola, 26.11: łapy na dolnych rogach książki, od strony stron (ukladKsiazki); głowa lekko pochylona
 		local kiw = math.sin(f * math.pi * 2) * 3
-		local cf, k = ukladKsiazki(M)
-		local bP, lP = celuj(r, "Right", (cf * CFrame.new(0.95 * k, -0.08, 0.55 * k)).Position, 0.5)
-		local bL, lL = celuj(r, "Left", (cf * CFrame.new(-0.95 * k, -0.08, 0.55 * k)).Position, 0.5)
+		local cf, s = ukladKsiazki(M)
+		local x = 0.9 * 1.05 * s -- prawie przy zewnętrznej krawędzi okładki
+		local y = 0.36 * math.sqrt(M.wysTulowia / 0.85) -- łapa nad stroną (kot 0,36; człowiek ok. 0,48)
+		local z = 0.75 * s - 0.25 * s -- ćwierć skali w górę od dolnej krawędzi
+		local bP, lP = celuj(r, "Right", (cf * CFrame.new(x, y, z)).Position, 0.5)
+		local bL, lL = celuj(r, "Left", (cf * CFrame.new(-x, y, z)).Position, 0.5)
 		if not (bP and bL) then
-			bP, lP, bL, lL = R(30, 0, -10), R(70), R(30, 0, 10), R(70) -- szkielet bez Motor6D
+			-- szkielet bez Motor6D (awatar na AnimationConstraint): ręce przed sobą, dłonie pod dolnymi rogami książki
+			bP, lP, bL, lL = R(55, 0, -8), R(40), R(55, 0, 8), R(40)
 		end
 		return {
-			RightShoulder = bP, RightElbow = lP, RightWrist = R(-25),
-			LeftShoulder = bL, LeftElbow = lL, LeftWrist = R(-25),
-			Neck = R(-12 + kiw), Waist = R(-4), -- było −20: pochylona głowa kota wchodziła w książkę
+			RightShoulder = bP, RightElbow = lP, RightWrist = R(-10),
+			LeftShoulder = bL, LeftElbow = lL, LeftWrist = R(-10),
+			Neck = R(-12 + kiw), Waist = R(-4),
 		}
 	end,
 	Pancerz = function(f)
@@ -735,21 +754,27 @@ local function ruszRekwizyty(f: number, t: number, r: Rig)
 		zapamietajGrupe(kart)
 		local ut = r.model:FindFirstChild("UpperTorso") :: BasePart?
 		if k and ut and miary then
-			-- agent Karola, sesja 25.11: książka przed klatką pod brodą (nie przy dłoniach, które u kota sięgały twarzy),
-			-- zmniejszona do wzrostu postaci; łapy trzymają jej dolne rogi (POZY.Inteligencja)
+			-- agent Karola, 26.11: książka przed klatką, dolna krawędź w łapach (ukladKsiazki), skala z wymiarów postaci
 			local uk, skala = ukladKsiazki(miary)
 			if math.abs(k:GetScale() - skala) > 0.01 then
 				k:ScaleTo(skala)
-				if kart then
-					kart:ScaleTo(skala)
-				end
 			end
 			local cf = ut.CFrame * uk
 			k:PivotTo(cf)
-			if kart then
-				-- kartka przewraca się z prawej na lewą w drugiej połowie powtórzenia
+			local ark = kart and kart:FindFirstChild("Arkusz") :: BasePart?
+			if kart and ark then
+				-- kartka przewraca się z prawej na lewą w drugiej połowie powtórzenia; w połowie obrotu jest krótsza
+				-- w poprzek (zwija się), więc nie wchodzi w twarz. Grupa zostaje w skali 1 — rozmiar kartki ustawiamy sami
+				if rozmiary[ark] == nil then
+					rozmiary[ark] = ark.Size
+					bazowe[ark] = ark.CFrame
+				end
 				local kat = if f < 0.5 then 0 elseif f < 0.9 then math.pi * ((f - 0.5) / 0.4) else math.pi
-				kart:PivotTo(cf * CFrame.new(0, 0.09 * skala, 0) * CFrame.Angles(0, 0, kat))
+				local os_ = cf * CFrame.new(0, 0.09 * skala, 0) * CFrame.Angles(0, 0, kat)
+				kart:PivotTo(os_)
+				local w = 0.92 * skala * KARTKA_SZER * (1 - KARTKA_ZWIJA * math.sin(kat))
+				ark.Size = Vector3.new(w, 0.03 * skala, 1.32 * skala)
+				ark.CFrame = os_ * CFrame.new(w / 2 + 0.01 * skala, 0, 0)
 			end
 		end
 	elseif id == "Pancerz" then

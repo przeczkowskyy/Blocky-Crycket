@@ -12,9 +12,20 @@ o salę na sześć stanowisk treningu AFK Pawła (src/server/TreningAFK.server.l
 miejsca: STANOWISKA niżej → znaczniki.json „trening_afk” → src/shared/TreningAFKDane.luau). Sala jest otwarta od frontu
 (bez słupów w świetle 24 st), lewy bok budynku ma przejście do sali pod podciągiem, a dach sali to szkło na krokwiach
 (przezroczystość 0,55 — kamera gracza Roblox, Poppercam, przechodzi przez części przezroczyste ≥ 0,25, więc nie
-wjeżdża w sufit i widać przez niego stanowiska). Dwa rzędy po trzy stanowiska; Pancerz w przednim rzędzie stoi
-twarzą do placyku, żeby NPC z pomidorami (11 st przed graczem) stał na placyku, a nie w drugim rzędzie.
+wjeżdża w sufit i widać przez niego stanowiska).
 Sala zajmuje miejsce niebieskiego domu placyku (dom_placyk_pn) — opis kolizji i wyboru w README pakietu.
+
+Dwa rzędy po trzy z przejściem pośrodku (26.11.2026, prośba Pawła przekazana przez Karola: „wydłużając go lekko, żeby
+te stanowiska AFK ze środka przenieść za pozostałe, żeby były 2 rzędy po 3 i przestrzeń po środku” — odczytane tak:
+rzędy wzdłuż lewego i prawego boku sali, od frontu do tylnej ściany, wolne przejście pośrodku od placyku do tylnej
+ściany; dwa stanowiska ze środka sali stoją teraz na końcu rzędów). Sala wydłużona o 3,2 st do tyłu (głębokość 16,8 →
+20,0; tył 3,2 st za tylną ścianą budynku — dalej okap domu z kulis, a niewidzialna ściana pola gry stoi tuż za salą),
+z prawym bokiem za budynkiem (ściana w linii jego lewej ściany). Lewy rząd (od frontu): Pancerz twarzą do placyku (NPC
+z pomidorami 11 st przed graczem stoi na placyku), Szczęście i Zręczność twarzą do lewej ściany (stolik i bieżnia pod
+ścianą — przodem do tyłu nie zmieściłyby się jeden za drugim); prawy rząd: Siła, Inteligencja, Kondycja twarzą do tylnej
+ściany jak dotąd. Przejście 8,2 st (x −26,1 … −17,9 modułu, zmierzone na stanowiskach zbudowanych w Play), lampy nad nim.
+Uwaga: podpowiedzi E stanowisk mają zasięg 10 st (skrypt Pawła), więc gracz podchodzący do Siły albo Inteligencji od
+frontu dostaje podpowiedź następnego stanowiska w rzędzie; z przejścia każde startuje dobrze (README pakietu).
 """
 import math
 import os
@@ -38,22 +49,30 @@ ZB = -10.0 + 1.2
 TRENER = (7.4, -5.6)
 STATYSTYKI = ("sila", "kondycja", "inteligencja", "zrecznosc", "szczescie", "pancerz")
 # sala treningowa po lewej (układ modułu): x od lewej ściany sali do lewego boku budynku, z od tyłu do frontu sali
-# (front sali cofnięty o 3,2 względem frontu budynku — ławka placyku zostaje na swoim miejscu)
+# (front sali cofnięty o 3,2 względem frontu budynku — ławka placyku zostaje na swoim miejscu). 26.11.2026: tył z −10,0
+# na −13,2 (3,2 st za tylną ścianą budynku; dalej o 0,9 okap domu z kulis, kalenica sali kończy się 0,1 przed nim)
 SALA_X = (-35.2, -11.0)
-SALA_Z = (-10.0, 6.8)
+SALA_Z = (-13.2, 6.8)
 H_SALI = (16.4, 14.4)           # wysokość ściany tylnej i belki frontu (dach szklany opada ku frontowi)
-# stanowiska treningu AFK: (id z TreningAFKDane, x, z, obrót względem budynku: 0 = twarzą do tylnej ściany, 180 = do placyku)
-STANOWISKA = (("Szczescie", -29.5, -4.4, 0), ("Kondycja", -21.2, -4.4, 0), ("Inteligencja", -12.9, -4.4, 0),
-              ("Pancerz", -29.5, 3.0, 180), ("Zrecznosc", -21.2, 3.0, 0), ("Sila", -12.9, 3.0, 0))
+# stanowiska treningu AFK: (id z TreningAFKDane, x, z, obrót względem budynku w stopniach: 0 = twarzą do tylnej ściany,
+# 90 = do lewej ściany, 180 = do placyku). 26.11.2026: dwa rzędy po trzy wzdłuż boków sali, przejście pośrodku
+# (x −26,1 … −17,9). Odstępy z wymiarów rekwizytów w src/server/TreningAFK.server.luau: tabliczka za graczem (z +3,05
+# … +3,35, x −4,4 … −0,8 stanowiska), punkt zejścia 3 st za graczem, stolik Szczęścia 3,9 przed graczem, bieżnia 3,2,
+# ławka 3,05; Pancerz najdalej w lewo, ile pozwala cokół (mata 4,4).
+STANOWISKA = (("Pancerz", -31.5, 3.0, 180), ("Szczescie", -29.5, -3.2, 90), ("Zrecznosc", -29.5, -8.8, 90),
+              ("Sila", -13.5, 3.0, 0), ("Inteligencja", -13.5, -2.75, 0), ("Kondycja", -13.5, -8.5, 0))
+LAMPY_SALI = (-22.0, (-8.4, -2.6, 3.0))     # x przejścia i z lamp nad nim
+OKNA_SALI = ((-8.8, 6, DACH), (-3.0, -5, None), (2.9, 4, None))   # lewa ściana: z, przechył, okiennica
 OBRYSY_DODATKOWE = (((SALA_X[0] + SALA_X[1]) / 2.0, (SALA_Z[0] + SALA_Z[1]) / 2.0, SALA_X[1] - SALA_X[0],
-                     SALA_Z[1] - SALA_Z[0]),)          # dla bruku: sala to też obrys budynku
+                     SALA_Z[1] - SALA_Z[0]),                  # dla bruku: sala to też obrys budynku
+                    (SALA_X[1] + 0.6, (SALA_Z[0] - OBRYS[1] / 2.0) / 2.0, 1.2, -OBRYS[1] / 2.0 - SALA_Z[0]))  # prawy bok za budynkiem
 
 
 def buduj(s, rnd):
     info = wspolne.skorupa(s, rnd, 22, 20, SCIANA, DACH, H0=14.0, otwor=14.0, otwor_x=1.0, H_otw=12.6, hp=5.5,
                            nawis=(2.2, 0.4, 1.0, 0.8), rz_p=-5.0, ry_p=4.0, dach_h=8.0, rz_d=9.0, okap=2.6, podzial=0.6,
                            markiza=(DACH, "biel"), okna_pietra=("prostokat",), duet="rycerz", na_pietrze=_szyld,
-                           okna_boczne=(0, 1), otwarty_bok=(-1, SALA_Z[0] + 1.2, SALA_Z[1]))
+                           okna_boczne=(0, 1), otwarty_bok=(-1, ZB, SALA_Z[1]))  # przejście od tylnej ściany budynku
     _sala(s)
     _tablica_wyboru(s)
     postacie.postac(s, "trener", NAZWA + "/Trener", (TRENER[0], Y_PODLOGI, TRENER[1]), ry=-28)
@@ -160,25 +179,44 @@ def _sprzet(s):
 def _sala(s):
     """Sala treningowa po lewej stronie budynku: posadzka, tylna i lewa ściana z cokołem i oknami, otwarty front
     z belką (bez słupów), dach ze szkła na krokwiach, różowy okap i kalenica, lampy, hantla-szyld nad frontem.
-    Stanowiska stawia skrypt Pawła; tu tylko ich miejsca (STANOWISKA → wspolne.DODATKI["trening_afk"])."""
+    Za tylną ścianą budynku (26.11.2026) prawy bok sali to ściana w linii lewej ściany budynku (x1 … x1 + T), a tylna
+    ściana i dach sięgają do niej. Stanowiska stawia skrypt Pawła; tu tylko ich miejsca (STANOWISKA →
+    wspolne.DODATKI["trening_afk"])."""
     x0, x1 = SALA_X
     z0, z1 = SALA_Z
     hT, hF = H_SALI
     T = 1.2
+    zb = -OBRYS[1] / 2.0                       # tylna ściana budynku (lico zewnętrzne)
+    xr = x1 + T if z0 < zb - 0.05 else x1      # prawy skraj sali za budynkiem
     sx, sz = (x0 + x1) / 2.0, (z0 + z1) / 2.0
+    dl = z1 - z0
+
+    def h_dachu(z):                            # spód szkła dachu nad punktem z (dach opada od tyłu ku frontowi)
+        return hF + (hT - hF) * (z1 - z) / dl
+
     # posadzka na równi z posadzką budynku (ta kończy się na x −10,9)
     s.blok("Posadzka", (sx - 0.05, (Y_PODLOGI - 0.15) / 2.0, sz), (x1 - x0 + 0.1, Y_PODLOGI + 0.15, z1 - z0 - 0.2),
            "drewno_jasne", "WoodPlanks")
     s.blok("Próg", (sx + 0.05, 0.125, z1 - 0.3), (x1 - x0 - 1.4, 0.35, 0.6), "kamien_cokol", "Cobblestone")
     # cokół, ściana tylna, ściana lewa (prosta do wysokości frontu + klin pod spadek dachu)
-    s.blok("Cokół", ((x0 - 0.25 + x1) / 2.0, 0.6, z0 + T / 2.0), (x1 - x0 + 0.25, 1.4, T + 0.5), "kamien_cokol", "Cobblestone")
+    s.blok("Cokół", ((x0 - 0.25 + xr + (0.25 if xr > x1 else 0.0)) / 2.0, 0.6, z0 + T / 2.0),
+           (xr - x0 + 0.25 + (0.25 if xr > x1 else 0.0), 1.4, T + 0.5), "kamien_cokol", "Cobblestone")
     s.blok("Cokół", (x0 + T / 2.0, 0.6, sz), (T + 0.5, 1.4, z1 - z0 + 0.5), "kamien_cokol", "Cobblestone")
-    s.blok("Ściana tył", ((x0 + T + x1) / 2.0, hT / 2.0, z0 + T / 2.0), (x1 - x0 - T, hT, T), SCIANA)
+    s.blok("Ściana tył", ((x0 + T + xr) / 2.0, hT / 2.0, z0 + T / 2.0), (xr - x0 - T, hT, T), SCIANA)
     s.blok("Ściana bok", (x0 + T / 2.0, hF / 2.0, sz), (T, hF, z1 - z0), SCIANA)
     s.klin("Ściana szczyt", (x0 + T / 2.0, hF + (hT - hF) / 2.0, sz), (T, hT - hF, z1 - z0), SCIANA, rot=(0, 180, 0))
-    # nad przejściem z budynku: ściana pod piętrem budynku (zakrywa szczelinę między podciągiem a piętrem)
+    if xr > x1:
+        # prawy bok za budynkiem: od tylnej ściany sali do tylnej ściany budynku, w linii jego lewej ściany
+        a, b = z0 + T, zb
+        h = h_dachu(a)
+        s.blok("Cokół", (x1 + T / 2.0, 0.6, (z0 + T + 0.25 + zb - 0.25) / 2.0), (T + 0.5, 1.4, zb - z0 - T - 0.5),
+               "kamien_cokol", "Cobblestone")
+        s.blok("Ściana bok", (x1 + T / 2.0, h / 2.0, (a + b) / 2.0), (T, h, b - a), SCIANA)
+    # nad przejściem z budynku: ściana pod piętrem budynku (zakrywa szczelinę między podciągiem a piętrem) — tylko
+    # w obrysie budynku (od jego tylnej ściany do 1,8 st przed frontem sali)
     with s.cechy(kolizja=False):
-        s.blok("Kolanko", (x1 - 0.55, (14.0 + hT) / 2.0 + 0.3, sz - 1.0), (1.1, hT - 14.0 + 0.6, z1 - z0 - 1.6), SCIANA)
+        s.blok("Kolanko", (x1 - 0.55, (14.0 + hT) / 2.0 + 0.3, (zb - 0.2 + z1 - 1.8) / 2.0),
+               (1.1, hT - 14.0 + 0.6, z1 - 1.8 - zb + 0.2), SCIANA)
     # front: belka nad otwartym frontem (kolizja — kamera zatrzymuje się na niej, nie za nią), pod nią rant tuszem
     s.blok("Nadproże", (sx, hF - 0.6, z1 - 0.5), (x1 - x0, 1.2, 1.0), SCIANA)
     with s.cechy(kolizja=False):
@@ -186,30 +224,34 @@ def _sala(s):
         for x, z in ((x0 + 0.5, z0 + 0.5), (x0 + 0.5, z1 - 0.5)):
             s.blok("Narożnik", (x, (1.3 + hF) / 2.0, z), (1.3, hF - 1.0, 1.3), "tusz")
         s.blok("Narożnik", (x1 - 0.55, (1.3 + hF) / 2.0, z1 - 0.55), (1.1, hF - 1.0, 1.1), "tusz")
+        if xr > x1:
+            s.blok("Narożnik", (xr - 0.5, (1.3 + hF) / 2.0, z0 + 0.5), (1.3, hF - 1.0, 1.3), "tusz")
         with s.cechy(cien=False):
             s.blok("Pas cienia", (x0 - 0.1, hF - 0.6, sz), (0.2, 0.9, z1 - z0 - 2.0), cien(s, SCIANA))
-    # okna w lewej ścianie (na zewnątrz) + poświata od środka
-    for z, k in ((-4.6, 6), (1.8, -5)):
-        zestaw.okno(s, (x0, 7.5, z), 3.0, 4.0, przechyl=k, swiatlo="neon_okno", ry=-90,
-                    okiennica=(DACH if z < 0 else None), strona_okiennicy=1)
+    # okna w lewej ścianie (na zewnątrz) + poświata od środka; nad stanowiskami zwróconymi do tej ściany
+    for z, k, okiennica in OKNA_SALI:
+        zestaw.okno(s, (x0, 7.5, z), 3.0, 4.0, przechyl=k, swiatlo="neon_okno", ry=-90, okiennica=okiennica,
+                    strona_okiennicy=1)
         with s.cechy(kolizja=False, cien=False):
             s.blok("Okno od środka", (x0 + T + 0.1, 7.5, z), (0.2, 3.6, 2.6), "neon_okno", "Neon")
-    # dach: szkło na krokwiach, spadek od tylnej ściany ku frontowi
-    dl = z1 - z0
+    # dach: szkło na krokwiach, spadek od tylnej ściany ku frontowi; prawy skraj w piętrze budynku (x1 + 0,3), a za
+    # budynkiem nad prawą ścianą sali (xr + 0,3)
     kat = math.degrees(math.atan2(hT - hF, dl))
     L = math.hypot(dl, hT - hF)
+    xp = xr + 0.3
     with s.uklad(pos=(sx, (hT + hF) / 2.0 + 0.1, sz), obrot=(kat, 0, 0)):
-        # od lica lewej ściany (x0) do wnętrza piętra budynku (x1 + 0,3): nad lewą ścianą nic nie wystaje ku okapowi domu
-        s.blok("Szyba dachu", (0.15, 0, 0.3), (x1 - x0 + 0.3, 0.2, L + 1.0), "D8F2EC", "SmoothPlastic", alfa=0.55)
+        s.blok("Szyba dachu", ((x0 + xp) / 2.0 - sx, 0, 0.3), (xp - x0, 0.2, L + 1.0), "D8F2EC", "SmoothPlastic", alfa=0.55)
         with s.cechy(kolizja=False):
             for x in (x0 + 0.3, x0 + 6.3, x0 + 12.3, x0 + 18.3, x1 - 0.3):
                 s.blok("Belka krokiew", (x - sx, 0.3, 0.3), (0.5, 0.4, L + 1.0), "tusz")
-            s.blok("Belka płatew", (0.15, 0.3, 0.3), (x1 - x0 + 0.3, 0.35, 0.45), "tusz")
-            s.blok("Okap", (0.3, 0.05, L / 2.0 + 0.95), (x1 - x0 + 0.6, 0.8, 0.7), DACH)
-            s.blok("Dach kalenica", (0.3, 0.25, -L / 2.0 - 0.1), (x1 - x0 + 0.6, 0.7, 1.4), DACH)
-    # lampy nad przejściem między rzędami stanowisk
-    for x in (-25.3, -17.0):
-        wspolne.lampa(s, (x, 15.5, -0.7), lancuch=1.2)
+            s.blok("Belka płatew", ((x0 + xp) / 2.0 - sx, 0.3, 0.3), (xp - x0, 0.35, 0.45), "tusz")
+            # okap i kalenica od lica lewej ściany (nad nią nic nie wystaje ku okapowi domu zachodniego) do xr + 0,6
+            s.blok("Okap", ((x0 + xp + 0.3) / 2.0 - sx, 0.05, L / 2.0 + 0.95), (xp + 0.3 - x0, 0.8, 0.7), DACH)
+            s.blok("Dach kalenica", ((x0 + xp + 0.3) / 2.0 - sx, 0.25, -L / 2.0 - 0.1), (xp + 0.3 - x0, 0.7, 1.4), DACH)
+    # lampy nad przejściem między rzędami stanowisk (punkt zawieszenia tuż nad spodem szkła)
+    xl, zl = LAMPY_SALI
+    for z in zl:
+        wspolne.lampa(s, (xl, h_dachu(z) + 0.2, z), lancuch=1.2)
     # szyld nad frontem sali: hantla jak na piętrze budynku (mniejsza)
     with s.uklad(pos=(sx, hF + 1.9, z1 + 0.2), obrot=(0, 0, 6), skala=0.55), s.cechy(kolizja=False):
         _hantla(s)
@@ -218,8 +260,9 @@ def _sala(s):
     ry_bud = math.degrees(math.atan2(kx, kz))
     lista = []
     for id_, x, z, o in STANOWISKA:
+        a = math.radians(o)                    # gracz patrzy w −Z stanowiska obróconego o o stopni wokół Y
         lista.append({"id": id_, "pozycja": wspolne.swiat(s, (x, Y_PODLOGI, z)), "obrot": round(ry_bud + o, 2),
-                      "przod": wspolne.kierunek(s, (0, 0, -1) if o == 0 else (0, 0, 1))})
+                      "przod": wspolne.kierunek(s, (round(-math.sin(a), 6), 0, round(-math.cos(a), 6)))})
     wspolne.DODATKI["trening_afk"] = {
         "opis": "miejsca sześciu stanowisk treningu AFK w sali Training Center (środek maty na posadzce, świat Studio; "
                 "obrot = stopnie obrotu stanowiska w Roblox, gracz patrzy w −Z stanowiska = „przod”). Wpisane do "

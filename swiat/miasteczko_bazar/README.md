@@ -19,7 +19,7 @@ przejściem na działkę, zagrodą petów, tablicą z rankingiem i Bramą Leśn�
 | `tekstury.py` | kafelki z arkusza, mapy do barwienia, wgrywanie do Roblox, raport przypisania, pomiar w emulacji telefonu |
 | `ujecia_tekstury.json`, `podglad/tekstury_*` | cztery kadry przed/po (plac, uliczka, karczma z bliska, całość z góry) i wyniki pomiaru `tekstury_pomiar.json` |
 
-**Liczby:** 4312 części (po sali Training Center i zagrodzie 25.11.2026; wcześniej 4410; cel ok. 8000, twardy limit 12 000), 84 grupy. Kontener `Workspace/MiasteczkoBazar`.
+**Liczby:** 4318 części (po wydłużeniu sali Training Center 26.11.2026; 25.11 po sali i zagrodzie 4312, wcześniej 4410; cel ok. 8000, twardy limit 12 000), 84 grupy. Kontener `Workspace/MiasteczkoBazar`.
 Świat = (994 + x; y; −700 + z), bez obrotu: części stoją w pliku już tam, gdzie mają stanąć (X 882…1066,
 Z −790…−610), więc przy budowie i zrzutach **nie podaje się `--przesun`**. Wschodni brzeg (X 1066) to początek pasa
 Lasu. Bazar stoi na wschodnim końcu płyty Baseplate (PROJEKT.md, wybór 1).
@@ -66,7 +66,8 @@ E `training_center` stoją jak stały; stojak z hantlami spod lewej ściany usun
 (26.11.2026) przeniesiony z lewego przodu na prawą stronę głównej izby, między trenerem a workiem (7,6; 0,5) — kamera
 gracza za plecami na stoisku E trenera stała w jego głowie (próba bazaru B06). Miejsca sześciu stanowisk AFK zapisuje moduł w `znaczniki.json` (blok `trening_afk`, poza listą
 `wszystkie`), stąd wpisane do `src/shared/TreningAFKDane.luau` (`D.miejsca`): dwa rzędy po trzy, gracz twarzą do tylnej
-ściany; Pancerz w przednim rzędzie twarzą do placyku, żeby NPC z pomidorami (11 st przed graczem) stał na placyku.
+ściany; Pancerz w przednim rzędzie twarzą do placyku, żeby NPC z pomidorami (11 st przed graczem) stał na placyku
+(układ z 25.11 — od 26.11 rzędy wzdłuż boków sali, zob. niżej).
 
 **Kolizje sali z mapą i wybór** (sala stoi w kącie pn.-zach. placyku studni): niebieski dom placyku `dom_placyk_pn`
 zastąpiony salą (wpis w `uklad.json` zostaje z polem `pominiety`, żeby pozostałe domy miały te same losowania), łącznik
@@ -80,6 +81,71 @@ Kontrola: `sprawdz.py` **0 błędów, 2 ostrzeżenia** (te same co wcześniej), 
 zaktualizowane do HUD i okien Pawła — 38/38). Zrzuty przed/po:
 `podglad/noc2511_*.jpg` (zagroda, Training Center z zewnątrz i w środku, sześć stanowisk w trakcie treningu — Kot-Mag
 i Wojownik).
+
+## Sala Training Center: dwa rzędy po trzy z przejściem pośrodku (26.11.2026)
+
+Prośba Pawła przekazana przez Karola: „poprawiłbym domek treningowy wydłużając go lekko, żeby te stanowiska AFK ze
+środka przenieść za pozostałe, żeby były 2 rzędy po 3 i przestrzeń po środku”. Status: **propozycja** do obejrzenia.
+**Odczytanie (interpretacja agenta):** rzędy biegną wzdłuż lewego i prawego boku sali, od otwartego frontu do tylnej
+ściany, a pośrodku zostaje wolne przejście od placyku do tylnej ściany; dwa stanowiska ze środka sali (Kondycja,
+Zręczność) stoją teraz na końcu rzędów.
+
+- **Sala dłuższa o 3,2 st do tyłu** (głębokość 16,8 → 20,0; tył z −10,0 na −13,2 modułu). Dalej się nie da bez ruszania
+  innych rzeczy: 0,9 st za tylną ścianą jest okap domu z kulis (kalenica sali kończy się 0,1 st przed nim), a tuż za
+  salą biegnie niewidzialna ściana pola gry (wnętrze sali zostaje przed nią). Front, szerokość, ławka i latarnia placyku
+  bez zmian. Za tylną ścianą budynku prawy bok sali to nowa ściana w linii lewej ściany budynku; tylna ściana, szkło
+  dachu, okap i kalenica sięgają do niej. Przejście z budynku do sali zaczyna się jak dotąd przy tylnej ścianie
+  budynku. Trzy okna w lewej ścianie (nad stanowiskami zwróconymi do niej), trzy lampy nad przejściem, krokwie i szkło
+  wydłużone; hantla-szyld nad frontem bez zmian. Bruk omija nowy obrys (`OBRYSY_DODATKOWE`).
+- **Stanowiska** (`STANOWISKA` w `budynki/training_center.py` → `znaczniki.json`, blok `trening_afk` →
+  `src/shared/TreningAFKDane.luau`, `D.miejsca`; świat = środek maty na posadzce):
+
+| Stanowisko | Rząd, miejsce | Moduł x; z | Obrót (świat) | Gracz patrzy | Świat Studio (X; Y; Z) |
+|---|---|---|---|---|---|
+| Pancerz | lewy, przód | −31,5; 3,0 | 183 | na placyk (NPC z pomidorami 11 st przed graczem, na placyku) | 904,200; 0,5; −719,356 |
+| Szczęście | lewy, środek | −29,5; −3,2 | 93 | na lewą ścianę (stolik pod ścianą) | 905,873; 0,5; −725,652 |
+| Zręczność | lewy, tył | −29,5; −8,8 | 93 | na lewą ścianę (bieżnia pod ścianą) | 905,580; 0,5; −731,244 |
+| Siła | prawy, przód | −13,5; 3,0 | 3 | na tylną ścianę | 922,176; 0,5; −720,298 |
+| Inteligencja | prawy, środek | −13,5; −2,75 | 3 | na tylną ścianę | 921,875; 0,5; −726,040 |
+| Kondycja | prawy, tył | −13,5; −8,5 | 3 | na tylną ścianę (leży na ławce) | 921,574; 0,5; −731,782 |
+
+  Szczęście i Zręczność stoją bokiem (twarzą do lewej ściany), bo przodem do tyłu nie zmieściłyby się jedno za drugim
+  (stolik kości sięga 3,9 st przed gracza, a 3 st za graczem jest punkt zejścia ze stanowiska); tabliczki z nazwą stoją
+  wtedy przy przejściu i czyta się je z przejścia. Odstępy policzone z rekwizytów w `src/server/TreningAFK.server.luau`.
+- **Przejście:** x modułu −26,1 … −17,9 — **8,2 st** wolne od placyku do tylnej ściany (sprawdzone na częściach
+  stanowisk zbudowanych w Play, nic w nim nie stoi).
+- **Znaczniki:** w `znaczniki.json` zmienił się tylko blok `trening_afk` i liczby części (Training Center 254 → 267,
+  bruk 294 → 287); punkty E, kotwice NPC, miejsca petów i strefy bez zmian, więc pakiety gry nie wymagały przebudowy.
+- **Podpowiedź E** (uwaga do decyzji — skrypt serwera jest Pawła): Roblox pokazuje tę podpowiedź „E”, która jest najbliżej
+  środka ekranu, a podpowiedzi stanowisk mają zasięg 10 st. Gdy gracz podchodzi do Siły albo Inteligencji **od frontu**
+  (kamera za plecami, patrzy w głąb rzędu), wygrywa podpowiedź następnego stanowiska w rzędzie (Inteligencji, Kondycji).
+  Podchodząc **z przejścia** (naturalna droga w tym układzie) wszystkie sześć startuje dobrze — sprawdzone w Play.
+  W dawnym układzie (3 × 2) to samo działo się przy Zręczności i Sile. Naprawa po stronie serwera: mniejszy zasięg
+  podpowiedzi (`MaxActivationDistance` ok. 4,5 zamiast 10) albo wybór najbliższej maty — do decyzji Pawła.
+
+Kontrola: `sprawdz.py` **0 błędów, 2 ostrzeżenia** (te same co przed zmianą), 4318 części, czas biegu do Training
+Center bez zmian (4,3 s). Testy `swiat/miasteczko_bazar_gra/testy/test_bazaru.py` 38/38. W Studio przebudowany
+kontener (4318 części) i wdrożone `TreningAFKDane` + `TreningAFKClient` (`tools/studio/deploy_gui.py`). Próba w Play
+(przez `SesjaPlay`, znacznik próby): każde z sześciu stanowisk startuje E z przejścia, postać stoi (leży) na macie
+i patrzy w kierunek stanowiska, rekwizyty stanowisk się nie nachodzą, NPC Pancerza dotyka tylko bruku.
+
+**Czytanie (Inteligencja, `src/client/TreningAFKClient.client.luau`, 26.11):** książka była mała (0,98 × 0,67 st)
+i siedziała w mankietach rękawów Kota-Maga (nachodziła na nie do 0,18 st), a u wojownika obracająca się kartka
+wchodziła w tułów i głowę (do 0,48 st). Teraz książka jest większa (skala z wysokości tułowia: kot 0,85, wojownik
+i zwiadowca 1,08), trzymana nisko przed klatką, pochylona 50° stronami ku twarzy, łapy na dolnych rogach od strony
+stron, głowa lekko pochylona; przewracana kartka ma 3/4 szerokości strony i „zwija się” w połowie obrotu. Pomiar
+w Play (19 próbek na postać, z przewracaniem kartek): Kot-Mag — książka dotyka tylko łapek (0,10 st), nic nie wchodzi
+w głowę, wąsy, szatę ani rękawy; wojownik i zwiadowca — tylko dłonie (0,20 st); awatar bez bohatera (szkielet bez
+Motor6D, poza zapasowa) — nic, ale ręce awatara (stawy AnimationConstraint) w trakcie treningu w ogóle się nie
+ruszają: skrypt ustawia Transform, a ramię zostaje w pozie spoczynkowej — tak samo na stanowisku Siły, więc to
+ograniczenie wszystkich stanowisk przy awatarze, nie zmiany z 26.11. Z kamery dokładnie za plecami kota książkę zasłania jego głowa (głowa ma 2,2 st
+szerokości z wąsami); z boku i z przejścia (skąd gracz podchodzi) książkę widać.
+
+Zrzuty: `podglad/sala2611_tc_z_placyku_{przed,po}.jpg` (przed = zrzut z raportu nocnego), `sala2611_tc_przejscie_po.jpg`
+(dla porównania przed: `noc2511_tc_wnetrze_po.jpg`), `sala2611_tc_z_gory_po.jpg`, `sala2611_afk_<stanowisko>.jpg`
+(sześć stanowisk w trakcie treningu, kamera gracza), `sala2611_czytanie_kot_przed.jpg`,
+`sala2611_czytanie_kot_{przod,bok}_po.jpg`, `sala2611_czytanie_kot_kamera_gracza_{przed,po}.jpg`,
+`sala2611_czytanie_wojownik_po.jpg`.
 
 ## Tekstury i kreska w stylu sali wyboru rasy (D-147, 25.11.2026)
 

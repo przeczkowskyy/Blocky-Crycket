@@ -19,16 +19,18 @@ D.obrot = 180 -- stopni: obrót stanowiska (gracz patrzy na rekwizyt)
 
 -- agent Karola, sesja 25.11: stanowiska stoją w sali treningowej Training Center (rozbudowa budynku „w lewo”,
 -- swiat/miasteczko_bazar/budynki/training_center.py → znaczniki.json, blok „trening_afk”). pozycja = środek maty na
--- posadzce sali, obrot = stopnie jak D.obrot. Dwa rzędy po trzy, gracz twarzą do tylnej ściany; Pancerz w przednim
--- rzędzie twarzą do placyku, żeby NPC z pomidorami (11 st przed graczem) stał na placyku. Stanowisko bez wpisu staje
--- w dawnym rzędzie od D.start.
+-- posadzce sali, obrot = stopnie jak D.obrot. Stanowisko bez wpisu staje w dawnym rzędzie od D.start.
+-- agent Karola, 26.11: prośba Pawła — sala dłuższa, dwa rzędy po trzy wzdłuż boków sali i wolne przejście pośrodku
+-- (od placyku do tylnej ściany). Lewy rząd od frontu: Pancerz twarzą do placyku (NPC z pomidorami 11 st przed graczem
+-- stoi na placyku), Szczęście i Zręczność twarzą do lewej ściany; prawy rząd: Siła, Inteligencja, Kondycja twarzą
+-- do tylnej ściany.
 D.miejsca = {
-	Szczescie = { pozycja = Vector3.new(905.81, 0.5, -726.85), obrot = 3 },
-	Kondycja = { pozycja = Vector3.new(914.099, 0.5, -727.284), obrot = 3 },
-	Inteligencja = { pozycja = Vector3.new(922.387, 0.5, -727.719), obrot = 3 },
-	Pancerz = { pozycja = Vector3.new(906.197, 0.5, -719.46), obrot = 183 },
-	Zrecznosc = { pozycja = Vector3.new(914.486, 0.5, -719.895), obrot = 3 },
-	Sila = { pozycja = Vector3.new(922.775, 0.5, -720.329), obrot = 3 },
+	Pancerz = { pozycja = Vector3.new(904.2, 0.5, -719.356), obrot = 183 },
+	Szczescie = { pozycja = Vector3.new(905.873, 0.5, -725.652), obrot = 93 },
+	Zrecznosc = { pozycja = Vector3.new(905.58, 0.5, -731.244), obrot = 93 },
+	Sila = { pozycja = Vector3.new(922.176, 0.5, -720.298), obrot = 3 },
+	Inteligencja = { pozycja = Vector3.new(921.875, 0.5, -726.04), obrot = 3 },
+	Kondycja = { pozycja = Vector3.new(921.574, 0.5, -731.782), obrot = 3 },
 }
 
 D.stanowiska = {

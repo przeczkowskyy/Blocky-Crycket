@@ -64,7 +64,7 @@ w `wspolne.py`. Polecenia: [README.md](README.md).
 | 5 | Karczma (`Karczma`) | kanon Karczma (Questy), Karczmarz; mistrz gier D-053 | (−32; −25), −2° | 26 × 22 × 37 | 14,8 × 12,7 | barman, mistrz gier | 296 | **3,0 s** / 2,7 s |
 | 6 | Sklep magiczny (`SklepMagiczny`) | D-085 „zaraz obok magiczny”, D-084 mag-sklepikarz | (28,8; −24), −4° | 18 × 20 × 42 | 11,8 × 12,3 | mag | 237 | **3,0 s** |
 | 7 | Zbrojownia (`Zbrojownia`) | D-085 sklep zbrojeniowy; pyt. 28: broń i pancerz w jednym | (50,4; −24), 3° | 20 × 20 × 36 | 12,8 × 12,3 | zbrojmistrz | 212 | **4,4 s** |
-| 8 | Training Center (`TrainingCenter`) | D-063 jeden budynek, wybór mini-gry; D-085 mini-gry z jednego panelu; od 25.11.2026 sala sześciu stanowisk AFK (D-141) po lewej | (−58,5; −24), 3° | 22 × 20 × 30 + sala 24,2 × 16,8 × 16,4 | 13,8 × 12,3; sala otwarta 24 | trener | 254 | **4,3 s** |
+| 8 | Training Center (`TrainingCenter`) | D-063 jeden budynek, wybór mini-gry; D-085 mini-gry z jednego panelu; od 25.11.2026 sala sześciu stanowisk AFK (D-141) po lewej, od 26.11.2026 dłuższa: dwa rzędy po trzy z przejściem pośrodku | (−58,5; −24), 3° | 22 × 20 × 30 + sala 24,2 × 20,0 × 16,4 | 13,8 × 12,3; sala otwarta 24 | trener | 267 | **4,3 s** |
 | 9 | Zagroda petów (`ZagrodaPetow`) | D-085 zagroda (pety chodzą za bohaterem, można je odstawić) | (−32; 24), 182° | 26 × 20 × 17 | bramka 9,9 | opiekunka przed bramką, 8 legowisk (od 25.11.2026 bez ozdobnych petów i budki) | 153 | **2,3 s** |
 | 10 | Wrota lochów (`BramaLochow`) | D-042 wrota z kłódką → hala portali | (44,5; 24), 180° | 30 × 20 × 36 | 12 × 14 | — | 271 | 3,2 s |
 | 11 | Brama Leśna (`BramaLesna`) | D-075: miasto jest pierwszym blokiem pasa, za nim Las | (64,5; 0), −90° | 24 × 6 × 22 | wrota (zamknięte) | — | 39 | 4,0 s |

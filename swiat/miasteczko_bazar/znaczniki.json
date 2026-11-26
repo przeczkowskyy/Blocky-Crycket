@@ -940,7 +940,7 @@
  ],
  "czesci_na_budynek": {
   "Teren": 2,
-  "TrainingCenter": 254,
+  "TrainingCenter": 267,
   "Karczma": 318,
   "PortalKrain": 54,
   "Tablica": 41,
@@ -958,7 +958,7 @@
   "Rekwizyty": 290,
   "Kulisy i tło": 271,
   "Niewidzialne": 4,
-  "Uliczka (bruk)": 294,
+  "Uliczka (bruk)": 287,
   "Start": 7,
   "Uliczka (kody)": 57
  },
@@ -1878,25 +1878,53 @@
   "opis": "miejsca sześciu stanowisk treningu AFK w sali Training Center (środek maty na posadzce, świat Studio; obrot = stopnie obrotu stanowiska w Roblox, gracz patrzy w −Z stanowiska = „przod”). Wpisane do src/shared/TreningAFKDane.luau (D.miejsca).",
   "stanowiska": [
    {
-    "id": "Szczescie",
+    "id": "Pancerz",
     "pozycja": [
-     905.81,
+     904.2,
      0.5,
-     -726.85
+     -719.356
     ],
-    "obrot": 3.0,
+    "obrot": 183.0,
     "przod": [
-     -0.0523,
+     0.0523,
      0.0,
-     -0.9986
+     0.9986
     ]
    },
    {
-    "id": "Kondycja",
+    "id": "Szczescie",
     "pozycja": [
-     914.099,
+     905.873,
      0.5,
-     -727.284
+     -725.652
+    ],
+    "obrot": 93.0,
+    "przod": [
+     -0.9986,
+     0.0,
+     0.0523
+    ]
+   },
+   {
+    "id": "Zrecznosc",
+    "pozycja": [
+     905.58,
+     0.5,
+     -731.244
+    ],
+    "obrot": 93.0,
+    "przod": [
+     -0.9986,
+     0.0,
+     0.0523
+    ]
+   },
+   {
+    "id": "Sila",
+    "pozycja": [
+     922.176,
+     0.5,
+     -720.298
     ],
     "obrot": 3.0,
     "przod": [
@@ -1908,9 +1936,9 @@
    {
     "id": "Inteligencja",
     "pozycja": [
-     922.387,
+     921.875,
      0.5,
-     -727.719
+     -726.04
     ],
     "obrot": 3.0,
     "przod": [
@@ -1920,39 +1948,11 @@
     ]
    },
    {
-    "id": "Pancerz",
+    "id": "Kondycja",
     "pozycja": [
-     906.197,
+     921.574,
      0.5,
-     -719.46
-    ],
-    "obrot": 183.0,
-    "przod": [
-     0.0523,
-     0.0,
-     0.9986
-    ]
-   },
-   {
-    "id": "Zrecznosc",
-    "pozycja": [
-     914.486,
-     0.5,
-     -719.895
-    ],
-    "obrot": 3.0,
-    "przod": [
-     -0.0523,
-     0.0,
-     -0.9986
-    ]
-   },
-   {
-    "id": "Sila",
-    "pozycja": [
-     922.775,
-     0.5,
-     -720.329
+     -731.782
     ],
     "obrot": 3.0,
     "przod": [
