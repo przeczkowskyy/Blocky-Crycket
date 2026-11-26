@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T13:35:35+01:00",
+ "aktualizacja": "2026-11-26T13:36:45+01:00",
  "prace": [
   {
    "id": "helmy-oslony-chwyty",
@@ -28,23 +28,6 @@
    "aktualizacja": "2026-11-26T12:06:28+01:00",
    "obszary": [
     "swiat/pety_proba/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "sala-dwa-rzedy",
-   "tytul": "Training Center: dwa rzędy po trzy stanowiska z przejściem pośrodku, trzymanie książki",
-   "stan": "w_toku",
-   "etap": "Gotowe do przeglądu, raport u orkiestratora",
-   "start": "2026-11-26T11:53:11+01:00",
-   "koniec_szacowany": "2026-11-26T14:00:00+01:00",
-   "aktualizacja": "2026-11-26T13:35:35+01:00",
-   "obszary": [
-    "mapa:miasteczko_bazar",
-    "studio:MiasteczkoBazar",
-    "studio:Play",
-    "swiat/miasteczko_bazar/**"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
