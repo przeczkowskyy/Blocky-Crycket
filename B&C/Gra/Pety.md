@@ -79,6 +79,7 @@ tags: [gra, mechanika, postacie]
 
 ## Zmieniło się
 - „Stajnia w mieście” z D-052: jajka są w inkubatorach biomów (D-060), a w mieście jest zagroda, do której odstawia się pety (D-085).
+- 26.11.2026 (D-160 i D-161 — decyzje Karola, czekają na Pawła): stare inkubatory z klocków zniknęły, jajko kupuje się przy nowym jajku ze scenką otwierania (leśne stoi w miasteczku przy zagrodzie); pety można sprzedawać, a okno petów pokazuje zarobek każdego peta na sekundę.
 - Bardzo rzadkie jajka z potworów z D-052: na razie ich nie ma, sprawdzi to test z graczami (D-060 zastąpiła ten punkt D-052).
 - Drzewko każdego peta z D-039: jest jedno drzewko petów (D-056).
 - Osobna waluta petów („petcoiny” z D-040, nazwa „Łapki” z D-046): nie ma jej; są shardy i tokeny krainy (D-058, D-046 odrzucona).

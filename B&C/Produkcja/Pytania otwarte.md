@@ -1056,6 +1056,9 @@ Gra: bc
 
 Szczegóły: gracz zaczyna dziś w nowym miasteczku, a do starego trafia portalem, więc dotyczy to tylko tych, którzy tam wejdą. Zdanie agenta (D-114): (a) — w grze szykowanej do wydania nie powinno być wejścia do wstrzymanego prototypu; BONK ma budowę do osobnego miejsca (`--publikacja`). Kontener w Studio jest nasz (wygenerowany), ale jego usunięcie to decyzja człowieka. Opis znaleziska: [[Dziennik zmian]], wpis z 26.11.
 **Odpowiedź:**
+- Karol (2026-11-26, czat; zapisał agent): „nie ma tutaj portalu żadnego BONK… Usuwamy resztę rzeczy” — wariant (a): brama i cały kontener BONK usunięte z miejsca B&C, BONK buduje się tylko w osobnym miejscu.
+
+Rozstrzyga: D-159.
 
 ## 109. Sala treningowa: kilku graczy przy jednym stanowisku
 - Paweł 26.11 (Telegram): „jak to będzie działać w przypadku kilku graczy, czy nie będą się widzieć nawzajem?”
@@ -1064,4 +1067,62 @@ Szczegóły: gracz zaczyna dziś w nowym miasteczku, a do starego trafia portale
 Gra: bc
 
 Szczegóły: tak działa skrypt serwera treningu (`src/server/TreningAFK.server.luau`, kod Pawła): przy zajętym stanowisku serwer po cichu odrzuca drugiego gracza. Zdanie agenta (D-114): (a) — trening AFK ma zatrzymywać graczy na długo, więc jeden gracz może blokować np. Siłę godzinami, a kolejka do sześciu stanowisk przy kilkunastu graczach na serwerze byłaby powodem do wyjścia z gry; (a) nie wymaga przebudowy sali. Koszt (a): zdjęcie blokady w skrypcie serwera i ukrywanie u gracza innych trenujących na jego stanowisku (kto nie trenuje, widzi na stanowisku jednego gracza). Zmienię zdanie, jeśli widok kolegi trenującego obok jest dla Was ważniejszy niż brak kolejek — wtedy (c). Nic z tego nie jest zrobione; czeka na decyzję. Dotyczy D-158.
+**Odpowiedź:**
+
+## 110. Stare inkubatory Bagna i Dżungli obok nowych jajek — schować?
+- Od 26.11 w Bagnie i Dżungli stoją nowe jajka ze scenką otwierania. Stare inkubatory z klocków stoją 13–16 studów obok i dalej sprzedają to samo jajko własnym E.
+- Strzałka celu „kup jajko” prowadzi do starego inkubatora, nie do nowego jajka.
+- Do wyboru: (a) schować stary inkubator tam, gdzie stoi nowe jajko, i przepiąć strzałkę celu na nowe jajko; (b) zostawić oba; (c) przenieść nowe jajko na miejsce starego inkubatora.
+Gra: bc
+
+Szczegóły: zdanie agenta (D-114): (a) — dwa miejsca zakupu tego samego jajka obok siebie mylą gracza, a nowe jajko ma lepszą scenkę. Koszt (a): zmiana w pakiecie petów i we wskazówkach celu oraz przepięcie prób petów Bagna i Dżungli na nowe jajko (dziś kupują w starym inkubatorze). Leśne jajo Pawła stoi w miasteczku, a leśny inkubator przy wejściu do lasu — tego pytanie nie dotyczy. Miejsce inkubatora w biomie: D-076.
+**Odpowiedź:**
+- Karol (2026-11-26, czat; zapisał agent): „Usuń też tak samo stare jajka i zastąp je nowymi w 100%” — wariant (a), także w lesie: stare inkubatory usunięte, strzałka celu prowadzi do nowych jajek.
+
+Rozstrzyga: D-160.
+
+## 111. „Same koty” — czy ludzie i Zwiadowca zostają?
+- D-145 („wszystkie postacie gracza to koty”) ma dwa podpisy: Pawła z 24.11 i Karola z 25.11.
+- Karol 26.11 na czacie: „jeszcze nie eliminuj jednak postaci ludzi i zwiadowcy. Ostateczna decyzja na »same koty« jeszcze nie zapadła”.
+- Dziś w świecie i w walce Wojownik i Zwiadowca to ludzie, kotem jest Mag; koty są na ekranie wyboru klasy i w modelach.
+- Do wyboru: (a) D-145 zostaje — ludzie zamieniani na koty także w świecie i walce; (b) zostają i ludzie, i koty; (c) wracamy do ludzi, koty tylko jako Mag i pety.
+Gra: bc
+
+Szczegóły: do Waszej odpowiedzi agent niczego nie usuwa ani nie zamienia; status D-145 bez zmian (dopisek pod decyzją). Paweł 26.11 wieczorem pracował nad kotami ras i podglądem „kot wybranej rasy jako postać gracza”. Koszt zamiany w świecie i walce (kot-wojownik i kot-zwiadowca z własnymi ruchami): ok. 1–1,5 mln tokenów. Zdanie agenta (D-114): jedna rodzina postaci jest czytelniejsza dla gracza i miniatury niż mieszanka; o tym, która, powinna rozstrzygnąć próba z graczami, nie gust.
+**Odpowiedź:**
+
+## 112. Gdzie gracz zmienia strój po usunięciu przymierzalni?
+- Przymierzalnia stała w starej wiosce i była jedynym wejściem do okna strojów; zniknęła razem z wioską (D-159).
+- Stroje z walk i od kowala zakładają się dalej same; ręcznie przebrać się nie ma gdzie.
+- Do wyboru: (a) zmianę stroju przejmuje okno ekwipunku Pawła; (b) stoisko w miasteczku, np. w zbrojowni; (c) bez ręcznej zmiany stroju w pierwszej wersji.
+Gra: bc
+
+Szczegóły: skrypty i dane strojów (`swiat/stroje_proba`) działają; przełącznik `stojak.w_grze` przywraca stoisko, ale stałoby w pustym miejscu po starej wiosce. Zdanie agenta (D-114): (a) — jedno okno do ubierania postaci, bez osobnego miejsca na mapie.
+**Odpowiedź:**
+
+## 113. Sprzedaż petów i zarobek w oknie: liczby do potwierdzenia
+- Cena sprzedaży kopii: 6 / 12 / 25 / 45 / 80% ceny jajka według rzadkości; średnio wraca ok. 15% (D-161).
+- Zarobek na kafelku jest na sekundę (+0,015…+0,45/s), a okno zagrody liczy na minutę (+0,9…+27/min).
+- Do wyboru: (a) procenty zostają, wszędzie „na minutę”; (b) wszędzie „na sekundę”; (c) inne procenty — jakie?
+Gra: bc
+
+Szczegóły: sprzedaż kopii zabiera materiał do ewolucji (D-058); chronione są tylko pet idący za graczem i pety w zagrodzie — kłódka „ulubiony” byłaby osobnym dodatkiem. Zdanie agenta (D-114): (a) — małe ułamki na sekundę źle się czyta, a jedna jednostka w całej grze jest ważniejsza niż to, która.
+**Odpowiedź:**
+
+## 114. Arena starych mini-gier Training Center — usunąć z mapy?
+- Po D-141 i D-162 trening to stanowiska AFK; E u trenera nie otwiera już wyboru mini-gier.
+- Arena mini-gier (`Workspace/TreningProba`, ok. 2,8 tys. części) stoi na mapie bez wejścia.
+- Do wyboru: (a) usunąć z miejsca w Studio, źródła zostają w repo; (b) zostawić na później; (c) siódmy kafelek „mini-gry” w oknie trenera.
+Gra: bc
+
+Szczegóły: zdanie agenta (D-114): (a), zgodnie z kierunkiem Karola z 26.11 („pozbywać się starych rzeczy”); przed usunięciem trzeba sprawdzić, czy trening AFK nie korzysta z serwera mini-gier przy zapisie statystyk.
+**Odpowiedź:**
+
+## 115. Trener: wybór ćwiczeń zamiast drzewka postaci?
+- Robocze ustalenie z sesji 25.11 (D-150, propozycja): przy trenerze otwiera się drzewko postaci.
+- Karol 26.11 (D-162): E u trenera otwiera wybór ćwiczenia i przenosi na stanowisko.
+- Do wyboru: (a) trener to tylko ćwiczenia, drzewko pod przyciskiem w HUD; (b) okno trenera dostaje przycisk „Skill tree”; (c) inaczej.
+Gra: bc
+
+Szczegóły: w repo jest (a), bez zmian w drzewku. Zdanie agenta (D-114): (a) — jedno okno, jedna czynność.
 **Odpowiedź:**

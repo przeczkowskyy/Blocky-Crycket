@@ -80,6 +80,7 @@ Karol zgodził się na wgranie pierwszej partii 17.11 ok. 09:05 („Tak wgrywaj.
 | `assets/audio/muzyka/muzyka_05_las_b_petla.ogg` | 106582652985449 |
 | `assets/audio/muzyka/muzyka_06_bagno_petla.ogg` (wgrany 18.11) | 116759284253061 |
 | `assets/audio/muzyka/muzyka_07_dzungla_petla.ogg` (wgrany 18.11) | 78060184641141 |
+| `assets/audio/arkusz/muzyka_arkusz_c.ogg` — muzyka miasteczka A i B (wgrany 26.11, zgoda Karola; prawa gry nadane 26.11) | 106850257173626 |
 
 - **Stan:** wszystkie sześć zasobów przyjęte, moderacja Roblox w toku w chwili wgrania. Rejestr: `assets/audio/wgrane.json`, zgoda z sumami kontrolnymi plików: `assets/audio/zgoda_wgrania.json`, identyfikatory w grze: `swiat/dzwiek_gra/identyfikatory.json`.
 - **Jak:** `tools/roblox_upload_audio.py wgraj-studio` — przez Roblox Studio, bo w repo nie ma klucza Open Cloud. Studio przyjmuje pliki tylko z folderów zatwierdzonych ręcznie przez człowieka; folder dźwięku nie jest zatwierdzony, więc każdy plik był na czas wgrania kopiowany do zatwierdzonego folderu wyników postaci i od razu usuwany. Taka droga wymaga wyraźnej zgody człowieka za każdym razem — ogólne „leć” nie wystarcza (system uprawnień odmówił o 12:20, zanim Karol potwierdził drogę).
