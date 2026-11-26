@@ -50,8 +50,8 @@ buy.OnServerEvent:Connect(function(player: Player, id: unknown)
 	last[player] = now
 
 	local node = Data.Nodes[id]
-	if not node then
-		return
+	if not node or Data.HiddenTabs[node.tab] then
+		return -- nieznany węzeł albo wyłączona zakładka (Data.HiddenTabs)
 	end
 	local levels = levelsOf(player)
 	local lvl = levels[id] or 0

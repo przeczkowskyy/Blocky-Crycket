@@ -87,6 +87,7 @@ Kanon wspomina tylko zakładkę Arena (ikona mieczy) w HUD. Pomysł: pojedynki z
 
 ### Waluty
 - ✅ Kanon: **Złoto** i **Magiczne Kryształy**.
+- Od 24.11.2026 (D-146, oba podpisy): waluta liczona atrybutem `Gold` nazywa się w grze **Rybki** i ma ikonę rybki; w kodzie zostaje `Gold`. Od 26.11.2026 tak mówią też napisy pakietów w `swiat/` (z odmianą: 1 Rybka, 3 Rybki, 5 Rybek).
 - HUD z Figmy pokazuje **Złoto** i **Diamenty (Gems)**, opisane jako waluta premium. Czy Diamenty to Magiczne Kryształy, i czy są płatne? ❓ (pytanie otwarte #6).
 
 ## 4. Kierunek artystyczny
@@ -176,6 +177,8 @@ LoadingScreen (ScreenGui)
 > **❓ Konflikt z kanonem.** Figma ma 6 przycisków zamiast 5 zakładek: **Teleport, Equipment, Pets** (lewa kolumna) i **Quests, Shop, Guilds** (prawa), z angielskimi napisami. Wdrożona jest wersja z Figmy, na polecenie Game Directora. Kanon pozostaje bez zmian do decyzji (pytanie otwarte #5).
 
 > **Układ z 25.11.2026 (propozycja w grze, polecenie Pawła):** sześć mniejszych przycisków po lewej w dwóch rzędach po 3 (Teleport, Equipment, Pets / Index, Shop, Guilds), questy w wysuwanej szufladzie po prawej, przycisk Pets otwiera okno petów. Szczegóły: `B&C/UI/HUD.md`, `B&C/UI/Okno petów (propozycja).md`; pytania otwarte 102 i 103.
+>
+> **Okna z 25.11.2026 (propozycje w grze, polecenie Pawła):** tablica ogłoszeń w miasteczku otwiera okno questów (dzienne i osiągnięcia; wybrane trafiają do szuflady HUD) — `src/server/Questy.server.luau`, `src/client/OknoQuestowClient.client.luau`, `B&C/UI/Tablica questów (propozycja).md`; mistrz gier ma planszę 3D na stole z własną kamerą — `src/client/MistrzGier3DClient.client.luau`; kowal ma zakładki ITEMS / INGREDIENTS; w drzewku zakładka FORTRESS jest wyłączona (`SkillTreeData.HiddenTabs`). Pytania otwarte 98, 99, 105.
 
 **Wdrożona wersja z Figmy** (layout [node 9:1571](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=9-1571), panel gracza [14:145](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=14-145), przyciski [9:1570](https://www.figma.com/design/BbLd4jDnvxAmOWZN1hAZQJ?node-id=9-1570)):
 - **ScreenGui `HUD`:** na starcie `Enabled = false`. `ResetOnSpawn = false`, `IgnoreGuiInset = false` i `ScreenInsets = CoreUISafeInsets`, więc nie wchodzi pod pasek Robloxa ani pod notch. `DisplayOrder = 10`.
