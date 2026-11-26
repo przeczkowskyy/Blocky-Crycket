@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T19:45:04+01:00",
+ "aktualizacja": "2026-11-26T21:21:15+01:00",
  "prace": [
   {
    "id": "pety-jajka-sprzedaz",
@@ -55,6 +55,24 @@
     "studio:TreningProba",
     "studio:DzwiekGra",
     "swiat/przejscie_gry/*"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "trening-trener",
+   "tytul": "Sala treningowa: wybór ćwiczenia u trenera, bez tabliczek, wolne wejście",
+   "stan": "w_toku",
+   "start": "2026-11-26T21:21:15+01:00",
+   "koniec_szacowany": "2026-11-26T22:41:15+01:00",
+   "aktualizacja": "2026-11-26T21:21:15+01:00",
+   "obszary": [
+    "studio:MiasteczkoBazar",
+    "studio:MiasteczkoBazarGra",
+    "studio:NpcGra",
+    "studio:TreningProba",
+    "studio:WskazowkiGry",
+    "swiat/miasteczko_bazar/*"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
