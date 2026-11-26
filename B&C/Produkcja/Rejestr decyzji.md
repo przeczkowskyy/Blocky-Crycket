@@ -688,6 +688,8 @@ Gracz gra **kotem**: każda rasa to wariant naszego Kota-Maga — ten sam model 
 
 Uwaga agenta (D-114), zgoda z poprawką: jeden słodki, rozpoznawalny bohater (kot) to mocniejsza marka i miniatura niż ludziki Roblox, a jeden szkielet dla wszystkich ras upraszcza klipy i przedmioty. Poprawka: przedmioty Rycerza i Zwiadowcy oraz cały katalog sklepu (`swiat/postacie/sklep_przedmioty.json`, ciało „czlowiek”) trzeba przerobić pod ciało „kot” — to duża praca 3D, najlepiej po stronie Karola. Tytuł „Blocky & Crycket” zostaje spójny tylko, jeśli Blocky jest widoczny w grze (np. NPC-opiekun w miasteczku, przewodnik w samouczku). Zmienię zdanie, jeśli testerzy będą woleli wygląd ludzików.
 
+**Dopisek z 2026-11-26 (Karol na czacie, wieczór; status bez zmian):** „jeszcze nie eliminuj jednak postaci ludzi i zwiadowcy. Ostateczna decyzja na »same koty« jeszcze nie zapadła”. Decyzja ma dwa podpisy, więc agent jej nie zmienia — rozbieżność jest pytaniem 111 w [[Pytania otwarte]]. Do odpowiedzi obu agent nie usuwa ludzkich modeli (Rycerz, Zwiadowca, figury ras) i nie zamienia ich w świecie ani w walce na koty.
+
 ### D-147 Miasto w kresce sali wyboru rasy: tekstury na budynkach i widoczny obrys
 ✅ zatwierdzona · art direction / świat 3D · 2026-11-25 · źródło: wiadomość Karola na czacie 25.11 (Karol mówi o rozmowie z Pawłem na osobności) · zdecydował: Karol 2026-11-25
 Miasteczko dostaje ten sam wygląd co sala wyboru rasy: tekstury na budynkach zamiast gładkich kolorów i widoczną kreskę obrysu. Bez przebudowy miasta — chodzi o jednolitość. Tekstury: paczka Pawła (`CsTex`, `CsProp` w `assets/processed/ClassSelectTextures/`); brakujące agent generuje w Higgsfield w tym samym stylu. Czeka na potwierdzenie Pawła (D-043). Kolor i grubość kreski: pytanie 100 w [[Pytania otwarte]].
@@ -762,3 +764,46 @@ Pytania z listy zadań (punkty 2 i 3): czy o taki układ sali chodziło i czy za
 - **Otwarte:** pytanie Pawła o kilku graczy przy jednym stanowisku — pytanie 109 w [[Pytania otwarte]].
 - **Stan:** w Studio od 26.11 (`src/server/TreningAFK.server.luau` — jedna liczba, za zgodą Pawła; próba `swiat/trening_proba/testy/proba_afk_zasieg.py`: 22 punkty bez niezaliczeń).
 - **Potwierdzenie Karola (26.11.2026):** „Potwierdzam obie” (D-157 i D-158) w oknie pytania agenta na czacie.
+
+### D-159 Gracz startuje w miasteczku; stara wioska, stary las, BONK i stare Krzywe Miasteczko znikają z mapy
+✅ zatwierdzona · świat / technika · 2026-11-26 · źródło: polecenia Karola na czacie Claude Code 26.11.2026 wieczorem · zaproponował: Karol · zdecydował: Karol 2026-11-26 (jeden podpis — czeka na Pawła; D-043)
+Gra: bc
+Karol: „po wejściu do gry gracz nie wchodzi do tej starej wioski, nie ma tutaj portalu żadnego BONK, nie ma żadnego portalu las, nie ma żadnej tabliczki Training Center, tylko od razu trafia do krzywej wioski. Usuwamy resztę rzeczy… te placeholderowe rzeczy… Nie ma potrzeby też trzymania na mapie Robloxowej tego starego lasu”. Na pytanie agenta o stare duże Krzywe Miasteczko: „Tak, usuń”.
+- Punkt startu gry (jedyny `SpawnLocation`) stoi na początku miasteczka-bazaru.
+- Z miejsca w Studio zniknęły: stara wioska startowa (`DemoLesnaBaza`), brama i mapa BONK (`BonkGra`), portal i stary las (`LasTeleport`, `BiomLas`, `LasPotwory`, `LasMgla`), stare Krzywe Miasteczko (`KrzyweMiasteczko`), wystawa ras (`RasyProba`), stara próba walki (`TestWalki`), tablica Training Center, przymierzalnia strojów i przejścia stare ↔ nowe miasteczko — razem 51 212 części, ponad połowa mapy. Źródła zostają w repo.
+- Teleport przez chmury, Kamienie Powrotu i skrypty pasów nie zależą już od usuniętych miejsc.
+- Rozstrzyga pytanie 108 (wariant a: BONK tylko w osobnym miejscu) i sprawę „gdzie gracz zaczyna” z przejścia gry 17.11. Rozwija D-075 i D-084.
+- **Stan:** w Studio od 26.11 (narzędzia `tools/studio/sprzatanie_mapy.py` i `start_w_miasteczku.py`); próba całej drogi gracza i regresja po sprzątaniu — wyniki w [[Dziennik zmian]].
+- Uwaga agenta (D-114): zgoda — gracz nie trafia w ślepe zaułki, a mapa wczyta się szybciej. Skutki uboczne: nie ma gdzie ręcznie zmienić stroju (pytanie 112); wystawę ras trzeba odbudować przed następnym wdrożeniem ekranu wyboru klasy (zadanie w [[Zadania]]).
+
+### D-160 Jajka kupuje się tylko w nowych jajkach ze scenką otwierania; stare inkubatory znikają
+✅ zatwierdzona · game design / świat · 2026-11-26 · źródło: polecenie Karola na czacie Claude Code 26.11.2026 · zaproponował: Claude Code (pytanie 110, wariant a) · zdecydował: Karol 2026-11-26 (jeden podpis — czeka na Pawła; D-043)
+Gra: bc
+Karol: „Usuń też tak samo stare jajka i zastąp je nowymi w 100%”.
+- Inkubatory z klocków w lesie, Bagnie i Dżungli zniknęły; jajko kupuje się tylko przy nowym jajku ze scenką Pawła.
+- Ceny, szanse i zapis bez zmian. Wskazówka celu „kup jajko” prowadzi do nowych jajek.
+- Rozstrzyga pytanie 110.
+- **Do potwierdzenia przez obu:** leśne jajo stoi w miasteczku przy zagrodzie (tam postawił je Paweł), a D-060 i D-076 mówią o inkubatorze w każdym biomie, przy wejściu — w lesie nie ma teraz miejsca zakupu jajka.
+- **Stan:** w Studio od 26.11 (`swiat/pety_proba`, `swiat/wskazowki_gry`); próby petów trzech biomów i próba jajek bez błędów.
+
+### D-161 Pety można sprzedawać; okno petów pokazuje zarobek każdego peta na sekundę
+✅ zatwierdzona · game design / ekonomia / UI · 2026-11-26 · źródło: polecenie Karola na czacie Claude Code 26.11.2026 · zaproponował: Karol (sprzedaż, zarobek na sekundę), Claude Code (liczby) · zdecydował: Karol 2026-11-26 (jeden podpis — czeka na Pawła; D-043)
+Gra: bc
+Karol: „każdy pet w zakładce petów… żeby to było jawne i tak prosto pokazana informacja, ile dany pet zarabia na sekundę. Pozwól też sprzedawać pety… opcję sprzedawania petów, na przykład selektora”.
+- Kafelek peta w oknie petów pokazuje jego zarobek w zagrodzie na sekundę (np. „+0.1/s”), bez najeżdżania — także na telefonie.
+- Sprzedaż: przycisk SELL włącza zaznaczanie, stopka pokazuje „SELL N FOR X”, drugie dotknięcie potwierdza. Sprzedaje się kopie petów.
+- **Liczby robocze agenta (pytanie 113):** cena kopii = cena jajka × udział rzadkości — pospolity 6%, niepospolity 12%, rzadki 25%, epicki 45%, legendarny 80% (jajko leśne 300 Rybek: 18–240; Bagna 750: 45–600; Dżungli 1350: 81–1080). Średnio wraca ok. 15% ceny jajka, więc kupowanie i sprzedawanie się nie opłaca.
+- Nie da się sprzedać: ostatniej sztuki peta, który idzie za graczem, ostatniej sztuki peta stojącego w zagrodzie ani ostatniego peta w ogóle. Jedna sprzedaż na sekundę.
+- **Stan:** w Studio od 26.11. Serwer i liczby: `swiat/pety_proba`, `swiat/stan_gracza`. Okno to pliki Pawła `src/client/OknoPetowClient.client.luau` i `src/server/OknoPetow.server.luau`, zmienione przez agenta Karola na polecenie Karola („Rób od razu” w oknie pytania 26.11) — do obejrzenia przez Pawła.
+- Uwaga agenta (D-114), zgoda z poprawką: sprzedaż rozwiązuje nadmiar petów przy ośmiu miejscach zagrody; cena musi zostać poniżej kosztu jajka w każdym trybie cen (pilnuje tego generator danych i test). Otwarte: zarobek jest mały liczbowo (+0,015…+0,45/s), a okno zagrody liczy na minutę; sprzedaż kopii zabiera materiał do ewolucji (D-058).
+
+### D-162 Training Center: bez tabliczek, ćwiczenie wybiera się u trenera pod E; wolne wejście do sali
+✅ zatwierdzona · świat / UI · 2026-11-26 · źródło: polecenie Karola na czacie Claude Code 26.11.2026 · zaproponował: Karol · zdecydował: Karol 2026-11-26 (jeden podpis — czeka na Pawła; D-043)
+Gra: bc
+Karol: „Potrzebujemy też dużo logiczniejszego przejścia do tych ćwiczeń… bardzo dużo zasłania teraz ta fontanna… tabliczki też przesłaniają przejście, nie jest to jasne, które ćwiczenie za co odpowiada… w ogóle tabliczek tu nie może być, absolutnie… zróbmy jakiś shortcut, że… klikamy sobie na niego E i klikamy, na co chcemy wejść. No i wtedy się… teleportujemy na przykład do bieżni”.
+- Drewniane tabliczki przy stanowiskach znikają; zostaje podpowiedź E na macie.
+- E u trenera otwiera okno z sześcioma ćwiczeniami (ikona statystyki, nazwa, czynność, wartość gracza; zajęte stanowisko wyszarzone „BUSY”). Wybór przenosi gracza na stanowisko i od razu zaczyna trening — tą samą drogą co E na macie; serwer sprawdza odległość od trenera (16 studów).
+- Studnia-pomnik stoi 6 studów dalej od wejścia, obie ławki i latarnia są odsunięte: przed otworem sali wolne 22 × 14 studów.
+- Trener nie otwiera już wyboru starych mini-gier (D-141: trening to stanowiska AFK); mini-gry zostają w kodzie i na mapie, ale bez wejścia — pytanie 114.
+- Układ dwóch rzędów (D-158) i reguła „jedno stanowisko = jeden gracz” (pytanie 109) bez zmian. Robocze ustalenie z D-150 („przy trenerze otwiera się drzewko postaci”) nie jest wdrożone — pytanie 115.
+- **Stan (26.11, 21:45):** gotowe w repo, testy bez Studio przechodzą; wdrożenie w Studio i próba w grze — kolejny wpis w [[Dziennik zmian]]. Skrypty stanowisk to pliki Pawła (`src/server/TreningAFK.server.luau`, `src/client/TreningAFKClient.client.luau`, `src/shared/TreningAFKDane.luau`), zmienione przez agenta Karola na polecenie Karola („Rób od razu”) — do obejrzenia przez Pawła.
