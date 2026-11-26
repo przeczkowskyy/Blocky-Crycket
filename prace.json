@@ -2,16 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T22:00:32+01:00",
+ "aktualizacja": "2026-11-26T22:00:36+01:00",
  "prace": [
   {
    "id": "pety-jajka-sprzedaz",
    "tytul": "Pety: tylko nowe jajka, zarobek na sekundę, sprzedaż petów",
    "stan": "w_toku",
-   "etap": "Wdrożone w Studio, próby w grze",
+   "etap": "W grze; zostaje zdjęcie okna do raportu",
    "start": "2026-11-26T18:59:24+01:00",
-   "koniec_szacowany": "2026-11-26T22:30:00+01:00",
-   "aktualizacja": "2026-11-26T19:45:04+01:00",
+   "koniec_szacowany": "2026-11-26T23:45:00+01:00",
+   "aktualizacja": "2026-11-26T22:00:36+01:00",
    "obszary": [
     "studio:PetyProba",
     "studio:WskazowkiGry",
