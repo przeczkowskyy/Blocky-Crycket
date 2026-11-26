@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T13:06:29+01:00",
+ "aktualizacja": "2026-11-26T13:06:53+01:00",
  "prace": [
   {
    "id": "helmy-oslony-chwyty",
@@ -36,10 +36,10 @@
    "id": "sala-dwa-rzedy",
    "tytul": "Training Center: dwa rzędy po trzy stanowiska z przejściem pośrodku, trzymanie książki",
    "stan": "w_toku",
-   "etap": "Sprawdzenie stanowisk i czytania w Play",
+   "etap": "Końcowa próba w Play",
    "start": "2026-11-26T11:53:11+01:00",
-   "koniec_szacowany": "2026-11-26T16:00:00+01:00",
-   "aktualizacja": "2026-11-26T12:57:17+01:00",
+   "koniec_szacowany": "2026-11-26T15:30:00+01:00",
+   "aktualizacja": "2026-11-26T13:06:53+01:00",
    "obszary": [
     "mapa:miasteczko_bazar",
     "studio:MiasteczkoBazar",
