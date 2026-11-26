@@ -6,6 +6,18 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-26 · Claude Code u Karola (noc, część trzecia: regresja całej gry i naprawy)
+- **Regresja całej gry (01:06–02:34, 24 próby w Play):** 19 prób bez niezaliczeń. Niezaliczenia: kowal 3, sklep 4, bazar 4, stan gracza 1 oraz znane od 18.11 za małe napisy w próbie walki na telefonie. Poprzednia pełna regresja była 19.11.
+- **Przyczyny** (agent na Opus, ok. 0,37 mln tokenów, 55 min):
+  - z tej nocy: manekin w nowej sali Training Center zasłaniał kamerę przy trenerze — przeniesiony na prawą stronę izby;
+  - od 20.11: tabliczka „Nowe miasteczko (E)” w starym miasteczku stała 5 studów od bramy BONK i postać lądowała w BONK — tabliczka odsunięta, brama została ([[Pytania otwarte]], pytanie 108);
+  - po zmianach Pawła z 23–25.11: jego okna sklepu, kowala i mistrza gier zastąpiły nasze okna próbne, a przyciski „+” statystyk zniknęły — próby czekały na stare okna.
+- **Zmiany w naszych pakietach:** okna próbne sklepu i kowala nie otwierają się na E, gdy działa okno Pawła (bez dwóch okien naraz). Próby kupują i zakładają przedmioty kliknięciami w jego oknie, a skutki sprawdzają na naszym serwerze. Punkty bez pokrycia mają wynik „?”, nie „OK”: okna Pawła na telefonie (S08, K12) i punkty statystyk bez sposobu wydania (S14). Trzy testy bez Studio dostosowane do HUD z „Index” i szufladą questów.
+- **Ponowne próby w Play:** kowal 12, sklep 11, bazar 14, stan gracza 13, NPC 14, trening 31 — bez niezaliczeń. Testy bez Studio: bazar 38, stan gracza 59, kowal 34, sklep 26, pety 51. Nie powtórzono próby dymnej, petów, strojów ani bohatera.
+- **Znalezione przy okazji:** Diamenty za poziom (D-140) nie są w grze (gałąź `pawel/diamenty-afk`), a punktów statystyk za poziom nie ma jak wydać — dopisek pod pytaniem 89. W karczmie E otwiera szufladę questów i dymek naraz ([[Zadania]]).
+- **Dźwięk:** gra dostała zgodę „Use” na utwory Bagna i Dżungli (wgrane 18.11). Próba dźwięku po nadaniu zgody (11 punktów, bez niezaliczeń): oba utwory wczytują się i grają w swoich krainach zamiast zastępczego utworu lasu.
+- Studio w trybie Edit; zmienione kontenery `MiasteczkoBazar`, `MiasteczkoBazarGra`, `SklepProba`, `KowalProba`. Zrzuty sali i starego miasteczka obejrzane po zmianie.
+
 ## 2026-11-26 · Claude Code u Karola (noc po sesji, część druga: pety w Studio, przedmioty wojownika, jajka wstrzymane)
 - **Pety w Studio** (dwóch agentów na Opus: przebudowa modeli ok. 0,44 mln tokenów, wdrożenie ok. 0,37 mln): Rybki z zagrody i miejsca 2 → 4 → 6 → 8 u Jagody działają w grze jako próba z liczbami roboczymi (propozycja D-153 niezatwierdzona — wdrożone z wyprzedzeniem na polecenie Karola z sesji, do zmiany); pięć petów leśnego jajka przebudowanych według arkuszy Pawła; pety stoją na ośmiu nowych legowiskach. Próby w Play bez niezaliczeń (zagroda 12, las 14, Bagno 10, Dżungla 10); trzy warunki prób dostosowane do nowej zasady. Poprawiony błąd po przebudowie miasta: podpowiedź E Jagody stała w starym miejscu.
 - **Przedmioty wojownika** (ok. 0,52 mln): 30 modeli w pięciu zestawach na kocie-wojowniku według arkuszy Pawła, w `swiat/postacie/` (`pula_wojownika*.py`); nie w Studio. Do gry wejdą z kotem-wojownikiem w walce.

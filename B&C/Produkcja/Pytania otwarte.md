@@ -873,6 +873,7 @@ Rozstrzyga: D-139.
 Szczegóły: poprawki agenta (tapnięcie przyspiesza pasek, przyrost rośnie z poziomem, mini-gry jako bonus, przeliczenie tempa walk bez punktów za poziom) są w treści D-140 i D-141 w [[Rejestr decyzji]]. Dotyka D-097 (dwa podpisy), D-050, D-108 i pytania 50.
 **Odpowiedź:**
 - Karol Balucki (2026-11-25): Paweł już wdrożył
+- Claude Code u Karola (2026-11-26, dopisek agenta, nie odpowiedź człowieka): w grze (`main`) jest trening AFK (D-141), a Diamentów za poziom (D-140) nie ma — zostały na gałęzi `pawel/diamenty-afk`. Skutek: `stan_gracza` dalej daje 5 punktów statystyk za poziom, ale od 24.11 nie ma ich jak wydać (przyciski „+” usunięte), a Diamentów za awans gracz nie dostaje. Do ustalenia: kto wdraża D-140 w `stan_gracza` i z jakimi liczbami.
 
 ## 90. Pakiety Karola działają tylko w Studio — przed wydaniem?
 - Stan gracza, kowal, sklep (i inne pakiety `swiat/…`) mają na początku `if not RunService:IsStudio() then return`.
@@ -1045,4 +1046,13 @@ Szczegóły: [[Sesja główna 2026-11-25 — zapis ustaleń]] (21:57–21:58). K
 Gra: wspolne
 
 Szczegóły: [[Sesja główna 2026-11-25 — zapis ustaleń]]; zasady i progi próby: [[Konto klipów z wirtualnymi streamerami — pomysł]], [[00 Marketing]]. Paweł na sesji zdania nie wyraził. Zdanie agenta (D-114): (a) — ukryta promocja własnej gry przez konto udające zwykłego gracza to ukryta reklama, a widzami będą dzieci; sam format (klipy z gry plus reakcje) działa też jawnie. Tego zdania nie zmienię; o kierunku decydują Karol i Paweł, ja mogę tylko odmówić wersji udawanej.
+**Odpowiedź:**
+
+## 108. Brama BONK stoi w starym miasteczku B&C — co z nią?
+- Od 20.11 brama gry BONK (D-112, propozycja; BONK wstrzymany przez D-139) stoi w miejscu Blocky & Crycket, 16 studów od płyty startu starego miasteczka. Kto wejdzie w jej zasięg (5 studów), ląduje w lesie BONK.
+- 26.11 próba bazaru trafiła tam zamiast do nowego miasteczka. Tabliczkę „Nowe miasteczko (E)” agent odsunął, brama została.
+- Do wyboru: (a) usunąć bramę i kontener BONK z miejsca B&C, a BONK budować tylko w osobnym miejscu; (b) zostawić, ale odsunąć bramę dalej od płyty startu; (c) zostawić jak jest do decyzji o BONK.
+Gra: bc
+
+Szczegóły: gracz zaczyna dziś w nowym miasteczku, a do starego trafia portalem, więc dotyczy to tylko tych, którzy tam wejdą. Zdanie agenta (D-114): (a) — w grze szykowanej do wydania nie powinno być wejścia do wstrzymanego prototypu; BONK ma budowę do osobnego miejsca (`--publikacja`). Kontener w Studio jest nasz (wygenerowany), ale jego usunięcie to decyzja człowieka. Opis znaleziska: [[Dziennik zmian]], wpis z 26.11.
 **Odpowiedź:**
