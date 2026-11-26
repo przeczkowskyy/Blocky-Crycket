@@ -122,6 +122,7 @@ python -B swiat/trening_proba/zbuduj.py --usun           # usuwa Workspace/Treni
 python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>   # próba T01–T22 w trybie Play (ok. 12 min)
 python -B swiat/trening_proba/testy/proba_play.py <folder> --nowe      # tylko T01 i T15–T22 (ok. 8 min)
 python -B swiat/trening_proba/testy/proba_play.py <folder> --walka     # tylko T01, T22 i T23–T27 — wygląd jak w walce (ok. 7 min)
+python -B swiat/trening_proba/testy/proba_afk_zasieg.py <folder>       # stanowiska AFK w sali: zasięg podpowiedzi E (ok. 2 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py                      # 24 zrzuty do klatki/ (ok. 7 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py --nowe               # tylko 09–24 (cztery nowe gry, ok. 5 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py --telefon            # 26–37: sześć gier na telefonie (ok. 5 min)

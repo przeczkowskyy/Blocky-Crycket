@@ -657,9 +657,11 @@ end
 
 -- WYBIEG (26.11.2026, uwaga Pawła do raportu z nocy: „fajnie by było, jakby chodziły luzem po tej zagrodzie, a nie były
 -- przyklejone do stanowisk”; propozycja): pety zagrody spacerują po prostokącie wybiegu (D.polozenia.wybieg — obrys
--- legowisk z mapy z marginesami), przystają, a co któryś raz wracają postać na swoim legowisku. To tylko obraz u gracza:
--- o tym, kto stoi w zagrodzie i ile daje Rybek, decyduje serwer jak dotąd. Bez ustawień wybiegu (starsze dane) albo
--- z wlaczony = false pety stoją na legowiskach jak przed zmianą. Jedna tabela zamiast wielu zmiennych (limit lokalnych).
+-- miejsc petów z mapy z marginesami), przystają, a co któryś raz odpoczywają dłużej tam, gdzie stoją (Paweł 26.11:
+-- „legowiska znikają, tempo okej” — legowisk na mapie już nie ma, więc pet nie wraca na „swoje” miejsce). To tylko
+-- obraz u gracza: o tym, kto stoi w zagrodzie i ile daje Rybek, decyduje serwer jak dotąd. Bez ustawień wybiegu
+-- (starsze dane) albo z wlaczony = false pety stoją na miejscach z mapy. Jedna tabela zamiast wielu zmiennych (limit
+-- lokalnych).
 local Wybieg = { ust = D.zagroda.wybieg, obszar = D.polozenia.wybieg, czasBledu = -math.huge }
 Wybieg.czynny = type(Wybieg.ust) == "table" and Wybieg.ust.wlaczony == true and type(Wybieg.obszar) == "table"
 
@@ -711,9 +713,9 @@ function Wybieg.krok(dt: number, t: number)
 			local d = math.sqrt(dx * dx + dz * dz)
 			local krok = z.predkosc * dt
 			if d <= krok or d < 0.05 then
-				-- na miejscu: postój (na własnym legowisku dłuższy)
+				-- na miejscu: postój
 				z.pos = Vector3.new(z.cel.X, z.pos.Y, z.cel.Z)
-				z.postoj = t + Wybieg.los(if z.drzemka then ust.drzemka_s else ust.postoj_s)
+				z.postoj = t + Wybieg.los(ust.postoj_s)
 				z.cel = nil
 			else
 				local kx, kz = dx / d, dz / d
@@ -740,19 +742,18 @@ function Wybieg.krok(dt: number, t: number)
 				end
 			end
 		elseif t >= z.postoj and not raduje then
-			-- co któryś raz pet wraca na swoje legowisko, inaczej losuje wolny punkt wybiegu
-			local cel = nil
-			if math.random() < ust.drzemka_szansa and Wybieg.poziomo(z.pos, z.dom) > 1 then
-				cel = z.dom
+			-- co któryś raz pet odpoczywa dłużej tam, gdzie stoi (legowisk nie ma), inaczej losuje wolny punkt wybiegu
+			if math.random() < ust.drzemka_szansa then
 				z.drzemka = true
+				z.postoj = t + Wybieg.los(ust.drzemka_s)
 			else
-				cel = Wybieg.wolnyCel(z)
 				z.drzemka = false
-			end
-			if cel then
-				z.cel = cel
-			else
-				z.postoj = t + Wybieg.los(ust.mijanie_s)
+				local cel = Wybieg.wolnyCel(z)
+				if cel then
+					z.cel = cel
+				else
+					z.postoj = t + Wybieg.los(ust.mijanie_s)
+				end
 			end
 		end
 		Rig.ustaw(z.u, CFrame.new(z.pos.X, z.pos.Y + z.unoszenie, z.pos.Z) * CFrame.Angles(0, z.yaw, 0))
@@ -786,7 +787,7 @@ function Wybieg.pozycje()
 end
 
 local function ustawPetyZagrody()
-	-- wybieg: pet, który już chodzi po zagrodzie, po odświeżeniu listy zostaje tam, gdzie był (bez skoku na legowisko)
+	-- wybieg: pet, który już chodzi po zagrodzie, po odświeżeniu listy zostaje tam, gdzie był (bez skoku na miejsce startu)
 	local poprzednie = {}
 	for id, z in petyZagrody do
 		poprzednie[id] = { pos = z.pos, yaw = z.yaw }

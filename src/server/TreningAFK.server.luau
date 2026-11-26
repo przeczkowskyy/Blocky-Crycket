@@ -288,7 +288,8 @@ local function zbuduj()
 		pp.ObjectText = s.czynnosc
 		pp.KeyboardKeyCode = Enum.KeyCode.E
 		pp.HoldDuration = 0
-		pp.MaxActivationDistance = 10
+		-- 26.11.2026 (Paweł: „4.5 git”): 10 studów łapało sąsiednie stanowisko przy podejściu wzdłuż rzędu
+		pp.MaxActivationDistance = 4.5
 		pp.RequiresLineOfSight = false
 		pp.Parent = mata
 		m.PrimaryPart = mata

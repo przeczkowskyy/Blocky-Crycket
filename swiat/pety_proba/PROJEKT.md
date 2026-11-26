@@ -291,15 +291,19 @@ Uwaga: zagroda nalicza także stojącemu bez ruchu graczowi (AFK) — do decyzji
 Paweł w opinii do raportu z nocy (26.11, przekazał Karol): „z petami nawet okej, ale fajnie by było, jakby chodziły luzem
 po tej zagrodzie, a nie były przyklejone do stanowisk”. Karol: „Wykonaj te zadania”.
 
-- **Co widzi gracz:** pety stojące w zagrodzie spacerują po wybiegu, przystają na 2–6 s, omijają się, a co piąty raz wracają
-  postać na swoim legowisku (5–9 s). Latające (Świetlikówka) unoszą się jak przy graczu. Imię idzie z petem.
+- **Co widzi gracz:** pety stojące w zagrodzie spacerują po wybiegu, przystają na 2–6 s, omijają się, a co piąty raz
+  odpoczywają dłużej tam, gdzie stoją (5–9 s). Latające (Świetlikówka) unoszą się jak przy graczu. Imię idzie z petem.
 - **Tylko obraz u gracza** (`KlientPetow.client.luau`, tabela `Wybieg`): o tym, kto stoi w zagrodzie i ile daje Rybek,
   dalej decyduje serwer. Serwer, zapis i liczby D-153 bez zmian. Każdy gracz widzi w zagrodzie swoje pety, jak dotąd.
-- **Wybieg** to prostokąt policzony z legowisk na mapie i marginesów (`dane_petow.py` → `D.polozenia.wybieg`): 20 × 11,8
+- **Wybieg** to prostokąt policzony z miejsc petów na mapie (znaczniki) i marginesów (`dane_petow.py` → `D.polozenia.wybieg`): 20 × 11,8
   studa; margines 2 do bocznych płotów, 0,4 do koryta, 1 do misek przy bramce. Mapy nie trzeba było zmieniać.
 - **Ustawienia:** `ustawienia.json` → `zagroda.wybieg` (prędkość 1,8–3 st/s, tempo klipu chodu 0,6, postoje, odstęp nowego
-  celu 3,4 st, mijanie 2,6 st). `wlaczony: false` przywraca stanie na legowiskach.
-- **Legowiska zostają** jako miejsca odpoczynku i znak, ile miejsc ma zagroda (2 → 4 → 6 → 8).
+  celu 3,4 st, mijanie 2,6 st). `wlaczony: false` przywraca stanie na miejscach z mapy.
+- **Legowiska znikają** (Paweł na Telegramie 26.11, 15:42, po obejrzeniu spaceru: „legowiska znikają, tempo okej”):
+  z mapy zniknęło osiem kolorowych poduch (16 części), znaczniki miejsc zostały jako niewidoczne dane — liczba miejsc
+  i punkty, w których pety pojawiają się w zagrodzie. Pet nie wraca już na „swoje” miejsce, tylko co piąty raz
+  odpoczywa dłużej tam, gdzie stoi. Ile miejsc ma zagroda (2 → 4 → 6 → 8), widać w oknie zagrody u Jagody (wiersz
+  zagrody i przycisk ulepszenia) — na samym wybiegu nic już tego nie pokazuje.
 
 **Sprawdzone w Play 26.11** (`testy/proba_play.py --zagroda`, cztery przebiegi, 14 punktów OK, 0 niezaliczeń):
 - Z10 — dwa pety przez 14 s: oba w wybiegu, model dokładnie tam, gdzie liczy go spacer, najdłuższa droga 8,5–11 st.

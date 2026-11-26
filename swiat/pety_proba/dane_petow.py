@@ -112,9 +112,10 @@ def polozenie_jajka(j):
 
 
 def _wybieg(U, e0, kx, kz, miejsca):
-    """Prostokąt wybiegu zagrody (26.11.2026: pety chodzą luzem): obrys legowisk w układzie zagrody (kx — w bok,
-    kz — ku bramce) powiększony o marginesy z ustawień. → {"wybieg": {srodek, os_x, os_z, pol_x, pol_z}} w świecie
-    Studio albo {} (brak ustawień wybiegu albo legowisk — pety stoją na miejscach jak dawniej)."""
+    """Prostokąt wybiegu zagrody (26.11.2026: pety chodzą luzem): obrys miejsc petów (znaczniki mapy; legowisk od
+    26.11 nie ma) w układzie zagrody (kx — w bok, kz — ku bramce) powiększony o marginesy z ustawień.
+    → {"wybieg": {srodek, os_x, os_z, pol_x, pol_z}} w świecie Studio albo {} (brak ustawień wybiegu albo miejsc —
+    pety stoją na miejscach jak dawniej)."""
     W = U["zagroda"].get("wybieg")
     if not W or not miejsca:
         return {}

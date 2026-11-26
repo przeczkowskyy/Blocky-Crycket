@@ -104,7 +104,8 @@ class TestDanych(unittest.TestCase):
             self.assertEqual(LP.jajko_peta(D, p["id"])["id"], p["jajko"])
 
     def test_1d_wybieg_z_legowisk(self):
-        """26.11.2026: pety chodzą luzem — prostokąt wybiegu z legowisk mapy i marginesów; klient ma spacer i wyłącznik."""
+        """26.11.2026: pety chodzą luzem — prostokąt wybiegu z miejsc petów na mapie i marginesów; klient ma spacer
+        i wyłącznik; od decyzji Pawła „legowiska znikają” pet nie wraca na swoje miejsce, tylko odpoczywa, gdzie stoi."""
         G, W = D["polozenia"], U["zagroda"]["wybieg"]
         wb = G["wybieg"]
         s, ox, oz = wb["srodek"], wb["os_x"], wb["os_z"]
@@ -136,6 +137,7 @@ class TestDanych(unittest.TestCase):
             self.assertIn(pole, wb, "polozenia.wybieg.%s" % pole)
         self.assertIn("pcall(Wybieg.krok, dt, t)", k)
         self.assertIn("if Wybieg.czynny then", k)
+        self.assertNotIn("cel = z.dom", k)                                          # bez powrotu na legowisko (26.11)
         # bez ustawień wybiegu dane nie mają prostokąta (klient zostawia pety na legowiskach)
         stare = U["zagroda"].pop("wybieg")
         try:

@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 """Zagroda petów — miejsce, gdzie gracz odstawia pety, które zwykle chodzą za bohaterem (D-085). Sama zagroda: otwarty
-wybieg za płotkiem z bramką na uliczkę, osiem legowisk = osiem miejsc na odstawione pety (znaczniki
-`zagroda_miejsce_1…8`, w kształcie litery U wokół przejścia od bramki: po trzy przy bocznych płotach, dwa przy tylnym),
-miski, koryto i siano. Opiekunka Jagoda stoi PRZED zagrodą, obok bramki od strony uliczki (E → okno zagrody, okno
+wybieg za płotkiem z bramką na uliczkę, osiem miejsc na odstawione pety (znaczniki `zagroda_miejsce_1…8`, w kształcie
+litery U wokół przejścia od bramki: po trzy przy bocznych płotach, dwa przy tylnym — tu pety pojawiają się w zagrodzie
+i stąd liczony jest wybieg, po którym chodzą luzem), miski, koryto i siano. Opiekunka Jagoda stoi PRZED zagrodą, obok bramki od strony uliczki (E → okno zagrody, okno
 w HUD robi Paweł), więc nie zasłania petów. Jajek tu nie ma: jajka są w inkubatorach biomów (D-060).
 Szyld: wielka łapa nad bramką.
 
 Zmiana 25.11.2026 (sesja główna Karola i Pawła, „zagroda ma być tylko zagrodą”): bez ozdobnego psa, smoka, slime'a,
 budki opiekunki i psiej budy; osiem miejsc zamiast sześciu; obrys zagrody bez zmian (26 × 20).
+
+Zmiana 26.11.2026 (Paweł na Telegramie, po obejrzeniu petów chodzących luzem: „legowiska znikają, tempo okej”):
+bez legowisk — pety chodzą po całym wybiegu, więc kolorowe poduchy nie są już ich miejscami. Znaczniki miejsc zostają
+(niewidoczne dane): liczba miejsc i punkty startu petów.
 """
 import math
 import os
@@ -18,7 +22,6 @@ if _REPO not in sys.path:
     sys.path.insert(0, _REPO)
 
 from swiat.krzywe_miasteczko import zestaw  # noqa: E402
-from swiat.krzywe_miasteczko.paleta import cien  # noqa: E402
 from swiat.miasteczko_bazar import postacie, wspolne  # noqa: E402
 
 NAZWA = "ZagrodaPetow"
@@ -32,8 +35,6 @@ OPIEKUNKA = (7.6, 11.8)
 # osiem miejsc na odstawione pety (układ modułu: +z = bramka i uliczka): 1–2 przy bramce, potem w głąb, 7–8 przy tylnym
 # płocie; kolejność = kolejność odblokowania (2 → 4 → 6 → 8)
 MIEJSCA = ((-8.0, 4.6), (8.0, 4.6), (-8.0, -0.6), (8.0, -0.6), (-8.0, -5.8), (8.0, -5.8), (-3.4, -5.6), (3.4, -5.6))
-KOLORY_LEGOWISK = ("dach_kolo", "dach_twierdza", "pomarancz", "dach_sklep", "dach_karczma", "dach_brama", "dach_gildia",
-                   "dach_wylegarnia")
 
 
 def buduj(s, rnd):
@@ -57,16 +58,13 @@ def buduj(s, rnd):
     wspolne.punkt_e(s, NAZWA, "zagroda_petow", (ox - 0.8, 0.0, oz + 4.6), (ox - 0.2, 4.6, oz + 0.6), typ="zagroda",
                     sklep="zagroda_petow", nazwa="Zagroda petów (opiekunka)", okno="Okno zagrody petów (Paweł)",
                     postac="opiekunka", model=NAZWA + "/Opiekunka", kier=(0, 0, 1))
-    # legowiska = miejsca na odstawione pety (bez kolizji: pet i gracz stają na nich)
+    # (26.11.2026: bez legowisk — pety chodzą luzem po wybiegu)
     with s.cechy(kolizja=False):
-        for (x, z), kol in zip(MIEJSCA, KOLORY_LEGOWISK):
-            s.walec("Legowisko", (x, Y_WYBIEGU + 0.25, z), 1.7, 0.5, kol, "Fabric", os="y")
-            s.walec("Legowisko rant", (x, Y_WYBIEGU + 0.45, z), 1.9, 0.3, cien(s, kol, 0.8), "Fabric", os="y")
-        # miski z kością przy bramce (w przejściu, nie na legowiskach)
+        # miski z kością przy bramce (w przejściu)
         for x, z in ((-3.6, 7.4), (3.8, 7.6)):
             s.walec("Miska", (x, Y_WYBIEGU + 0.35, z), 0.9, 0.7, KOD, os="y")
             s.blok("Kość", (x + 0.1, Y_WYBIEGU + 0.8, z), (1.3, 0.3, 0.3), "biel", rot=(0, 35, 0))
-    # koryto z wodą przy tylnym płocie, między miejscami 7 i 8; siano w tylnych narożnikach
+    # koryto z wodą przy tylnym płocie; siano w tylnych narożnikach
     s.blok("Koryto", (0, 1.0, -8.3), (3.0, 1.6, 1.6), "drewno", "WoodPlanks")
     with s.cechy(kolizja=False):
         s.blok("Koryto woda", (0, 1.75, -8.3), (2.4, 0.15, 1.1), "woda")

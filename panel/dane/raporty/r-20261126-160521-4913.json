@@ -1,0 +1,15 @@
+{
+ "id": "r-20261126-160521-4913",
+ "tytul": "Zagroda bez legowisk i zasięg E 4,5 studa (po odpowiedzi Pawła)",
+ "opis_md": "Po odpowiedzi Pawła z grupy na Telegramie (26.11, 15:42). Obie zmiany są w Studio.\n\n**Zagroda bez legowisk (D-157)**\n- Z wybiegu zniknęło osiem kolorowych poduch.\n- Pety chodzą jak wcześniej, tempo bez zmian. Co piąty raz pet odpoczywa dłużej tam, gdzie stoi, zamiast wracać na swoje miejsce.\n- Liczbę miejsc (2 → 4 → 6 → 8) widać teraz tylko w oknie zagrody u Jagody.\n- Sprawdzone w Play: 15 punktów bez niezaliczeń. Pełna zagroda: osiem z ośmiu petów w ruchu, żaden poza wybiegiem.\n\n**Zasięg E przy stanowiskach treningu (D-158)**\n- Podpowiedź E sięga 4,5 studa zamiast 10. Żeby zacząć trening, trzeba podejść do maty; ze środka przejścia E nic nie włącza.\n- Sprawdzone w Play: 22 punkty bez niezaliczeń. Każde z sześciu stanowisk włącza się z przejścia, a E przy jednym stanowisku nie włącza dalszego.\n\n**Nie sprawdzono:** prawdziwy telefon, dwóch graczy naraz.\n\n**Do decyzji:** pytanie 109 — co ma się dziać, gdy kilku graczy chce trenować na tym samym stanowisku. Dziś drugi gracz jest po cichu odrzucany.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T16:05:21+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "gra": "bc"
+}

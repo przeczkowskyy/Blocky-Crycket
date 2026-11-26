@@ -473,7 +473,7 @@ return {
 		cel_przychodu = "zagroda",
 		plus_s = 1.6,
 		wybieg = {
-			_opis = "26.11.2026 (uwaga Pawła do raportu z nocy, propozycja): pety w zagrodzie chodzą luzem po wybiegu zamiast stać na legowiskach. Tylko obraz u gracza — kto stoi w zagrodzie i ile daje Rybek, liczy serwer jak dotąd. Prostokąt wybiegu liczy dane_petow.py z legowisk na mapie (znaczniki zagroda_miejsce_N) i marginesów niżej (study: bok — ku bocznym płotom, tyl — ku korytu, przod — ku miskom przy bramce). predkosc i postoje: przedziały losowania; tempo_chodu: tempo klipu chodu przy spacerze; drzemka: co któryś raz pet wraca na swoje legowisko i stoi dłużej; odstep: najmniejsza odległość nowego celu od innych petów; mijanie: bliżej niż tyle od peta na drodze — postój i nowy cel. wlaczony = false przywraca stanie na legowiskach.",
+			_opis = "26.11.2026 (uwaga Pawła do raportu z nocy, propozycja): pety w zagrodzie chodzą luzem po wybiegu zamiast stać na miejscach; od decyzji Pawła z 26.11 („legowiska znikają, tempo okej”) legowisk na mapie nie ma, a „drzemka” to dłuższy odpoczynek tam, gdzie pet stoi. Tylko obraz u gracza — kto stoi w zagrodzie i ile daje Rybek, liczy serwer jak dotąd. Prostokąt wybiegu liczy dane_petow.py z miejsc petów na mapie (znaczniki zagroda_miejsce_N) i marginesów niżej (study: bok — ku bocznym płotom, tyl — ku korytu, przod — ku miskom przy bramce). predkosc i postoje: przedziały losowania; tempo_chodu: tempo klipu chodu przy spacerze; drzemka: co któryś raz pet wraca na swoje legowisko i stoi dłużej; odstep: najmniejsza odległość nowego celu od innych petów; mijanie: bliżej niż tyle od peta na drodze — postój i nowy cel. wlaczony = false przywraca stanie na legowiskach.",
 			wlaczony = true,
 			margines_bok = 2,
 			margines_tyl = 0.4,
@@ -2617,5 +2617,5 @@ return {
 			{ r = 0, s = 0.29, dt = 5, ile = 1, reszta = 0.44999999999999996 },
 		},
 	},
-	skrot = "00d79c98c4f0",
+	skrot = "06b201623db4",
 }

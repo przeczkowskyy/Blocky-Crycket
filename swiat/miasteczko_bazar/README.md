@@ -42,7 +42,8 @@ Zlecenie z sesji głównej Karola i Pawła 25.11 (zgoda obu na głos; status zmi
 **Zagroda petów** (`budynki/zagroda_petow.py`): bez ozdobnego psa, smoka, slime'a (także tego na dachu), budki opiekunki
 i psiej budy. Opiekunka Jagoda stoi **przed zagrodą**, na bruku obok prawego słupka bramki (punkt E przed nią, od strony
 uliczki), więc nie zasłania petów. Obrys bez zmian (26 × 20). **Osiem miejsc** na pety w kształcie litery U wokół przejścia
-od bramki (każde z legowiskiem w innym kolorze), miski przy bramce, koryto przy tylnym płocie, siano w tylnych narożnikach.
+od bramki (od 26.11.2026 bez legowisk — decyzja Pawła „legowiska znikają”; miejsca to niewidoczne znaczniki, pety
+chodzą luzem po wybiegu), miski przy bramce, koryto przy tylnym płocie, siano w tylnych narożnikach.
 Nazwy znaczników i id interakcji `zagroda_petow` bez zmian. Kolejność = kolejność odblokowania (2 → 4 → 6 → 8):
 
 | Znacznik | Świat Studio (X; Y; Z) | | Znacznik | Świat Studio (X; Y; Z) |
