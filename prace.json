@@ -2,16 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T12:38:17+01:00",
+ "aktualizacja": "2026-11-26T12:38:46+01:00",
  "prace": [
   {
    "id": "helmy-chwyty",
    "tytul": "Przedmioty wojownika: hełmy zasłaniają uszy, chwyt broni według rodzaju",
    "stan": "w_toku",
-   "etap": "Przebudowa zestawów (1 z 5) i plansze",
+   "etap": "Gotowe: modele i plansze przebudowane, raport dla koordynatora",
    "start": "2026-11-26T11:53:15+01:00",
-   "koniec_szacowany": "2026-11-26T15:45:00+01:00",
-   "aktualizacja": "2026-11-26T12:27:07+01:00",
+   "koniec_szacowany": "2026-11-26T12:53:00+01:00",
+   "aktualizacja": "2026-11-26T12:38:18+01:00",
    "obszary": [
     "swiat/postacie/pula_wojownika*.py"
    ],
