@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T12:31:22+01:00",
+ "aktualizacja": "2026-11-26T12:31:36+01:00",
  "prace": [
   {
    "id": "helmy-chwyty",
@@ -49,10 +49,10 @@
    "id": "sala-dwa-rzedy",
    "tytul": "Training Center: dwa rzędy po trzy stanowiska z przejściem pośrodku, trzymanie książki",
    "stan": "w_toku",
-   "etap": "Budowa sali w Studio",
+   "etap": "Próba stanowisk w Play",
    "start": "2026-11-26T11:53:11+01:00",
-   "koniec_szacowany": "2026-11-26T15:30:00+01:00",
-   "aktualizacja": "2026-11-26T12:25:29+01:00",
+   "koniec_szacowany": "2026-11-26T15:45:00+01:00",
+   "aktualizacja": "2026-11-26T12:31:36+01:00",
    "obszary": [
     "mapa:miasteczko_bazar",
     "studio:MiasteczkoBazar",
