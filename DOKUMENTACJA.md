@@ -253,7 +253,7 @@ Blocky&Crycket/
 │   ├── las_pas/  las_pas_gra/   💡 las jako wąski pas: mapa (Workspace/LasPas) i skrypty gry (Workspace/LasPasGra)
 │   ├── bagno_pas/  biomy/       💡 mapa Bagna jako odcinka pasa (zbudowana w Studio 17.11: Workspace/BagnoPas) i zarys biomów 2–8 — do akceptacji
 │   ├── dzwiek_gra/              💡 katalog dźwięków i muzyka stref (Workspace/DzwiekGra); od 18.11 własne utwory Bagna i Dżungli oraz muzyka walki, Strażnika i mini-gier; numery wgranych plików, część czeka na prawa gry i na wgranie
-│   ├── trening_proba/           💡 Training Center: sześć mini-gier na próbę, po jednej na statystykę, kamera i efekty jak w walce (Workspace/TreningProba)
+│   ├── trening_proba/           💡 Training Center: sześć mini-gier na próbę (od 26.11.2026 wyłączone przełącznikiem — w grze trenuje się na stanowiskach AFK, D-141 i D-162; w Workspace/TreningProba został tylko sygnał przyrostu statystyk)
 │   ├── stan_gracza/             💡 jeden właściciel stanu gracza: łup i awans po walce, bohater z klasy i poziomu, pety i wydatki (Workspace/StanGracza)
 │   ├── bagno_pas_gra/           💡 Bagno jako drugi biom na kodzie lasu-pasa: pięć gatunków, Strażnik Topieli (Workspace/BagnoPasGra)
 │   ├── dzungla_pas/  dzungla_pas_gra/  💡 Dżungla jako trzeci biom: mapa (Workspace/DzunglaPas) i skrypty gry (Workspace/DzunglaPasGra), pięć gatunków, strażnik Wąż Stu Lian
@@ -264,7 +264,7 @@ Blocky&Crycket/
 │   ├── stroje_proba/            💡 ubieranie postaci (D-071): strój w walce (Workspace/StrojeProba; przymierzalnia usunięta 26.11 razem ze starą wioską)
 │   ├── wskazowki_gry/           💡 linijka celu i znacznik w świecie dla nowego gracza (Workspace/WskazowkiGry)
 │   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi
-│   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra)
+│   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra); od 26.11.2026 tu stoi punkt startu gry (D-159)
 │   ├── teleport_chmury/       💡 przejście przez chmury zamiast okna mapy (Workspace/TeleportChmury)
 │   ├── bonk/                  💡 BONK (D-112): osobna, samowystarczalna prosta gra z naszych zasobów — bijesz potwory, odlatują; pałki, jajka i pety, Strażnicy, trzy krainy; do 26.11.2026 wejście bramą przy starcie obecnej gry (Workspace/BonkGra; usunięte z miejsca B&C, D-159), grafiki do sklepu w `grafika/`, kroki publikacji w README
 │   ├── pet_arena/             💡 Pet Arena (D-118): samowystarczalna gra we własnym miejscu Roblox — wrzucasz peta do dołu-areny, bitka o złoty środek, jajka i kolekcja, boss; kontener Workspace/PetArenaGra (BONK porzucony 20.11, D-117)

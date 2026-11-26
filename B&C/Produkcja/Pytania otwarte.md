@@ -1117,6 +1117,9 @@ Gra: bc
 
 Szczegóły: zdanie agenta (D-114): (a), zgodnie z kierunkiem Karola z 26.11 („pozbywać się starych rzeczy”); przed usunięciem trzeba sprawdzić, czy trening AFK nie korzysta z serwera mini-gier przy zapisie statystyk.
 **Odpowiedź:**
+- Karol (2026-11-26, czat; zapisał agent): „Usuń placeholdery już” — wariant (a): arena usunięta z miejsca w Studio. Trening AFK korzystał z jednego sygnału tego kontenera, więc sygnał został (bez części i bez skryptów); źródła mini-gier zostają w repo.
+
+Rozstrzyga: D-162.
 
 ## 115. Trener: wybór ćwiczeń zamiast drzewka postaci?
 - Robocze ustalenie z sesji 25.11 (D-150, propozycja): przy trenerze otwiera się drzewko postaci.
