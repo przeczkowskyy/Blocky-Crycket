@@ -6,6 +6,17 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-26 · Claude Code u Karola (jajka: napis nie zdradza peta przed otwarciem)
+- **Problem z popołudniowej próby:** przy zakupie z jajka napis pakietu petów „Wykluł się: … — premia” pojawiał się zaraz po E, zanim gracz otworzył jajo pięcioma kliknięciami; stary inkubator obok grał przy tym własną animację. Dotyczyło też leśnego jaja.
+- **Poprawka** (w Studio): serwer scenki woła haczyk serwera petów z opcją „bez pokazu” (`SterowanieSerwera("kup", gracz, id, { bezPokazu = true })`). Zakup, zapis peta i liczniki bez zmian; klient petów nie gra animacji inkubatora i wstrzymuje napis do sygnału scenki. Scenka wysyła dwa sygnały: „odsłonięty” razem z dymkiem „NEW PET!” (wtedy pojawia się napis) i „koniec” po zamknięciu kina (pet rusza za graczem od jajka). Zabezpieczenie: bez sygnału napis i pet pokazują się same po 45 s. Zakup prawdziwym E w starym inkubatorze bez zmian.
+- **Pliki:** `swiat/pety_proba/zrodla/SerwerPetow.server.luau`, `KlientPetow.client.luau`; pliki Pawła (za zgodą z 26.11): `src/server/JajkoKorowe.server.luau` (jedna linia), `src/client/JajkoKoroweClient.client.luau` (18 linii); próba `swiat/jajka_biomow/testy/proba_play.py` z nowymi punktami; zrzuty `swiat/jajka_biomow/podglad/scenka_*`.
+- **Próby w Play:** jajka na prawdziwych modelach 36 OK, 0 błędów, 3 zrzuty do oceny; pełna próba petów lasu 17 punktów, 0 błędów. Kontrola składni pakietu petów OK; testy petów bez Studio 51 z 52 w osobnej kopii roboczej (jeden test wymaga plików z Blendera, których tam nie było).
+- **Do decyzji:** pytanie 110 w [[Pytania otwarte]] — stare inkubatory Bagna i Dżungli obok nowych jajek i strzałka celu, która prowadzi do starego inkubatora.
+- **Nie sprawdzono:** zabezpieczenia 45 s, dotyku i myszy, telefonu, widoku u drugiego gracza, zakupu prawdziwym E w starych inkubatorach Bagna i Dżungli (ten sam kod co w lesie).
+- **Porządek w repo:** kopia robocza na komputerze Karola została wyrównana z GitHubem dla plików bez lokalnych zmian (m.in. pliki Pawła z 25.11), żeby wdrożenia do Studio nie szły ze starych wersji; trzy notatki z niezapisanymi wierszami panelu i manifest zostały nietknięte.
+- **Koszt:** agent od jajek łącznie ok. 0,5 mln tokenów (scenka 0,38 mln, ta poprawka ok. 0,12 mln).
+- Raport w panelu: „Jajka: napis nie zdradza już peta przed otwarciem”.
+
 ## 2026-11-26 · Claude Code u Karola (przedmioty wojownika po upadku leżą na ziemi)
 - **Zlecenie:** Paweł na Telegramie 26.11 (punkt 7 listy zadań): „poprawić, żeby nie były pod ziemią”.
 - **Korekta upadku** (modele i plansze, nie w grze): poprawka jest daną przedmiotu, nie nowym klipem. Każda część na zaczepie ma drugą korektę (pozycja i obrót) i okno klatek, w którym spaw płynnie przechodzi z korekty chwytu na korektę upadku. Prawa łapa (klatki 22→33): broń obraca się w locie i ląduje płasko przed kotem. Hełm (od klatki 30) prostuje się i staje obok głowy. Lewa łapa: łuk i tarcza kładą się płasko pod łapą; księga bez korekty. Korekty liczy budowa z geometrii (ziemia sprawdzana co pół klatki).
