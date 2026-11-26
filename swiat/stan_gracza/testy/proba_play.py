@@ -88,7 +88,7 @@ KOD = {
     "edit": ('local H = game:GetService("HttpService") local function jest(n) local o = workspace:FindFirstChild(n) '
              'return o ~= nil and o:GetAttribute("Wygenerowane") == true end '
              'return H:JSONEncode({ stan = jest("StanGracza"), pas = jest("LasPasGra"), mapa = workspace:FindFirstChild("LasPas") ~= nil, '
-             'proto = workspace:FindFirstChild("TestWalki2") ~= nil, trening = jest("TreningProba"), '
+             'proto = workspace:FindFirstChild("TestWalki2") ~= nil, trening = (jest("TreningProba") and workspace.TreningProba:GetAttribute("MiniGry") ~= false), '
              'statystyki = workspace:FindFirstChild("StanGracza") and workspace.StanGracza:GetAttribute("StatystykiKlasy") })'),
     "gracz_atr": GR + 'local o = {} for _, n in { %s } do o[n] = J(gracz:GetAttribute(n)) end return H:JSONEncode(o)',
     "kont_atr": 'local o = {} local f = workspace:FindFirstChild("%s") if not f then return H:JSONEncode({ brak = true }) end '
@@ -680,7 +680,7 @@ def main():
                         a0.get("Strength"), a1.get("Strength"), dS, t1 - t0, (opis or {}).get("statystyki", {}).get("sila") if isinstance(opis, dict) else opis,
                         w7 and w7["po"]["walka"].get("SerwerOstatniaWalka")))
                 else:
-                    punkt("S07", None, "brak Workspace/TreningProba — pominięte")
+                    punkt("S07", None, "nie dotyczy: brak Workspace/TreningProba albo mini-gry wyłączone (MiniGry = false, 26.11.2026: kontener bez areny, trening statystyk = stanowiska AFK)")
 
                 # ================================================================ S08 tryb testowy TestBohater
                 luau(KOD["test_atr"] % ("LasPasGra", "TestBohater", "true"), "Server")

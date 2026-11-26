@@ -14,7 +14,7 @@
 		   sztywnego scenariusza. Bez StanGracza kroki o poziomach i treningu się nie pokazują.
 		4. Schowane, gdy trwa walka, przelot, chmury, mini-gra, wybór klasy albo gdy HUD jest schowany — nie zasłania
 		   HUD-u ani ekranu walki.
-	Źródła (tylko odczyt): atrybuty gracza Class, Level, PokonalStraznikaLasu, TreningGra; atrybuty klienta kontenerów
+	Źródła (tylko odczyt): atrybuty gracza Class, Level, PokonalStraznikaLasu, TreningAFK (z danych); atrybuty klienta kontenerów
 	lasu (OstatniWynik, OstatnieZiarno, KlientOstatniaWalka — ustawia je odtwarzacz walki); moduł DanePasa lasu-pasa;
 	Stan potworów lasu; punkty E trenera i Kamienia Powrotu; StanGracza (SerwerStanuGotowy, TreningPodlaczony);
 	TeleportChmury (Trwa); ScreenGui HUD, TestWalki2Cutscenka, ClassSelect.
@@ -134,7 +134,8 @@ local function podepnijLasy()
 	end
 end
 
--- trening: wejście na stanowisko (atrybut gracza TreningGra) po przegranej = „potrenował” (w każdym biomie)
+-- trening: wejście na stanowisko (atrybut gracza z danych: od 26.11.2026 TreningAFK — stanowiska AFK; wcześniej TreningGra
+-- mini-gier) po przegranej = „potrenował” (w każdym biomie)
 gracz:GetAttributeChangedSignal(Z.atrybut_treningu):Connect(function()
 	if gracz:GetAttribute(Z.atrybut_treningu) == nil then
 		return

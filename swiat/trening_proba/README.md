@@ -1,5 +1,24 @@
 # Training Center — próba sześciu mini-gier
 
+> **Mini-gry wyłączone z gry (26.11.2026 ok. 22:00, Karol: „usuń placeholdery”, „pozbądź się starych rzeczy”).**
+> `ustawienia.json → mini_gry.w_grze = false` (→ `DaneTreningu.mini_gry.w_grze`). `zbuduj.py` stawia wtedy
+> `Workspace/TreningProba` **bez areny (ok. 2800 części), bez modułów, skryptów i haczyków** — tylko folder `Sygnaly`
+> z `PrzyrostStatystyki` (BindableEvent) i atrybut kontenera `MiniGry = false`. Tym sygnałem skrypt Pawła
+> `src/server/TreningAFK.server.luau` oddaje przyrosty ze stanowisk AFK, a `swiat/stan_gracza` (SerwerStanu, słucha
+> wprost zdarzenia, `TreningPodlaczony`) dopisuje je do atrybutu i profilu (zapis). Żaden skrypt mini-gier nie jest do
+> tego potrzebny: zdarzenie powstaje przy budowie, a `SerwerTreningu` / `KlientTreningu` (128 tys. znaków) to wyłącznie
+> mini-gry. Haczyków (BindableFunction) nie ma celowo — wywołanie haczyka bez odbiorcy czekałoby w nieskończoność.
+> `--skrypty` w tym trybie odmawia (pełna budowa usuwa starą arenę). Kod mini-gier, arena i ich testy offline zostają
+> w repo; `mini_gry.w_grze = true` przywraca wszystko jak przed 26.11. Dowód offline: `testy/test_afk_trener.py`
+> (7a–7d: budowa = sam sygnał, ten sam sygnał co w `DaneStanu.trening` i w skrypcie Pawła, `czysty_przyrost` przyjmuje
+> przyrost AFK każdej z sześciu statystyk) i testy `swiat/stan_gracza` (8f, 8g: przyrost tym sygnałem w atrapie z samym
+> kontenerem `TreningProba/Sygnaly/PrzyrostStatystyki`). Próby w Play: `testy/proba_play.py` w tym trybie sprawdza
+> T01 (kontener bez części i skryptów, sygnał podpięty), T03 (E przy trenerze → okno AFK), T32 (trening AFK przez sygnał:
+> +1 sygnał, Strength rośnie, STOP) i T22 (konsola), a T02 i T04–T31 wypisuje jako „?” z powodem „nie dotyczy”;
+> `swiat/przejscie_gry/proba_dymna.py`, `swiat/stan_gracza/testy/proba_play.py` (S07), `proba_zapisu.py` (Z02, krok
+> mini-gry) i `swiat/bohater_swiat/testy/proba_play.py` (B16) rozpoznają `MiniGry = false` i oznaczają rundę mini-gry
+> jako „nie dotyczy”. Wskazówki (`swiat/wskazowki_gry`): „potrenował” = atrybut `TreningAFK` (wcześniej `TreningGra`).
+
 > **Wejście przez trenera do stanowisk AFK (26.11.2026, zlecenie Karola: „podchodzimy do trenera, E, klikamy, w co
 > chcemy wejść, i nas teleportuje”; D-141 — statystyki trenuje się na stanowiskach AFK).** Etap 1 zrobiony bez Studio
 > (pliki gotowe, testy offline zielone na kopii z odświeżonymi danymi); etap 2 (wdrożenie, próba w Play, zrzuty) —

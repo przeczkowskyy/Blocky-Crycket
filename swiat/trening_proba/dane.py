@@ -490,6 +490,8 @@ def wczytaj():
         "teksty": K["teksty"],
         "nazwy": NAZWY,
         "tablica_wejscia": K["tablica_wejscia"],
+        # 26.11.2026: false = kontener bez areny i bez skryptów mini-gier (zbuduj.py), tylko sygnał przyrostu dla AFK
+        "mini_gry": {"w_grze": (K.get("mini_gry") or {}).get("w_grze", True) is not False},
     }
     return K, D
 

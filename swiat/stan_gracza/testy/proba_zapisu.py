@@ -66,6 +66,7 @@ KOD = {
                  '"TreningProba", "LasPasGra", "CutscenkaBiomu" } do local k = workspace:FindFirstChild(n) '
                  'o[n] = k ~= nil and k:GetAttribute("Wygenerowane") == true end '
                  'local s = workspace:FindFirstChild("StanGracza") o.ZapisPostepu = s and s:GetAttribute("ZapisPostepu") '
+                 'local t = workspace:FindFirstChild("TreningProba") o.MiniGry = if t then t:GetAttribute("MiniGry") ~= false else false '
                  'return H:JSONEncode(o)'),
     "gotowy_klient": 'local p = game:GetService("Players").LocalPlayer return tostring(p ~= nil and p.Character ~= nil)',
     "wczytany": H + GR + KS + ('if not gracz or not s then return H:JSONEncode({ brak = true }) end '
@@ -337,7 +338,10 @@ def main():
                 time.sleep(1.2)
                 krok("oferta_po_stroju", lambda: js(KOD["oferta"] % (item, "")))
             krok("pet", lambda: js(KOD["pet"] % JAJKO))
-            tw = krok("trening_wejdz", lambda: js(KOD["trening_wejdz"]))
+            # 26.11.2026: kontener treningu bez mini-gier (MiniGry = false) — rundy mini-gry nie ma, krok „nie dotyczy”
+            mini = edit.get("MiniGry") is not False
+            tw = (krok("trening_wejdz", lambda: js(KOD["trening_wejdz"])) if mini else
+                  {"ok": False, "nie_dotyczy": "mini-gry wyłączone (TreningProba: MiniGry = false)"})
             if tw.get("ok"):
                 time.sleep(2.0)
                 luau(KOD["trening_klient"] % ("start", "nil"), "Client")
@@ -360,7 +364,7 @@ def main():
                 ("sklep", kroki["sklep"].get("ok") and kroki["sklep"].get("stopien") not in (None, "start")),
                 ("ulepszenie", (kroki.get("ulepsz") or {}).get("ok")), ("strój", (kroki.get("stroj") or {}).get("ok")),
                 ("kupiony założony", (kroki.get("oferta_po_stroju") or {}).get("stan") == "zalozone" and item in stroj.split(",")),
-                ("pet", kroki["pet"].get("ok") and a.get("PetAktywny")), ("mini-gra", (a.get("TreningSila") or 0) > 0 and "trening" in pak),
+                ("pet", kroki["pet"].get("ok") and a.get("PetAktywny")), ("mini-gra", not mini or ((a.get("TreningSila") or 0) > 0 and "trening" in pak)),
                 ("Strażnik", kroki["straznik"].get("ok") and a.get("PokonalStraznikaLasu") is True),
                 ("przelot", a.get("WidzialPrzelotLasu") is True), ("kowal w profilu", "kowal" in pak)) if not ok]
             punkt("Z02", True if not braki else None, "braki: %s; kroki: %s" % (braki or "brak", json.dumps(kroki, ensure_ascii=False)[:1200]))

@@ -19,7 +19,7 @@ przejściem na działkę, zagrodą petów, tablicą z rankingiem i Bramą Leśn�
 | `tekstury.py` | kafelki z arkusza, mapy do barwienia, wgrywanie do Roblox, raport przypisania, pomiar w emulacji telefonu |
 | `ujecia_tekstury.json`, `podglad/tekstury_*` | cztery kadry przed/po (plac, uliczka, karczma z bliska, całość z góry) i wyniki pomiaru `tekstury_pomiar.json` |
 
-**Liczby:** 4289 części (26.11.2026 wieczorem, po przesunięciu studni i ławek; tuż przed tym generator dawał 4286 — po sprzątaniu mapy; wcześniej 4318 po wydłużeniu sali Training Center, 25.11 po sali i zagrodzie 4312, jeszcze wcześniej 4410; cel ok. 8000, twardy limit 12 000), 84 grupy. Kontener `Workspace/MiasteczkoBazar`.
+**Liczby:** 4256 części (26.11.2026 ok. 22:00, po usunięciu tablicy wyboru mini-gry z Training Center — 4289 → 4256; wcześniej tego wieczoru 4289 po przesunięciu studni i ławek; tuż przed tym generator dawał 4286 — po sprzątaniu mapy; wcześniej 4318 po wydłużeniu sali Training Center, 25.11 po sali i zagrodzie 4312, jeszcze wcześniej 4410; cel ok. 8000, twardy limit 12 000), 84 grupy. Kontener `Workspace/MiasteczkoBazar`.
 Świat = (994 + x; y; −700 + z), bez obrotu: części stoją w pliku już tam, gdzie mają stanąć (X 882…1066,
 Z −790…−610), więc przy budowie i zrzutach **nie podaje się `--przesun`**. Wschodni brzeg (X 1066) to początek pasa
 Lasu. Bazar stoi na wschodnim końcu płyty Baseplate (PROJEKT.md, wybór 1).
@@ -108,6 +108,14 @@ bez E w grze); od znaczników zależne dane innych pakietów (bazar, NPC, wskaz�
 po przeliczeniu w kopii zostały aktualne — zmieniają się tylko z powodu tekstów trenera (DaneBazaru, DaneNpc,
 DaneWskazowek) i przełącznika mini-gier (DaneTreningu). NPC rzucający pomidorami przy Pancerzu (skrypt Pawła, 11 st
 przed matą, z ≈ −8,4) stoi teraz na gruncie, 6 st przed cembrowiną.
+
+**Tablica wyboru mini-gry usunięta (26.11.2026 ok. 22:00, Karol: „ma tu nie być żadnych tabliczek”, „usuń placeholdery”).**
+Z tylnej ściany głównej izby Training Center zniknęła tablica z daszkiem i sześcioma medalionami statystyk
+(`budynki/training_center.py`: `_tablica_wyboru`, `_medalion` — 33 części; TrainingCenter 267 → 234). Trener
+i jego punkt E zostają (E → okno stanowisk AFK); opis znacznika `training_center` mówi teraz „trener (okno stanowisk
+AFK)”. Tabliczka z imieniem nad trenerem (NPC, jak u innych postaci miasteczka) zostaje. `sprawdz.py`: 0 błędów,
+2 ostrzeżenia; dane bazaru, NPC, wskazówek i pozostałych pakietów po przeliczeniu aktualne (zmienił się tylko opis
+znacznika). Reguły nazw „Tablica wyboru…” / „Medalion” w `tekstury.json` zostały (nie pasują już do żadnej części).
 
 ## Sala Training Center: dwa rzędy po trzy z przejściem pośrodku (26.11.2026)
 

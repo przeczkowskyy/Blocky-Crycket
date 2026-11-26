@@ -74,6 +74,12 @@ INNE = [
     ("BindableFunction", "Sygnaly/WybierzGre"),
 ]
 ATRYBUTY_TESTOWE = ["WyborTymczasowy", "RecznyPunktTablicy"]
+# 26.11.2026: tryb bez mini-gier (ustawienia.json → mini_gry.w_grze = false) — kontener tylko z sygnałem przyrostu:
+# src/server/TreningAFK.server.luau (Paweł) strzela nim przyrostami ze stanowisk AFK, swiat/stan_gracza słucha i zapisuje.
+# Bez areny, bez modułów i skryptów (SerwerTreningu i KlientTreningu to tylko mini-gry), bez haczyków (BindableFunction
+# bez odbiorcy wstrzymałaby wywołującego na zawsze).
+FOLDERY_LOGIKI = ["Sygnaly"]
+INNE_LOGIKI = [("BindableEvent", "Sygnaly/PrzyrostStatystyki")]
 # podpowiedzi E: (ścieżka części w kontenerze, Akcja, Zrodlo, napis akcji, obiekt)
 PODPOWIEDZI = [
     ("TablicaWejscia/E", "wybor", "tablica", "Mini-gry", "Training Center"),
@@ -147,6 +153,7 @@ f:SetAttribute("Zrodlo", "__ZRODLO__")
 f:SetAttribute("Zbudowano", "__CZAS__")
 f:SetAttribute("Skrot", "__SKROT__")
 f:SetAttribute("WyborTymczasowy", true)
+f:SetAttribute("MiniGry", __MINI__)
 for a, v in testowe do f:SetAttribute(a, v) end
 for _, n in { __FOLDERY__ } do
 	local d = Instance.new("Folder")
@@ -492,8 +499,27 @@ def kod_start(D, usun=False, czas="", skrot=""):
     return (START.replace("__KONTENER__", D["kontener"]).replace("__USUN__", "true" if usun else "false")
             .replace("__ZRODLO__", ZRODLO).replace("__CZAS__", czas).replace("__SKROT__", skrot)
             .replace("__TESTOWE__", ", ".join(DANE._napis(a) for a in ATRYBUTY_TESTOWE))
-            .replace("__FOLDERY__", ", ".join(DANE._napis(x) for x in FOLDERY))
-            .replace("__INNE__", ", ".join("{%s, %s}" % (DANE._napis(k), DANE._napis(p)) for k, p in INNE)))
+            .replace("__MINI__", "true" if mini_gry_w_grze(D) else "false")
+            .replace("__FOLDERY__", ", ".join(DANE._napis(x) for x in foldery(D)))
+            .replace("__INNE__", ", ".join("{%s, %s}" % (DANE._napis(k), DANE._napis(p)) for k, p in inne(D))))
+
+
+def mini_gry_w_grze(D):
+    """Czy budować arenę i skrypty mini-gier (26.11.2026: nie — ustawienia.json → mini_gry.w_grze = false)."""
+    return (D.get("mini_gry") or {}).get("w_grze", True) is not False
+
+
+def foldery(D):
+    return FOLDERY if mini_gry_w_grze(D) else FOLDERY_LOGIKI
+
+
+def inne(D):
+    return INNE if mini_gry_w_grze(D) else INNE_LOGIKI
+
+
+def skrypty_w_grze(D, zrodla):
+    """Moduły i skrypty, które budowa wysyła (bez mini-gier: żadnych)."""
+    return zrodla if mini_gry_w_grze(D) else []
 
 
 def _podpowiedzi(z_tablica):
@@ -555,12 +581,20 @@ def kod_konca(D, punkt_historii="zbudowano"):
 
 def wszystkie_kody(D):
     """Kod wysyłany do Studio (bez skryptów) — do --sucho i do testu parsowania."""
+    areny = kody_areny(D) if mini_gry_w_grze(D) else []
     return {"sprawdz": kod_sprawdz(D), "start": kod_start(D, czas="x", skrot="x"), "usun": kod_start(D, True),
-            **{"arena%d" % (i + 1): k for i, k in enumerate(kody_areny(D))}, "tablica": kod_tablicy(D), "koniec": kod_konca(D)}
+            **{"arena%d" % (i + 1): k for i, k in enumerate(areny)}, "tablica": kod_tablicy(D), "koniec": kod_konca(D)}
 
 
 def plan(D):
     linie = []
+    if not mini_gry_w_grze(D):
+        linie.append("  %-26s → nie powstaje (mini_gry.w_grze = false, 26.11.2026): bez areny, modułów, skryptów i haczyków"
+                     % "Arena, Moduly, skrypty")
+        linie.append("  %-26s → BindableEvent dla src/server/TreningAFK.server.luau → swiat/stan_gracza (zapis)"
+                     % "Sygnaly/PrzyrostStatystyki")
+        linie.append("  %-26s → nie powstaje (tablica_wejscia.w_grze = false i mini_gry.w_grze = false)" % "TablicaWejscia")
+        return linie
     mn, mx = SCENA.obrys(D)
     cz = SCENA.czesci(D)
     linie.append("  %-26s → %d części, pudło (%s) – (%s)" % ("Arena (Persistent)", len(cz), _w([round(x, 1) for x in mn]),
@@ -603,11 +637,13 @@ def main():
         zrodla = zrodla_pakietu()
         D = sprawdz_offline(zrodla)
         print("Kontener: Workspace/%s · Skrot danych: %s · placeId %d · modułów i skryptów: %d"
-              % (D["kontener"], D["skrot"], MIEJSCE, len(zrodla)))
-        print("  %-26s → %s" % ("Folder", ", ".join(FOLDERY)))
-        for klasa, sciezka in INNE:
+              % (D["kontener"], D["skrot"], MIEJSCE, len(skrypty_w_grze(D, zrodla))))
+        print("  %-26s → %s" % ("Folder", ", ".join(foldery(D))))
+        print("  %-26s → %s" % ("Tryb", "pełna próba mini-gier" if mini_gry_w_grze(D) else
+                                "BEZ mini-gier (mini_gry.w_grze = false): tylko sygnał przyrostu dla stanowisk AFK"))
+        for klasa, sciezka in inne(D):
             print("  %-26s → %s" % (sciezka, klasa))
-        for sciezka, klasa, kontekst, tekst, plik in zrodla:
+        for sciezka, klasa, kontekst, tekst, plik in skrypty_w_grze(D, zrodla):
             print("  %-26s → %s%s, zrodla/%s (%d znaków)" % (sciezka, klasa, " [RunContext=%s]" % kontekst if kontekst else "",
                                                            plik, len(tekst)))
         for linia in plan(D):
@@ -646,10 +682,13 @@ def main():
                 return w
 
             def skrypty():
-                for sciezka, klasa, kontekst, tekst, plik in zrodla:
+                for sciezka, klasa, kontekst, tekst, plik in skrypty_w_grze(D, zrodla):
                     print("  skrypt:", wykonaj(kod_skryptu(D, sciezka, klasa, kontekst, tekst)))
 
             t0 = time.time()
+            if a.skrypty and not mini_gry_w_grze(D):
+                sys.exit("STOP: mini_gry.w_grze = false — bez --skrypty: pełna budowa usuwa arenę i skrypty mini-gier "
+                         "i stawia sam sygnał przyrostu")
             if a.skrypty:
                 wykonaj('local f = workspace:FindFirstChild("%s") if not f or f:GetAttribute("Wygenerowane") ~= true '
                         'then return "STOP: brak kontenera — zbuduj całość" end '
@@ -664,8 +703,11 @@ def main():
             print("start:", wynik)
             if a.usun or wynik != "OK":
                 return
-            for i, k in enumerate(kody_areny(D)):
-                print("  arena %d:" % (i + 1), wykonaj(k))
+            if mini_gry_w_grze(D):
+                for i, k in enumerate(kody_areny(D)):
+                    print("  arena %d:" % (i + 1), wykonaj(k))
+            else:
+                print("  arena: pominięta (mini_gry.w_grze = false — kontener tylko z sygnałem przyrostu)")
             if tablica_w_grze(D):
                 print("  tablica:", wykonaj(kod_tablicy(D)))
             else:

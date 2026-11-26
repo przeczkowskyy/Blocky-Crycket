@@ -314,6 +314,8 @@
       "tarcza_blok": [0.4, 3.7, -1.7]
     }
   },
+  "mini_gry": {"w_grze": false,
+    "opis": "26.11.2026 (Karol: „usuń placeholdery”, „ma tu nie być żadnych tabliczek”; D-141 — statystyki trenuje się na stanowiskach AFK, mini-gry są z gry nieosiągalne od zmiany trenera): w_grze = false → zbuduj.py stawia kontener Workspace/TreningProba BEZ areny (ok. 2800 części), bez skryptów i modułów mini-gier — tylko Sygnaly/PrzyrostStatystyki (BindableEvent), którym skrypt Pawła src/server/TreningAFK.server.luau przekazuje przyrosty ze stanowisk AFK do swiat/stan_gracza (zapis). Atrybut kontenera MiniGry = false. true = pełna próba mini-gier jak dawniej (arena, SerwerTreningu, KlientTreningu, haczyki)."},
   "tablica_wejscia": {
     "w_grze": false,
     "opis": "26.11.2026 (sprzątanie mapy, Karol): tablicy Training Center przy starym starcie już nie ma — gracz zaczyna w bazarze, a do mini-gier wchodzi tylko przez trenera w bazarze (MiasteczkoBazarGra, punkt E training_center). w_grze = false: zbuduj.py jej nie stawia (stawiała się przy pierwszym SpawnLocation, czyli dziś stanęłaby w bazarze). Kod tablicy zostaje w zbuduj.py na wypadek powrotu.",

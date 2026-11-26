@@ -244,8 +244,8 @@
   "czesc_stoiska": "Punkt E training_center",
   "czesc_podpowiedzi": "Podpowiedź E training_center",
   "sklep": "training_center",
-  "nazwa": "Training Center — wybór mini-gry",
-  "okno": "Okno wyboru mini-gry (Paweł)",
+  "nazwa": "Training Center — trener (okno stanowisk AFK)",
+  "okno": "Okno trenera: sześć stanowisk AFK (src/client/TreningAFKClient.client.luau, Paweł)",
   "postac": "trener",
   "model": "Workspace/MiasteczkoBazar/TrainingCenter/Trener",
   "statystyki": [
@@ -940,7 +940,7 @@
  ],
  "czesci_na_budynek": {
   "Teren": 2,
-  "TrainingCenter": 267,
+  "TrainingCenter": 234,
   "Karczma": 318,
   "PortalKrain": 54,
   "Tablica": 41,
@@ -1008,8 +1008,8 @@
    "czesc_stoiska": "Punkt E training_center",
    "czesc_podpowiedzi": "Podpowiedź E training_center",
    "sklep": "training_center",
-   "nazwa": "Training Center — wybór mini-gry",
-   "okno": "Okno wyboru mini-gry (Paweł)",
+   "nazwa": "Training Center — trener (okno stanowisk AFK)",
+   "okno": "Okno trenera: sześć stanowisk AFK (src/client/TreningAFKClient.client.luau, Paweł)",
    "postac": "trener",
    "model": "Workspace/MiasteczkoBazar/TrainingCenter/Trener",
    "statystyki": [

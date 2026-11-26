@@ -3,6 +3,10 @@ status: propozycja
 ---
 # Wskazówki celu dla nowego gracza
 
+> **26.11.2026 (sala treningowa):** „potrenował” = atrybut gracza `TreningAFK` (stanowiska AFK, skrypt Pawła
+> `src/server/TreningAFK.server.luau`), a nie `TreningGra` mini-gier — mini-gry są wyłączone z gry
+> (`swiat/trening_proba`, `mini_gry.w_grze = false`). Tekst kroku `d_trening_miasto`: „Potrenuj u trenera — E i wybierz ćwiczenie”.
+
 **Status: propozycja** (17.11.2026, raport przejścia gry `swiat/przejscie_gry/RAPORT_PRZEJSCIA.md`, M3: „brak celu
 w pierwszej minucie”). Teksty i kolejność kroków nie są kanonem — do decyzji Karola i Pawła.
 

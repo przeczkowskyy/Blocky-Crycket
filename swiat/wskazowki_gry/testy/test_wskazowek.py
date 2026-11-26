@@ -347,8 +347,12 @@ class TestStykow(unittest.TestCase):
 
     def test_5c_trening_bazar_chmury_hud(self):
         Z = D["zrodla"]
-        self.assertIn('gracz:SetAttribute("%s"' % Z["atrybut_treningu"],
-                      czytaj(REPO, "swiat", "trening_proba", "zrodla", "SerwerTreningu.server.luau"))
+        # 26.11.2026: mini-gry wyłączone (TreningProba bez areny) — „trenuje” = stanowisko AFK (atrybut TreningAFK
+        # ustawia skrypt Pawła src/server/TreningAFK.server.luau przy starcie treningu, zdejmuje przy końcu)
+        self.assertIn('gracz:SetAttribute("%s", id)' % Z["atrybut_treningu"],
+                      czytaj(REPO, "src", "server", "TreningAFK.server.luau"))
+        self.assertIn('gracz:SetAttribute("%s", nil)' % Z["atrybut_treningu"],
+                      czytaj(REPO, "src", "server", "TreningAFK.server.luau"))
         # 26.11.2026: tablica wejścia treningu znika z mapy — trenerem jest tylko punkt E Training Center w bazarze
         self.assertEqual(Z["trenerzy"], ["MiasteczkoBazarGra/Punkty/E training_center"])
         self.assertIn('"training_center"', czytaj(REPO, "swiat", "miasteczko_bazar_gra", "miejsca.json"))

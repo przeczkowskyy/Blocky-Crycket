@@ -258,7 +258,9 @@ def main():
 
         def stan_treningu():   # odczyt: klient Training Center
             return js('local k = workspace:FindFirstChild("TreningProba") if not k then return "{}" end '
-                      'local s = k.Sygnaly.SterowanieKlienta:Invoke("stan") return H:JSONEncode({ ekran = s.ekran, '
+                      'local sg = k:FindFirstChild("Sygnaly") local hk = sg and sg:FindFirstChild("SterowanieKlienta") '
+                      'if not hk then return "{}" end '   # 26.11.2026: kontener bez mini-gier nie ma haczyka
+                      'local s = hk:Invoke("stan") return H:JSONEncode({ ekran = s.ekran, '
                       'wybor = s.wybor, zrodlo = s.zrodlo, kamera = s.kamera })', "Client")
 
         def stan_wskazowek():   # odczyt: klient wskazówek (None = brak kontenera WskazowkiGry)

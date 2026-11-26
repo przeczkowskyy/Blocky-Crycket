@@ -218,6 +218,79 @@ class TestBazaruIMiniGier(unittest.TestCase):
         self.assertNotIn("tymczasowyWlaczony()", h)
 
 
+class TestBezMiniGier(unittest.TestCase):
+    """26.11.2026 (Karol: „usuń placeholdery”): Workspace/TreningProba bez areny i skryptów mini-gier — zostaje tylko
+    sygnał, którym przyrosty ze stanowisk AFK idą do stanu gracza (zapis)."""
+
+    @classmethod
+    def setUpClass(cls):
+        import importlib.util
+        if PAKIET not in sys.path:
+            sys.path.insert(0, PAKIET)
+        import zbuduj as ZB  # noqa: E402 — buduje tylko w main(); import niczego nie wysyła
+        import dane as DT  # noqa: E402
+        cls.ZB = ZB
+        cls.D = DT.wczytaj()[1]
+        sg = os.path.join(REPO, "swiat", "stan_gracza")
+        if sg not in sys.path:
+            sys.path.append(sg)
+        spec = importlib.util.spec_from_file_location("dane_stanu_afk", os.path.join(sg, "dane.py"))
+        cls.DS_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.DS_mod)
+        cls.DS = cls.DS_mod.dane_z_przypadkami()[1]
+        import logika_stanu as LS  # noqa: E402
+        cls.LS = LS
+
+    def test_7a_przelacznik(self):
+        K = json_("swiat", "trening_proba", "ustawienia.json")
+        self.assertIs(K["mini_gry"]["w_grze"], False)
+        self.assertFalse(self.ZB.mini_gry_w_grze(self.D))
+        self.assertIn("w_grze = false", czytaj("swiat", "trening_proba", "zrodla", "DaneTreningu.luau")
+                      [czytaj("swiat", "trening_proba", "zrodla", "DaneTreningu.luau").index("mini_gry = {"):][:60])
+
+    def test_7b_budowa_tylko_sygnal(self):
+        ZB, D = self.ZB, self.D
+        self.assertEqual(ZB.foldery(D), ["Sygnaly"])
+        self.assertEqual(ZB.inne(D), [("BindableEvent", "Sygnaly/PrzyrostStatystyki")])
+        self.assertEqual(ZB.skrypty_w_grze(D, ["x"]), [])
+        start = ZB.kod_start(D, czas="x", skrot="x")
+        self.assertIn('{"BindableEvent", "Sygnaly/PrzyrostStatystyki"}', start)
+        self.assertIn('f:SetAttribute("MiniGry", false)', start)
+        for zbedne in ("SterowanieKlienta", "SterowanieSerwera", "WybierzGre", "ZdarzeniaTreningu", '"Moduly"'):
+            self.assertNotIn(zbedne, start, zbedne)       # haczyk bez odbiorcy wstrzymałby wywołującego
+        self.assertFalse([k for k in ZB.wszystkie_kody(D) if k.startswith("arena")])
+        self.assertIn("nie powstaje", ZB.plan(D)[0])
+
+    def test_7c_ten_sam_sygnal_co_stan_gracza_i_trening_afk(self):
+        T = self.DS["trening"]
+        self.assertEqual(T, {"kontener": self.D["kontener"], "sygnal": "PrzyrostStatystyki"})
+        # skrypt Pawła: szuka Workspace/TreningProba/Sygnaly/PrzyrostStatystyki i strzela { atrybut, przyrost, … }
+        f = SERWER[SERWER.index("local function dodajStatystyke"):SERWER.index("local function losujCheck")]
+        for kawalek in ('workspace:FindFirstChild("%s")' % T["kontener"], 'FindFirstChild("Sygnaly")',
+                        'FindFirstChild("%s")' % T["sygnal"], 'e:IsA("BindableEvent")', 'workspace:FindFirstChild("StanGracza")',
+                        "e:Fire(gracz, { atrybut = s.atrybut, przyrost = ile"):
+            self.assertIn(kawalek, f, kawalek)
+        # stan gracza słucha tego zdarzenia (bez skryptów mini-gier) i każdy przyrost AFK przyjmuje
+        serwer_stanu = czytaj("swiat", "stan_gracza", "zrodla", "SerwerStanu.server.luau")
+        self.assertIn('k:WaitForChild("Sygnaly", 15)', serwer_stanu)
+        self.assertIn("e.Event:Connect(function(gracz: any, info: any)", serwer_stanu)
+        for s in re.findall(r'atrybut = "(\w+)"', DANE[DANE.index("D.stanowiska = {"):]):
+            w, powod = self.LS.czysty_przyrost(self.DS, {"atrybut": s, "przyrost": 1, "zrodlo": "TreningAFK", "gra": "afk_x"})
+            self.assertEqual(powod, "ok", s)
+            self.assertEqual(w[1], 1)
+
+    def test_7d_mini_gry_nie_sa_wolane_z_gry(self):
+        # w kodzie gry (src/) kontener treningu zna tylko skrypt Pawła TreningAFK i używa z niego tylko sygnału przyrostu
+        uzywa = []
+        for sciezka, _, pliki in os.walk(os.path.join(REPO, "src")):
+            for n in pliki:
+                if n.endswith(".luau") and self.D["kontener"] in czytaj(os.path.relpath(os.path.join(sciezka, n), REPO)):
+                    uzywa.append(n)
+        self.assertEqual(uzywa, ["TreningAFK.server.luau"])
+        for haczyk in ("WybierzGre", "SterowanieSerwera", "SterowanieKlienta", "ZdarzeniaTreningu", "Moduly"):
+            self.assertNotIn(haczyk, SERWER, haczyk)
+
+
 class TestMapy(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

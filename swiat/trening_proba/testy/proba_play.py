@@ -32,6 +32,10 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       (PlayerGui.TreningAFKMenu, atrybut Otwarte); gdy stoi MiasteczkoBazarGra — prawdziwe E przy trenerze: okno AFK
       otwarte, wybór mini-gry zamknięty, bez dymka bazaru; okno AFK zamykane prawdziwym kliknięciem X. Przy
       wybor_od_trenera = true jak dawniej: wybór (zrodlo = "bazar") i bez dymka
+  BEZ MINI-GIER (od 26.11.2026 ustawienia.json → mini_gry.w_grze = false; kontener bez areny i skryptów): T01 = kontener
+      z samym sygnałem PrzyrostStatystyki (0 części, 0 skryptów, MiniGry = false), StanGracza.TreningPodlaczony; T03 =
+      prawdziwe E przy trenerze → okno stanowisk AFK, bez dymka; T32 = klik STRENGTH → trening AFK, sygnał +1, Strength
+      rośnie, STOP; T22 = konsola. T02 i T04–T31 (rundy mini-gier, arena) wypisane jako „?” z powodem „nie dotyczy”
   T04 wejście do Siły prawdziwym kliknięciem GRAJ: postać na podeście (≤ 1,5 st), TreningGra = "sila", kamera
       Scriptable, sterowanie dotykowe wyłączone, punkt powrotu = miejsce przy tablicy
   T05 runda Siły grana bezbłędnie (autograj 1,0): trafienia = liczba zdarzeń, pudła 0, jednostki paska = Σ przyrost(1..n),
@@ -155,6 +159,16 @@ KOD = {
     "stan_bazaru": ('local b = workspace:FindFirstChild("%s") local s = b and b.Sygnaly.SterowanieKlienta:Invoke("stan") '
                     'return H:JSONEncode(J(s))', ("MiasteczkoBazarGra",)),
     "poziom": (GR + 'return H:JSONEncode({ l = gracz:GetAttribute("Level") })', ()),
+    # kontener bez mini-gier (26.11.2026): co w nim stoi, czy stan gracza podpiął sygnał — tylko odczyt
+    "bez_mini": (KP + 'local n, s = 0, 0 if k then for _, d in k:GetDescendants() do if d:IsA("BasePart") then n += 1 end '
+                 'if d:IsA("LuaSourceContainer") then s += 1 end end end local sg = k and k:FindFirstChild("Sygnaly") '
+                 'local e = sg and sg:FindFirstChild("PrzyrostStatystyki") local st = workspace:FindFirstChild("StanGracza") '
+                 'return H:JSONEncode({ mini = k and k:GetAttribute("MiniGry"), czesci = n, skrypty = s, '
+                 'arena = k ~= nil and k:FindFirstChild("Arena") ~= nil, sygnal = e ~= nil and e:IsA("BindableEvent"), '
+                 'podlaczony = st ~= nil and st:GetAttribute("TreningPodlaczony") == true, '
+                 'obiektow = if k then #k:GetDescendants() else -1 })', ()),
+    "afk_stan": (KP + GR + 'return H:JSONEncode({ afk = gracz:GetAttribute("TreningAFK") or false, '
+                 'sila = gracz:GetAttribute("Strength") or 0, sygnaly = k and k:GetAttribute("ProbaSygnaly") or 0 })', ()),
     # okno stanowisk AFK przy trenerze (src/client/TreningAFKClient.client.luau, 26.11.2026) — tylko odczyt
     "menu_afk": ('local g = game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TreningAFKMenu") '
                  'return H:JSONEncode({ jest = g ~= nil, otwarte = g ~= nil and g:GetAttribute("Otwarte") == true })', ()),
@@ -325,6 +339,9 @@ def main():
     # 26.11.2026: tablica wejścia przy starym starcie wyłączona (ustawienia.json → tablica_wejscia.w_grze = false)
     TABLICA_W_GRZE = D["tablica_wejscia"].get("w_grze", True) is not False
     PODP_OCZEK = 1 if TABLICA_W_GRZE else 0
+    # 26.11.2026: ustawienia.json → mini_gry.w_grze = false — kontener bez areny i skryptów mini-gier (tylko sygnał
+    # przyrostu dla stanowisk AFK); próba sprawdza wtedy T01/T03/T22/T32, a punkty rund mini-gier wypisuje jako „nie dotyczy”
+    MINI_GRY = (D.get("mini_gry") or {}).get("w_grze", True) is not False
 
     for _s in (os.path.join(REPO, "tools"), os.path.join(REPO, "swiat", "test_walki_roblox"),
                os.path.join(REPO, "swiat", "test_walki2", "testy")):
@@ -559,6 +576,79 @@ def main():
             luau(kod("sluchacz"), "Server")
             # kąt widzenia kamery gracza przed pierwszym wejściem na stanowisko (T23: po wyjściu ma wrócić)
             KAT0 = float(luau(kod("kat_gracza"), "Client"))
+
+            if not MINI_GRY:
+                # ============================================================ bez mini-gier (26.11.2026)
+                NA = ("nie dotyczy: mini-gry wyłączone (ustawienia.json → mini_gry.w_grze = false, 26.11.2026) — w kontenerze "
+                      "nie ma areny ani skryptów mini-gier; trening statystyk = stanowiska AFK przez trenera (D-141)")
+                b = js(kod("bez_mini"), "Server")
+                zapisz("T01", b)
+                punkt("T01", b.get("mini") is False and b.get("sygnal") is True and b.get("czesci") == 0
+                      and b.get("skrypty") == 0 and not b.get("arena") and b.get("podlaczony") is True,
+                      "kontener bez mini-gier: MiniGry %s, sygnał %s, części %s, skryptów %s, arena %s, obiektów %s, "
+                      "StanGracza.TreningPodlaczony %s" % (b.get("mini"), b.get("sygnal"), b.get("czesci"), b.get("skrypty"),
+                                                         b.get("arena"), b.get("obiektow"), b.get("podlaczony")))
+
+                def mysz(sciezka):
+                    call("user_mouse_input", {"datamodel_type": "Client", "actions": [
+                        {"action": "moveTo", "instance_path": "LocalPlayer.PlayerGui." + sciezka},
+                        {"action": "mouseButtonClick", "mouse_button": "left"}]})
+
+                def menu_otwarte():
+                    return js(kod("menu_afk"), "Client").get("otwarte") is True
+
+                # T03: prawdziwe E przy trenerze → okno stanowisk AFK, bez dymka bazaru
+                zn = DANE._czytaj_json(DANE.ZNACZNIKI)["training_center"]
+                m3, ost = False, {}
+                for _ in range(3):   # bazar ma krótką blokadę po przeniesieniu — do 3 naciśnięć
+                    przestaw([zn["stoisko"][0], zn["stoisko"][1] + 3.2, zn["stoisko"][2]], zn["podpowiedz"])
+                    time.sleep(1.5)
+                    kamera_za()
+                    time.sleep(0.4)
+                    klawisz("E")
+                    m3 = czekaj_na(menu_otwarte, 3, 0.4) or False
+                    if m3:
+                        break
+                if edit.get("bazar"):
+                    bz = js(kod("stan_bazaru", D["bazar"]["kontener"]), "Client")
+                    hist = bz.get("historia") if isinstance(bz, dict) else None
+                    ost = hist[-1] if isinstance(hist, list) and hist else {}
+                zapisz("T03", {"menu_afk": m3, "historia_bazaru": ost})
+                punkt("T03", m3 is True and not ost.get("dymek"), "E przy trenerze: okno stanowisk AFK %s, dymek bazaru %s"
+                      % (m3, ost.get("dymek")))
+                zrzut("03_okno_trenera_afk")
+
+                # T32: trening AFK idzie sygnałem kontenera bez mini-gier do stanu gracza (Strength rośnie)
+                a0 = js(kod("afk_stan"), "Server")
+                if not menu_otwarte():
+                    klawisz("E")
+                    czekaj_na(menu_otwarte, 3, 0.4)
+                mysz("TreningAFKMenu.Okno.Cwiczenia.Sila")
+
+                def po_punkcie():
+                    w = js(kod("afk_stan"), "Server")
+                    ok_ = (w.get("afk") == "Sila" and (w.get("sygnaly") or 0) > (a0.get("sygnaly") or 0)
+                           and (w.get("sila") or 0) > (a0.get("sila") or 0))
+                    return w if ok_ else None
+                a1 = czekaj_na(po_punkcie, 15, 0.5) or js(kod("afk_stan"), "Server")
+                mysz("TreningAFK.Panel.Stop")
+                a2 = czekaj_na(lambda: (lambda w: w if not w.get("afk") else None)(js(kod("afk_stan"), "Server")), 6, 0.5) or {}
+                zapisz("T32", {"przed": a0, "w_trakcie": a1, "po_stop": a2})
+                punkt("T32", a1.get("afk") == "Sila" and (a1.get("sygnaly") or 0) > (a0.get("sygnaly") or 0)
+                      and (a1.get("sila") or 0) > (a0.get("sila") or 0) and bool(a2) and not a2.get("afk"),
+                      "stanowisko AFK „%s”, sygnałów PrzyrostStatystyki %s → %s, Strength %s → %s, po STOP „%s”" % (
+                          a1.get("afk"), a0.get("sygnaly"), a1.get("sygnaly"), a0.get("sila"), a1.get("sila"), a2.get("afk")))
+
+                for kod_na in ["T02"] + ["T%02d" % i for i in range(4, 32) if i != 22]:
+                    if chce(kod_na):
+                        punkt(kod_na, None, NA)
+                kons = call("get_console_output", {}, timeout=60)["text"]
+                bledy = [x.strip()[:240] for x in kons.splitlines() if ("rror" in x or "błąd" in x.lower())
+                         and ("TreningProba" in x or "Treningu" in x or "TreningAFK" in x)]
+                zapisz("T22", bledy[-30:])
+                punkt("T22", not bledy, "błędów TreningProba / TreningAFK w konsoli: %d %s" % (len(bledy), bledy[:3]))
+                print("\n".join("%s %-4s %s" % x for x in LISTA))
+                return
 
             # ---------------------------------------------------------------- T01 gotowość
             at = atrybuty(["SerwerTreninguGotowy", "ZgodnoscLogikiTreningu", "Podpowiedzi"])

@@ -1,7 +1,7 @@
 --[[
 	DaneTreningu — WYGENEROWANE przez swiat/trening_proba/dane.py z ustawienia.json (oraz punktu
 	trenera ze swiat/miasteczko_bazar/znaczniki.json). Nie edytuj ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: 5997793f8ed4
+	Skrót danych: 92adc087004f
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -670,6 +670,7 @@ return {
 		rzut_dlugosc = 40,
 		zapas_bez_spawnu = { 0, 0, 0 },
 	},
+	mini_gry = { w_grze = false },
 	przypadki = {
 		plany = {
 			{
@@ -3134,5 +3135,5 @@ return {
 			{ 1024, 768, 1.535232383808096 },
 		},
 	},
-	skrot = "5997793f8ed4",
+	skrot = "92adc087004f",
 }

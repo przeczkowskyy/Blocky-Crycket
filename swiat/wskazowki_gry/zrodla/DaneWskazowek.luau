@@ -1,7 +1,7 @@
 --[[
 	DaneWskazowek — WYGENEROWANE przez swiat/wskazowki_gry/dane.py z ustawienia.json. Nie edytuj
 	ręcznie: zmień ustawienia i uruchom dane.py.
-	Skrót danych: a64c47b16691
+	Skrót danych: 067debacf02a
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -94,7 +94,7 @@ return {
 		ekran_klasy = "ClassSelect",
 		atrybut_klasy = "Class",
 		atrybut_poziomu = "Level",
-		atrybut_treningu = "TreningGra",
+		atrybut_treningu = "TreningAFK",
 		atrybut_wyniku = "OstatniWynik",
 		atrybut_stanu_walki = "OstatniStan",
 		stan_wyniku = "wynik",
@@ -972,5 +972,5 @@ return {
 			{ x = 1500, z = -700, brama = 2034, wynik = "miasto" },
 		},
 	},
-	skrot = "a64c47b16691",
+	skrot = "067debacf02a",
 }
