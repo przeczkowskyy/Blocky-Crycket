@@ -734,9 +734,28 @@ Karol [22:09–22:10]: wcześniej (poza sesją) uzgodnili, że osobny **sklep pe
 Karol [22:15–22:16]: liczba statystyk nie jest przypisana do stopnia — zwykły przedmiot może mieć trzy słabe, legendarny jedną bardzo mocną; **epickie i legendarne mają do tego unikalną zdolność** (np. szansa na podpalenie przeciwnika). Paweł [22:16]: chodzi o mnożniki — **legendarny daje co najmniej 1,5 razy więcej statystyk** niż zwykły tego samego poziomu. Karol: „o to chodzi, tu się zgadzamy”. Rozwija D-142 (oba podpisy) i odpowiedź Karola pod pytaniem 96 (25.11); zmienia tabelę z notatki Pawła o rzadkości z 24.11 (tam zwykły 1–2, legendarny wszystkie; notatka jeszcze nie trafiła do repozytorium — zob. Dziennik zmian 25.11). Uwaga agenta (D-114): zgoda — „jedna mocna statystyka plus zdolność” odróżnia legendarkę lepiej niż „wszystkie statystyki po trochu” i daje buildy; mnożnik budżetu ×1,5 i ×1,8 do kalkulatora (`tools/walka/balans.py`), unikalne zdolności jako lista do projektu razem z pulą Lv 1–10 (pytanie 94).
 
 ### D-156 Hełmy kota zasłaniają uszy osłonami w kształcie uszu; chwyt broni zależy od rodzaju i nie może kolidować w chodzie
-✅ zatwierdzona · art direction / przedmioty · 2026-11-26 · źródło: wiadomość Karola na czacie 26.11 ok. 13:00, po opinii Pawła do raportu z nocy (Telegram) · zaproponował: Paweł (hełmy mają zasłaniać kocie uszy), Claude Code (osłony w kształcie uszu, rodzaje chwytu) · zdecydował: Karol 2026-11-26 (jeden podpis — czeka na potwierdzenie Pawła, D-043)
+✅ zatwierdzona · art direction / przedmioty · 2026-11-26 · źródło: wiadomość Karola na czacie 26.11 ok. 13:00, po opinii Pawła do raportu z nocy (Telegram) · zaproponował: Paweł (hełmy mają zasłaniać kocie uszy), Claude Code (osłony w kształcie uszu, rodzaje chwytu) · zdecydował: Karol 2026-11-26 · potwierdził: Paweł 2026-11-26
 Gra: bc
 Paweł (opinia do raportu z nocy): „na pewno trzeba by było poprawić hełmy, żeby zasłaniały kocie uszy”. Agent pokazał dwa warianty: dużą kopułę mieszczącą uszy i niską kopułę z osłonami w kształcie uszu. Karol: „Hełm wygląda dobrze zostawiając sylwetkę. Miecz ma być tak wychylony, że podczas animacji chodzenia się nie bugował. Dograj resztę pozycji”.
 - **Hełmy:** hełm zasłania uszy kota dwiema osłonami w kształcie uszu z materiału hełmu; sylwetka kota zostaje. Uszy pod hełmem są schowane (przedmiot to deklaruje). Dotyczy hełmów puli wojownika; wzór dla kolejnych nakryć głowy, które mają zasłaniać uszy.
 - **Chwyt broni:** broń deklaruje rodzaj (miecz, różdżka, kostur, proca, łuk, tarcza, księga), a ciało kota ma osobne ustawienie na każdy rodzaj. Miarą dobrego chwytu jest chód i spoczynek: broń nie wchodzi w ciało, strój, hełm, ogon ani w ziemię.
 - **Stan:** modele i plansze (`swiat/postacie/pula_wojownika.py`, `chwyty.py`, kontrakt `EKWIPUNEK.md` pkt 14–15), jeszcze nie w grze. Otwarte: rękojeść w ramieniu w trzech klipach walki, przedmioty lewej łapy w klipach walki, broń pod ziemią w upadku — zadania w [[Zadania]].
+- **Potwierdzenie Pawła (26.11.2026):** „1 tak” w odpowiedzi na punkt „1) Potwierdź D-156” listy zadań z grupy zespołu na Telegramie (15:42). Zrzut wiadomości przekazał Karol na czacie; podpis zapisał agent Karola na tej podstawie. Do punktu o broni w upadku Paweł dodał: „poprawić, żeby nie były pod ziemią” (w toku 26.11).
+
+### D-157 Zagroda: pety chodzą luzem po wybiegu, legowiska znikają
+✅ zatwierdzona · game design / świat · 2026-11-26 · źródło: odpowiedź Pawła na grupie zespołu na Telegramie 26.11.2026, 15:42 (zrzut wiadomości przekazał Karol na czacie, z poleceniem „go”) · zaproponował: Paweł (pety luzem, opinia do raportu z nocy), Claude Code (wybieg i pytanie, czy legowiska zostają) · zdecydował: Paweł 2026-11-26 (jeden podpis — Karol zlecił wykonanie, formalnie nie potwierdził; D-043)
+Gra: bc
+Pytanie z listy zadań (punkt 5): „Pety luzem: czy ruch i tempo są OK; legowiska zostają czy znikają?”. Paweł: „5 legowiska znikają, tempo okej”.
+- Pety odstawione do zagrody chodzą luzem po wybiegu (obraz u gracza; o tym, kto stoi w zagrodzie i ile daje Rybek, dalej decyduje serwer — D-153 bez zmian).
+- Na wybiegu nie ma legowisk. Liczba miejsc (2 → 4 → 6 → 8) zostaje; widać ją w oknie zagrody u Jagody.
+- Tempo spaceru z próby 26.11 zostaje (prędkość 1,8–3 studa na sekundę, postoje 2–6 s).
+- **Stan:** w Studio od 26.11 (`swiat/pety_proba`, mapa `swiat/miasteczko_bazar`). Uwaga agenta: bez legowisk nic na samym wybiegu nie pokazuje, ile miejsc ma zagroda — tylko okno.
+
+### D-158 Sala Training Center: dwa rzędy po trzy stanowiska AFK, przejście środkiem; podpowiedź E sięga 4,5 studa
+✅ zatwierdzona · świat / technika · 2026-11-26 · źródło: odpowiedź Pawła na grupie zespołu na Telegramie 26.11.2026, 15:42 (zrzut wiadomości przekazał Karol na czacie, z poleceniem „go”) · zaproponował: Paweł (układ, opinia do raportu z nocy), Claude Code (zasięg ok. 4,5 studa) · zdecydował: Paweł 2026-11-26 (jeden podpis — Karol zlecił wykonanie, formalnie nie potwierdził; D-043)
+Gra: bc
+Pytania z listy zadań (punkty 2 i 3): czy o taki układ sali chodziło i czy zasięg podpowiedzi E skrócić z 10 do ok. 4,5 studa. Paweł: „2 tak, ale jak to będzie działać w przypadku kilku graczy, czy nie będą się widzieć nawzajem? 3 4.5 git”.
+- Stanowiska AFK stoją w dwóch rzędach po trzy wzdłuż bocznych ścian, przejście środkiem (układ z 26.11; zmienia rozmieszczenie z propozycji D-151, której status zostaje bez zmian).
+- Podpowiedź E stanowiska sięga 4,5 studa — żeby zacząć trening, trzeba podejść do maty.
+- **Otwarte:** pytanie Pawła o kilku graczy przy jednym stanowisku — pytanie 109 w [[Pytania otwarte]].
+- **Stan:** w Studio od 26.11 (`src/server/TreningAFK.server.luau` — jedna liczba, za zgodą Pawła; próba `swiat/trening_proba/testy/proba_afk_zasieg.py`: 22 punkty bez niezaliczeń).

@@ -6,6 +6,18 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-26 · Claude Code u Karola (odpowiedź Pawła z Telegrama: podpis pod D-156, zasięg E 4,5, zagroda bez legowisk)
+- **Odpowiedź Pawła** (grupa zespołu na Telegramie, 15:42; zrzut przekazał Karol na czacie z poleceniem „go”): „1 tak, 2 tak, ale jak to będzie działać w przypadku kilku graczy, czy nie będą się widzieć nawzajem? 3 4.5 git, 4 niech zrobi agent Karola, wzorując się na animacji jaja lasu, 5 legowiska znikają, tempo okej, 6 poprawić trzymanie itemów lekko, może, nie wiem, pogadamy z Karolem potem, 7 poprawić, żeby nie były pod ziemią” (numery = punkty listy zadań z 14:19).
+- **D-156 ma drugi podpis:** `potwierdził: Paweł 2026-11-26` w [[Rejestr decyzji]] — na podstawie „1 tak” ze zrzutu; zapisał agent Karola.
+- **Nowe decyzje Pawła** (jeden podpis; Karol zlecił wykonanie, formalnie nie potwierdził): **D-157** zagroda bez legowisk, tempo petów zostaje; **D-158** sala w dwóch rzędach po trzy i zasięg podpowiedzi E 4,5 studa.
+- **Zasięg E** (w Studio): `MaxActivationDistance` 10 → 4,5 w `src/server/TreningAFK.server.luau` — plik Pawła, jedna liczba, za jego zgodą; w Studio podmieniony tylko ten wiersz. Nowa próba w Play `swiat/trening_proba/testy/proba_afk_zasieg.py`: 22 punkty bez niezaliczeń — każde z sześciu stanowisk włącza się prawdziwym E z przejścia (3 studa od maty), z 5,5 studa i ze środka przejścia E nic nie włącza, od frontu rzędu włącza się najbliższe stanowisko, nie dalsze. Kondycja od strony sąsiedniej maty z 3 studów nie włączyła się (z przejścia tak).
+- **Zagroda bez legowisk** (w Studio): z mapy zniknęło osiem poduch (16 części; `swiat/miasteczko_bazar/budynki/zagroda_petow.py`, mapa 4302 części, w znacznikach zmieniła się tylko liczba części zagrody), znaczniki miejsc zostały jako dane. Pet nie wraca na swoje miejsce, tylko co piąty raz odpoczywa dłużej tam, gdzie stoi (`swiat/pety_proba/zrodla/KlientPetow.client.luau`). Kontrole: mapa 0 błędów, testy bazaru 38 z 38, testy petów 52 z 52; próba zagrody w Play 15 punktów bez niezaliczeń (pełna zagroda: osiem z ośmiu petów w ruchu, żaden poza wybiegiem).
+- **Pytanie Pawła o kilku graczy w sali** → pytanie 109 w [[Pytania otwarte]]: dziś jedno stanowisko przyjmuje jednego gracza, drugi jest po cichu odrzucany; propozycja agenta — kilku graczy naraz, każdy widzi na stanowisku tylko siebie.
+- **Jajka Bagna i Dżungli:** Paweł zgodził się, żeby scenkę wyklucia zrobił agent Karola na wzór jaja lasu; praca czeka na wgranie modeli (decyzja Karola o folderze do wgrywania) — zadanie w [[Zadania]].
+- **Broń po upadku pod ziemią:** osobny agent na Opus pracuje nad poprawką (modele i plansze, bez Studio); wynik w osobnym wpisie.
+- **Chwyt według rodzaju w grze:** bez zmian, czeka na rozmowę Karola i Pawła.
+- Notatki: [[Rejestr decyzji]] (D-156, D-157, D-158), [[Pytania otwarte]] (109), [[Zadania]], [[Pety]]; opisy pakietów `swiat/pety_proba/PROJEKT.md`, `swiat/miasteczko_bazar/README.md` i `PROJEKT.md`, `swiat/trening_proba/README.md`.
+
 ## 2026-11-26 · Claude Code u Karola (hełmy z osłonami uszu i chwyty dobrane do chodu — D-156)
 - **Decyzja Karola (ok. 13:00, czat):** „Hełm wygląda dobrze zostawiając sylwetkę. Miecz ma być tak wychylony, że podczas animacji chodzenia się nie bugował. Dograj resztę pozycji” → **D-156** w [[Rejestr decyzji]] (zdecydował: Karol 2026-11-26; jeden podpis, czeka na Pawła).
 - **Hełmy:** wszystkie pięć hełmów puli wojownika ma niską kopułę jak na arkuszach Pawła i dwie osłony w kształcie uszu z materiału hełmu; duża kopuła z rundy pierwszej usunięta. Komplet 166–184 części (limit 220).

@@ -1056,3 +1056,12 @@ Gra: bc
 
 Szczegóły: gracz zaczyna dziś w nowym miasteczku, a do starego trafia portalem, więc dotyczy to tylko tych, którzy tam wejdą. Zdanie agenta (D-114): (a) — w grze szykowanej do wydania nie powinno być wejścia do wstrzymanego prototypu; BONK ma budowę do osobnego miejsca (`--publikacja`). Kontener w Studio jest nasz (wygenerowany), ale jego usunięcie to decyzja człowieka. Opis znaleziska: [[Dziennik zmian]], wpis z 26.11.
 **Odpowiedź:**
+
+## 109. Sala treningowa: kilku graczy przy jednym stanowisku
+- Paweł 26.11 (Telegram): „jak to będzie działać w przypadku kilku graczy, czy nie będą się widzieć nawzajem?”
+- Dziś: jedno stanowisko = jeden gracz. Drugi naciska E i nic się nie dzieje, bez komunikatu. Gracze widzą się nawzajem. Stanowisk jest sześć, po jednym na statystykę.
+- Do wyboru: (a) kilku graczy trenuje na tym samym stanowisku, a każdy widzi tam tylko siebie; (b) jeden gracz na stanowisko, ale z napisem „zajęte” i limitem czasu; (c) więcej stanowisk na każdą statystykę (większa sala).
+Gra: bc
+
+Szczegóły: tak działa skrypt serwera treningu (`src/server/TreningAFK.server.luau`, kod Pawła): przy zajętym stanowisku serwer po cichu odrzuca drugiego gracza. Zdanie agenta (D-114): (a) — trening AFK ma zatrzymywać graczy na długo, więc jeden gracz może blokować np. Siłę godzinami, a kolejka do sześciu stanowisk przy kilkunastu graczach na serwerze byłaby powodem do wyjścia z gry; (a) nie wymaga przebudowy sali. Koszt (a): zdjęcie blokady w skrypcie serwera i ukrywanie u gracza innych trenujących na jego stanowisku (kto nie trenuje, widzi na stanowisku jednego gracza). Zmienię zdanie, jeśli widok kolegi trenującego obok jest dla Was ważniejszy niż brak kolejek — wtedy (c). Nic z tego nie jest zrobione; czeka na decyzję. Dotyczy D-158.
+**Odpowiedź:**
