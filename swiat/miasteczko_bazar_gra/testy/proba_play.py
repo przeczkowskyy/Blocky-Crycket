@@ -25,7 +25,8 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       gdzie przypisany (karczma → Quests, sklepy → Shop, zagroda → Pets), dymek „… w budowie”, gdy nic się nie otworzyło;
       zbrojownia (19.11.2026): gdy stoi Workspace/SklepProba — okno sklepu SklepProbaOkno i tylko ono (makieta „Shop”
       schowana), bez dymku; bez SklepProba, ale z oknem zgłoszonym atrybutem OknoMiejsca.zbrojownia (ShopClient
-      w miejscu gry) — bez dymku i okno „Shop” na ekranie; bez żadnego okna — dymek
+      w miejscu gry) — bez dymku i okno „Shop” na ekranie; bez żadnego okna — dymek. Od 26.11.2026: gdy w PlayerGui
+      stoi okno sklepu Pawła („Shop” z towarem z serwera sklepu, 44f6579) — tylko ono, okno próbne się nie otwiera
   B05 istniejące okna: które okna otworzyły się od razu (historia klienta „otwarto”) — dziś oczekiwane: żadne okno
       Pawła (Shop / Pets / Quests jeszcze nie istnieją), portal → TeleportChmury Trwa = true
   B06 kamera we wnętrzach: na stoisku karczmy, mistrza gier, maga, zbrojmistrza i trenera, kamera ustawiona za plecami
@@ -47,7 +48,8 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
       postać zostaje w polu gry (± 1,5 st) i nie spada (y > −5)
   B13 dymek wyłączany atrybutem: DymkiWylaczone = true → E przy zbrojowni bez dymku; BezDymku = "zbrojownia" — też;
       po usunięciu atrybutów dymek wraca. Gdy zbrojownia ma zgłoszone okno (sklep albo ShopClient — dymku tam nigdy nie
-      ma), ten sam test idzie przy mistrzu gier (miejsce bez okna)
+      ma), ten sam test idzie przy pierwszym miejscu, które w B04 pokazało dymek (26.11.2026: mistrz gier ma okno Pawła
+      MistrzGier3D, więc dziś karczma)
   B14 czas klatki: RenderStepped 8 s na starcie, w karczmie, przy zagrodzie i przy Bramie Leśnej (średnio, p95)
   B15 konsola: bez błędów z [MiasteczkoBazarGra] i bez „error” ze skryptów pakietu
   (ręcznie, poza skryptem: telefon w emulatorze Studio — przycisk E i czytelność dymków; dwóch graczy (Test →
@@ -254,9 +256,12 @@ def main():
         def ekran_zbrojowni():
             """Okna u klienta po E zbrojowni: okno sklepu zbrojmistrza (swiat/sklep_proba), makieta „Shop” (ShopClient)
             i czy zbrojownia ma okno zgłoszone atrybutem zdarzenia OknoMiejsca (wtedy bazar nie pokazuje dymku)."""
+            # shop_jest (26.11.2026): okno sklepu Pawła („Shop”, ShopClient z towarem z serwera sklepu, commit 44f6579)
+            # stoi w PlayerGui — od tej pory to ono jest oknem zbrojowni, a okno próbne sklepu nie otwiera się na E
             return js('local pg = game:GetService("Players").LocalPlayer.PlayerGui local s = pg:FindFirstChild("Shop") '
                       'local o = pg:FindFirstChild("SklepProbaOkno") local e = game:GetService("ReplicatedStorage"):FindFirstChild("OknoMiejsca") '
                       'return H:JSONEncode({ sklep = o ~= nil and o.Enabled, shop = s ~= nil and s:IsA("ScreenGui") and s.Enabled, '
+                      'shop_jest = s ~= nil and s:IsA("ScreenGui"), '
                       'zgloszone = e ~= nil and e:GetAttribute("zbrojownia") == true })', "Client")
 
         def klatki(sekundy=8):
@@ -389,7 +394,11 @@ def main():
             zb = okna.get("zbrojownia") or {}
             ze = zb.get("ekran") or {}
             dymek_zb = bool(zb.get("klient", {}).get("dymek"))
-            if edit.get("sklep"):          # okno sklepu zbrojmistrza (swiat/sklep_proba) — jedno okno, bez dymku
+            if ze.get("shop_jest") and ze.get("zgloszone"):
+                # 26.11.2026: okno sklepu Pawła z towarem z serwera sklepu (ShopClient, 44f6579) zastąpiło okno próbne —
+                # po E ma stać jego okno i tylko ono (okno próbne SklepProbaOkno nie otwiera się), bez dymku
+                ok_zb, opis_zb = ze.get("shop") is True and ze.get("sklep") is not True and not dymek_zb, "okno Pawła (Shop), bez okna próbnego"
+            elif edit.get("sklep"):        # okno sklepu zbrojmistrza (swiat/sklep_proba) — jedno okno, bez dymku
                 ok_zb, opis_zb = ze.get("sklep") is True and ze.get("shop") is not True and not dymek_zb, "okno sklepu"
             elif ze.get("zgloszone"):      # inne okno zgłoszone atrybutem (ShopClient) — bez dymku, okno „Shop” na ekranie
                 ok_zb, opis_zb = ze.get("shop") is True and not dymek_zb, "okno zgłoszone (Shop)"
@@ -619,10 +628,15 @@ def main():
 
             # ---------------------------------------------------------------- B13 dymek wyłączany atrybutem
             wyniki13 = {}
-            # zbrojownia ze zgłoszonym oknem (sklep albo ShopClient) dymku nie ma nigdy — wtedy miejsce bez okna
-            mid13 = "mistrz_gier" if ekran_zbrojowni().get("zgloszone") else "zbrojownia"
+            # miejsce, przy którym bazar dziś pokazuje dymek (w B04): zbrojownia ze zgłoszonym oknem i mistrz gier
+            # z oknem Pawła (MistrzGier3D, 641e578, od 25.11) dymku nie mają nigdy — wtedy pierwsze miejsce z dymkiem
+            # (26.11.2026: karczma; wcześniej na sztywno mistrz_gier, który dziś ma okno → B13 nie mógł przejść)
+            mid13 = next((m13 for m13 in ("zbrojownia", "mistrz_gier", "karczma", "dzialka")
+                          if (okna.get(m13) or {}).get("klient", {}).get("dymek") is True), None)
+            if mid13 is None:
+                mid13 = "mistrz_gier" if ekran_zbrojowni().get("zgloszone") else "zbrojownia"
             for opis, kod in (("DymkiWylaczone", 'k:SetAttribute("DymkiWylaczone", true)'),
-                              ("BezDymku", 'k:SetAttribute("DymkiWylaczone", nil) k:SetAttribute("BezDymku", "karczma, %s")' % mid13),
+                              ("BezDymku", 'k:SetAttribute("DymkiWylaczone", nil) k:SetAttribute("BezDymku", "tablica, %s")' % mid13),
                               ("bez atrybutów", 'k:SetAttribute("DymkiWylaczone", nil) k:SetAttribute("BezDymku", nil)')):
                 luau(KP + kod + ' return "ok"', "Server")
                 time.sleep(4.0)  # poprzedni dymek gaśnie po D.czasy.dymek_s

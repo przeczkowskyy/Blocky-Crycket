@@ -14,13 +14,17 @@ wynik bez nazw kont. Próba ustawia graczowi poziom i Złoto atrybutami (tylko w
   S00 Edit: kontenery, wejście kowala dla sklepu, skrót danych = lokalny
   S01 gotowość: serwer i klient sklepu, zgodność logiki, kowal podłączony, okno podpięte pod E bazaru
   S02 prawdziwe E przy zbrojmistrzu otwiera okno (zrzut); oferta klasy w czterech stopniach; jedno okno — makieta
-      sklepu z HUD (ScreenGui „Shop”, też słucha E zbrojowni) schowana
-  S03 kupno prawdziwym kliknięciem: Złoto w dół o cenę, przedmiot w posiadanych, napis potwierdzenia (zrzut)
+      sklepu z HUD (ScreenGui „Shop”, też słucha E zbrojowni) schowana. Od 26.11.2026, gdy działa okno sklepu Pawła
+      („Shop” z towarem z tego serwera): po E tylko jego okno, z towarem na ladzie; okno próbne się nie otwiera
+  S03 kupno prawdziwym kliknięciem: Złoto w dół o cenę, przedmiot w posiadanych, napis potwierdzenia (zrzut); przy
+      oknie Pawła — kliknięcie slotu, karta, BUY w jego oknie (ten sam serwer)
   S04 strój na postaci po kupnie: przedmiot w stroju przymierzalni (zrzut postaci)
-  S05 reguła zakładania: wyższy stopień, potem niższy — zostaje wyższy; „Załóż” kliknięciem zmienia (zrzut)
+  S05 reguła zakładania: wyższy stopień, potem niższy — zostaje wyższy; „Załóż” kliknięciem zmienia (zrzut); przy
+      oknie Pawła „Załóż” = EQUIP na jego karcie
   S06 walka w kupionym przedmiocie: wpis kowala w Modyfikatory i opis bohatera walki rosną o statystyki przedmiotu
   S07 odmowy: za mało Złota, za niski poziom, posiadany, cudza klasa, nieznany, część zbroi, daleko — nic się nie zmienia
-  S08 okno na małym ekranie (emulacja 667 × 375): tekst ≥ 12 pt, okno w ekranie; zrzut
+  S08 okno na małym ekranie (emulacja 667 × 375): tekst ≥ 12 pt, okno w ekranie; zrzut. Przy oknie Pawła — „?” (okno
+      próbne nie jest już oknem gry, jego okna na telefonie próba nie mierzy)
   S09 zrzuty trzech klas w trzech stopniach (komplet leśny, bagienny, Dżungli na postaci)
   S11 prawdziwa walka w kupionym komplecie (po S09: komplet Dżungli klasy gracza): TELEPORT → chmury → Las, prawdziwe
       E przy slime'ie; bohater walki ma broń i pancerz = wzór poziomu + wpis kowala, model w walce w kupionym stroju
@@ -78,7 +82,18 @@ KOD = {
                          '"SkrotSerwera", "LicznikKupna", "LicznikZalozen", "LicznikOdmow" } do w[n] = k:GetAttribute(n) end '
                          'return H:JSONEncode(w)'),
     "atr_klienta": KS + ('return H:JSONEncode({ gotowy = k:GetAttribute("KlientSklepuGotowy"), '
-                         'podE = k:GetAttribute("PodpietePodE"), okno = k:GetAttribute("OknoOtwarte") })'),
+                         'podE = k:GetAttribute("PodpietePodE"), okno = k:GetAttribute("OknoOtwarte"), '
+                         'zastapione = k:GetAttribute("OknoZastapione"), pawel = k:GetAttribute("ChowajOknoShop") == false })'),
+    # okno sklepu Pawła (ScreenGui „Shop”, src/client/ShopClient — towar i kupno z tego serwera, od 23.11.2026), odczyt
+    "okno_pawla": H + ('local pg = game:GetService("Players").LocalPlayer.PlayerGui local g = pg:FindFirstChild("Shop") '
+                       'local p = g and g:FindFirstChild("Panel") local c = p and p:FindFirstChild("Card") local ceny = {} '
+                       'for i = 1, 6 do local sl = p and p:FindFirstChild("ShopSlot" .. i) local t = sl and sl:FindFirstChild("Price") '
+                       'local o = sl and sl:FindFirstChild("Owned") ceny[i] = (t and t.Text or "") .. "|" .. (o and o.Text or "") end '
+                       'local pl = p and p:FindFirstChild("Plate") local b = c and c:FindFirstChild("BuyButton") '
+                       'local n = c and c:FindFirstChild("ItemName") '
+                       'return H:JSONEncode({ jest = g ~= nil and g:IsA("ScreenGui"), wlaczone = g ~= nil and g:IsA("ScreenGui") and g.Enabled, '
+                       'karta = c ~= nil and c.Visible, nazwa = n and n.Text or "", przycisk = b and b.Visible and b.Text or "", '
+                       'tabliczka = pl and pl.Text or "", sloty = ceny })'),
     "gracz": H + GR + ('local klasa = ({ Warrior = "wojownik", Scout = "zwiadowca", Mage = "mag" })[g:GetAttribute("Class") or ""] '
                        'or "wojownik" return H:JSONEncode({ klasa = klasa, dostepne = g:GetAttribute("KowalDostepne"), '
                        'zloto = g:GetAttribute("Gold"), poziom = g:GetAttribute("Level"), stac = g:GetAttribute("SklepStacNa"), '
@@ -299,6 +314,50 @@ def main(argv):
             klient("otworz")
             return czekaj(lambda: (lambda w: w if w.get("wiersze", 0) > 0 else None)(klient("stan")), 6) or {}
 
+        def okno_pawla():
+            return js(KOD["okno_pawla"])
+
+        def jest_okno_pawla():
+            """Okno sklepu Pawła działa (ScreenGui „Shop” + jego ShopClient ustawił ChowajOknoShop = false) — wtedy E
+            zbrojowni otwiera tylko jego okno, a okno próbne zostaje dla haczyka (26.11.2026)."""
+            return bool(okno_pawla().get("jest")) and bool(js(KOD["atr_klienta"]).get("pawel"))
+
+        def zamknij_okno_pawla():
+            """Jego X, jak gracz (otwarte okno i jego tło łapią kliknięcia: TELEPORT, przyciski okna próbnego)."""
+            if okno_pawla().get("wlaczone"):
+                sp.klik("Shop.Panel.CloseButton")
+                return bool(czekaj(lambda: not okno_pawla().get("wlaczone"), 3, 0.3))
+            return None
+
+        def otworz_okno_pawla():
+            """Świeże okno Pawła prawdziwym E (otwarcie pyta serwer o ofertę) — po zamknięciu poprzedniego."""
+            zamknij_okno_pawla()
+            klient("zamknij")
+            przy_zbrojmistrzu()
+            kamera_za()
+            sp.klawisz("E")
+            return czekaj(lambda: (lambda o: o if o.get("wlaczone") and any(x != "|" for x in o.get("sloty") or []) else None)(
+                okno_pawla()), 6)
+
+        def klik_w_oknie_pawla(pid):
+            """Przedmiot na ladzie w oknie Pawła: sloty 1–6, potem następna szóstka (RerollButton); karta → BuyButton
+            (BUY albo EQUIP — o akcji decyduje jego okno po stanie z oferty). → slot, strona, napis przycisku."""
+            nazwa = {w.get("id"): w.get("nazwa") for w in zdalnie("oferta").get("widok", {}).get("oferta", [])}.get(pid)
+            if not nazwa or not otworz_okno_pawla():
+                return None
+            for strona in range(6):
+                for i in range(1, 7):
+                    sp.klik("Shop.Panel.ShopSlot%d" % i)
+                    time.sleep(0.35)
+                    o = okno_pawla()
+                    if o.get("karta") and o.get("nazwa") == nazwa:
+                        napis = o.get("przycisk")
+                        sp.klik("Shop.Panel.Card.BuyButton")
+                        return {"slot": i, "strona": strona, "przycisk": napis, "nazwa": nazwa}
+                sp.klik("Shop.Panel.RerollButton")
+                time.sleep(0.35)
+            return {"brak": nazwa}
+
         sp.luau(KOD["bez_nazwy"])
         time.sleep(1.0)
         # ------------------------------------------------------------------ S01
@@ -313,7 +372,24 @@ def main(argv):
         g0 = gracz()
         k = g0["klasa"]
         # ------------------------------------------------------------------ S02 prawdziwe E
-        if chce("S02"):
+        if chce("S02") and jest_okno_pawla():
+            # 26.11.2026: okno sklepu Pawła (44f6579, 23.11) zastąpiło okno próbne — prawdziwe E otwiera jego okno
+            # i tylko ono; towar na jego ladzie pochodzi z oferty tego serwera (Zdalne/Sklep "oferta")
+            ok = otworz_okno_pawla()
+            time.sleep(1.0)
+            ekr = js(KOD["okna_ekranu"])
+            kl = js(KOD["atr_klienta"])
+            op = okno_pawla()
+            zrzut("s02_okno_sklepu")
+            of = zdalnie("oferta").get("widok", {}).get("oferta", [])
+            na_ladzie = sum(1 for x in op.get("sloty") or [] if x != "|")
+            punkt("S02", bool(ok) and len(of) == len([p for p in K["przedmioty"] if p["klasa"] == k and p["sprzedawany"]])
+                  and ekr.get("shop") is True and ekr.get("sklep") is False and kl.get("zastapione") == "Shop" and na_ladzie > 0,
+                  "okno Pawła po E: %s (towar w %d z 6 slotów, tabliczka „%s”), okno próbne: %s (OknoZastapione %s), "
+                  "pozycji w ofercie serwera %d; okna na ekranie %s" % (bool(ok), na_ladzie, op.get("tabliczka"), ekr.get("sklep"),
+                                                                     kl.get("zastapione"), len(of), ekr))
+            dane["S02"] = {"okna": ekr, "okno_pawla": op}
+        elif chce("S02"):
             # czcionka okna (FredokaOne) nie ma polskich liter — Roblox dociąga zastępczą przy pierwszym pokazaniu tekstu
             # i przez kilka sekund „ś”, „ę”, „ż” są puste; rozgrzewka haczykiem, żeby zrzut po E był czytelny
             przy_zbrojmistrzu()
@@ -336,7 +412,20 @@ def main(argv):
             dane["S02"] = {"okna": ekr}
         # ------------------------------------------------------------------ S03 kupno kliknięciem
         pas = przedmioty(k, "las", "Belt")[0]
-        if chce("S03"):
+        if chce("S03") and jest_okno_pawla():
+            # kupno prawdziwym kliknięciem w oknie Pawła: slot z przedmiotem → karta → BUY (jego okno woła ten serwer)
+            przed = gracz()
+            klik = klik_w_oknie_pawla(pas)
+            po = czekaj(lambda: (lambda g: g if pas in (g.get("dostepne") or "").split(",") else None)(gracz()), 6) or gracz()
+            time.sleep(0.6)
+            op = okno_pawla()
+            zrzut("s03_po_kupnie")
+            ok = (bool(klik) and not (klik or {}).get("brak") and (klik or {}).get("przycisk") == "BUY"
+                  and pas in (po.get("dostepne") or "").split(",") and (przed.get("zloto") or 0) - (po.get("zloto") or 0) == P[pas]["cena"])
+            punkt("S03", bool(ok), "kupno w oknie Pawła %s; %s za %d Złota: Złoto %s → %s; tabliczka jego okna „%s”"
+                  % (klik, pas, P[pas]["cena"], przed.get("zloto"), po.get("zloto"), op.get("tabliczka")))
+            dane["S03"] = {"przed": przed, "po": po, "klik": klik}
+        elif chce("S03"):
             przy_zbrojmistrzu()
             otworz_okno()
             klient("zakladka", '"las"')
@@ -354,6 +443,7 @@ def main(argv):
         if chce("S04"):
             g1 = gracz()
             klient("zamknij")
+            zamknij_okno_pawla()
             zdjecie("s04_postac_po_kupnie")
             punkt("S04", pas in (g1.get("stroj") or "").split(","), "strój: %s" % g1.get("stroj"))
         # ------------------------------------------------------------------ S05 reguła zakładania
@@ -363,10 +453,14 @@ def main(argv):
             r1 = zdalnie("kup", helm_b)
             r2 = zdalnie("kup", helm_l)
             g2 = gracz()
-            otworz_okno()
-            klient("zakladka", '"las"')
-            time.sleep(0.5)
-            sp.klik(OKNO + "Lista.Wiersz_" + helm_l + ".Przycisk")
+            if jest_okno_pawla():
+                # „Załóż” = EQUIP na karcie w oknie Pawła (dla posiadanego przedmiotu jego okno wysyła "zaloz")
+                dane["S05_klik"] = klik_w_oknie_pawla(helm_l)
+            else:
+                otworz_okno()
+                klient("zakladka", '"las"')
+                time.sleep(0.5)
+                sp.klik(OKNO + "Lista.Wiersz_" + helm_l + ".Przycisk")
             g3 = czekaj(lambda: (lambda g: g if helm_l in (g.get("stroj") or "").split(",") else None)(gracz()), 6) or gracz()
             zrzut("s05_zaloz_recznie")
             ok = (r1.get("zalozony") is True and r2.get("ok") is True and r2.get("zalozony") is False
@@ -417,6 +511,7 @@ def main(argv):
                                                                   [r.get("tekst") for r in w.values()], przed == po))
         # ------------------------------------------------------------------ S08 mały ekran
         if chce("S08"):
+            zamknij_okno_pawla()
             przy_zbrojmistrzu()
             klient("zamknij")
             sp.luau(KOD["emulacja"] % "Vector2.new(667, 375)")
@@ -426,8 +521,15 @@ def main(argv):
             zrzut("s08_okno_maly_ekran")
             sp.luau(KOD["emulacja"] % "nil")
             klient("zamknij")
-            punkt("S08", (st.get("rozmiarTekstu") or 0) >= 12 and (geo.get("tekst") or 0) >= 12 and geo.get("dol", 2) <= 1.0
-                  and geo.get("gora", -1) >= 0, "tekst %s pt (najmniejszy w oknie %s), okno %s" % (st.get("rozmiarTekstu"), geo.get("tekst"), geo))
+            ok8 = ((st.get("rozmiarTekstu") or 0) >= 12 and (geo.get("tekst") or 0) >= 12 and geo.get("dol", 2) <= 1.0
+                   and geo.get("gora", -1) >= 0)
+            opis8 = "tekst %s pt (najmniejszy w oknie %s), okno %s" % (st.get("rozmiarTekstu"), geo.get("tekst"), geo)
+            if jest_okno_pawla():
+                # okno próbne nie pokazuje się już graczowi — jego wynik nie mówi nic o grze; okna Pawła na telefonie
+                # ta próba nie mierzy
+                punkt("S08", None if ok8 else False, "okno zastąpione przez okno Pawła — okno próbne na małym ekranie: " + opis8)
+            else:
+                punkt("S08", ok8, opis8)
         # ------------------------------------------------------------------ S09 trzy klasy w trzech stopniach
         if chce("S09"):
             zrobione = []
@@ -452,6 +554,7 @@ def main(argv):
         # ------------------------------------------------------------------ S11 walka w kupionym komplecie
         def do_lasu():
             """TELEPORT → chmury → strzałka w prawo + Enter = Las, potem koniec przelotu (jak kowal K06 i proba_dymna D02)."""
+            zamknij_okno_pawla()
             sp.luau(KOD["kamera_zwykla"])
             sp.klik("HUD.LeftColumn.TeleportSlot.Teleport")
             if not czekaj(lambda: sp.luau(KOD["chmury_trwa"]).strip() == "true", 8, 0.5):

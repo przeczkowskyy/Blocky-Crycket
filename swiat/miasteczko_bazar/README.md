@@ -63,7 +63,8 @@ w `wspolne.skorupa`, inne budynki bez zmian). **Kamera:** front sali otwarty na 
 z kolizją, a dach to szkło (przezroczystość 0,55) na krokwiach — kamera Roblox (Poppercam) przechodzi przez części
 przezroczyste ≥ 0,25 i bez kolizji, więc nie wjeżdża w sufit, a stanowiska widać z placyku. Trener, tablica wyboru i punkt
 E `training_center` stoją jak stały; stojak z hantlami spod lewej ściany usunięty (zastępuje go stanowisko Siły), manekin
-odsunięty o ok. 1 st. Miejsca sześciu stanowisk AFK zapisuje moduł w `znaczniki.json` (blok `trening_afk`, poza listą
+(26.11.2026) przeniesiony z lewego przodu na prawą stronę głównej izby, między trenerem a workiem (7,6; 0,5) — kamera
+gracza za plecami na stoisku E trenera stała w jego głowie (próba bazaru B06). Miejsca sześciu stanowisk AFK zapisuje moduł w `znaczniki.json` (blok `trening_afk`, poza listą
 `wszystkie`), stąd wpisane do `src/shared/TreningAFKDane.luau` (`D.miejsca`): dwa rzędy po trzy, gracz twarzą do tylnej
 ściany; Pancerz w przednim rzędzie twarzą do placyku, żeby NPC z pomidorami (11 st przed graczem) stał na placyku.
 
@@ -75,7 +76,8 @@ stanowiska Siły (słup z kolizją wciągałby kamerę). Front sali cofnięty o 
 placyku zostaje. Mur w rogu placyku (x −95,5) dotyka ściany sali cokołem (0,2 st), dom zachodni nie nachodzi.
 
 Kontrola: `sprawdz.py` **0 błędów, 2 ostrzeżenia** (te same co wcześniej), 4312 części (było 4410). Testy
-`swiat/miasteczko_bazar_gra`: 36/38, dwa niezaliczenia sprzed tej pracy (`test_1d…`, `test_5e…`). Zrzuty przed/po:
+`swiat/miasteczko_bazar_gra`: 36/38, dwa niezaliczenia sprzed tej pracy (`test_1d…`, `test_5e…`; 26.11.2026
+zaktualizowane do HUD i okien Pawła — 38/38). Zrzuty przed/po:
 `podglad/noc2511_*.jpg` (zagroda, Training Center z zewnątrz i w środku, sześć stanowisk w trakcie treningu — Kot-Mag
 i Wojownik).
 

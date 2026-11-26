@@ -14,7 +14,8 @@ do plików), wynik bez nazw kont.
   K01 gotowość: serwer i klient kowala, zgodność logiki, podpowiedź E, stan gracza podłączony, kowal animowany
   K02 start: podstawowy zestaw klasy, strój w przymierzalni, wpis „kowal” w Modyfikatory, bohater = wzór poziomu
   K03 kuźnia z kilku stron (zrzuty: przód, ¾ z lewej i prawej, od drzwi zbrojowni, kowal przy kowadle)
-  K04 prawdziwe E przy kowalu otwiera okno (zrzut); lista przedmiotów klasy
+  K04 prawdziwe E przy kowalu otwiera okno (zrzut); lista przedmiotów klasy. Od 26.11.2026, gdy stoi okno kowala Pawła
+      (OknoKowala): po E tylko jego okno (okno próbne się nie otwiera), widok serwera z przedmiotami klasy, zamknięcie X
   K05 łup: haczyk (nowy przedmiot → założony, napis) i prawdziwa droga przez przyrost tokenów krainy (ochrona ≤ 10)
   K06 walka z nowymi liczbami: wpis kowala = oczekiwany; wejście do lasu jak gracz (TELEPORT → chmury → Las, jak
       swiat/przejscie_gry/proba_dymna.py), prawdziwe E przy slime'ie: bohater walki ma broń i pancerz z przedmiotami,
@@ -24,7 +25,8 @@ do plików), wynik bez nazw kont.
   K09 odmowy serwera: za mało Złota, za mało materiałów, daleko od kowala, zły przedmiot — nic się nie zmienia
   K10 reset postaci: przedmioty, poziomy i wpis Modyfikatory zostają; okno działa
   K11 przymierzalnia: tylko posiadane przedmioty, bez „Dawny wygląd” (serwer odmawia)
-  K12 okno na małym ekranie (emulacja 667 × 375): tekst ≥ 12 pt, okno nad dolną krawędzią; zrzut
+  K12 okno na małym ekranie (emulacja 667 × 375): tekst ≥ 12 pt, okno nad dolną krawędzią; zrzut. Gdy okno próbne
+      zastąpiło okno Pawła — „?” (okno próbne nie jest już oknem gry; jego okna na telefonie próba nie mierzy)
   K13 konsola bez błędów [KowalProba]
 """
 import argparse
@@ -69,7 +71,12 @@ KOD = {
                         '"LicznikOdmow" } do w[n] = k:GetAttribute(n) end return H:JSONEncode(w)'),
     "atr_klienta": KK + ('return H:JSONEncode({ gotowy = k:GetAttribute("KlientKowalaGotowy"), '
                          'animowany = k:GetAttribute("KowalAnimowany"), okno = k:GetAttribute("OknoOtwarte"), '
-                         'napis = k:GetAttribute("OstatniNapis") })'),
+                         'napis = k:GetAttribute("OstatniNapis"), zastapione = k:GetAttribute("OknoZastapione") })'),
+    # okno kowala Pawła (ScreenGui „OknoKowala”, src/client/OknoKowalaClient, od 24.11.2026) — tylko odczyt
+    "okno_pawla": ('local H = game:GetService("HttpService") local pg = game:GetService("Players").LocalPlayer.PlayerGui '
+                   'local g = pg:FindFirstChild("OknoKowala") local o = pg:FindFirstChild("KowalProbaOkno") '
+                   'return H:JSONEncode({ jest = g ~= nil and g:IsA("ScreenGui"), wlaczone = g ~= nil and g:IsA("ScreenGui") and g.Enabled, '
+                   'proba = o ~= nil and o:IsA("ScreenGui") and o.Enabled })'),
     "gracz": KK + GR + ('local klasa = ({ Warrior = "wojownik", Scout = "zwiadowca", Mage = "mag" })[g:GetAttribute("Class") or ""] '
                         'or "wojownik" return H:JSONEncode({ klasa = klasa, dostepne = g:GetAttribute("KowalDostepne"), '
                         'materialy = g:GetAttribute("KowalMaterialy"), zloto = g:GetAttribute("Gold"), '
@@ -270,8 +277,20 @@ def main(argv):
             sp.luau(KOD["kamera_za"])
             time.sleep(0.5)
 
+        def okno_pawla():
+            return js(KOD["okno_pawla"])
+
+        def zamknij_okno_pawla():
+            """Okno kowala Pawła zamykamy jego X (jak gracz): otwarte zostaje po E i jego tło łapie kliknięcia —
+            26.11.2026 kliknięcie TELEPORT w K06 trafiało w tło jego okna i chmury się nie otwierały."""
+            if okno_pawla().get("wlaczone"):
+                sp.klik("OknoKowala.Panel.CloseButton")
+                return bool(czekaj(lambda: not okno_pawla().get("wlaczone"), 3, 0.3))
+            return None
+
         def do_lasu():
             """TELEPORT → chmury → strzałka w prawo + Enter = Las, potem koniec przelotu (jak proba_dymna D02)."""
+            zamknij_okno_pawla()
             sp.luau(KOD["kamera_zwykla"])
             sp.klik("HUD.LeftColumn.TeleportSlot.Teleport")
             if not czekaj(lambda: sp.luau(KOD["chmury_trwa"]).strip() == "true", 8, 0.5):
@@ -355,12 +374,31 @@ def main(argv):
         if chce("K04"):
             przy_kowalu()
             kamera_za()
-            sp.klawisz("E")
-            ok = czekaj(lambda: js(KOD["atr_klienta"]).get("okno"), 6)
-            st = czekaj(lambda: (lambda w: w if w.get("wiersze", 0) > 0 else None)(klient("stan")), 6) or {}
-            zrzut("k04_okno_kowala")
-            punkt("K04", bool(ok) and st.get("wiersze", 0) == len(D["klasy"][g0["klasa"]]["przedmioty"]),
-                  "okno %s, wierszy %s (klasa ma %d przedmiotów)" % (ok, st.get("wiersze"), len(D["klasy"][g0["klasa"]]["przedmioty"])))
+            n_klasy = len(D["klasy"][g0["klasa"]]["przedmioty"])
+            if okno_pawla().get("jest"):
+                # 26.11.2026: okno kowala Pawła (24.11, ab56560; zakładki 641e578) zastąpiło okno próbne — E otwiera jego
+                # okno i tylko ono; jego treść to widok z naszego serwera (Zdalne/Kuznia "widok"), więc liczbę
+                # przedmiotów klasy sprawdzamy w widoku serwera. Okno zamykamy jego X (inaczej łapie kliknięcia dalej).
+                sp.klawisz("E")
+                ok = czekaj(lambda: okno_pawla().get("wlaczone"), 6)
+                time.sleep(0.8)
+                op = okno_pawla()
+                kl = js(KOD["atr_klienta"])
+                w = js(KOD["zdalnie"] % ("widok", "nil"))
+                n_widok = len(((w.get("widok") or {}).get("wiersze")) or [])
+                zrzut("k04_okno_kowala")
+                zamkniete = zamknij_okno_pawla()
+                punkt("K04", bool(ok) and not op.get("proba") and not kl.get("okno") and kl.get("zastapione") == "OknoKowala"
+                      and n_widok == n_klasy and zamkniete is True,
+                      "okno Pawła po E %s, okno próbne %s (OknoZastapione %s), wierszy w widoku serwera %s (klasa ma %d), "
+                      "zamknięte jego X: %s" % (ok, op.get("proba") or kl.get("okno"), kl.get("zastapione"), n_widok, n_klasy, zamkniete))
+            else:
+                sp.klawisz("E")
+                ok = czekaj(lambda: js(KOD["atr_klienta"]).get("okno"), 6)
+                st = czekaj(lambda: (lambda w: w if w.get("wiersze", 0) > 0 else None)(klient("stan")), 6) or {}
+                zrzut("k04_okno_kowala")
+                punkt("K04", bool(ok) and st.get("wiersze", 0) == n_klasy,
+                      "okno %s, wierszy %s (klasa ma %d przedmiotów)" % (ok, st.get("wiersze"), n_klasy))
         # ------------------------------------------------------------------ K05 łup
         k = g0["klasa"]
         lista = D["klasy"][k]["przedmioty"]
@@ -517,8 +555,13 @@ def main(argv):
             zrzut("k12_okno_maly_ekran")
             sp.luau(KOD["emulacja"] % "nil")
             klient("zamknij")
-            punkt("K12", (st.get("rozmiarTekstu") or 0) >= 12 and geo.get("dol", 2) <= 1.0,
-                  "tekst %s pt, okno %s" % (st.get("rozmiarTekstu"), geo))
+            ok12 = (st.get("rozmiarTekstu") or 0) >= 12 and geo.get("dol", 2) <= 1.0
+            if okno_pawla().get("jest"):
+                # okno próbne nie pokazuje się już graczowi (zastąpione oknem Pawła) — wynik nie mówi nic o grze
+                punkt("K12", None if ok12 else False, "okno zastąpione przez okno Pawła — okno próbne na małym ekranie: "
+                      "tekst %s pt, okno %s; okna Pawła na telefonie ta próba nie mierzy" % (st.get("rozmiarTekstu"), geo))
+            else:
+                punkt("K12", ok12, "tekst %s pt, okno %s" % (st.get("rozmiarTekstu"), geo))
         # ------------------------------------------------------------------ K13 konsola
         if chce("K13"):
             kons = sp.konsola()

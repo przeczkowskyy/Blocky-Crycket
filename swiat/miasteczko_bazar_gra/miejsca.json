@@ -7,7 +7,8 @@
   "znaczniki": "swiat/miasteczko_bazar/znaczniki.json",
   "zdarzenie_okien": "OknoMiejsca",
   "sygnal_hud": "HUDButtonPressed",
-  "przyciski_hud": ["Teleport", "Equipment", "Pets", "Quests", "Shop", "Guilds"],
+  "przyciski_hud": ["Teleport", "Equipment", "Pets", "Index", "Shop", "Guilds"],
+  "sygnaly_hud_bez_przycisku": {"Quests": "dawny przycisk Quests — od 25.11.2026 (Paweł, 311cce3) HUD ma Index zamiast Quests, a sygnał HUDButtonPressed(\"Quests\") otwiera szufladę questów (src/client/QuestyClient.client.luau)"},
   "podpowiedz": {
     "zasieg": 10,
     "zapas_serwera": 4,

@@ -191,15 +191,26 @@ class TestDanych(unittest.TestCase):
         przyciski = set()
 
         def chodz(w):
+            # szuflada questów (QuestDrawer, Paweł 25.11) ma własną zakładkę-ImageButton „Tab” — to nie przycisk HUD
+            if w.get("Name") == "QuestDrawer":
+                return
             if w.get("ClassName") == "ImageButton":
                 przyciski.add(w.get("Name"))
             for c in w.get("Children", []):
                 chodz(c)
         chodz(hud)
         self.assertEqual(przyciski, set(K["przyciski_hud"]))
+        # sygnał bez przycisku (dawny „Quests”) musi mieć słuchacza w src/ — inaczej E w karczmie nic nie otworzy
+        bez = K.get("sygnaly_hud_bez_przycisku", {})
+        for nazwa in bez:
+            self.assertNotIn(nazwa, przyciski, "%s jest znów przyciskiem HUD — przenieś do przyciski_hud" % nazwa)
+            sluchacze = [n for sciezka, _, pliki in os.walk(os.path.join(REPO, "src", "client")) for n in pliki
+                         if n.endswith(".luau") and 'HUDButtonPressed' in czytaj(sciezka, n)
+                         and ('nazwa == "%s"' % nazwa in czytaj(sciezka, n) or 'name == "%s"' % nazwa in czytaj(sciezka, n))]
+            self.assertTrue(sluchacze, "sygnał HUD %r bez słuchacza w src/client" % nazwa)
         for mid in D["kolejnosc"]:
             if M[mid].get("hud"):
-                self.assertIn(M[mid]["hud"], przyciski, mid)
+                self.assertTrue(M[mid]["hud"] in przyciski or M[mid]["hud"] in bez, mid)
 
 
 # ============================================================================================== 2. znaczniki
@@ -662,13 +673,27 @@ class TestStyku(unittest.TestCase):
         self.assertIn("pressed:Fire(b.Name)", hud)
         eq = czytaj(REPO, "src", "client", "EquipmentPanelClient.client.luau")
         self.assertIn('local hudPressed = bindable("HUDButtonPressed")', eq)
-        # nazwa zdarzenia okien nie koliduje z niczym w src/ ani w innych pakietach Studio
-        for korzen in (os.path.join(REPO, "src"), os.path.join(REPO, "swiat", "teleport_chmury"),
-                       os.path.join(REPO, "swiat", "las_pas_gra")):
+        # nazwa zdarzenia okien nie koliduje z niczym w innych pakietach Studio
+        for korzen in (os.path.join(REPO, "swiat", "teleport_chmury"), os.path.join(REPO, "swiat", "las_pas_gra")):
             for sciezka, _, pliki in os.walk(korzen):
                 for n in pliki:
                     if n.endswith(".luau"):
                         self.assertNotIn(D["zdarzenie_okien"], czytaj(sciezka, n), n)
+        # w src/ od 23.11.2026 okna Pawła (sklep, mistrz gier, tablica questów…) SŁUCHAJĄ tego zdarzenia — to umówiony
+        # styk, nie kolizja. Kolizją byłby obiekt innej klasy pod tą nazwą: każdy plik, który ją wymienia, ma tworzyć
+        # (albo znajdować) BindableEvent, nigdy RemoteEvent / RemoteFunction / BindableFunction o tej nazwie.
+        for sciezka, _, pliki in os.walk(os.path.join(REPO, "src")):
+            for n in pliki:
+                if not n.endswith(".luau"):
+                    continue
+                t = czytaj(sciezka, n)
+                if D["zdarzenie_okien"] not in t:
+                    continue
+                self.assertIn('Instance.new("BindableEvent")', t, n)
+                for linia in t.splitlines():
+                    if D["zdarzenie_okien"] in linia:
+                        for zla in ("RemoteEvent", "RemoteFunction", "BindableFunction"):
+                            self.assertNotIn(zla, linia, n)
         self.assertIn("ReplicatedStorage:FindFirstChild(D.zdarzenie_okien)", KLIENT)
         self.assertIn("okna:Fire(id,", KLIENT)
         self.assertIn("h:Fire(m.hud)", KLIENT)

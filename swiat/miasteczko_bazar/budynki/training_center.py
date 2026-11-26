@@ -138,8 +138,10 @@ def _sprzet(s):
     with s.cechy(kolizja=False, cien=False):
         s.blok("Mata", (-1.5, Y_PODLOGI + 0.06, 1.5), (9.0, 0.12, 7.0), cien(s, DACH, 0.9), "Fabric")
         s.blok("Mata pas", (-1.5, Y_PODLOGI + 0.1, 1.5), (9.4, 0.1, 0.6), "biel", "Fabric")
-    # słomiany manekin z tarczą (lewy przód, poza osią wejście → tablica)
-    with s.uklad(pos=(-5.9, Y_PODLOGI, 5.0), obrot=(0, 35, 0)):
+    # słomiany manekin z tarczą (prawa strona głównej izby, między trenerem a workiem, poza osią wejście → tablica).
+    # 26.11.2026: z lewego przodu (−5,9; 5,0) przeniesiony tutaj — kamera gracza za plecami na stoisku E trenera
+    # stała w głowie manekina (próba bazaru B06: zasłona „Manekin głowa”; części bez kolizji Poppercam nie omija)
+    with s.uklad(pos=(7.6, Y_PODLOGI, 0.5), obrot=(0, -30, 0)):
         s.blok("Manekin podstawa", (0, 0.3, 0), (2.4, 0.6, 2.4), "drewno_ciemne", "Wood")
         with s.cechy(kolizja=False):
             s.blok("Manekin słup", (0, 2.5, 0), (0.5, 4.0, 0.5), "drewno", "Wood")

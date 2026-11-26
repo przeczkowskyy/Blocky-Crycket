@@ -138,9 +138,13 @@ class TestDanych(unittest.TestCase):
                       czytaj(REPO, "src", "server", "ClassSelect.server.luau"))
         # PlayerStatsDefaults ustawia tylko brakujące atrybuty — nie nadpisze tego, co wpisze SerwerStanu
         self.assertIn("if player:GetAttribute(key) == nil then", domyslne)
-        # StatPoints dopisuje do tych samych atrybutów (darmowy „+”), limit jak nasz
+        # StatPoints Pawła: do 23.11.2026 darmowy „+” dopisywał do tych samych atrybutów (limit MAX_VALUE = nasz
+        # statystyka_maks). Od 33a7dbf (24.11, D-140) zdarzenie AddStatPoint zostaje, ale serwer nic nie zapisuje —
+        # sprawdzamy, że to dalej prawda (drugi pisarz statystyk wróciłby tylko razem z limitem jak nasz).
         punkty = czytaj(REPO, "src", "server", "StatPoints.server.luau")
-        self.assertIn("local MAX_VALUE = %d" % D["limity"]["statystyka_maks"], punkty)
+        self.assertIn('Name = "AddStatPoint"', punkty)
+        if "SetAttribute" in punkty:
+            self.assertIn("local MAX_VALUE = %d" % D["limity"]["statystyka_maks"], punkty)
 
     def test_1d_hud_pawla(self):
         # ScreenGui HUD (Rojo: nazwa z pliku src/gui/HUD.model.json); HUDClient słucha zmian atrybutów, które piszemy

@@ -72,6 +72,10 @@ INNE = [
     ("BindableFunction", "Sygnaly/SterowanieSerwera"),  # haczyk testowy SerwerBazaru (+ odblokowanie lochów)
     ("BindableFunction", "Sygnaly/SterowanieKlienta"),  # haczyk testowy KlientBazaru
 ]
+# strefy wejścia innych pakietów przy starym miasteczku, z dala od których stoi „Nowe miasteczko (E)”:
+# (kontener w Workspace, atrybut Vector3 ze środkiem strefy, promień w st). Brama BONK (swiat/bonk, zasięg 5 st)
+# — promień 12 = zasięg bramy + zasięg podpowiedzi E (8) bez 1 st, żeby gracz przy tabliczce nie wszedł w bramę.
+STREFY_WEJSCIA = [("BonkGra", "PortalPoz", 12)]
 ATRYBUTY_TESTOWE = ["DymkiWylaczone", "BezDymku", "RecznyPunktStaregoMiasteczka", "PrzenikanieKamery"]
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'
@@ -383,6 +387,30 @@ else
 	op.FilterDescendantsInstances = pomin
 	op.RespectCanCollide = true
 	local kand = L.kandydaci(D, { x = s.X, z = s.Z }, if portal then { x = portal.X, z = portal.Z } else nil)
+	-- strefy wejścia innych pakietów (tylko odczyt atrybutów): brama BONK przy płycie startu przenosi każdego, kto
+	-- wejdzie w jej zasięg (5 st). 26.11.2026: tabliczka stała 5,1 st od niej i postać przy tabliczce lądowała w BONK
+	-- (B09 próby bazaru). Kandydat bliżej niż promień strefy odpada.
+	local strefy = {}
+	for _, st in { __STREFY__ } do
+		local kk = workspace:FindFirstChild(st[1])
+		local v = kk and kk:GetAttribute(st[2])
+		if typeof(v) == "Vector3" then
+			table.insert(strefy, { p = v, r = st[3], opis = st[1] .. "." .. st[2] })
+		end
+	end
+	local pominiete = 0
+	for i = #kand, 1, -1 do
+		for _, st in strefy do
+			if Vector3.new(kand[i].x - st.p.X, 0, kand[i].z - st.p.Z).Magnitude < st.r then
+				table.remove(kand, i)
+				pominiete += 1
+				break
+			end
+		end
+	end
+	if pominiete > 0 then
+		table.insert(uwagi, string.format("kandydatów przy strefach wejścia (%d) pominiętych: %d", #strefy, pominiete))
+	end
 	for i, c in kand do
 		local y = grunt(c.x, c.z, s.Y)
 		if y and math.abs(y - s.Y) <= S.roznica_wysokosci then
@@ -541,6 +569,7 @@ def kod_stare(D):
     dane = wczytaj(os.path.join(ZRODLA, DANE.PLIK_LUAU))
     logika = wczytaj(os.path.join(ZRODLA, "LogikaBazaru.luau"))
     return (STARE.replace("__KONTENER__", D["kontener"]).replace("__PUNKT__", PUNKT)
+            .replace("__STREFY__", ", ".join("{%s, %s, %s}" % (luau_napis(k), luau_napis(a), r) for k, a, r in STREFY_WEJSCIA))
             .replace("__LOGIKA__", logika).replace("__DANE__", dane))
 
 

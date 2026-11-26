@@ -7,7 +7,9 @@
 	ReplicatedStorage.<D.miejsce.zdarzenie> (BindableEvent „OknoMiejsca”) z id miejsca — tu słuchamy id D.miejsce.id.
 	Pakietu bazaru nie zmieniamy; jego dymek „w budowie” wyłącza przewidziany do tego atrybut zdarzenia
 	(zdarzenie:SetAttribute(id, true) — haczyk opisany w README bazaru). X albo odejście dalej niż D.miejsce.zasiegOkna
-	od stoiska → zamknięcie. Atrybut kontenera EmulacjaEkranu = Vector2 (np. 667, 375) — okno jak na telefonie.
+	od stoiska → zamknięcie. Od 26.11.2026: gdy działa okno sklepu Pawła (ScreenGui „Shop” + atrybut ChowajOknoShop =
+	false, który ustawia jego ShopClient), E otwiera tylko jego okno — to okno próbne zostaje dla haczyka prób.
+	Atrybut kontenera EmulacjaEkranu = Vector2 (np. 667, 375) — okno jak na telefonie.
 	Sygnaly/SterowanieKlienta (BindableFunction, haczyk prób): "otworz" · "zamknij" · "stan" → { otwarte, wiersze,
 	zakladka, rozmiarTekstu, komunikat } · "zakladka", id stopnia · "kliknij", id przedmiotu (przycisk wiersza).
 ]]
@@ -126,6 +128,16 @@ if zdarzenie:IsA("BindableEvent") then
 	zdarzenie:SetAttribute(D.miejsce.id, true) -- to miejsce ma już okno: bazar nie pokazuje dymku „w budowie”
 	zdarzenie.Event:Connect(function(id)
 		if id == D.miejsce.id then
+			-- okno sklepu Pawła („Shop”, ShopClient z towarem z tego serwera, 23.11.2026) zastępuje to okno próbne:
+			-- gdy stoi w PlayerGui, na E nie otwieramy swojego (bez dwóch okien naraz i bez mignięcia). Haczyk prób
+			-- "otworz" działa dalej; atrybut OknoZastapione mówi próbom, czyje okno stoi.
+			local pg = gracz:FindFirstChild("PlayerGui")
+			local cudze = pg and pg:FindFirstChild(CUDZE_OKNO)
+			if cudze and cudze:IsA("ScreenGui") and kontener:GetAttribute("ChowajOknoShop") == false then
+				kontener:SetAttribute("OknoZastapione", cudze.Name)
+				return
+			end
+			kontener:SetAttribute("OknoZastapione", nil)
 			otworz()
 			-- kolejność słuchaczy zdarzenia jest nieustalona: sprawdzamy po chwili, kilka razy
 			task.spawn(function()

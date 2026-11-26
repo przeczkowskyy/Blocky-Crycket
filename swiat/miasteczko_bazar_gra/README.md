@@ -200,7 +200,10 @@ jak dotąd. Odmowa uchwytu (np. `trwa`) nie przenosi nigdzie indziej. Sprawdzone
   spawnem, karczmą i kołem fortuny), a nie w `Workspace/KrzyweMiasteczko` (ono nie ma prawdziwego spawnu — jego
   README). Budowa wypisuje więc uwagę „start poza obszarem starego miasteczka” i stawia „Nowe miasteczko (E)” w
   (11,7; 1,0; −2,7): 12,0 st od spawnu, 22,1 st od `LasTeleport/PortalStart`, niczego nie zasłania (zrzut
-  `klatki/12_przejscie_nowe_w_starym.jpg`). To miejsce, w którym gracz dziś wchodzi do gry, więc rano: spawn → E →
+  `klatki/12_przejscie_nowe_w_starym.jpg`). **26.11.2026:** od 20.11 stoi tam też brama BONK (`swiat/bonk`, atrybut
+  `BonkGra.PortalPoz` (16; 1; 0), wejście w promieniu 5 st) — 5,1 st od tabliczki, więc postać przy tabliczce lądowała
+  w BONK (B09). Budowa pomija teraz kandydatów bliżej niż 12 st od stref wejścia innych pakietów (`STREFY_WEJSCIA`
+  w `zbuduj.py`); punkt stoi w (6,4; 1,0; −10,2): 12 st od spawnu, 14 st od bramy BONK. To miejsce, w którym gracz dziś wchodzi do gry, więc rano: spawn → E →
   bazar. „Stare miasteczko (E)” w bazarze prowadzi więc z powrotem na ten plac startowy, a nie do Krzywego
   Miasteczka — do decyzji (wybór 9).
 

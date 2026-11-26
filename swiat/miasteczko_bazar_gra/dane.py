@@ -149,8 +149,9 @@ def wszystko():
         for klucz in ("hud", "gui", "dymek_otwarte", "cel", "tabliczka"):
             if m.get(klucz) is not None:
                 w[klucz] = m[klucz]
-        if w.get("hud") is not None and w["hud"] not in K["przyciski_hud"]:
-            raise BladDanych("%s: hud %r nie jest przyciskiem HUD %s" % (mid, w["hud"], K["przyciski_hud"]))
+        if w.get("hud") is not None and w["hud"] not in K["przyciski_hud"]                 and w["hud"] not in K.get("sygnaly_hud_bez_przycisku", {}):
+            raise BladDanych("%s: hud %r nie jest przyciskiem HUD %s ani sygnałem bez przycisku %s"
+                             % (mid, w["hud"], K["przyciski_hud"], sorted(K.get("sygnaly_hud_bez_przycisku", {}))))
         if m.get("znacznik") == "start":
             # przejście „Stare miasteczko” w bazarze: start + przesunięcie w układzie bazaru (bez obrotu = świat)
             st = _r(_dodaj(start_punkt, m["od_startu_bazar"]))
