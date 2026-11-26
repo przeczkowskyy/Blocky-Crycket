@@ -1,0 +1,27 @@
+{
+ "id": "r-20261126-010358-1e01",
+ "tytul": "Zagroda daje Rybki: nowe legowiska i przebudowane pety w Studio",
+ "opis_md": "Trzy zmiany petów z sesji 25.11 są w Studio i działają w grze: Rybki z zagrody, osiem nowych legowisk i pięć przebudowanych petów leśnego jajka.\n\n**Jak to działa**\n- Pety stojące w zagrodzie dają Rybki; nad zagrodą pojawia się napis „+3 Rybki”. Pet idący za graczem w zagrodzie nie stoi i Rybek nie daje.\n- Miejsca kupuje się u Jagody: 2 → 4 → 6 → 8 za 1000, 3000 i 7500 Rybek. Zagroda się nie powiększa.\n- Rybki są tylko dla gracza w grze, bez przychodu po wyjściu.\n- Liczby robocze: zagroda daje zwykle 3–14% Rybek z walk, najwyżej ok. 26%. W lesie to ok. 4 Rybki na minutę, czyli prawie niewidoczne.\n\n**Sprawdzone w trybie Play**\n- Próba zagrody: 12 z 12 punktów. Las, Bagno i Dżungla: 14, 10 i 10 punktów, bez niezaliczeń.\n- Każdy z pięciu nowych petów idzie za graczem; jelonek ma wszystkie części.\n- Okno Pets Pawła i jego leśne jajko działają jak wcześniej.\n- Warunki trzech punktów prób zostały dostosowane do nowej zasady (w zagrodzie stoją dwa pety na starcie, Rybki przybywają w trakcie pomiaru).\n\n**Do decyzji**\n- E przy Jagodzie otwiera naraz okno Pets Pawła i tymczasowe okno zagrody, jedno na drugim.\n- Pet z drugiego slotu okna Pets nadal stoi w zagrodzie i daje Rybki.\n- Jajko Pawła stoi ok. 3 study od miejsca przed Jagodą: z boku E kupuje jajko zamiast otwierać okno.\n- Sówka ma w grze oczy żółto-pomarańczowe, a jelonek „złote” nogi wyglądające na oliwkowe.\n- Starsze napisy pakietu mówią jeszcze „Złota” zamiast „Rybek”.\n\n**Nie sprawdzone**\n- Dwóch graczy naraz, telefon i prawdziwy zapis postępu (próby idą bez zapisu).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T01:03:58+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/PetyProba",
+   "etykieta": "Pety"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ],
+ "pytanie": "Rybki z zagrody i miejsca 2-4-6-8 u Jagody: czy tak zostaje (liczby robocze)?",
+ "gra": "bc"
+}

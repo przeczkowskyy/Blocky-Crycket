@@ -65,6 +65,7 @@ return {
 	publikacja = { zapas_s = 6, min_s = 1.5, odstep_pokaz_s = 0.5 },
 	zrodla = { "LasPotwory", "LasPasGra", "BagnoPasGra", "DzunglaPasGra" },
 	wydatki = { zrodla = { "PetyProba", "KowalProba" }, kwota_maks = 1000000 },
+	przychody = { zrodla = { "PetyProba" }, kwota_maks = 100000 },
 	pety = {
 		rodzajow_maks = 100,
 		kopii_maks = 1000000,
@@ -551,6 +552,33 @@ return {
 				wynik = false,
 				powod = "zly_cel",
 			},
+		},
+		przychod = {
+			{
+				info = { ile = 3, zrodlo = "PetyProba", cel = "zagroda" },
+				wynik = { ile = 3, zrodlo = "PetyProba", cel = "zagroda" },
+				powod = "ok",
+			},
+			{
+				info = { ile = 1, zrodlo = "PetyProba", cel = "zagroda" },
+				wynik = { ile = 1, zrodlo = "PetyProba", cel = "zagroda" },
+				powod = "ok",
+			},
+			{ info = { ile = 0, zrodlo = "PetyProba", cel = "zagroda" }, wynik = false, powod = "zla_kwota" },
+			{ info = { ile = -2, zrodlo = "PetyProba", cel = "zagroda" }, wynik = false, powod = "zla_kwota" },
+			{ info = { ile = 1.5, zrodlo = "PetyProba", cel = "zagroda" }, wynik = false, powod = "zla_kwota" },
+			{
+				info = { ile = 100000, zrodlo = "PetyProba", cel = "zagroda" },
+				wynik = { ile = 100000, zrodlo = "PetyProba", cel = "zagroda" },
+				powod = "ok",
+			},
+			{ info = { ile = 100001, zrodlo = "PetyProba", cel = "zagroda" }, wynik = false, powod = "zla_kwota" },
+			{ info = { ile = "3", zrodlo = "PetyProba", cel = "zagroda" }, wynik = false, powod = "zla_kwota" },
+			{ info = { ile = 3, zrodlo = "KowalProba", cel = "zagroda" }, wynik = false, powod = "zle_zrodlo" },
+			{ info = { ile = 3, cel = "zagroda" }, wynik = false, powod = "zle_zrodlo" },
+			{ info = { ile = 3, zrodlo = "PetyProba", cel = "zagroda petow" }, wynik = false, powod = "zly_cel" },
+			{ info = { ile = 3, zrodlo = "PetyProba" }, wynik = false, powod = "zly_cel" },
+			{ info = "x", wynik = false, powod = "zly_przychod" },
 		},
 		wydaj = {
 			{ zloto = 500, ile = 300, wynik = { 200, 0 } },
@@ -2242,5 +2270,5 @@ return {
 			{ znana = 9999, nowa = 10000, pula = 5, wynik = { 9999, 5, "ok" } },
 		},
 	},
-	skrot = "57a6e3cc7c3d",
+	skrot = "9218589c072c",
 }

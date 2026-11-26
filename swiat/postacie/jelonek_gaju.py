@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-"""JELONEK GAJU — pet legendarny z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny
-projekt).
+"""JELONEK GAJU — pet legendarny z leśnego jajka (próba swiat/pety_proba; status: propozycja).
 
-Smukły jelonek (ok. 3,3 studa z porożem): płowa sierść z białymi cętkami, duże oczy, uszy na boki, złote kopytka,
-liściasty wianek ze świecącym klejnotem na szyi i — najważniejsze — świecące kryształowe poroże z kwiatkami i listkami.
-Sylwetka: wysoki, na długich nogach, z porożem — najbardziej efektowny z piątki (legendarny: świeci najmocniej).
+Przebudowa 25/26.11.2026 według arkusza obrotów Pawła (`jelonek_gaju_obroty.jpg`: przód, bok, tył, drugi bok). Wzór
+wyglądu: „chibi” jelonek (ok. 3,6 studa z porożem): DUŻA okrągła głowa z kremową maską i małym noskiem, wielkie uszy
+na boki z różowym środkiem, kryształowe poroże (cyjan) z różowymi kwiatkami, wianek z liści na krótkiej szyi
+z zielonym świecącym klejnotem z przodu, krótki tułów z kremową piersią i białymi cętkami na grzbiecie, smukłe nogi
+ze ZŁOTYMI dolnymi częściami i kopytkami, mały zadarty ogonek. Kości, nazwy kości i klipy jak w modelu z 17.11.
 
     python -B swiat/postacie/przebuduj.py jelonek_gaju --bez-filmow
 
@@ -12,94 +13,106 @@ Budowa (typ="stwor", patrzy w +Z, lewa = +X):
   Root > Tulow > {Szyja > Glowa > {UchoL, UchoP, Poroze}, NogaPrzodL/P, NogaTylL/P, Ogonek}
 Klipy: spoczynek, chod (stęp po przekątnej, pętla), radosc (podskok z obrotem i podkulonymi nogami), wyklucie.
 """
+import math
+
 from swiat.postacie.biblioteka.postac import Postac
-from swiat.postacie.pety_lesne import klip_radosc, klip_wyklucie, oczy
+from swiat.postacie.pety_lesne import klip_radosc, klip_wyklucie, lata, model, naklejka, oczy_okragle
 
 ID = "jelonek_gaju"
 
 PALETA = {
-    "siersc": "C98B55", "siersc_ciemna": "9E6436", "krem": "FFF1DC", "cetka": "FFF8EA", "nos": "2A1A12",
-    "kopyto": "FFD34D", "kopyto_ciemne": "D9A62E", "kryszt": "7DF9FF", "kryszt_ciemny": "38D9E8",
-    "kwiat": "FF8FC8", "kwiat_srodek": "FFE066", "lisc": "6DD45A", "klejnot": "9BFF6A", "ucho_srodek": "F5B7A0",
+    "siersc": "D08A4E", "siersc_ciemna": "A8683A", "krem": "FFF1DC", "cetka": "FFFBF2", "nos": "3A2418",
+    "kopyto": "FFC93C", "kryszt": "7DF2FF", "kryszt_ciemny": "38D9E8",
+    "kwiat": "FF8FC8", "lisc": "5CC94A", "lisc_ciemny": "3E9A34", "klejnot": "7DFF5A", "ucho_srodek": "F5B0A8",
+    "oko": "3A2216",
 }
 
-TULOW = (0.85, 0.75, 1.5)
-Y_TULOWIA = 1.25
-NOGI = [("Przod", 0.5), ("Tyl", -0.55)]
+TULOW = ((0.0, 1.15, -0.1), (0.92, 0.82, 1.35))      # elipsoida tułowia
+GLOWA = ((0.0, 2.22, 0.45), (1.18, 1.04, 1.04))         # elipsoida głowy
+Y_TULOWIA = 1.15
+NOGI = [("Przod", 0.3), ("Tyl", -0.5)]
 
 
 def zbuduj():
     p = Postac(ID, "Jelonek Gaju", typ="stwor", skala=1.0, faza=0.06, paleta=PALETA)
-    p.kosc("Tulow", "Root", staw=(0, Y_TULOWIA, 0), czesc=TULOW, srodek=(0, 0, -0.05))
-    p.kosc("Szyja", "Tulow", staw=(0, 1.5, 0.55), czesc=(0.42, 0.75, 0.42), srodek=(0, 0.3, 0.1))
-    p.kosc("Glowa", "Szyja", staw=(0, 2.05, 0.72), czesc=(0.82, 0.74, 0.84), srodek=(0, 0.22, 0.16))
+    (tx, ty, tz), (tw, th, td) = TULOW
+    (gx, gy, gz), (gw, gh, gd) = GLOWA
+    p.kosc("Tulow", "Root", staw=(0, Y_TULOWIA, 0), czesc=(tw, th, td), srodek=(tx, ty - Y_TULOWIA, tz))
+    p.kosc("Szyja", "Tulow", staw=(0, 1.38, 0.3), czesc=(0.42, 0.5, 0.42), srodek=(0, 0.24, 0.06))
+    p.kosc("Glowa", "Szyja", staw=(0, 1.76, 0.42), czesc=(gw, gh, gd), srodek=(gx, gy - 1.76, gz - 0.42))
     for s, zn in (("L", 1), ("P", -1)):
-        p.kosc("Ucho" + s, "Glowa", staw=(zn * 0.36, 2.45, 0.76), czesc=(0.5, 0.2, 0.28), srodek=(zn * 0.22, 0.02, 0))
+        p.kosc("Ucho" + s, "Glowa", staw=(zn * 0.46, gy + 0.2, gz - 0.02), czesc=(0.7, 0.3, 0.12),
+               srodek=(zn * 0.33, 0.05, 0))
         for przod, z in NOGI:
-            p.kosc("Noga%s%s" % (przod, s), "Tulow", staw=(zn * 0.26, 1.0, z), czesc=(0.22, 1.0, 0.24),
-                   srodek=(0, -0.5, 0))
-    p.kosc("Poroze", "Glowa", staw=(0, 2.62, 0.82), czesc=(1.4, 1.0, 0.3), srodek=(0, 0.45, 0))
-    p.kosc("Ogonek", "Tulow", staw=(0, 1.5, -0.8), czesc=(0.26, 0.32, 0.16), srodek=(0, 0.0, -0.06))
+            p.kosc("Noga%s%s" % (przod, s), "Tulow", staw=(zn * 0.24, 0.95, z), czesc=(0.2, 0.95, 0.2),
+                   srodek=(0, -0.47, 0))
+    p.kosc("Poroze", "Glowa", staw=(0, gy + gh / 2 - 0.08, gz - 0.05), czesc=(1.2, 1.0, 0.3), srodek=(0, 0.45, 0))
+    p.kosc("Ogonek", "Tulow", staw=(0, 1.4, -0.74), czesc=(0.22, 0.34, 0.16), srodek=(0, 0.1, -0.05))
 
-    # ------------------------------------------------------------------ tułów
-    with p.na("Tulow", od="srodek"):
-        w, h, d = TULOW
-        p.blok("Tulow", (0, 0, 0), TULOW, "siersc", faza=0.12)
-        p.blok("Brzuch", (0, -h / 2 - 0.02, 0.05), (0.66, 0.06, 1.1), "krem", "matowy", faza=0.02)
-        p.blok("Piers", (0, -0.05, d / 2 + 0.02), (0.6, 0.5, 0.06), "krem", "matowy", faza=0.03)
-        for x, z in ((0.2, 0.35), (-0.18, 0.05), (0.15, -0.3), (-0.22, -0.55)):
-            p.blok("Cetka", (x, h / 2 + 0.02, z), (0.17, 0.04, 0.17), "cetka", "matowy", faza=0.0)
+    # ------------------------------------------------------------------ tułów: kremowa pierś, białe cętki na grzbiecie
+    with model(p, "Tulow"):
+        p.kula("Tulow", (tx, ty, tz), (tw, th, td), "siersc", segm=20)
+        p.kula("Piers", *lata(TULOW, (0, -0.45, 1), 0.3, s=0.12), "krem", "matowy", segm=20)
+        for x, y, zn in ((0.2, 1.47, 1), (-0.22, 1.45, -1), (0.26, 1.4, -1), (-0.1, 1.52, 1)):
+            naklejka(p, "Cetka", TULOW, x, y, (0.14, 0.1, 0.03), "cetka", z_znak=zn)
 
-    # ------------------------------------------------------------------ szyja z wiankiem i klejnotem
-    with p.na("Szyja", od="srodek"):
-        p.blok("Szyja", (0, 0, 0), (0.42, 0.75, 0.42), "siersc", rot=(18, 0, 0), faza=0.08)
-        p.blok("Wianek", (0, -0.22, 0.02), (0.58, 0.16, 0.56), "lisc", "matowy", faza=0.04)
-        p.blok("Klejnot", (0, -0.28, 0.32), (0.18, 0.18, 0.08), "klejnot", "swiecacy", rot=(0, 0, 45), faza=0.0)
+    # ------------------------------------------------------------------ krótka szyja z wiankiem i klejnotem
+    with model(p, "Szyja"):
+        p.walec("Szyja", (0, 1.62, 0.38), (0.42, 0.5, 0.42), "siersc", rot=(15, 0, 0), segm=12, faza=0.04)
+        p.kula("Wianek", (0, 1.56, 0.42), (0.78, 0.22, 0.74), "lisc", "matowy", segm=16)
+        for kat in (-50, 50, 180):
+            a = math.radians(kat)
+            p.kula("Wianek lisc", (0.34 * math.sin(a), 1.53, 0.42 + 0.32 * math.cos(a)), (0.24, 0.12, 0.4),
+                   "lisc_ciemny", "matowy", rot=(0, kat + 60, 0), segm=10)
+        p.blok("Klejnot", (0, 1.44, 0.8), (0.21, 0.21, 0.11), "klejnot", "swiecacy", rot=(0, 0, 45), faza=0.02)
 
-    # ------------------------------------------------------------------ głowa
-    with p.na("Glowa", od="srodek"):
-        w, h, d = 0.82, 0.74, 0.84
-        z = d / 2
-        p.blok("Glowa", (0, 0, 0), (w, h, d), "siersc", faza=0.12)
-        p.blok("Pyszczek", (0, -0.18, z + 0.16), (0.4, 0.3, 0.42), "krem", "matowy", faza=0.06)
-        p.blok("Nos", (0, -0.08, z + 0.38), (0.16, 0.11, 0.06), "nos", "polysk", faza=0.03)
-        oczy(p, 0.22, 0.1, z, szer=0.2, wys=0.27)
+    # ------------------------------------------------------------------ głowa: kremowa maska, nosek, oczy
+    with model(p, "Glowa"):
+        p.kula("Glowa", (gx, gy, gz), (gw, gh, gd), "siersc", segm=22)
+        MASKA = lata(GLOWA, (0, -0.25, 1), 0.3, s=0.12)
+        p.kula("Maska", *MASKA, "krem", "matowy", segm=22)
+        PYSK = ((0, gy - 0.2, gz + 0.52), (0.4, 0.28, 0.3))
+        p.kula("Pyszczek", *PYSK, "krem", "matowy", segm=14)
+        p.kula("Nos", (0, gy - 0.13, gz + 0.66), (0.16, 0.11, 0.09), "nos", "polysk", segm=10)
+        for zn in (1, -1):
+            naklejka(p, "Buzia", PYSK, zn * 0.045, gy - 0.27, (0.08, 0.025, 0.025), "nos", ksztalt="blok",
+                     obrot=zn * 25)
+        oczy_okragle(p, MASKA, 0.25, gy + 0.05, szer=0.18, wys=0.23, kolor="oko", grub=0.07, blysk_maly=False)
 
+    # ------------------------------------------------------------------ duże uszy na boki z różowym środkiem
     for s, zn in (("L", 1), ("P", -1)):
-        with p.na("Ucho" + s, od="srodek"):
-            p.blok("Ucho", (zn * 0.04, 0, 0), (0.6, 0.24, 0.34), "siersc_ciemna", rot=(0, 0, zn * 18), faza=0.05)
-            p.blok("Ucho srodek", (zn * 0.06, 0.01, 0.15), (0.42, 0.13, 0.06), "ucho_srodek", "matowy",
-                   rot=(0, 0, zn * 18), faza=0.0)
+        with p.na("Ucho" + s, od="staw"), p.uklad(obrot=(0, -zn * 15, zn * 14)):
+            p.kula("Ucho", (zn * 0.32, 0, 0), (0.66, 0.3, 0.12), "siersc", segm=12)
+            p.kula("Ucho srodek", (zn * 0.34, 0, 0.045), (0.46, 0.17, 0.05), "ucho_srodek", "matowy", segm=10)
 
     # ------------------------------------------------------------------ kryształowe poroże z kwiatkami
     with p.na("Poroze", od="staw"):
         for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Poroze " + s, (zn * 0.2, 0.28, 0), (0.12, 0.62, 0.12), "kryszt", "polysk", rot=(0, 0, -zn * 26),
-                   faza=0.0)
-            p.blok("Odnoga gorna " + s, (zn * 0.42, 0.72, 0), (0.1, 0.46, 0.1), "kryszt", "polysk",
-                   rot=(0, 0, zn * 8), faza=0.0)
-            p.blok("Odnoga boczna " + s, (zn * 0.55, 0.4, 0), (0.1, 0.34, 0.1), "kryszt", "polysk",
-                   rot=(0, 0, -zn * 62), faza=0.0)
-            p.blok("Krysztal " + s, (zn * 0.44, 1.0, 0), (0.2, 0.26, 0.2), "kryszt_ciemny", "swiecacy",
-                   rot=(0, 45, 0), faza=0.03)
-            p.blok("Kwiatek " + s, (zn * 0.27, 0.42, 0.08), (0.18, 0.18, 0.08), "kwiat", "matowy", rot=(0, 0, 45),
-                   faza=0.0)
-            p.blok("Listek " + s, (zn * 0.12, 0.12, 0.04), (0.26, 0.06, 0.14), "lisc", "matowy",
-                   rot=(0, zn * 20, zn * 30), faza=0.0)
+            with p.uklad(pos=(zn * 0.24, 0, 0), obrot=(-10, 0, -zn * 22)):
+                p.blok("Poroze " + s, (0, 0.4, 0), (0.2, 0.82, 0.2), "kryszt", "polysk", rot=(0, 45, 0), faza=0.04)
+                with p.uklad(pos=(0, 0.42, 0), obrot=(0, 0, zn * 44)):
+                    p.blok("Odnoga " + s, (0, 0.22, 0), (0.16, 0.46, 0.16), "kryszt", "polysk", rot=(0, 45, 0),
+                           faza=0.03)
+                with p.uklad(pos=(0, 0.2, 0), obrot=(0, 0, -zn * 50)):       # druga, niższa odnoga na zewnątrz
+                    p.blok("Odnoga " + s, (0, 0.17, 0), (0.14, 0.36, 0.14), "kryszt", "polysk", rot=(0, 45, 0),
+                           faza=0.03)
+                p.blok("Krysztal " + s, (0, 0.92, 0), (0.22, 0.3, 0.22), "kryszt_ciemny", "swiecacy",
+                       rot=(0, 45, 0), faza=0.03)
+                p.kula("Kwiatek " + s, (zn * 0.04, 0.32, 0.12), (0.22, 0.22, 0.07), "kwiat", "matowy", segm=10)
 
-    # ------------------------------------------------------------------ nogi ze złotymi kopytkami
+    # ------------------------------------------------------------------ smukłe nogi ze złotymi dolnymi częściami
     for s in ("L", "P"):
         for przod, _z in NOGI:
-            with p.na("Noga%s%s" % (przod, s), od="srodek"):
-                p.blok("Noga", (0, 0.06, 0), (0.2, 0.88, 0.22), "siersc" if przod == "Przod" else "siersc_ciemna",
-                       faza=0.04)
-                p.blok("Kopytko", (0, -0.42, 0.02), (0.25, 0.16, 0.29), "kopyto", "metal", faza=0.03)
+            with p.na("Noga%s%s" % (przod, s), od="staw"):
+                p.walec("Noga", (0, -0.27, 0), (0.2, 0.56, 0.2), "siersc" if przod == "Przod" else "siersc_ciemna",
+                        segm=12, faza=0.03)
+                p.walec("Kopytko", (0, -0.74, 0.01), (0.22, 0.42, 0.22), "kopyto", "metal", segm=12, faza=0.03)
 
-    with p.na("Ogonek", od="srodek"):
-        p.blok("Ogonek", (0, 0, 0), (0.26, 0.32, 0.16), "cetka", "matowy", rot=(-25, 0, 0), faza=0.05)
+    with p.na("Ogonek", od="staw"):
+        p.kula("Ogonek", (0, 0.1, -0.05), (0.22, 0.34, 0.16), "cetka", "matowy", rot=(-30, 0, 0), segm=10)
 
     p.zaczep("RootAttachment", "Tulow", (0, -Y_TULOWIA, 0))
-    p.zaczep("GlowaAttachment", "Poroze", (0, 1.25, 0))
+    p.zaczep("GlowaAttachment", "Poroze", (0, 1.2, 0))
     _klipy(p)
     p.ustaw_poze_renderu("spoczynek", 14)
     return p
@@ -108,7 +121,8 @@ def zbuduj():
 SLABOSCI = [
     "Świecą kryształy na końcach poroża i klejnot (Neon w Roblox); gałęzie poroża są błyszczące, nie świecące — "
     "w grze cały Neon zlewał się z bliska w jedną cyjanową plamę (próba 17.11).",
-    "Nogi bez kolan (jedna bryła) — stęp to wymach całych nóg.",
+    "Poroże ma po jednej odnodze na stronę (rysunek: dwie–trzy) i po jednym kwiatku — limit 45 części peta w grze.",
+    "Nogi bez kolan (jedna bryła na kość) — stęp to wymach całych nóg; złota dolna część to osobny walec.",
 ]
 
 

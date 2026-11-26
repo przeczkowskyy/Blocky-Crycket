@@ -254,6 +254,22 @@ def czysty_wydatek(D, info):
     return {"ile": int(ile), "zrodlo": info["zrodlo"], "cel": info["cel"]}, "ok"
 
 
+def czysty_przychod(D, info):
+    """Sygnał Pety "przychod" (25.11.2026, zagroda petów): {ile, zrodlo, cel} → kopia albo (None, powód). Bez zaufania
+    do wołającego: kwota całkowita 1..kwota_maks, źródło z listy D["przychody"]["zrodla"], cel = nazwa z liter, cyfr
+    i „_”."""
+    if not isinstance(info, dict):
+        return None, "zly_przychod"
+    ile = info.get("ile")
+    if not _calkowita(ile, D["przychody"]["kwota_maks"]) or ile < 1:
+        return None, "zla_kwota"
+    if not isinstance(info.get("zrodlo"), str) or info["zrodlo"] not in D["przychody"]["zrodla"]:
+        return None, "zle_zrodlo"
+    if not nazwa_ok(D, info.get("cel")):
+        return None, "zly_cel"
+    return {"ile": int(ile), "zrodlo": info["zrodlo"], "cel": info["cel"]}, "ok"
+
+
 def wydaj(D, zloto, ile):
     """Złoto gracza (atrybut Gold — może nie być liczbą) minus kwota → (Złoto po, brakuje). Nigdy poniżej zera: gdy
     Złota za mało, zostaje bez zmian, a brakuje > 0. Ułamki Złota obcinamy (atrybut jest całkowity)."""

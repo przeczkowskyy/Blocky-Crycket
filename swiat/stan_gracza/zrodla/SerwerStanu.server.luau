@@ -69,6 +69,8 @@
 		Pety:Invoke("kup", gracz, { ile, zrodlo, cel, pet, premia = { zloto, doswiadczenie } }) → jak WydajZloto
 		                  + pet, nowy, kopie, aktywny | ("aktywny", gracz, { pet, premia } | { odstaw = true })
 		                  → { ok, aktywny } | ("stan", gracz) → { ok, kopie, aktywny, premia, wydatki, zloto }
+		                  | ("przychod", gracz, { ile, zrodlo, cel }) → { ok, zloto, ile } — 25.11.2026: Rybki
+		                  spoza walki (zagroda petów; źródło z listy D.przychody.zrodla, dopisane jak łup, bez premii)
 	Zdalne/ZdarzeniaStanu (RemoteEvent): serwer → klient "awans", poziom, ile; "premia", zloto, doswiadczenie, pet
 	(dodatek peta w pokazanym łupie); "przegrana", kara, doswiadczenie (kara za przegraną w pokazanym łupie);
 	klient → serwer "pokaz" (bez liczb; najwyżej raz na D.publikacja.odstep_pokaz_s —
@@ -850,6 +852,19 @@ local function pety(polecenie: any, gracz: any, info: any)
 		end
 		publikujPety(gracz)
 		return { ok = true, aktywny = p.pety.aktywny }
+	elseif polecenie == "przychod" then
+		-- Rybki spoza walki (25.11.2026, swiat/pety_proba — pety stojące w zagrodzie; kwotę liczy serwer petów co kilka
+		-- sekund): kwota i źródło sprawdzone (D.przychody), dopisane do atrybutu Złota jak łup — bez premii z
+		-- modyfikatorów, bez kary i bez licznika walk; profil od razu (zapis postępu bierze p.zloto)
+		local w, powod = L.czystyPrzychod(D, info)
+		if not w then
+			return { ok = false, powod = powod }
+		end
+		dopisz(gracz, A.zloto, w.ile)
+		p.zloto = liczba(gracz, A.zloto, 0)
+		dolicz("LicznikPrzychodow")
+		kontener:SetAttribute("OstatniPrzychod", string.format("%s:%s:%s:+%dz", gracz.Name, w.zrodlo, w.cel, w.ile))
+		return { ok = true, zloto = p.zloto, ile = w.ile }
 	end
 	return { ok = false, powod = "nieznane_polecenie" }
 end

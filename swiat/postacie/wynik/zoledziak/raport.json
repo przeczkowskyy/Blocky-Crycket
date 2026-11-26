@@ -9,178 +9,178 @@
     {
      "nazwa": "Tulow_Geo",
      "kosc": "Tulow",
-     "trojkaty": 280,
-     "wierzcholki": 160,
+     "trojkaty": 2532,
+     "wierzcholki": 1294,
      "wymiary": [
-      1.2,
-      1.29,
-      1.19
+      1.0,
+      1.49,
+      0.927
      ],
      "min": [
-      -0.6,
-      0.01,
-      -0.55
+      -0.5,
+      0.06,
+      -0.46
      ],
      "max": [
-      0.6,
-      1.3,
-      0.64
+      0.5,
+      1.55,
+      0.467
      ]
     },
     {
      "nazwa": "Czapka_Geo",
      "kosc": "Czapka",
-     "trojkaty": 308,
-     "wierzcholki": 184,
+     "trojkaty": 1636,
+     "wierzcholki": 832,
      "wymiary": [
-      1.56,
-      0.61,
-      1.46
+      1.24,
+      0.672,
+      1.447
      ],
      "min": [
-      -0.78,
-      1.17,
-      -0.71
+      -0.62,
+      1.234,
+      -0.62
      ],
      "max": [
-      0.78,
-      1.78,
-      0.75
+      0.62,
+      1.906,
+      0.827
      ]
     },
     {
      "nazwa": "Ogonek_Geo",
      "kosc": "Ogonek",
-     "trojkaty": 56,
-     "wierzcholki": 32,
+     "trojkaty": 208,
+     "wierzcholki": 110,
      "wymiary": [
-      0.68,
-      0.486,
-      0.468
+      0.482,
+      0.392,
+      0.172
      ],
      "min": [
-      -0.106,
-      1.613,
-      -0.234
+      -0.079,
+      1.836,
+      -0.08
      ],
      "max": [
-      0.574,
-      2.099,
-      0.234
+      0.403,
+      2.228,
+      0.092
      ]
     },
     {
      "nazwa": "RekaL_Geo",
      "kosc": "RekaL",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 68,
+     "wierzcholki": 40,
      "wymiary": [
-      0.272,
-      0.438,
-      0.14
+      0.391,
+      0.419,
+      0.076
      ],
      "min": [
-      0.554,
-      0.421,
-      -0.02
+      0.429,
+      0.451,
+      -0.018
      ],
      "max": [
-      0.826,
-      0.859,
-      0.12
+      0.82,
+      0.87,
+      0.058
      ]
     },
     {
      "nazwa": "NogaL_Geo",
      "kosc": "NogaL",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 108,
+     "wierzcholki": 56,
      "wymiary": [
-      0.36,
-      0.24,
-      0.46
+      0.2,
+      0.33,
+      0.206
      ],
      "min": [
-      0.12,
+      0.11,
       0.0,
-      -0.17
+      -0.083
      ],
      "max": [
-      0.48,
-      0.24,
-      0.29
+      0.31,
+      0.33,
+      0.123
      ]
     },
     {
      "nazwa": "RekaP_Geo",
      "kosc": "RekaP",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 68,
+     "wierzcholki": 40,
      "wymiary": [
-      0.272,
-      0.438,
-      0.14
+      0.391,
+      0.419,
+      0.076
      ],
      "min": [
-      -0.826,
-      0.421,
-      -0.02
+      -0.82,
+      0.451,
+      -0.018
      ],
      "max": [
-      -0.554,
-      0.859,
-      0.12
+      -0.429,
+      0.87,
+      0.058
      ]
     },
     {
      "nazwa": "NogaP_Geo",
      "kosc": "NogaP",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 108,
+     "wierzcholki": 56,
      "wymiary": [
-      0.36,
-      0.24,
-      0.46
+      0.2,
+      0.33,
+      0.206
      ],
      "min": [
-      -0.48,
+      -0.31,
       0.0,
-      -0.17
+      -0.083
      ],
      "max": [
-      -0.12,
-      0.24,
-      0.29
+      -0.11,
+      0.33,
+      0.123
      ]
     }
    ],
-   "trojkaty_razem": 820,
+   "trojkaty_razem": 4728,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 11
+    "kolory_materialy": 13
    },
    "typ": "stwor",
    "skala": 1.0,
    "wymiary_ciala": [
-    1.652,
-    2.099,
-    1.46
+    1.64,
+    2.228,
+    1.447
    ],
    "wymiary_z_akcesoriami": [
-    1.652,
-    2.099,
-    1.46
+    1.64,
+    2.228,
+    1.447
    ],
    "zakres_z_akcesoriami": [
     [
-     -0.826,
+     -0.82,
      0.0,
-     -0.71
+     -0.62
     ],
     [
-     0.826,
-     2.099,
-     0.75
+     0.82,
+     2.228,
+     0.827
     ]
    ],
    "kosci": [
@@ -237,11 +237,11 @@
  ],
  "uwagi_podgladu": [],
  "kontrola": [
-  "zoledziak.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje brak -> ZGODNE",
-  "zoledziak__spoczynek.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje zoledziak|Scene 1-61 -> ZGODNE",
-  "zoledziak__chod.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje zoledziak|Scene 1-21 -> ZGODNE",
-  "zoledziak__radosc.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje zoledziak|Scene 1-37 -> ZGODNE",
-  "zoledziak__wyklucie.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje zoledziak|Scene 1-31 -> ZGODNE",
-  "zoledziak.glb: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+  "zoledziak.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje brak -> ZGODNE",
+  "zoledziak__spoczynek.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje zoledziak|Scene 1-61 -> ZGODNE",
+  "zoledziak__chod.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje zoledziak|Scene 1-21 -> ZGODNE",
+  "zoledziak__radosc.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje zoledziak|Scene 1-37 -> ZGODNE",
+  "zoledziak__wyklucie.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje zoledziak|Scene 1-31 -> ZGODNE",
+  "zoledziak.glb: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
  ]
 }

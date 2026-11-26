@@ -262,6 +262,35 @@ def nazwa_rigu(model_id, U=None):
 
 
 # ------------------------------------------------------------------------------------------------ dane
+def stawki_zagrody(U, jajko_peta):
+    """Zagroda petów (25.11.2026, propozycja — LICZBY ROBOCZE): Rybki na sekundę każdego peta stojącego w zagrodzie =
+    stawka rzadkości (zagroda.stawki_s) × mnożnik jajka biomu (zagroda.mnozniki_jajek; las 1, Bagno 2,5, Dżungla 4,5 —
+    jak ceny jajek 300 / 750 / 1350); pole `rybki_s` w pecie w ustawieniach nadpisuje wzór. Sprawdza też poziomy zagrody
+    (miejsca rosną, pierwszy poziom za darmo, ceny całkowite)."""
+    Z = U["zagroda"]
+    poz = Z["poziomy"]
+    if not poz or poz[0]["cena"] != 0:
+        raise BladDanych("zagroda.poziomy: pierwszy poziom musi być za darmo")
+    for a, b in zip(poz, poz[1:]):
+        if not (isinstance(b["miejsc"], int) and b["miejsc"] > a["miejsc"] and isinstance(b["cena"], int) and b["cena"] > 0):
+            raise BladDanych("zagroda.poziomy: miejsca muszą rosnąć, ceny być całkowite > 0 (%s → %s)" % (a, b))
+    if not 1 <= Z["tik_s"] <= Z["tik_maks_s"] <= 60:
+        raise BladDanych("zagroda: 1 <= tik_s <= tik_maks_s <= 60")
+    w = {}
+    for p in U["pety"]:
+        if "rybki_s" in p:
+            v = p["rybki_s"]
+        else:
+            if p["rzadkosc"] not in Z["stawki_s"] or jajko_peta[p["id"]] not in Z["mnozniki_jajek"]:
+                raise BladDanych("pet %s: brak stawki rzadkości albo mnożnika jajka w zagroda" % p["id"])
+            v = Z["stawki_s"][p["rzadkosc"]] * Z["mnozniki_jajek"][jajko_peta[p["id"]]]
+        v = round(float(v), 4)
+        if not 0 <= v <= 10:
+            raise BladDanych("pet %s: Rybki na sekundę %s poza 0..10" % (p["id"], v))
+        w[p["id"]] = v
+    return w
+
+
 def podstawa():
     U = ustawienia()
     rz = {r["id"]: r for r in U["rzadkosci"]}
@@ -278,12 +307,13 @@ def podstawa():
     for j, ju in zip(jajka, U["jajka"]):
         j["stale"], j["y_jajka"] = inkubator_jajka(U, ju)
     jajko_peta = {pid: j["id"] for j in jajka for pid in j["pula"]}
+    stawki = stawki_zagrody(U, jajko_peta)
     D = {
         "wersja": 2,
         "kontener": U["kontener"],
         "prefiks": U["prefiks"],
         "rzadkosci": U["rzadkosci"],
-        "pety": [dict(p, jajko=jajko_peta[p["id"]]) for p in U["pety"]],
+        "pety": [dict(p, jajko=jajko_peta[p["id"]], rybki_s=stawki[p["id"]]) for p in U["pety"]],
         "jajka": jajka,
         "licznik_ceny": {"tryb": LC["tryb"]},
         "zywioly": {k: {kk: z[kk] for kk in ("nazwa", "opis", "pasywki", "zaklecie") if kk in z}

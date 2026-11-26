@@ -1,8 +1,8 @@
 RAPORT — swietlikowka
-ŚWIETLIKÓWKA — pet epicki z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+ŚWIETLIKÓWKA — pet epicki z leśnego jajka (próba swiat/pety_proba; status: propozycja).
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/swietlikowka.py · wygenerowano 17.11.2026 poleceniem:
+Źródło: swiat/postacie/swietlikowka.py · wygenerowano 25.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py swietlikowka
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 
@@ -13,13 +13,16 @@ PODSUMOWANIE
 - ostrzeżenia z raportu: 0; uwagi podglądu: 6
 
 ZNANE SŁABOŚCI
-- Świecenie (oczy, brzuszek, świetliki) w Roblox to materiał Neon; poświata dookoła — PointLight w grze.
-- Skrzydła to płaskie klocki przy bokach — przy machaniu nie mają rozłożonych lotek.
+- Na arkuszu nie ma widoku z boku: bok jest dorobiony z widoku 3/4 (skrzydło, latarenka, głowa-kostka).
+- Mina „oczy zamknięte” z arkusza nie jest odwzorowana — model ma jedną minę (oczy otwarte, świecące).
+- Świecenie (oczy, latarenka, świetliki) w Roblox to materiał Neon; poświata dookoła — PointLight w grze.
+- Głowa to klocek z fazą — w Blenderze zaokrąglony, w Roblox (Part) ma ostre krawędzie.
+- Latarenka jest przyczepiona do tułowia (bez własnej kości) — nie kołysze się.
 - Uwaga raportu „pętla skoczy” przy kościach świetlików jest oczekiwana: obrót 0° → 360° to ta sama poza.
 
 MODEL swietlikowka „Świetlikówka” (stwor)
-  wymiary ciała: 2,32 × 2,67 × 2,16; z akcesoriami: 2,32 × 2,67 × 2,16
-  trójkąty: 1012 (siatek: 9)
+  wymiary ciała: 2,50 × 2,71 × 2,09; z akcesoriami: 2,50 × 2,71 × 2,09
+  trójkąty: 4828 (siatek: 9)
   kości (10): Root, Tulow, Glowa, PiorkoL, SkrzydloL, PiorkoP, SkrzydloP, Swietlik1, Swietlik2, Swietlik3
   klipy: spoczynek 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
   punkty zaczepienia: RootAttachment, GlowaAttachment
@@ -33,12 +36,12 @@ UWAGI PODGLĄDU
 - klip spoczynek: Swietlik3.obrot — klatka 0 ≠ klatka 60, pętla skoczy
 
 KONTROLA EKSPORTÓW
-- swietlikowka.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje brak -> ZGODNE
-- swietlikowka__spoczynek.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-61 -> ZGODNE
-- swietlikowka__chod.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-25 -> ZGODNE
-- swietlikowka__radosc.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-37 -> ZGODNE
-- swietlikowka__wyklucie.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-31 -> ZGODNE
-- swietlikowka.glb: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+- swietlikowka.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje brak -> ZGODNE
+- swietlikowka__spoczynek.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje swietlikowka|Scene 1-61 -> ZGODNE
+- swietlikowka__chod.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje swietlikowka|Scene 1-25 -> ZGODNE
+- swietlikowka__radosc.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje swietlikowka|Scene 1-37 -> ZGODNE
+- swietlikowka__wyklucie.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje swietlikowka|Scene 1-31 -> ZGODNE
+- swietlikowka.glb: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
 
 PLIKI
 - swietlikowka.blend

@@ -13,12 +13,17 @@
 		   za nim płynnie (wygładzanie, grunt z promienia w dół, bez kolizji), chód / spoczynek / radość przy skoku.
 		   Znika w walce, przelocie, chmurach, mini-grze i przy wyborze klasy: u siebie od razu (wtedy też wszystkie
 		   cudze — nie wchodzą w kadr walki), a innym przez "czekaj" do serwera (atrybut gracza).
-		4. Zagroda w bazarze: posiadane pety na sześciu miejscach (najrzadsze najpierw; lokalnie, tylko u tego gracza),
+		4. Zagroda w bazarze: pety STOJĄCE w zagrodzie (lista od serwera — wybór gracza albo najrzadsze, tyle, ile miejsc
+		   ma poziom zagrody; 25.11.2026) na miejscach z mapy (tyle, ile znaczników zagroda_miejsce_N — dziś 6 albo 8;
+		   pety ponad liczbę znaczników dają Rybki bez modelu), lokalnie, tylko u tego gracza; napis „+N Rybek” nad
+		   zagrodą, gdy serwer dopisze Rybki (tylko gdy gracz jest blisko); w oknie wiersz zagrody (miejsca, Rybki na
+		   minutę, „Więcej miejsc” za Rybki, „Najrzadsze”) i przy każdym pecie „Do zagrody” / „Z zagrody”;
 		   tablica „TWOJE PETY · PRÓBA” w dwóch kolumnach (jajko po jajku) z liczbą kopii (= shardy peta, D-058), okno
 		   wyboru aktywnego peta „PRÓBA” (przewijane, podzielone na jajka) — otwiera je E opiekunki
 		   (ReplicatedStorage.OknoMiejsca, id zagrody — pakiet swiat/miasteczko_bazar_gra) albo zapasowe E tablicy.
 		5. Premia peta przy łupie: komunikat "premia" od StanGracza → krótki napis „+N Złota od peta: …”.
-	Haczyk testowy: Sygnaly/SterowanieKlienta ("stan" | "okno" | "zamknij" | "wybierz", id | "wyklucie", pet, nowy,
+	Haczyk testowy: Sygnaly/SterowanieKlienta ("stan" | "okno" | "zamknij" | "wybierz", id | "do_zagrody", id
+	| "z_zagrody", id | "ulepsz" | "najrzadsze" (jak przyciski okna, 25.11.2026) | "wyklucie", pet, nowy,
 	jajko? | "pokaz", pet, Vector3 | "pokaz_usun").
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -637,28 +642,53 @@ local function usunPetyZagrody()
 	end
 end
 
+-- pety stojące w zagrodzie (od serwera: lista.zagroda.stoja); starszy serwer bez zagrody — wszystkie poza aktywnym
+local function stojaWZagrodzie(): { [string]: boolean }?
+	local z = wierszeZagrody and wierszeZagrody.zagroda
+	if type(z) ~= "table" or type(z.stoja) ~= "table" then
+		return nil
+	end
+	local w = {}
+	for _, id in z.stoja do
+		w[id] = true
+	end
+	return w
+end
+
 local function ustawPetyZagrody()
 	usunPetyZagrody()
 	if not bliskoZagrody or not wierszeZagrody or not wierszeZagrody.wiersze then
 		return
 	end
-	local miejsca = D.polozenia.miejsca_petow
+	local miejsca = D.polozenia.miejsca_petow -- tyle miejsc, ile znaczników zagroda_miejsce_N na mapie (6 albo 8)
 	local e = v3(D.polozenia.zagroda_e)
-	-- na sześciu miejscach najrzadsze pety (przy dziesięciu petach z dwóch jajek nie wszystkie się zmieszczą)
+	-- na miejscach pety, które STOJĄ w zagrodzie (dają Rybki), w kolejności od serwera; bez listy — najrzadsze
+	local stoja = stojaWZagrodzie()
 	local kolejka = {}
-	for _, w in wierszeZagrody.wiersze do
-		if not w.aktywny then
-			table.insert(kolejka, w)
+	if stoja then
+		local z = wierszeZagrody.zagroda
+		for _, id in z.stoja do
+			for _, w in wierszeZagrody.wiersze do
+				if w.pet == id then
+					table.insert(kolejka, w)
+				end
+			end
 		end
+	else
+		for _, w in wierszeZagrody.wiersze do
+			if not w.aktywny then
+				table.insert(kolejka, w)
+			end
+		end
+		local nrRz = {}
+		for _, w in kolejka do
+			local _r, nr = rzadkoscPeta(w.pet)
+			nrRz[w.pet] = nr
+		end
+		table.sort(kolejka, function(a, b)
+			return nrRz[a.pet] > nrRz[b.pet]
+		end)
 	end
-	local nrRz = {}
-	for _, w in kolejka do
-		local _r, nr = rzadkoscPeta(w.pet)
-		nrRz[w.pet] = nr
-	end
-	table.sort(kolejka, function(a, b)
-		return nrRz[a.pet] > nrRz[b.pet]
-	end)
 	local i = 0
 	for _, w in kolejka do
 		if i < #miejsca then
@@ -696,6 +726,67 @@ local function ustawPetyZagrody()
 			end
 		end
 	end
+end
+
+-- napis „+N Rybek” nad zagrodą, gdy serwer dopisze Rybki za pety w zagrodzie (tylko gdy gracz jest blisko)
+local kotwicaPlus: BasePart? = nil
+local plusow, ostatniPlus = 0, nil -- do próby w Play (haczyk "stan")
+local function plusZagrody(ile: any)
+	if type(ile) ~= "number" or ile < 1 then
+		return
+	end
+	plusow += 1
+	ostatniPlus = ile
+	if not bliskoZagrody then
+		return
+	end
+	if not kotwicaPlus then
+		local srodek = Vector3.new(0, 0, 0)
+		local miejsca = D.polozenia.miejsca_petow
+		for _, m in miejsca do
+			srodek += v3(m)
+		end
+		srodek = if #miejsca > 0 then srodek / #miejsca else v3(D.polozenia.zagroda_e)
+		local k = Instance.new("Part")
+		k.Name = "PlusZagrody"
+		k.Anchored = true
+		k.CanCollide = false
+		k.CanQuery = false
+		k.CanTouch = false
+		k.Transparency = 1
+		k.Size = Vector3.new(0.2, 0.2, 0.2)
+		k.Position = srodek + Vector3.new(0, 4.5, 0)
+		k.Parent = lokalne
+		kotwicaPlus = k
+	end
+	local napis = Instance.new("BillboardGui")
+	napis.Name = "Plus"
+	napis.Adornee = kotwicaPlus
+	napis.LightInfluence = 0
+	napis.MaxDistance = D.zagroda.zasieg_pokazu
+	napis.Size = UDim2.fromOffset(170, 40)
+	napis.StudsOffsetWorldSpace = Vector3.new(0, 0, 0)
+	napis.Parent = lokalne
+	local t = Instance.new("TextLabel")
+	t.BackgroundTransparency = 1
+	t.Size = UDim2.fromScale(1, 1)
+	t.Font = CZCIONKA_TYTULU
+	t.TextScaled = true
+	t.TextColor3 = kolor("FFD54A")
+	t.TextStrokeTransparency = 0.2
+	-- odmiana (26.11): 1 Rybka, 2–4 / 22–24… Rybki, reszta Rybek
+	local d, s = ile % 10, ile % 100
+	local wzor = if ile == 1 then T.plus_1 elseif d >= 2 and d <= 4 and (s < 12 or s > 14) then T.plus_2_4 else T.plus
+	t.Text = string.format(wzor or T.plus, ile)
+	t.Parent = napis
+	local czas = D.zagroda.plus_s
+	TweenService:Create(napis, TweenInfo.new(czas, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ StudsOffsetWorldSpace = Vector3.new(0, 2.5, 0) }):Play()
+	TweenService:Create(t, TweenInfo.new(czas, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+		{ TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+	task.delay(czas + 0.1, function()
+		napis:Destroy()
+	end)
 end
 
 -- tablica przy zagrodzie: SurfaceGui u tego gracza na części Zagroda/Tablica — kolumna na każde jajko
@@ -915,6 +1006,72 @@ local function rysujOkno()
 	odstawBtn.Visible = wierszeZagrody.aktywny ~= nil
 	local kolejnosc = 0
 	local ostatnieJajko = nil
+	-- wiersz zagrody (25.11.2026): ile miejsc zajętych, Rybki na minutę, więcej miejsc za Rybki, „Najrzadsze”
+	local z = wierszeZagrody.zagroda
+	local stoja = stojaWZagrodzie() or {}
+	if type(z) == "table" then
+		kolejnosc += 1
+		local f = Instance.new("Frame")
+		f.Name = "Zagroda"
+		f.LayoutOrder = kolejnosc
+		f.Size = UDim2.new(1, -10, 0, 92)
+		f.BackgroundColor3 = kolor("2F4A2A")
+		f.Parent = przewijane
+		local r = Instance.new("UICorner")
+		r.CornerRadius = UDim.new(0, 10)
+		r.Parent = f
+		local t = Instance.new("TextLabel")
+		t.Name = "Stan"
+		t.BackgroundTransparency = 1
+		t.Position = UDim2.new(0, 12, 0, 4)
+		t.Size = UDim2.new(1, -24, 0, 36)
+		t.Font = CZCIONKA_TYTULU
+		t.TextScaled = true
+		t.TextXAlignment = Enum.TextXAlignment.Left
+		t.TextColor3 = kolor("FFD54A")
+		t.Text = string.format(T.zagroda_stan, #z.stoja, z.miejsc, if #z.stoja > 0 then z.opis else T.przychod_pusta)
+		t.Parent = f
+		local ulepsz = Instance.new("TextButton")
+		ulepsz.Name = "Ulepsz"
+		ulepsz.AnchorPoint = Vector2.new(1, 1)
+		ulepsz.Position = UDim2.new(1, -10, 1, -6)
+		ulepsz.Size = UDim2.new(0.56, 0, 0, 42)
+		ulepsz.BackgroundColor3 = if z.cena then kolor("C98A1E") else kolor("5E5244")
+		ulepsz.AutoButtonColor = z.cena ~= nil
+		ulepsz.Font = CZCIONKA
+		ulepsz.TextScaled = true
+		ulepsz.TextColor3 = kolor("FFFFFF")
+		ulepsz.Text = if z.cena then string.format(T.ulepsz, L.miejscaZagrody(D, z.poziom + 1), z.cena)
+			else string.format(T.ulepsz_max, z.miejsc)
+		ulepsz.Parent = f
+		local ru = Instance.new("UICorner")
+		ru.CornerRadius = UDim.new(0, 10)
+		ru.Parent = ulepsz
+		if z.cena then
+			ulepsz.Activated:Connect(function()
+				zdarzenia:FireServer("ulepsz_zagrode")
+			end)
+		end
+		if z.reczny then
+			local auto = Instance.new("TextButton")
+			auto.Name = "Najrzadsze"
+			auto.AnchorPoint = Vector2.new(0, 1)
+			auto.Position = UDim2.new(0, 12, 1, -6)
+			auto.Size = UDim2.new(0.34, 0, 0, 42)
+			auto.BackgroundColor3 = kolor("5E3A22")
+			auto.Font = CZCIONKA
+			auto.TextScaled = true
+			auto.TextColor3 = kolor("FFF6E0")
+			auto.Text = T.najrzadsze
+			auto.Parent = f
+			local ra = Instance.new("UICorner")
+			ra.CornerRadius = UDim.new(0, 10)
+			ra.Parent = auto
+			auto.Activated:Connect(function()
+				zdarzenia:FireServer("zagroda_auto")
+			end)
+		end
+	end
 	for _, w in wierszeZagrody.wiersze do
 		if w.jajko ~= ostatnieJajko then -- nagłówek jajka (lista jest w kolejności katalogu: jajko po jajku)
 			ostatnieJajko = w.jajko
@@ -950,17 +1107,18 @@ local function rysujOkno()
 		local nazwa = Instance.new("TextLabel")
 		nazwa.BackgroundTransparency = 1
 		nazwa.Position = UDim2.new(0, 20, 0, 4)
-		nazwa.Size = UDim2.new(0.62, -20, 0, 30)
+		nazwa.Size = UDim2.new(0.58, -20, 0, 30)
 		nazwa.Font = CZCIONKA_TYTULU
 		nazwa.TextScaled = true
 		nazwa.TextXAlignment = Enum.TextXAlignment.Left
 		nazwa.TextColor3 = kolor(w.kolor)
 		nazwa.Text = string.format("%s  ×%d", w.nazwa, w.kopie)
+			.. (if stoja[w.pet] then "  ·  " .. string.format(T.w_zagrodzie, L.opisPrzychodu(D, L.stawka(D, w.pet))) else "")
 		nazwa.Parent = f
 		local opis = Instance.new("TextLabel")
 		opis.BackgroundTransparency = 1
 		opis.Position = UDim2.new(0, 20, 0, 35)
-		opis.Size = UDim2.new(0.62, -20, 0, 22)
+		opis.Size = UDim2.new(0.58, -20, 0, 22)
 		opis.Font = CZCIONKA
 		opis.TextScaled = true
 		opis.TextXAlignment = Enum.TextXAlignment.Left
@@ -979,11 +1137,36 @@ local function rysujOkno()
 			t.Text = T.aktywny
 			t.Parent = f
 		else
+			if type(z) == "table" then -- „Do zagrody” / „Z zagrody” (25.11.2026)
+				local wz = stoja[w.pet] == true
+				local bz = Instance.new("TextButton")
+				bz.Name = if wz then "ZZagrody" else "DoZagrody"
+				bz.AnchorPoint = Vector2.new(1, 0.5)
+				bz.Position = UDim2.new(1, -10, 0.5, 0)
+				bz.Size = UDim2.new(0.18, 0, 0, 44)
+				bz.BackgroundColor3 = if wz then kolor("5E3A22") else kolor("2E7D6B")
+				bz.Font = CZCIONKA
+				bz.TextScaled = true
+				bz.TextColor3 = kolor("FFFFFF")
+				bz.Text = if wz then T.z_zagrody else T.do_zagrody
+				bz.Parent = f
+				local rz = Instance.new("UICorner")
+				rz.CornerRadius = UDim.new(0, 10)
+				rz.Parent = bz
+				local idz = w.pet
+				bz.Activated:Connect(function()
+					if wz then
+						zdarzenia:FireServer("zagroda_zdejmij", idz)
+					else
+						zdarzenia:FireServer("zagroda_dodaj", idz)
+					end
+				end)
+			end
 			local b = Instance.new("TextButton")
 			b.Name = "Wybierz"
 			b.AnchorPoint = Vector2.new(1, 0.5)
-			b.Position = UDim2.new(1, -10, 0.5, 0)
-			b.Size = UDim2.new(0.3, 0, 0, 44)
+			b.Position = if type(z) == "table" then UDim2.new(0.82, -16, 0.5, 0) else UDim2.new(1, -10, 0.5, 0)
+			b.Size = if type(z) == "table" then UDim2.new(0.2, 0, 0, 44) else UDim2.new(0.3, 0, 0, 44)
 			b.BackgroundColor3 = kolor("4C8A35")
 			b.Font = CZCIONKA
 			b.TextScaled = true
@@ -1097,6 +1280,12 @@ zdarzenia.OnClientEvent:Connect(function(polecenie: any, a: any, b: any)
 		end
 	elseif polecenie == "okno" then
 		otworzOkno()
+	elseif polecenie == "zagroda_plus" then
+		plusZagrody(a)
+	elseif polecenie == "zagroda_ulepszona" then
+		if type(a) == "number" then
+			komunikat(string.format(T.ulepszona, a), kolor("FFD54A"), 3)
+		end
 	end
 end)
 
@@ -1200,7 +1389,17 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 			jajkoLokalne = jajkaLok[pierwsze] ~= nil, napisy = napisy, akcjeE = akcje, jajekLokalnych = lokalneJajka,
 			wiersze = wierszeZagrody and wierszeZagrody.wiersze and #wierszeZagrody.wiersze, komunikat = pasekKom.Visible
 				and pasekKom.Text or nil,
+			zagroda = wierszeZagrody and wierszeZagrody.zagroda, plusow = plusow, ostatniPlus = ostatniPlus,
+			wierszZagrodyWOknie = przewijane:FindFirstChild("Zagroda") ~= nil, miejscNaMapie = #D.polozenia.miejsca_petow,
 		}
+	elseif polecenie == "do_zagrody" and type(a) == "string" then
+		zdarzenia:FireServer("zagroda_dodaj", a)
+	elseif polecenie == "z_zagrody" and type(a) == "string" then
+		zdarzenia:FireServer("zagroda_zdejmij", a)
+	elseif polecenie == "ulepsz" then
+		zdarzenia:FireServer("ulepsz_zagrode")
+	elseif polecenie == "najrzadsze" then
+		zdarzenia:FireServer("zagroda_auto")
 	elseif polecenie == "okno" then
 		otworzOkno()
 	elseif polecenie == "zamknij" then

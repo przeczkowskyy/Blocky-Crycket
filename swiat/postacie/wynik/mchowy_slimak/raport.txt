@@ -1,8 +1,8 @@
 RAPORT — mchowy_slimak
-MCHOWY ŚLIMAK — pet zwykły z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+MCHOWY ŚLIMAK — pet zwykły z leśnego jajka (próba swiat/pety_proba; status: propozycja).
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/mchowy_slimak.py · wygenerowano 17.11.2026 poleceniem:
+Źródło: swiat/postacie/mchowy_slimak.py · wygenerowano 25.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py mchowy_slimak
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 
@@ -13,23 +13,25 @@ PODSUMOWANIE
 - ostrzeżenia z raportu: 0; uwagi podglądu: 0
 
 ZNANE SŁABOŚCI
+- Na arkuszu nie ma widoku z tyłu: tył (koniec stopy, tylna ściana muszli z mchem) jest dorobiony z boków arkusza.
+- Głowa i muszla to klocki z fazą — w Blenderze zaokrąglone, w Roblox (Part) mają ostre krawędzie.
+- Spirala na muszli to płaskie listewki (po sześć na bok), nie rowek.
 - Stopa jest jedną sztywną bryłą — falowanie przy sunięciu robi przesunięcie kości, nie zginanie.
-- Muszla i stopa to kanciaste klocki; „spirala” jest płaska (kwadraty na bokach).
 
 MODEL mchowy_slimak „Mchowy Ślimak” (stwor)
-  wymiary ciała: 1,32 × 2,13 × 2,56; z akcesoriami: 1,32 × 2,13 × 2,56
-  trójkąty: 796 (siatek: 6)
+  wymiary ciała: 1,16 × 2,30 × 2,68; z akcesoriami: 1,16 × 2,30 × 2,68
+  trójkąty: 4288 (siatek: 6)
   kości (7): Root, Cialo, Glowa, CzulekL, CzulekP, Muszla, Grzybek
   klipy: spoczynek 60 kl. 2,00 s pętla, chod 24 kl. 0,80 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
   punkty zaczepienia: RootAttachment, GlowaAttachment
 
 KONTROLA EKSPORTÓW
-- mchowy_slimak.fbx: siatki 8, kości 7, trójkąty 820, wzrost 2.13 st., akcje brak -> ZGODNE
-- mchowy_slimak__spoczynek.fbx: siatki 8, kości 7, trójkąty 820, wzrost 2.13 st., akcje mchowy_slimak|Scene 1-61 -> ZGODNE
-- mchowy_slimak__chod.fbx: siatki 8, kości 7, trójkąty 820, wzrost 2.13 st., akcje mchowy_slimak|Scene 1-25 -> ZGODNE
-- mchowy_slimak__radosc.fbx: siatki 8, kości 7, trójkąty 820, wzrost 2.13 st., akcje mchowy_slimak|Scene 1-37 -> ZGODNE
-- mchowy_slimak__wyklucie.fbx: siatki 8, kości 7, trójkąty 820, wzrost 2.13 st., akcje mchowy_slimak|Scene 1-31 -> ZGODNE
-- mchowy_slimak.glb: siatki 8, kości 7, trójkąty 820, wzrost 2.13 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+- mchowy_slimak.fbx: siatki 8, kości 7, trójkąty 4312, wzrost 2.30 st., akcje brak -> ZGODNE
+- mchowy_slimak__spoczynek.fbx: siatki 8, kości 7, trójkąty 4312, wzrost 2.30 st., akcje mchowy_slimak|Scene 1-61 -> ZGODNE
+- mchowy_slimak__chod.fbx: siatki 8, kości 7, trójkąty 4312, wzrost 2.30 st., akcje mchowy_slimak|Scene 1-25 -> ZGODNE
+- mchowy_slimak__radosc.fbx: siatki 8, kości 7, trójkąty 4312, wzrost 2.30 st., akcje mchowy_slimak|Scene 1-37 -> ZGODNE
+- mchowy_slimak__wyklucie.fbx: siatki 8, kości 7, trójkąty 4312, wzrost 2.30 st., akcje mchowy_slimak|Scene 1-31 -> ZGODNE
+- mchowy_slimak.glb: siatki 8, kości 7, trójkąty 4312, wzrost 2.30 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
 
 PLIKI
 - mchowy_slimak.blend

@@ -43,9 +43,12 @@ KLASY_GRACZA = {"Warrior": "wojownik", "Scout": "zwiadowca", "Mage": "mag"}
 # (`zbuduj.py --skrypty` wystarcza — DaneStanu to moduł). Nazwy niezbudowanych jeszcze kontenerów nic nie psują.
 #  • BIOMY — kontenery z walkami biomu (kod SerwerPotworow): ich łup przyjmuje Sygnaly/PrzyznajLup i tylko w ich
 #    walkach działa kara za przegraną (tablica próby TestWalki2 łupu nie wysyła);
-#  • WYDATKI — kontenery, które mogą wydawać Złoto gracza (Sygnaly/WydajZloto, Pety "kup").
+#  • WYDATKI — kontenery, które mogą wydawać Złoto gracza (Sygnaly/WydajZloto, Pety "kup");
+#  • PRZYCHODY — kontenery, które mogą DOPISAĆ Złoto (Rybki, D-146) poza walką (Sygnaly/Pety "przychod"; 25.11.2026:
+#    zagroda petów — pety stojące w zagrodzie dają Rybki na sekundę, kwotę liczy serwer petów).
 PAKIETY_BIOMOW = ["LasPotwory", "LasPasGra", "BagnoPasGra", "DzunglaPasGra"]   # 18.11: Dżungla (trzeci biom)
 PAKIETY_WYDATKOW = ["PetyProba", "KowalProba"]                                # 18.11: Kowal (D-102)
+PAKIETY_PRZYCHODOW = ["PetyProba"]                                            # 25.11: zagroda petów (Rybki/s)
 
 # punkty statystyk za poziom (D-097 ✅ 17.11: „5 punktów do rozdania za poziom”). PUNKTY_SAMO_NA_POZIOM = ile
 # punktów na poziom rozdziela się SAMO rozkładem klasy: 5 = wariant b (odstępstwo przyjęte roboczo dla balansu — suma
@@ -206,6 +209,9 @@ def podstawa():
         # wydawanie Złota (Sygnaly/WydajZloto i Sygnaly/Pety "kup", 17.11.2026): kto może wydawać (nazwy kontenerów
         # pakietów) i największa jedna kwota; licznik wydatków na cel (np. kupione jajka) jest w profilu
         "wydatki": {"zrodla": list(PAKIETY_WYDATKOW), "kwota_maks": 1000000},
+        # przychody spoza walki (Sygnaly/Pety "przychod", 25.11.2026 — zagroda petów): kto może dopisać Złoto i
+        # największa jedna kwota (naliczanie co kilka sekund — setki, nie tysiące); bez premii i bez licznika walk
+        "przychody": {"zrodla": list(PAKIETY_PRZYCHODOW), "kwota_maks": 100000},
         # pety w profilu (swiat/pety_proba): kopie każdego peta (kopia = shard peta, D-058), aktywny pet i jego premia
         # do łupu z walk (wartości premii przysyła pakiet petów — tu tylko granice); atrybuty gracza dla klientów
         "pety": {"rodzajow_maks": 100, "kopii_maks": 1000000, "premia_maks": 0.5,
@@ -337,6 +343,14 @@ def przypadki(D):
                  dict(dobry_w, cel=""), dict(dobry_w, cel="jajko lesne"), dict(dobry_w, cel="x" * 25)):
         w, powod = LS.czysty_wydatek(D, info)
         P["wydatek"].append({"info": info, "wynik": nil(w), "powod": powod})
+    P["przychod"] = []
+    dobry_p = {"ile": 3, "zrodlo": D["przychody"]["zrodla"][0], "cel": "zagroda"}
+    for info in (dobry_p, dict(dobry_p, ile=1), dict(dobry_p, ile=0), dict(dobry_p, ile=-2), dict(dobry_p, ile=1.5),
+                 dict(dobry_p, ile=D["przychody"]["kwota_maks"]), dict(dobry_p, ile=D["przychody"]["kwota_maks"] + 1),
+                 dict(dobry_p, ile="3"), dict(dobry_p, zrodlo="KowalProba"), dict(dobry_p, zrodlo=None),
+                 dict(dobry_p, cel="zagroda petow"), dict(dobry_p, cel=None), "x"):
+        w, powod = LS.czysty_przychod(D, info)
+        P["przychod"].append({"info": info, "wynik": nil(w), "powod": powod})
     P["wydaj"] = [{"zloto": z, "ile": i, "wynik": list(LS.wydaj(D, z, i))}
                   for z, i in ((500, 300), (300, 300), (299, 300), (0, 300), (-40, 10), (12.7, 12), (None, 5), ("9", 5))]
     P["premia"] = []

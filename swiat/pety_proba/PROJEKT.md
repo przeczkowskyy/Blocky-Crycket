@@ -31,17 +31,19 @@ Ewolucji i tokeny krainy), D-060 (inkubator w biomie, wyklucie od razu z animacj
 
 ## Pięć petów leśnego jajka
 
-Własne projekty (modele z klocków w `swiat/postacie/`, plansze i portrety w `swiat/postacie/wynik/<id>/`). Szanse:
+Modele w `swiat/postacie/` (plansze i portrety w `swiat/postacie/wynik/<id>/`); od nocy 25/26.11 przebudowane według
+arkuszy Pawła — obłe bryły z elipsoid i walców, okrągłe oczy z odblaskami, jasne łaty (porównanie arkusz / nowy / stary:
+`podglad/noc2511_pet_<id>.jpg`, w grze: `klatki/noc2511_*.jpg`). Szanse:
 `tools/walka/progresja.py` (`ZALOZENIA["szanse_jajka"]`). Rzadszy = efektowniejszy: pospolity, zwykły i rzadki bez
 świecenia, epicki i legendarny świecą (Neon) i mają słup światła przy wykluciu.
 
 | Pet | Rzadkość | Szansa | Skill (pasywny, z walk) | Wygląd |
 |---|---|---:|---|---|
-| Żołędziak | Pospolity | 50% | Zbieracz: +2% Złota z walk | pulchny żołądź w czapeczce z listkiem na ogonku, z patyczkowymi rączkami |
-| Mchowy Ślimak | Zwykły | 25% | Muszla: +3% Pancerza | bladozielony ślimak z oczami na czułkach i muszlą w mchu z czerwonym grzybkiem |
-| Liściolis | Rzadki | 15% | Lisi Spryt: +15% Zręczności i Szczęścia | pomarańczowy lisek z uszami-liśćmi, liściastym kołnierzykiem i liściem na końcu ogona |
-| Świetlikówka | Epicki | 8% | Blask Świetlików: Światło (szybsza mana), +20% Inteligencji, +5% doświadczenia | śliwkowa sówka ze świecącymi oczami i brzuszkiem-latarenką, krążą wokół niej trzy świetliki |
-| Jelonek Gaju | Legendarny | 2% | Kryształowe Poroże: Kryształ (ciosy mocniej trafiają), +20% Siły, +5% Złota i doświadczenia | cętkowany jelonek ze świecącym kryształowym porożem w kwiatkach i złotymi kopytkami |
+| Żołędziak | Pospolity | 50% | Zbieracz: +2% Złota z walk | obła kropla-żołądź na nóżkach-walcach, jasny dół brzuszka, czapka-kopułka w ciemne pasy z daszkiem z przodu, ogonek z listkiem, rączki-patyczki z trzema palcami |
+| Mchowy Ślimak | Zwykły | 25% | Muszla: +3% Pancerza | duża zielona głowa-kostka z buzią, czułki z zielonymi kulkami, obła stopa z jaśniejszym spodem, muszla z kwadratową spiralą w mchu z czerwonym grzybkiem w białe kropki |
+| Liściolis | Rzadki | 15% | Lisi Spryt: +15% Zręczności i Szczęścia | „chibi” lisek z wielką kanciastą głową i kremowym pyszczkiem, uszy z dużych liści, kołnierz z pięciu liści, mały tułów z kremową piersią, gruby zadarty ogon z liściem |
+| Świetlikówka | Epicki | 8% | Blask Świetlików: Światło (szybsza mana), +20% Inteligencji, +5% doświadczenia | ciemnośliwkowa sówka z wielką głową-kostką, jasną maską i pomarańczowymi świecącymi oczami, wisząca świecąca latarenka, szerokie skrzydła, fioletowe nóżki; krążą wokół niej trzy świetliki |
+| Jelonek Gaju | Legendarny | 2% | Kryształowe Poroże: Kryształ (ciosy mocniej trafiają), +20% Siły, +5% Złota i doświadczenia | jelonek z dużą okrągłą głową i kremową maską, wielkie uszy z różowym środkiem, świecące kryształowe poroże z kwiatkiem, wianek z liści ze świecącym klejnotem, białe cętki, złote dolne części nóg z kopytkami (45 części — limit) |
 
 Klipy każdego peta: `spoczynek`, `chod`, `radosc`, `wyklucie`. Jajko: `spoczynek`, `trzesienie`, `pekniecie`.
 Pies, Slime i Smok (pety z kanonu) zostają na inne jajka (np. miejskie).
@@ -230,6 +232,57 @@ Licznik kupionych jajek (wydatki na cel = id jajka w profilu StanGracza) wpływa
 biomów; testy `5e2b` i `5e3` na prawdziwym serwerze), a liczba kupionych jajek biomu i tak trafia do atrybutu gracza
 `PetyKupioneJajka*` (wskazówka celu „pierwsze jajko biomu”).
 
+## Zagroda daje Rybki (25.11.2026 noc, część A bez Studio — propozycja D-153, LICZBY ROBOCZE)
+
+Ustalenia z sesji głównej 25.11 (Karol i Paweł na głos, w sejfie jako propozycja D-153): **pety stojące w zagrodzie
+dają Rybki na sekundę** (Rybki = atrybut `Gold`, D-146), **pet założony** (idący za graczem) daje swój skill i **nie stoi
+w zagrodzie**, pety na wyprawie też nie (wypraw nie ma — haczyk `naWyprawie` w `SerwerPetow`), **miejsc 2 → 4 → 6 → 8**
+u opiekunki Jagody za Rybki, zagroda fizycznie nie rośnie, bez animacji budowy.
+
+- **Kto stoi:** posiadane pety (jeden na gatunek — kopie to shardy), bez aktywnego i bez petów na wyprawie; wybór
+  gracza („Do zagrody” / „Z zagrody” w oknie) albo domyślnie **najrzadsze** (przy tej samej rzadkości wyższa stawka,
+  czyli dalszy biom); najwyżej tyle, ile miejsc ma poziom. Pety ponad limit zostają w posiadaniu i nic nie dają.
+  „Najrzadsze” wraca do wyboru domyślnego. Przy wyborze ręcznym zmiana peta za graczem to zamiana miejscami
+  (nowy wychodzi z zagrody, stary wchodzi na jego miejsce), a „Odstaw peta” odstawia go do zagrody, gdy jest miejsce.
+- **Naliczanie:** serwer petów co `tik_s` = 5 s liczy Rybki/s petów w zagrodzie × czas od poprzedniego razu (najwyżej
+  `tik_maks_s` = 15 s — przerwa serwera nie daje zaległości), całe Rybki dopisuje **StanGracza** (`Sygnaly/Pety
+  ("przychod")`, źródło z listy `PAKIETY_PRZYCHODOW` w `swiat/stan_gracza/dane.py`), ułamek czeka na następny raz.
+  Tylko gracz w grze z wczytanym profilem — **bez przychodu offline** (przyjęte). Klient tylko pokazuje: napis
+  „+N Rybek” nad zagrodą (gdy gracz jest blisko) i wiersz zagrody w tymczasowym oknie („ZAGRODA: 3/4 miejsc · +2,4
+  Rybek/min”, „Więcej miejsc: 6 za 3000 Rybek”, „Najrzadsze”), przy pecie w zagrodzie „· w zagrodzie: +N Rybek/min”.
+- **Miejsca:** poziom = 1 + licznik wydatków na cel `zagroda_miejsca` w profilu StanGracza — zakup (`WydajZloto`) i poziom
+  zapisują się jednym wywołaniem. Za mało Rybek = „Brakuje ci N Rybek (masz M, ulepszenie kosztuje C)”, nic nie zmienione.
+  Wybór petów żyje w profilu przez `Sygnaly/DanePakietu` (pakiet `PetyProba`, pole `zagroda`).
+- **Mapa:** klient stawia modele na tylu miejscach, ile znaczników `zagroda_miejsce_N` ma mapa bazaru (dane z
+  `swiat/miasteczko_bazar/znaczniki.json` przy `dane_petow.py`; było 6, przebudowa miasta 25.11 daje 8); gdy petów
+  w zagrodzie jest więcej niż znaczników, nadmiar daje Rybki bez modelu.
+
+**Liczby robocze** (`ustawienia.json` → `zagroda`; rachunek `ekonomia_zagrody.py`, 30 graczy na klasę, symulacja walk jak
+`ekonomia_jajek.py`): stawka peta = stawka rzadkości × mnożnik jajka biomu (las ×1, Bagno ×2,5, Dżungla ×4,5 — jak ceny
+jajek 300 / 750 / 1350).
+
+| Rzadkość | Las | Bagno | Dżungla |
+|---|---:|---:|---:|
+| Pospolity | 0,015/s (54/h) | 0,0375/s (135/h) | 0,0675/s (243/h) |
+| Zwykły | 0,025/s (90/h) | 0,0625/s (225/h) | 0,1125/s (405/h) |
+| Rzadki | 0,04/s (144/h) | 0,1/s (360/h) | 0,18/s (648/h) |
+| Epicki | 0,065/s (234/h) | 0,1625/s (585/h) | 0,2925/s (1053/h) |
+| Legendarny | 0,1/s (360/h) | 0,25/s (900/h) | 0,45/s (1620/h) |
+
+Ceny miejsc: 2 → 4 za **1000**, 4 → 6 za **3000**, 6 → 8 za **7500** Rybek. Rybki z walk (mediana, od wejścia do
+wygranej ze strażnikiem): las ok. 7900/h (28 min), Bagno ok. 10 100/h (44 min), Dżungla ok. 16 300/h (48 min).
+Zagroda pełna, „typowa” (jajka kupione za całe Rybki z biomów, najrzadszy za graczem) · „najwięcej” (najlepsze pety):
+
+| Etap | 2 miejsca | 4 | 6 | 8 |
+|---|---|---|---|---|
+| koniec lasu | 234/h (3%) · 378 (5%) | 288 (4%) · 522 (7%) | jak 4 (las ma 5 petów) | jak 4 |
+| koniec Bagna | 504 (5%) · 945 (9%) | 819 (8%) · 1539 (15%) | 1008 (10%) · 1908 (19%) | 1008 (10%) · 2133 (21%) |
+| koniec Dżungli | 882 (5%) · 1260 (8%) | 1557 (10%) · 2898 (18%) | 2016 (12%) · 3780 (23%) | 2349 (14%) · 4284 (26%) |
+
+Zagroda to dodatek (typowo 3–14% Rybek z walk, najwyżej ok. 26%), pętla „Rybki → miejsca → Rybki” jest ograniczona
+(8 miejsc, jeden pet na gatunek, ulepszenie 2 → 4 zwraca się w lesie po ok. 18 h gry, w Dżungli po 1,5 h).
+Uwaga: zagroda nalicza także stojącemu bez ruchu graczowi (AFK) — do decyzji razem z D-050.
+
 ## Jak działa zakup i gdzie żyje stan
 
 1. Gracz przytrzymuje E przy jajku (`ProximityPrompt` na niewidzialnej części w punkcie E mapy, 0,5 s; jeden punkt E
@@ -261,7 +314,8 @@ a zagroda pokazuje ten sam napis — bez błędów.
   i 3,2 w tył, chód / spoczynek / radość przy skoku; 21–45 części na peta. Znika u siebie od razu, gdy HUD jest
   schowany, kamera nie jest zwykła, trwa mini-gra (`TreningGra`), przelot (`BlokadaWalki`), chmury (`Trwa`), wybór
   klasy — wtedy chowa też cudze pety (nie wchodzą w kadr walki), a innym graczom zgłasza „czekaj” (atrybut `PetCzeka`).
-- **Zagroda (bazar):** do 6 posiadanych petów (bez aktywnego; przy dziesięciu — najrzadsze najpierw) stoi na miejscach
+- **Zagroda (bazar):** od 25.11 stoją w niej pety, które dają Rybki (rozdział „Zagroda daje Rybki” wyżej — wybór gracza
+  albo najrzadsze, tyle, ile miejsc ma poziom; dawniej: do 6 posiadanych petów bez aktywnego) i stoją na miejscach
   z mapy `zagroda_miejsce_1…6` z napisem „Nazwa ×N” (kopie = shardy peta, D-058); tablica przy bramie zagrody w dwóch
   kolumnach — jajko po jajku („► ” przy aktywnym, „jeszcze żadnego” w pustej); **E opiekunki** (pakiet bazaru, zdarzenie
   `ReplicatedStorage.OknoMiejsca`, id `zagroda_petow`) otwiera tymczasowe okno „TWOJE PETY · PRÓBA”: **przewijane**,
@@ -341,7 +395,8 @@ a zagroda pokazuje ten sam napis — bez błędów.
 | `podglad.py` → `podglad/pety_lesne.jpg`, `podglad/pety_bagna.jpg` | pięć portretów petów jajka z rzadkością, szansą i skillem + inkubator i jajko (do raportu); `podglad/jajko_lesne_przed_po.jpg` — para przed / po |
 | `sprawdz_luau_petow.py` | kontrola statyczna Luau (m.in. bez Robuxów, bez zapisu Złota w pakiecie, klient bez liczb) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
-| `testy/test_petow.py` | 43 testy offline (w tym prawdziwe SerwerPetow + SerwerStanu w `luau_mini`, trzy jajka, cena stała i przełączniki) |
+| `testy/test_petow.py` | 51 testów offline (w tym prawdziwe SerwerPetow + SerwerStanu w `luau_mini`, trzy jajka, cena stała i przełączniki; od 25.11 zagroda: Rybki, miejsca, wybór, 6 albo 8 znaczników) |
+| `ekonomia_zagrody.py` | zagroda (25.11): Rybki/h pełnej zagrody na każdym poziomie wobec Rybek z walk, koszt miejsc w minutach walk i zwrot |
 | `testy/proba_play.py` | próba w Play P00–P15 (+ P07b: każdy pet za graczem); `--bagno`: B00–B09 (jajko Bagna), `--dzungla`: te same punkty dla jajka Dżungli (zrzuty `dz…`); zrzuty do `klatki/`; `--sprawdz` bez Studio. Atrybut klienta `TestKameraProby` na kontenerze: kamera do zrzutów nie chowa petów (tylko próby) |
 | `testy/proba_ludzka.py` | przejście „po ludzku”: walki do Złota na jajko (liczba walk i minut), wskazówka, E, wyklucie, pet, premia, zagroda (L01–L09) |
 | `swiat/postacie/zoledziak.py`, `mchowy_slimak.py`, `lisciolis.py`, `swietlikowka.py`, `jelonek_gaju.py`, `jajko_lesne.py`, `pety_lesne.py` | modele lasu (Blender i klocki); `pety_lesne.py` — wspólne klipy, oczy, gładkie jajko, tablica szans |
@@ -351,7 +406,8 @@ a zagroda pokazuje ten sam napis — bez błędów.
 
 ```
 python -B swiat/pety_proba/dane_petow.py                 # po zmianie ustawień albo modeli
-python -B swiat/pety_proba/testy/test_petow.py           # 43 testy, ok. 20 s
+python -B swiat/pety_proba/testy/test_petow.py           # 51 testów, ok. 50 s
+python -B swiat/pety_proba/ekonomia_zagrody.py           # zagroda: Rybki/h wobec walk (liczby robocze)
 python -B swiat/pety_proba/zbuduj.py --sucho             # bez Studio
 python -B swiat/pety_proba/ekonomia_jajek.py --biom bagno  # cena jajka Bagna
 python -B swiat/pety_proba/ekonomia_jajek.py --biom dzungla  # cena jajka Dżungli (reguła 6 min)
@@ -380,6 +436,10 @@ python -B swiat/pety_proba/zbuduj.py --usun              # wyłącznik: gra wrac
   w `ustawienia.json` (`zrodla.biomy[].inkubator`, `atrybut_ceny_jajka`, `atrybut_kupionych_jajek`); klient bierze
   jajko biomu, w którym stoi gracz; testy `2g` i `5e`, README.
 - `swiat/postacie`: nowe moduły modeli (lista wyżej); istniejących plików nie zmieniano.
+- `swiat/stan_gracza` (25.11, zagroda daje Rybki): polecenie `Pety("przychod", gracz, { ile, zrodlo, cel })` — Rybki
+  spoza walki od źródła z listy `PAKIETY_PRZYCHODOW` (`dane.py`, `D.przychody`), dopisane do `Gold` jak łup, bez premii
+  i licznika walk; `czysty_przychod` / `czystyPrzychod` z przypadkami wzorcowymi; test `8j2`. Wdrożenie:
+  `zbuduj.py --skrypty` (bez nowych obiektów).
 
 ## Co sprawdzone w grze (Studio, tryb Play, 17.11.2026)
 
@@ -419,6 +479,23 @@ kupno działa. Mylący był też haczyk klienta: `akcjaE` pokazywało zawsze jaj
 inkubatora (`jajkoPrzy`). Serwer od teraz sam sprawdza zasięg inkubatora (test `5c1`).
 
 ## Czego nie sprawdzono
+
+**Zagroda daje Rybki i nowe modele leśnych petów — wdrożone w Studio 26.11 (00:13–01:05)**: `stan_gracza/zbuduj.py
+--skrypty`, pełna `pety_proba/zbuduj.py` i pełna `miasteczko_bazar_gra/zbuduj.py` (po przebudowie miasta 25.11 część
+z podpowiedzią E Jagody stała jeszcze w starym miejscu w głębi zagrody — E przed Jagodą kupowało wtedy jajko Pawła).
+`proba_play.py --zagroda`: **Z01–Z09 9/9 OK** + P01, P02, P15 (naliczanie +3 Rybki w 22 s przy 9,9/min, napis „+N”,
+2 modele na 8 znacznikach, okno z wierszem zagrody, odmowa „Brakuje ci 1000 Rybek…”, ulepszenie 2 → 4, „Z zagrody” /
+„Najrzadsze”, pet za graczem poza zagrodą). Regresja: las 14 OK + 3 „?” (zrzuty; P07b — każdy z pięciu nowych petów idzie za graczem, 4,6–5,3 st), `--bagno` 10 OK + 4 „?” (zrzuty), `--dzungla`
+10 OK + 4 „?”. W próbach poprawione: stanowisko przed Jagodą, P09 i B08 (na legowiskach stoją tylko pety W zagrodzie — na
+starcie 2, nie wszystkie posiadane), Z07 i P11 (zagroda dopisuje Rybki także w trakcie punktu). Ręcznie (Play ze
+znacznikiem próby): 9 petów, zagroda 8/8 (+36 Rybek/min), pety równo na legowiskach, bez kolizji z płotem, Jelonek
+45/45 widocznych części; okno Pets Pawła (`stan`, „zaloz”, „najlepsze”; „usun” → „coming soon”) i jego jajko
+(prawdziwe E: −300 Rybek, +1 pet) działają. Zrzuty `klatki/noc2511_*.jpg`. Teksty: „Miejsca w zagrodzie: N” zamiast
+„Zagroda ma teraz N miejsc”, napis „+1 Rybka / +3 Rybki / +5 Rybek”.
+Znane kłopoty (do decyzji): pet ze slotu 2 okna Pets Pawła stoi też w zagrodzie i daje Rybki; E Jagody otwiera naraz
+tymczasowe okno „PRÓBA” i okno Pets Pawła; jajko Pawła stoi ok. 3 st od stoiska Jagody (z boku E kupuje jajko, przodem
+do Jagody otwiera okno); tablica „TWOJE PETY” stoi na placu ok. 14 st przed bramą (`tablica_od_e` liczone od nowego
+punktu E); Neon oczu Świetlikówki (F26A00) wygląda w grze na żółto-pomarańczowy.
 
 **Jajko Dżungli (18.11, 03:10–03:24, Studio)** — `proba_play.py --dzungla`: **14 z 14 OK** (trzy jajka lokalne, ceny
 300 / 750 / 1350, brak Złota → „Brakuje ci 1350 Złota”, wskazówka `f_jajko_dzungla`, kupno prawdziwym E, pięć petów

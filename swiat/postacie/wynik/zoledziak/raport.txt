@@ -1,8 +1,8 @@
 RAPORT — zoledziak
-ŻOŁĘDZIAK — pet pospolity z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+ŻOŁĘDZIAK — pet pospolity z leśnego jajka (próba swiat/pety_proba; status: propozycja).
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/zoledziak.py · wygenerowano 17.11.2026 poleceniem:
+Źródło: swiat/postacie/zoledziak.py · wygenerowano 25.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py zoledziak
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 
@@ -14,22 +14,25 @@ PODSUMOWANIE
 
 ZNANE SŁABOŚCI
 - Kości własne (nie R15) — klipy idą przez Motor6D w grze (prototyp z klocków).
+- Obłe bryły to elipsoidy i walce (w Roblox Part Ball / Cylinder albo SpecialMesh) — w grze są gładkie, ale bez fazowania krawędzi i bez komiksowego obrysu z renderu.
+- Pasy czapki to cienkie plastry kopułki (wystają o 5%) — z bliska widać, że są wypukłe, a nie namalowane.
+- Liść na arkuszu w bokach przeczy sobie (raz widać go z jednej, raz z drugiej strony) — w modelu jest po lewej stronie peta (+X), obrócony o 25°, więc widać go z przodu, z tyłu i z lewego boku.
 - Brak nóg w klipie wyklucia: w jajku żołądź siedzi cały, nóżki są schowane w skorupce.
 
 MODEL zoledziak „Żołędziak” (stwor)
-  wymiary ciała: 1,65 × 2,10 × 1,46; z akcesoriami: 1,65 × 2,10 × 1,46
-  trójkąty: 820 (siatek: 7)
+  wymiary ciała: 1,64 × 2,23 × 1,45; z akcesoriami: 1,64 × 2,23 × 1,45
+  trójkąty: 4728 (siatek: 7)
   kości (8): Root, Tulow, Czapka, Ogonek, RekaL, NogaL, RekaP, NogaP
   klipy: spoczynek 60 kl. 2,00 s pętla, chod 20 kl. 0,67 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
   punkty zaczepienia: RootAttachment, GlowaAttachment
 
 KONTROLA EKSPORTÓW
-- zoledziak.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje brak -> ZGODNE
-- zoledziak__spoczynek.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje zoledziak|Scene 1-61 -> ZGODNE
-- zoledziak__chod.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje zoledziak|Scene 1-21 -> ZGODNE
-- zoledziak__radosc.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje zoledziak|Scene 1-37 -> ZGODNE
-- zoledziak__wyklucie.fbx: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje zoledziak|Scene 1-31 -> ZGODNE
-- zoledziak.glb: siatki 9, kości 8, trójkąty 844, wzrost 2.10 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+- zoledziak.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje brak -> ZGODNE
+- zoledziak__spoczynek.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje zoledziak|Scene 1-61 -> ZGODNE
+- zoledziak__chod.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje zoledziak|Scene 1-21 -> ZGODNE
+- zoledziak__radosc.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje zoledziak|Scene 1-37 -> ZGODNE
+- zoledziak__wyklucie.fbx: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje zoledziak|Scene 1-31 -> ZGODNE
+- zoledziak.glb: siatki 9, kości 8, trójkąty 4752, wzrost 2.23 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
 
 PLIKI
 - zoledziak.blend

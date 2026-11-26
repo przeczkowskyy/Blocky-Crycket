@@ -1015,6 +1015,28 @@ class TestSerweraOffline(unittest.TestCase):
     def mody(self, polecenie, zrodlo=None, mod=None):
         return self.wywolaj("Modyfikatory", polecenie, self.g.t, zrodlo, mod)
 
+    def test_8j2_przychod_zagrody(self):
+        """25.11.2026: Pety("przychod") — Rybki (atrybut Gold) spoza walki od zarejestrowanego źródła (zagroda petów):
+        dopisane od razu, do profilu, bez premii z modyfikatorów, bez licznika walk; złe dane = odmowa bez zmian."""
+        self.uruchom()
+        self.g.ustaw("Gold", 50)
+        self.assertEqual(self.wywolaj("Modyfikatory", "ustaw", self.g.t, "pety", {"lup": {"zloto": 0.5}})["ok"], True)
+        dobry = {"ile": 7, "zrodlo": "PetyProba", "cel": "zagroda"}
+        w = self.pety("przychod", dobry)
+        self.assertEqual((w["ok"], w["zloto"], w["ile"]), (True, 57, 7))
+        self.assertEqual(self.atr("Gold"), 57, "bez premii +50% z modyfikatora (to nie łup z walki)")
+        st = self.wywolaj("SterowanieSerwera", "stan", self.g.t)
+        self.assertEqual((st["zloto"], st["walki"]["wygrane"], st["walki"]["przegrane"]), (57, 0, 0))
+        self.assertEqual(self.k.atrybuty.get("LicznikPrzychodow"), 1)
+        for zle, powod in ((dict(dobry, ile=0), "zla_kwota"), (dict(dobry, ile=2.5), "zla_kwota"),
+                           (dict(dobry, ile=D["przychody"]["kwota_maks"] + 1), "zla_kwota"),
+                           (dict(dobry, zrodlo="KowalProba"), "zle_zrodlo"), (dict(dobry, cel="zle cel"), "zly_cel")):
+            self.assertEqual(self.pety("przychod", zle)["powod"], powod, zle)
+        self.assertEqual(self.atr("Gold"), 57)
+        # górna granica waluty jak przy łupie
+        self.g.ustaw("Gold", D["limity"]["waluta_maks"] - 3)
+        self.assertEqual(self.pety("przychod", dobry)["zloto"], D["limity"]["waluta_maks"])
+
     def test_8m_modyfikatory(self):
         # Sygnaly/Modyfikatory (18.11.2026): jeden wpis na źródło, złożenie w bohaterze walki i w premii do łupu
         self.uruchom()

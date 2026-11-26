@@ -91,7 +91,7 @@ Inne pakiety NIE edytują `stan_gracza` — wpływają na bohatera i trzymają s
 | `Sygnaly/PrzyznajLup` (BindableFunction) | las → stan | `Invoke(gracz, { lup = walka.lup, wynik, czas = walka.czas, zrodlo = "LasPotwory" \| "LasPasGra" \| "BagnoPasGra", gatunek, poziom })` → `{ ok = true }` \| `{ ok = false, powod }` |
 | `Sygnaly/SterowanieSerwera` (BindableFunction) | testy | `"stan", gracz?` · `"zgodnosc"` · `"publikuj", gracz?` · `"bohater", gracz?` · `"przyznaj", gracz, lup` |
 | `Sygnaly/WydajZloto` (BindableFunction, 17.11) | pakiet → stan | `Invoke(gracz, { ile, zrodlo = kontener z listy D.wydatki.zrodla, cel })` → `{ ok = true, zloto, ile, licznik }` \| `{ ok = false, powod ("za_malo" + brakuje, zloto, ile \| "zla_kwota" \| "zle_zrodlo" \| "zly_cel" \| "zly_gracz") }` — nigdy poniżej zera |
-| `Sygnaly/Pety` (BindableFunction, 17.11) | pety → stan | `"kup", gracz, { ile, zrodlo, cel, pet, premia }` (wydatek + kopia peta w jednym wywołaniu) · `"aktywny", gracz, { pet, premia }` \| `{ odstaw = true }` · `"stan", gracz` |
+| `Sygnaly/Pety` (BindableFunction, 17.11) | pety → stan | `"kup", gracz, { ile, zrodlo, cel, pet, premia }` (wydatek + kopia peta w jednym wywołaniu) · `"aktywny", gracz, { pet, premia }` \| `{ odstaw = true }` · `"stan", gracz` · `"przychod", gracz, { ile, zrodlo, cel }` → `{ ok, zloto, ile }` (25.11.2026: Rybki spoza walki — zagroda petów; źródło z listy `PAKIETY_PRZYCHODOW`, kwota 1…`D.przychody.kwota_maks`, dopisane do `Gold` jak łup, bez premii z modyfikatorów i bez licznika walk) |
 | `Zdalne/ZdarzeniaStanu` (RemoteEvent) | serwer → klient | `"awans", poziom, ile` · `"premia", zloto, doswiadczenie, pet` (dodatek peta w pokazanym łupie — czyta go klient `swiat/pety_proba`) · `"przegrana", kara, doswiadczenie` (kara za przegraną w pokazanym łupie — napis `KlientStanu`) · `"brak_punktow"` („+” bez punktu cofnięty) · `"gemy_straznika", n` (Gemy za pierwsze pokonanie strażnika) |
 | | klient → serwer | `"pokaz"` (bez liczb, najwyżej raz na 0,5 s) |
 | `Workspace/TreningProba/Sygnaly/PrzyrostStatystyki` | trening → stan | tylko słuchamy (z ponownym podłączeniem po przebudowie) |
@@ -136,7 +136,7 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
 **Jak dodać pakiet (jedno miejsce, 18.11.2026):** listy kontenerów, które rozmawiają ze stanem gracza, są na górze
 `dane.py`: `PAKIETY_BIOMOW` (walki biomu — łup przez `PrzyznajLup` i kara za przegraną; dziś `LasPotwory`,
 `LasPasGra`, `BagnoPasGra` i od razu `DzunglaPasGra`) i `PAKIETY_WYDATKOW` (wydawanie Złota — `PetyProba`,
-`KowalProba`). Nowy pakiet: dopisz nazwę jego kontenera, `python -B swiat/stan_gracza/dane.py`, testy, potem
+`KowalProba`), od 25.11.2026 też `PAKIETY_PRZYCHODOW` (dopisywanie Złota / Rybek poza walką przez `Pety("przychod")` — `PetyProba`, zagroda petów). Nowy pakiet: dopisz nazwę jego kontenera, `python -B swiat/stan_gracza/dane.py`, testy, potem
 `zbuduj.py --skrypty`. Cele wydatków (`jajko_lesne`, `ulepszenie`, `zakup_przedmiotu`…) listy nie mają — przechodzi każda
 nazwa z liter, cyfr i „_”. Test `6b` sam znajduje pakiety `swiat/*_pas_gra` i oblewa, gdy kontener biomu nie jest na
 liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyKrainy_<kraina>`) też listy nie mają.

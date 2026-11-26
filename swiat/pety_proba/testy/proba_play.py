@@ -5,6 +5,7 @@ i wyłącza Play, niczego nie zapisuje i nie publikuje.
     python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> [--studio <id>] [--bez-zrzutow] [--bez-walki]
     python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> --bagno   # tylko jajko Bagna (B00–B09)
     python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> --dzungla # jajko Dżungli (te same B00–B09)
+    python -B swiat/pety_proba/testy/proba_play.py <folder wyników POZA repo> --zagroda # zagroda daje Rybki (Z01–Z09)
     python -B swiat/pety_proba/testy/proba_play.py --sprawdz      # bez Studio: parsuje każdy kawałek Luau (luau_mini)
 
 Warunki (tryb Edit): Workspace/PetyProba (swiat/pety_proba/zbuduj.py), Workspace/StanGracza (z sygnałami WydajZloto
@@ -30,7 +31,8 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
   P07b każdy z pięciu petów IDZIE ZA GRACZEM (pety kupione haczykiem "kup" z wymuszonym losem, aktywny wybrany
       haczykiem "wybierz" bez zasięgu — zaznaczone w opisie), marsz postacią, zrzut z kamery za plecami
   P08 wyklucie każdego peta (haczyk "wyklucie" — sama animacja u klienta), zrzut napisu każdego
-  P09 zagroda: posiadane pety na miejscach i tablica (lista z kopiami), prawdziwe E opiekunki → okno „PRÓBA”; zrzuty
+  P09 zagroda: pety stojące w zagrodzie (od 25.11 tyle, ile miejsc ma poziom) na miejscach i tablica (lista z kopiami),
+      prawdziwe E opiekunki → okno „PRÓBA”; zrzuty
   P10 wybór aktywnego peta z okna (jak przycisk „Wybierz”: Jelonek Gaju) → PetAktywny, pet za graczem zmienia się; zrzut
   P11 premia peta przy łupie (StanGracza "przyznaj") → Złoto + premia (+5%), napis „+N … od peta”; skill peta
       w StanGracza/Sygnaly/Modyfikatory (źródło "pety": +20% Siły, pasywki Kryształu) — gdy stan gracza ma sygnał; zrzut
@@ -58,6 +60,20 @@ LISTA --bagno (17.11 wieczór, jajko Bagna; warunki jak wyżej + Workspace/Bagno
 --dzungla (18.11, jajko Dżungli): te same punkty B00–B09 dla jajka Dżungli (Workspace/DzunglaPas, DzunglaPasGra,
 WskazowkiGry; krok wskazówki „f_jajko_dzungla”; gracz dostaje PokonalStraznikaBagna jak po Strażniku Topieli),
 zrzuty z przedrostkiem „dz” zamiast „b”.
+
+LISTA --zagroda (25.11.2026, zagroda daje Rybki — PRZYGOTOWANE, jeszcze nieuruchomione; warunki jak wyżej, StanGracza
+z poleceniem Pety("przychod") — swiat/stan_gracza/zbuduj.py --skrypty; zrzuty „z…”):
+  Z01 trzy pety lasu (haczyk "kup" z wymuszonym losem): Żołędziak za graczem, Świetlikówka i Jelonek Gaju w zagrodzie
+      (2 miejsca) — serwer "zagroda": stoja, miejsc, wczytany, Rybki/s
+  Z02 naliczanie: Gold rośnie o Rybki/s × czas (co tik_s; ± jeden tik), LicznikPrzychodow > 0 (pety i stan gracza)
+  Z03 napis „+N Rybek” nad zagrodą (gracz przy zagrodzie) — licznik plusów klienta rośnie; zrzut
+  Z04 pety stojące w zagrodzie na znacznikach mapy (tyle modeli, ile stoi, najwyżej tyle, ile znaczników — 6 albo 8)
+  Z05 E opiekunki → okno z wierszem zagrody („ZAGRODA: 2/2 miejsc · +N Rybek/min”, „Więcej miejsc …”); zrzut
+  Z06 „Więcej miejsc” bez Rybek (Gold = 0) → odmowa „Brakuje ci … Rybek”, Gold bez zmian
+  Z07 „Więcej miejsc” z Rybkami (Gold = cena + 50) → 4 miejsca, Gold = 50, napis „Miejsca w zagrodzie: 4”; zrzut okna
+  Z08 „Z zagrody” (Świetlikówka) → nie stoi, wybór ręczny; „Najrzadsze” → wraca wybór domyślny
+  Z09 pet za graczem nie stoi w zagrodzie: „Wybierz” Jelonka → Jelonek poza zagrodą, Żołędziak w zagrodzie
+  (P15) konsola: bez błędów naszych skryptów — jak w każdej próbie
 """
 import io
 import json
@@ -183,6 +199,16 @@ def sprawdz_kod():
     return 0 if not bledy else 1
 
 
+def stoisko_zagrody(G):
+    """Gdzie próba stawia gracza przed E Jagody (środek HumanoidRootPart). 26.11.2026: 2,5 st przed podpowiedzią Jagody,
+    przodem do niej. Po przebudowie miasta 25.11 ok. 3 st od stoiska stoi jajko Pawła (Workspace/JajkoKorowePodglad,
+    własna podpowiedź E „Kup jajko”, zasięg 12 st). Gdy podpowiedź Jagody stała jeszcze w starym miejscu (kontener
+    MiasteczkoBazarGra zbudowany przed przebudową), E przed Jagodą kupowało jajko; przodem do Jagody jej podpowiedź
+    wygrywa, z boku (1,5–3,5 st obok) — podpowiedź jajka."""
+    ez, kz, pz = G["zagroda_e"], G["zagroda_kier"], G["zagroda_podpowiedz"]
+    return (pz[0] + kz[0] * 2.5, ez[1] + 3.0, pz[2] + kz[2] * 2.5)
+
+
 def main():
     argv = sys.argv[1:]
     if "--sprawdz" in argv:
@@ -200,6 +226,7 @@ def main():
     bez_zrzutow = "--bez-zrzutow" in argv
     bez_walki = "--bez-walki" in argv
     tylko_bagno = "--bagno" in argv or "--dzungla" in argv
+    tylko_zagroda = "--zagroda" in argv                            # 25.11.2026: zagroda daje Rybki (Z01–Z10)
     kraina_b = "dzungla" if "--dzungla" in argv else "bagno"      # biom próby jajka spoza lasu
     os.makedirs(wyj, exist_ok=True)
     os.makedirs(KLATKI, exist_ok=True)
@@ -515,10 +542,14 @@ def main():
             serwer('"zwolnij"')
             serwer('"wybierz", nil, "%s", true' % JB["pula"][0])
             ez, kz = G["zagroda_e"], G["zagroda_kier"]
-            stoi_z = (ez[0] + kz[0] * 1.5, ez[1] + 3.0, ez[2] + kz[2] * 1.5)
+            stoi_z = stoisko_zagrody(G)
             przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
             # lista mogła przyjść wcześniej (wybór peta) — czekamy też, aż pety staną na miejscach zagrody
-            k8 = czekaj_na(lambda: (lambda k: k if (k.get("wiersze") or 0) >= 10 and (k.get("petyWZagrodzie") or 0) >= 5
+            # od 25.11 (zagroda daje Rybki) na miejscach stoją tylko pety W ZAGRODZIE (na starcie 2 miejsca), nie ≥ 5
+            def stoi8(k):
+                n = len((k.get("zagroda") or {}).get("stoja") or [])
+                return n >= 1 and k.get("petyWZagrodzie") == min(n, k.get("miejscNaMapie") or 0)
+            k8 = czekaj_na(lambda: (lambda k: k if (k.get("wiersze") or 0) >= 10 and stoi8(k)
                                     else None)(klient('"stan"')), 15, 0.5) or klient('"stan"')
             kamera((ez[0] + kz[0] * 14.0, ez[1] + 9.0, ez[2] + kz[2] * 14.0), (ez[0] - kz[0] * 3.0, ez[1], ez[2] - kz[2] * 3.0))
             zrzut(PX + "13_zagroda_dziesiec")
@@ -536,8 +567,9 @@ def main():
             time.sleep(0.5)
             zrzut(PX + "16_okno_przewiniete")
             zapisz("B08", {"klient": k8, "okno": bool(okno)})
-            punkt("B08", bool(okno) and (k8.get("wiersze") or 0) == 10 and (k8.get("petyWZagrodzie") or 0) >= 5,
-                  "wierszy %s, pety na miejscach %s, okno po E %s" % (k8.get("wiersze"), k8.get("petyWZagrodzie"), bool(okno)))
+            punkt("B08", bool(okno) and (k8.get("wiersze") or 0) == 10 and stoi8(k8),
+                  "wierszy %s, pety na miejscach %s (w zagrodzie %s), okno po E %s" % (
+                      k8.get("wiersze"), k8.get("petyWZagrodzie"), len((k8.get("zagroda") or {}).get("stoja") or []), bool(okno)))
             # ============================================================ B09 wybór peta Bagna z okna
             klient('"wybierz", "%s"' % JB["pula"][-1])
             time.sleep(1.5)
@@ -548,6 +580,120 @@ def main():
             k9 = klient('"stan"')
             punkt("B09", a9.get("PetAktywny") == JB["pula"][-1] and k9.get("mojPet") == JB["pula"][-1],
                   "aktywny %s, za graczem %s" % (a9.get("PetAktywny"), k9.get("mojPet")))
+
+        # ---------------------------------------------------------------- zagroda daje Rybki (--zagroda, 25.11.2026)
+        def proba_zagrody():
+            Z = D["zagroda"]
+            ez, kz = G["zagroda_e"], G["zagroda_kier"]
+            stoi_z = stoisko_zagrody(G)
+
+            def przy_zagrodzie():
+                przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
+                time.sleep(1.0)
+
+            def zagroda():
+                return serwer('"zagroda"')
+
+            # ================================================================ Z01
+            luau(KOD["ustaw_atr"] % ("Gold", "5000"), "Server")
+            for r in (0.0, 0.95, 0.99):                       # Żołędziak (za graczem), Świetlikówka, Jelonek Gaju
+                serwer('"zwolnij"')
+                serwer('"kup", nil, "%s", %f' % (JL["id"], r))
+                time.sleep(4.8)
+            serwer('"zwolnij"')
+            z1 = zagroda()
+            st1 = z1.get("stan") or {}
+            zapisz("Z01", z1)
+            punkt("Z01", st1.get("stoja") == ["jelonek_gaju", "swietlikowka"] and st1.get("miejsc") == Z["poziomy"][0]["miejsc"]
+                  and z1.get("wczytany") is True, "w zagrodzie %s, miejsc %s, %s" % (st1.get("stoja"), st1.get("miejsc"),
+                                                                                    st1.get("opis")))
+            # ================================================================ Z02 naliczanie
+            s = st1.get("stawka_s") or 0
+            przed, t0 = atr("Gold").get("Gold") or 0, time.time()
+            time.sleep(Z["tik_s"] * 4 + 2)
+            po, t1 = atr("Gold").get("Gold") or 0, time.time()
+            dl = (t1 - t0)
+            lo, hi = int(s * (dl - 2 * Z["tik_s"])), int(s * (dl + Z["tik_s"])) + 1
+            licz = kont("PetyProba", ["LicznikPrzychodow", "OstatniPrzychod"])
+            zapisz("Z02", {"przed": przed, "po": po, "sekund": dl, "stawka_s": s, "licznik": licz})
+            punkt("Z02", lo <= po - przed <= hi and (licz.get("LicznikPrzychodow") or 0) > 0,
+                  "Gold %s → %s (+%s w %.0f s, oczekiwane %d…%d), licznik %s" % (przed, po, po - przed, dl, lo, hi,
+                                                                                licz.get("LicznikPrzychodow")))
+            # ================================================================ Z03 „+N” przy zagrodzie
+            przy_zagrodzie()
+            k0 = klient('"stan"')
+            k3 = czekaj_na(lambda: (lambda k: k if (k.get("plusow") or 0) > (k0.get("plusow") or 0) else None)(
+                klient('"stan"')), Z["tik_s"] * 4, 0.3) or {}
+            kamera((ez[0] + kz[0] * 14.0, ez[1] + 9.0, ez[2] + kz[2] * 14.0), (ez[0] - kz[0] * 3.0, ez[1], ez[2] - kz[2] * 3.0))
+            zrzut("z03_plus_przy_zagrodzie")
+            punkt("Z03", bool(k3) and k3.get("bliskoZagrody") is True, "plusów %s → %s, ostatni +%s" % (
+                k0.get("plusow"), k3.get("plusow"), k3.get("ostatniPlus")))
+            # ================================================================ Z04 pety na znacznikach
+            k4 = klient('"stan"')
+            n_st = len((k4.get("zagroda") or {}).get("stoja") or [])
+            zapisz("Z04", k4)
+            punkt("Z04", k4.get("petyWZagrodzie") == min(n_st, k4.get("miejscNaMapie") or 0) and n_st > 0,
+                  "modeli w zagrodzie %s, stoi %s, znaczników na mapie %s" % (k4.get("petyWZagrodzie"), n_st,
+                                                                             k4.get("miejscNaMapie")))
+            zrzut("z04_pety_w_zagrodzie")
+            kamera_zwykla()
+            # ================================================================ Z05 okno z wierszem zagrody
+            przy_zagrodzie()
+            przytrzymaj_e()                                   # E opiekunki → OknoMiejsca
+            okno = czekaj_na(lambda: luau(KOD["okno_otwarte"], "Client") == "true", 5, 0.4)
+            time.sleep(0.8)
+            k5 = klient('"stan"')
+            zrzut("z05_okno_zagrody")
+            punkt("Z05", bool(okno) and k5.get("wierszZagrodyWOknie") is True, "okno %s, wiersz zagrody %s" % (
+                bool(okno), k5.get("wierszZagrodyWOknie")))
+            # ================================================================ Z06 ulepszenie bez Rybek
+            luau(KOD["ustaw_atr"] % ("Gold", "0"), "Server")
+            time.sleep(0.4)
+            klient('"ulepsz"')
+            time.sleep(1.0)
+            odm = kont("PetyProba", ["OstatniaOdmowa"])
+            k6 = klient('"stan"')
+            g6 = atr("Gold").get("Gold")
+            punkt("Z06", odm.get("OstatniaOdmowa") == "za_malo" and "Brakuje" in str(k6.get("komunikat")) and g6 == 0,
+                  "odmowa %s, napis %r, Gold %s" % (odm.get("OstatniaOdmowa"), k6.get("komunikat"), g6))
+            # ================================================================ Z07 ulepszenie za Rybki
+            cena = Z["poziomy"][1]["cena"]
+            luau(KOD["ustaw_atr"] % ("Gold", str(cena + 50)), "Server")
+            t7 = time.time()
+            time.sleep(0.6)
+            klient('"ulepsz"')
+            time.sleep(1.2)
+            z7 = (zagroda().get("stan") or {})
+            g7 = atr("Gold").get("Gold")
+            # zagroda nalicza dalej w trakcie punktu (26.11: raz było 51) — dopuszczalne Rybki z tików od ustawienia Gold
+            g7_hi = 50 + int((z7.get("stawka_s") or 0) * (time.time() - t7 + Z["tik_s"])) + 1
+            k7 = klient('"stan"')
+            zrzut("z07_okno_po_ulepszeniu")
+            zapisz("Z07", {"stan": z7, "gold": g7, "komunikat": k7.get("komunikat")})
+            punkt("Z07", z7.get("miejsc") == Z["poziomy"][1]["miejsc"] and isinstance(g7, (int, float)) and 50 <= g7 <= g7_hi,
+                  "miejsc %s, Gold %s (oczekiwane 50…%d), napis %r" % (z7.get("miejsc"), g7, g7_hi, k7.get("komunikat")))
+            # ================================================================ Z08 „Z zagrody” i „Najrzadsze”
+            time.sleep(0.4)
+            klient('"z_zagrody", "swietlikowka"')
+            time.sleep(1.0)
+            z8 = (zagroda().get("stan") or {})
+            time.sleep(0.4)
+            klient('"najrzadsze"')
+            time.sleep(1.0)
+            z8b = (zagroda().get("stan") or {})
+            punkt("Z08", "swietlikowka" not in (z8.get("stoja") or []) and z8.get("reczny") is True
+                  and "swietlikowka" in (z8b.get("stoja") or []) and z8b.get("reczny") is False,
+                  "po „Z zagrody” %s (ręczny %s), po „Najrzadsze” %s" % (z8.get("stoja"), z8.get("reczny"), z8b.get("stoja")))
+            # ================================================================ Z09 pet za graczem nie stoi w zagrodzie
+            time.sleep(0.4)
+            klient('"wybierz", "jelonek_gaju"')
+            time.sleep(1.5)
+            z9 = (zagroda().get("stan") or {})
+            a9 = atr("PetAktywny")
+            klient('"zamknij"')
+            punkt("Z09", a9.get("PetAktywny") == "jelonek_gaju" and "jelonek_gaju" not in (z9.get("stoja") or [])
+                  and "zoledziak" in (z9.get("stoja") or []), "aktywny %s, w zagrodzie %s" % (a9.get("PetAktywny"),
+                                                                                             z9.get("stoja")))
 
         # ================================================================ P00 Edit
         nie_usypiaj()
@@ -599,6 +745,8 @@ def main():
             punkt("P02", bool(wk.get("klasa")) and not wk.get("ekran"), "wybór klasy: %s" % wk)
             if tylko_bagno:
                 proba_bagna()
+            elif tylko_zagroda:
+                proba_zagrody()
             else:
                 # ================================================================ P03 brak Złota
                 luau(KOD["ustaw_atr"] % ("Gold", "0"), "Server")
@@ -731,7 +879,7 @@ def main():
                 serwer('"wybierz", nil, "zoledziak", true')
                 ez = G["zagroda_e"]
                 kz = G["zagroda_kier"]
-                stoi_z = (ez[0] + kz[0] * 1.5, ez[1] + 3.0, ez[2] + kz[2] * 1.5)
+                stoi_z = stoisko_zagrody(G)
                 przestaw(stoi_z, (ez[0] - kz[0] * 5, 0, ez[2] - kz[2] * 5))
                 k9 = czekaj_na(lambda: (lambda k: k if k.get("petyWZagrodzie") else None)(klient('"stan"')), 15, 0.5) or {}
                 kamera((ez[0] + kz[0] * 14.0, ez[1] + 9.0, ez[2] + kz[2] * 14.0), (ez[0] - kz[0] * 3.0, ez[1], ez[2] - kz[2] * 3.0))
@@ -747,8 +895,13 @@ def main():
                 time.sleep(0.8)
                 zrzut("12_okno_proba")
                 zapisz("P09", {"klient": k9, "okno": bool(okno)})
-                punkt("P09", bool(okno) and (k9.get("petyWZagrodzie") or 0) >= 3 and (k9.get("wiersze") or 0) >= 4,
-                      "pety na miejscach %s, wierszy %s, okno po E %s" % (k9.get("petyWZagrodzie"), k9.get("wiersze"), bool(okno)))
+                # od 25.11 (zagroda daje Rybki) na miejscach stoją tylko pety W ZAGRODZIE: tyle, ile miejsc ma poziom (na
+                # starcie 2), a nie wszystkie posiadane poza aktywnym (wcześniej warunek ≥ 3)
+                n9 = len((k9.get("zagroda") or {}).get("stoja") or [])
+                punkt("P09", bool(okno) and n9 >= 1 and k9.get("petyWZagrodzie") == min(n9, k9.get("miejscNaMapie") or 0)
+                      and (k9.get("wiersze") or 0) >= 4,
+                      "pety na miejscach %s (w zagrodzie %s), wierszy %s, okno po E %s" % (
+                          k9.get("petyWZagrodzie"), n9, k9.get("wiersze"), bool(okno)))
                 # ================================================================ P10 wybór z okna
                 # pet z premią do Złota i statystyką (D-101): Jelonek Gaju — Kryształ, +20% Siły, +5% Złota i dośw.
                 PET10 = "jelonek_gaju"
@@ -762,23 +915,27 @@ def main():
                 punkt("P10", a10.get("PetAktywny") == PET10 and k10.get("mojPet") == PET10,
                       "aktywny %s, za graczem %s" % (a10.get("PetAktywny"), k10.get("mojPet")))
                 # ================================================================ P11 premia przy łupie
-                przed = atr("Gold")
+                przed, t11 = atr("Gold"), time.time()
                 w11 = js(KOD["przyznaj"] % (100, 40), "Server")
                 time.sleep(0.4)
                 k11 = klient('"stan"')
                 zrzut("14_premia_przy_lupie")
                 po = atr("Gold")
                 premia = int(math.floor(100 * LP.premia_peta(D, PET10)["zloto"] + 0.5))
+                # od 25.11 zagroda nalicza Rybki także w trakcie punktu (26.11: raz +106 zamiast +105) — dopuszczalne tiki
+                s11 = ((serwer('"zagroda"') or {}).get("stan") or {}).get("stawka_s") or 0
+                zapas11 = int(s11 * (time.time() - t11 + D["zagroda"]["tik_s"])) + 1
+                roznica11 = (po.get("Gold") or 0) - (przed.get("Gold") or 0) - 100 - premia
                 # skill peta w stanie gracza (Sygnaly/Modyfikatory, źródło "pety") — gdy stan gracza ma ten sygnał
                 mod11 = (serwer('"stan"') or {}).get("modyfikatory") or {}
                 oczek = LP.mod_peta(D, PET10)
                 mod_ok = (not mod11) or ("pety" in (mod11.get("zrodla") or []) and mod11.get("procent") == oczek.get("procent")
                                          and list(mod11.get("pasywki") or []) == oczek.get("pasywki"))
                 zapisz("P11", {"wynik": w11, "przed": przed, "po": po, "klient": k11, "modyfikatory": mod11})
-                punkt("P11", po.get("Gold") == przed.get("Gold") + 100 + premia and "od peta" in str(k11.get("komunikat"))
+                punkt("P11", 0 <= roznica11 <= zapas11 and "od peta" in str(k11.get("komunikat"))
                       and mod_ok,
-                      "Gold %s → %s (łup 100 + premia %d), napis %r, modyfikator %s" % (
-                          przed.get("Gold"), po.get("Gold"), premia, k11.get("komunikat"),
+                      "Gold %s → %s (łup 100 + premia %d + zagroda 0…%d), napis %r, modyfikator %s" % (
+                          przed.get("Gold"), po.get("Gold"), premia, zapas11, k11.get("komunikat"),
                           {k: mod11.get(k) for k in ("zrodla", "procent", "pasywki", "lup")} if mod11 else "brak sygnału"))
                 # ================================================================ P12 reset w trakcie wyklucia
                 do_inkubatora()

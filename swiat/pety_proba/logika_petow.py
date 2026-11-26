@@ -250,6 +250,199 @@ def czas_wyklucia(D):
     return W["trzesienie_s"] + W["pekniecie_s"] + W["wyskok_s"] + W["radosc_s"]
 
 
+# ------------------------------------------------------------------------------------------------ zagroda: Rybki
+# 25.11.2026 (sesja główna, propozycja): pety stojące w zagrodzie dają Rybki (atrybut Gold, D-146) na sekundę; pet
+# idący za graczem daje swój skill i NIE stoi w zagrodzie; pety na wyprawie (`poza` — wypraw jeszcze nie ma) też nie.
+# Miejsca 2 → 4 → 6 → 8 (zagroda.poziomy), ulepszenie u opiekunki za Rybki; licznik ulepszeń = wydatki na cel
+# zagroda.cel_ulepszenia w profilu StanGracza (zakup i poziom w jednym wywołaniu WydajZloto). Liczby robocze.
+def stawka(D, pid):
+    """Rybki na sekundę peta stojącego w zagrodzie (0 dla nieznanego)."""
+    p = pet(D, pid)
+    return p["rybki_s"] if p else 0
+
+
+def poziom_zagrody(D, wydatki):
+    """Poziom zagrody 1..len(poziomy) z licznika kupionych ulepszeń (wydatki[cel_ulepszenia]); śmieci = 0 ulepszeń."""
+    v = (wydatki if isinstance(wydatki, dict) else {}).get(D["zagroda"]["cel_ulepszenia"])
+    n = int(v) if _calkowita_nieujemna(v) else 0
+    return min(1 + n, len(D["zagroda"]["poziomy"]))
+
+
+def miejsca_zagrody(D, poziom):
+    poz = D["zagroda"]["poziomy"]
+    i = int(poziom) if _calkowita_nieujemna(poziom) else 1
+    return poz[max(1, min(i, len(poz))) - 1]["miejsc"]
+
+
+def cena_ulepszenia(D, poziom):
+    """Cena NASTĘPNEGO poziomu zagrody albo None (najwyższy poziom)."""
+    poz = D["zagroda"]["poziomy"]
+    i = int(poziom) if _calkowita_nieujemna(poziom) else 1
+    if i >= len(poz):
+        return None
+    return poz[max(1, i)]["cena"]
+
+
+def czysty_wybor(D, wybor):
+    """Wybór gracza z DanePakietu → lista znanych id bez powtórzeń (najwyżej tyle, ile petów w katalogu) albo None
+    (= wybór domyślny: najrzadsze). Słownik z kluczami 1, 2, … (tablica Luau po zapisie) też jest listą."""
+    if isinstance(wybor, dict):
+        if len(wybor) == 0:
+            return []
+        if not all(isinstance(k, int) for k in wybor):
+            return None
+        elementy = [wybor[k] for k in sorted(wybor)]
+    elif isinstance(wybor, list):
+        elementy = wybor
+    else:
+        return None
+    w = []
+    for x in elementy:
+        if isinstance(x, str) and pet(D, x) is not None and x not in w and len(w) < len(D["pety"]):
+            w.append(x)
+    return w
+
+
+def _nr_rzadkosci(D, pid):
+    p = pet(D, pid)
+    for i, r in enumerate(D["rzadkosci"]):
+        if p and r["id"] == p["rzadkosc"]:
+            return i + 1
+    return 0
+
+
+def _przed(D, a, b, kolejnosc):
+    """Kolejność domyślna zagrody: rzadszy pierwszy, przy tej samej rzadkości wyższa stawka, potem katalog."""
+    ra, rb = _nr_rzadkosci(D, a), _nr_rzadkosci(D, b)
+    if ra != rb:
+        return ra > rb
+    sa, sb = stawka(D, a), stawka(D, b)
+    if sa != sb:
+        return sa > sb
+    return kolejnosc[a] < kolejnosc[b]
+
+
+def w_zagrodzie(D, kopie, aktywny, wybor, miejsc, poza=None):
+    """Pety, które STOJĄ w zagrodzie (dają Rybki): posiadane (kopie > 0), bez aktywnego i bez petów `poza` (wyprawa);
+    wybór gracza (lista) w jego kolejności, a bez wyboru — najrzadsze; najwyżej `miejsc`."""
+    kopie = kopie if isinstance(kopie, dict) else {}
+    poza = poza if isinstance(poza, dict) else {}
+    kolejnosc, kandydaci = {}, []
+    for i, p in enumerate(D["pety"]):
+        kolejnosc[p["id"]] = i
+        n = kopie.get(p["id"])
+        if _calkowita_nieujemna(n) and n > 0 and p["id"] != aktywny and not poza.get(p["id"]):
+            kandydaci.append(p["id"])
+    m = int(miejsc) if _calkowita_nieujemna(miejsc) else 0
+    czysty = czysty_wybor(D, wybor)
+    if czysty is not None:
+        return [x for x in czysty if x in kandydaci][:m]
+    lista = []
+    for x in kandydaci:          # wstawianie (Luau bez table.sort w luau_mini) — ta sama kolejność co w lustrze
+        i = len(lista)
+        while i > 0 and _przed(D, x, lista[i - 1], kolejnosc):
+            i -= 1
+        lista.insert(i, x)
+    return lista[:m]
+
+
+def przychod_s(D, lista):
+    """Rybki na sekundę petów z listy (suma w kolejności listy)."""
+    s = 0.0
+    for x in lista or []:
+        s += stawka(D, x)
+    return s
+
+
+def opis_przychodu(D, stawka_s):
+    """Rybki na sekundę → „+2,4 Rybek/min” (do 10 na minutę z jednym miejscem po przecinku, wyżej całe)."""
+    dobra = isinstance(stawka_s, (int, float)) and not isinstance(stawka_s, bool) and stawka_s > 0
+    v = stawka_s * 60.0 if dobra else 0.0
+    if v >= 10:
+        t = "%d" % int(math.floor(v + 0.5))
+    else:
+        dz = int(math.floor(v * 10 + 0.5))
+        t = "%d" % (dz // 10) if dz % 10 == 0 else "%d,%d" % (dz // 10, dz % 10)
+    return D["teksty"]["przychod_min"] % t
+
+
+def stan_zagrody(D, kopie, aktywny, wybor, wydatki, poza=None):
+    """Wszystko o zagrodzie gracza dla serwera (naliczanie) i okna: poziom, miejsca, kto stoi, Rybki na sekundę, opis,
+    cena następnego poziomu (None na najwyższym), czy wybór jest ręczny."""
+    poziom = poziom_zagrody(D, wydatki)
+    miejsc = miejsca_zagrody(D, poziom)
+    stoja = w_zagrodzie(D, kopie, aktywny, wybor, miejsc, poza)
+    s = przychod_s(D, stoja)
+    return {"poziom": poziom, "miejsc": miejsc, "miejsc_maks": D["zagroda"]["poziomy"][-1]["miejsc"], "stoja": stoja,
+            "stawka_s": s, "opis": opis_przychodu(D, s), "cena": cena_ulepszenia(D, poziom),
+            "reczny": czysty_wybor(D, wybor) is not None}
+
+
+def zmien_wybor(D, kopie, aktywny, wybor, wydatki, poza, pid, tak):
+    """„Do zagrody” (tak) / „Z zagrody” peta → (nowy wybór — lista, ręczny, od tego, co dziś stoi; powód).
+    Powody: ok, nie_masz, aktywny (pet idący za graczem nie stoi w zagrodzie), pelna, juz, nie_stoi."""
+    st = stan_zagrody(D, kopie, aktywny, wybor, wydatki, poza)
+    stoja = list(st["stoja"])
+    n = (kopie if isinstance(kopie, dict) else {}).get(pid) if isinstance(pid, str) else None
+    if pet(D, pid) is None or not (_calkowita_nieujemna(n) and n > 0):
+        return czysty_wybor(D, wybor), "nie_masz"
+    if tak:
+        if pid == aktywny:
+            return czysty_wybor(D, wybor), "aktywny"
+        if pid in stoja:
+            return stoja, "juz"
+        if len(stoja) >= st["miejsc"]:
+            return czysty_wybor(D, wybor), "pelna"
+        return stoja + [pid], "ok"
+    if pid not in stoja:
+        return czysty_wybor(D, wybor), "nie_stoi"
+    return [x for x in stoja if x != pid], "ok"
+
+
+def po_wyborze(D, wybor, stary, nowy):
+    """Ręczny wybór po zmianie aktywnego peta: nowy aktywny zwalnia swoje miejsce w zagrodzie dla starego (zamiana
+    miejscami); wybór domyślny (None) zostaje domyślny."""
+    w = czysty_wybor(D, wybor)
+    if w is None:
+        return None
+    if nowy in w:
+        i = w.index(nowy)
+        if isinstance(stary, str) and pet(D, stary) is not None and stary not in w:
+            w[i] = stary
+        else:
+            w.pop(i)
+    return w
+
+
+def po_odstawieniu(D, wybor, stary):
+    """Ręczny wybór po „Odstaw peta”: odstawiony pet wraca na koniec listy zagrody (stanie, jeśli jest miejsce)."""
+    w = czysty_wybor(D, wybor)
+    if w is None:
+        return None
+    if isinstance(stary, str) and pet(D, stary) is not None and stary not in w:
+        w.append(stary)
+    return w
+
+
+def _skonczona(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and v == v and abs(v) != float("inf")
+
+
+def tik(D, reszta, stawka_s, dt):
+    """Naliczanie co zagroda.tik_s: (całe Rybki do dopisania, reszta ułamka na następny raz). dt przycięte do
+    0..tik_maks_s (przerwa serwera nie daje zaległych Rybek; przychodu offline nie ma)."""
+    d = min(max(dt if _skonczona(dt) else 0.0, 0.0), D["zagroda"]["tik_maks_s"])
+    r = reszta if _skonczona(reszta) and 0 <= reszta < 1 else 0.0
+    s = stawka_s if _skonczona(stawka_s) and stawka_s > 0 else 0.0
+    suma = r + s * d
+    ile = int(math.floor(suma + 1e-9))
+    return ile, max(0.0, suma - ile)
+
+
+def tekst_braku_ulepszenia(D, brakuje, zloto, c):
+    return D["teksty"]["za_malo_ulepszenie"] % (brakuje, zloto, c)
+
+
 # ------------------------------------------------------------------------------------------------ przypadki
 def przypadki(D):
     P = {"cena": [], "opis_ceny": [], "kupione": [], "losuj": [], "procent": [], "skill": [], "jajko_peta": [],
@@ -298,4 +491,56 @@ def przypadki(D):
     for k in [j["kraina"] for j in D["jajka"]] + ["dzungla", None]:
         j = jajko_krainy(D, k)
         P["kraina"].append({"kraina": k, "wynik": j["id"] if j else None})
+    przypadki_zagrody(D, P)
     return P
+
+
+def _bez_none(v):
+    """Przypadek dla Luau: None w słowniku = brak klucza (nil), więc go nie zapisujemy."""
+    if isinstance(v, dict):
+        return {k: _bez_none(x) for k, x in v.items() if x is not None}
+    if isinstance(v, list):
+        return [_bez_none(x) for x in v]
+    return v
+
+
+def przypadki_zagrody(D, P):
+    """Przypadki wzorcowe zagrody (Rybki, miejsca, wybór) — lustro Luau sprawdza je w testach i w Studio."""
+    cel = D["zagroda"]["cel_ulepszenia"]
+    ids = [p["id"] for p in D["pety"]]
+    P["stawka"] = [{"pet": x, "wynik": stawka(D, x)} for x in ids + ["obcy"]]
+    P["poziom_zagrody"] = [{"wydatki": w, "wynik": poziom_zagrody(D, w)}
+                           for w in ({}, {cel: 1}, {cel: 2}, {cel: 3}, {cel: 7}, {cel: -1}, {cel: 1.5}, {cel: "2"},
+                                     {"jajko_lesne": 3})]
+    P["miejsca_zagrody"] = [_bez_none({"poziom": v, "wynik": miejsca_zagrody(D, v), "cena": cena_ulepszenia(D, v)})
+                            for v in (1, 2, 3, 4, 5, 0, -2, 2.5)]
+    P["opis_przychodu"] = [{"s": s, "wynik": opis_przychodu(D, s)}
+                           for s in (0, 0.02, 0.05, 0.1, 0.1234, 0.16666, 0.5, 1.0, 2.75, -1)]
+    wszystkie = {x: 1 + i % 3 for i, x in enumerate(ids)}
+    las = {x: 1 for x in ids[:5]}
+    scen = [({}, None, None, {}), (las, ids[4], None, {}), (las, None, None, {cel: 1}),
+            (wszystkie, ids[-1], None, {cel: 3}), (wszystkie, None, [ids[0], ids[0], "obcy", ids[7]], {cel: 1}),
+            (wszystkie, ids[7], [ids[7], ids[1]], {}), (las, None, [], {cel: 2}),
+            (dict(las, **{ids[2]: 0}), None, None, {cel: 1}), (wszystkie, None, None, {cel: 2})]
+    P["stan_zagrody"] = []
+    for kopie, akt, wyb, wyd in scen:
+        for poza in (None, {ids[-1]: True, ids[4]: True}):
+            P["stan_zagrody"].append(_bez_none({"kopie": kopie, "aktywny": akt, "wybor": wyb, "wydatki": wyd,
+                                                "poza": poza, "wynik": stan_zagrody(D, kopie, akt, wyb, wyd, poza)}))
+    P["zmien_wybor"] = []
+    for kopie, akt, wyb, wyd in scen[1:7]:
+        for pid, tak in ((ids[0], True), (ids[4], True), (ids[3], False), (ids[1], False), (ids[9], True),
+                         ("obcy", True)):
+            nowy, powod = zmien_wybor(D, kopie, akt, wyb, wyd, None, pid, tak)
+            P["zmien_wybor"].append(_bez_none({"kopie": kopie, "aktywny": akt, "wybor": wyb, "wydatki": wyd,
+                                               "pet": pid, "tak": tak, "wynik": nowy, "powod": powod}))
+    P["po_wyborze"] = []
+    for wyb, st, nw in ((None, ids[0], ids[1]), ([ids[1], ids[2]], ids[0], ids[1]), ([ids[1], ids[2]], None, ids[2]),
+                        ([ids[1], ids[0]], ids[0], ids[1]), ([ids[3]], ids[0], ids[1])):
+        P["po_wyborze"].append(_bez_none({"wybor": wyb, "stary": st, "nowy": nw, "wynik": po_wyborze(D, wyb, st, nw),
+                                          "odstaw": po_odstawieniu(D, wyb, st)}))
+    P["tik"] = []
+    for r, s, dt in ((0, 0.05, 5), (0.9, 0.05, 5), (0.5, 0.25, 4), (0, 0.4, 100), (0, 1.3, -3), (2, 0.1, 5),
+                     (0.3, 0, 5), (0.999, 0.0002, 5), (0, 0.29, 5)):
+        ile, reszta = tik(D, r, s, dt)
+        P["tik"].append({"r": r, "s": s, "dt": dt, "ile": ile, "reszta": reszta})

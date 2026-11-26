@@ -16,6 +16,12 @@
 		procent(szansa), opisSkilla(D, pet), premiaPeta(D, id), tekstBraku(D, brakuje, zloto, cena)
 		modPeta(D, id)                            → modyfikator bohatera od peta (Sygnaly/Modyfikatory stanu gracza)
 		wierszeSzans(D, jajko), wierszeZagrody(D, kopie, aktywny), decyzja(D, stan), czasWyklucia(D)
+		zagroda — Rybki (25.11.2026, propozycja, liczby robocze): stawka(D, id), poziomZagrody(D, wydatki),
+		miejscaZagrody(D, poziom), cenaUlepszenia(D, poziom) (nil = najwyższy), czystyWybor(D, wybor) (nil = najrzadsze),
+		wZagrodzie(D, kopie, aktywny, wybor, miejsc, poza), przychodS(D, lista), opisPrzychodu(D, s),
+		stanZagrody(D, kopie, aktywny, wybor, wydatki, poza), zmienWybor(D, …, pet, tak) → wybór, powód,
+		poWyborze(D, wybor, stary, nowy), poOdstawieniu(D, wybor, stary), tik(D, reszta, s, dt) → ile, reszta,
+		tekstBrakuUlepszenia(D, brakuje, zloto, cena)
 		rowne(a, b), sprawdzPrzypadki(D) → ok, n, bledy
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -320,6 +326,238 @@ function L.czasWyklucia(D): number
 end
 
 -- równość głęboka (tabele: te same klucze i wartości; liczby z tolerancją 1e-9)
+------------------------------------------------------------------ zagroda: Rybki (25.11.2026, propozycja)
+-- Pety stojące w zagrodzie dają Rybki (atrybut Gold, D-146) na sekundę; pet idący za graczem i pety na wyprawie
+-- (`poza` — wypraw jeszcze nie ma) nie stoją w zagrodzie. Miejsca z D.zagroda.poziomy (2 → 4 → 6 → 8), poziom z licznika
+-- wydatków na cel D.zagroda.cel_ulepszenia w profilu StanGracza. Liczby robocze (ustawienia.json → zagroda).
+function L.stawka(D, id): number
+	local p = L.pet(D, id)
+	return if p then p.rybki_s else 0
+end
+
+function L.poziomZagrody(D, wydatki): number
+	local v = if type(wydatki) == "table" then wydatki[D.zagroda.cel_ulepszenia] else nil
+	local n = if calkowitaNieujemna(v) then v else 0
+	return math.min(1 + n, #D.zagroda.poziomy)
+end
+
+function L.miejscaZagrody(D, poziom): number
+	local poz = D.zagroda.poziomy
+	local i = if calkowitaNieujemna(poziom) then poziom else 1
+	return poz[math.max(1, math.min(i, #poz))].miejsc
+end
+
+function L.cenaUlepszenia(D, poziom): number?
+	local poz = D.zagroda.poziomy
+	local i = if calkowitaNieujemna(poziom) then poziom else 1
+	if i >= #poz then
+		return nil
+	end
+	return poz[math.max(1, i) + 1].cena
+end
+
+local function zawiera(lista, x): boolean
+	for _, v in lista do
+		if v == x then
+			return true
+		end
+	end
+	return false
+end
+
+function L.czystyWybor(D, wybor)
+	if type(wybor) ~= "table" then
+		return nil
+	end
+	local n = 0
+	for k in wybor do
+		if type(k) ~= "number" or k < 1 or math.floor(k) ~= k then
+			return nil
+		end
+		n += 1
+	end
+	local w = {}
+	for i = 1, n do
+		local x = wybor[i]
+		if type(x) == "string" and L.pet(D, x) ~= nil and not zawiera(w, x) and #w < #D.pety then
+			table.insert(w, x)
+		end
+	end
+	return w
+end
+
+local function nrRzadkosci(D, id): number
+	local p = L.pet(D, id)
+	for i, r in D.rzadkosci do
+		if p and r.id == p.rzadkosc then
+			return i
+		end
+	end
+	return 0
+end
+
+local function przed(D, a, b, kolejnosc): boolean
+	local ra, rb = nrRzadkosci(D, a), nrRzadkosci(D, b)
+	if ra ~= rb then
+		return ra > rb
+	end
+	local sa, sb = L.stawka(D, a), L.stawka(D, b)
+	if sa ~= sb then
+		return sa > sb
+	end
+	return kolejnosc[a] < kolejnosc[b]
+end
+
+function L.wZagrodzie(D, kopie, aktywny, wybor, miejsc, poza)
+	local k = if type(kopie) == "table" then kopie else {}
+	local pz = if type(poza) == "table" then poza else {}
+	local kolejnosc, kandydaci = {}, {}
+	for i, p in D.pety do
+		kolejnosc[p.id] = i
+		local n = k[p.id]
+		if calkowitaNieujemna(n) and n > 0 and p.id ~= aktywny and not pz[p.id] then
+			table.insert(kandydaci, p.id)
+		end
+	end
+	local m = if calkowitaNieujemna(miejsc) then miejsc else 0
+	local czysty = L.czystyWybor(D, wybor)
+	local w = {}
+	if czysty ~= nil then
+		for _, x in czysty do
+			if zawiera(kandydaci, x) and #w < m then
+				table.insert(w, x)
+			end
+		end
+		return w
+	end
+	-- wstawianie (luau_mini bez table.sort i table.insert z pozycją) — ta sama kolejność co w lustrze Pythona
+	local lista = {}
+	for _, x in kandydaci do
+		local i = #lista + 1
+		while i > 1 and przed(D, x, lista[i - 1], kolejnosc) do
+			lista[i] = lista[i - 1]
+			i -= 1
+		end
+		lista[i] = x
+	end
+	for i = 1, math.min(m, #lista) do
+		w[i] = lista[i]
+	end
+	return w
+end
+
+function L.przychodS(D, lista): number
+	local s = 0
+	for _, x in (if type(lista) == "table" then lista else {}) do
+		s += L.stawka(D, x)
+	end
+	return s
+end
+
+function L.opisPrzychodu(D, s): string
+	local v = if liczba(s) and s > 0 then s * 60 else 0
+	local t
+	if v >= 10 then
+		t = string.format("%d", math.floor(v + 0.5))
+	else
+		local dz = math.floor(v * 10 + 0.5)
+		t = if dz % 10 == 0 then string.format("%d", math.floor(dz / 10))
+			else string.format("%d,%d", math.floor(dz / 10), dz % 10)
+	end
+	return string.format(D.teksty.przychod_min, t)
+end
+
+function L.stanZagrody(D, kopie, aktywny, wybor, wydatki, poza)
+	local poziom = L.poziomZagrody(D, wydatki)
+	local miejsc = L.miejscaZagrody(D, poziom)
+	local stoja = L.wZagrodzie(D, kopie, aktywny, wybor, miejsc, poza)
+	local s = L.przychodS(D, stoja)
+	return { poziom = poziom, miejsc = miejsc, miejsc_maks = D.zagroda.poziomy[#D.zagroda.poziomy].miejsc,
+		stoja = stoja, stawka_s = s, opis = L.opisPrzychodu(D, s), cena = L.cenaUlepszenia(D, poziom),
+		reczny = L.czystyWybor(D, wybor) ~= nil }
+end
+
+local function bez(lista, x)
+	local w = {}
+	for _, v in lista do
+		if v ~= x then
+			table.insert(w, v)
+		end
+	end
+	return w
+end
+
+function L.zmienWybor(D, kopie, aktywny, wybor, wydatki, poza, id, tak)
+	local st = L.stanZagrody(D, kopie, aktywny, wybor, wydatki, poza)
+	local stoja = st.stoja
+	local n = if type(kopie) == "table" and type(id) == "string" then kopie[id] else nil
+	if L.pet(D, id) == nil or not (calkowitaNieujemna(n) and n > 0) then
+		return L.czystyWybor(D, wybor), "nie_masz"
+	end
+	if tak then
+		if id == aktywny then
+			return L.czystyWybor(D, wybor), "aktywny"
+		end
+		if zawiera(stoja, id) then
+			return stoja, "juz"
+		end
+		if #stoja >= st.miejsc then
+			return L.czystyWybor(D, wybor), "pelna"
+		end
+		local w = bez(stoja, nil)
+		table.insert(w, id)
+		return w, "ok"
+	end
+	if not zawiera(stoja, id) then
+		return L.czystyWybor(D, wybor), "nie_stoi"
+	end
+	return bez(stoja, id), "ok"
+end
+
+function L.poWyborze(D, wybor, stary, nowy)
+	local w = L.czystyWybor(D, wybor)
+	if w == nil then
+		return nil
+	end
+	if not zawiera(w, nowy) then
+		return w
+	end
+	local zamiana = type(stary) == "string" and L.pet(D, stary) ~= nil and not zawiera(w, stary)
+	local wynik = {}
+	for _, x in w do
+		if x ~= nowy then
+			table.insert(wynik, x)
+		elseif zamiana then
+			table.insert(wynik, stary)
+		end
+	end
+	return wynik
+end
+
+function L.poOdstawieniu(D, wybor, stary)
+	local w = L.czystyWybor(D, wybor)
+	if w == nil then
+		return nil
+	end
+	if type(stary) == "string" and L.pet(D, stary) ~= nil and not zawiera(w, stary) then
+		table.insert(w, stary)
+	end
+	return w
+end
+
+function L.tik(D, reszta, s, dt): (number, number)
+	local d = math.min(math.max(if liczba(dt) then dt else 0, 0), D.zagroda.tik_maks_s)
+	local r = if liczba(reszta) and reszta >= 0 and reszta < 1 then reszta else 0
+	local st = if liczba(s) and s > 0 then s else 0
+	local suma = r + st * d
+	local ile = math.floor(suma + 1e-9)
+	return ile, math.max(0, suma - ile)
+end
+
+function L.tekstBrakuUlepszenia(D, brakuje: number, zloto: number, c: number): string
+	return string.format(D.teksty.za_malo_ulepszenie, brakuje, zloto, c)
+end
+
 function L.rowne(a, b): boolean
 	if type(a) ~= type(b) then
 		return false
@@ -395,6 +633,34 @@ function L.sprawdzPrzypadki(D)
 	end
 	for i, c in P.szanse do
 		sprawdz("szanse", i, L.rowne(L.wierszeSzans(D, L.jajko(D, c.jajko)), c.wynik))
+	end
+	-- zagroda: Rybki, miejsca, wybór (25.11.2026)
+	for i, c in P.stawka do
+		sprawdz("stawka", i, L.rowne(L.stawka(D, c.pet), c.wynik))
+	end
+	for i, c in P.poziom_zagrody do
+		sprawdz("poziom_zagrody", i, L.poziomZagrody(D, c.wydatki) == c.wynik)
+	end
+	for i, c in P.miejsca_zagrody do
+		sprawdz("miejsca_zagrody", i, L.miejscaZagrody(D, c.poziom) == c.wynik and L.cenaUlepszenia(D, c.poziom) == c.cena)
+	end
+	for i, c in P.opis_przychodu do
+		sprawdz("opis_przychodu", i, L.opisPrzychodu(D, c.s) == c.wynik)
+	end
+	for i, c in P.stan_zagrody do
+		sprawdz("stan_zagrody", i, L.rowne(L.stanZagrody(D, c.kopie, c.aktywny, c.wybor, c.wydatki, c.poza), c.wynik))
+	end
+	for i, c in P.zmien_wybor do
+		local w, powod = L.zmienWybor(D, c.kopie, c.aktywny, c.wybor, c.wydatki, nil, c.pet, c.tak)
+		sprawdz("zmien_wybor", i, L.rowne(w, c.wynik) and powod == c.powod)
+	end
+	for i, c in P.po_wyborze do
+		sprawdz("po_wyborze", i, L.rowne(L.poWyborze(D, c.wybor, c.stary, c.nowy), c.wynik)
+			and L.rowne(L.poOdstawieniu(D, c.wybor, c.stary), c.odstaw))
+	end
+	for i, c in P.tik do
+		local ile, reszta = L.tik(D, c.r, c.s, c.dt)
+		sprawdz("tik", i, ile == c.ile and L.rowne(reszta, c.reszta))
 	end
 	return #bledy == 0, n, bledy
 end

@@ -1,98 +1,126 @@
 # -*- coding: utf-8 -*-
-"""ŚWIETLIKÓWKA — pet epicki z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+"""ŚWIETLIKÓWKA — pet epicki z leśnego jajka (próba swiat/pety_proba; status: propozycja).
 
-Puszysta śliwkowa sówka (ok. 2,6 studa z piórkami): wielka głowa z jasnymi tarczami wokół bursztynowych, świecących
-oczu, dziób, piórka-uszy, skrzydła wzdłuż boków, a na brzuszku świecąca „latarenka” jak u świetlika. Wokół niej
-krążą trzy świetliki. Sylwetka: pionowa, szeroka głowa z różkami — epicki, więc świeci (oczy, brzuszek, świetliki).
+Przebudowa 25/26.11.2026 według arkusza obrotów Pawła (`swietlikowka_obroty.jpg`: przód, 3/4, przód z zamkniętymi
+oczami, tył — BEZ widoku z boku; bok uzupełniony z widoku 3/4 i z modelu z 17.11). Wzór wyglądu: ciemnośliwkowa
+sówka (ok. 2,7 studa z piórkami): wielka głowa-kostka z zaokrąglonymi rogami, jasna maska z dwóch kół wokół
+świecących pomarańczowych oczu, mały zakrzywiony dziób, pierzaste uszka wygięte na boki; okrągły tułów z jasnym
+brzuszkiem, na którym WISI LATARENKA (daszek z uchwytem i świecąca bańka); duże pierzaste skrzydła wzdłuż boków,
+krótkie fioletowe nóżki (bez pomarańczowych stóp), z tyłu krótki ogonek; obok krążą świetliki ze skrzydełkami.
+Kości, nazwy kości i klipy jak w modelu z 17.11.
 
     python -B swiat/postacie/przebuduj.py swietlikowka --bez-filmow
 
 Budowa (typ="stwor", patrzy w +Z, lewa = +X):
   Root > Tulow > {Glowa > {PiorkoL, PiorkoP}, SkrzydloL, SkrzydloP, Swietlik1, Swietlik2, Swietlik3}
-  Świetliki mają staw w środku tułowia, a bryłę ok. 1,2 studa dalej — obrót kości wokół pionu = krążenie.
+  Świetliki mają staw w środku tułowia, a bryłę ok. 1,15 studa dalej — obrót kości wokół pionu = krążenie.
 Klipy: spoczynek (rozgląda się, świetliki krążą), chod (trzepocze i unosi się, pętla), radosc, wyklucie.
 """
+import math
+
 from swiat.postacie.biblioteka.postac import Postac
-from swiat.postacie.pety_lesne import klip_radosc, klip_wyklucie
+from swiat.postacie.pety_lesne import klip_radosc, klip_wyklucie, lata, model
 
 ID = "swietlikowka"
 
 PALETA = {
-    "pioro": "5B4A8A", "pioro_ciemne": "3E2F66", "pioro_jasne": "7E6BB0", "brzuch": "D8C9A8",
-    "tarcza": "F2E6C8", "teczowka": "FFB31A", "dziob": "F2A93B", "blask": "E4FF6A", "swietlik": "F6FF7A",
+    "pioro": "5B3F8F", "pioro_ciemne": "40296B", "pioro_jasne": "7A5DB0", "brzuch": "DCC79A",
+    "tarcza": "F2E6C8", "teczowka": "F26A00", "dziob": "F0962E", "blask": "C8F53C", "swietlik": "F6FF7A",
+    "latarnia": "4A5A48", "skrzydelko": "D8F0FF",
 }
 
-TULOW = (1.15, 1.1, 0.95)
-Y_STAWU = 0.8
-Y_SRODKA = 0.85
-SWIETLIKI = [("Swietlik1", 1.25, 0.45, 0), ("Swietlik2", 1.15, 1.45, 130), ("Swietlik3", 1.35, 0.95, 250)]
+TULOW = ((0.0, 0.72, 0.0), (1.3, 1.0, 1.1))           # elipsoida tułowia
+GLOWA = ((0.0, 1.8, 0.02), (1.6, 1.3, 1.3))           # głowa-kostka: środek, rozmiar
+Y_STAWU = 0.6
+Y_SRODKA = 0.8                                        # środek orbit świetlików
+# (kość, promień orbity, wysokość, kąt w spoczynku: 0 = przód +Z, 90 = lewy bok +X)
+SWIETLIKI = [("Swietlik1", 1.15, 1.05, 90), ("Swietlik2", 1.2, 1.3, 270), ("Swietlik3", 1.25, 0.75, 200)]
+
+
+def _twarz(p, nazwa, x, y, size, kolor, mat="matowy", wysun=0.0, obrot=0.0):
+    """Płaska bryła (kula) na przedniej ścianie głowy-kostki."""
+    (gx, gy, gz), (gw, gh, gd) = GLOWA
+    return p.kula(nazwa, (x, y, gz + gd / 2 + size[2] / 2 - 0.012 + wysun), size, kolor, mat, rot=(0, 0, obrot),
+                  segm=14)
 
 
 def zbuduj():
     p = Postac(ID, "Świetlikówka", typ="stwor", skala=1.0, faza=0.07, paleta=PALETA)
-    p.kosc("Tulow", "Root", staw=(0, Y_STAWU, 0), czesc=TULOW, srodek=(0, Y_SRODKA - Y_STAWU, 0))
-    p.kosc("Glowa", "Tulow", staw=(0, 1.38, 0), czesc=(1.25, 1.0, 1.0), srodek=(0, 0.45, 0.02))
+    (tx, ty, tz), (tw, th, td) = TULOW
+    (gx, gy, gz), (gw, gh, gd) = GLOWA
+    p.kosc("Tulow", "Root", staw=(0, Y_STAWU, 0), czesc=(tw, th, td), srodek=(tx, ty - Y_STAWU, tz))
+    p.kosc("Glowa", "Tulow", staw=(0, 1.16, 0), czesc=(gw, gh, gd), srodek=(gx, gy - 1.16, gz))
     for s, zn in (("L", 1), ("P", -1)):
-        p.kosc("Piorko" + s, "Glowa", staw=(zn * 0.45, 2.26, 0.0), czesc=(0.24, 0.45, 0.2), srodek=(zn * 0.06, 0.2, 0))
-        p.kosc("Skrzydlo" + s, "Tulow", staw=(zn * 0.56, 1.3, -0.05), czesc=(0.22, 0.82, 0.84),
-               srodek=(zn * 0.1, -0.36, -0.06))
+        p.kosc("Piorko" + s, "Glowa", staw=(zn * 0.6, gy + gh / 2 - 0.08, 0.05), czesc=(0.36, 0.34, 0.12),
+               srodek=(zn * 0.1, 0.15, 0))
+        p.kosc("Skrzydlo" + s, "Tulow", staw=(zn * 0.62, 1.12, -0.05), czesc=(0.18, 0.92, 0.72),
+               srodek=(zn * 0.12, -0.44, -0.02))
     for nazwa, r, y, kat in SWIETLIKI:
         p.kosc(nazwa, "Tulow", staw=(0, Y_SRODKA, 0), czesc=None, srodek=(0, 0, 0))
 
-    # ------------------------------------------------------------------ tułów z latarenką
-    with p.na("Tulow", od="srodek"):
-        w, h, d = TULOW
-        z = d / 2
-        p.blok("Tulow", (0, 0, 0), TULOW, "pioro", faza=0.16)
-        p.blok("Brzuszek", (0, -0.08, z + 0.02), (0.8, 0.8, 0.06), "brzuch", "matowy", faza=0.04)
-        p.blok("Latarenka", (0, -0.16, z + 0.05), (0.5, 0.46, 0.04), "blask", "swiecacy", faza=0.02)
-        for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Pazurki " + s, (zn * 0.24, -h / 2 - 0.12, 0.14), (0.26, 0.3, 0.34), "dziob", faza=0.05)
+    # ------------------------------------------------------------------ tułów: jasny brzuszek, latarenka, nóżki, ogonek
+    with model(p, "Tulow"):
+        p.kula("Tulow", (tx, ty, tz), (tw, th, td), "pioro", segm=22)
+        p.kula("Brzuszek", *lata(TULOW, (0, -0.1, 1), 0.45, s=0.12), "brzuch", "matowy", segm=22)
+        zb = tz + td / 2 * 0.9                         # przód brzuszka na wysokości latarenki
+        p.walec("Latarenka uchwyt", (0, 0.99, zb + 0.06), (0.11, 0.11, 0.03), "latarnia", "metal", rot=(90, 0, 0),
+                segm=10, faza=0.0)
+        p.walec("Latarenka daszek", (0, 0.9, zb + 0.1), (0.22, 0.09, 0.22), "latarnia", "metal", segm=10, faza=0.02)
+        p.kula("Latarenka", (0, 0.72, zb + 0.12), (0.26, 0.32, 0.24), "blask", "swiecacy", segm=14)
+        for zn in (1, -1):
+            p.walec("Nozka", (zn * 0.24, 0.13, 0.05), (0.27, 0.28, 0.27), "pioro_ciemne", segm=12, faza=0.04)
+        p.kula("Ogonek", (0, 0.4, -0.55), (0.34, 0.42, 0.12), "pioro_ciemne", rot=(-25, 0, 0), segm=12)
 
-    # ------------------------------------------------------------------ głowa
-    with p.na("Glowa", od="srodek"):
-        w, h, d = 1.25, 1.0, 1.0
-        z = d / 2
-        p.blok("Glowa", (0, 0, 0), (w, h, d), "pioro", faza=0.16)
+    # ------------------------------------------------------------------ głowa: maska z dwóch kół, świecące oczy, dziób
+    with model(p, "Glowa"):
+        p.blok("Glowa", (gx, gy, gz), (gw, gh, gd), "pioro", faza=0.32)
         for zn, s in ((1, "L"), (-1, "P")):
             x = zn * 0.28
-            p.blok("Tarcza " + s, (x, 0.0, z + 0.01), (0.52, 0.54, 0.06), "tarcza", "matowy", faza=0.03)
-            p.blok("Teczowka " + s, (x, 0.0, z + 0.05), (0.34, 0.36, 0.04), "teczowka", "swiecacy", faza=0.02)
-            p.blok("Zrenica " + s, (x - zn * 0.02, -0.02, z + 0.08), (0.17, 0.22, 0.03), "tusz", "polysk", faza=0.0)
-            p.blok("Blysk " + s, (x - zn * 0.08, 0.09, z + 0.1), (0.08, 0.08, 0.02), "bialy", "swiecacy", faza=0.0)
-            p.blok("Brew " + s, (zn * 0.3, 0.33, z + 0.03), (0.42, 0.1, 0.06), "pioro_ciemne", "matowy",
-                   rot=(0, 0, -zn * 16), faza=0.0)
-        p.blok("Dziob", (0, -0.2, z + 0.08), (0.18, 0.24, 0.16), "dziob", faza=0.04)
-        p.blok("Dziob czubek", (0, -0.34, z + 0.1), (0.1, 0.1, 0.1), "dziob", faza=0.02)
+            _twarz(p, "Tarcza " + s, x, gy - 0.04, (0.66, 0.78, 0.05), "tarcza")
+            _twarz(p, "Teczowka " + s, x, gy - 0.06, (0.36, 0.36, 0.05), "teczowka", "swiecacy", wysun=0.03)
+            _twarz(p, "Blysk " + s, x + 0.07, gy + 0.03, (0.1, 0.1, 0.03), "bialy", "swiecacy", wysun=0.06)
+            _twarz(p, "Blysk " + s, x - 0.07, gy - 0.13, (0.05, 0.05, 0.02), "bialy", "swiecacy", wysun=0.06)
+        _twarz(p, "Tarcza dol", 0, gy - 0.3, (0.5, 0.36, 0.05), "tarcza")
+        _twarz(p, "Dziob", 0, gy - 0.26, (0.2, 0.24, 0.16), "dziob", "zwykly", wysun=0.02)
+        _twarz(p, "Dziob czubek", 0, gy - 0.36, (0.1, 0.12, 0.1), "dziob", "zwykly", wysun=0.08)
 
+    # ------------------------------------------------------------------ pierzaste uszka wygięte na boki
     for s, zn in (("L", 1), ("P", -1)):
-        with p.na("Piorko" + s, od="srodek"):
-            p.blok("Piorko", (0, 0, 0), (0.24, 0.45, 0.2), "pioro_ciemne", rot=(0, 0, -zn * 24), faza=0.04)
-        with p.na("Skrzydlo" + s, od="srodek"):
-            with p.uklad(obrot=(8, 0, zn * 9)):
-                p.blok("Skrzydlo", (0, 0, 0), (0.2, 0.82, 0.84), "pioro_ciemne", faza=0.08)
-                p.blok("Skrzydlo pasek", (zn * 0.02, -0.18, 0.02), (0.22, 0.14, 0.86), "pioro_jasne", "matowy",
-                       faza=0.02)
-                p.klin("Lotka", (0, -0.5, -0.12), (0.18, 0.24, 0.5), "pioro_ciemne", rot=(180, 0, 0), faza=0.0)
+        with p.na("Piorko" + s, od="staw"):
+            p.kula("Piorko", (zn * 0.05, 0.14, 0), (0.18, 0.4, 0.12), "pioro_ciemne", rot=(0, 0, -zn * 22), segm=10)
+            p.kula("Piorko", (zn * 0.2, 0.1, 0), (0.16, 0.32, 0.11), "pioro", rot=(0, 0, -zn * 52), segm=10)
 
-    # ------------------------------------------------------------------ świetliki (krążą wokół tułowia)
-    import math
+    # ------------------------------------------------------------------ duże pierzaste skrzydła wzdłuż boków
+    for s, zn in (("L", 1), ("P", -1)):
+        with p.na("Skrzydlo" + s, od="staw"), p.uklad(obrot=(4, -zn * 25, zn * 24)):
+            p.kula("Skrzydlo", (zn * 0.05, -0.4, 0.04), (0.24, 0.96, 0.9), "pioro_ciemne", segm=14)
+            # lotki: trzy zachodzące na siebie pióra rozłożone wachlarzem w dół (z przodu jedna postrzępiona krawędź)
+            for dz, dl, kat in ((0.2, 0.36, -18), (0.0, 0.44, 0), (-0.2, 0.36, 18)):
+                with p.uklad(pos=(zn * 0.07, -0.66, dz), obrot=(kat, 0, zn * 6)):
+                    p.kula("Lotka", (0, -dl / 2 + 0.04, 0), (0.12, dl, 0.26), "pioro", segm=8)
+
+    # ------------------------------------------------------------------ świetliki ze skrzydełkami (krążą wokół tułowia)
     for nazwa, r, y, kat in SWIETLIKI:
         a = math.radians(kat)
-        with p.na(nazwa, od="staw"):
-            p.blok("Swietlik", (r * math.sin(a), y - Y_SRODKA, r * math.cos(a)), (0.17, 0.17, 0.17), "swietlik",
-                   "swiecacy", faza=0.03)
+        with p.na(nazwa, od="staw"), p.uklad(pos=(r * math.sin(a), y - Y_SRODKA, r * math.cos(a)), obrot=(0, kat, 0)):
+            p.kula("Swietlik", (0, -0.02, 0), (0.15, 0.17, 0.15), "swietlik", "swiecacy", segm=10)
+            for zn in (1, -1):                         # skrzydełka w „V” nad świecącym odwłokiem
+                p.kula("Swietlik skrzydelko", (zn * 0.07, 0.08, 0), (0.16, 0.05, 0.1), "skrzydelko", "polysk",
+                       rot=(0, 0, zn * 35), segm=8)
 
     p.zaczep("RootAttachment", "Tulow", (0, -Y_STAWU, 0))
-    p.zaczep("GlowaAttachment", "Glowa", (0, 1.05, 0))
+    p.zaczep("GlowaAttachment", "Glowa", (0, gy + gh / 2 + 0.45 - 1.16, 0))
     _klipy(p)
-    p.ustaw_poze_renderu("spoczynek", 8)
+    p.ustaw_poze_renderu("spoczynek", 0)
     return p
 
 
 SLABOSCI = [
-    "Świecenie (oczy, brzuszek, świetliki) w Roblox to materiał Neon; poświata dookoła — PointLight w grze.",
-    "Skrzydła to płaskie klocki przy bokach — przy machaniu nie mają rozłożonych lotek.",
+    "Na arkuszu nie ma widoku z boku: bok jest dorobiony z widoku 3/4 (skrzydło, latarenka, głowa-kostka).",
+    "Mina „oczy zamknięte” z arkusza nie jest odwzorowana — model ma jedną minę (oczy otwarte, świecące).",
+    "Świecenie (oczy, latarenka, świetliki) w Roblox to materiał Neon; poświata dookoła — PointLight w grze.",
+    "Głowa to klocek z fazą — w Blenderze zaokrąglony, w Roblox (Part) ma ostre krawędzie.",
+    "Latarenka jest przyczepiona do tułowia (bez własnej kości) — nie kołysze się.",
     "Uwaga raportu „pętla skoczy” przy kościach świetlików jest oczekiwana: obrót 0° → 360° to ta sama poza.",
 ]
 

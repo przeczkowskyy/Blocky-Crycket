@@ -9,262 +9,262 @@
     {
      "nazwa": "Tulow_Geo",
      "kosc": "Tulow",
-     "trojkaty": 180,
-     "wierzcholki": 104,
+     "trojkaty": 1200,
+     "wierzcholki": 612,
      "wymiary": [
-      0.85,
-      0.84,
-      1.55
+      0.92,
+      0.828,
+      1.404
      ],
      "min": [
-      -0.425,
-      0.825,
-      -0.8
+      -0.46,
+      0.732,
+      -0.775
      ],
      "max": [
-      0.425,
-      1.665,
-      0.75
+      0.46,
+      1.56,
+      0.629
      ]
     },
     {
      "nazwa": "Szyja_Geo",
      "kosc": "Szyja",
-     "trojkaty": 100,
-     "wierzcholki": 56,
+     "trojkaty": 600,
+     "wierzcholki": 312,
      "wymiary": [
-      0.58,
-      0.804,
-      0.651
+      0.838,
+      0.599,
+      0.897
      ],
      "min": [
-      -0.29,
-      1.393,
-      0.359
+      -0.39,
+      1.306,
+      -0.042
      ],
      "max": [
-      0.29,
-      2.197,
-      1.01
+      0.448,
+      1.905,
+      0.855
      ]
     },
     {
      "nazwa": "Glowa_Geo",
      "kosc": "Glowa",
-     "trojkaty": 244,
-     "wierzcholki": 136,
+     "trojkaty": 1632,
+     "wierzcholki": 836,
      "wymiary": [
-      0.82,
-      0.74,
-      1.25
+      1.168,
+      1.04,
+      1.225
      ],
      "min": [
-      -0.41,
-      1.9,
-      0.46
+      -0.584,
+      1.7,
+      -0.07
      ],
      "max": [
-      0.41,
-      2.64,
-      1.71
+      0.584,
+      2.74,
+      1.155
      ]
     },
     {
      "nazwa": "UchoL_Geo",
      "kosc": "UchoL",
-     "trojkaty": 56,
-     "wierzcholki": 32,
+     "trojkaty": 200,
+     "wierzcholki": 104,
      "wymiary": [
-      0.614,
-      0.382,
-      0.35
+      0.627,
+      0.332,
+      0.216
      ],
      "min": [
-      0.313,
-      2.279,
-      0.59
+      0.446,
+      2.331,
+      0.407
      ],
      "max": [
-      0.927,
-      2.661,
-      0.94
+      1.073,
+      2.663,
+      0.623
      ]
     },
     {
      "nazwa": "NogaPrzodL_Geo",
      "kosc": "NogaPrzodL",
-     "trojkaty": 88,
-     "wierzcholki": 48,
+     "trojkaty": 184,
+     "wierzcholki": 96,
      "wymiary": [
-      0.25,
-      1.0,
-      0.29
+      0.22,
+      0.96,
+      0.22
      ],
      "min": [
-      0.135,
+      0.13,
       0.0,
-      0.375
+      0.2
      ],
      "max": [
-      0.385,
-      1.0,
-      0.665
+      0.35,
+      0.96,
+      0.42
      ]
     },
     {
      "nazwa": "NogaTylL_Geo",
      "kosc": "NogaTylL",
-     "trojkaty": 88,
-     "wierzcholki": 48,
+     "trojkaty": 184,
+     "wierzcholki": 96,
      "wymiary": [
-      0.25,
-      1.0,
-      0.29
+      0.22,
+      0.96,
+      0.22
      ],
      "min": [
-      0.135,
+      0.13,
       0.0,
-      -0.675
+      -0.6
      ],
      "max": [
-      0.385,
-      1.0,
-      -0.385
+      0.35,
+      0.96,
+      -0.38
      ]
     },
     {
      "nazwa": "UchoP_Geo",
      "kosc": "UchoP",
-     "trojkaty": 56,
-     "wierzcholki": 32,
+     "trojkaty": 200,
+     "wierzcholki": 104,
      "wymiary": [
-      0.614,
-      0.382,
-      0.35
+      0.627,
+      0.332,
+      0.216
      ],
      "min": [
-      -0.927,
-      2.279,
-      0.59
+      -1.073,
+      2.331,
+      0.407
      ],
      "max": [
-      -0.313,
-      2.661,
-      0.94
+      -0.446,
+      2.663,
+      0.623
      ]
     },
     {
      "nazwa": "NogaPrzodP_Geo",
      "kosc": "NogaPrzodP",
-     "trojkaty": 88,
-     "wierzcholki": 48,
+     "trojkaty": 184,
+     "wierzcholki": 96,
      "wymiary": [
-      0.25,
-      1.0,
-      0.29
+      0.22,
+      0.96,
+      0.22
      ],
      "min": [
-      -0.385,
+      -0.35,
       0.0,
-      0.375
+      0.2
      ],
      "max": [
-      -0.135,
-      1.0,
-      0.665
+      -0.13,
+      0.96,
+      0.42
      ]
     },
     {
      "nazwa": "NogaTylP_Geo",
      "kosc": "NogaTylP",
-     "trojkaty": 88,
-     "wierzcholki": 48,
+     "trojkaty": 184,
+     "wierzcholki": 96,
      "wymiary": [
-      0.25,
-      1.0,
-      0.29
+      0.22,
+      0.96,
+      0.22
      ],
      "min": [
-      -0.385,
+      -0.35,
       0.0,
-      -0.675
+      -0.6
      ],
      "max": [
-      -0.135,
-      1.0,
-      -0.385
+      -0.13,
+      0.96,
+      -0.38
      ]
     },
     {
      "nazwa": "Poroze_Geo",
      "kosc": "Poroze",
-     "trojkaty": 208,
-     "wierzcholki": 128,
+     "trojkaty": 512,
+     "wierzcholki": 276,
      "wymiary": [
-      1.448,
-      1.155,
-      0.269
+      1.508,
+      1.059,
+      0.41
      ],
      "min": [
-      -0.724,
-      2.595,
-      0.7
+      -0.754,
+      2.62,
+      0.099
      ],
      "max": [
-      0.724,
-      3.75,
-      0.969
+      0.754,
+      3.679,
+      0.509
      ]
     },
     {
      "nazwa": "Ogonek_Geo",
      "kosc": "Ogonek",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 80,
+     "wierzcholki": 42,
      "wymiary": [
-      0.26,
-      0.328,
-      0.25
+      0.21,
+      0.294,
+      0.224
      ],
      "min": [
-      -0.13,
-      1.336,
-      -0.985
+      -0.105,
+      1.353,
+      -0.902
      ],
      "max": [
-      0.13,
-      1.664,
-      -0.735
+      0.105,
+      1.647,
+      -0.678
      ]
     }
    ],
-   "trojkaty_razem": 1240,
+   "trojkaty_razem": 5160,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 14
+    "kolory_materialy": 16
    },
    "typ": "stwor",
    "skala": 1.0,
    "wymiary_ciala": [
-    1.854,
-    3.75,
-    2.695
+    2.146,
+    3.679,
+    2.057
    ],
    "wymiary_z_akcesoriami": [
-    1.854,
-    3.75,
-    2.695
+    2.146,
+    3.679,
+    2.057
    ],
    "zakres_z_akcesoriami": [
     [
-     -0.927,
+     -1.073,
      0.0,
-     -0.985
+     -0.902
     ],
     [
-     0.927,
-     3.75,
-     1.71
+     1.073,
+     3.679,
+     1.155
     ]
    ],
    "kosci": [
@@ -325,11 +325,11 @@
  ],
  "uwagi_podgladu": [],
  "kontrola": [
-  "jelonek_gaju.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje brak -> ZGODNE",
-  "jelonek_gaju__spoczynek.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje jelonek_gaju|Scene 1-61 -> ZGODNE",
-  "jelonek_gaju__chod.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje jelonek_gaju|Scene 1-25 -> ZGODNE",
-  "jelonek_gaju__radosc.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje jelonek_gaju|Scene 1-37 -> ZGODNE",
-  "jelonek_gaju__wyklucie.fbx: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje jelonek_gaju|Scene 1-31 -> ZGODNE",
-  "jelonek_gaju.glb: siatki 13, kości 12, trójkąty 1264, wzrost 3.75 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+  "jelonek_gaju.fbx: siatki 13, kości 12, trójkąty 5184, wzrost 3.68 st., akcje brak -> ZGODNE",
+  "jelonek_gaju__spoczynek.fbx: siatki 13, kości 12, trójkąty 5184, wzrost 3.68 st., akcje jelonek_gaju|Scene 1-61 -> ZGODNE",
+  "jelonek_gaju__chod.fbx: siatki 13, kości 12, trójkąty 5184, wzrost 3.68 st., akcje jelonek_gaju|Scene 1-25 -> ZGODNE",
+  "jelonek_gaju__radosc.fbx: siatki 13, kości 12, trójkąty 5184, wzrost 3.68 st., akcje jelonek_gaju|Scene 1-37 -> ZGODNE",
+  "jelonek_gaju__wyklucie.fbx: siatki 13, kości 12, trójkąty 5184, wzrost 3.68 st., akcje jelonek_gaju|Scene 1-31 -> ZGODNE",
+  "jelonek_gaju.glb: siatki 13, kości 12, trójkąty 5184, wzrost 3.68 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
  ]
 }

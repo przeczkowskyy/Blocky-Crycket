@@ -20,12 +20,22 @@
 		4. Skill aktywnego peta (D-101) → StanGracza/Sygnaly/Modyfikatory("ustaw", gracz, "pety", LogikaPetow.modPeta):
 		   przy wejściu gracza, po zakupie, wyborze i odstawieniu ("usun"). Stan gracza składa go z innymi źródłami
 		   w bohatera walki (procent statystyk → pole silnika pet, pasywki żywiołu → premie) i w premię do łupu.
+		5. Zagroda daje Rybki (25.11.2026, sesja główna, propozycja — LICZBY ROBOCZE w ustawienia.json → zagroda):
+		   co D.zagroda.tik_s serwer liczy pety STOJĄCE w zagrodzie (LogikaPetow.stanZagrody: posiadane, bez aktywnego
+		   — on daje skill — i bez petów na wyprawie; wybór gracza albo najrzadsze; najwyżej tyle, ile miejsc ma poziom
+		   zagrody) i dopisuje całe Rybki przez StanGracza/Sygnaly/Pety("przychod") — tylko graczom w grze, bez
+		   zaległości (dt przycięte do tik_maks_s, przychodu offline nie ma); klient dostaje "zagroda_plus", ile (napis).
+		   Miejsca 2 → 4 → 6 → 8: "ulepsz_zagrode" od klienta (przy zagrodzie) → Sygnaly/WydajZloto (cel
+		   D.zagroda.cel_ulepszenia — licznik wydatków na ten cel w profilu JEST poziomem, zakup i poziom w jednym
+		   wywołaniu). Wybór petów do zagrody ("zagroda_dodaj" / "zagroda_zdejmij", id; "zagroda_auto" = najrzadsze)
+		   żyje w profilu przez Sygnaly/DanePakietu (pakiet D.zagroda.pakiet_danych, pole zagroda = lista id).
 	Stan petów żyje w profilu StanGracza (jeden właściciel, pod przyszły zapis). Bez StanGracza: inkubator odmawia
 	z komunikatem, zagroda pokazuje „brak”, żadnych błędów. Atrybuty gracza tego pakietu: dla każdego jajka
 	jajko.atrybuty.cena (cena następnego jajka — napis przy E i wskazówki celu) i jajko.atrybuty.kupione (ile takich
 	jajek gracz kupił — wskazówka „stać cię na pierwsze jajko biomu”), oraz D.atrybuty_gracza.czeka.
 	Haczyk testowy: Sygnaly/SterowanieSerwera ("kup", gracz?, jajko, r?) | ("zwolnij", gracz?) | ("stan", gracz?)
-	| ("wybierz", gracz?, pet, bezZasiegu?) | ("zgodnosc").
+	| ("wybierz", gracz?, pet, bezZasiegu?) | ("zgodnosc") | ("zagroda", gracz?) | ("nalicz", gracz?)
+	| ("ulepsz", gracz?) | ("zagroda_zmien", gracz?, pet, tak) | ("zagroda_auto", gracz?) — bez sprawdzania zasięgu.
 	Działa tylko w Roblox Studio: poza Studio usuwa cały kontener, jak pozostałe prototypy.
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -52,7 +62,8 @@ local function dolicz(nazwa: string)
 end
 
 kontener:SetAttribute("SerwerPetowGotowy", false)
-for _, n in { "LicznikZakupow", "LicznikOdmow", "LicznikWyborow", "LicznikModyfikatorow" } do
+for _, n in { "LicznikZakupow", "LicznikOdmow", "LicznikWyborow", "LicznikModyfikatorow", "LicznikPrzychodow",
+	"LicznikUlepszen", "LicznikZmianZagrody" } do
 	kontener:SetAttribute(n, 0)
 end
 
@@ -94,6 +105,25 @@ end
 
 local function sygnalPetow(): BindableFunction?
 	return sygnalStanu(S.sygnal_petow)
+end
+
+-- jedno wywołanie innego sygnału stanu gracza (WydajZloto, DanePakietu) → wynik albo nil
+local function wolajSygnal(nazwa: string, a: any, b: any, c: any, d: any): any
+	local f = sygnalStanu(nazwa)
+	if not f then
+		return nil
+	end
+	local ok, w = pcall(function()
+		if d ~= nil then
+			return f:Invoke(a, b, c, d)
+		end
+		return f:Invoke(a, b, c)
+	end)
+	if not ok then
+		warn(P .. "StanGracza/" .. nazwa .. ": " .. tostring(w))
+		return nil
+	end
+	return w
 end
 
 -- skill aktywnego peta (D-101) jako modyfikator bohatera: StanGracza/Sygnaly/Modyfikatory, źródło "pety" — procent
@@ -231,6 +261,87 @@ local function kup(gracz: any, idJajka: any, wymuszoneR: any, zZasiegiem: boolea
 	return info
 end
 
+------------------------------------------------------------------ zagroda: Rybki, miejsca, wybór (25.11.2026)
+local wyborZagrody: { [Player]: any } = {} -- lista id (wybór gracza) albo nil (najrzadsze)
+local wczytanyWybor: { [Player]: boolean } = {}
+local tikZagrody: { [Player]: number } = {}
+local resztaZagrody: { [Player]: number } = {}
+local zmianaZagrody: { [Player]: boolean } = {} -- blokada na czas ulepszenia (dwa kliknięcia naraz nie kupią dwa razy)
+local ostrzezonyPrzychod = false
+
+-- Pety zabrane na wyprawę nie stoją w zagrodzie i nie dają Rybek. Wypraw jeszcze nie ma (25.11.2026): tu wpiąć ich
+-- stan — tabela { [id peta] = true } albo nil.
+local function naWyprawie(_gracz: Player): any
+	return nil
+end
+
+local function stanZagrody(gracz: Player, st)
+	return L.stanZagrody(D, st.kopie, st.aktywny, wyborZagrody[gracz], st.wydatki, naWyprawie(gracz))
+end
+
+-- wybór gracza z profilu (Sygnaly/DanePakietu); bez sygnału (starszy stan gracza) — tylko w pamięci serwera
+local function wczytajWybor(gracz: Player)
+	local v = wolajSygnal(S.sygnal_danych, "czytaj", gracz, D.zagroda.pakiet_danych)
+	wyborZagrody[gracz] = if type(v) == "table" then L.czystyWybor(D, v.zagroda) else nil
+	wczytanyWybor[gracz] = true
+end
+
+local function zapiszWybor(gracz: Player, w: any)
+	wyborZagrody[gracz] = w
+	local r = wolajSygnal(S.sygnal_danych, "zapisz", gracz, D.zagroda.pakiet_danych, if w then { zagroda = w } else {})
+	if r ~= nil and (type(r) ~= "table" or not r.ok) then
+		warn(P .. "DanePakietu zapisz: " .. tostring(if type(r) == "table" then r.powod else r))
+	end
+end
+
+-- co D.zagroda.tik_s: Rybki za pety stojące w zagrodzie od poprzedniego razu (tylko gracz w grze, z wczytanym profilem)
+local function naliczZagrode(gracz: Player, t: number)
+	if not graczOk(gracz) or gracz:GetAttribute(S.atrybut_wczytania) == false or not wczytanyWybor[gracz] then
+		tikZagrody[gracz] = nil
+		return nil
+	end
+	local poprz = tikZagrody[gracz]
+	tikZagrody[gracz] = t
+	if poprz == nil then
+		return nil
+	end
+	local st = wolajPety("stan", gracz)
+	if not st or not st.ok then
+		return nil
+	end
+	local z = stanZagrody(gracz, st)
+	local ile, reszta = L.tik(D, resztaZagrody[gracz] or 0, z.stawka_s, t - poprz)
+	resztaZagrody[gracz] = reszta
+	if ile < 1 then
+		return 0
+	end
+	local w = wolajPety("przychod", gracz, { ile = ile, zrodlo = D.kontener, cel = D.zagroda.cel_przychodu })
+	if w and w.ok then
+		dolicz("LicznikPrzychodow")
+		kontener:SetAttribute("OstatniPrzychod", string.format("%s:+%d:%d", gracz.Name, ile, #z.stoja))
+		zdarzenia:FireClient(gracz, "zagroda_plus", ile)
+		return ile
+	end
+	if not ostrzezonyPrzychod then
+		ostrzezonyPrzychod = true
+		warn(P .. "StanGracza/Pety przychod odmówił (" .. tostring(if w then w.powod else "brak sygnału")
+			.. ") — zagroda nie daje Rybek; przebuduj stan gracza (swiat/stan_gracza/zbuduj.py --skrypty)")
+	end
+	return nil
+end
+
+local function tikWszystkich()
+	local t = teraz()
+	for _, g in Players:GetPlayers() do
+		local ok, blad = pcall(naliczZagrode, g, t)
+		if not ok then
+			warn(P .. "zagroda: " .. tostring(blad))
+		end
+	end
+	task.delay(D.zagroda.tik_s, tikWszystkich)
+end
+task.delay(D.zagroda.tik_s, tikWszystkich)
+
 ------------------------------------------------------------------ zagroda: lista, wybór, odstawienie
 local function przyZagrodzie(gracz: Player): boolean
 	local p = polozenie(gracz)
@@ -248,7 +359,8 @@ local function wyslijListe(gracz: Player)
 		zdarzenia:FireClient(gracz, "lista", { brak = true, tekst = D.teksty.brak_stanu })
 		return
 	end
-	zdarzenia:FireClient(gracz, "lista", { wiersze = L.wierszeZagrody(D, st.kopie, st.aktywny), aktywny = st.aktywny })
+	zdarzenia:FireClient(gracz, "lista", { wiersze = L.wierszeZagrody(D, st.kopie, st.aktywny), aktywny = st.aktywny,
+		zagroda = stanZagrody(gracz, st) })
 end
 
 local function wybierz(gracz: Player, pet: any, bezZasiegu: boolean?)
@@ -258,6 +370,8 @@ local function wybierz(gracz: Player, pet: any, bezZasiegu: boolean?)
 	if not bezZasiegu and not przyZagrodzie(gracz) then
 		return odmowa(gracz, "za_daleko", D.teksty.za_daleko)
 	end
+	local przed = wolajPety("stan", gracz)
+	local stary = if przed and przed.ok and type(przed.aktywny) == "string" then przed.aktywny else nil
 	local w = wolajPety("aktywny", gracz, { pet = pet, premia = L.premiaPeta(D, pet) })
 	if not w then
 		return odmowa(gracz, "brak_stanu", D.teksty.brak_stanu)
@@ -266,6 +380,9 @@ local function wybierz(gracz: Player, pet: any, bezZasiegu: boolean?)
 		return odmowa(gracz, tostring(w.powod), D.teksty.nie_masz)
 	end
 	dolicz("LicznikWyborow")
+	if wyborZagrody[gracz] ~= nil then -- wybór ręczny: nowy pet za graczem zwalnia miejsce w zagrodzie dla starego
+		zapiszWybor(gracz, L.poWyborze(D, wyborZagrody[gracz], stary, pet))
+	end
 	ustawModyfikator(gracz, pet)
 	zdarzenia:FireClient(gracz, "wybrany", pet)
 	wyslijListe(gracz)
@@ -276,14 +393,102 @@ local function odstaw(gracz: Player)
 	if not przyZagrodzie(gracz) then
 		return odmowa(gracz, "za_daleko", D.teksty.za_daleko)
 	end
+	local przed = wolajPety("stan", gracz)
+	local stary = if przed and przed.ok and type(przed.aktywny) == "string" then przed.aktywny else nil
 	local w = wolajPety("aktywny", gracz, { odstaw = true })
 	if not w or not w.ok then
 		return odmowa(gracz, "brak_stanu", D.teksty.brak_stanu)
+	end
+	if wyborZagrody[gracz] ~= nil then -- wybór ręczny: odstawiony pet wraca do zagrody (gdy jest miejsce)
+		zapiszWybor(gracz, L.poOdstawieniu(D, wyborZagrody[gracz], stary))
 	end
 	ustawModyfikator(gracz, nil)
 	zdarzenia:FireClient(gracz, "wybrany", nil)
 	wyslijListe(gracz)
 	return { ok = true }
+end
+
+-- „Do zagrody” / „Z zagrody” (tak = true / false): wybór ręczny od tego, co dziś stoi
+local function zmienZagrode(gracz: Player, pet: any, tak: boolean, bezZasiegu: boolean?)
+	if type(pet) ~= "string" or #pet > D.limity.dlugosc_id then
+		return odmowa(gracz, "nie_masz", D.teksty.nie_masz)
+	end
+	if not bezZasiegu and not przyZagrodzie(gracz) then
+		return odmowa(gracz, "za_daleko", D.teksty.za_daleko)
+	end
+	local st = wolajPety("stan", gracz)
+	if not st or not st.ok or not wczytanyWybor[gracz] then
+		return odmowa(gracz, "brak_stanu", D.teksty.brak_stanu)
+	end
+	local nowy, powod = L.zmienWybor(D, st.kopie, st.aktywny, wyborZagrody[gracz], st.wydatki, naWyprawie(gracz),
+		pet, tak)
+	if powod == "ok" then
+		zapiszWybor(gracz, nowy)
+		dolicz("LicznikZmianZagrody")
+	elseif powod ~= "juz" and powod ~= "nie_stoi" then
+		local teksty = { nie_masz = D.teksty.nie_masz, aktywny = D.teksty.aktywny_nie_w_zagrodzie, pelna = D.teksty.pelna }
+		return odmowa(gracz, powod, teksty[powod] or D.teksty.blad)
+	end
+	wyslijListe(gracz)
+	return { ok = true, powod = powod, wybor = wyborZagrody[gracz] }
+end
+
+local function zagrodaAuto(gracz: Player, bezZasiegu: boolean?)
+	if not bezZasiegu and not przyZagrodzie(gracz) then
+		return odmowa(gracz, "za_daleko", D.teksty.za_daleko)
+	end
+	zapiszWybor(gracz, nil)
+	dolicz("LicznikZmianZagrody")
+	wyslijListe(gracz)
+	return { ok = true }
+end
+
+-- więcej miejsc u opiekunki: cena z poziomu (licznik wydatków na cel ulepszenia), Rybki przez WydajZloto — ten sam
+-- licznik jest poziomem, więc zakup i poziom zapisują się razem; za mało Rybek = odmowa z kwotą, nic nie zmienione
+local function ulepszZagrode(gracz: Player, bezZasiegu: boolean?)
+	if not bezZasiegu and not przyZagrodzie(gracz) then
+		return odmowa(gracz, "za_daleko", D.teksty.za_daleko)
+	end
+	if zmianaZagrody[gracz] then
+		return odmowa(gracz, "zajeta", D.teksty.zagroda_zajeta)
+	end
+	zmianaZagrody[gracz] = true -- przed pierwszym wywołaniem stanu: drugie kliknięcie w tym czasie dostaje odmowę
+	local ok, w = pcall(function()
+		local st = wolajPety("stan", gracz)
+		if not st or not st.ok or not sygnalStanu(S.sygnal_wydatkow) then
+			return odmowa(gracz, "brak_stanu", D.teksty.brak_stanu)
+		end
+		local poziom = L.poziomZagrody(D, st.wydatki)
+		local cena = L.cenaUlepszenia(D, poziom)
+		if cena == nil then
+			return odmowa(gracz, "max", string.format(D.teksty.ulepsz_max, L.miejscaZagrody(D, poziom)))
+		end
+		local r = wolajSygnal(S.sygnal_wydatkow, gracz, { ile = cena, zrodlo = D.kontener, cel = D.zagroda.cel_ulepszenia })
+		if type(r) ~= "table" then
+			return odmowa(gracz, "brak_stanu", D.teksty.brak_stanu)
+		end
+		if not r.ok then
+			if r.powod == "za_malo" then
+				return odmowa(gracz, "za_malo", L.tekstBrakuUlepszenia(D, r.brakuje, r.zloto, cena))
+			end
+			return odmowa(gracz, tostring(r.powod), D.teksty.blad)
+		end
+		local nowy = L.poziomZagrody(D, { [D.zagroda.cel_ulepszenia] = r.licznik })
+		local miejsc = L.miejscaZagrody(D, nowy)
+		dolicz("LicznikUlepszen")
+		kontener:SetAttribute("OstatnieUlepszenie", string.format("%s:%d:%d:%dz", gracz.Name, nowy, miejsc, cena))
+		zdarzenia:FireClient(gracz, "zagroda_ulepszona", miejsc)
+		return { ok = true, poziom = nowy, miejsc = miejsc, cena = cena, zloto = r.zloto }
+	end)
+	zmianaZagrody[gracz] = nil
+	if not ok then
+		warn(P .. "ulepszenie zagrody: " .. tostring(w))
+		return odmowa(gracz, "blad", D.teksty.blad)
+	end
+	if w.ok then
+		wyslijListe(gracz)
+	end
+	return w
 end
 
 ------------------------------------------------------------------ zdarzenia od klienta (bez liczb, z limitem)
@@ -305,6 +510,14 @@ zdarzenia.OnServerEvent:Connect(function(gracz: Player, polecenie: any, a: any)
 			wybierz(gracz, a, false)
 		elseif polecenie == "odstaw" then
 			odstaw(gracz)
+		elseif polecenie == "zagroda_dodaj" then
+			zmienZagrode(gracz, a, true, false)
+		elseif polecenie == "zagroda_zdejmij" then
+			zmienZagrode(gracz, a, false, false)
+		elseif polecenie == "zagroda_auto" then
+			zagrodaAuto(gracz, false)
+		elseif polecenie == "ulepsz_zagrode" then
+			ulepszZagrode(gracz, false)
 		elseif polecenie == "czekaj" then
 			local czeka = if a == true then true else nil
 			if gracz:GetAttribute(AG.czeka) ~= czeka then
@@ -372,13 +585,14 @@ end)
 local function zProfilu(gracz: Player)
 	local st = wolajPety("stan", gracz)
 	ustawCeny(gracz, wydatki(st))
+	wczytajWybor(gracz) -- wybór petów do zagrody (DanePakietu); od teraz zagroda nalicza Rybki
 	-- modyfikator od razu przy wejściu (przejmuje źródło "pety" w stanie gracza, zanim przyjdzie pierwszy łup)
 	ustawModyfikator(gracz, if st and type(st.aktywny) == "string" then st.aktywny else nil)
 end
 
 -- zapis postępu (D-110, 19.11.2026): StanGracza wczytuje profil po wejściu; do końca (atrybut gracza
 -- StanGraczaWczytany = false) Pety i Modyfikatory odmawiają — ceny i skill peta ustawiamy, gdy atrybut zmieni się na true
-local ATR_WCZYTANIA = "StanGraczaWczytany"
+local ATR_WCZYTANIA = S.atrybut_wczytania
 
 local function nowyGracz(gracz: Player)
 	ustawCeny(gracz, {})
@@ -406,6 +620,12 @@ end
 Players.PlayerRemoving:Connect(function(gracz: Player)
 	zajety[gracz] = nil
 	ostatnie[gracz] = nil
+	-- zagroda: bez przychodu offline — po wyjściu nic się nie nalicza, po powrocie liczy się od nowa
+	wyborZagrody[gracz] = nil
+	wczytanyWybor[gracz] = nil
+	tikZagrody[gracz] = nil
+	resztaZagrody[gracz] = nil
+	zmianaZagrody[gracz] = nil
 end)
 
 ------------------------------------------------------------------ haczyk testowy
@@ -431,6 +651,18 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		return true
 	elseif polecenie == "wybierz" then
 		return wybierz(g, b, c == true)
+	elseif polecenie == "zagroda" then
+		local st = wolajPety("stan", g)
+		return { stan = if st and st.ok then stanZagrody(g, st) else nil, wybor = wyborZagrody[g],
+			wczytany = wczytanyWybor[g] == true, reszta = resztaZagrody[g], tik = tikZagrody[g] }
+	elseif polecenie == "nalicz" then
+		return naliczZagrode(g, teraz())
+	elseif polecenie == "ulepsz" then
+		return ulepszZagrode(g, true)
+	elseif polecenie == "zagroda_zmien" then
+		return zmienZagrode(g, b, c == true, true)
+	elseif polecenie == "zagroda_auto" then
+		return zagrodaAuto(g, true)
 	elseif polecenie == "stan" then
 		local st = wolajPety("stan", g)
 		local ceny, kupioneJ = {}, {}

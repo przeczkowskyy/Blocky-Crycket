@@ -19,6 +19,7 @@
 		czystyLup(D, lup), czystyPrzyrost(D, info) → kopia ze znanymi polami albo nil, powód
 		sumaLupow(D, lista), nowyProfil(D), rowne(a, b), sprawdzPrzypadki(D) → ok, n, bledy
 		czystyWydatek(D, info), czystaPremia(D, premia) → kopia albo nil, powód   (17.11.2026, swiat/pety_proba)
+		czystyPrzychod(D, info)                   → kopia albo nil, powód   (25.11.2026, Pety "przychod" — zagroda)
 		wydaj(D, zloto, ile)                      → Złoto po, brakuje (nigdy poniżej zera)
 		premiaLupu(D, lup, premia)                → { zloto, doswiadczenie } — dodatek od aktywnego peta
 	lupZwyklego(D, poziom)                    → Złoto za wygraną ze zwykłym potworem na tym poziomie (17.11.2026)
@@ -367,6 +368,29 @@ function L.czystyWydatek(D, info)
 	end
 	local znane = false
 	for _, z in D.wydatki.zrodla do
+		if info.zrodlo == z then
+			znane = true
+		end
+	end
+	if type(info.zrodlo) ~= "string" or not znane then
+		return nil, "zle_zrodlo"
+	end
+	if not L.nazwaOk(D, info.cel) then
+		return nil, "zly_cel"
+	end
+	return { ile = ile, zrodlo = info.zrodlo, cel = info.cel }, "ok"
+end
+
+function L.czystyPrzychod(D, info)
+	if type(info) ~= "table" then
+		return nil, "zly_przychod"
+	end
+	local ile = info.ile
+	if not calkowita(ile, D.przychody.kwota_maks) or ile < 1 then
+		return nil, "zla_kwota"
+	end
+	local znane = false
+	for _, z in D.przychody.zrodla do
 		if info.zrodlo == z then
 			znane = true
 		end
@@ -1032,6 +1056,10 @@ function L.sprawdzPrzypadki(D)
 	for i, c in P.wydatek do
 		local w, powod = L.czystyWydatek(D, c.info)
 		sprawdz("wydatek", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.przychod do
+		local w, powod = L.czystyPrzychod(D, c.info)
+		sprawdz("przychod", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
 	end
 	for i, c in P.wydaj do
 		local z, brak = L.wydaj(D, c.zloto, c.ile)

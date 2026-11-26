@@ -158,7 +158,22 @@
     "zasieg_pokazu": 70,
     "napis_tablicy": "TWOJE PETY",
     "napis_proby": "PRÓBA",
-    "napis_e": "Wybierz peta"
+    "napis_e": "Wybierz peta",
+    "_rybki": "25.11.2026 (sesja główna, propozycja): pety stojące w zagrodzie dają Rybki (atrybut Gold, D-146) na sekundę, tylko gdy gracz jest w grze; pet idący za graczem (i pet na wyprawie — wypraw jeszcze nie ma) nie stoi w zagrodzie. Miejsca 2 → 4 → 6 → 8, ulepszenie u opiekunki Jagody za Rybki. LICZBY ROBOCZE / PRZYJĘTE, DO ZMIANY: stawki_s, mnozniki_jajek, poziomy[].cena, tik_s — rachunek: ekonomia_zagrody.py.",
+    "poziomy": [
+      {"miejsc": 2, "cena": 0},
+      {"miejsc": 4, "cena": 1000},
+      {"miejsc": 6, "cena": 3000},
+      {"miejsc": 8, "cena": 7500}
+    ],
+    "cel_ulepszenia": "zagroda_miejsca",
+    "stawki_s": {"pospolity": 0.015, "zwykly": 0.025, "rzadki": 0.04, "epicki": 0.065, "legendarny": 0.1},
+    "mnozniki_jajek": {"jajko_lesne": 1, "jajko_bagienne": 2.5, "jajko_dzungli": 4.5},
+    "tik_s": 5,
+    "tik_maks_s": 15,
+    "pakiet_danych": "PetyProba",
+    "cel_przychodu": "zagroda",
+    "plus_s": 1.6
   },
   "wyklucie": {
     "przed_gniazdem": 4.4,
@@ -213,7 +228,24 @@
     "odstaw": "Odstaw peta",
     "zamknij": "Zamknij",
     "wybierz": "Wybierz",
-    "aktywny": "IDZIE ZA TOBĄ"
+    "aktywny": "IDZIE ZA TOBĄ",
+    "zagroda_stan": "ZAGRODA: %d/%d miejsc · %s",
+    "przychod_min": "+%s Rybek/min",
+    "przychod_pusta": "pusta — pety w zagrodzie dają Rybki",
+    "w_zagrodzie": "w zagrodzie: %s",
+    "ulepsz": "Więcej miejsc: %d za %d Rybek",
+    "ulepsz_max": "Najwięcej miejsc (%d)",
+    "za_malo_ulepszenie": "Brakuje ci %d Rybek (masz %d, ulepszenie kosztuje %d)",
+    "ulepszona": "Miejsca w zagrodzie: %d",
+    "do_zagrody": "Do zagrody",
+    "z_zagrody": "Z zagrody",
+    "najrzadsze": "Najrzadsze",
+    "pelna": "Zagroda pełna — zdejmij peta albo dokup miejsca",
+    "aktywny_nie_w_zagrodzie": "Pet idący za tobą nie stoi w zagrodzie",
+    "plus": "+%d Rybek",
+    "plus_1": "+%d Rybka",
+    "plus_2_4": "+%d Rybki",
+    "zagroda_zajeta": "Chwila — zagroda się zmienia"
   },
   "ukrycie": {
     "hud": "HUD",
@@ -233,7 +265,10 @@
     "zdarzenia": "ZdarzeniaStanu",
     "atrybut_aktywnego": "PetAktywny",
     "atrybut_liczby": "PetyLiczba",
-    "atrybut_zlota": "Gold"
+    "atrybut_zlota": "Gold",
+    "sygnal_wydatkow": "WydajZloto",
+    "sygnal_danych": "DanePakietu",
+    "atrybut_wczytania": "StanGraczaWczytany"
   },
   "atrybuty_gracza": {"czeka": "PetCzeka"}
 }
