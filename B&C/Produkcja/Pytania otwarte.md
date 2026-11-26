@@ -1065,3 +1065,12 @@ Gra: bc
 
 Szczegóły: tak działa skrypt serwera treningu (`src/server/TreningAFK.server.luau`, kod Pawła): przy zajętym stanowisku serwer po cichu odrzuca drugiego gracza. Zdanie agenta (D-114): (a) — trening AFK ma zatrzymywać graczy na długo, więc jeden gracz może blokować np. Siłę godzinami, a kolejka do sześciu stanowisk przy kilkunastu graczach na serwerze byłaby powodem do wyjścia z gry; (a) nie wymaga przebudowy sali. Koszt (a): zdjęcie blokady w skrypcie serwera i ukrywanie u gracza innych trenujących na jego stanowisku (kto nie trenuje, widzi na stanowisku jednego gracza). Zmienię zdanie, jeśli widok kolegi trenującego obok jest dla Was ważniejszy niż brak kolejek — wtedy (c). Nic z tego nie jest zrobione; czeka na decyzję. Dotyczy D-158.
 **Odpowiedź:**
+
+## 110. Stare inkubatory Bagna i Dżungli obok nowych jajek — schować?
+- Od 26.11 w Bagnie i Dżungli stoją nowe jajka ze scenką otwierania. Stare inkubatory z klocków stoją 13–16 studów obok i dalej sprzedają to samo jajko własnym E.
+- Strzałka celu „kup jajko” prowadzi do starego inkubatora, nie do nowego jajka.
+- Do wyboru: (a) schować stary inkubator tam, gdzie stoi nowe jajko, i przepiąć strzałkę celu na nowe jajko; (b) zostawić oba; (c) przenieść nowe jajko na miejsce starego inkubatora.
+Gra: bc
+
+Szczegóły: zdanie agenta (D-114): (a) — dwa miejsca zakupu tego samego jajka obok siebie mylą gracza, a nowe jajko ma lepszą scenkę. Koszt (a): zmiana w pakiecie petów i we wskazówkach celu oraz przepięcie prób petów Bagna i Dżungli na nowe jajko (dziś kupują w starym inkubatorze). Leśne jajo Pawła stoi w miasteczku, a leśny inkubator przy wejściu do lasu — tego pytanie nie dotyczy. Miejsce inkubatora w biomie: D-076.
+**Odpowiedź:**

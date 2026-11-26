@@ -8,7 +8,7 @@ tags: [produkcja, zadania]
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
 - [ ] Paweł i Karol: ocenić jajka Bagna i Dżungli w grze — modele i scenkę otwierania (raport „Jajka Bagna i Dżungli w grze: modele i scenka otwierania” w panelu); Paweł: do wiadomości poprawka w `src/server/JajkoKorowe.server.luau` — po odmowie zakupu (np. brak Rybek) gracz był blokowany na 45 s i dostawał „Jajko już pęka…”, teraz blokada schodzi od razu (dotyczy też leśnego jaja) · #wysoki #gra/bc
-- [ ] Jajka Bagna i Dżungli: stary inkubator z pakietu petów stoi ok. 13–16 studów od nowego jajka i ma własne E; przy zakupie z nowego jajka gra też swoją animację, a komunikat „Wykluł się: …” na dole ekranu zdradza peta, zanim gracz otworzy jajo (komunikat dotyczy też leśnego). Propozycja agenta: zakup ze scenki bez pokazu inkubatora i komunikatu; inkubator biomu chowa się, gdy stoi tam nowe jajko · agent: Karol · #wysoki #gra/bc
+- [ ] Karol i Paweł: pytanie 110 — stare inkubatory Bagna i Dżungli obok nowych jajek: schować i przepiąć strzałkę celu „kup jajko” na nowe jajko? (dziś strzałka prowadzi do starego inkubatora; od inkubatorów zależą próby petów) · #średni #gra/bc
 - [ ] Paweł: obejrzeć „czystą zagrodę” — Karol 26.11 kazał usunąć bramkę z łapą-szyldem (dopisek pod D-157, jeden podpis) · #średni #gra/bc
 - [ ] Karol i Paweł: pytanie 109 — kilku graczy przy jednym stanowisku treningu AFK (dziś drugi gracz jest po cichu odrzucany; propozycja agenta: kilku graczy naraz, każdy widzi na stanowisku tylko siebie) · #wysoki #gra/bc
 - [ ] Chwyty w klipach walki (do decyzji Karola i Pawła, D-156): koniec rękojeści wchodzi w ramię w trzech klipach walki (miecze do 0,11 studa, proca 0,21); łuk, tarcza i księga w lewej łapie wchodzą w ciało w klipach walki (klipy pisane dla pustej łapy) i zahaczają o ogon w chodzie. Propozycje agenta: mniejszy wymach lewej łapy z przedmiotem, własne klipy walki dla łuku i tarczy · #średni #gra/bc
@@ -200,6 +200,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-26: Jajka — zakup ze scenki bez pokazu inkubatora: napis „Wykluł się: …” pojawia się dopiero po odsłonięciu peta (razem z „NEW PET!”), stary inkubator nie gra swojej animacji, pet rusza za graczem po scence; dotyczy leśnego, Bagna i Dżungli; zakup w starym inkubatorze bez zmian; próba jajek na prawdziwych modelach 36 punktów bez niezaliczeń, pełna próba petów lasu 17 punktów bez niezaliczeń
 - [x] 2026-11-26: Przedmioty wojownika w upadku nie wchodzą pod ziemię (Paweł: „poprawić, żeby nie były pod ziemią”) — korekta upadku jako dana przedmiotu: miecz ląduje płasko przed kotem, hełm staje obok głowy, łuk i tarcza pod lewą łapą; najniższy punkt +0,01…+0,035 studa nad ziemią (było do −0,79); kontrola `pula_wojownika.py --ruch` obejmuje upadek; plansze i raport w panelu; modele i plansze, jeszcze nie w grze
 - [x] 2026-11-26: Karol potwierdził D-157 i D-158 („Potwierdzam obie”) — obie mają dwa podpisy
 - [x] 2026-11-26: „Czysta zagroda” (zlecenie Karola) — z zagrody zniknęła bramka z łapą-szyldem (16 części; mapa 4286 części, 0 błędów, testy bazaru 38 z 38); próba zagrody w Play 15 punktów bez niezaliczeń (osiem z ośmiu petów w ruchu)
