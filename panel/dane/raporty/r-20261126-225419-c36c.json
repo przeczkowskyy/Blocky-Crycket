@@ -1,0 +1,14 @@
+{
+ "id": "r-20261126-225419-c36c",
+ "tytul": "Sprzątanie mapy: start w miasteczku, stare miejsca usunięte",
+ "opis_md": "Polecenie Karola z 26.11: gracz ma trafiać od razu do miasteczka, a stare, placeholderowe miejsca mają zniknąć (decyzja D-159, czeka na Pawła).\n\n**Co się zmieniło w grze**\n- Start gracza stoi na początku miasteczka-bazaru.\n- Zniknęły: stara wioska, brama i mapa BONK, portal i stary las, stare Krzywe Miasteczko, wystawa ras, stara próba walki, tablica Training Center, przymierzalnia, przejścia stare ↔ nowe miasteczko — 51 212 części, ponad połowa mapy.\n- Zniknęła też arena starych mini-gier (2,8 tys. części); został niewidoczny sygnał, którym trening zapisuje statystyki.\n- Szara płyta pod mapą jest ukryta (da się przywrócić jednym poleceniem).\n\n**Sprawdzone w grze:** krótka droga gracza od startu w miasteczku przez las, walkę i powrót — bez błędów; regresja 21 prób po sprzątaniu — wyniki w dzienniku.\n\n**Skutki uboczne do decyzji**\n- Nie ma gdzie ręcznie zmienić stroju (pytanie 112).\n- Wystawę ras trzeba odbudować przed następnym wdrożeniem ekranu wyboru klasy (zadanie dla agenta Pawła).\n\n**Nie sprawdzono:** telefonu, dwóch graczy naraz.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T22:54:19+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ],
+ "gra": "bc"
+}

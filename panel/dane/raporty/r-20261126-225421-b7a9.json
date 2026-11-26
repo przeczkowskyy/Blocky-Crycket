@@ -1,0 +1,11 @@
+{
+ "id": "r-20261126-225421-b7a9",
+ "tytul": "Muzyka miasteczka: utwory A i B w grze",
+ "opis_md": "Karol po odsłuchu trzech próbek: „A najlepsza, potem B”.\n\n**Co się zmieniło w grze**\n- W miasteczku grają dwa nowe utwory: A „targ kotów” i B „psotny”.\n- Trzy dotychczasowe utwory zostają jako zastępcze — zagrają tylko wtedy, gdy nowy plik się nie wczyta.\n\n**Jak to zrobione:** oba utwory są w jednym pliku (1 min 47 s), wgranym do Roblox za zgodą Karola; Karol nadał grze prawa do pliku. To dziewiąte wgranie audio w listopadzie (limit 10).\n\n**Sprawdzone w grze:** próba dźwięku bez błędów — plik się wczytuje, w miasteczku grają nowe utwory, muzyka walki i powrót do muzyki miasteczka działają.\n\n**Do oceny na słuch:** to próbki 60-sekundowe, więc pętla jest krótsza niż przy starych utworach (ok. 52 s). Dłuższe wersje wymagają nowego generowania.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T22:54:21+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [],
+ "gra": "bc"
+}

@@ -1,0 +1,13 @@
+{
+ "id": "r-20261126-225420-9f14",
+ "tytul": "Pety: sprzedaż, zarobek na sekundę, tylko nowe jajka",
+ "opis_md": "Polecenia Karola z 26.11 (decyzje D-160 i D-161, czekają na Pawła).\n\n**Co się zmieniło w grze**\n- Stare inkubatory zniknęły. Jajko kupuje się tylko przy nowym jajku ze scenką otwierania (leśne stoi w miasteczku przy zagrodzie).\n- Każdy kafelek w oknie petów pokazuje zarobek peta na sekundę (np. „+0.1/s”).\n- Przycisk SELL włącza zaznaczanie petów; stopka pokazuje, ile sztuk i za ile, drugie dotknięcie potwierdza.\n- Cena sprzedaży kopii: 6 / 12 / 25 / 45 / 80% ceny jajka według rzadkości. Średnio wraca ok. 15%, więc kupowanie i sprzedawanie się nie opłaca.\n- Nie da się sprzedać ostatniej sztuki peta, który idzie za graczem, ani ostatniej sztuki peta stojącego w zagrodzie.\n\n**Pliki Pawła:** okno petów (`OknoPetowClient`, `OknoPetow`) zmienił agent Karola na polecenie Karola — do obejrzenia przez Pawła.\n\n**Sprawdzone w grze:** próby petów lasu, Bagna i Dżungli (17, 14 i 14 punktów) i próba jajek (36 OK) bez błędów; próba zagrody 19 punktów bez błędów — sprzedane 3 kopie za 81 Rybek, odmowy i ograniczenie tempa działają.\n\n**Do decyzji (pytanie 113):** zarobek na kafelku jest na sekundę, a okno zagrody liczy na minutę; procenty sprzedaży.\n\n**Zdjęcie:** z próby — na oknie petów leży jeszcze okno próbne zagrody; trybu SELL z zaznaczonymi petami na zdjęciu nie ma.\n\n**Nie sprawdzono:** telefonu, czytelności małego napisu zarobku na małym ekranie.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T22:54:20+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg"
+ ],
+ "gra": "bc"
+}
