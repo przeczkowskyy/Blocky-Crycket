@@ -600,7 +600,7 @@ local function updateAlert()
 	end
 	local any = false
 	for _, node in pairs(Data.Nodes) do
-		if canBuy(node) then
+		if not Data.HiddenTabs[node.tab] and canBuy(node) then
 			any = true
 			break
 		end
@@ -764,6 +764,10 @@ end
 
 for name, tab in pairs(TAB_BY_BUTTON) do
 	local b = tabs:WaitForChild(name)
+	if Data.HiddenTabs[tab] then
+		b.Visible = false -- zakładka wyłączona (Data.HiddenTabs) — bez przycisku
+		continue
+	end
 	tabSetters[name] = flatButton(b, function()
 		if currentTab ~= tab then
 			selectTab(tab)
