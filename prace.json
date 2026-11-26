@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T13:36:45+01:00",
+ "aktualizacja": "2026-11-26T13:47:45+01:00",
  "prace": [
   {
    "id": "helmy-oslony-chwyty",
@@ -22,10 +22,10 @@
    "id": "pety-luzem",
    "tytul": "Zagroda: pety chodzą luzem zamiast stać na legowiskach",
    "stan": "w_toku",
-   "etap": "Kod i testy gotowe; próba w Studio po zwolnieniu kolejki",
+   "etap": "Wdrożenie w Studio i próba w Play",
    "start": "2026-11-26T11:53:19+01:00",
    "koniec_szacowany": "2026-11-26T14:30:00+01:00",
-   "aktualizacja": "2026-11-26T12:06:28+01:00",
+   "aktualizacja": "2026-11-26T13:37:10+01:00",
    "obszary": [
     "swiat/pety_proba/**"
    ],
