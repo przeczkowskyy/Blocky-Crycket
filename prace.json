@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-26T13:56:21+01:00",
+ "aktualizacja": "2026-11-26T13:56:51+01:00",
  "prace": [
   {
    "id": "helmy-oslony-chwyty",
@@ -28,19 +28,6 @@
    "aktualizacja": "2026-11-26T13:54:02+01:00",
    "obszary": [
     "swiat/pety_proba/**"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-pula_wojownika_mleczarz",
-   "tytul": "Przebudowa modelu pula_wojownika_mleczarz",
-   "stan": "w_toku",
-   "start": "2026-11-26T13:56:21+01:00",
-   "koniec_szacowany": "2026-11-26T14:16:21+01:00",
-   "aktualizacja": "2026-11-26T13:56:21+01:00",
-   "obszary": [
-    "model:pula_wojownika_mleczarz"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
