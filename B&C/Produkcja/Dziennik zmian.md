@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-26 · Claude Code u Karola (noc, część piąta: końcowa regresja całej gry)
+- **Końcowa regresja (04:38–06:08, 24 próby w Play, po napisach „Rybki”):** 22 próby bez niezaliczeń, liczone po wierszach „BŁĄD”, a nie po kodach wyjścia. Kowal, sklep, bazar i stan gracza, które o 01:06 miały niezaliczenia, przeszły czysto. Sam skrypt, bez agentów.
+- **Dwa niezaliczenia:**
+  - walka (próba v3): znane od 18.11 za małe napisy w panelu wyboru na telefonie (10–11 punktów) — bez zmian, czeka na decyzję ludzi ([[Zadania]]);
+  - bohater, punkt B20 (bieg w ścianę): stopy w spoczynku przesunięte o 0,087 studa przy progu 0,05. Powtórka samej próby o 06:09 przeszła (20 OK, 0 niezaliczeń), tak samo przebieg o 02:02. Pakietu bohatera nie zmieniano od 19.11, więc to niestabilny punkt próby, a nie skutek nocnych zmian; zadanie w [[Zadania]].
+- **Punkty bez pokrycia („?”), które czekają na ludzi:** punkty statystyk za poziom bez sposobu wydania w grze (S14, pytanie 89) oraz okna Pawła bez próby na telefonie (K12 kowala, S08 sklepu). Pozostałe „?” to zrzuty i pomiary do obejrzenia.
+- Odświeżone pliki wyników prób kowala, strojów i walki.
+
 ## 2026-11-26 · Claude Code u Karola (noc, część czwarta: napisy „Rybki” zamiast „Złota”)
 - **D-146 w naszych pakietach** (agent na Opus, ok. 0,37 mln tokenów, 50 min): 25 tekstów źródłowych w pakietach kowala, sklepu, petów, stanu gracza, wskazówek i na karcie wyniku walki mówi „Rybki” zamiast „Złota”. Odmiana przy liczbie: „+1 Rybka”, „+3 Rybki”, „750 Rybek”, „Kup za 1 Rybkę”, „Brakuje ci 1 Rybki”. Identyfikatory i atrybut `Gold` bez zmian (bez migracji zapisu).
 - **Jak:** każdy pakiet ma jedną funkcję odmiany w Luau i jej lustro w Pythonie, z testami dla 15 liczb. Zmienione źródła, pliki generowane odtworzone generatorami pakietów.

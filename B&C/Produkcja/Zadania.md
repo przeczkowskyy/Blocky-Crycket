@@ -164,6 +164,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Paweł: klucz zatwierdzania na własny telefon albo własny panel — `python panel/serwer.py --klucz-gd` na komputerze z panelem wypisuje link ([[Panel zespołu]]) · #średni
 
 ## 📥 Backlog
+- [ ] Bohater w świecie: punkt B20 próby (bieg w ścianę) nie przechodzi raz na trzy przebiegi (26.11: dwa razy OK, raz stopy w spoczynku przesunięte o 0,087 studa przy progu 0,05 i krótki powrót do chodu) — sprawdzić, czy postać drga przy ścianie, czy to pomiar · agent Karola · #niski
 - [ ] Gracz chodzi modelem swojej RASY (Paweł 18.11): po wyborze rasy bohater w świecie (`swiat/bohater_swiat`) ma ciało rasy z figur `Workspace/RasyProba` w bazowym stroju zamiast Rycerza / Zwiadowcy / Kota-Maga; atrybut gracza `Race` (`Human`, `Demon`, `DarkElf`, `Elf`, `Orc`, `Goblin`; Półbóg zablokowany), mapowanie na figury w `src/shared/RaceData.luau` (`model`). Otwarte: klipy i przedmioty Maga dla ciała człowieka (pytanie 68) · agent: Karol · #wysoki
 - [ ] **Zapis rasy w `StanGracza`** (Karol) — dziś zapisywana jest tylko klasa, więc gracz wybiera rasę przy każdym wejściu (Paweł 23.11, przy naprawie znikającego UI).
 
@@ -194,6 +195,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Końcowa regresja całej gry po nocy 25/26.11 (24 próby, po napisach „Rybki”): 22 próby bez niezaliczeń; kowal, sklep, bazar i stan gracza czysto; zostają znane małe napisy w próbie walki na telefonie i niestabilny punkt B20 bohatera · agent Karola · 2026-11-26
 - [x] Napisy waluty: „Rybki” zamiast „Złota” (D-146) w pakietach kowala, sklepu, petów, stanu gracza, wskazówek i na karcie wyniku walki — 25 tekstów z odmianą przy liczbie, w Studio; próby bez niezaliczeń · agent Karola · 2026-11-26
 - [x] Regresja całej gry po nocy 25/26.11 (24 próby) i naprawy: manekin w sali Training Center, tabliczka przy bramie BONK, okna próbne sklepu i kowala ustępują oknom Pawła, próby dostosowane do jego okien; ponowne próby bez niezaliczeń · agent Karola · 2026-11-26
 - [x] Bazar: testy pakietu `miasteczko_bazar_gra` dostosowane do HUD Pawła z 25.11 („Index”, szuflada questów, sygnał okien) — 38 z 38 · agent Karola · 2026-11-26
