@@ -32,7 +32,9 @@ Bryły: same bloki, kliny i walce (bez ostrosłupów), żeby komplet mieścił s
     python -B swiat/postacie/pula_wojownika.py --przenikanie # broń w głowie, hełmie i tułowiu w klipach walki kota
     python -B swiat/postacie/pula_wojownika.py --uszy        # czy hełmy mieszczą uszy kota (zapas w studach)
     python -B swiat/postacie/pula_wojownika.py --ruch        # broń vs całe ciało i ziemia, klatka po klatce, każdy
-                                                             # klip kota (miecze zestawów + pozostałe rodzaje chwytu)
+                                                             # klip kota (miecze zestawów + pozostałe rodzaje chwytu);
+                                                             # upadek: broń, hełm i przedmiot lewej łapy z korektą
+                                                             # upadku względem ziemi co pół klatki (kod 1 pod progiem)
     python -B swiat/postacie/pula_wojownika.py --razem       # plansza zbiorcza zrobionych zestawów (po przebudowach)
     python -B swiat/postacie/przebuduj.py pula_wojownika_giermek --bez-filmow     # modele, ikony, plansze zestawu
     python -B swiat/postacie/przebuduj.py pula_wojownika_chwyty --bez-filmow      # plansze: chwyty, hełm z uszami
@@ -49,7 +51,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, REPO)
 
 from swiat.postacie import chwyty as CH  # noqa: E402
-from swiat.postacie.biblioteka.postac import Akcesorium, macierz_obrotu, razy_wektor  # noqa: E402
+from swiat.postacie.biblioteka.postac import Akcesorium, katy_z_macierzy, macierz_obrotu, razy_wektor  # noqa: E402
 from swiat.postacie.ekwipunek import ZNACZNIKI_CIALA, Przedmiot, ubierz  # noqa: E402
 
 BOHATER = "kot_rycerz"
@@ -1007,8 +1009,18 @@ def warianty(zestaw, id_modulu, rodzaj="plansze"):
 
 
 def ekwipunek_json(zestaw, id_modulu):
-    """Dane ekwipunku (EKWIPUNEK.md pkt 5): jak kot_mag.ekwipunek_json, przedmioty na zaczepie z korektą kota."""
+    """Dane ekwipunku (EKWIPUNEK.md pkt 5): jak kot_mag.ekwipunek_json, przedmioty na zaczepie z korektą kota;
+    część na zaczepie ma też „korekta_upadku” (chwyty.py, KOREKTA UPADKU: grupa, od_klatki, do_klatki, pos, rot
+    w ramce tego samego zaczepu; null — w upadku zostaje korekta chwytu), a bohater pole „upadek” (zasada)."""
     z = ZESTAWY[zestaw]
+    prz = przedmioty(zestaw)
+    opisy = [x.opis(KOREKTY_CHWYTU) for x in prz]
+    for x, o in zip(prz, opisy):
+        for s, cz in zip(x.segmenty, o["czesci"]):
+            if s["kosc"] is None:
+                kor = korekta_upadku(s["akc"])
+                cz["korekta_upadku"] = None if kor is None else {
+                    k: kor[k] for k in ("grupa", "od_klatki", "do_klatki", "pos", "rot")}
     return {"bohater": BOHATER, "cialo": KM.CIALO_TYP, "klasy": list(KLASY), "pula": "Lv 1-10",
             "arkusz": z["nazwa"], "kolumna_arkusza": z["kolumna"], "komplet_z_premia": z["komplet"],
             "kanon": list(komplet(zestaw)), "stroje": {"golas": [], "komplet": list(komplet(zestaw))},
@@ -1018,7 +1030,9 @@ def ekwipunek_json(zestaw, id_modulu):
             "rodzaje_chwytu": CH.dla_gry(KOREKTY_CHWYTU),
             # znaczniki z pola „ukrywa” przedmiotów, które chowają części ciała (gra: Transparency = 1 tych kości)
             "znaczniki_ciala": {k: list(v) for k, v in ZNACZNIKI_CIALA.items()},
-            "przedmioty": [x.opis(KOREKTY_CHWYTU) for x in przedmioty(zestaw)]}
+            # klip upadku: przejście spawu przedmiotu z korekty chwytu na „korekta_upadku” części (chwyty.py)
+            "upadek": CH.upadek_dla_gry(),
+            "przedmioty": opisy}
 
 
 # --------------------------------------------------------------------------- liczby (bez Blendera)
@@ -1207,7 +1221,7 @@ def _odleglosc(b, L):
     return w
 
 
-def bron_w_ruchu(p, bron, dlon, klipy=None, krok=0.04, strefa=STREFA_CHWYTU):
+def bron_w_ruchu(p, bron, dlon, klipy=None, krok=0.04, strefa=STREFA_CHWYTU, upadek=True):
     """Broń (id akcesorium) na postaci p względem WSZYSTKICH brył ciała, stroju i nakrycia głowy (bez kości dłoni,
     która ją trzyma — rękojeść siedzi w łapie z założenia; przedramię tej łapy tylko poza strefą chwytu, patrz
     STREFA_CHWYTU; punkty broni schowane w tej łapie się nie liczą — ich styk to styk łapy) i względem ziemi (y = 0),
@@ -1215,7 +1229,7 @@ def bron_w_ruchu(p, bron, dlon, klipy=None, krok=0.04, strefa=STREFA_CHWYTU):
     {klip: {"cialo": (odstęp, bryła, kość, klatka, bryła broni), "ziemia": (y, klatka),
     "chwyt": (odstęp w strefie chwytu, bryła, klatka)}};
     odstęp < 0 — broń wchodzi w bryłę na tyle studa; „bron” = która bryła broni jest najbliżej. Punkty broni: siatka
-    co `krok` w bryłach broni."""
+    co `krok` w bryłach broni. upadek=True: w klipie upadku broń z korektą upadku (korekta_upadku, jak w grze)."""
     import numpy as np
     br = KM._bryly(p)
     bryly_broni = [b for b in br if b["zrodlo"] == bron]
@@ -1229,6 +1243,9 @@ def bron_w_ruchu(p, bron, dlon, klipy=None, krok=0.04, strefa=STREFA_CHWYTU):
         pkt.append(P)
         czyje += [i] * len(P)
     P0 = np.concatenate(pkt)
+    wpis = next(z for z in p.zalozone if z[0].id == bron)
+    kor_up = korekta_upadku(wpis[0]) if upadek else None
+    Rs, ts = _rama_korekty(p, wpis[1], wpis[2], wpis[3])
     cialo = [b for b in br if b["zrodlo"] != bron and b["kosc"] != dlon]
     lapa = [b for b in br if b["zrodlo"] != bron and b["kosc"] == dlon]
     przedramie = p.kosci[dlon]["rodzic"]
@@ -1243,7 +1260,12 @@ def bron_w_ruchu(p, bron, dlon, klipy=None, krok=0.04, strefa=STREFA_CHWYTU):
         for f in range(kl.dlugosc + 1):
             W = KM._fk(p, KM._poza_klatki(p, kl, f))
             Rw, tw = W[kosc_broni]
-            S = P0 @ np.asarray(Rw).T + np.asarray(tw)       # punkty broni w świecie
+            P = P0
+            if kor_up and kl.nazwa == KLIP_UPADKU:           # korekta upadku tej klatki (jak w grze)
+                Rf, tf = _rama_korekty(p, wpis[1], *korekta_w_klatce(kor_up, (wpis[2], wpis[3]), f))
+                Rd = Rf @ Rs.T
+                P = P0 @ Rd.T + (tf - Rd @ ts)
+            S = P @ np.asarray(Rw).T + np.asarray(tw)        # punkty broni w świecie
             yz = float(S[:, 1].min())                         # ziemia: cała broń (także w łapie)
             if yz < najz[0]:
                 najz = (yz, f)
@@ -1282,12 +1304,396 @@ def wypisz_ruch(nazwa, w, zapas=ZAPAS_RUCHU):
     for kl, v in w.items():
         o, n, k, f, nb = v["cialo"]
         yz, fz = v["ziemia"]
-        zly = o < zapas or yz < zapas
+        # upadek: broń ma leżeć NA ziemi (korekta upadku) — próg chwyty.PROG_UPADKU, odstęp od ciała informacyjnie
+        zly = yz < CH.PROG_UPADKU if kl == KLIP_UPADKU else (o < zapas or yz < zapas)
         zle += zly
         ch = v["chwyt"]
         print("  %-14s ciało %+.3f (%s → %s/%s, kl. %d)   ziemia %+.3f (kl. %d)   chwyt %+.3f%s"
-              % (kl, o, nb, k, n, f, yz, fz, min(ch[0], 9.0), "  <-- poniżej %.2f" % zapas if zly else ""))
+              % (kl, o, nb, k, n, f, yz, fz, min(ch[0], 9.0),
+                 ("  <-- poniżej %.2f" % (CH.PROG_UPADKU if kl == KLIP_UPADKU else zapas)) if zly else ""))
     return zle
+
+
+# --------------------------------------------------------------------------- upadek: korekta upadku (bez Blendera)
+# Paweł 26.11.2026: „poprawić, żeby nie były pod ziemią” — przedmioty kota w klipie upadku (EKWIPUNEK.md pkt 15,
+# zasada i dane dla gry: chwyty.py, KOREKTA UPADKU). Klip ciała zostaje wspólny; przedmiot dostaje drugą korektę
+# w ramce swojego zaczepu, na którą gra przechodzi w klipie upadku (chwyty.miesz_korekte). Tu: liczenie tej korekty
+# z geometrii przedmiotu, poza przedmiotu w każdej klatce (ta sama funkcja dla kontroli i dla renderów plansz)
+# i kontrola względem ziemi.
+KLIP_UPADKU = "upadek"
+KROK_UPADKU = 0.5                    # kontrola: co pół klatki (gra w 60 kl./s pokazuje klip 30 kl./s co pół klatki)
+_KOREKTY_UPADKU = {}                 # pamięć: id akcesorium -> korekta upadku (liczona na gołym kocie)
+
+
+def _sprawdz_klatki_upadku():
+    """Klatki grup kości nośnych w chwyty.UPADEK_KOTA = tory w kot_mag.UPADEK_LOT (wspólny klip się nie zmienia)."""
+    for kosc, f0, f1, *_ in KM.UPADEK_LOT:
+        g = next(d for d in CH.UPADEK_KOTA.values() if d["kosc"] == kosc)
+        if (g["od_klatki"], g["do_klatki"]) != (f0, f1):
+            raise ValueError("chwyty.UPADEK_KOTA[%s] ≠ kot_mag.UPADEK_LOT (%d, %d)" % (kosc, f0, f1))
+
+
+def _rama_korekty(p, zaczep, pos, rot):
+    """(R, t): ramka MODELU przedmiotu w układzie stawu kości zaczepu dla korekty (pos, rot) — jak Postac.json."""
+    import numpy as np
+    z = p.zaczepy[zaczep]
+    Ra = np.asarray(macierz_obrotu(*z["r"]))
+    return Ra @ np.asarray(macierz_obrotu(*rot)), np.asarray(z["p"], dtype=float) + Ra @ np.asarray(pos, dtype=float)
+
+
+def _punkty_bryly(b, krok, powloka=False):
+    """Punkty bryły (układ stawu): siatka co `krok` w środku bryły, a walec i kula dodatkowo gęsto po obwodzie
+    (najniższy punkt leżącego walca nie musi leżeć w węźle siatki). powloka=True — tylko węzły przy ścianach (do
+    szybkiego wyboru korekty: najniższy punkt zawsze leży na ścianie)."""
+    import numpy as np
+    P = np.array(KM._siatka(b, krok))
+    od = _odleglosc(b, P)
+    P = P[(od <= 1e-6) & (od >= -1.01 * krok)] if powloka else P[od <= 1e-6]
+    if b["k"] in ("walec", "kula"):
+        hx, hy, hz = b["h"]
+        ka = np.linspace(0.0, 2 * np.pi, 36, endpoint=False)
+        if b["k"] == "walec":
+            L = np.array([(hx * math.cos(a), y, hz * math.sin(a))
+                          for y in np.linspace(-hy, hy, max(2, int(math.ceil(2 * hy / krok)) + 1)) for a in ka])
+        else:
+            L = np.array([(hx * math.cos(a) * math.cos(e), hy * math.sin(e), hz * math.sin(a) * math.cos(e))
+                          for e in np.linspace(-math.pi / 2, math.pi / 2, 13) for a in ka])
+        P = np.concatenate([P, L @ np.asarray(b["R"]).T + np.asarray(b["c"])])
+    return P
+
+
+def punkty_przedmiotu(p, akc_id, krok=0.04, powloka=False):
+    """Przedmiot założony na zaczepie postaci p: (kość, zaczep, korekta chwytu (pos, rot), punkty w układzie MODELU
+    przedmiotu N×3 — siatka brył co `krok`, walce i kule także po obwodzie)."""
+    import numpy as np
+    wpis = next((z for z in p.zalozone if z[0].id == akc_id), None)
+    if wpis is None:
+        raise ValueError("Postać %s nie ma przedmiotu %s na zaczepie" % (p.id, akc_id))
+    _akc, zaczep, pos, rot, _eksport = wpis
+    br = [b for b in KM._bryly(p) if b["zrodlo"] == akc_id]
+    P = np.concatenate([_punkty_bryly(b, krok, powloka) for b in br])
+    R, t = _rama_korekty(p, zaczep, pos, rot)
+    return br[0]["kosc"], zaczep, (tuple(pos), tuple(rot)), (P - t) @ R
+
+
+def korekta_w_klatce(kor, kor_chwytu, klatka):
+    """Korekta (pos, rot) przedmiotu w klatce klipu upadku: przejście z korekty chwytu na korektę upadku
+    (chwyty.miesz_korekte — CFrame:Lerp gry); kor = korekta_upadku(...) albo None (zostaje korekta chwytu).
+    Tej samej funkcji używają kontrola (--ruch) i rendery plansz upadku."""
+    if not kor:
+        return tuple(kor_chwytu[0]), tuple(kor_chwytu[1])
+    return CH.miesz_korekte(kor_chwytu, (kor["pos"], kor["rot"]),
+                            CH.alfa_upadku(klatka, kor["od_klatki"], kor["do_klatki"]))
+
+
+def _swiat(p, kl, f):
+    return KM._fk(p, KM._poza_klatki(p, kl, f))
+
+
+def _w_swiecie(p, W, kosc, zaczep, kor, Q):
+    """Punkty modelu Q przedmiotu w świecie dla korekty kor = (pos, rot) i pozy W (kot_mag._fk)."""
+    import numpy as np
+    Rm, tm = _rama_korekty(p, zaczep, *kor)
+    Rb, tb = W[kosc]
+    return (Q @ Rm.T + tm) @ np.asarray(Rb).T + np.asarray(tb)
+
+
+def _klatki(kl, od=0.0, krok=KROK_UPADKU):
+    n = int(round((kl.dlugosc - od) / krok))
+    return [od + i * krok for i in range(n + 1)]
+
+
+def _odstep_od_ciala(p, W, S, bez_zrodla, bez_kosci=()):
+    """Najmniejszy odstęp punktów S (świat) od brył postaci (ciało, strój, inne przedmioty; bez brył przedmiotu
+    `bez_zrodla` i kości `bez_kosci`): (odstęp, bryła, kość); < 0 — wchodzi na tyle studa."""
+    import numpy as np
+    sr = S.mean(axis=0)
+    rw = float(np.linalg.norm(S - sr, axis=1).max())
+    naj = (9.0, "", "")
+    for b in KM._bryly(p):
+        if b["zrodlo"] == bez_zrodla or b["kosc"] in bez_kosci:
+            continue
+        Rk, tk = W[b["kosc"]]
+        Rk = np.asarray(Rk)
+        if np.linalg.norm(Rk @ np.asarray(b["c"]) + np.asarray(tk) - sr) > rw + float(np.linalg.norm(b["h"])) + 0.1:
+            continue
+        od = _odleglosc(b, (S - np.asarray(tk)) @ Rk)
+        i = int(od.argmin())
+        if od[i] < naj[0]:
+            naj = (float(od[i]), b["n"], b["kosc"])
+    return naj
+
+
+def _podnies(p, W, kosc, zaczep, Q, kor):
+    """Korekta kor = (pos, rot) przesunięta w pionie świata (w ostatniej klatce) tak, żeby najniższy punkt
+    przedmiotu w pozach W (lista wyników kot_mag._fk) był dokładnie ZAPAS_UPADKU nad ziemią (do trzech przybliżeń:
+    kość może się jeszcze lekko ruszać, np. lewa łapa w odbiciu)."""
+    import numpy as np
+    z = p.zaczepy[zaczep]
+    Ra = np.asarray(macierz_obrotu(*z["r"]))
+    Rb = np.asarray(W[-1][kosc][0])
+    pos = np.asarray(kor[0], dtype=float)
+    for _ in range(3):
+        y = min(float(_w_swiecie(p, w, kosc, zaczep, (tuple(pos), kor[1]), Q)[:, 1].min()) for w in W)
+        if abs(y - CH.ZAPAS_UPADKU) < 1e-4:
+            break
+        pos = pos + Ra.T @ Rb.T @ np.array([0.0, CH.ZAPAS_UPADKU - y, 0.0])
+    return tuple(float(v) for v in pos), tuple(kor[1])
+
+
+def _ziemia_w_klipie(p, kl, kosc, zaczep, Q, kor, kor_chwytu, klatki):
+    """(najniższy punkt przedmiotu nad ziemią, klatka) w klatkach `klatki` z przejściem korekty."""
+    naj = (9.0, -1.0)
+    for f in klatki:
+        y = float(_w_swiecie(p, _swiat(p, kl, f), kosc, zaczep, korekta_w_klatce(kor, kor_chwytu, f), Q)[:, 1].min())
+        if y < naj[0]:
+            naj = (y, f)
+    return naj
+
+
+def _przedmiot_na_zaczepie(akc):
+    """Goły kot z tym jednym przedmiotem (korekty kota; hełm chowa uszy jak hełmy puli) i samym klipem upadku."""
+    prz = Przedmiot("upadek_" + akc.id, akc.nazwa, "Weapon", "Weapons", MIARA, cialo=KM.CIALO_TYP,
+                    ukrywa=UKRYWA["helm"] if akc.zaczep == "HatAttachment" else ())
+    prz.na_zaczepie(akc)
+    p = ubierz(cialo(), [prz], id="upadek_" + akc.id, korekty=KOREKTY_CHWYTU)
+    p.klipy = [k for k in p.klipy if k.nazwa == KLIP_UPADKU]
+    return p
+
+
+# okna przejścia (od_klatki, do_klatki) do wyboru: broń w prawej łapie — tor kostura (stałe); hełm — od zsunięcia
+# z głowy (albo trochę wcześniej: hełm podskakuje), krócej niż lot kapelusza, żeby szybciej zszedł z głowy; lewa łapa —
+# przejście musi skończyć się, zanim łapa zejdzie nisko (łapa nie puszcza przedmiotu)
+OKNA = {"prawa": [(22, 33)],
+        "helm": [(od, do) for od in (30, 28, 26) for do in (40, 38, 36, 34, 32) if do - od >= 4],
+        "lewa": [(od, do) for od in (20, 18, 22, 16, 14, 12, 24) for do in (32, 30, 28, 26, 34) if do - od >= 6]}
+
+
+def korekta_upadku(akc):
+    """Korekta upadku przedmiotu na zaczepie kota (chwyty.UPADEK_KOTA): {"grupa", "zaczep", "od_klatki",
+    "do_klatki", "pos", "rot", "ziemia", "cialo", "przejscie_cialo"} albo None (przedmiot lewej łapy, który w stałym
+    chwycie nie schodzi pod ziemię, i zaczepy bez grupy). Liczona na gołym kocie z tym jednym przedmiotem — nie
+    zależy od reszty stroju (tor kości nośnej i ruch łapy są wspólne). Ułożenie po upadku:
+      prawa — obrót kostura Kota-Maga (KM.KOREKTY_CHWYTU, „ułożenie kostura”), rękojeść tam, gdzie rękojeść kostura;
+      helm  — prosto, kopułą do góry (obrót wokół pionu jak kapelusz w kot_mag.UPADEK_LOT);
+      lewa  — płasko pod łapą: najcieńsza oś przedmiotu (PCA punktów) pionowo, skręt wokół pionu co 15°;
+    do tego przesunięcie w poziomie (prawa i hełm do 0,5 studa, lewa do 0,25, co 0,25), a potem pion: najniższy
+    punkt po lądowaniu = ZAPAS_UPADKU. Okno przejścia: z OKNA (hełm i lewa łapa — kilka do wyboru). Wybór:
+    najmniejszy koszt = głębokość wejścia w leżącego kota po lądowaniu + 0,5 × wejście w kota w trakcie przejścia
+    głębsze niż w noszeniu + 0,2/stud przesunięcia + 0,001/° obrotu względem chwytu (lewa) + 0,002/klatkę odejścia
+    od domyślnego okna, pod twardym warunkiem: w każdej pół klatce klipu najniższy punkt ≥ PROG_UPADKU (+0,002).
+    „ziemia” = najniższy punkt w całym klipie (y, klatka), „cialo” = najmniejszy odstęp od kota od do_klatki
+    (odstęp, bryła, kość, klatka), „przejscie_cialo” = to samo w trakcie przejścia (od 2. klatki okna),
+    „noszenie_cialo” = odstęp w noszeniu (kl. 0) — informacyjnie."""
+    import numpy as np
+    if akc.id in _KOREKTY_UPADKU:
+        return copy.deepcopy(_KOREKTY_UPADKU[akc.id])
+    _sprawdz_klatki_upadku()
+    p = _przedmiot_na_zaczepie(akc)
+    kl = p.klipy[0]
+    kosc, zaczep, Ks, Q = punkty_przedmiotu(p, akc.id)
+    Qp = punkty_przedmiotu(p, akc.id, 0.06, powloka=True)[3]       # wybór: ściany co 0,06
+    g = CH.grupa_upadku(zaczep)
+    F = _klatki(kl)
+    Wf = {f: _swiat(p, kl, f) for f in F}
+
+    def ziemia(kor, od, do, klatki=F):
+        k = None if kor is None else {"pos": kor[0], "rot": kor[1], "od_klatki": od, "do_klatki": do}
+        return min((float(_w_swiecie(p, Wf[f], kosc, zaczep, korekta_w_klatce(k, Ks, f), Q)[:, 1].min()), f)
+                   for f in klatki)
+
+    if g == "lewa" and ziemia(None, 0, 1)[0] >= CH.PROG_UPADKU:
+        g = None                                                     # w łapie i tak nad ziemią: bez korekty
+    if g is None:
+        _KOREKTY_UPADKU[akc.id] = None
+        return None
+    d = CH.UPADEK_KOTA[g]
+    od0, do0 = d["od_klatki"], d["do_klatki"]
+    bez = (kosc,) if g == "lewa" else ()
+    Wk = Wf[float(kl.dlugosc)]
+    Rb, tb = np.asarray(Wk[kosc][0]), np.asarray(Wk[kosc][1])
+    Ra = np.asarray(macierz_obrotu(*p.zaczepy[zaczep]["r"]))
+    pa = np.asarray(p.zaczepy[zaczep]["p"], dtype=float)
+    Rs, ts = _rama_korekty(p, zaczep, *Ks)
+
+    def w_ramce(o, Rk):
+        """Korekta (pos, rot) dla rękojeści w punkcie o (świat, ostatnia klatka) i obrotu Rk w ramce zaczepu."""
+        return tuple(float(v) for v in Ra.T @ (Rb.T @ (o - tb) - pa)), tuple(katy_z_macierzy(Rk.tolist()))
+
+    obroty = []                                                      # (obrót w ramce zaczepu, koszt)
+    if g == "prawa":
+        _z, pos0, rot0 = KM.KOREKTY_CHWYTU["RightGripAttachment"]   # ułożenie kostura Kota-Maga
+        o0 = Rb @ (Ra @ np.asarray(pos0, dtype=float) + pa) + tb
+        obroty.append((np.asarray(macierz_obrotu(*rot0)), 0.0))
+    else:
+        o0 = Rb @ ts + tb                                            # rękojeść w stałym chwycie
+        if g == "helm":
+            lot = next(x for x in KM.UPADEK_LOT if x[0] == kosc)
+            obroty.append((Ra.T @ Rb.T @ np.asarray(macierz_obrotu(0.0, lot[3][1], 0.0)), 0.0))
+        else:
+            _w, V = np.linalg.eigh(np.cov((Q - Q.mean(axis=0)).T))
+            n, a = V[:, 0], V[:, 2]                                  # najcieńsza i najdłuższa oś modelu
+            for zn in (1.0, -1.0):
+                B = np.stack([a, zn * n, np.cross(a, zn * n)])       # wiersze: oś -> X świata, normalna -> góra
+                for yaw in range(0, 360, 15):
+                    Rk = Ra.T @ Rb.T @ np.asarray(macierz_obrotu(0.0, float(yaw), 0.0)) @ B
+                    kat = math.degrees(math.acos(max(-1.0, min(1.0, (np.trace(Rs.T @ Ra @ Rk) - 1) / 2))))
+                    obroty.append((Rk, 0.001 * kat))
+    sas = (-0.25, 0.0, 0.25) if g == "lewa" else (-0.5, -0.25, 0.0, 0.25, 0.5)
+    po = [f for f in F if f >= do0 and f == int(f)]
+    Wpo = [Wf[f] for f in po]
+    Wcialo = [Wf[f] for f in sorted({float(do0), 37.0, 44.0, 52.0, float(kl.dlugosc)})]
+    Qs = Qp                                                          # wybór: same ściany (odstęp od kota, ziemia)
+    bez_przej = bez + (("RightHand",) if g == "prawa" else ())       # broń wypada z tej łapy
+    ocenione = []
+    for Rk, koszt in obroty:
+        for dx in sas:
+            for dz in sas:
+                kor = _podnies(p, [Wk], kosc, zaczep, Qs, w_ramce(o0 + np.array([dx, 0.0, dz]), Rk))
+                glab = max(0.0, -min(_odstep_od_ciala(p, w, _w_swiecie(p, w, kosc, zaczep, kor, Qs), akc.id, bez)[0]
+                                     for w in Wcialo))
+                ocenione.append((glab + koszt + 0.2 * math.hypot(dx, dz), kor))
+    ocenione.sort(key=lambda x: x[0])
+    okna = OKNA[g]
+    y_stale = {f: float(_w_swiecie(p, Wf[f], kosc, zaczep, Ks, Qs)[:, 1].min()) for f in F}
+    # jak głęboko przedmiot siedzi w ciele w noszeniu (kl. 0; hełm obejmuje głowę, rękojeść w pięści) — w trakcie
+    # przejścia liczy się tylko wejście GŁĘBSZE niż to (od 2. klatki okna: przedmiot dopiero schodzi z głowy / łapy)
+    noszenie = min(0.0, _odstep_od_ciala(p, Wf[0.0], _w_swiecie(p, Wf[0.0], kosc, zaczep, Ks, Qs), akc.id,
+                                         bez_przej)[0])
+    najl = None
+    for i, (koszt, kor) in enumerate(ocenione):
+        if i >= 12 and najl is not None and najl[0] == "ok":
+            break                                                    # 12 najtańszych, dalej tylko bez ważnej
+        kor = _podnies(p, Wpo, kosc, zaczep, Qs, kor)
+        y_kon = {f: float(_w_swiecie(p, Wf[f], kosc, zaczep, kor, Qs)[:, 1].min()) for f in F}
+        for od, do in okna:
+            k = {"pos": kor[0], "rot": kor[1], "od_klatki": od, "do_klatki": do}
+            y = min(min([y_stale[f] for f in F if f <= od] + [9.0]), min([y_kon[f] for f in F if f >= do] + [9.0]),
+                    min([float(_w_swiecie(p, Wf[f], kosc, zaczep, korekta_w_klatce(k, Ks, f), Qs)[:, 1].min())
+                         for f in F if od < f < do] + [9.0]))
+            if y < CH.PROG_UPADKU + 0.002:
+                if najl is None or (najl[0] == "zle" and y > najl[1]):
+                    najl = ("zle", y, kor, od, do)
+                continue
+            przej = min(_odstep_od_ciala(p, Wf[f], _w_swiecie(p, Wf[f], kosc, zaczep, korekta_w_klatce(k, Ks, f), Qs),
+                                         akc.id, bez_przej)[0] for f in range(od + 2, do + 1, 2))
+            calk = koszt + 0.5 * max(0.0, noszenie - przej) + 0.002 * (abs(od - od0) + abs(do - do0))
+            if najl is None or najl[0] == "zle" or calk < najl[1]:
+                najl = ("ok", calk, kor, od, do)
+    _stan, _k, kor, od, do = najl
+    kor = _podnies(p, Wpo, kosc, zaczep, Q, kor)                     # pion jeszcze raz na pełnej siatce
+    wynik = {"grupa": g, "zaczep": zaczep, "od_klatki": od, "do_klatki": do,
+             "pos": [round(v, 4) + 0.0 for v in kor[0]], "rot": [round(v, 3) + 0.0 for v in kor[1]]}
+    y, f = ziemia((wynik["pos"], wynik["rot"]), od, do)
+    c, cp = (9.0, "", "", -1.0), (9.0, "", "", -1.0)
+    for fw in F[::2]:
+        S = _w_swiecie(p, Wf[fw], kosc, zaczep, korekta_w_klatce(wynik, Ks, fw), Q)
+        if fw >= do:
+            c = min(c, _odstep_od_ciala(p, Wf[fw], S, akc.id, bez) + (fw,), key=lambda x: x[0])
+        elif fw >= od + 2:
+            cp = min(cp, _odstep_od_ciala(p, Wf[fw], S, akc.id, bez_przej) + (fw,), key=lambda x: x[0])
+    wynik["ziemia"] = [round(y, 4), f]
+    wynik["cialo"] = [round(c[0], 3), c[1], c[2], c[3]]
+    wynik["przejscie_cialo"] = [round(cp[0], 3), cp[1], cp[2], cp[3]]
+    wynik["noszenie_cialo"] = round(noszenie, 3)
+    _KOREKTY_UPADKU[akc.id] = wynik
+    return copy.deepcopy(wynik)
+
+
+def korekty_w_klatce_upadku(przedmioty, klatka, korekty=None):
+    """Korekty chwytu bohatera (jak KOREKTY_CHWYTU) dla JEDNEJ klatki klipu upadku: wpis każdego przedmiotu na
+    zaczepie z korektą upadku zastąpiony korektą tej klatki (korekta_w_klatce). Do renderów plansz upadku:
+    ubierz(cialo(), przedmioty, korekty=…) i poza z klipu upadku w tej klatce = to, co pokaże gra."""
+    from swiat.postacie.ekwipunek import korekta as _korekta
+    k = dict(korekty or KOREKTY_CHWYTU)
+    for prz in przedmioty:
+        for s in prz.segmenty:
+            if s["kosc"]:
+                continue
+            klucz = s["akc"].chwyt if getattr(s["akc"], "chwyt", None) in k else s["zaczep"]
+            z, pos, rot = _korekta(k, s)
+            kor = korekta_upadku(s["akc"])
+            if kor:
+                k[klucz] = (z,) + korekta_w_klatce(kor, (pos, rot), klatka)
+    return k
+
+
+def upadek_na_postaci(p, krok=0.04):
+    """Kontrola klipu upadku: wszystko, co postać nosi na zaczepach (broń, hełm, przedmiot lewej łapy), z korektą
+    upadku (korekta_upadku) względem ziemi co pół klatki i względem kota po lądowaniu. Zwraca
+    {id: {"grupa", "korekta", "ziemia": (y, klatka), "koniec": y w ostatniej klatce, "cialo": (odstęp, bryła, kość,
+    klatka) — po lądowaniu (od do_klatki; bez korekty od kl. 32), bez kości, na której przedmiot wisi}}."""
+    kl = next(k for k in p.klipy if k.nazwa == KLIP_UPADKU)
+    wynik = {}
+    for akc, _z, _pos, _rot, _e in p.zalozone:
+        kosc, zaczep, Ks, Q = punkty_przedmiotu(p, akc.id, krok)
+        kor = korekta_upadku(akc)
+        y, f = _ziemia_w_klipie(p, kl, kosc, zaczep, Q, kor, Ks, _klatki(kl))
+        koniec = float(_w_swiecie(p, _swiat(p, kl, kl.dlugosc), kosc, zaczep,
+                                  korekta_w_klatce(kor, Ks, kl.dlugosc), Q)[:, 1].min())
+        od = float(kor["do_klatki"] if kor else 32)
+        c = (9.0, "", "", -1.0)
+        for fw in _klatki(kl, od, 2.0):
+            W = _swiat(p, kl, fw)
+            o = _odstep_od_ciala(p, W, _w_swiecie(p, W, kosc, zaczep, korekta_w_klatce(kor, Ks, fw), Q), akc.id,
+                                 (kosc,) if not kosc.endswith("Pivot") else ())
+            if o[0] < c[0]:
+                c = o + (fw,)
+        wynik[akc.id] = {"grupa": CH.grupa_upadku(zaczep), "korekta": kor, "ziemia": (y, f), "koniec": koniec,
+                         "cialo": c}
+    return wynik
+
+
+def cialo_w_upadku(p):
+    """(najniższy punkt brył ciała i stroju — bez przedmiotów na zaczepach — w klipie upadku, klatka): klip ciała
+    kładzie gołego kota na ziemi; powłoki stroju są grubsze od futra (informacyjnie, bez korekty)."""
+    import numpy as np
+    kl = next(k for k in p.klipy if k.nazwa == KLIP_UPADKU)
+    br = [b for b in KM._bryly(p) if b["zrodlo"] == "cialo"]
+    naj = (9.0, -1)
+    for f in range(kl.dlugosc + 1):
+        W = _swiat(p, kl, f)
+        y = min(float((np.asarray(b["pkt"]) @ np.asarray(W[b["kosc"]][0]).T)[:, 1].min() + W[b["kosc"]][1][1])
+                for b in br)
+        if y < naj[0]:
+            naj = (y, f)
+    return naj
+
+
+def wypisz_upadek(nazwa, w):
+    """Wiersze raportu upadek_na_postaci; zwraca liczbę przedmiotów pod progiem PROG_UPADKU w którejś klatce."""
+    zle = 0
+    print("== %s" % nazwa)
+    for aid, v in w.items():
+        y, f = v["ziemia"]
+        zly = y < CH.PROG_UPADKU
+        zle += zly
+        kor = v["korekta"]
+        o, n, k, fc = v["cialo"]
+        print("  %-30s %-5s ziemia min %+.3f (kl. %4.1f), koniec %+.3f   kot po lądowaniu %+.3f (%s/%s, kl. %d)   %s%s"
+              % (aid, v["grupa"] or "-", y, f, v["koniec"], o, k, n, fc,
+                 "korekta kl. %d→%d" % (kor["od_klatki"], kor["do_klatki"]) if kor else "bez korekty",
+                 "  <-- POD ZIEMIĄ (próg %.2f)" % CH.PROG_UPADKU if zly else ""))
+    return zle
+
+
+def zgodnosc_renderu(p, przedmioty, klatki=(22.0, 26.5, 33.0, 60.0)):
+    """Rendery plansz upadku budują postać przez ubierz(..., korekty_w_klatce_upadku(...)), a kontrola liczy pozę
+    przedmiotu z korekty klatki — ta sama funkcja korekta_w_klatce. Sprawdzenie: największa różnica położenia
+    punktów przedmiotów (studa) między jednym a drugim sposobem w podanych klatkach."""
+    import numpy as np
+    kl = next(k for k in p.klipy if k.nazwa == KLIP_UPADKU)
+    mx = 0.0
+    for f in klatki:
+        q = ubierz(cialo(), przedmioty, korekty=korekty_w_klatce_upadku(przedmioty, f))
+        W = _swiat(p, kl, f)
+        for wpis in q.zalozone:
+            akc = wpis[0]
+            kosc, zaczep, Ks, Q = punkty_przedmiotu(p, akc.id)
+            S1 = _w_swiecie(p, W, kosc, zaczep, korekta_w_klatce(korekta_upadku(akc), Ks, f), Q)
+            S2 = _w_swiecie(q, W, kosc, wpis[1], (wpis[2], wpis[3]), Q)
+            mx = max(mx, float(np.abs(S1 - S2).max()))
+    return mx
 
 
 # --------------------------------------------------------------------------- przenikanie w klipach walki (bez Blendera)
@@ -1474,12 +1880,15 @@ SLABOSCI = [
     "Hełmy (26.11.2026): niska kopuła i dwie osłony w kształcie kocich uszu, które mieszczą uszy (zapas 0,065 studa "
     "w spoczynku, --uszy); uszy schowane (ukrywa „Uszy”). W klipie upadku hełm zsuwa się, a uszu nie ma przez cały "
     "klip (eksport nie przełącza widoczności) — w grze odsłoni je dopiero skrypt.",
-    "W klipie upadku hełm leży do 0,25–0,79 studa pod ziemią (tak było już przed 26.11: tor lotu liczono dla "
-    "kapelusza Kota-Maga, a hełmy mają części poniżej obręczy — osłony, pasek, makaron, kabłąk).",
+    "Upadek (Paweł 26.11.2026: „poprawić, żeby nie były pod ziemią”): tor lotu kości nośnych liczono dla kapelusza "
+    "i kostura Kota-Maga, więc hełm kończył upadek do 0,79, a miecz do 0,54 studa pod ziemią. Teraz przedmiot ma "
+    "KOREKTĘ UPADKU (chwyty.py; pole korekta_upadku w ekwipunek.json): w grze skrypt przestawia spaw z korekty "
+    "chwytu na nią w oknie klatek klipu upadku (CFrame:Lerp) — miecz leży płasko przed kotem, hełm stoi obok "
+    "głowy, nic nie schodzi pod ziemię (--ruch). Eksport FBX/GLB zna tylko korektę chwytu; skryptu w grze jeszcze "
+    "nie ma. Hełm w trakcie zsuwania z głowy dalej przechodzi przez głowę (tor kapelusza, wspólny klip).",
     "Miecze trzyma chwyt „miecz” (chwyty.py, --ruch): w chodzie i spoczynku broń nie dotyka ciała (zapas ≥ 0,07) ani "
     "ziemi. W klipach walki atak, kula_ognia i lodowy_pocisk głowica (Giermek, Mleczarz) wchodzi do 0,11 studa "
-    "w rękaw ramienia, gdy łapa jest przy barku (przed 26.11 do 0,18); w upadku czubek schodzi do 0,54 studa pod "
-    "ziemię (pochylenie do przodu leży wtedy pionowo w dół).",
+    "w rękaw ramienia, gdy łapa jest przy barku (przed 26.11 do 0,18).",
     "Przenikanie broni w głowę, hełm i tułów w klipach walki: --przenikanie (dane walki maga, próg głowy 0,02, "
     "tułowia 0,10); całe ciało i ziemia klatka po klatce: --ruch. Kot nie ma klipu biegu — bieg w świecie liczy "
     "gra (swiat/bohater_swiat), tu niesprawdzany.",
@@ -1502,10 +1911,32 @@ if __name__ == "__main__":
             _w = bron_w_ruchu(postac(_z), _id(_z, "miecz"), "RightHand")
             wypisz_ruch("%s — %s (chwyt „miecz”)" % (ZESTAWY[_z]["nazwa"], ZESTAWY[_z]["przedmioty"]["miecz"]), _w)
             _zle += sum(1 for _k in KLIPY_RUCHU if min(_w[_k]["cialo"][0], _w[_k]["ziemia"][0]) < ZAPAS_RUCHU)
-        for _opis, _p, _id_broni, _dlon, _strefa in _PC.postacie_kontroli():
+        _kontrolne = list(_PC.postacie_kontroli())
+        for _opis, _p, _id_broni, _dlon, _strefa in _kontrolne:
             wypisz_ruch(_opis, bron_w_ruchu(_p, _id_broni, _dlon, strefa=_strefa))
-        print("miecze zestawów: klipów chodu/spoczynku poniżej zapasu %.2f: %d" % (ZAPAS_RUCHU, _zle))
-        raise SystemExit(1 if _zle else 0)
+        # upadek (Paweł 26.11.2026: „poprawić, żeby nie były pod ziemią”): wszystko, co kot nosi na zaczepach,
+        # z korektą upadku, względem ziemi co pół klatki — kod wyjścia 1, gdy coś schodzi poniżej PROG_UPADKU
+        print("\nUPADEK — broń, hełm i przedmiot lewej łapy z korektą upadku (chwyty.py); ziemia co pół klatki, "
+              "próg %.2f; „kot po lądowaniu” = najmniejszy odstęp od ciała i stroju (informacyjnie)" % CH.PROG_UPADKU)
+        _zle_up = 0
+        for _z in zrobione():
+            _p = postac(_z)
+            _zle_up += wypisz_upadek("%s — miecz i hełm" % ZESTAWY[_z]["nazwa"], upadek_na_postaci(_p))
+            _y, _f = cialo_w_upadku(_p)
+            print("  (ciało ze strojem w upadku najniżej %+.3f, kl. %d — klip ciała, bez korekty; goły kot %+.3f)"
+                  % (_y, _f, cialo_w_upadku(cialo())[0]))
+        for _opis, _p, _id_broni, _dlon, _strefa in _kontrolne:
+            _zle_up += wypisz_upadek(_opis, upadek_na_postaci(_p))
+        _mx = zgodnosc_renderu(postac("giermek"), przedmioty("giermek"))
+        _pc = [x for x in _kontrolne if x[2] in ("zwiadowca_luk_kot", "rycerz_tarcza_kot")]
+        for _opis, _p, _id_broni, _dlon, _strefa in _pc:
+            _a = next(z[0] for z in _p.zalozone if z[0].id == _id_broni)
+            _mx = max(_mx, zgodnosc_renderu(_p, [_PC._bron_przedmiot(_a.chwyt, _a)]))
+        print("zgodność kadrów plansz upadku z kontrolą (ta sama korekta klatki): największa różnica %.1e studa"
+              % _mx)
+        print("miecze zestawów: klipów chodu/spoczynku poniżej zapasu %.2f: %d; upadek: przedmiotów pod progiem "
+              "%.2f: %d" % (ZAPAS_RUCHU, _zle, CH.PROG_UPADKU, _zle_up))
+        raise SystemExit(1 if _zle or _zle_up or _mx > 1e-4 else 0)
     if "--uszy" in sys.argv:
         _helmy = [(ZESTAWY[_z]["nazwa"], przedmioty(_z)[RZECZY.index("helm")]) for _z in zrobione()]
         _zle = 0

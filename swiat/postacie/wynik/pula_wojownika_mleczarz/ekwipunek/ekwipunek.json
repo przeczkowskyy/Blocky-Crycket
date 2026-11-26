@@ -163,7 +163,8 @@
      -61.118,
      62.764
     ]
-   }
+   },
+   "upadek": "prawa"
   },
   "rozdzka": {
    "lapa": "prawa",
@@ -181,7 +182,8 @@
      10.0,
      0.0
     ]
-   }
+   },
+   "upadek": "prawa"
   },
   "drzewce": {
    "lapa": "prawa",
@@ -199,7 +201,8 @@
      5.0,
      0.0
     ]
-   }
+   },
+   "upadek": "prawa"
   },
   "proca": {
    "lapa": "prawa",
@@ -217,7 +220,8 @@
      30.0,
      0.0
     ]
-   }
+   },
+   "upadek": "prawa"
   },
   "luk": {
    "lapa": "lewa",
@@ -235,7 +239,8 @@
      -48.362,
      45.274
     ]
-   }
+   },
+   "upadek": "lewa"
   },
   "tarcza": {
    "lapa": "lewa",
@@ -253,7 +258,8 @@
      0.0,
      0.0
     ]
-   }
+   },
+   "upadek": "lewa"
   },
   "ksiega": {
    "lapa": "lewa",
@@ -271,7 +277,8 @@
      0.0,
      0.0
     ]
-   }
+   },
+   "upadek": "lewa"
   }
  },
  "znaczniki_ciala": {
@@ -279,6 +286,35 @@
    "LeftEar",
    "RightEar"
   ]
+ },
+ "upadek": {
+  "klip": "upadek",
+  "fps": 30,
+  "zapas": 0.02,
+  "przejscie": "a = clamp((klatka - od_klatki) / (do_klatki - od_klatki), 0, 1); C0 = C0_chwytu:Lerp(C0_upadku, a); C0_x = zaczep * CFrame.new(pos) * CFrame.fromOrientation(rot w radianach); po klipie z powrotem korekta chwytu",
+  "grupy": {
+   "prawa": {
+    "zaczep": "KosturAttachment",
+    "kosc": "StaffPivot",
+    "od_klatki": 22,
+    "do_klatki": 33,
+    "ulozenie": "broń wypada z łapy w kl. 22 (jak kostur Kota-Maga) i w locie obraca się do ułożenia kostura: leży płasko przed kotem, oś broni poziomo wzdłuż leżącego kota, lico (+Z) do ziemi, rękojeść w miejscu lądowania kostura (kl. 33), podniesiona tak, żeby najniższy punkt był 0,02 nad ziemią"
+   },
+   "helm": {
+    "zaczep": "KapeluszAttachment",
+    "kosc": "HatPivot",
+    "od_klatki": 30,
+    "do_klatki": 40,
+    "ulozenie": "hełm zsuwa się z głowy w kl. 30 (jak kapelusz Kota-Maga) i w locie prostuje się: stoi na ziemi obok głowy kopułą do góry (obrót wokół pionu jak kapelusz, −30°), odsunięty od głowy, najniższy punkt 0,02 nad ziemią; okno przejścia (domyślnie kl. 30→40) dobiera budowa dla każdego hełmu — krótsze, gdy hełm szybciej schodzi z głowy"
+   },
+   "lewa": {
+    "zaczep": "LeftGripAttachment",
+    "kosc": "LeftHand",
+    "od_klatki": 20,
+    "do_klatki": 32,
+    "ulozenie": "lewa łapa nie ma kości nośnej: przedmiot zostaje przy łapie i w czasie upadania (domyślnie kl. 20, kolana miękną, → kl. 32, kot leży; okno dobiera budowa tak, żeby w żadnej klatce nie zszedł pod ziemię) kładzie się płasko na ziemi pod łapą (najcieńszą osią pionowo), skręcony wokół pionu tak, żeby jak najmniej wchodził w leżącego kota; tylko przedmiot, który w stałym chwycie schodzi pod ziemię"
+   }
+  }
  },
  "przedmioty": [
   {
@@ -311,6 +347,21 @@
       0,
       0
      ],
+     "korekta_upadku": {
+      "grupa": "helm",
+      "od_klatki": 30,
+      "do_klatki": 36,
+      "pos": [
+       0.6533,
+       0.2316,
+       0.183
+      ],
+      "rot": [
+       0.0,
+       0.0,
+       12.0
+      ]
+     },
      "fbx": "wynik/pula_wojownika_mleczarz/przedmioty/kot_rycerz_mleczarz_helm.fbx",
      "glb": "wynik/pula_wojownika_mleczarz/przedmioty/kot_rycerz_mleczarz_helm.glb",
      "trojkaty": 732,
@@ -632,6 +683,21 @@
       62.764
      ],
      "chwyt": "miecz",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       0.1771,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
      "fbx": "wynik/pula_wojownika_mleczarz/przedmioty/kot_rycerz_mleczarz_miecz.fbx",
      "glb": "wynik/pula_wojownika_mleczarz/przedmioty/kot_rycerz_mleczarz_miecz.glb",
      "trojkaty": 496,
