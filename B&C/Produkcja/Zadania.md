@@ -7,6 +7,7 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Paweł: opinia do raportu z nocy 25/26.11 (grupa na Telegramie, 26.11 08:42, i raporty w panelu) — czy pety leśnego jajka i przedmioty wojownika zgadzają się z arkuszami, jajka Bagna i Dżungli, sala Training Center, brama BONK w starym miasteczku (pytanie 108) · Paweł · #wysoki
 - [ ] Paweł: usunąć podmianę „Złota → Rybek” w `OknoKowalaClient`, `OknoPetowClient` i `JajkoKoroweClient` — nasze teksty mówią już „Rybki”, a podmiana psuje nazwy przedmiotów („Złota Zbroja Słońca” wychodzi jako „Rybek Zbroja Słońca”) · Paweł · #średni
 - [ ] Walka: łup wysypywany na arenie po wygranej to dalej złote monety, a waluta nazywa się Rybki (D-146) — zamienić monety na rybki albo zostawić; do oceny przy przeglądzie walki · agent Karola · #niski
 - [ ] Zrzuty raportu walki: kadr spowolnienia (`raport_4_spowolnienie`) nie odświeża się — po zmianach silnika w przeszukiwanych ziarnach nie ma utraty tury po lodowym pocisku; dobrać nowe ziarno albo inną chwilę · agent Karola · #niski
@@ -196,6 +197,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] Raport z nocy 25/26.11 na grupie zespołu na Telegramie: wstęp, 11 opisanych zdjęć i prośba do Pawła o opinię; nowe narzędzie panelu do wysyłki zdjęć z podpisami (`panel/narzedzia/telegram_zdjecia.py`) · agent Karola · 2026-11-26
 - [x] Karta wyniku walki: ikona rybki zamiast monety przy napisie „RYBKI” (D-146), w Studio; próba walki bez niezaliczeń · agent Karola · 2026-11-26
 - [x] Końcowa regresja całej gry po nocy 25/26.11 (24 próby, po napisach „Rybki”): 22 próby bez niezaliczeń; kowal, sklep, bazar i stan gracza czysto; zostają znane małe napisy w próbie walki na telefonie i niestabilny punkt B20 bohatera · agent Karola · 2026-11-26
 - [x] Napisy waluty: „Rybki” zamiast „Złota” (D-146) w pakietach kowala, sklepu, petów, stanu gracza, wskazówek i na karcie wyniku walki — 25 tekstów z odmianą przy liczbie, w Studio; próby bez niezaliczeń · agent Karola · 2026-11-26

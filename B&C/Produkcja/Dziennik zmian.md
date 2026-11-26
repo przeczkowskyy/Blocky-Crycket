@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-26 · Claude Code u Karola (raport z nocy na Telegramie ze zdjęciami)
+- **Raport dla Pawła:** Karol poprosił o raport z nocy, potem o zdjęcia i o wysłanie całości na grupę zespołu na Telegramie z prośbą do Pawła o opinię. O 08:42 poszły: wstęp, sześć grup z 11 opisanymi zdjęciami (sala Training Center, zagroda i pety, jajka Bagna i Dżungli, przedmioty wojownika, karta wyniku z rybką, naprawy po regresji) i zakończenie. Pytania do Pawła: czy pety i przedmioty zgadzają się z arkuszami, jajka, sala Training Center, brama BONK (pytanie 108). Przypomniane dwie sprawy po jego stronie: podmiana „Złota” na „Rybek” w jego oknach i Diamenty za poziom poza `main`.
+- **Nowe narzędzie panelu:** `panel/narzedzia/telegram_zdjecia.py` — zdjęcia z podpisami na grupę zespołu; opis w [[Panel zespołu]] i w skillu panelu. Testy narzędzia 11 z 11, bez sieci.
+- Opinii Pawła jeszcze nie ma; zadanie dla niego w [[Zadania]].
+- Karol dostał te same zdjęcia na telefon. Na przyszłość: podsumowania zbiorcze idą od razu ze zdjęciami.
+
 ## 2026-11-26 · Claude Code u Karola (noc, część piąta: końcowa regresja całej gry)
 - **Końcowa regresja (04:38–06:08, 24 próby w Play, po napisach „Rybki”):** 22 próby bez niezaliczeń, liczone po wierszach „BŁĄD”, a nie po kodach wyjścia. Kowal, sklep, bazar i stan gracza, które o 01:06 miały niezaliczenia, przeszły czysto. Sam skrypt, bez agentów.
 - **Dwa niezaliczenia:**
