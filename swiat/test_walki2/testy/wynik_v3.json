@@ -38,12 +38,12 @@
   {
    "test": "P8. mostek lasu-pasa: pamięć wspólna, pominięcie zwalnia od razu, nowy gatunek bez zgody, stary las bez walki = brak_walki",
    "ok": true,
-   "opis": "({'ok': True, 'powod': 'ok'} | {'ok': True, 'nastepnaOd': 1795656451.647669, 'powod': 'ok'} | {'ok': False, 'powod': 'pierwsza_walka'} | {'ok': False, 'powod': 'brak_walki'})"
+   "opis": "({'ok': True, 'powod': 'ok'} | {'ok': True, 'nastepnaOd': 1795669269.386692, 'powod': 'ok'} | {'ok': False, 'powod': 'pierwsza_walka'} | {'ok': False, 'powod': 'brak_walki'})"
   },
   {
    "test": "P8b. mostek starego lasu: poznany gatunek → zgoda, pominięcie przyjęte",
    "ok": true,
-   "opis": "({'ok': True, 'powod': 'ok'} | {'ok': True, 'nastepnaOd': 1795656454.197354, 'powod': 'ok'})"
+   "opis": "({'ok': True, 'powod': 'ok'} | {'ok': True, 'nastepnaOd': 1795669271.935003, 'powod': 'ok'})"
   },
   {
    "test": "mana mana_pierwsza_akcja (POD MANĘ): 6 zdarzeń, 4 użyć — paski = dziennik",
@@ -208,17 +208,17 @@
   {
    "test": "koszt klienta mag/lustro/10/wskrzeszenie ziarno 628562 (23.4 s dziennika)",
    "ok": true,
-   "opis": "{\"OstatniKosztSkryptuSredni\": 0.46, \"OstatniKosztSkryptuP95\": 1.37, \"OstatniKosztSkryptuMaks\": 2.15, \"OstatniP95Klatki\": 18.02, \"OstatniaLiczbaInstancji\": 2074, \"OstatniCzasTrwania\": 34.12, \"OstatniaNiezgodnoscPaskow\": 0, \"OstatniaNiezgodnoscMany\": 0, \"OstatnieBledyObslugi\": 0, \"OstatnieBrakiChoreografii\": 0}"
+   "opis": "{\"OstatniKosztSkryptuSredni\": 0.46, \"OstatniKosztSkryptuP95\": 1.37, \"OstatniKosztSkryptuMaks\": 2.55, \"OstatniP95Klatki\": 18.09, \"OstatniaLiczbaInstancji\": 2074, \"OstatniCzasTrwania\": 34.12, \"OstatniaNiezgodnoscPaskow\": 0, \"OstatniaNiezgodnoscMany\": 0, \"OstatnieBledyObslugi\": 0, \"OstatnieBrakiChoreografii\": 0}"
   },
   {
    "test": "koszt klienta zwiadowca/cierniowy_wilk/10/pasywki ziarno 314378 (10.5 s dziennika)",
    "ok": true,
-   "opis": "{\"OstatniKosztSkryptuSredni\": 0.51, \"OstatniKosztSkryptuP95\": 1.34, \"OstatniKosztSkryptuMaks\": 2.65, \"OstatniP95Klatki\": 18.07, \"OstatniaLiczbaInstancji\": 2363, \"OstatniCzasTrwania\": 17.12, \"OstatniaNiezgodnoscPaskow\": 0, \"OstatniaNiezgodnoscMany\": 0, \"OstatnieBledyObslugi\": 0, \"OstatnieBrakiChoreografii\": 0}"
+   "opis": "{\"OstatniKosztSkryptuSredni\": 0.51, \"OstatniKosztSkryptuP95\": 1.44, \"OstatniKosztSkryptuMaks\": 2.16, \"OstatniP95Klatki\": 17.98, \"OstatniaLiczbaInstancji\": 2363, \"OstatniCzasTrwania\": 17.12, \"OstatniaNiezgodnoscPaskow\": 0, \"OstatniaNiezgodnoscMany\": 0, \"OstatnieBledyObslugi\": 0, \"OstatnieBrakiChoreografii\": 0}"
   },
   {
    "test": "koszt klienta wojownik/muchomornik/1/wzorcowa ziarno 554372 (30.4 s dziennika)",
    "ok": true,
-   "opis": "{\"OstatniKosztSkryptuSredni\": 0.44, \"OstatniKosztSkryptuP95\": 1.36, \"OstatniKosztSkryptuMaks\": 2.42, \"OstatniP95Klatki\": 18.03, \"OstatniaLiczbaInstancji\": 1809, \"OstatniCzasTrwania\": 34.76, \"OstatniaNiezgodnoscPaskow\": 0, \"OstatniaNiezgodnoscMany\": 0, \"OstatnieBledyObslugi\": 0, \"OstatnieBrakiChoreografii\": 0}"
+   "opis": "{\"OstatniKosztSkryptuSredni\": 0.44, \"OstatniKosztSkryptuP95\": 1.33, \"OstatniKosztSkryptuMaks\": 2.68, \"OstatniP95Klatki\": 18.04, \"OstatniaLiczbaInstancji\": 1809, \"OstatniCzasTrwania\": 34.76, \"OstatniaNiezgodnoscPaskow\": 0, \"OstatniaNiezgodnoscMany\": 0, \"OstatnieBledyObslugi\": 0, \"OstatnieBrakiChoreografii\": 0}"
   },
   {
    "test": "konsola bez ostrzeżeń i błędów [TestWalki2]",
@@ -235,8 +235,8 @@
   {
    "OstatniKosztSkryptuSredni": 0.46,
    "OstatniKosztSkryptuP95": 1.37,
-   "OstatniKosztSkryptuMaks": 2.15,
-   "OstatniP95Klatki": 18.02,
+   "OstatniKosztSkryptuMaks": 2.55,
+   "OstatniP95Klatki": 18.09,
    "OstatniaLiczbaInstancji": 2074,
    "OstatniCzasTrwania": 34.12,
    "OstatniaNiezgodnoscPaskow": 0,
@@ -248,9 +248,9 @@
   },
   {
    "OstatniKosztSkryptuSredni": 0.51,
-   "OstatniKosztSkryptuP95": 1.34,
-   "OstatniKosztSkryptuMaks": 2.65,
-   "OstatniP95Klatki": 18.07,
+   "OstatniKosztSkryptuP95": 1.44,
+   "OstatniKosztSkryptuMaks": 2.16,
+   "OstatniP95Klatki": 17.98,
    "OstatniaLiczbaInstancji": 2363,
    "OstatniCzasTrwania": 17.12,
    "OstatniaNiezgodnoscPaskow": 0,
@@ -262,9 +262,9 @@
   },
   {
    "OstatniKosztSkryptuSredni": 0.44,
-   "OstatniKosztSkryptuP95": 1.36,
-   "OstatniKosztSkryptuMaks": 2.42,
-   "OstatniP95Klatki": 18.03,
+   "OstatniKosztSkryptuP95": 1.33,
+   "OstatniKosztSkryptuMaks": 2.68,
+   "OstatniP95Klatki": 18.04,
    "OstatniaLiczbaInstancji": 1809,
    "OstatniCzasTrwania": 34.76,
    "OstatniaNiezgodnoscPaskow": 0,
@@ -275,5 +275,5 @@
    "czas_dziennika": 30.4
   }
  ],
- "data": "2026-11-26 02:30"
+ "data": "2026-11-26 06:04"
 }
