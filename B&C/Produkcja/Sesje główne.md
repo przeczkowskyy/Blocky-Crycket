@@ -10,7 +10,7 @@ Format wiersza: `- [ ] Temat — kontekst · dodał: imię data`.
 
 ## Do omówienia
 - [ ] Poradnik (tutorial) i pierwsza godzina gracza: czym gracz zajmuje się najpierw, ile ekranów przed pierwszą walką (pytania 58, 59, 72; D-081) — Karol 25.11 dwa razy odłożył te sprawy „na później, jak będziemy o tutorialu gadać”; karta daje pierwszym 10 sekundom 1/3, a punktów za poziom już nie ma (D-140), więc nowy gracz musi od razu rozumieć trening i kowala · propozycja agenta 2026-11-25
-- [ ] Lochy w pierwszej wersji i termin pierwszej publicznej wersji (pytanie 104; D-149) — 25.11 obaj zdjęli z pierwszej wersji Twierdzę i walki petów, Karol mówił „bez dungeonów”, Paweł „możemy dać”; terminu i listy „bez tego nie wydajemy” nie padło · propozycja agenta 2026-11-25
+- [ ] Lochy w pierwszej wersji i termin pierwszej publicznej wersji (pytanie 106; D-149) — 25.11 obaj zdjęli z pierwszej wersji Twierdzę i walki petów, Karol mówił „bez dungeonów”, Paweł „możemy dać”; terminu i listy „bez tego nie wydajemy” nie padło · propozycja agenta 2026-11-25
 
 ## Omówione
 - [x] Gra: Pet Arena (D-118; pytanie 77) — temat sesji wybrany w panelu 21.11 · dodał: Karol 2026-11-21 · omówione: 2026-11-21, Karol Balucki — Karol sam, po pierwszym podglądzie prototypu „bardzo niezadowolony”: arena ok. 4 razy większa i zamknięta, wyraźnie różna wielkość petów, krytyk wybija w powietrze, wyklucie z konfetti, interfejs robi Paweł (propozycje D-119–D-123); styl sceny bez wyboru (pytanie 78); Karol chce decydować o Pet Arenie sam — sprzeczne z D-043 (propozycja D-124, pytanie 79); krótki film jako standard raportów (propozycja D-125); [[Sesja główna 2026-11-21 — zapis ustaleń]]
