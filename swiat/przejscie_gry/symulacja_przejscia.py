@@ -5,16 +5,21 @@
     python -B swiat/przejscie_gry/symulacja_przejscia.py                     # całość: JSON + tabele w raporcie (kilka minut)
     python -B swiat/przejscie_gry/symulacja_przejscia.py --przebiegow 10 --bez-propozycji --bez-zapisu   # szybka próba
     python -B swiat/przejscie_gry/symulacja_przejscia.py --jeden mag wszystko po_zmianie 7   # jeden gracz na ekran (JSON)
+    python -B swiat/przejscie_gry/symulacja_przejscia.py --afk-min 20 --punkty d140 --bez-zapisu   # inne założenia
+    python -B swiat/przejscie_gry/symulacja_przejscia.py --propozycje bez_zmian,razem --bez-zapisu  # wybrane propozycje
 
 PROPOZYCJA LICZB, NIE KANON. Bez Roblox Studio. Wynik każdej walki liczy port silnika (tools/walka/silnik.py), a WSZYSTKIE
 liczby gry są czytane z plików gry przy każdym uruchomieniu — po zmianach danych wystarczy puścić symulację jeszcze raz:
   • potwory, łup, stałe walki            — tools/walka/dane_walki.json + swiat/{bagno,dzungla}_pas_gra/przeciwnicy.py
   • zagrody, poziomy, odradzanie, bramy  — swiat/{las,bagno,dzungla}_pas_gra/zrodla/Dane*.luau (interpreter luau_mini)
-  • doświadczenie, punkty, kara, start   — swiat/stan_gracza/dane.py + logika_stanu.py
-  • mini-gry (przyrost, pasek)           — swiat/trening_proba/dane.py + logika_treningu.py
+  • doświadczenie, punkty, kara, start,  — swiat/stan_gracza/dane.py + logika_stanu.py (pula statystyk jak serwer stanu:
+    Diamenty (Gemy) za poziom i Strażnika   pulaSama — od 24.11 punktów „do rozdania” nie ma czym wydać, D-140 nie wdrożona)
+  • trening AFK (D-141) i sklep trenera  — src/shared/TreningAFKDane.luau (czyta go swiat/trening_proba/ekonomia_sklepu_afk.py)
+    (D-164: ulepszenia stanowisk, wzmacniacz)
   • kowal (przedmioty, ulepszanie, łup)  — swiat/kowal_proba/dane.py + logika_kowala.py
-  • jajka i pety                         — swiat/pety_proba/dane_petow.py + logika_petow.py
-  • sklep w trzech stopniach             — plik z listy KATALOG_SKLEPU, gdy powstanie (opis formatu: wczytaj_katalog)
+  • jajka, pety, zagroda (Rybki/s, D-153) — swiat/pety_proba/dane_petow.py + logika_petow.py
+  • sklep w trzech stopniach             — plik z listy KATALOG_SKLEPU (opis formatu: wczytaj_katalog)
+Stare mini-gry Training Center nie mają już wejścia w grze (D-141, D-162) — symulacja ich nie liczy.
 W tym pliku są tylko ZAŁOŻENIA o graczu i o czasie (CZAS, STYLE, TRYBY) oraz dwa warianty świata (WARIANTY).
 """
 import argparse
@@ -55,7 +60,6 @@ def _modul(nazwa, sciezka):
 import silnik  # noqa: E402
 import luau_mini as LM  # noqa: E402
 import logika_stanu as LS  # noqa: E402
-import logika_treningu as LT  # noqa: E402
 import logika_kowala as LK  # noqa: E402
 import logika_petow as LP  # noqa: E402
 import logika as LPOT  # noqa: E402  (swiat/las_potwory/logika.py: ile potworów, czas odrodzenia)
@@ -91,9 +95,9 @@ CZAS = {
     "wizyta_miasto_s": 40.0,     # Kamień Powrotu → bazar → z powrotem (jak swiat/kowal_proba/balans_kowala.py)
     "wizyta_co_s": 300.0,        # do kowala najwyżej raz na 5 minut
     "jajko_s": 25.0,             # kupno i wyklucie jajka przy wejściu do krainy (bez dojścia)
-    "przerwa_rundy_s": 6.0,      # podsumowanie rundy mini-gry i start następnej
-    "okres_treningu_min": 30.0,  # co ile minut gracz robi przerwę na mini-gry
-    "run_na_runde": 26,          # mini-gra Runy: ile run gracz zdąży w rundzie (swiat/trening_proba/PROJEKT.md)
+    "okres_treningu_min": 30.0,  # co ile minut gry gracz idzie na stanowiska AFK (sesja = okres × trening_min_na_h / 60)
+    "wybor_stanowiska_s": 8.0,   # E u trenera, wybór ćwiczenia, przeniesienie na matę (D-162) i zejście
+    "sklep_trenera_s": 10.0,     # zakupy w zakładce SHOP trenera (D-164), gdy coś kupuje
     "graczy_na_serwerze": 1,     # od tego zależy liczba potworów i tempo odradzania (dane gry)
     "limit_min": 720.0,          # dłużej nie liczymy: gracz „nie skończył”
     "utknal_od_prob": 5,         # tyle przegranych prób z jednym Strażnikiem = „utknął”
@@ -102,40 +106,59 @@ CZAS = {
 # Styl gry. tempo_* = tempo oglądania (1, 2, 4); pomija_znane = jak często pomija walkę ze znanym gatunkiem;
 # margines_poziomu = bije potwory do poziomu własnego + tyle; zapas_wejscia = idzie do następnej zagrody na poziomie
 # jej najsłabszego potwora + tyle; zapas_straznika = pierwsza próba ze Strażnikiem na jego poziomie + tyle;
-# celnosc = udział trafień w mini-grze (77% zmierzone w przejściu gry 17.11.2026)
+# skill_check = udział trafionych skill checków na stanowisku AFK (0 = stoi i nie klika; 1 = trafia każdy)
 STYLE = {
     "cale": {"tempo_nowe": 1, "tempo_znane": 1, "pomija_znane": 0.0, "tempo_straznika": 1, "pomija_straznika": False,
              "margines_poziomu": 1, "zapas_wejscia": 0, "zapas_straznika": 0, "przegrane_do_cofniecia": 2,
-             "farma_po_strazniku": 3, "poziomy_po_strazniku": 0, "celnosc": 0.77, "jajek_na_biom": 3},
+             "farma_po_strazniku": 3, "poziomy_po_strazniku": 0, "skill_check": 0.0, "jajek_na_biom": 3},
     "zwykly": {"tempo_nowe": 1, "tempo_znane": 2, "pomija_znane": 0.5, "tempo_straznika": 1, "pomija_straznika": False,
                "margines_poziomu": 1, "zapas_wejscia": 0, "zapas_straznika": 0, "przegrane_do_cofniecia": 2,
-               "farma_po_strazniku": 3, "poziomy_po_strazniku": 0, "celnosc": 0.77, "jajek_na_biom": 3},
+               "farma_po_strazniku": 3, "poziomy_po_strazniku": 0, "skill_check": 0.0, "jajek_na_biom": 3},
     "ostrozny": {"tempo_nowe": 1, "tempo_znane": 2, "pomija_znane": 0.2, "tempo_straznika": 1, "pomija_straznika": False,
                  "margines_poziomu": 0, "zapas_wejscia": 1, "zapas_straznika": 1, "przegrane_do_cofniecia": 1,
-                 "farma_po_strazniku": 3, "poziomy_po_strazniku": 1, "celnosc": 0.85, "jajek_na_biom": 5},
+                 "farma_po_strazniku": 3, "poziomy_po_strazniku": 1, "skill_check": 0.5, "jajek_na_biom": 5},
     "niecierpliwy": {"tempo_nowe": 4, "tempo_znane": 4, "pomija_znane": 1.0, "tempo_straznika": 4, "pomija_straznika": True,
                      "margines_poziomu": 2, "zapas_wejscia": -1, "zapas_straznika": -1, "przegrane_do_cofniecia": 3,
-                     "farma_po_strazniku": 1, "poziomy_po_strazniku": 0, "celnosc": 0.65, "jajek_na_biom": 1},
+                     "farma_po_strazniku": 1, "poziomy_po_strazniku": 0, "skill_check": 0.0, "jajek_na_biom": 1},
+    # „przeskakuje” (pytanie 117): silny z treningu idzie do następnej zagrody po każdej wygranej, bez patrzenia na poziom
+    "pcha": {"tempo_nowe": 2, "tempo_znane": 4, "pomija_znane": 1.0, "tempo_straznika": 2, "pomija_straznika": True,
+             "margines_poziomu": 3, "zapas_wejscia": -99, "zapas_straznika": -99, "przegrane_do_cofniecia": 2,
+             "farma_po_strazniku": 1, "poziomy_po_strazniku": 0, "skill_check": 0.5, "jajek_na_biom": 1},
 }
 
-# Sposoby gry (kolejność = kolejność w raporcie)
+# Sposoby gry (kolejność = kolejność w raporcie). trening_min_na_h = minut na stanowiskach AFK na godzinę gry (--afk-min
+# zmienia to we wszystkich sposobach, które trenują); sklep_trenera = kupuje ulepszenia stanowisk i wzmacniacze (D-164)
 TRYBY = {
     "walki_cale": {"nazwa": "Tylko walki, każda oglądana w całości", "styl": "cale", "trening_min_na_h": 0,
-                   "pety": False, "kowal": False, "sklep": False},
+                   "pety": False, "kowal": False, "sklep": False, "sklep_trenera": False},
     "walki": {"nazwa": "Tylko walki", "styl": "zwykly", "trening_min_na_h": 0, "pety": False, "kowal": False,
-              "sklep": False},
-    "walki_minigry": {"nazwa": "Walki + mini-gry (10 min na godzinę)", "styl": "zwykly", "trening_min_na_h": 10,
-                      "pety": False, "kowal": False, "sklep": False},
-    "wszystko": {"nazwa": "Walki + mini-gry + pety + kowal", "styl": "zwykly", "trening_min_na_h": 10, "pety": True,
-                 "kowal": True, "sklep": False},
+              "sklep": False, "sklep_trenera": False},
+    "walki_afk": {"nazwa": "Walki + trening AFK (10 min na godzinę)", "styl": "zwykly", "trening_min_na_h": 10,
+                  "pety": False, "kowal": False, "sklep": False, "sklep_trenera": False},
+    "wszystko": {"nazwa": "Walki + AFK + sklep trenera + pety + kowal", "styl": "zwykly", "trening_min_na_h": 10,
+                 "pety": True, "kowal": True, "sklep": False, "sklep_trenera": True},
     # sklep liczy się tylko wtedy, gdy istnieje plik katalogu (KATALOG_SKLEPU); bez pliku = to samo co „wszystko”
     "ze_sklepem": {"nazwa": "Wszystko + sklep z przedmiotami", "styl": "zwykly", "trening_min_na_h": 10, "pety": True,
-                   "kowal": True, "sklep": True},
+                   "kowal": True, "sklep": True, "sklep_trenera": True},
+    "afk_duzo": {"nazwa": "Gracz AFK (20 min na godzinę, wszystko)", "styl": "zwykly", "trening_min_na_h": 20,
+                 "pety": True, "kowal": True, "sklep": True, "sklep_trenera": True},
     "ostrozny": {"nazwa": "Ostrożny (bez sklepu, z zapasem poziomu)", "styl": "ostrozny", "trening_min_na_h": 15,
-                 "pety": True, "kowal": True, "sklep": False},
+                 "pety": True, "kowal": True, "sklep": False, "sklep_trenera": True},
     "niecierpliwy": {"nazwa": "Niecierpliwy (pomija walki, pcha do przodu)", "styl": "niecierpliwy",
-                     "trening_min_na_h": 0, "pety": False, "kowal": False, "sklep": False},
+                     "trening_min_na_h": 0, "pety": False, "kowal": False, "sklep": False, "sklep_trenera": False},
+    "afk_przeskok": {"nazwa": "AFK 20 min/h i przeskakiwanie zagród (pytanie 117)", "styl": "pcha",
+                     "trening_min_na_h": 20, "pety": False, "kowal": False, "sklep": False, "sklep_trenera": True},
 }
+
+# Pula statystyk za poziom (serwer stanu, LogikaStanu.pulaSama): "gra" = jak dziś na main — 30 + auto_na_poziom × (L − 1)
+# rozdzielane samo (punktów „do rozdania” od 24.11 nie ma czym wydać, przyciski „+” zniknęły); "rozdane" = gracz wydaje
+# też punkty do rozdania (jak przed 24.11: 30 + 10 × (L − 1)); "d140" = D-140 wdrożona (za poziom tylko Diamenty: 30).
+PUNKTY = ("gra", "rozdane", "d140")
+
+# Zakupy u trenera (D-164) — założenia o graczu, nie liczby gry: kupuje kolejny poziom stanowiska, gdy po zakupie zostaje
+# mu co najmniej tyle × cena (reszta idzie na przedmioty i jajka); wzmacniacz — tylko na sesję ≥ wzmacniacz_od_s
+# i gdy ma co najmniej wzmacniacz_zapas × cena
+TRENER = {"zapas_ulepszenia": 1.0, "wzmacniacz_od_s": 300.0, "wzmacniacz_zapas": 3.0, "zapas_zagrody": 1.0}
 
 # Katalog przedmiotów do kupienia w trzech stopniach — jeszcze go nie ma. Pierwszy istniejący plik z listy jest
 # wczytywany (ścieżki względem korzenia repo); brak pliku = gracz niczego nie kupuje w sklepie.
@@ -155,15 +178,27 @@ BIOMY = [  # kolejność krain i ich pliki (dane gry)
 # Propozycje zmian liczb, liczone na KOPII danych (pliki gry zostają nietknięte). Opis pól: zastosuj_zmiany.
 # Życie Strażnika Topieli i Węża Stu Lian −15% jest już w plikach gry (D-111, 19.11) — propozycje −15% / −30% i „razem”
 # z tym życiem zniknęły z listy; „xp_dzungli” liczy się teraz na Strażnikach po D-111.
+# 27.11.2026 (BALANS_2711.md): A = punkty za poziom wracają do 10 rozdzielanych samo (stan gracza), B = limit treningu
+# AFK zależny od poziomu (TreningAFKDane — pola, których w grze jeszcze nie ma), C = tańsze ulepszenia stanowisk.
+LIMIT_AFK = {"limit_na_poziom": 2, "ponad_limit": 0.1}
 PROPOZYCJE = {
     "bez_zmian": {"nazwa": "Bez zmian (liczby z plików gry)", "zmiany": {}},
-    "xp_dzungli": {"nazwa": "Doświadczenie z potworów Dżungli +25%",
-                   "zmiany": {"lup": {"dzungla": {"doswiadczenie": 1.25}}}},
-    "krzywa_b": {"nazwa": "Krzywa doświadczenia: wykładnik 1,5 zamiast 1,6", "zmiany": {"krzywa_b": 1.5}},
-    "dluzsza": {"nazwa": "Dla porównania: krzywa doświadczenia +25% (dłuższa gra)", "zmiany": {"krzywa_a": 1.25}},
+    "a_punkty": {"nazwa": "A: 10 punktów za poziom rozdzielanych samo", "zmiany": {"punkty": "rozdane"}},
+    "b_limit": {"nazwa": "B: limit treningu 2 × poziom na statystykę (ponad limitem pasek ×10)",
+                "zmiany": {"afk": dict(LIMIT_AFK)}},
+    "ab": {"nazwa": "A + B", "zmiany": {"punkty": "rozdane", "afk": dict(LIMIT_AFK)}},
+    "abc": {"nazwa": "A + B + C: ulepszenia stanowisk 150 / 350 / 800 / 1800 / 4200",
+            "zmiany": {"punkty": "rozdane", "afk": dict(LIMIT_AFK, ceny=[150, 350, 800, 1800, 4200])}},
+    "ab_xp_dzungli": {"nazwa": "Dla porównania: A + B i doświadczenie Dżungli +25% (pytanie 70)",
+                      "zmiany": {"punkty": "rozdane", "afk": dict(LIMIT_AFK), "lup": {"dzungla": {"doswiadczenie": 1.25}}}},
+    "ab_dluzsza": {"nazwa": "Dla porównania: A + B i krzywa doświadczenia ×1,5 (dłuższa gra)",
+                   "zmiany": {"punkty": "rozdane", "afk": dict(LIMIT_AFK), "krzywa_a": 1.5}},
+    "d140_limit4": {"nazwa": "Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom",
+                    "zmiany": {"punkty": "d140", "afk": {"limit_na_poziom": 4, "ponad_limit": 0.1}}},
 }
-PROPOZYCJE_TRYBY = ["walki", "wszystko", "niecierpliwy"]
+PROPOZYCJE_TRYBY = ["walki", "walki_afk", "wszystko", "afk_duzo", "afk_przeskok"]
 PROPOZYCJE_WARIANT = "po_zmianie"
+POLECANA = "abc"            # druga tabela Strażników liczy się na tej propozycji
 STOPNIE_SKLEPU = {"start": 0, "las": 1, "bagno": 2, "dzungla": 3}   # nazwy stopni z sklep_ceny.py → numer
 
 
@@ -245,6 +280,21 @@ def _stala_luau(sciezka, nazwa, domyslna):
         return domyslna
 
 
+PLIK_AFK = os.path.join(REPO, "src", "shared", "TreningAFKDane.luau")
+
+
+def wczytaj_afk(plik=PLIK_AFK):
+    """Trening AFK i sklep trenera z TreningAFKDane.luau (moduł czytany przez serwer i klienta) — parser rachunku sklepu
+    (swiat/trening_proba/ekonomia_sklepu_afk.wczytaj) + przyrostCoPoziomow. Pola propozycji (limit_*, ponad_limit) są
+    puste: w grze ich nie ma, dodaje je dopiero zmiana „afk” (zastosuj_zmiany)."""
+    EA = _modul("ekonomia_sklepu_afk_przejscie", os.path.join(SWIAT, "trening_proba", "ekonomia_sklepu_afk.py"))
+    E = EA.wczytaj(plik)
+    with open(plik, encoding="utf-8") as f:
+        E["przyrost_co_poziomow"] = EA._liczba(f.read(), r"D\.przyrostCoPoziomow")
+    E.update({"limit_baza": 0.0, "limit_na_poziom": None, "ponad_limit": 1.0})
+    return E
+
+
 _BAZA = {}
 
 
@@ -272,15 +322,13 @@ def baza():
         biomy.append({"id": b["id"], "nazwa": dpa["biom"]["nazwa"], "strefy": strefy,
                       "x_przybycia": dpa["przybycie"]["punkt"][0], "przelot_s": dpa["przelot"]["czas"],
                       "brama_x": dpa["brama"]["x"]})
-    # mini-gry: prosto z ustawień pakietu (jedyne źródło jego liczb); logika_treningu czyta z nich gry, rundę i przyrost
-    with open(os.path.join(SWIAT, "trening_proba", "ustawienia.json"), encoding="utf-8") as f:
-        Dt = json.load(f)
     Dk = _modul("dane_kowala_przejscie", os.path.join(SWIAT, "kowal_proba", "dane.py")).dane_z_przypadkami()[0]
     Dp = _modul("dane_petow_przejscie", os.path.join(SWIAT, "pety_proba", "dane_petow.py")).dane_z_przypadkami()
     if not isinstance(Dp, dict):
         Dp = next(x for x in Dp if isinstance(x, dict))
     _BAZA.update({
-        "Ds": Ds, "biomy": biomy, "Dt": Dt, "Dk": Dk, "Dp": Dp, "katalog": wczytaj_katalog(),
+        "Ds": Ds, "biomy": biomy, "afk": wczytaj_afk(), "Dk": Dk, "Dp": Dp, "katalog": wczytaj_katalog(),
+        "punkty": "gra",
         "przeciwnicy": copy.deepcopy(silnik.PRZECIWNICY),
         "final_s": silnik.STALE["czas_finalu"] / 100.0,
         "zapas_sesji_s": _stala_luau(os.path.join(SWIAT, "las_potwory", "zrodla", "Stale.luau"), "S.ZAPAS_SESJI", 0.4),
@@ -295,13 +343,27 @@ def zastosuj_zmiany(G, zmiany):
         "krzywa_a": 0.85            — mnożnik stałej A krzywej doświadczenia (mniej = szybsze poziomy)
         "krzywa_b": 1.5             — nowy wykładnik krzywej
         "poziomy": {"dzungla/straznik": -1, "bagno/t1": [15, 15]} — przesunięcie albo nowe poziomy zagrody
-        "potwor": {"waz_stu_lian": {"zycie": -0.10, "bron": 0.9}}   — życie: dodatek do modyfikatora, broń: mnożnik
+        "potwor": {"waz_stu_lian": {"zycie": -0.10, "bron": 0.9}}   — życie: dodatek do modyfikatora, broń: mnożnik;
+                  {"las": {"statystyki": {"sila": 0.9}, "mod": {"cios": -0.05}}} — id potwora albo kraina: mnożnik
+                  pary [baza, na poziom] statystyki, dodatek do modyfikatora
         "lup": {"dzungla": {"doswiadczenie": 1.2, "zloto": 1.0}}     — mnożnik łupu potworów krainy (albo id potwora)
         "cena_jajka": {"jajko_dzungli": 900}                          — nowa cena stała jajka
-        "kara_procent": 0.0                                           — kara Złota za przegraną"""
+        "kara_procent": 0.0                                           — kara Złota za przegraną
+        "afk": {"czas_powtorzenia": 3.0, "limit_na_poziom": 3, …}     — pola treningu AFK (wczytaj_afk): powtorzen,
+               czas_powtorzenia, przyrost, przyrost_co_poziomow, premia, ceny, cena_w; propozycja limitu: wytrenowane
+               w statystyce ≥ limit_baza + limit_na_poziom × poziom → pasek ÷ ponad_limit (0 = trening stoi)
+        "punkty": "d140"                                              — pula statystyk za poziom (PUNKTY)"""
     for k in zmiany:
-        if k not in ("krzywa_a", "krzywa_b", "poziomy", "potwor", "lup", "cena_jajka", "kara_procent"):
+        if k not in ("krzywa_a", "krzywa_b", "poziomy", "potwor", "lup", "cena_jajka", "kara_procent", "afk", "punkty"):
             raise ValueError("nieznana zmiana: %s" % k)
+    if "punkty" in zmiany:
+        if zmiany["punkty"] not in PUNKTY:
+            raise ValueError("nieznana pula punktów: %r" % (zmiany["punkty"],))
+        G["punkty"] = zmiany["punkty"]
+    for pole, v in (zmiany.get("afk") or {}).items():
+        if pole not in G["afk"]:
+            raise ValueError("nieznane pole treningu AFK: %s" % pole)
+        G["afk"][pole] = v
     if "krzywa_a" in zmiany:
         G["Ds"]["krzywa"]["a"] = G["Ds"]["krzywa"]["a"] * zmiany["krzywa_a"]
     if "krzywa_b" in zmiany:
@@ -315,12 +377,19 @@ def zastosuj_zmiany(G, zmiany):
             s["od"], s["do"] = v
         else:
             s["od"], s["do"] = max(1, s["od"] + v), max(1, s["do"] + v)
-    for pid, z in (zmiany.get("potwor") or {}).items():
-        p = G["przeciwnicy"][pid]
-        if "zycie" in z:
-            p["modyfikatory"]["zycie"] = round(p["modyfikatory"].get("zycie", 0) + z["zycie"], 4)
-        if "bron" in z:
-            p["bron"] = [round(x * z["bron"], 4) for x in p["bron"]]
+    for cel, z in (zmiany.get("potwor") or {}).items():
+        lista = [p for p in G["przeciwnicy"].values() if p["id"] == cel or p["kraina"] == cel]
+        if not lista:
+            raise ValueError("nieznany potwór albo kraina: %s" % cel)
+        for p in lista:
+            if "zycie" in z:
+                p["modyfikatory"]["zycie"] = round(p["modyfikatory"].get("zycie", 0) + z["zycie"], 4)
+            if "bron" in z:
+                p["bron"] = [round(x * z["bron"], 4) for x in p["bron"]]
+            for s, mn in (z.get("statystyki") or {}).items():
+                p["statystyki"][s] = [round(x * mn, 4) for x in p["statystyki"][s]]
+            for m, d in (z.get("mod") or {}).items():
+                p["modyfikatory"][m] = round(p["modyfikatory"].get(m, 0) + d, 4)
     for cel, z in (zmiany.get("lup") or {}).items():
         for p in G["przeciwnicy"].values():
             if p["id"] == cel or p["kraina"] == cel:
@@ -334,7 +403,7 @@ def zastosuj_zmiany(G, zmiany):
 def gra(zmiany=None):
     """Kopia danych gry (ze zmianami albo bez) gotowa do symulacji. Ustawia też potwory w porcie silnika."""
     B = baza()
-    G = {k: (copy.deepcopy(v) if k in ("Ds", "biomy", "Dp", "przeciwnicy") else v) for k, v in B.items()}
+    G = {k: (copy.deepcopy(v) if k in ("Ds", "biomy", "Dp", "przeciwnicy", "afk") else v) for k, v in B.items()}
     if zmiany:
         zastosuj_zmiany(G, zmiany)
     silnik.PRZECIWNICY.clear()
@@ -348,36 +417,75 @@ def gra(zmiany=None):
 # ====================================================================================================================
 # GRACZ
 # ====================================================================================================================
-def runda_minigry(G, stat, poziom, W, pasek, celnosc, los):
-    """Jedna runda mini-gry statystyki `stat`: prawdziwy plan rundy i prawdziwy wzór paska (logika_treningu).
-    → (nowe W = punkty wytrenowane, nowy pasek, trafienia, zdarzenia)."""
-    Dt = G["Dt"]
-    Gm = Dt["gry"][stat]
-    n = len(LT.plan(Dt, stat, los.randrange(1, 2 ** 31 - 1)))
-    if Gm["typ"] == "sekwencja":
-        n = min(n, CZAS["run_na_runde"])
-    pula = LT.pula(Dt, poziom)
-    seria = traf = 0
-    for _ in range(n):
-        if los.random() < celnosc:
-            seria += 1
-            traf += 1
-            pasek += LT.przyrost(Dt, seria, Gm)
-            pr = LT.prog(Dt, W, pula)
-            while pasek >= pr:
-                pasek -= pr
-                W += 1
-                pr = LT.prog(Dt, W, pula)
-        else:
-            seria = 0
-    return W, pasek, traf, n
+def afk_powtorzen(G, poziom_stanowiska):
+    """Powtórzeń na pełny pasek (lustro TreningAFKDane.powtorzenDla: ulepszenie stanowiska u trenera, D-164)."""
+    E = G["afk"]
+    p = max(0, min(int(poziom_stanowiska), E["maks"]))
+    return E["powtorzen"] / (1 + E["premia"] * p)
+
+
+def afk_przyrost(G, L):
+    """Statystyki za pełny pasek (lustro TreningAFKDane.przyrost: + 1 co przyrostCoPoziomow poziomów gracza)."""
+    E = G["afk"]
+    co = E["przyrost_co_poziomow"]
+    return E["przyrost"] + (int(math.floor(max(L, 0) / co)) if co > 0 else 0)
+
+
+def afk_limit(G, L):
+    """Propozycja (w grze tego nie ma): ile punktów jednej statystyki da się wytrenować na poziomie L bez spowolnienia."""
+    E = G["afk"]
+    return None if E["limit_na_poziom"] is None else E["limit_baza"] + E["limit_na_poziom"] * L
+
+
+def afk_mnoznik_skill(G, udzial):
+    """Średnie tempo paska, gdy gracz trafia `udzial` skill checków (lustro rachunku ekonomia_sklepu_afk.tempo_h)."""
+    E = G["afk"]
+    cykl = (E["skill_min"] + E["skill_maks"]) / 2.0 + 0.5
+    return 1.0 + (E["skill_mnoznik"] - 1.0) * E["skill_czas"] / cykl * max(0.0, min(1.0, udzial))
+
+
+def trening_afk(G, sekund, L, W, postep, poziom_stanowiska=0, wzmocnienie_s=0.0, skill=0.0):
+    """Sesja na jednym stanowisku AFK (serwer TreningAFK: postęp += krok × tempo / czasPowtorzenia; pełny pasek → +przyrost,
+    ×mnożnik przez czas wzmacniacza). W = wytrenowane już punkty tej statystyki, postep = powtórzenia z poprzedniej
+    sesji. → (nowe W, postep, dodane punkty, sekund naprawdę użytych — przy limicie z ponad_limit = 0 trening staje)."""
+    E = G["afk"]
+    tempo = afk_mnoznik_skill(G, skill) / E["czas_powtorzenia"]          # powtórzeń na sekundę
+    limit = afk_limit(G, L)
+    t, dodane = 0.0, 0
+    while t < sekund - 1e-9:
+        pasek = afk_powtorzen(G, poziom_stanowiska)
+        if limit is not None and W >= limit:
+            if E["ponad_limit"] <= 0:
+                break
+            pasek /= E["ponad_limit"]
+        dt = max(0.0, pasek - postep) / tempo
+        if t + dt > sekund + 1e-9:
+            postep += (sekund - t) * tempo
+            t = sekund
+            break
+        t += dt
+        postep = 0.0
+        ile = afk_przyrost(G, L) * (E["mnoznik"] if t <= wzmocnienie_s + 1e-9 else 1)
+        W += ile
+        dodane += ile
+    return W, postep, dodane, min(t, sekund)
+
+
+def pula_poziomu(G, L):
+    """Punkty statystyk z poziomu rozdzielane rozkładem klasy (serwer stanu: LogikaStanu.pulaSama; G["punkty"] — PUNKTY)."""
+    Ds = G["Ds"]
+    if G["punkty"] == "rozdane":
+        return LS.pula(Ds, L)
+    if G["punkty"] == "d140":
+        return Ds["pula"]["baza"]
+    return LS.pula_sama(Ds, L, True)
 
 
 def opis_bohatera(G, klasa, L, wytrenowane=None, mody=None):
-    """Bohater dla silnika: rozkład klasy dla puli poziomu + punkty z mini-gier + modyfikatory (kowal, pet, sklep,
+    """Bohater dla silnika: rozkład klasy dla puli poziomu + punkty z treningu AFK + modyfikatory (kowal, pet, sklep,
     szczęście początkującego) złożone prawdziwą logiką stanu gracza. → (opis, premia łupu)."""
     Ds = G["Ds"]
-    st = LS.rozdziel(Ds, Ds["rozklady"][klasa], LS.pula(Ds, L))
+    st = LS.rozdziel(Ds, Ds["rozklady"][klasa], pula_poziomu(G, L))
     for s, v in (wytrenowane or {}).items():
         st[s] = min(st[s] + v, Ds["limity"]["statystyka_maks"])
     o = LS.opis_bohatera(Ds, klasa, L, st)
@@ -423,10 +531,13 @@ def _wybierz(miejsca, L, margines, czas):
     return max(dobre, key=lambda m: m["poziom"]) if dobre else min(dost, key=lambda m: m["poziom"])
 
 
-def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
+def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None, afk_min=None):
     """Jeden gracz od 1. poziomu do wygranej ze Strażnikiem ostatniej krainy (albo do limitu czasu) → słownik wyników.
-    sledz = lista, do której trafia zapis każdej walki (testy)."""
-    T, W = TRYBY[tryb], WARIANTY[wariant]
+    sledz = lista, do której trafia zapis każdej walki (testy); afk_min = minut treningu AFK na godzinę zamiast tej
+    z TRYBY (tylko w sposobach gry, które trenują)."""
+    T, W = dict(TRYBY[tryb]), WARIANTY[wariant]
+    if afk_min is not None and T["trening_min_na_h"] > 0:
+        T["trening_min_na_h"] = afk_min
     S = STYLE[T["styl"]]
     Ds, Dk, Dp = G["Ds"], G["Dk"], G["Dp"]
     los = random.Random("%s|%s|%s|%d" % (klasa, tryb, wariant, ziarno))
@@ -438,11 +549,19 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
 
     L, xp, zloto = 1, 0, 0
     zarobione = wydane = stracone = 0
+    wydane_na = {"przedmioty": 0, "kowal": 0, "jajka": 0, "trener": 0, "zagroda": 0}
+    zarobione_zagroda, reszta_zagrody = 0, 0.0
+    gemy = 0
     walki = wygrane = przegrane = 0
     znane = set()
     wytren = {s: 0 for s in Ds["statystyki"]}
-    pasek = {s: 0.0 for s in Ds["statystyki"]}
+    postep = {s: 0.0 for s in Ds["statystyki"]}
     glowne = sorted(Ds["statystyki"], key=lambda s: -Ds["rozklady"][klasa][s])[:3]
+    E = G["afk"]
+    stanowiska = {s: 0 for s in Ds["statystyki"]}      # poziom ulepszenia stanowiska u trenera (D-164)
+    wzmocnienie_do = {s: -1.0 for s in Ds["statystyki"]}
+    wzmacniaczy = ulepszen_stanowisk = 0
+    zagroda_poz = 1
     kowal = LK.podstawowe(Dk, LK.nowe(Dk), klasa)[0] if T["kowal"] else None
     ulepszen = lupow = 0
     pety, aktywny, jajka = {}, None, {}
@@ -481,6 +600,9 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
     b = i = 0
     B = biomy[0]
     czas = B["przelot_s"] + abs(B["strefy"][0]["x"] - B["x_przybycia"]) / v
+    t_zagroda = czas
+    biom_od = {biomy[0]["id"]: (czas, 0.0)}      # wejście do krainy: (czas, sekundy treningu AFK do tej chwili)
+    biom_min = {}
     x = B["strefy"][0]["x"]
     wolny_od = 0.0
     kamienie = {}
@@ -491,7 +613,8 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
     wymagany = 0
     z_rzedu = 0
     chce_wzmocnienia = False
-    ost_trening = ost_wizyta = 0.0
+    ost_wizyta = 0.0
+    ost_trening = -1e9          # pierwsza sesja AFK zaraz po pierwszej wygranej (Training Center stoi w miasteczku, D-159)
     t_trening = t_miasto = t_blokada = t_odrodzenie = t_walk = 0.0
     ost_awans, bez_awansu, bez_awansu_gdzie = 0.0, 0.0, ""
     ost_nowosc, bez_nowosci, bez_nowosci_gdzie = 0.0, 0.0, ""
@@ -504,8 +627,62 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
         return "%s/%s" % (biomy[bi]["id"], biomy[bi]["strefy"][si]["id"])
 
     def kamien(nazwa):
-        kamienie[nazwa] = {"min": czas / 60.0, "poziom": L, "walki": walki, "przegrane": przegrane,
-                           "zarobione": zarobione, "wydane": wydane}
+        kamienie[nazwa] = {"min": czas / 60.0, "min_aktywne": (czas - t_trening) / 60.0, "poziom": L, "walki": walki,
+                           "przegrane": przegrane, "zarobione": zarobione, "wydane": wydane, "zloto": zloto,
+                           "gemy": gemy, "wytrenowane": sum(wytren.values()), "przedmioty": len(sklep)}
+
+    def nalicz_zagrode():
+        """Rybki z petów stojących w zagrodzie od ostatniego naliczenia (D-153; tylko w grze — gracz cały czas w grze)."""
+        nonlocal zloto, zarobione, zarobione_zagroda, reszta_zagrody, t_zagroda
+        if pety:
+            stoja = LP.w_zagrodzie(Dp, pety, aktywny, None, LP.miejsca_zagrody(Dp, zagroda_poz))
+            suma = reszta_zagrody + LP.przychod_s(Dp, stoja) * max(0.0, czas - t_zagroda)
+            ile = int(math.floor(suma + 1e-9))
+            reszta_zagrody = suma - ile
+            zloto += ile
+            zarobione += ile
+            zarobione_zagroda += ile
+        t_zagroda = czas
+
+    def wydaj(kat, ile):
+        nonlocal zloto, wydane
+        zloto -= ile
+        wydane += ile
+        wydane_na[kat] += ile
+
+    def zagroda():
+        """U Jagody (D-153): kolejny poziom zagrody, gdy petów do postawienia jest więcej niż miejsc i stać go z zapasem."""
+        nonlocal zagroda_poz
+        kupiono = False
+        while True:
+            c = LP.cena_ulepszenia(Dp, zagroda_poz)
+            wolne = len([q for q in pety if q != aktywny]) - LP.miejsca_zagrody(Dp, zagroda_poz)
+            if c is None or wolne <= 0 or zloto < c * (1 + TRENER["zapas_zagrody"]):
+                return kupiono
+            nalicz_zagrode()
+            wydaj("zagroda", c)
+            zagroda_poz += 1
+            kupiono = True
+
+    def sklep_trenera(stat, sesja):
+        """Zakładka SHOP u trenera (D-164): ulepszenie stanowiska, które zaraz trenuje, i wzmacniacz na długą sesję."""
+        nonlocal wzmacniaczy, ulepszen_stanowisk
+        kupiono = False
+        while stanowiska[stat] < E["maks"]:
+            c = E["ceny"][stanowiska[stat]]
+            if zloto < c * (1 + TRENER["zapas_ulepszenia"]):
+                break
+            wydaj("trener", c)
+            stanowiska[stat] += 1
+            ulepszen_stanowisk += 1
+            kupiono = True
+        if (sesja >= TRENER["wzmacniacz_od_s"] and wzmocnienie_do[stat] < czas
+                and zloto >= E["cena_w"] * TRENER["wzmacniacz_zapas"]):
+            wydaj("trener", E["cena_w"])
+            wzmocnienie_do[stat] = czas + E["czas_w"]
+            wzmacniaczy += 1
+            kupiono = True
+        return kupiono
 
     def nowosc(etykieta):
         nonlocal ost_nowosc, bez_nowosci, bez_nowosci_gdzie
@@ -549,7 +726,7 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
 
     def miasto():
         """Wizyta w miasteczku: kowal (rozbiórka zapasu, ulepszenia od najtańszego) i sklep. → czy coś kupiono."""
-        nonlocal kowal, zloto, wydane, ulepszen
+        nonlocal kowal, ulepszen
         kupiono = False
         if kowal is not None:
             for pid in Dk["klasy"][klasa]["przedmioty"]:
@@ -567,8 +744,7 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
                     break
                 kand.sort(key=lambda t: (t[0], t[1]))
                 c, pid, k = kand[0]
-                zloto -= c
-                wydane += c
+                wydaj("kowal", c)
                 kowal = LK.ulepsz(Dk, kowal, pid, k)
                 ulepszen += 1
                 kupiono = True
@@ -578,8 +754,7 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
                 if not kand:
                     break
                 it = min(kand, key=lambda t: (t["cena"], t["id"]))
-                zloto -= it["cena"]
-                wydane += it["cena"]
+                wydaj("przedmioty", it["cena"])
                 sklep[it["slot"]] = it
                 kupiono = True
         if kupiono:
@@ -598,21 +773,33 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
         return bool(kandydaci_sklepu())
 
     while czas <= limit_s:
-        # ------------------------------------------------------------ poza walką: mini-gry, kowal i sklep, jajko
+        nalicz_zagrode()
+        # ------------------------------------------------------------ poza walką: trening AFK, kowal i sklep, jajko
         if T["trening_min_na_h"] > 0 and wygrane > 0 and czas - ost_trening >= okres_s - sesja_s:
             t0 = czas
             czas += CZAS["wizyta_miasto_s"]
-            koniec = czas + sesja_s
-            runda_s = G["Dt"]["runda"]["dlugosc_s"] + G["Dt"]["runda"]["odliczanie_s"] + CZAS["przerwa_rundy_s"]
-            while czas + runda_s <= koniec + 1e-9:
-                stat = min(glowne, key=lambda s: (LT.prog(G["Dt"], wytren[s], LT.pula(G["Dt"], L))
-                                                  / G["Dt"]["gry"][s].get("waga", 1), s))
-                wytren[stat], pasek[stat], _t, _n = runda_minigry(G, stat, L, wytren[stat], pasek[stat], S["celnosc"], los)
-                czas += runda_s
-            wersja[0] += 1
             if T["kowal"] or katalog:
-                miasto()
+                miasto()                               # najpierw przedmioty (kowal, sklep), potem trener
                 ost_wizyta = czas
+            if T["pety"]:
+                zagroda()
+            # stanowisko: główna statystyka klasy najdalej od swojego udziału (jak dawniej przy mini-grach); przy
+            # limicie z propozycji gracz przechodzi na następną (E u trenera jeszcze raz)
+            zostalo = sesja_s
+            kolejka = sorted(glowne, key=lambda s: (wytren[s] / Ds["rozklady"][klasa][s], s))
+            for stat in kolejka:
+                if zostalo <= 1e-9:
+                    break
+                czas += CZAS["wybor_stanowiska_s"]
+                if T["sklep_trenera"] and sklep_trenera(stat, zostalo):
+                    czas += CZAS["sklep_trenera_s"]
+                nalicz_zagrode()
+                wytren[stat], postep[stat], _d, uzyte = trening_afk(
+                    G, zostalo, L, wytren[stat], postep[stat], stanowiska[stat], max(0.0, wzmocnienie_do[stat] - czas),
+                    S["skill_check"])
+                czas += uzyte
+                zostalo -= uzyte
+            wersja[0] += 1
             t_trening += czas - t0
             ost_trening = czas
         elif (kowal is not None or katalog) and (chce_wzmocnienia or czas - ost_wizyta >= CZAS["wizyta_co_s"]) and stac_na_cos():
@@ -629,8 +816,8 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
                 if zloto >= c:
                     t0 = czas
                     czas += 2 * abs(x - biomy[b]["x_przybycia"]) / v + CZAS["jajko_s"]
-                    zloto -= c
-                    wydane += c
+                    nalicz_zagrode()
+                    wydaj("jajka", c)
                     jajka[j["id"]] = jajka.get(j["id"], 0) + 1
                     pid = LP.losuj(Dp, j, los.random())
                     if pid not in pety:
@@ -694,6 +881,7 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
         dod = LS.premia_lupu(Ds, lup, premia)
         xp_walki = lup["doswiadczenie"] + dod["doswiadczenie"]
         L, xp, awanse = LS.awans(Ds, L, xp, xp_walki)
+        gemy += Ds["gemy"]["za_poziom"] * awanse
         if awanse:
             if czas - ost_awans > bez_awansu:
                 bez_awansu, bez_awansu_gdzie = czas - ost_awans, gdzie(b, cel_i)
@@ -709,6 +897,9 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
             zloto_walki = lup["zloto"] + dod["zloto"]
             zloto += zloto_walki
             zarobione += zloto_walki
+            gemy += lup.get("gemy", 0)
+            if cel["straznik"] and ("straznik_" + biomy[b]["id"]) not in kamienie:
+                gemy += Ds["gemy"]["za_straznika"]      # pierwsze pokonanie Strażnika (serwer stanu)
             m["od"] = czas + M[b][cel_i]["odrodzenie"]
             if kowal is not None:
                 kowal, wyn = LK.lup(Dk, kowal, klasa, cel["ranga"], los.random(), los.random())
@@ -735,6 +926,9 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
             z_rzedu = 0
             if cel["straznik"]:
                 kamien("straznik_" + biomy[b]["id"])
+                t_od, afk_od = biom_od[biomy[b]["id"]]
+                biom_min[biomy[b]["id"]] = {"min": (czas - t_od) / 60.0,
+                                            "min_aktywne": (czas - t_od - (t_trening - afk_od)) / 60.0}
                 nowosc(gdzie(b, i))
                 czas += abs(biomy[b]["brama_x"] - cel["x"]) / v
                 kamien("brama_" + biomy[b]["id"])
@@ -742,6 +936,7 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
                     break
                 b += 1
                 i = 0
+                biom_od[biomy[b]["id"]] = (czas, t_trening)
                 czas += biomy[b]["przelot_s"] + abs(biomy[b]["strefy"][0]["x"] - biomy[b - 1]["brama_x"]) / v
                 x = biomy[b]["strefy"][0]["x"]
                 wejscie(b, 0)
@@ -760,6 +955,18 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
                 wejscie(b, i)
             continue
         z_rzedu += 1
+        if cel["ranga"] == "rzadki" and cel_i == i and i + 1 < len(strefy_b):
+            # rzadki potwór nie zamyka drogi (w grze bramę ma tylko Strażnik): po przegranej z nim gracz, który ma już
+            # poziom następnej zagrody, idzie dalej (do 27.11 symulacja wymagała wygranej z rzadkim)
+            nastepna = strefy_b[i + 1]
+            prog = nastepna["od"] + (S["zapas_straznika"] if nastepna["straznik"] else S["zapas_wejscia"])
+            if L >= max(prog, min_wejscia.get((b, i + 1), 0), wymagany if nastepna["straznik"] else 0):
+                czas += abs(nastepna["x"] - x) / v
+                x = nastepna["x"]
+                i += 1
+                wejscie(b, i)
+                z_rzedu = 0
+                continue
         if cel["straznik"]:
             straznicy[biomy[b]["id"]]["przegrane"] += 1
             farma = S["farma_po_strazniku"]
@@ -776,6 +983,7 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
             i -= 1
             z_rzedu = 0
 
+    nalicz_zagrode()
     ukonczone = ("straznik_" + biomy[-1]["id"]) in kamienie
     if czas - ost_awans > bez_awansu:
         bez_awansu, bez_awansu_gdzie = czas - ost_awans, gdzie(b, i)
@@ -789,8 +997,11 @@ def przejscie(G, klasa, tryb, wariant, ziarno, limit_min=None, sledz=None):
         "ukonczone": ukonczone, "czas_min": czas / 60.0, "poziom": L, "walki": walki, "wygrane": wygrane,
         "przegrane": przegrane, "zloto": zloto, "zarobione": zarobione, "wydane": wydane, "stracone": stracone,
         "kamienie": kamienie, "strefy": strefy, "straznicy": straznicy, "utknal_w": gdzie(b, i) if not ukonczone else "",
-        "wytrenowane": sum(wytren.values()), "ulepszen": ulepszen, "lupow_przedmiotow": lupow,
-        "jajek": sum(jajka.values()), "pet": aktywny or "", "sklep": len(sklep),
+        "wytrenowane": sum(wytren.values()), "wytrenowane_staty": dict(wytren), "ulepszen": ulepszen,
+        "lupow_przedmiotow": lupow, "jajek": sum(jajka.values()), "pet": aktywny or "", "sklep": len(sklep),
+        "min_aktywne": (czas - t_trening) / 60.0, "gemy": gemy, "zarobione_zagroda": zarobione_zagroda,
+        "wydane_na": dict(wydane_na), "ulepszen_stanowisk": ulepszen_stanowisk, "wzmacniaczy": wzmacniaczy,
+        "zagroda_poziom": zagroda_poz, "biomy_min": biom_min,
         "min_trening": t_trening / 60.0, "min_miasto": t_miasto / 60.0, "min_walk": t_walk / 60.0,
         "min_blokady": t_blokada / 60.0, "min_odrodzenia": t_odrodzenie / 60.0,
         "bez_awansu_min": bez_awansu / 60.0, "bez_awansu_gdzie": bez_awansu_gdzie,
@@ -831,8 +1042,17 @@ def podsumuj(wyniki):
     P = {"przebiegow": n, "ukonczylo_proc": round(100.0 * len(ok) / n, 1),
          "utknal_w": _najczestszy([w["utknal_w"] for w in wyniki])}
     for pole in ("czas_min", "poziom", "walki", "przegrane", "zarobione", "wydane", "stracone", "zloto", "wytrenowane",
-                 "ulepszen", "jajek", "min_trening", "min_miasto", "min_walk", "min_blokady", "min_odrodzenia"):
+                 "ulepszen", "jajek", "min_trening", "min_miasto", "min_walk", "min_blokady", "min_odrodzenia",
+                 "min_aktywne", "gemy", "zarobione_zagroda", "ulepszen_stanowisk", "wzmacniaczy", "zagroda_poziom"):
         P[pole] = rozklad([w[pole] for w in ok])
+    P["wydane_na"] = {k: rozklad([w["wydane_na"][k] for w in ok]) for k in (wyniki[0]["wydane_na"] if wyniki else {})}
+    P["biomy_min"] = {}
+    for w in wyniki:
+        for bid in w["biomy_min"]:
+            P["biomy_min"].setdefault(bid, None)
+    for bid in P["biomy_min"]:
+        maja = [w["biomy_min"][bid] for w in wyniki if bid in w["biomy_min"]]
+        P["biomy_min"][bid] = {k: rozklad([m[k] for m in maja]) for k in ("min", "min_aktywne")}
     for pole in ("bez_awansu_min", "bez_nowosci_min", "seria_potwora"):
         P[pole] = rozklad([w[pole] for w in wyniki])
     P["bez_awansu_gdzie"] = _najczestszy([w["bez_awansu_gdzie"] for w in wyniki])
@@ -847,7 +1067,8 @@ def podsumuj(wyniki):
     for k in nazwy:
         maja = [w["kamienie"][k] for w in wyniki if k in w["kamienie"]]
         P["kamienie"][k] = {"dotarlo_proc": round(100.0 * len(maja) / n, 1)}
-        for pole in ("min", "poziom", "walki", "przegrane", "zarobione", "wydane"):
+        for pole in ("min", "min_aktywne", "poziom", "walki", "przegrane", "zarobione", "wydane", "zloto", "gemy",
+                     "wytrenowane", "przedmioty"):
             P["kamienie"][k][pole] = rozklad([m[pole] for m in maja])
     P["strefy"] = {}
     for w in wyniki:
@@ -877,9 +1098,10 @@ def podsumuj(wyniki):
 
 
 def _zadanie(arg):
-    klasa, tryb, wariant, zmiany, ziarna = arg
+    klasa, tryb, wariant, zmiany, ziarna = arg[:5]
+    afk_min = arg[5] if len(arg) > 5 else None
     G = gra(zmiany)
-    return (klasa, tryb, wariant), podsumuj([przejscie(G, klasa, tryb, wariant, z) for z in ziarna])
+    return (klasa, tryb, wariant), podsumuj([przejscie(G, klasa, tryb, wariant, z, afk_min=afk_min) for z in ziarna])
 
 
 def policz(zadania, procesy):
@@ -890,27 +1112,62 @@ def policz(zadania, procesy):
         return pula.map(_zadanie, zadania, chunksize=1)
 
 
+AFK_MINUTY = (5, 15, 30)       # kolumny tabeli Strażników: tyle minut treningu AFK przed walką
+POZIOMY_STRAZNIKA = (-1, 0, 1, 2)
+
+
+def punkty_afk(G, klasa, minut, L):
+    """Punkty z `minut` treningu AFK na poziomie L (bez ulepszeń stanowisk, bez skill checków), czas dzielony na trzy
+    główne statystyki klasy w proporcji ich udziałów — tak trenuje gracz w przejscie(). → {statystyka: punkty}."""
+    Ds = G["Ds"]
+    glowne = sorted(Ds["statystyki"], key=lambda q: -Ds["rozklady"][klasa][q])[:3]
+    waga = sum(Ds["rozklady"][klasa][q] for q in glowne)
+    return {q: trening_afk(G, 60.0 * minut * Ds["rozklady"][klasa][q] / waga, L, 0, 0.0)[0] for q in glowne}
+
+
+def szansa(G, klasa, L, gatunek, poziom_potwora, ziaren, ziarno, wytren=None, mody=None, etykieta=""):
+    opis, _ = opis_bohatera(G, klasa, L, wytren, mody)
+    los = random.Random("straznik|%s|%s|%d|%s|%d" % (gatunek, klasa, L, etykieta, ziarno))
+    return 100.0 * sum(silnik.symuluj(opis, {"potwor": gatunek, "poziom": poziom_potwora}, los.randrange(1, 2 ** 31 - 1))
+                       ["wynik"] == "wygrana" for _ in range(ziaren)) / ziaren
+
+
+def minut_afk_do(G, klasa, L, gatunek, poziom_potwora, cel, ziaren, ziarno, maks=240.0):
+    """Najmniej minut treningu AFK (dokładność ok. 1 min), przy których bohater na poziomie L wygrywa ≥ cel %; None = ponad maks."""
+    def ok(m):
+        return szansa(G, klasa, L, gatunek, poziom_potwora, ziaren, ziarno, punkty_afk(G, klasa, m, L), None,
+                      "afk%.2f" % m) >= cel
+    if ok(0.0):
+        return 0.0
+    if not ok(maks):
+        return None
+    lo, hi = 0.0, maks
+    while hi - lo > 1.0:
+        sr = (lo + hi) / 2
+        lo, hi = (lo, sr) if ok(sr) else (sr, hi)
+    return round(hi, 1)
+
+
 def szanse_straznikow(G, ziaren, ziarno):
-    """Szansa wygranej ze Strażnikiem krainy na poziomach wokół jego poziomu: sam bohater i bohater z dodatkami
-    (przykład: po 6 punktów z mini-gier w trzech głównych statystykach + pełny zestaw kowala ulepszony o 2)."""
+    """Szansa wygranej (%) ze Strażnikiem każdej krainy: sam bohater na poziomie Strażnika −1 … +2; na jego poziomie po
+    5 / 15 / 30 minutach treningu AFK; z pełnym zestawem kowala ulepszonym o 2; ile minut AFK daje 50% i 80%."""
     Ds, Dk = G["Ds"], G["Dk"]
     w = {}
     for bm in G["biomy"]:
         s = bm["strefy"][-1]
+        gat, Lg = s["gatunek"], s["od"]
         for klasa in Ds["klasy"]:
-            glowne = sorted(Ds["statystyki"], key=lambda q: -Ds["rozklady"][klasa][q])[:3]
             zestaw = LK.nowe(Dk)
             for pid in Dk["klasy"][klasa]["przedmioty"]:
                 zestaw["przedmioty"][pid] = {"poziom": 2, "zapas": 0}
             mod = _czysty(G, LK.mod(Dk, klasa, zestaw, LK.zalozone(Dk, klasa, zestaw, None)), "kowala")
-            for d in (-1, 0, 1, 2, 3):
-                L = max(1, s["od"] + d)
-                for nazwa, wytren, mody in (("sam", None, None), ("z_dodatkami", {q: 6 for q in glowne}, [mod])):
-                    opis, _ = opis_bohatera(G, klasa, L, wytren, mody)
-                    los = random.Random("straznik|%s|%s|%d|%d" % (bm["id"], klasa, d, ziarno))
-                    wyg = sum(silnik.symuluj(opis, {"potwor": s["gatunek"], "poziom": s["od"]},
-                                             los.randrange(1, 2 ** 31 - 1))["wynik"] == "wygrana" for _ in range(ziaren))
-                    w.setdefault(bm["id"], {}).setdefault(klasa, {}).setdefault(nazwa, {})[str(d)] = round(100.0 * wyg / ziaren)
+            X = w.setdefault(bm["id"], {}).setdefault(klasa, {})
+            X["sam"] = {str(d): round(szansa(G, klasa, max(1, Lg + d), gat, Lg, ziaren, ziarno)) for d in POZIOMY_STRAZNIKA}
+            X["afk"] = {str(m): round(szansa(G, klasa, Lg, gat, Lg, ziaren, ziarno, punkty_afk(G, klasa, m, Lg), None,
+                                             "afk%d" % m)) for m in AFK_MINUTY}
+            X["kowal2"] = round(szansa(G, klasa, Lg, gat, Lg, ziaren, ziarno, None, [mod], "kowal2"))
+            X["afk_do_50"] = minut_afk_do(G, klasa, Lg, gat, Lg, 50.0, max(100, ziaren // 2), ziarno)
+            X["afk_do_80"] = minut_afk_do(G, klasa, Lg, gat, Lg, 80.0, max(100, ziaren // 2), ziarno)
     return w
 
 
@@ -954,39 +1211,66 @@ def tabele(R):
         w.append("### Czasy do kamieni milowych — świat „%s” (minuty gry, mediana)" % WARIANTY[wid]["nazwa"])
         w.append("")
         w.append("| Sposób gry | Klasa | 1. wygrana | " + " | ".join("Strażnik: %s" % nazwy_b[b] for b in biomy)
-                 + " | Koniec: 10%–90% graczy | Skończyło |")
-        w.append("|---|---|---:|" + "---:|" * len(biomy) + "---|---:|")
+                 + " | Koniec: 10%–90% graczy | W tym AFK | Skończyło |")
+        w.append("|---|---|---:|" + "---:|" * len(biomy) + "---|---:|---:|")
         for tid in R["meta"]["tryby"]:
             for k in klasy:
                 P = W[tid][k]
                 kon = P["kamienie"].get("straznik_" + biomy[-1], {})
-                w.append("| %s | %s | %s | %s | %s | %s%% |" % (
+                w.append("| %s | %s | %s | %s | %s | %s | %s%% |" % (
                     TRYBY[tid]["nazwa"], nk[k], fm(_med(P, "kamienie", "pierwsza_wygrana", "min")),
                     " | ".join(fm(_med(P, "kamienie", "straznik_" + b, "min")) for b in biomy),
                     ("%s–%s" % (fm(kon["min"]["p10"]), fm(kon["min"]["p90"]))) if kon.get("min") else "—",
-                    fl(P["ukonczylo_proc"])))
+                    fm(_med(P, "min_trening")), fl(P["ukonczylo_proc"])))
         w.append("")
-        w.append("Brama otwiera się od razu po wygranej ze Strażnikiem; dojście do niej to kilka sekund "
-                 "(dokładne czasy bram są w pliku JSON, pola `brama_…`).")
+        w.append("Czas gry liczony razem ze staniem na stanowiskach AFK (kolumna „W tym AFK”). Brama otwiera się od razu "
+                 "po wygranej ze Strażnikiem; dokładne czasy bram są w pliku JSON (pola `brama_…`).")
         w.append("")
-        w.append("### Poziom, walki i Złoto — świat „%s” (mediana)" % WARIANTY[wid]["nazwa"])
+        w.append("### Minut na krainę — świat „%s” (mediana; w nawiasie bez czasu AFK)" % WARIANTY[wid]["nazwa"])
         w.append("")
-        w.append("| Sposób gry | Klasa | Poziom przy bramach | Walk | Przegranych | Złoto zarobione | Złoto wydane | "
-                 "Złoto stracone po przegranych | Punkty z mini-gier |")
-        w.append("|---|---|---|---:|---:|---:|---:|---:|---:|")
+        w.append("| Sposób gry | Klasa | " + " | ".join(nazwy_b[b] for b in biomy) + " |")
+        w.append("|---|---|" + "---:|" * len(biomy))
         for tid in R["meta"]["tryby"]:
             for k in klasy:
                 P = W[tid][k]
-                w.append("| %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (
+                w.append("| %s | %s | %s |" % (TRYBY[tid]["nazwa"], nk[k], " | ".join(
+                    "%s (%s)" % (fm(_med(P, "biomy_min", b, "min")), fm(_med(P, "biomy_min", b, "min_aktywne")))
+                    for b in biomy)))
+        w.append("")
+        w.append("### Poziom, walki i Rybki — świat „%s” (mediana)" % WARIANTY[wid]["nazwa"])
+        w.append("")
+        w.append("| Sposób gry | Klasa | Poziom przy bramach | Walk | Przegranych | Rybki zarobione (w tym zagroda) | "
+                 "Wydane: przedmioty / kowal / jajka / trener / zagroda | Stracone po przegranych | Punkty z treningu AFK | "
+                 "Diamenty |")
+        w.append("|---|---|---|---:|---:|---:|---|---:|---:|---:|")
+        for tid in R["meta"]["tryby"]:
+            for k in klasy:
+                P = W[tid][k]
+                w.append("| %s | %s | %s | %s | %s | %s (%s) | %s | %s | %s | %s |" % (
                     TRYBY[tid]["nazwa"], nk[k],
                     " / ".join(fl(_med(P, "kamienie", "brama_" + b, "poziom")) for b in biomy),
-                    fl(_med(P, "walki")), fl(_med(P, "przegrane")), fl(_med(P, "zarobione")), fl(_med(P, "wydane")),
-                    fl(_med(P, "stracone")), fl(_med(P, "wytrenowane"))))
+                    fl(_med(P, "walki")), fl(_med(P, "przegrane")), fl(_med(P, "zarobione")),
+                    fl(_med(P, "zarobione_zagroda")),
+                    " / ".join(fl(_med(P, "wydane_na", c)) for c in ("przedmioty", "kowal", "jajka", "trener", "zagroda")),
+                    fl(_med(P, "stracone")), fl(_med(P, "wytrenowane")), fl(_med(P, "gemy"))))
+        w.append("")
+        w.append("### Rybki w kieszeni przy Strażnikach — świat „%s” (mediana: posiadane / zarobione do tej chwili; "
+                 "przedmiotów ze sklepu)" % WARIANTY[wid]["nazwa"])
+        w.append("")
+        w.append("| Sposób gry | Klasa | " + " | ".join("Strażnik: %s" % nazwy_b[b] for b in biomy) + " |")
+        w.append("|---|---|" + "---|" * len(biomy))
+        for tid in R["meta"]["tryby"]:
+            for k in klasy:
+                P = W[tid][k]
+                w.append("| %s | %s | %s |" % (TRYBY[tid]["nazwa"], nk[k], " | ".join(
+                    "%s / %s; %s szt." % (fl(_med(P, "kamienie", "straznik_" + b, "zloto")),
+                                          fl(_med(P, "kamienie", "straznik_" + b, "zarobione")),
+                                          fl(_med(P, "kamienie", "straznik_" + b, "przedmioty"))) for b in biomy)))
         w.append("")
         w.append("### Strażnicy — świat „%s”" % WARIANTY[wid]["nazwa"])
         w.append("")
         w.append("Dla każdej krainy: poziom przy pierwszej próbie · prób do wygranej (mediana / co dziesiąty gracz) · "
-                 "ilu graczy utknęło (co najmniej %d przegranych prób)." % CZAS["utknal_od_prob"])
+                 "wygrana za pierwszym razem · ilu graczy utknęło (co najmniej %d przegranych prób)." % CZAS["utknal_od_prob"])
         w.append("")
         w.append("| Sposób gry | Klasa | " + " | ".join(nazwy_b[b] for b in biomy) + " |")
         w.append("|---|---|" + "---|" * len(biomy))
@@ -996,8 +1280,9 @@ def tabele(R):
                 kom = []
                 for b in biomy:
                     s = P["straznicy"].get(b)
-                    kom.append("—" if not s else "poz. %s · %s / %s · %s%%" % (
-                        fl(s["poziom_pierwszej"]["med"]), fl(s["proby"]["med"]), fl(s["proby"]["p90"]), fl(s["utknelo_proc"])))
+                    kom.append("—" if not s else "poz. %s · %s / %s · 1. raz %s%% · %s%%" % (
+                        fl(s["poziom_pierwszej"]["med"]), fl(s["proby"]["med"]), fl(s["proby"]["p90"]),
+                        fl(s["za_pierwszym_proc"]), fl(s["utknelo_proc"])))
                 w.append("| %s | %s | %s |" % (TRYBY[tid]["nazwa"], nk[k], " | ".join(kom)))
         w.append("")
         w.append("### Nuda i przestoje — świat „%s” (mediana)" % WARIANTY[wid]["nazwa"])
@@ -1036,37 +1321,47 @@ def tabele(R):
                 w.append("| %s | %s (%d–%d) | %s | %s | %s | %s |" % (
                     klucz, nazwa_potwora[s["gatunek"]], s["od"], s["do"], fl(kom[0]), fm(kom[1]), fl(kom[2]), fm(kom[3])))
         w.append("")
-    if R.get("szanse_straznikow"):
-        w.append("### Szansa wygranej ze Strażnikiem (%), bohater na poziomie Strażnika −1 … +3")
+    for klucz_sz, tytul in (("szanse_straznikow", "pula statystyk „%s”, liczby z plików gry" % R["meta"].get("punkty", "gra")),
+                            ("szanse_straznikow_propozycji", "po propozycji „%s”" % (
+                                PROPOZYCJE[R["meta"]["polecana"]]["nazwa"] if R["meta"].get("polecana") else ""))):
+        if not R.get(klucz_sz):
+            continue
+        w.append("### Szansa wygranej ze Strażnikiem (%%) — %s" % tytul)
         w.append("")
-        w.append("„Sam” = bohater bez niczego. „Z dodatkami” = po 6 punktów z mini-gier w trzech głównych statystykach "
-                 "i pełny zestaw kowala ulepszony o 2.")
+        w.append("„Sam” = bohater bez treningu i przedmiotów na poziomie Strażnika −1 / 0 / +1 / +2. „AFK” = na poziomie "
+                 "Strażnika po %s minutach na stanowiskach (bez ulepszeń, bez skill checków, czas dzielony na trzy główne "
+                 "statystyki klasy). „Kowal +2” = pełny zestaw kowala ulepszony o 2, bez treningu. Ostatnia kolumna: "
+                 "ile minut AFK daje 50%% / 80%% wygranych." % " / ".join(str(m) for m in AFK_MINUTY))
         w.append("")
-        w.append("| Strażnik | Klasa | Sam: −1 / 0 / +1 / +2 / +3 | Z dodatkami: −1 / 0 / +1 / +2 / +3 |")
-        w.append("|---|---|---|---|")
+        w.append("| Strażnik | Klasa | Sam: %s | AFK: %s min | Kowal +2 | Minut AFK do 50%% / 80%% |" % (
+            " / ".join("%+d" % d for d in POZIOMY_STRAZNIKA), " / ".join(str(m) for m in AFK_MINUTY)))
+        w.append("|---|---|---|---|---:|---|")
         for bm in G["biomy"]:
             s = bm["strefy"][-1]
             for k in klasy:
-                X = R["szanse_straznikow"][bm["id"]][k]
-                w.append("| %s (poz. %d) | %s | %s | %s |" % (
+                X = R[klucz_sz][bm["id"]][k]
+                w.append("| %s (poz. %d) | %s | %s | %s | %s | %s / %s |" % (
                     nazwa_potwora[s["gatunek"]], s["od"], nk[k],
-                    " / ".join(str(X["sam"][str(d)]) for d in (-1, 0, 1, 2, 3)),
-                    " / ".join(str(X["z_dodatkami"][str(d)]) for d in (-1, 0, 1, 2, 3))))
+                    " / ".join(str(X["sam"][str(d)]) for d in POZIOMY_STRAZNIKA),
+                    " / ".join(str(X["afk"][str(m)]) for m in AFK_MINUTY), X["kowal2"],
+                    fm(X["afk_do_50"]) if X["afk_do_50"] is not None else "> 240",
+                    fm(X["afk_do_80"]) if X["afk_do_80"] is not None else "> 240"))
         w.append("")
     if R.get("propozycje"):
         w.append("### Propozycje zmian liczb — „przed / po” (świat „%s”, mediana z trzech klas)" %
                  WARIANTY[R["meta"]["propozycje_wariant"]]["nazwa"])
         w.append("")
-        w.append("Liczone na kopii danych; pliki gry bez zmian. Kolumny: minuty do końca · różnica między klasami "
-                 "(najwolniejsza − najszybsza) · przegranych · prób ze Strażnikami i ilu graczy na nich utknęło "
-                 "(%s) · najdłużej bez awansu." % " / ".join(nazwy_b[b] for b in biomy))
+        w.append("Liczone na kopii danych; pliki gry bez zmian. Kolumny: minuty do końca (razem z AFK) · w tym AFK · "
+                 "różnica między klasami (najwolniejsza − najszybsza) · przegranych · wygrana ze Strażnikiem za pierwszym "
+                 "razem i ilu graczy na nim utknęło (%s) · najdłuższa seria jednego potwora · najdłużej bez awansu · "
+                 "punkty z treningu · Rybki stracone po przegranych · wydane u trenera." % " / ".join(nazwy_b[b] for b in biomy))
         w.append("")
         for tid in R["meta"]["propozycje_tryby"]:
             w.append("**%s**" % TRYBY[tid]["nazwa"])
             w.append("")
-            w.append("| Zmiana | Koniec (min) | Różnica klas (min) | Przegranych | Prób ze Strażnikami | "
-                     "Utknęło (%) | Bez awansu (min) |")
-            w.append("|---|---:|---:|---:|---|---|---:|")
+            w.append("| Zmiana | Koniec (min) | W tym AFK | Różnica klas | Przegranych | Strażnik za 1. razem (%) | "
+                     "Utknęło (%) | Seria | Bez awansu (min) | Punkty AFK | Rybki stracone | U trenera |")
+            w.append("|---|---:|---:|---:|---:|---|---|---:|---:|---:|---:|---:|")
             for pid, X in R["propozycje"].items():
                 Y = X["wyniki"][tid]
                 czasy = [_med(Y[k], "czas_min") for k in klasy]
@@ -1076,16 +1371,29 @@ def tabele(R):
                     xs = [_med(Y[k], *sc) for k in klasy]
                     xs = [q for q in xs if q is not None]
                     return statistics.mean(xs) if xs else None
-                w.append("| %s | %s | %s | %s | %s | %s | %s |" % (
-                    X["nazwa"], fm(statistics.mean(czasy)) if czasy else "—",
+                def pierwsza(b):
+                    xs = [Y[k]["straznicy"][b]["za_pierwszym_proc"] for k in klasy if b in Y[k]["straznicy"]]
+                    return statistics.mean(xs) if xs else None
+                w.append("| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (
+                    X["nazwa"], fm(statistics.mean(czasy)) if czasy else "—", fm(sr("min_trening")),
                     fm(max(czasy) - min(czasy)) if czasy else "—", fl(sr("przegrane")),
-                    " / ".join(fm(sr("straznicy", b, "proby")) for b in biomy),
-                    " / ".join(fl(sr("straznicy", b, "utknelo_proc")) for b in biomy), fm(sr("bez_awansu_min"))))
+                    " / ".join(fl(pierwsza(b)) for b in biomy),
+                    " / ".join(fl(sr("straznicy", b, "utknelo_proc")) for b in biomy), fl(sr("seria_potwora")),
+                    fm(sr("bez_awansu_min")), fl(sr("wytrenowane")), fl(sr("stracone")),
+                    fl(sr("wydane_na", "trener"))))
             w.append("")
-    w.append("_Uruchomienie: `python -B swiat/przejscie_gry/symulacja_przejscia.py --przebiegow %d --ziarno %d` · "
-             "%d przebiegów na komórkę · krzywa doświadczenia %s × L^%s · katalog sklepu: %s · liczone %s._" % (
-                 R["meta"]["przebiegow"], R["meta"]["ziarno"], R["meta"]["przebiegow"],
+    E = G["afk"]
+    w.append("_Uruchomienie: `python -B swiat/przejscie_gry/symulacja_przejscia.py --przebiegow %d --ziarno %d%s%s` · "
+             "%d przebiegów na komórkę · krzywa doświadczenia %s × L^%s · pula statystyk „%s” · trening AFK: pasek "
+             "%s × %s s, +%s za pasek (%d punktów na godzinę na stanowisku) · katalog sklepu: %s · liczone %s._" % (
+                 R["meta"]["przebiegow"], R["meta"]["ziarno"],
+                 " --punkty %s" % R["meta"]["punkty"] if R["meta"].get("punkty", "gra") != "gra" else "",
+                 " --afk-min %s" % R["meta"]["afk_min"] if R["meta"].get("afk_min") is not None else "",
+                 R["meta"]["przebiegow"],
                  ("%.2f" % Ds["krzywa"]["a"]).replace(".", ","), ("%.1f" % Ds["krzywa"]["b"]).replace(".", ","),
+                 R["meta"].get("punkty", "gra"), ("%g" % E["powtorzen"]).replace(".", ","),
+                 ("%g" % E["czas_powtorzenia"]).replace(".", ","), ("%g" % E["przyrost"]).replace(".", ","),
+                 round(3600.0 / (E["powtorzen"] * E["czas_powtorzenia"]) * E["przyrost"]),
                  R["meta"]["katalog_sklepu"] or "jeszcze go nie ma", R["meta"]["data"]))
     return "\n".join(w) + "\n"
 
@@ -1122,27 +1430,39 @@ def main(argv=None):
     ap.add_argument("--json", default=os.path.join(TU, "przejscie_w_liczbach.json"))
     ap.add_argument("--md", default=os.path.join(TU, "PRZEJSCIE_W_LICZBACH.md"))
     ap.add_argument("--jeden", nargs=4, metavar=("KLASA", "TRYB", "WARIANT", "ZIARNO"))
+    ap.add_argument("--afk-min", type=float, default=None,
+                    help="minut treningu AFK na godzinę gry we wszystkich sposobach gry, które trenują")
+    ap.add_argument("--punkty", choices=PUNKTY, default="gra", help="pula statystyk za poziom (opis: PUNKTY)")
+    ap.add_argument("--propozycje", default="", help="tylko te propozycje (id po przecinku)")
+    ap.add_argument("--ziaren-straznikow", type=int, default=300, help="walk na komórkę tabeli Strażników (0 = bez)")
     a = ap.parse_args(argv)
     t0 = time.time()
-    G = gra()
+    swiat = {"punkty": a.punkty} if a.punkty != "gra" else {}
+    G = gra(swiat)
     if a.jeden:
-        w = przejscie(G, a.jeden[0], a.jeden[1], a.jeden[2], int(a.jeden[3]))
+        w = przejscie(G, a.jeden[0], a.jeden[1], a.jeden[2], int(a.jeden[3]), afk_min=a.afk_min)
         print(json.dumps(w, ensure_ascii=False, indent=1))
         return 0
     klasy = [k for k in a.klasy.split(",") if k] or list(G["Ds"]["klasy"])
     tryby = [t for t in a.tryby.split(",") if t]
     warianty = [x for x in a.warianty.split(",") if x]
     ziarna = [a.ziarno * 1000 + n for n in range(a.przebiegow)]
-    zadania = [(k, t, wr, None, ziarna) for wr in warianty for t in tryby for k in klasy]
-    prop = {} if a.bez_propozycji else PROPOZYCJE
+    zadania = [(k, t, wr, swiat or None, ziarna, a.afk_min) for wr in warianty for t in tryby for k in klasy]
+    wybrane = [p for p in a.propozycje.split(",") if p]
+    for p in wybrane:
+        if p not in PROPOZYCJE:
+            ap.error("nieznana propozycja: %s (są: %s)" % (p, ", ".join(PROPOZYCJE)))
+    prop = {} if a.bez_propozycji else {p: PROPOZYCJE[p] for p in (wybrane or PROPOZYCJE)}
     for pid, X in prop.items():
-        zadania += [(k, t, PROPOZYCJE_WARIANT, X["zmiany"], ziarna) for t in PROPOZYCJE_TRYBY for k in klasy]
+        zadania += [(k, t, PROPOZYCJE_WARIANT, dict(swiat, **X["zmiany"]), ziarna, a.afk_min)
+                    for t in PROPOZYCJE_TRYBY for k in klasy]
     wyn = policz(zadania, a.procesy)
     R = {"meta": {"opis": "Przejście gry w liczbach (D-106) — propozycja, nie kanon. Czasy w minutach gry.",
                   "data": time.strftime("%Y-%m-%d"), "przebiegow": a.przebiegow, "ziarno": a.ziarno, "klasy": klasy,
                   "tryby": tryby, "warianty": warianty, "parametry_czasu": CZAS, "style": STYLE,
                   "sposoby_gry": TRYBY, "warianty_swiata": WARIANTY, "propozycje_tryby": PROPOZYCJE_TRYBY,
-                  "propozycje_wariant": PROPOZYCJE_WARIANT,
+                  "propozycje_wariant": PROPOZYCJE_WARIANT, "punkty": a.punkty, "afk_min": a.afk_min,
+                  "trening_afk": G["afk"], "trener": TRENER,
                   "katalog_sklepu": G["katalog"]["plik"] if G["katalog"] else None,
                   "krzywa": G["Ds"]["krzywa"],
                   "zagrody": {b["id"]: [{k: s[k] for k in ("id", "gatunek", "od", "do", "odrodzenie", "naraz")}
@@ -1161,7 +1481,12 @@ def main(argv=None):
                 R["propozycje"][pid]["wyniki"].setdefault(t, {})[k] = {a_: b_ for a_, b_ in wyn[n][1].items()
                                                                        if a_ not in ("strefy", "walki_gatunku")}
                 n += 1
-    R["szanse_straznikow"] = szanse_straznikow(gra(), 300, a.ziarno)
+    if a.ziaren_straznikow > 0:
+        R["szanse_straznikow"] = szanse_straznikow(gra(swiat), a.ziaren_straznikow, a.ziarno)
+        if POLECANA in prop:
+            R["szanse_straznikow_propozycji"] = szanse_straznikow(
+                gra(dict(swiat, **PROPOZYCJE[POLECANA]["zmiany"])), a.ziaren_straznikow, a.ziarno)
+            R["meta"]["polecana"] = POLECANA
     tekst = tabele(R)
     if a.bez_zapisu:
         print(tekst)
