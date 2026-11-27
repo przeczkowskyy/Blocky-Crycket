@@ -653,6 +653,7 @@ Szczegóły: Karol 17.11 ustalił na czacie, że Strażnik Topieli ma być trudn
 **Odpowiedź:**
 - Karol (2026-11-19): Nie wiem czy 30% to nie za dużo. Gracz słusznie ma się pomęczyć. Może jakieś 15%?
 Rozstrzyga: D-111 (życie −15%); doświadczenie z potworów Dżungli +25% zostaje otwarte
+- Karol (2026-11-27, wybór w oknie pytania agenta; zapisał agent): „Tak, +25%” — doświadczenie z potworów Dżungli ×1,25 (D-165).
 
 
 ## 71. Paweł: makieta okna „Shop” a sklep zbrojmistrza
@@ -1148,6 +1149,9 @@ Gra: bc
 
 Szczegóły: dane w `src/shared/TreningAFKDane.luau` (pliki Pawła): `powtorzenNaPasek`, `czasPowtorzenia`, `przyrostNaPasek`, `przyrostCoPoziomow`. Zdanie agenta (D-114): (a) — gdy kilka minut AFK zastępuje godzinę walk, walka i łup tracą sens, a z nimi pętla gry; najtańszy test to ustawić tempo tak, żeby trening dawał np. połowę przyrostu co walka w tym samym czasie, i sprawdzić w kalkulatorze. Ceny sklepu dopiero po tej decyzji.
 **Odpowiedź:**
+- Karol (2026-11-27, wybór w oknie pytania agenta; zapisał agent): „A + B (zalecane)” — limit treningu (2 × poziom, powyżej ×0,1) razem z 10 punktami za poziom.
+
+Rozstrzyga: D-165.
 
 ## 118. Sklep u trenera: wzmacniacz poza grą, waluta, podpowiedź nad matą
 - Wzmacniacz ×2 na 10 min płynie dalej, gdy gracz wyjdzie z gry — czy ma się zatrzymywać?
@@ -1156,4 +1160,23 @@ Szczegóły: dane w `src/shared/TreningAFKDane.luau` (pliki Pawła): `powtorzenN
 Gra: bc
 
 Szczegóły: dziś (D-164) wzmacniacz płynie poza grą, kosztuje 600 Rybek, podpowiedź wisi nad matą. Zdanie agenta (D-114): wzmacniacz za Robuxy to typowe źródło przychodu symulatorów — warto go dodać po ustaleniu tempa treningu (pytanie 117), z jasną ceną i bez losowania.
+**Odpowiedź:**
+
+## 119. Drzewko umiejętności nie działa w walce, ulepszenia u trenera za drogie — co z tym?
+- Symulacja 27.11: gracz zbiera ok. 520 Diamentów na grę, ale premie drzewka nie wpływają na walkę (walka nie czyta atrybutów drzewka).
+- Pełne ulepszenia u trenera (D-164) kosztują 87 600 Rybek — 3,7 razy więcej niż wszystkie Rybki z gry; gracz wydaje tam 300–1100.
+- Zagroda daje ok. 2% Rybek z gry.
+- Do wyboru: (a) podpiąć drzewko do walki, potanić ulepszenia (np. ÷4) i podnieść stawki zagrody ×3; (b) tylko drzewko; (c) zostawić do bety.
+Gra: bc
+
+Szczegóły: raport `swiat/przejscie_gry/BALANS_2711.md`. Drzewko to okno Pawła (D-150), walka i premie po stronie Karola. Zdanie agenta (D-114): (a) — drzewko, które nic nie daje, psuje zaufanie gracza do całego systemu Diamentów; to najważniejsza z trzech rzeczy.
+**Odpowiedź:**
+
+## 120. Napisy potworów i walki: angielski czy polski?
+- Od 27.11 nad potworem jest „LV”, „RARE”, „BOSS” (po angielsku, jak HUD).
+- Ekran walki dalej ma „POZ.”, „ZWYKŁY”, przycisk E „Walcz”, panel bohatera „BOHATER: WOJOWNIK · POZ. 1”.
+- Do wyboru: (a) wszystko po angielsku (D-045); (b) wszystko po polsku; (c) zostawić.
+Gra: bc
+
+Szczegóły: D-045 mówi „angielski z tłumaczeniami”. Zdanie agenta (D-114): (a) — gra idzie do szerokiego rynku, a mieszanka języków wygląda na niedokończoną.
 **Odpowiedź:**

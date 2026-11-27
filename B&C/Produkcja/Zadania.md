@@ -7,7 +7,11 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
-- [ ] Karol i Paweł: pytanie 117 — trening AFK daje ok. 750 punktów statystyki na godzinę, kilka minut AFK wystarcza na strażników Bagna i Dżungli; ustalić tempo przed cenami sklepu u trenera · #wysoki #gra/bc
+- [ ] Paweł: potwierdzić albo odrzucić D-165 (balans: 10 punktów za poziom samo — zmienia D-140; limit treningu AFK w Twoim `TreningAFKDane`; XP Dżungli ×1,25) · Paweł · #wysoki #gra/bc
+- [ ] Karol i Paweł: pytania 119 (drzewko nie działa w walce, ceny ulepszeń u trenera, zagroda) i 120 (język napisów potworów i walki) · #średni #gra/bc
+- [ ] Potwory: ładniejsze modele obecnych 15 gatunków (gładkie siatki z Blendera zamiast klocków, świecące elementy) — wybór Karola 27.11, start po jego znaku · agent: Karol · #średni #gra/bc
+- [ ] Bronie w grze: chwyt według rodzaju i korekta upadku w walce i w świecie, łuk i tarcza bez wchodzenia w ciało; różdżki dla Maga (nowe przedmioty i modele) — z listy Karola 27.11, start po jego znaku; do uzgodnienia z Pawłem: miejsce na łuk w oknie ekwipunku, jego podgląd kota rasy chowa broń w świecie · agent: Karol · #średni #gra/bc
+- [ ] Paweł: wypchnąć na GitHuba ikony 80 przedmiotów (`IkonyPrzedmiotow`) i okno Index, które są tylko w Studio; zakładka potworów w Index (dane może dać agent Karola) · Paweł · #średni #gra/bc
 - [ ] Paweł: obejrzeć większy Training Center i sklep u trenera (D-163, D-164; raport w panelu) oraz zmiany w swoich plikach `TreningAFK`, `TreningAFKClient`, `TreningAFKDane` (sala, zakładka SHOP, podpowiedź E nad matą, wstawanie po ławce) · Paweł · #wysoki #gra/bc
 - [ ] Paweł: potwierdzić albo odrzucić decyzje Karola z 26.11 wieczorem — D-159 (start w miasteczku, stare miejsca usunięte), D-160 (tylko nowe jajka; leśne stoi w miasteczku), D-161 (sprzedaż petów, zarobek na sekundę), D-162 (sala: wybór u trenera, bez tabliczek) · Paweł · #wysoki #gra/bc
 - [ ] Paweł: obejrzeć zmiany w swoich plikach zrobione przez agenta Karola na polecenie Karola 26.11 — okno petów (`OknoPetowClient`, `OknoPetow`: zarobek na kafelku, tryb SELL) i stanowiska sali (`TreningAFK`, `TreningAFKClient`, `TreningAFKDane`: bez tabliczek, okno wyboru u trenera); opis zmian w raportach panelu · Paweł · #wysoki #gra/bc
@@ -205,6 +209,8 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-27: Balans D-165 w grze — 10 punktów za poziom samo, limit treningu AFK, XP Dżungli ×1,25; symulator przejścia odświeżony do obecnej gry (`swiat/przejscie_gry/BALANS_2711.md`); próby: awans, limit, Dżungla, zapis, krótka droga — bez błędów
+- [x] 2026-11-27: Potwory — nazwa, poziom i ranga (RARE/BOSS) nad potworem we wszystkich biomach; w walce portrety z ikon z Blendera (15 obrazów wgranych za zgodą Karola, moderacja Approved); próba tabliczek 17/17
 - [x] 2026-11-27: Większy Training Center (D-163, Paweł) i sklep u trenera z ulepszeniami stanowisk i wzmacniaczami za Rybki (D-164, Paweł) — w Studio; próby: zasięg E 27/27, okno trenera i sklep 26/26, zapis 10/10, krótka droga gracza 15/15, ściany pola gry OK; raport w panelu
 - [x] 2026-11-27: Wyjaśnione niezaliczenia prób z 26.11 — las PD3: próba mierzyła widoki wokół kamery zostawionej przez haczyk testowy walki (z kamerą gracza 8 widoków, gra w porządku; próba poprawiona); Pancerz A12: postać po ławce leżała jeszcze ok. 1 s i ślizgała się przy przeniesieniu (próba); Zręczność A13: rama bieżni wystawała w przejście (usunięte w nowej sali); Brama Leśna B08: przeszła
 - [x] 2026-11-26: Sala treningowa (D-162) w Studio — okno wyboru ćwiczenia u trenera, bez tabliczek i bez tablicy mini-gier, studnia i ławki odsunięte od wejścia (mapa 4256 części); próba okna trenera 17 z 17 punktów, krótka droga gracza, próba treningu i próba postaci w miasteczku bez błędów; raport w panelu
