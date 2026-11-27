@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T20:11:25+01:00",
+ "aktualizacja": "2026-11-27T20:15:35+01:00",
  "prace": [
   {
    "id": "smok-mapa2-gra",
@@ -23,9 +23,10 @@
    "id": "trening-kosci-animacje",
    "tytul": "Sala treningowa: kości szczęścia, bieżnia, sztanga; kamera rzutu u mistrza gier",
    "stan": "w_toku",
+   "etap": "Diagnoza i kod: kosci szczescia, bieznia, sztanga",
    "start": "2026-11-27T20:11:25+01:00",
-   "koniec_szacowany": "2026-11-27T22:11:25+01:00",
-   "aktualizacja": "2026-11-27T20:11:25+01:00",
+   "koniec_szacowany": "2026-11-27T22:10:00+01:00",
+   "aktualizacja": "2026-11-27T20:15:34+01:00",
    "obszary": [
     "src/server/TreningAFK.server.luau",
     "src/client/TreningAFKClient.client.luau",
