@@ -85,8 +85,10 @@ KOD = {
                   'local function widac() for _, g in ipairs(p.PlayerGui:GetDescendants()) do '
                   'if g:IsA("BillboardGui") and g.Adornee ~= nil and (g.Adornee == m or g.Adornee:IsDescendantOf(m)) then '
                   'return true end end return false end '
+                  'local cam = workspace.CurrentCamera cam.CameraType = Enum.CameraType.Custom '
                   'local function stan(r) hrp.AssemblyLinearVelocity = Vector3.zero '
-                  'hrp.CFrame = CFrame.lookAt(Vector3.new(mx + r * kx, wys, mz + r * kz), Vector3.new(mx, wys, mz)) end '
+                  'hrp.CFrame = CFrame.lookAt(Vector3.new(mx + r * kx, wys, mz + r * kz), Vector3.new(mx, wys, mz)) '
+                  'cam.CFrame = CFrame.lookAt(hrp.Position - hrp.CFrame.LookVector * 9 + Vector3.new(0, 5, 0), hrp.Position) end '
                   'stan(5.5) local t = os.clock() while widac() and os.clock() - t < 2 do task.wait(0.05) end '
                   'for i = 0, 19 do local r = 5.4 - i * 0.2 stan(r) local t0 = os.clock() '
                   'while os.clock() - t0 < 0.3 do task.wait() end '
@@ -137,12 +139,12 @@ def dane_sali():
     return {s["id"]: s for s in T["stanowiska"]}, T["przejscie"]
 
 
-def na_osi(p, a, b):
-    """Rzut punktu p (x, z) na prostą a–b (oś korytarza) — punkt w świecie [x, z]."""
-    ax, az, bx, bz = a[0], a[2], b[0], b[2]
-    dx, dz = bx - ax, bz - az
-    t = ((p[0] - ax) * dx + (p[1] - az) * dz) / (dx * dx + dz * dz)
-    return ax + t * dx, az + t * dz
+def na_osi(p, koniec, kor):
+    """Rzut punktu p (x, z) na oś korytarza: prosta przez „koniec” (punkt na osi przy zachodniej ścianie), prostopadła
+    do kierunku „korytarz” stanowisk (27.11.2026: „przedsionek” leży na froncie sali, nie na osi)."""
+    dx, dz = kor[2], -kor[0]
+    t = (p[0] - koniec[0]) * dx + (p[1] - koniec[2]) * dz
+    return koniec[0] + t * dx, koniec[2] + t * dz
 
 
 def main():
@@ -332,7 +334,7 @@ def main():
             # --- A3x: oś korytarza naprzeciw maty — nic
             for i, x in enumerate(st):
                 zakoncz_jesli_trwa()
-                ox, oz = na_osi((x["x"], x["z"]), KOR["przedsionek"], KOR["koniec"])
+                ox, oz = na_osi((x["x"], x["z"]), KOR["koniec"], ZN[x["id"]]["korytarz"])
                 stoj((ox, wys, oz), (KOR["koniec"][0], wys, KOR["koniec"][2]))
                 a = e_i_stan()
                 zapisz("A3%d" % i, {"id": x["id"], "punkt": [ox, oz], "od_maty": math.hypot(ox - x["x"], oz - x["z"]), "po_E": a})
@@ -344,7 +346,7 @@ def main():
             for i, x in enumerate(st):
                 zakoncz_jesli_trwa()
                 kor = ZN[x["id"]]["korytarz"]
-                ox, oz = na_osi((x["x"], x["z"]), KOR["przedsionek"], KOR["koniec"])
+                ox, oz = na_osi((x["x"], x["z"]), KOR["koniec"], ZN[x["id"]]["korytarz"])
                 stoj((ox, wys, oz), (x["x"], wys, x["z"]))
                 y_posadzka = stan()["y"]
                 m = js(KOD["marsz"] % (x["x"] + 3.0 * kor[0], x["z"] + 3.0 * kor[2]), "Server")

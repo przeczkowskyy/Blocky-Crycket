@@ -1,0 +1,16 @@
+{
+ "id": "r-20261127-142957-3ab4",
+ "tytul": "Training Center większy i sklep u trenera",
+ "opis_md": "Polecenia Pawła z Telegrama (27.11, 01:10–01:15), Karol: „zastosuj się do polecenia”. Decyzje D-163 i D-164 (Paweł, Karol zlecił wykonanie).\n\n**Większy Training Center**\n- Sala ma 40 × 22 study (było 24 × 20) — zajmuje obszar z zaznaczenia Pawła, razem z miejscem po brązowym domu na zachód.\n- Dwa rzędy po trzy stanowiska, przejście środkiem 9,3 studa; żaden sprzęt nie wystaje w przejście.\n- Podpowiedź E wisi nad matą na wysokości ciała — pojawia się z podłogi ok. 2 study przed matą (zasięg 4,5 bez zmian).\n- Trener zostaje w głównym budynku, widoczny z wejścia do sali.\n\n**Sklep u trenera (zakładka SHOP)**\n- Ulepszenie każdego stanowiska, poziomy 1–5: +10% szybkości za poziom; 300 / 700 / 1600 / 3600 / 8400 Rybek.\n- Wzmacniacz ×2 na 10 minut dla jednej statystyki: 600 Rybek; licznik na kafelku i w panelu treningu.\n- Bez Robuxów — to osobna decyzja.\n\n**Sprawdzone w grze:** zasięg E 27 z 27; okno trenera i sklep 26 z 26 (zakup, MAX, odmowa bez Rybek i z daleka, wzmacniacz i jego koniec); zapis 10 z 10 (ulepszenie i wzmacniacz wracają po ponownym wejściu); krótka droga gracza 15 z 15.\n\n**Do decyzji:** pytanie 117 — trening AFK daje ok. 750 punktów na godzinę, kilka minut wystarcza na strażników Bagna i Dżungli; pytanie 118 — wzmacniacz poza grą, waluta, podpowiedź nad matą.\n\n**Pliki Pawła:** `TreningAFK`, `TreningAFKClient`, `TreningAFKDane` zmienione przez agenta Karola — do obejrzenia.\n\n**Nie sprawdzono:** telefonu, dwóch graczy naraz.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-27T14:29:57+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "gra": "bc"
+}

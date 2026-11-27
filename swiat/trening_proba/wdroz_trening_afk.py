@@ -80,10 +80,10 @@ def main(argv):
     for p in nowe:
         if KONIEC in nowe[p]:
             sys.exit("%s zawiera %s — zmień ogranicznik napisu w narzędziu" % (p, KONIEC))
-    odczyt = ('local H = game:GetService("HttpService") local o = {} '
-              + " ".join('do local s = %s o["%s"] = s and { klasa = s.ClassName, zrodlo = s.Source } or false end'
-                         % (sciezka_lua(sc), p) for p, sc, _, _ in SKRYPTY)
-              + " return H:JSONEncode(o)")
+    # 27.11.2026: każdy skrypt osobnym odczytem — razem (ok. 103 tys. znaków) przekraczały limit odpowiedzi execute_luau
+    odczyty = [('local H = game:GetService("HttpService") local o = {} '
+                'do local s = %s o["%s"] = s and { klasa = s.ClassName, zrodlo = s.Source } or false end '
+                'return H:JSONEncode(o)') % (sciezka_lua(sc), p) for p, sc, _, _ in SKRYPTY]
     with StudioMCP(timeout=180) as s:
         sid = wybierz_studio(s, studio)
 
@@ -94,9 +94,15 @@ def main(argv):
                 sys.exit(1)
             return r["text"].strip()
 
+        def czytaj():
+            w_ = {}
+            for kod_ in odczyty:
+                w_.update(json.loads(luau(kod_)))
+            return w_
+
         if "Current Studio Mode: Edit" not in s.call("get_studio_state", {"studio_id": sid})["text"]:
             sys.exit("Studio nie jest w trybie Edit — wdrożenie tylko w Edit")
-        w = json.loads(luau(odczyt))
+        w = czytaj()
         stan, stop = {}, False
         for p, sc, klasa, _ in SKRYPTY:
             x = w.get(p)
@@ -131,7 +137,7 @@ def main(argv):
                 sciezka_lua(sc), "\n" + nowe[p] if nowe[p].startswith("\n") else nowe[p], KONIEC))
         kod.append("if rec then CHS:FinishRecording(rec, Enum.FinishRecordingOperation.Commit) end return tostring(n)")
         print("podmienione:", luau("\n".join(kod)))
-        w = json.loads(luau(odczyt))
+        w = czytaj()
         zle = [p for p, _, _, _ in SKRYPTY if not w.get(p) or norm(w[p]["zrodlo"]) != norm(nowe[p])]
         if zle:
             print("BŁĄD: po podmianie Studio ≠ repo:", zle)

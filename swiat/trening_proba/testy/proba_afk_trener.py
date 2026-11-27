@@ -34,7 +34,8 @@ LISTA (OK / BŁĄD / ?):
   S05 spam: 5 próśb o wzmacniacz Kondycji w 0,1 s (zdalnym zdarzeniem) → jeden zakup (−600), wzmacniacz ok. 600 s
   S06 drugi wzmacniacz Kondycji → odmowa „aktywny”, Gold bez zmian; zrzut 04_sklep_wzmacniacz (zakładka SHOP, kafelek
       z licznikiem)
-  S07 wzmacniacz ×2 i jego koniec: czas wzmacniacza w module danych na serwerze skrócony do 15 s, zakup dla Szczęścia,
+  S07 wzmacniacz ×2 i jego koniec: zakup dla Szczęścia, potem koniec wzmacniacza w profilu przestawiony na za 30 s
+      (DanePakietu; serwer czyta profil od nowa po zmianie atrybutu StanGraczaWczytany),
       trening Szczęścia: pełny pasek w trakcie daje +2 (licznik nad panelem widać — zrzut 05_panel_wzmacniacz), po
       15 s +1; czas przywrócony
   S08 zakup z daleka (25 st od trenera, zdalnym zdarzeniem) → odmowa „daleko”, Gold bez zmian
@@ -72,8 +73,9 @@ SKRYPTY = [("src/server/TreningAFK.server.luau", 'game:GetService("ServerScriptS
            ("src/shared/TreningAFKDane.luau", 'game:GetService("ReplicatedStorage").Shared:FindFirstChild("TreningAFKDane")')]
 
 KOD = {
-    "edit": H + 'local o = {} ' + " ".join('do local ok, s = pcall(function() return %s end) o["%s"] = ok and s and s.Source or false end'
-                                          % (sc, p) for p, sc in SKRYPTY) + ' return H:JSONEncode(o)',
+    # 27.11.2026: każdy skrypt osobnym odczytem (razem przekraczały limit odpowiedzi execute_luau, ok. 97 tys. znaków)
+    **{"edit_%d" % i: H + 'local o = {} do local ok, s = pcall(function() return %s end) o["%s"] = ok and s and s.Source or false end '
+       'return H:JSONEncode(o)' % (sc, p) for i, (p, sc) in enumerate(SKRYPTY)},
     "gotowy_klient": 'local p = game:GetService("Players").LocalPlayer return tostring(p ~= nil and p.Character ~= nil)',
     "imie": LP + 'return lp.Name',
     "bez_nazwy": ('local SG = game:GetService("StarterGui") for _, t in { Enum.CoreGuiType.PlayerList, Enum.CoreGuiType.Chat } do '
@@ -131,10 +133,10 @@ KOD = {
     # sklep trenera (27.11.2026)
     "sluchacz_sklepu": (LP + 'if not lp:GetAttribute("ProbaSluchaczSklepu") then lp:SetAttribute("ProbaSluchaczSklepu", true) '
                         'local H = game:GetService("HttpService") local punkty = {} '
-                        'game:GetService("ReplicatedStorage").TreningAFK.OnClientEvent:Connect(function(a, b, c, d, e) '
+                        'game:GetService("ReplicatedStorage").TreningAFK.OnClientEvent:Connect(function(a, b, c, d, e, f) '
                         'if a == "odmowa" then lp:SetAttribute("ProbaOdmowa", tostring(b)) lp:SetAttribute("ProbaBrakuje", d) '
-                        'elseif a == "start" then lp:SetAttribute("ProbaPasek", d) lp:SetAttribute("ProbaPrzyrost", c) '
-                        'lp:SetAttribute("ProbaWzm", e) table.clear(punkty) lp:SetAttribute("ProbaPunkty", "[]") '
+                        'elseif a == "start" then lp:SetAttribute("ProbaPasek", e) lp:SetAttribute("ProbaPrzyrost", d) '
+                        'lp:SetAttribute("ProbaWzm", f) table.clear(punkty) lp:SetAttribute("ProbaPunkty", "[]") '
                         'elseif a == "punkt" then table.insert(punkty, { t = os.clock(), ile = c }) '
                         'lp:SetAttribute("ProbaPunkty", H:JSONEncode(punkty)) end end) end '
                         'lp:SetAttribute("ProbaOdmowa", nil) lp:SetAttribute("ProbaBrakuje", nil) return "ok"'),
@@ -156,8 +158,13 @@ KOD = {
     "kup": 'game:GetService("ReplicatedStorage").TreningAFK:FireServer("kup", "%s", "%s") return "ok"',
     "kup_seria": ('local Z = game:GetService("ReplicatedStorage").TreningAFK for i = 1, 5 do '
                   'Z:FireServer("kup", "wzmacniacz", "%s") task.wait(0.02) end return "ok"'),
-    "czas_wzm": ('local D = require(game:GetService("ReplicatedStorage").Shared.TreningAFKDane) '
-                 'D.sklep.wzmacniacze.czas = %d return "ok"'),
+    # koniec wzmacniacza w profilu (os.time + s) i ponowny odczyt sklepu przez serwer: atrybut StanGraczaWczytany
+    # na chwilę false, potem z powrotem (serwer TreningAFK czyta profil od nowa przy zmianie na wartość ≠ false)
+    "skroc_wzm": (GR + 'local f = workspace.StanGracza.Sygnaly.DanePakietu local v = f:Invoke("czytaj", gracz, "TreningAFK") or {} '
+                  'v.w = v.w or {} v.w["%s"] = os.time() + %d local r = f:Invoke("zapisz", gracz, "TreningAFK", v) '
+                  'local a = gracz:GetAttribute("StanGraczaWczytany") gracz:SetAttribute("StanGraczaWczytany", false) '
+                  'task.wait(0.3) gracz:SetAttribute("StanGraczaWczytany", if a == nil then true else a) task.wait(0.3) '
+                  'gracz:SetAttribute("StanGraczaWczytany", a) return tostring(type(r) == "table" and r.ok)'),
 }
 
 
@@ -303,6 +310,14 @@ def main():
             if bez_zrzutow:
                 return False
             nie_usypiaj()
+            # 27.11.2026: okno Studio zminimalizowane albo w tle nie rysuje świata 3D (zrzut czarny poza interfejsem)
+            try:
+                import studio_okno  # noqa: E402 — tools/studio_okno.py
+                for h_, _, _ in studio_okno.okna_studio():
+                    studio_okno.na_wierzch(h_)
+                time.sleep(1.5)
+            except Exception as e_:  # noqa: BLE001 — bez Windows / bez okna: zrzut i tak próbujemy zrobić
+                log("okno Studio: %s" % e_)
             a = {"capture_id": "afk_" + nazwa_}
             if kamera:
                 a["camera_position"], a["look_at_position"] = list(kamera), list(patrz)
@@ -350,7 +365,9 @@ def main():
         if "Current Studio Mode: Edit" not in call("get_studio_state")["text"]:
             sys.exit("Studio nie jest w trybie Edit — ta próba sama włącza Play")
         # ------------------------------------------------------------------ B00 Edit: skrypty = repo
-        ed = js(KOD["edit"], "Edit")
+        ed = {}
+        for i_ in range(len(SKRYPTY)):
+            ed.update(js(KOD["edit_%d" % i_], "Edit"))
         zgodne = {p: bool(ed.get(p)) and norm(ed[p]) == norm(open(os.path.join(REPO, p), encoding="utf-8").read())
                   for p, _ in SKRYPTY}
         zapisz("B00", zgodne)
@@ -520,6 +537,9 @@ def main():
                 do_trenera()
                 otworz_menu()
                 luau(KOD["sluchacz_sklepu"], "Client")
+                # okno mogło zostać otwarte na zakładce SHOP — kafelek ćwiczenia jest wtedy schowany pod kafelkiem sklepu
+                klik("TreningAFKMenu.Okno.ZakladkaTrening")
+                time.sleep(0.5)
                 klik("TreningAFKMenu.Okno.Cwiczenia." + id_)
                 czekaj_na(lambda: (lambda t_: t_ if t_.get("afk") == id_ else None)(stan()), 6)
                 return czekaj_na(lambda: (lambda s_: s_ if len(s_.get("punkty") or []) >= paskow else None)(sklep()), limit) \
@@ -594,28 +614,25 @@ def main():
                   "drugi wzmacniacz Kondycji → odmowa „%s”, Gold %s; zrzut 04_sklep_wzmacniacz %s" % (
                       a.get("odmowa"), pa.get("gold"), ok_z4))
             # -------------------------------------------------------------- S07 ×2 i koniec wzmacniacza
-            luau(KOD["czas_wzm"] % 15, "Server")
-            try:
-                otworz_sklep()
-                t_zakupu = time.time()
-                klik_kup("Szczescie", "wzmacniacz")
-                w1 = trenuj("Szczescie", 1, 12)
-                ok_z5 = zrzut("05_panel_wzmacniacz")
-                koniec_ = t_zakupu + 16.0
-                while time.time() < koniec_:
-                    time.sleep(0.5)
-                n0 = len(w1.get("punkty") or [])
-                w2 = czekaj_na(lambda: (lambda s_: s_ if len(s_.get("punkty") or []) >= n0 + 2 else None)(sklep()), 15) or sklep()
-            finally:
-                luau(KOD["czas_wzm"] % 600, "Server")
+            otworz_sklep()
+            klik_kup("Szczescie", "wzmacniacz")
+            skr = luau(KOD["skroc_wzm"] % ("Luck", 30), "Server")
+            t_konca = time.time() + 30.0
+            w1 = trenuj("Szczescie", 1, 12)
+            ok_z5 = zrzut("05_panel_wzmacniacz")
+            while time.time() < t_konca + 1.0:
+                time.sleep(0.5)
+            n0 = len(sklep().get("punkty") or [])
+            w2 = czekaj_na(lambda: (lambda s_: s_ if len(s_.get("punkty") or []) >= n0 + 2 else None)(sklep()), 15) or sklep()
             zakoncz_trening()
             p1 = [x["ile"] for x in (w1.get("punkty") or [])]
             p2 = [x["ile"] for x in (w2.get("punkty") or [])]
             zapisz("S07", {"w_trakcie": {"przyrost_start": w1.get("przyrost"), "wzm_start": w1.get("wzm_start"), "punkty": p1,
                                          "panel": w1.get("panel_wzm"), "napis": w1.get("panel_wzm_tekst")}, "po": p2})
-            punkt("S07", w1.get("przyrost") == 2 and p1[:1] == [2] and w1.get("panel_wzm") is True and p2[-1:] == [1],
-                  "wzmacniacz 15 s: start +%s/pasek, pierwszy pasek +%s, licznik nad panelem %s („%s”); po końcu ostatni pasek +%s;"
-                  " zrzut 05 %s" % (w1.get("przyrost"), p1[:1], w1.get("panel_wzm"), w1.get("panel_wzm_tekst"), p2[-1:], ok_z5))
+            punkt("S07", skr == "true" and w1.get("przyrost") == 2 and p1[:1] == [2] and w1.get("panel_wzm") is True
+                  and p2[-1:] == [1],
+                  "wzmacniacz skrócony do 30 s (%s): start +%s/pasek, pierwszy pasek +%s, licznik nad panelem %s („%s”); po końcu ostatni pasek +%s;"
+                  " zrzut 05 %s" % (skr, w1.get("przyrost"), p1[:1], w1.get("panel_wzm"), w1.get("panel_wzm_tekst"), p2[-1:], ok_z5))
             # -------------------------------------------------------------- S08 z daleka
             g0 = profil().get("gold")
             przestaw((PODP[0], STOISKO[1] + 3.2, PODP[2] + 25.0), PODP)
