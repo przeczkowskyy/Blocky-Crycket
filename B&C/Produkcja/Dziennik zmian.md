@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-27 (noc, 23:00) · Claude Code u Karola (łatki w pracy Pawła, tekstury broni)
+- **Karol:** „Wszystkie trzy + info Pawłowi” — wdrożone do wersji Pawła w Studio (zapis tylko przy zgodnej migawce): `IkonyPrzedmiotow`, `IndeksPrzedmioty`, `KotRasySwiatClient`. Próba w Play 8/8: lada z ikonami, zakup, kot przebudowuje się i trzyma Kostur Ucznia, klawisz 1 wyjmuje i chowa, podpowiedź ze statystykami, konsola bez błędów. Paweł dostał opis na Telegramie.
+- **Tekstury broni:** Kostur Ucznia bywał w Play szary; wszystkie tekstury i siatki były Approved, ale prawo „Use” dla gry miały tylko modele — nadane 36 zasobom. Do sprawdzenia w Play ([[Zadania]]).
+
 ## 2026-11-27 (noc) · Claude Code u Karola (UI broni)
 - **Karol:** wybrał „UI broni” (ikony nowych broni w oknie ekwipunku i sklepu, bronie na kocie) — wiedząc, że to okna Pawła.
 - **Rozpoznanie:** zakup i posiadanie prowadzi kowal Karola (`swiat/kowal_proba`), okno sklepu Pawła bierze z niego ofertę, założenie zapisuje strój przymierzalni (`swiat/stroje_proba`), na walkę działa wpis kowala. Wersje w Studio różne od repo albo tylko w Studio (`ShopClient`, `EquipmentPanelClient`, `EkwipunekStan`, `HUDClient`, `IkonyPrzedmiotow`, `IndeksPrzedmioty`, `PodpowiedzPrzedmiotu`, `KotRasySwiatClient`) potraktowane jako praca Pawła w toku — nieruszone.
