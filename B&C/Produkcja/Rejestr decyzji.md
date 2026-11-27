@@ -688,6 +688,8 @@ Gracz gra **kotem**: każda rasa to wariant naszego Kota-Maga — ten sam model 
 
 Uwaga agenta (D-114), zgoda z poprawką: jeden słodki, rozpoznawalny bohater (kot) to mocniejsza marka i miniatura niż ludziki Roblox, a jeden szkielet dla wszystkich ras upraszcza klipy i przedmioty. Poprawka: przedmioty Rycerza i Zwiadowcy oraz cały katalog sklepu (`swiat/postacie/sklep_przedmioty.json`, ciało „czlowiek”) trzeba przerobić pod ciało „kot” — to duża praca 3D, najlepiej po stronie Karola. Tytuł „Blocky & Crycket” zostaje spójny tylko, jeśli Blocky jest widoczny w grze (np. NPC-opiekun w miasteczku, przewodnik w samouczku). Zmienię zdanie, jeśli testerzy będą woleli wygląd ludzików.
 
+**Dopisek z 2026-11-26 (Karol na czacie, wieczór; status bez zmian):** „jeszcze nie eliminuj jednak postaci ludzi i zwiadowcy. Ostateczna decyzja na »same koty« jeszcze nie zapadła”. Decyzja ma dwa podpisy, więc agent jej nie zmienia — rozbieżność jest pytaniem 111 w [[Pytania otwarte]]. Do odpowiedzi obu agent nie usuwa ludzkich modeli (Rycerz, Zwiadowca, figury ras) i nie zamienia ich w świecie ani w walce na koty.
+
 ### D-147 Miasto w kresce sali wyboru rasy: tekstury na budynkach i widoczny obrys
 ✅ zatwierdzona · art direction / świat 3D · 2026-11-25 · źródło: wiadomość Karola na czacie 25.11 (Karol mówi o rozmowie z Pawłem na osobności) · zdecydował: Karol 2026-11-25
 Miasteczko dostaje ten sam wygląd co sala wyboru rasy: tekstury na budynkach zamiast gładkich kolorów i widoczną kreskę obrysu. Bez przebudowy miasta — chodzi o jednolitość. Tekstury: paczka Pawła (`CsTex`, `CsProp` w `assets/processed/ClassSelectTextures/`); brakujące agent generuje w Higgsfield w tym samym stylu. Czeka na potwierdzenie Pawła (D-043). Kolor i grubość kreski: pytanie 100 w [[Pytania otwarte]].
@@ -707,7 +709,7 @@ Paweł [21:54]: gra o kotach nie będzie już „Blocky & Crycket”; w nowym ty
 
 ### D-149 Pierwsza wersja (beta na test rynku) bez Twierdzy i walk petów; treść dawkowana aktualizacjami
 💡 propozycja · roadmapa / zakres · 2026-11-25 · źródło: [[Sesja główna 2026-11-25 — zapis ustaleń]] · zaproponował: Paweł (Karol: „ja się z tym zgadzam”; na sesji głównej, bez podpisu), zapisał: Claude Code
-Pierwsza publiczna wersja to **beta na testowanie rynku**: trzy biomy (D-106), walka, trening, kowal, pety w zagrodzie, sklepy — **bez Twierdzy (działki, tycoonu) i bez walk petów / Pet Areny**. Paweł [21:56–21:58]: gracz, który dostanie od razu wszystko, zmaksuje grę w 4–5 dni i nie wróci; wzorem gry o kurczakach resztę dokładamy aktualizacjami, żeby ludzie wracali. Karol [21:57–21:58]: „wypuszczamy pierwszą wersję beta na testowanie rynku… ja się z tym zgadzam, niechaj tak będzie”. **Lochy nierozstrzygnięte** — pytanie 104. Zmienia zatwierdzoną D-035 (Twierdza w podstawie na premierę) i D-063 (działka od pierwszego poziomu) w części o Twierdzy; zgodne z zasadą progu z D-035 („gry nie da się zmaksować w dwa dni”). Kod Twierdzy i Pet Areny zostaje, znika z gry gracza. Uwaga agenta (D-114), zgoda z poprawką: to cięcie, o które prosiła karta (koszt 0/3), ale w tej samej rozmowie doszły trzy nowe mechaniki petów i kuźni (D-152, D-153) — zakres trzeba domknąć listą „bez tego nie wydajemy” i datą, których nie padło.
+Pierwsza publiczna wersja to **beta na testowanie rynku**: trzy biomy (D-106), walka, trening, kowal, pety w zagrodzie, sklepy — **bez Twierdzy (działki, tycoonu) i bez walk petów / Pet Areny**. Paweł [21:56–21:58]: gracz, który dostanie od razu wszystko, zmaksuje grę w 4–5 dni i nie wróci; wzorem gry o kurczakach resztę dokładamy aktualizacjami, żeby ludzie wracali. Karol [21:57–21:58]: „wypuszczamy pierwszą wersję beta na testowanie rynku… ja się z tym zgadzam, niechaj tak będzie”. **Lochy nierozstrzygnięte** — pytanie 106. Zmienia zatwierdzoną D-035 (Twierdza w podstawie na premierę) i D-063 (działka od pierwszego poziomu) w części o Twierdzy; zgodne z zasadą progu z D-035 („gry nie da się zmaksować w dwa dni”). Kod Twierdzy i Pet Areny zostaje, znika z gry gracza. Uwaga agenta (D-114), zgoda z poprawką: to cięcie, o które prosiła karta (koszt 0/3), ale w tej samej rozmowie doszły trzy nowe mechaniki petów i kuźni (D-152, D-153) — zakres trzeba domknąć listą „bez tego nie wydajemy” i datą, których nie padło.
 
 ### D-150 Drzewko umiejętności w pierwszej wersji: dwie sekcje — postać i pety; gałąź Twierdzy schowana, kod zostaje
 💡 propozycja · game design · 2026-11-25 · źródło: [[Sesja główna 2026-11-25 — zapis ustaleń]] · zaproponował: Paweł (Karol: „dobra”; na sesji głównej, bez podpisu), zapisał: Claude Code
@@ -733,3 +735,97 @@ Karol [22:09–22:10]: wcześniej (poza sesją) uzgodnili, że osobny **sklep pe
 💡 propozycja · game design / przedmioty / balans · 2026-11-25 · źródło: [[Sesja główna 2026-11-25 — zapis ustaleń]] · zaproponował: Karol i Paweł (na sesji głównej, bez podpisu), zapisał: Claude Code
 Karol [22:15–22:16]: liczba statystyk nie jest przypisana do stopnia — zwykły przedmiot może mieć trzy słabe, legendarny jedną bardzo mocną; **epickie i legendarne mają do tego unikalną zdolność** (np. szansa na podpalenie przeciwnika). Paweł [22:16]: chodzi o mnożniki — **legendarny daje co najmniej 1,5 razy więcej statystyk** niż zwykły tego samego poziomu. Karol: „o to chodzi, tu się zgadzamy”. Rozwija D-142 (oba podpisy) i odpowiedź Karola pod pytaniem 96 (25.11); zmienia tabelę z notatki Pawła o rzadkości z 24.11 (tam zwykły 1–2, legendarny wszystkie; notatka jeszcze nie trafiła do repozytorium — zob. Dziennik zmian 25.11). Uwaga agenta (D-114): zgoda — „jedna mocna statystyka plus zdolność” odróżnia legendarkę lepiej niż „wszystkie statystyki po trochu” i daje buildy; mnożnik budżetu ×1,5 i ×1,8 do kalkulatora (`tools/walka/balans.py`), unikalne zdolności jako lista do projektu razem z pulą Lv 1–10 (pytanie 94).
 
+### D-156 Hełmy kota zasłaniają uszy osłonami w kształcie uszu; chwyt broni zależy od rodzaju i nie może kolidować w chodzie
+✅ zatwierdzona · art direction / przedmioty · 2026-11-26 · źródło: wiadomość Karola na czacie 26.11 ok. 13:00, po opinii Pawła do raportu z nocy (Telegram) · zaproponował: Paweł (hełmy mają zasłaniać kocie uszy), Claude Code (osłony w kształcie uszu, rodzaje chwytu) · zdecydował: Karol 2026-11-26 · potwierdził: Paweł 2026-11-26
+Gra: bc
+Paweł (opinia do raportu z nocy): „na pewno trzeba by było poprawić hełmy, żeby zasłaniały kocie uszy”. Agent pokazał dwa warianty: dużą kopułę mieszczącą uszy i niską kopułę z osłonami w kształcie uszu. Karol: „Hełm wygląda dobrze zostawiając sylwetkę. Miecz ma być tak wychylony, że podczas animacji chodzenia się nie bugował. Dograj resztę pozycji”.
+- **Hełmy:** hełm zasłania uszy kota dwiema osłonami w kształcie uszu z materiału hełmu; sylwetka kota zostaje. Uszy pod hełmem są schowane (przedmiot to deklaruje). Dotyczy hełmów puli wojownika; wzór dla kolejnych nakryć głowy, które mają zasłaniać uszy.
+- **Chwyt broni:** broń deklaruje rodzaj (miecz, różdżka, kostur, proca, łuk, tarcza, księga), a ciało kota ma osobne ustawienie na każdy rodzaj. Miarą dobrego chwytu jest chód i spoczynek: broń nie wchodzi w ciało, strój, hełm, ogon ani w ziemię.
+- **Stan:** modele i plansze (`swiat/postacie/pula_wojownika.py`, `chwyty.py`, kontrakt `EKWIPUNEK.md` pkt 14–15), jeszcze nie w grze. Otwarte: rękojeść w ramieniu w trzech klipach walki, przedmioty lewej łapy w klipach walki, broń pod ziemią w upadku — zadania w [[Zadania]].
+- **Potwierdzenie Pawła (26.11.2026):** „1 tak” w odpowiedzi na punkt „1) Potwierdź D-156” listy zadań z grupy zespołu na Telegramie (15:42). Zrzut wiadomości przekazał Karol na czacie; podpis zapisał agent Karola na tej podstawie. Do punktu o broni w upadku Paweł dodał: „poprawić, żeby nie były pod ziemią” — zrobione 26.11 w modelach i planszach (korekta upadku: broń i hełm leżą na ziemi, `swiat/postacie/EKWIPUNEK.md` pkt 15); w grze jeszcze nie.
+
+### D-157 Zagroda: pety chodzą luzem po wybiegu, legowiska znikają
+✅ zatwierdzona · game design / świat · 2026-11-26 · źródło: odpowiedź Pawła na grupie zespołu na Telegramie 26.11.2026, 15:42 (zrzut wiadomości przekazał Karol na czacie, z poleceniem „go”) · zaproponował: Paweł (pety luzem, opinia do raportu z nocy), Claude Code (wybieg i pytanie, czy legowiska zostają) · zdecydował: Paweł 2026-11-26 · potwierdził: Karol 2026-11-26
+Gra: bc
+Pytanie z listy zadań (punkt 5): „Pety luzem: czy ruch i tempo są OK; legowiska zostają czy znikają?”. Paweł: „5 legowiska znikają, tempo okej”.
+- Pety odstawione do zagrody chodzą luzem po wybiegu (obraz u gracza; o tym, kto stoi w zagrodzie i ile daje Rybek, dalej decyduje serwer — D-153 bez zmian).
+- Na wybiegu nie ma legowisk. Liczba miejsc (2 → 4 → 6 → 8) zostaje; widać ją w oknie zagrody u Jagody.
+- Tempo spaceru z próby 26.11 zostaje (prędkość 1,8–3 studa na sekundę, postoje 2–6 s).
+- **Stan:** w Studio od 26.11 (`swiat/pety_proba`, mapa `swiat/miasteczko_bazar`). Uwaga agenta: bez legowisk nic na samym wybiegu nie pokazuje, ile miejsc ma zagroda — tylko okno.
+- **Potwierdzenie Karola (26.11.2026):** „Potwierdzam obie” (D-157 i D-158) w oknie pytania agenta na czacie.
+- **Dopisek — „czysta zagroda” (zdecydował: Karol 2026-11-26, czeka na Pawła):** Karol po zrzucie zagrody bez legowisk: „Usuń też tą wiatę furtkę. Czysta zagroda” — z zagrody zniknęła bramka: dwa słupki, poprzeczka, łapa-szyld i chorągiewka. Przejście w płotku, koryto, siano i miski zostają (agent zostawił je, bo zlecenie mówiło o wiacie).
+
+### D-158 Sala Training Center: dwa rzędy po trzy stanowiska AFK, przejście środkiem; podpowiedź E sięga 4,5 studa
+✅ zatwierdzona · świat / technika · 2026-11-26 · źródło: odpowiedź Pawła na grupie zespołu na Telegramie 26.11.2026, 15:42 (zrzut wiadomości przekazał Karol na czacie, z poleceniem „go”) · zaproponował: Paweł (układ, opinia do raportu z nocy), Claude Code (zasięg ok. 4,5 studa) · zdecydował: Paweł 2026-11-26 · potwierdził: Karol 2026-11-26
+Gra: bc
+Pytania z listy zadań (punkty 2 i 3): czy o taki układ sali chodziło i czy zasięg podpowiedzi E skrócić z 10 do ok. 4,5 studa. Paweł: „2 tak, ale jak to będzie działać w przypadku kilku graczy, czy nie będą się widzieć nawzajem? 3 4.5 git”.
+- Stanowiska AFK stoją w dwóch rzędach po trzy wzdłuż bocznych ścian, przejście środkiem (układ z 26.11; zmienia rozmieszczenie z propozycji D-151, której status zostaje bez zmian).
+- Podpowiedź E stanowiska sięga 4,5 studa — żeby zacząć trening, trzeba podejść do maty.
+- **Otwarte:** pytanie Pawła o kilku graczy przy jednym stanowisku — pytanie 109 w [[Pytania otwarte]].
+- **Stan:** w Studio od 26.11 (`src/server/TreningAFK.server.luau` — jedna liczba, za zgodą Pawła; próba `swiat/trening_proba/testy/proba_afk_zasieg.py`: 22 punkty bez niezaliczeń).
+- **Potwierdzenie Karola (26.11.2026):** „Potwierdzam obie” (D-157 i D-158) w oknie pytania agenta na czacie.
+
+### D-159 Gracz startuje w miasteczku; stara wioska, stary las, BONK i stare Krzywe Miasteczko znikają z mapy
+✅ zatwierdzona · świat / technika · 2026-11-26 · źródło: polecenia Karola na czacie Claude Code 26.11.2026 wieczorem · zaproponował: Karol · zdecydował: Karol 2026-11-26 (jeden podpis — czeka na Pawła; D-043)
+Gra: bc
+Karol: „po wejściu do gry gracz nie wchodzi do tej starej wioski, nie ma tutaj portalu żadnego BONK, nie ma żadnego portalu las, nie ma żadnej tabliczki Training Center, tylko od razu trafia do krzywej wioski. Usuwamy resztę rzeczy… te placeholderowe rzeczy… Nie ma potrzeby też trzymania na mapie Robloxowej tego starego lasu”. Na pytanie agenta o stare duże Krzywe Miasteczko: „Tak, usuń”.
+- Punkt startu gry (jedyny `SpawnLocation`) stoi na początku miasteczka-bazaru.
+- Z miejsca w Studio zniknęły: stara wioska startowa (`DemoLesnaBaza`), brama i mapa BONK (`BonkGra`), portal i stary las (`LasTeleport`, `BiomLas`, `LasPotwory`, `LasMgla`), stare Krzywe Miasteczko (`KrzyweMiasteczko`), wystawa ras (`RasyProba`), stara próba walki (`TestWalki`), tablica Training Center, przymierzalnia strojów i przejścia stare ↔ nowe miasteczko — razem 51 212 części, ponad połowa mapy. Źródła zostają w repo.
+- Teleport przez chmury, Kamienie Powrotu i skrypty pasów nie zależą już od usuniętych miejsc.
+- Rozstrzyga pytanie 108 (wariant a: BONK tylko w osobnym miejscu) i sprawę „gdzie gracz zaczyna” z przejścia gry 17.11. Rozwija D-075 i D-084.
+- **Stan:** w Studio od 26.11 (narzędzia `tools/studio/sprzatanie_mapy.py` i `start_w_miasteczku.py`); próba całej drogi gracza i regresja po sprzątaniu — wyniki w [[Dziennik zmian]].
+- **Dopisek z 26.11 wieczorem (Karol: „Usuń placeholdery już”):** szara płyta pod mapą (wspólny `Baseplate`) jest ukryta — przezroczysta, kolizje bez zmian; przywraca ją `python -B tools/studio/plyta_bazowa.py --pokaz`. Z poziomu gracza w miasteczku nic się nie zmieniło, z góry nie widać już kratki. Arena starych mini-gier — zob. D-162.
+- Uwaga agenta (D-114): zgoda — gracz nie trafia w ślepe zaułki, a mapa wczyta się szybciej. Skutki uboczne: nie ma gdzie ręcznie zmienić stroju (pytanie 112); wystawę ras trzeba odbudować przed następnym wdrożeniem ekranu wyboru klasy (zadanie w [[Zadania]]).
+
+### D-160 Jajka kupuje się tylko w nowych jajkach ze scenką otwierania; stare inkubatory znikają
+✅ zatwierdzona · game design / świat · 2026-11-26 · źródło: polecenie Karola na czacie Claude Code 26.11.2026 · zaproponował: Claude Code (pytanie 110, wariant a) · zdecydował: Karol 2026-11-26 (jeden podpis — czeka na Pawła; D-043)
+Gra: bc
+Karol: „Usuń też tak samo stare jajka i zastąp je nowymi w 100%”.
+- Inkubatory z klocków w lesie, Bagnie i Dżungli zniknęły; jajko kupuje się tylko przy nowym jajku ze scenką Pawła.
+- Ceny, szanse i zapis bez zmian. Wskazówka celu „kup jajko” prowadzi do nowych jajek.
+- Rozstrzyga pytanie 110.
+- **Do potwierdzenia przez obu:** leśne jajo stoi w miasteczku przy zagrodzie (tam postawił je Paweł), a D-060 i D-076 mówią o inkubatorze w każdym biomie, przy wejściu — w lesie nie ma teraz miejsca zakupu jajka.
+- **Stan:** w Studio od 26.11 (`swiat/pety_proba`, `swiat/wskazowki_gry`); próby petów trzech biomów i próba jajek bez błędów.
+
+### D-161 Pety można sprzedawać; okno petów pokazuje zarobek każdego peta na sekundę
+✅ zatwierdzona · game design / ekonomia / UI · 2026-11-26 · źródło: polecenie Karola na czacie Claude Code 26.11.2026 · zaproponował: Karol (sprzedaż, zarobek na sekundę), Claude Code (liczby) · zdecydował: Karol 2026-11-26 (jeden podpis — czeka na Pawła; D-043)
+Gra: bc
+Karol: „każdy pet w zakładce petów… żeby to było jawne i tak prosto pokazana informacja, ile dany pet zarabia na sekundę. Pozwól też sprzedawać pety… opcję sprzedawania petów, na przykład selektora”.
+- Kafelek peta w oknie petów pokazuje jego zarobek w zagrodzie na sekundę (np. „+0.1/s”), bez najeżdżania — także na telefonie.
+- Sprzedaż: przycisk SELL włącza zaznaczanie, stopka pokazuje „SELL N FOR X”, drugie dotknięcie potwierdza. Sprzedaje się kopie petów.
+- **Liczby robocze agenta (pytanie 113):** cena kopii = cena jajka × udział rzadkości — pospolity 6%, niepospolity 12%, rzadki 25%, epicki 45%, legendarny 80% (jajko leśne 300 Rybek: 18–240; Bagna 750: 45–600; Dżungli 1350: 81–1080). Średnio wraca ok. 15% ceny jajka, więc kupowanie i sprzedawanie się nie opłaca.
+- Nie da się sprzedać: ostatniej sztuki peta, który idzie za graczem, ostatniej sztuki peta stojącego w zagrodzie ani ostatniego peta w ogóle. Jedna sprzedaż na sekundę.
+- **Stan:** w Studio od 26.11. Serwer i liczby: `swiat/pety_proba`, `swiat/stan_gracza`. Okno to pliki Pawła `src/client/OknoPetowClient.client.luau` i `src/server/OknoPetow.server.luau`, zmienione przez agenta Karola na polecenie Karola („Rób od razu” w oknie pytania 26.11) — do obejrzenia przez Pawła.
+- Uwaga agenta (D-114), zgoda z poprawką: sprzedaż rozwiązuje nadmiar petów przy ośmiu miejscach zagrody; cena musi zostać poniżej kosztu jajka w każdym trybie cen (pilnuje tego generator danych i test). Otwarte: zarobek jest mały liczbowo (+0,015…+0,45/s), a okno zagrody liczy na minutę; sprzedaż kopii zabiera materiał do ewolucji (D-058).
+
+### D-162 Training Center: bez tabliczek, ćwiczenie wybiera się u trenera pod E; wolne wejście do sali
+✅ zatwierdzona · świat / UI · 2026-11-26 · źródło: polecenie Karola na czacie Claude Code 26.11.2026 · zaproponował: Karol · zdecydował: Karol 2026-11-26 (jeden podpis — czeka na Pawła; D-043)
+Gra: bc
+Karol: „Potrzebujemy też dużo logiczniejszego przejścia do tych ćwiczeń… bardzo dużo zasłania teraz ta fontanna… tabliczki też przesłaniają przejście, nie jest to jasne, które ćwiczenie za co odpowiada… w ogóle tabliczek tu nie może być, absolutnie… zróbmy jakiś shortcut, że… klikamy sobie na niego E i klikamy, na co chcemy wejść. No i wtedy się… teleportujemy na przykład do bieżni”.
+- Drewniane tabliczki przy stanowiskach znikają; zostaje podpowiedź E na macie.
+- E u trenera otwiera okno z sześcioma ćwiczeniami (ikona statystyki, nazwa, czynność, wartość gracza; zajęte stanowisko wyszarzone „BUSY”). Wybór przenosi gracza na stanowisko i od razu zaczyna trening — tą samą drogą co E na macie; serwer sprawdza odległość od trenera (16 studów).
+- Studnia-pomnik stoi 6 studów dalej od wejścia, obie ławki i latarnia są odsunięte: przed otworem sali wolne 22 × 14 studów.
+- Trener nie otwiera już wyboru starych mini-gier (D-141: trening to stanowiska AFK); mini-gry zostają w kodzie i na mapie, ale bez wejścia — pytanie 114.
+- Układ dwóch rzędów (D-158) i reguła „jedno stanowisko = jeden gracz” (pytanie 109) bez zmian. Robocze ustalenie z D-150 („przy trenerze otwiera się drzewko postaci”) nie jest wdrożone — pytanie 115.
+- **Dopisek z 26.11 wieczorem (Karol: „Usuń placeholdery już”):** tablica mini-gier z sześcioma medalionami na ścianie sali też zniknęła, a arena starych mini-gier została usunięta z mapy — w `Workspace/TreningProba` został tylko sygnał, którym trening na stanowiskach zapisuje statystyki (rozstrzyga pytanie 114, wariant a). Kod mini-gier zostaje w repo za przełącznikiem.
+- **Stan:** w Studio od 26.11, ok. 22:30. Próba okna trenera 17 z 17 punktów; krótka droga gracza i próba treningu bez błędów. Do wyjaśnienia: w próbie zasięgu E przy Pancerzu i Zręczności E z przejścia (3 study) nie włączyło treningu (od frontu rzędu działa). Skrypty stanowisk to pliki Pawła (`src/server/TreningAFK.server.luau`, `src/client/TreningAFKClient.client.luau`, `src/shared/TreningAFKDane.luau`), zmienione przez agenta Karola na polecenie Karola („Rób od razu”) — do obejrzenia przez Pawła.
+
+### D-163 Training Center zajmuje większy obszar: sala na miejscu domu na zachód od niej
+✅ zatwierdzona · świat 3D · 2026-11-27 · źródło: wiadomości Pawła na grupie zespołu na Telegramie 27.11.2026, 01:10–01:15 (zrzut przekazał Karol na czacie z poleceniem „zastosuj się do polecenia”) · zaproponował: Paweł · zdecydował: Paweł 2026-11-27 (jeden podpis — Karol zlecił wykonanie, formalnie nie potwierdził; D-043)
+Gra: bc
+Paweł (z zrzutem miasteczka z góry, czerwone kółko wokół sali i brązowego domu na zachód od niej): „Ja myślę, że ta hala ze sprzętami powinna zajmować mniej więcej taki obszar, żeby było tam dużo przestrzeni. W sensie to Training Center”.
+- Sala 40 × 22 study (było 24 × 20) na miejscu domu `dom_zachod_pn`; pole gry przesunięte na zachód; mapa miasteczka 4202 części (było 4256).
+- Dwa rzędy po trzy stanowiska i przejście środkiem 9,3 studa (D-158 bez zmian, zasięg E 4,5). Podpowiedź E wisi 1,5 studa nad matą, więc pojawia się z podłogi ok. 2 study przed matą; żaden sprzęt nie wystaje w przejście.
+- Trener zostaje w głównym budynku, widoczny z wejścia do sali (przeniesienie do środka wydłużyłoby drogę od startu ponad 5 s).
+- **Stan:** w Studio od 27.11 (miejsce zapisane, nieopublikowane). Próba zasięgu E 27 z 27, próba okna trenera i sklepu 26 z 26, krótka droga gracza 15 z 15, ściany pola gry bez błędów. Skrypty stanowisk to pliki Pawła — zmienione przez agenta Karola (polecenie Pawła i Karola).
+
+### D-164 U trenera sklep treningu: ulepszenia stanowisk i wzmacniacze za Rybki
+✅ zatwierdzona · game design / ekonomia / UI · 2026-11-27 · źródło: wiadomości Pawła na grupie zespołu na Telegramie 27.11.2026, 01:10–01:15 (zrzut przekazał Karol na czacie z poleceniem „zastosuj się do polecenia”) · zaproponował: Paweł (pomysł), Claude Code (liczby) · zdecydował: Paweł 2026-11-27 (jeden podpis — Karol zlecił wykonanie, formalnie nie potwierdził; D-043)
+Gra: bc
+Paweł: „Myślałem, żeby u trenera nie tyle co się wybierało trening, ale też był panel sklepu/ulepszeń, gdzie np. gracz może ulepszyć bieżnię, żeby dawała więcej na powtórzenie, albo kupić jakieś wzmacniacze na trening, np. siła ×2 na 10 min”.
+- W oknie trenera zakładki TRAIN i SHOP. Ulepszenie każdego stanowiska osobno, poziomy 1–5: +10% szybkości za poziom (mniej powtórzeń na pasek), ceny 300 / 700 / 1600 / 3600 / 8400 Rybek (wszystkie sześć do końca: 87 600).
+- Wzmacniacz: ×2 za pasek jednej statystyki przez 10 minut, 600 Rybek, jeden naraz na statystykę; czas płynie także poza grą (zapisany koniec).
+- Płatność przez stan gracza (`swiat/stan_gracza`, liczniki wydatków), zapis w profilu gracza; bez Robuxów — miejsce na zakup za Robuxy jest przygotowane, ale to osobna decyzja.
+- **Liczby robocze agenta** — zob. pytanie 117 (tempo treningu) i 118 (szczegóły sklepu).
+- **Stan:** w Studio od 27.11; próba sklepu: odmowa bez Rybek, zakup poziomu, MAX, ochrona przed podwójnym zakupem, wzmacniacz ×2 i jego koniec, odmowa z daleka; próba zapisu: ulepszenie i wzmacniacz wracają po ponownym wejściu.
+- Uwaga agenta (D-114), zgoda z poprawką: to dobra pętla wydawania Rybek z zagrody i klasyczne miejsce na przyszłą sprzedaż za Robuxy. Poprawka: podstawowe tempo treningu jest już bardzo szybkie (pytanie 117), więc najpierw trzeba ustawić je, a dopiero potem ceny sklepu.
