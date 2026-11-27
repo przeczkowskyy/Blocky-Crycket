@@ -28,6 +28,12 @@ DaneTreningu.luau, KlientTreningu) i mapy (uklad.json, czesci.json, znaczniki.js
   8. sklep trenera (27.11.2026, polecenie Pawła): dane D.sklep, kolejność sprawdzeń na serwerze, cena tylko z danych,
      jedno miejsce przyznania, bez Robuxów, stan gracza przyjmuje wydatek i dane pakietu, zakładki i przyciski ≥ 44 px,
      rachunek ekonomia_sklepu_afk.py zgodny z danymi.
+ 10. kości Szczęścia (27.11.2026, Karol): liczby D.kosci (1 k6, pasek 3,5×, średnio jak inne statystyki), ścianki
+     prawdziwej kości (przeciwne = 7, oczek tyle co wartość), obrót klienta kładzie ściankę wyniku do góry (lustro),
+     serwer losuje i liczy przyrost = suma oczek × przyrost przed stanem gracza i limitem, klient bierze wynik z serwera;
+ 11. animacje (27.11.2026, Karol: bieżnia i sztanga): Animator awatara odpięty, pozy także w PreSimulation, stawy
+     AnimationConstraint z zaczepów, kot Pawła jako szkielet z lustrem na awatarze, bieg bez klipu bohatera, rytm
+     wyciskania.
 """
 import json
 import math
@@ -699,7 +705,7 @@ class TestLimitu(unittest.TestCase):
 
     def test_9c_serwer(self):
         f = SERWER[SERWER.index("local function pasekDla"):SERWER.index("local function przyrostNaPasek")]
-        self.assertIn("D.pasekPrzyLimicie(D.powtorzenDla(", f)
+        self.assertIn("D.pasekPrzyLimicie(D.powtorzenStanowiska(", f)  # 27.11: pasek Szczęścia × D.kosci.mnoznikPaska
         self.assertIn('gracz:GetAttribute("Level")', f)
         z = SERWER[SERWER.index("local function zacznij"):SERWER.index("-- wejście przez trenera")]
         self.assertIn("wartosc(gracz, D.prefiksWytrenowanych .. s.atrybut)", z)
@@ -708,7 +714,7 @@ class TestLimitu(unittest.TestCase):
         petla = petla[:petla.index("else")]
         kol = [petla.index(x) for x in ("dodajStatystyke(gracz, s, ile)", "t.wytrenowane += ile",
                                          "t.pasek, ponad = pasekDla(gracz, t.id, t.wytrenowane)",
-                                         'Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep, t.pasek, ponad)')]
+                                         'Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep, t.pasek, ponad, rzut)')]
         self.assertEqual(kol, sorted(kol))
         self.assertIn('gracz:SetAttribute("TreningAFKLimit", nil)', SERWER)
 
@@ -719,6 +725,141 @@ class TestLimitu(unittest.TestCase):
         p = KLIENT[KLIENT.index('elseif akcja == "punkt" then'):KLIENT.index('elseif akcja == "skillcheck" then')]
         self.assertIn("pasekReps = d", p)
         self.assertIn("pokazLimit(e == true)", p)
+
+
+def wektor(t):
+    """Vector3.yAxis / -Vector3.zAxis … → (x, y, z)."""
+    znak = -1 if t.startswith("-") else 1
+    os_ = t.lstrip("-").split(".")[1]
+    return tuple(znak * (1 if os_ == c + "Axis" else 0) for c in "xyz")
+
+
+def obrot_osi(v, os_, kat):
+    """Obrót wektora v wokół osi jednostkowej os_ o kąt (wzór Rodriguesa) — lustro CFrame.fromAxisAngle."""
+    c, s = math.cos(kat), math.sin(kat)
+    k = os_
+    kxv = (k[1] * v[2] - k[2] * v[1], k[2] * v[0] - k[0] * v[2], k[0] * v[1] - k[1] * v[0])
+    kv = sum(a * b for a, b in zip(k, v))
+    return tuple(v[i] * c + kxv[i] * s + k[i] * kv * (1 - c) for i in range(3))
+
+
+class TestKosci(unittest.TestCase):
+    """Kości Szczęścia (27.11.2026, Karol: „niech też rzuca się prawdziwymi kośćmi, wypadają prawdziwe wyniki — i tyle
+    szczęścia dostajemy, ile wypadnie”; liczby Karola: 1 kość k6, pasek 3,5× dłuższy)."""
+
+    @classmethod
+    def setUpClass(cls):
+        blok = re.search(r"D\.kosci = \{(.*?)\n\}", DANE, re.S).group(1)
+        cls.K = {k: float(v) for k, v in re.findall(r"^\t(liczba|scianki|mnoznikPaska|bok) = ([\d.]+)", blok, re.M)}
+        cls.SCIANY = [(int(w), wektor(n), wektor(u), wektor(v)) for w, n, u, v in re.findall(
+            r"\{ w = (\d), n = (-?Vector3\.\wAxis), u = (-?Vector3\.\wAxis), v = (-?Vector3\.\wAxis) \}", blok)]
+        cls.OCZKA = {int(w): len(re.findall(r"\{ -?\d, -?\d \}", r)) for w, r in re.findall(r"\[(\d)\] = \{ (.*?) \},\n", blok)}
+
+    def test_10a_liczby_karola(self):
+        self.assertEqual((self.K["liczba"], self.K["scianki"], self.K["mnoznikPaska"]), (1, 6, 3.5))
+        self.assertIn('stanowisko = "Szczescie"', DANE)
+        # średnio tyle samo punktów na sekundę co inne statystyki: E[suma oczek] / mnożnik paska = 1
+        srednia = self.K["liczba"] * (self.K["scianki"] + 1) / 2
+        self.assertAlmostEqual(srednia / self.K["mnoznikPaska"], 1.0)
+
+    def test_10b_scianki_prawdziwej_kosci(self):
+        self.assertEqual(sorted(w for w, _, _, _ in self.SCIANY), [1, 2, 3, 4, 5, 6])
+        normalne = {w: n for w, n, _, _ in self.SCIANY}
+        for w, n, u, v in self.SCIANY:
+            self.assertEqual(tuple(-x for x in n), normalne[7 - w], "przeciwne ścianki dają 7")
+            for a, b in ((n, u), (n, v), (u, v)):
+                self.assertEqual(sum(x * y for x, y in zip(a, b)), 0, "osie ścianki prostopadłe")
+            self.assertEqual(self.OCZKA[w], w, "oczek tyle, ile wartość")
+
+    def test_10c_obrot_klienta_kladzie_wynik_do_gory(self):
+        # lustro obrotWyniku(w) z klienta: n.Y > 0,5 → bez obrotu; n.Y < −0,5 → π wokół X; inaczej π/2 wokół n × Y
+        self.assertIn("CFrame.fromAxisAngle(sc.n:Cross(Vector3.yAxis).Unit, math.pi / 2)", KLIENT)
+        for w, n, _, _ in self.SCIANY:
+            if n[1] > 0.5:
+                gora = n
+            elif n[1] < -0.5:
+                gora = obrot_osi(n, (1, 0, 0), math.pi)
+            else:
+                os_ = (n[1] * 0 - n[2] * 1, n[2] * 0 - n[0] * 0, n[0] * 1 - n[1] * 0)
+                gora = obrot_osi(n, os_, math.pi / 2)
+            for a, b in zip(gora, (0, 1, 0)):
+                self.assertAlmostEqual(a, b, msg="ścianka %d do góry" % w)
+
+    def test_10d_serwer_losuje_i_liczy(self):
+        self.assertIn("losKosci:NextInteger(1, scianki)", SERWER)
+        self.assertIn("local liczba, scianki = D.kosciRzutu()", SERWER)
+        petla = SERWER[SERWER.index("if t.postep >= t.pasek then"):]
+        petla = petla[:petla.index("else\n\t\t\tZ:FireClient")]
+        kol = [petla.index(x) for x in ("local ile = przyrostNaPasek(gracz, s)", "if t.id == D.kosci.stanowisko then",
+                                         "ile *= suma", "dodajStatystyke(gracz, s, ile)", "t.wytrenowane += ile",
+                                         'Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep, t.pasek, ponad, rzut)')]
+        self.assertEqual(kol, sorted(kol), "przyrost = suma oczek × przyrost, zanim pójdzie do stanu gracza i limitu")
+        # kości z klocków (bez SurfaceGui — test_1a), tyle, ile rzuca serwer
+        self.assertIn("local liczba = D.kosciRzutu()", SERWER)
+        self.assertIn('grupa(m, "Kosc_" .. i, cf)', SERWER)
+        self.assertIn("for _, sc in ipairs(D.kosci.sciany) do", SERWER)
+
+    def test_10e_pasek_szczescia(self):
+        self.assertIn("function D.powtorzenStanowiska(id: string, poziom: number): number", DANE)
+        self.assertIn("p *= math.max(D.kosci.mnoznikPaska, 0.05)", DANE)
+        self.assertIn("math.clamp(math.floor(D.kosci.scianki), 2, 6)", DANE)
+
+    def test_10f_klient_rzuca_wynikiem_z_serwera(self):
+        p = KLIENT[KLIENT.index('elseif akcja == "punkt" then'):KLIENT.index('elseif akcja == "skillcheck" then')]
+        self.assertIn("rzucKosciU(kosci, b or suma)", p)
+        self.assertIn('typeof(f) == "table"', p)  # f = rzut (7. wartość zdarzenia "punkt")
+        f = KLIENT[KLIENT.index("local function rzucKosciU"):KLIENT.index("local function pokazWynikKosci")]
+        self.assertIn("* obrotWyniku(w)", f)
+        self.assertNotIn("math.random(1, 6)", KLIENT, "wynik tylko z serwera")
+        self.assertIn('wyskok("+" .. tostring(rz.ile)', KLIENT)
+        # obrót w locie gaśnie do zera: na końcu lotu kość ma dokładnie obrót celu
+        self.assertIn("local rem = (1 - k) ^ 2", KLIENT)
+        self.assertIn("CFrame.Angles(a.X * rem, a.Y * rem, a.Z * rem)", KLIENT)
+
+
+class TestAnimacji(unittest.TestCase):
+    """Bieżnia i sztanga (27.11.2026, Karol: „bieżnia się rusza, ale ludek stoi w miejscu. Tak samo ze sztangą — słabo się
+    podnosi”). Próba w Play 27.11: awatar ma stawy AnimationConstraint, a Animator nadpisuje ich Transform."""
+
+    def test_11a_animator_odpiety_i_presimulation(self):
+        f = KLIENT[KLIENT.index("local function przejmijAwatara"):KLIENT.index("local function zerujStawy")]
+        self.assertIn("an.Parent = nil", f)
+        o = KLIENT[KLIENT.index("local function oddajSzkielet"):KLIENT.index("agent Karola, sesja 25.11: nic w łapach")]
+        self.assertLess(o.index("animatorOdpiety.Parent = animatorHum"), o.index("animateWylaczony.Disabled = false"),
+                        "Animator wraca przed włączeniem Animate")
+        self.assertIn("RunService.PreSimulation:Connect(function()", KLIENT)
+        self.assertIn('if j:IsA("AnimationConstraint") then', KLIENT)
+
+    def test_11b_stawy_z_zaczepow(self):
+        f = KLIENT[KLIENT.index("local function staw(r: Rig"):KLIENT.index("local function dlugosciRamienia")]
+        self.assertIn("return { C0 = j.Attachment0.CFrame, C1 = j.Attachment1.CFrame }", f)
+
+    def test_11c_kot_pawla_i_lustro(self):
+        self.assertIn('workspace:FindFirstChild("KotyRasSwiatLokalne")', KLIENT)
+        self.assertIn('model, rodzaj, lustro = kot, "kot", zbierzStawy(char)', KLIENT)
+        self.assertIn("for n, j in pairs(r.lustro or {}) do", KLIENT)
+
+    def test_11d_bieg_na_kazdym_szkielecie(self):
+        self.assertNotIn('ruch:Invoke("klip", "bieg")', KLIENT)
+        self.assertNotIn('not (r.rodzaj == "bohater" and aktywne == "Zrecznosc")', KLIENT)
+        # taśma i kroki z tej samej prędkości
+        self.assertIn("drogaTasmy = (drogaTasmy + dt * TASMA * tempo) % 6", KLIENT)
+        self.assertIn("fazaBiegu = (fazaBiegu + dt * math.pi * 2 * KADENCJA * tempo)", KLIENT)
+
+    def test_11e_wyciskanie(self):
+        # lustro wyciskanie(f): góra przytrzymana, opuszczanie wolniejsze niż wyciśnięcie
+        def h(f):
+            if f < 0.3:
+                return 1 - (1 - f / 0.3) ** 2
+            if f < 0.45:
+                return 1
+            if f < 0.9:
+                return 0.5 + 0.5 * math.cos(math.pi * (f - 0.45) / 0.45)
+            return 0
+        self.assertIn("return 0.5 + 0.5 * math.cos(math.pi * (f - 0.45) / 0.45)", KLIENT)
+        self.assertEqual((h(0), h(0.3), h(0.4), h(0.95)), (0, 1, 1, 0))
+        self.assertGreater(0.45, 0.3 * 1.4, "opuszczanie (0,45 cyklu) dłuższe niż wyciśnięcie (0,3)")
+        self.assertIn("local gora = math.max(dol + 0.6, M.zasieg * 0.97)", KLIENT)
 
 
 if __name__ == "__main__":

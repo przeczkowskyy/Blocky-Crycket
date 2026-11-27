@@ -1,5 +1,34 @@
 # Training Center — próba sześciu mini-gier
 
+> **Kości Szczęścia, bieżnia i sztanga (27.11.2026 wieczorem, polecenie Karola).** Status: **propozycja**, wdrożone
+> w Studio (`wdroz_trening_afk.py`, wersja sprzed zmiany = main 567ba18) i sprawdzone w Play. Karol: „w gierce szczęścia
+> w sali AFK niech też rzuca się prawdziwymi kośćmi, wypadają prawdziwe wyniki — i tyle szczęścia dostajemy, ile wypadnie”
+> oraz „animacje na bieżni nie działają: bieżnia się rusza, ale ludek stoi w miejscu. Tak samo ze sztangą — słabo się
+> podnosi”.
+> - **Kości** (`D.kosci` w `src/shared/TreningAFKDane.luau`; liczby Karola: 1 kość k6, pasek Szczęścia 3,5× dłuższy —
+>   średnio tyle samo punktów na minutę co inne statystyki): na końcu paska serwer losuje oczka, przyrost = suma oczek ×
+>   zwykły przyrost (poziom, wzmacniacz ×2), wytrenowane punkty limitu D-165 rosną o faktyczny przyrost. Zdarzenie
+>   `"punkt"` niesie listę oczek; klient przez cały pasek potrząsa kubkiem, a na końcu rzuca — kość koziołkuje coraz
+>   wolniej i ląduje ścianką wyniku do góry, potem duże „+N LUCK” na ekranie, po chwili kość wraca do kubka.
+>   Kości z oczkami są z klocków (bez SurfaceGui), ścianki jak prawdziwa kość (przeciwne = 7) — jeden opis
+>   `D.kosci.sciany` dla serwera i klienta. Panel: „+1-6 LCK / ROLL”.
+> - **Bieżnia i sztanga — przyczyna:** awatar Robloxa ma dziś stawy `AnimationConstraint`, a jego Animator co klatkę
+>   nadpisuje ich `Transform`; pozy z pętli renderowania nie docierały do ciała, a kot rasy Pawła (kopiuje pozy ze stawów
+>   awatara) dostawał zera. Próba w Play: wpis w pętli renderowania nie ruszał dłoni (2,59 st stale), w `PreSimulation`
+>   albo po odpięciu Animatora — ruszał (2,6–4,2 st). Naprawa w kliencie: Animator awatara odpięty na czas treningu
+>   (wraca przed włączeniem `Animate`), pozy jeszcze raz w `PreSimulation`, celowanie dłoni liczy stawy
+>   `AnimationConstraint` z zaczepów, kot Pawła (`Workspace/KotyRasSwiatLokalne/<gracz>`, tylko odczyt) to osobny rodzaj
+>   szkieletu — pozy z jego wymiarów, rekwizyty w jego łapach, te same pozy na stawach awatara. Bieg: własna poza na każdym
+>   szkielecie (biodro ±46°, kolano do −98° w przenoszeniu, ręce naprzemiennie, dwa podskoki na cykl, 1,35 cyklu/s, taśma
+>   7 st/s — droga taśmy i faza kroku narastają w pętli); klip „bieg” bohatera już nie jest używany. Sztanga: wyciśnięcie,
+>   przytrzymanie na górze, wolniejsze opuszczanie, ok. 1,9 s na ruch; gryf dotyka klatki na dole, ramiona prawie proste
+>   na górze.
+> - **Testy:** `testy/test_afk_trener.py` (55: nowe 10a–10f kości, 11a–11e animacje). W Play (27.11, 20:36–20:49): kot
+>   rasy — stawy biegu i stopy w ruchu, Animator odpięty, sztanga 0,85–1,33 st nad klatką z gryfem ≤ 0,11 st od dłoni,
+>   goły awatar (bez wyboru rasy) — stopa 1,8–2,7 st, sztanga 0,78–1,56 st; sześć rzutów kośćmi (4 na kocie, 2 na
+>   awatarze): górna ścianka = wynik z serwera, Luck rośnie dokładnie o wynik. Bohatera klasy (podgląd kotów Pawła go
+>   wyłącza) w Play nie sprawdzono.
+
 > **Duża sala i sklep trenera (27.11.2026, polecenie Pawła na Telegramie zespołu; Karol: „zastosuj się”).** Status:
 > **propozycja**, etap 1 bez Studio (wdrożenie i próby w Play — etap 2). Paweł: „ta hala ze sprzętami powinna zajmować
 > mniej więcej taki obszar, żeby było tam dużo przestrzeni” oraz „u trenera … panel sklepu/ulepszeń, gdzie np. gracz może

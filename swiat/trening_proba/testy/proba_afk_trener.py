@@ -34,7 +34,7 @@ LISTA (OK / BŁĄD / ?):
   S05 spam: 5 próśb o wzmacniacz Kondycji w 0,1 s (zdalnym zdarzeniem) → jeden zakup (−600), wzmacniacz ok. 600 s
   S06 drugi wzmacniacz Kondycji → odmowa „aktywny”, Gold bez zmian; zrzut 04_sklep_wzmacniacz (zakładka SHOP, kafelek
       z licznikiem)
-  S07 wzmacniacz ×2 i jego koniec: zakup dla Szczęścia, potem koniec wzmacniacza w profilu przestawiony na za 30 s
+  S07 wzmacniacz ×2 i jego koniec: zakup dla Zręczności (27.11 wieczorem; wcześniej Szczęście — dziś rzut kośćmi), potem koniec wzmacniacza w profilu przestawiony na za 30 s
       (DanePakietu; serwer czyta profil od nowa po zmianie atrybutu StanGraczaWczytany),
       trening Szczęścia: pełny pasek w trakcie daje +2 (licznik nad panelem widać — zrzut 05_panel_wzmacniacz), po
       15 s +1; czas przywrócony
@@ -631,10 +631,11 @@ def main():
                       a.get("odmowa"), pa.get("gold"), ok_z4))
             # -------------------------------------------------------------- S07 ×2 i koniec wzmacniacza
             otworz_sklep()
-            klik_kup("Szczescie", "wzmacniacz")
-            skr = luau(KOD["skroc_wzm"] % ("Luck", 30), "Server")
+            # 27.11.2026 wieczorem: Zręczność zamiast Szczęścia — Szczęście rzuca dziś kośćmi (przyrost = oczka, pasek 3,5×)
+            klik_kup("Zrecznosc", "wzmacniacz")
+            skr = luau(KOD["skroc_wzm"] % ("Dexterity", 30), "Server")
             t_konca = time.time() + 30.0
-            w1 = trenuj("Szczescie", 1, 12)
+            w1 = trenuj("Zrecznosc", 1, 12)
             ok_z5 = zrzut("05_panel_wzmacniacz")
             while time.time() < t_konca + 1.0:
                 time.sleep(0.5)

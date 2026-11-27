@@ -15,7 +15,7 @@ Skrypty (istniejące instancje — narzędzie ich nie tworzy, nie usuwa i nie pr
     src/shared/TreningAFKDane.luau           → ReplicatedStorage.Shared.TreningAFKDane          (ModuleScript)
 Wersja sprzed zmiany = bloby git zapisane niżej (PRZED). Porównanie bez różnic końców wierszy i końcowych spacji.
 Wynik: 0 = wdrożone (albo przy --sucho: można wdrażać / już wdrożone), 3 = STOP (inna wersja w Studio albo brak
-instancji), 1 = błąd Studio. Jedna zmiana w historii („Trening AFK: limit treningu zależny od poziomu”, Ctrl+Z ją cofa).
+instancji), 1 = błąd Studio. Jedna zmiana w historii („Trening AFK: kości Szczęścia, bieżnia i sztanga”, Ctrl+Z ją cofa).
 Tylko tryb Edit.
 """
 import json
@@ -30,15 +30,16 @@ for _s in (os.path.join(REPO, "tools"), os.path.join(REPO, "swiat", "test_walki_
         sys.path.insert(0, _s)
 
 SKRYPTY = [
-    # (plik w repo, ścieżka w Studio, klasa, blob sprzed zmiany 27.11.2026 wieczorem (limit treningu, BALANS_2711.md)
-    # = main 12f2445; wcześniej 27.11 rano (duża sala, sklep): 87cda65…, c123413…, 7cc45dd…; 26.11: 6c8c2b4…, c3a0a35…,
-    # 4a5e13f…)
+    # (plik w repo, ścieżka w Studio, klasa, blob sprzed zmiany 27.11.2026 ok. 20:00 (kości Szczęścia, bieżnia i sztanga
+    # na awatarze AnimationConstraint) = main 567ba18; wcześniej 27.11 wieczorem (limit treningu, BALANS_2711.md) = main
+    # 12f2445: eed1fe4…, 16802ca…, 88c983b…; 27.11 rano (duża sala, sklep): 87cda65…, c123413…, 7cc45dd…; 26.11:
+    # 6c8c2b4…, c3a0a35…, 4a5e13f…)
     ("src/server/TreningAFK.server.luau", ("ServerScriptService", "Server", "TreningAFK"), "Script",
-     "eed1fe4eb48d183124c2f0976af45147963f9f8a"),
+     "992bb1293e5feb4bc864040a4810eed5acbf7ae6"),
     ("src/client/TreningAFKClient.client.luau", ("StarterPlayer", "StarterPlayerScripts", "Client", "TreningAFKClient"),
-     "LocalScript", "16802cabcccbe7ae911f876fcfe94727b9e3fda6"),
+     "LocalScript", "2b28635985ae62c950d052eea54b9628e6581552"),
     ("src/shared/TreningAFKDane.luau", ("ReplicatedStorage", "Shared", "TreningAFKDane"), "ModuleScript",
-     "88c983bf61b91fd07d20d8c29e62909ba92b8dd2"),
+     "538832adb2f18fe69f0bae0cbf5e7971aaf2ac98"),
 ]
 KONIEC = "]======]"
 
@@ -133,7 +134,7 @@ def main(argv):
             print("WYNIK (--sucho): można wdrażać %d skrypt(y)" % len(do_podmiany))
             return 0
         kod = ['local CHS = game:GetService("ChangeHistoryService")',
-               'local rec = CHS:TryBeginRecording("Trening AFK: limit treningu zależny od poziomu")', "local n = 0"]
+               'local rec = CHS:TryBeginRecording("Trening AFK: kości Szczęścia, bieżnia i sztanga")', "local n = 0"]
         for p, sc, _, _ in do_podmiany:
             kod.append("do local s = %s if s then s.Source = [======[%s%s n += 1 end end" % (
                 sciezka_lua(sc), "\n" + nowe[p] if nowe[p].startswith("\n") else nowe[p], KONIEC))

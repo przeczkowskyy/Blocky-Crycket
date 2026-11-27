@@ -77,6 +77,39 @@ D.czasPowtorzenia = 1.2 -- s na jedno powtórzenie (pełny pasek ≈ 4,8 s)
 D.przyrostNaPasek = 1 -- + tyle do statystyki za pełny pasek
 D.przyrostCoPoziomow = 0 -- 0 = stały przyrost; np. 10 = +1 za każde 10 poziomów gracza
 
+-- agent Karola, 27.11 (Karol: „w gierce szczęścia w sali AFK niech też rzuca się prawdziwymi kośćmi, wypadają prawdziwe
+-- wyniki — i tyle szczęścia dostajemy, ile wypadnie”; liczby wybrał Karol 27.11): stanowisko Szczęścia na końcu paska
+-- rzuca `liczba` kości o `scianki` ściankach (losuje serwer) — przyrost = suma oczek × zwykły przyrost za pasek
+-- (poziom gracza, wzmacniacz ×2 ze sklepu). Kości to sześciany, więc scianki 2…6 (wynik pokazuje górna ścianka);
+-- liczba 1…4 (tyle mieści stolik).
+-- mnoznikPaska = ile razy dłuższy pasek Szczęścia niż pozostałych: przy 1 kości k6 i 3,5 średnio tyle samo punktów na
+-- minutę co inne statystyki. Limit treningu (D.pasekPrzyLimicie) liczy się od faktycznego przyrostu.
+D.kosci = {
+	stanowisko = "Szczescie",
+	liczba = 1,
+	scianki = 6,
+	mnoznikPaska = 3.5,
+	bok = 0.6, -- studów: bok kości (wygląd)
+	-- ścianki w układzie kości: wartość w, normalna n, osie u i v na ściance (przeciwne ścianki dają 7); te same dla
+	-- serwera (oczka z klocków) i klienta (obrót, który kładzie ściankę wyniku do góry)
+	sciany = {
+		{ w = 1, n = Vector3.yAxis, u = Vector3.xAxis, v = Vector3.zAxis },
+		{ w = 6, n = -Vector3.yAxis, u = Vector3.xAxis, v = Vector3.zAxis },
+		{ w = 2, n = -Vector3.zAxis, u = Vector3.xAxis, v = Vector3.yAxis },
+		{ w = 5, n = Vector3.zAxis, u = Vector3.xAxis, v = Vector3.yAxis },
+		{ w = 3, n = Vector3.xAxis, u = Vector3.zAxis, v = Vector3.yAxis },
+		{ w = 4, n = -Vector3.xAxis, u = Vector3.zAxis, v = Vector3.yAxis },
+	},
+	oczka = { -- położenie oczek na ściance (u, v w jednostkach odstępu oczek)
+		[1] = { { 0, 0 } },
+		[2] = { { -1, -1 }, { 1, 1 } },
+		[3] = { { -1, -1 }, { 0, 0 }, { 1, 1 } },
+		[4] = { { -1, -1 }, { 1, -1 }, { -1, 1 }, { 1, 1 } },
+		[5] = { { -1, -1 }, { 1, -1 }, { 0, 0 }, { -1, 1 }, { 1, 1 } },
+		[6] = { { -1, -1 }, { -1, 0 }, { -1, 1 }, { 1, -1 }, { 1, 0 }, { 1, 1 } },
+	},
+}
+
 -- agent Karola, 27.11 (Karol: „A + B”, swiat/przejscie_gry/BALANS_2711.md, pytanie 117; czeka na Pawła): limit treningu
 -- zależny od poziomu. Dopóki gracz ma w tej statystyce WYTRENOWANE mniej niż limitNaPoziom × poziom, pasek jak dotąd;
 -- powyżej pasek trwa 1 / ponadLimitem razy dłużej (0.1 = 10× wolniej). Wytrenowane punkty pisze stan gracza
@@ -126,6 +159,20 @@ D.sklep = {
 function D.powtorzenDla(poziom: number): number
 	local p = math.clamp(math.floor(poziom), 0, D.sklep.ulepszenia.maks)
 	return D.powtorzenNaPasek / (1 + D.sklep.ulepszenia.premia * p)
+end
+
+-- agent Karola, 27.11: powtórzeń na pełny pasek tego stanowiska (Szczęście: × D.kosci.mnoznikPaska)
+function D.powtorzenStanowiska(id: string, poziom: number): number
+	local p = D.powtorzenDla(poziom)
+	if id == D.kosci.stanowisko then
+		p *= math.max(D.kosci.mnoznikPaska, 0.05)
+	end
+	return p
+end
+
+-- agent Karola, 27.11: liczba kości i ścianek w bezpiecznych granicach (sześcian: 2…6 ścianek)
+function D.kosciRzutu(): (number, number)
+	return math.clamp(math.floor(D.kosci.liczba), 1, 4), math.clamp(math.floor(D.kosci.scianki), 2, 6)
 end
 
 -- cena następnego poziomu (z poziomu `poziom` na poziom + 1); nil = już najwyższy

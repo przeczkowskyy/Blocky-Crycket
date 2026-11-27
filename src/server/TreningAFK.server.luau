@@ -21,8 +21,9 @@
 
 	Zdalne: ReplicatedStorage.TreningAFK (RemoteEvent)
 		klient → serwer: "check", numer | "stop" | "wybierz", id | "sklep" | "kup", rodzaj ("ulepszenie" | "wzmacniacz"), id
-		serwer → klient: "start", id, postep, przyrost, pasek, wzmocnienie_s | "postep", postep, tempo
-		                 | "punkt", atrybut, ile, postep | "skillcheck", numer, okno | "trafiony", czas | "koniec"
+		serwer → klient: "start", id, postep, przyrost, pasek, wzmocnienie_s, ponad | "postep", postep, tempo
+		                 | "punkt", atrybut, ile, postep, pasek, ponad, rzut | "skillcheck", numer, okno | "trafiony", czas | "koniec"
+		                 (rzut = lista oczek kości — tylko Szczęście, agent Karola 27.11; ile = suma oczek × przyrost)
 		                 | "odmowa", powod, id, brakuje | "sklep", stan | "kupiono", rodzaj, id
 
 	Agent Karola, 26.11 (polecenie Karola): bez tabliczek z nazwami przy stanowiskach; wejście przez trenera — okno
@@ -243,9 +244,23 @@ local REKWIZYTY: { [string]: (Model, CFrame, Color3) -> () } = {
 		local kub = grupa(m, "Kubek", o * CFrame.new(1.2, 2.6, -2.4))
 		czesc(kub, "Kubek", Vector3.new(0.9, 0.9, 0.9), o * CFrame.new(1.2, 2.6, -2.4), Color3.fromRGB(110, 70, 40), Enum.PartType.Cylinder)
 		bezKolizji(kub)
-		for i = 1, 2 do
-			local g = grupa(m, "Kosc_" .. i, o * CFrame.new(-0.6 + i * 0.6, 2.5, -2.6))
-			czesc(g, "Kość", Vector3.new(0.5, 0.5, 0.5), o * CFrame.new(-0.6 + i * 0.6, 2.5, -2.6), if i == 1 then Color3.new(1, 1, 1) else k)
+		-- agent Karola, 27.11 (Karol: „niech też rzuca się prawdziwymi kośćmi, wypadają prawdziwe wyniki”): D.kosci.liczba
+		-- kości z oczkami (klocki, bez napisów), leżą na blacie; klient rzuca nimi na końcu paska tak, że górna ścianka =
+		-- wynik z serwera. Ścianki jak na prawdziwej kości (przeciwne dają 7): góra 1, dół 6, przód (−Z) 2, tył 5,
+		-- prawo (+X) 3, lewo 4 — ten sam układ zna klient (OBROT_KOSCI).
+		local liczba = D.kosciRzutu()
+		for i = 1, liczba do
+			local cf = o * CFrame.new((i - (liczba + 1) / 2) * 0.8, 2.25 + D.kosci.bok / 2, -2.6)
+			local g = grupa(m, "Kosc_" .. i, cf)
+			local jasna = i % 2 == 1
+			czesc(g, "Kość", Vector3.one * D.kosci.bok, cf, if jasna then Color3.fromRGB(250, 246, 236) else k)
+			for _, sc in ipairs(D.kosci.sciany) do
+				for _, uv in ipairs(D.kosci.oczka[sc.w]) do
+					local poz = sc.n * (D.kosci.bok / 2) + (sc.u * uv[1] + sc.v * uv[2]) * (D.kosci.bok * 0.28)
+					czesc(g, "Oczko", Vector3.new(0.05, D.kosci.bok * 0.22, D.kosci.bok * 0.22), cf * CFrame.fromMatrix(poz, sc.n, sc.u),
+						if jasna then CIEMNY else Color3.new(1, 1, 1), Enum.PartType.Cylinder)
+				end
+			end
 			bezKolizji(g)
 		end
 	end,
@@ -434,7 +449,21 @@ end
 local function pasekDla(gracz: Player, id: string, wytrenowane: number): (number, boolean)
 	local sk = sklepy[gracz]
 	local lv = gracz:GetAttribute("Level")
-	return D.pasekPrzyLimicie(D.powtorzenDla(sk and sk.u[id] or 0), wytrenowane, if typeof(lv) == "number" then lv else 1)
+	-- agent Karola, 27.11: powtorzenStanowiska — pasek Szczęścia dłuższy o D.kosci.mnoznikPaska (rzut kośćmi)
+	return D.pasekPrzyLimicie(D.powtorzenStanowiska(id, sk and sk.u[id] or 0), wytrenowane,
+		if typeof(lv) == "number" then lv else 1)
+end
+
+-- agent Karola, 27.11 (Karol: „wypadają prawdziwe wyniki — i tyle szczęścia dostajemy, ile wypadnie”): rzut kośćmi
+-- Szczęścia losuje tylko serwer → lista oczek (klient kładzie kości dokładnie tymi ściankami do góry)
+local losKosci = Random.new()
+local function rzucKosci(): { number }
+	local liczba, scianki = D.kosciRzutu()
+	local rzut = {}
+	for i = 1, liczba do
+		rzut[i] = losKosci:NextInteger(1, scianki)
+	end
+	return rzut
 end
 
 local function przyrostNaPasek(gracz: Player, s: any): number
@@ -742,13 +771,24 @@ RunService.Heartbeat:Connect(function(dt)
 		if t.postep >= t.pasek then -- agent Karola, 27.11: pasek i przyrost ze sklepu trenera
 			t.postep -= t.pasek
 			local ile = przyrostNaPasek(gracz, s)
+			-- agent Karola, 27.11: Szczęście — przyrost = suma oczek × zwykły przyrost (poziom, wzmacniacz)
+			local rzut: { number }? = nil
+			if t.id == D.kosci.stanowisko then
+				local r = rzucKosci()
+				local suma = 0
+				for _, v in ipairs(r) do
+					suma += v
+				end
+				ile *= suma
+				rzut = r
+			end
 			dodajStatystyke(gracz, s, ile)
 			-- agent Karola, 27.11: limit treningu — następny pasek liczony od nowych wytrenowanych punktów
 			t.wytrenowane += ile
 			local ponad
 			t.pasek, ponad = pasekDla(gracz, t.id, t.wytrenowane)
 			gracz:SetAttribute("TreningAFKLimit", ponad)
-			Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep, t.pasek, ponad)
+			Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep, t.pasek, ponad, rzut)
 		else
 			Z:FireClient(gracz, "postep", t.postep, tempo)
 		end

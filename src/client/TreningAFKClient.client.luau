@@ -22,6 +22,15 @@
 	Agent Karola, 27.11 (polecenie Pawła: sklep u trenera): długość paska przychodzi z serwera ("start", …, pasek,
 	wzmocnienie_s — ulepszenie stanowiska skraca pasek), nad panelem licznik wzmacniacza; okno trenera ma dwie zakładki:
 	TRAIN (sześć ćwiczeń) i SHOP (ulepszenia stanowisk i wzmacniacze ×2 za Rybki — cenę i saldo liczy serwer).
+	Agent Karola, 27.11 wieczorem (Karol: „animacje na bieżni nie działają: bieżnia się rusza, ale ludek stoi w miejscu.
+	Tak samo ze sztangą — słabo się podnosi”): awatar Robloxa ma dziś stawy AnimationConstraint, a jego Animator co klatkę
+	nadpisuje ich Transform — pozy z pętli renderowania nie docierały do ciała (ani do kota Pawła, który je kopiuje).
+	Na czas treningu Animator awatara jest odpięty (wraca po treningu), pozy idą też w PreSimulation, a celowanie dłoni
+	liczy stawy AnimationConstraint z ich zaczepów. Kot rasy z podglądu Pawła (Workspace/KotyRasSwiatLokalne/<gracz>) jest
+	osobnym rodzajem szkieletu: pozy liczone z jego wymiarów, rekwizyty w jego łapach, te same Transform także na
+	stawach awatara (kot Pawła je kopiuje). Bieg ma własną pozę na każdym szkielecie (krok w rytmie taśmy), sztanga pełny
+	ruch z przytrzymaniem na górze. Szczęście (Karol: „niech też rzuca się prawdziwymi kośćmi”): przez cały pasek
+	potrząsanie kubkiem, na końcu paska rzut — kości lądują oczkami z serwera do góry, potem „+N LUCK”.
 ]]
 
 local Players = game:GetService("Players")
@@ -241,14 +250,17 @@ local function rysuj(dt: number)
 	end
 end
 
-local function wyskok(tekst: string, kolor: Color3)
-	local t = napis(gui, "Wyskok", UDim2.new(0.5, 0, 0.72, 0), UDim2.fromScale(0.3, 0.08), kolor)
+-- agent Karola, 27.11: duzy = większy i dłużej na ekranie (wynik rzutu kośćmi)
+local function wyskok(tekst: string, kolor: Color3, duzy: boolean?)
+	local t = napis(gui, "Wyskok", UDim2.new(0.5, 0, 0.72, 0), if duzy then UDim2.fromScale(0.42, 0.12) else UDim2.fromScale(0.3, 0.08),
+		kolor)
 	t.AnchorPoint = Vector2.new(0.5, 0.5)
 	t.Text = tekst
 	t.Rotation = math.random(-6, 6)
-	TS:Create(t, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+	local czas = if duzy then 1.9 else 1.1
+	TS:Create(t, TweenInfo.new(czas, if duzy then Enum.EasingStyle.Quint else Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 		{ Position = UDim2.new(0.5, 0, 0.58, 0), TextTransparency = 1 }):Play()
-	task.delay(1.2, function()
+	task.delay(czas + 0.1, function()
 		t:Destroy()
 	end)
 end
@@ -261,8 +273,31 @@ for _, n in ipairs(STAWY) do
 	CZY_STAW[n] = true
 end
 
-type Rig = { model: Model, rodzaj: string, stawy: { [string]: any }, korzen: BasePart?, dlonL: BasePart?, dlonP: BasePart? }
+-- agent Karola, 27.11: lustro = stawy awatara, na które idą te same Transform, gdy widać kota Pawła (on je kopiuje)
+type Rig = { model: Model, rodzaj: string, stawy: { [string]: any }, lustro: { [string]: any }?, korzen: BasePart?,
+	dlonL: BasePart?, dlonP: BasePart? }
 local rig: Rig? = nil
+
+local function zbierzStawy(model: Model): { [string]: any }
+	local stawy = {}
+	for _, d in ipairs(model:GetDescendants()) do
+		if (d:IsA("Motor6D") or d:IsA("AnimationConstraint")) and CZY_STAW[d.Name] and stawy[d.Name] == nil then
+			stawy[d.Name] = d
+		end
+	end
+	return stawy
+end
+
+-- agent Karola, 27.11: kot rasy z podglądu Pawła (KotRasySwiatClient, tylko odczyt): model lokalny o nazwie gracza
+local function kotPawla(hrp: BasePart): Model?
+	local f = workspace:FindFirstChild("KotyRasSwiatLokalne")
+	local m = f and f:FindFirstChild(player.Name)
+	local r = m and m:IsA("Model") and m:FindFirstChild("HumanoidRootPart") :: BasePart?
+	if m and r and (r.Position - hrp.Position).Magnitude < 10 then
+		return m :: Model
+	end
+	return nil
+end
 
 local function ruchBohatera(): BindableFunction?
 	local k = workspace:FindFirstChild("BohaterSwiat")
@@ -295,16 +330,16 @@ local function znajdzRig(): Rig?
 			model, rodzaj = naj, "bohater"
 		end
 	end
-	local stawy = {}
-	for _, d in ipairs(model:GetDescendants()) do
-		if (d:IsA("Motor6D") or d:IsA("AnimationConstraint")) and CZY_STAW[d.Name] and stawy[d.Name] == nil then
-			stawy[d.Name] = d
-		end
+	local lustro: { [string]: any }? = nil
+	local kot = if rodzaj == "awatar" then kotPawla(hrp) else nil
+	if kot then
+		model, rodzaj, lustro = kot, "kot", zbierzStawy(char)
 	end
 	return {
 		model = model,
 		rodzaj = rodzaj,
-		stawy = stawy,
+		stawy = zbierzStawy(model),
+		lustro = lustro,
 		korzen = model:FindFirstChild("HumanoidRootPart") :: BasePart?,
 		dlonL = model:FindFirstChild("LeftHand") :: BasePart?,
 		dlonP = model:FindFirstChild("RightHand") :: BasePart?,
@@ -312,35 +347,56 @@ local function znajdzRig(): Rig?
 end
 
 local animateWylaczony: LocalScript? = nil
+-- agent Karola, 27.11: Animator awatara odpięty na czas treningu — przy stawach AnimationConstraint nadpisywał co klatkę
+-- Transform (próba w Play 27.11: wpis w pętli renderowania nie ruszał dłoni, po odpięciu Animatora — ruszał)
+local animatorOdpiety: Animator? = nil
+local animatorHum: Humanoid? = nil
 local function przejmijAwatara(r: Rig)
-	if r.rodzaj ~= "awatar" then
+	if r.rodzaj == "bohater" then
 		return
 	end
-	local a = r.model:FindFirstChild("Animate")
+	local char = player.Character
+	if not char then
+		return
+	end
+	local a = char:FindFirstChild("Animate")
 	if a and a:IsA("LocalScript") and not a.Disabled then
 		a.Disabled = true
 		animateWylaczony = a
 	end
-	local hum = r.model:FindFirstChildOfClass("Humanoid")
+	local hum = char:FindFirstChildOfClass("Humanoid")
 	local an = hum and hum:FindFirstChildOfClass("Animator")
-	if an then
+	if hum and an then
 		for _, tr in ipairs(an:GetPlayingAnimationTracks()) do
-			tr:Stop(0.1)
+			tr:Stop(0)
 		end
+		animatorOdpiety, animatorHum = an, hum
+		an.Parent = nil
+	end
+end
+
+local function zerujStawy(stawy: { [string]: any }?)
+	for _, j in pairs(stawy or {}) do
+		pcall(function()
+			j.Transform = CFrame.identity
+		end)
 	end
 end
 
 local function oddajSzkielet(r: Rig?)
+	if animatorOdpiety then
+		if animatorHum and animatorHum.Parent then
+			animatorOdpiety.Parent = animatorHum
+		end
+		animatorOdpiety, animatorHum = nil, nil
+	end
 	if animateWylaczony then
 		animateWylaczony.Disabled = false
 		animateWylaczony = nil
 	end
 	if r then
-		for _, j in pairs(r.stawy) do
-			pcall(function()
-				j.Transform = CFrame.identity
-			end)
-		end
+		zerujStawy(r.stawy)
+		zerujStawy(r.lustro)
 	end
 	local ruch = ruchBohatera()
 	if ruch then
@@ -391,11 +447,12 @@ local function czyBron(m: Model): boolean
 end
 
 local function schowajBron(r: Rig)
-	if r.rodzaj == "bohater" and (bronModel ~= r.model or (bronCzesci[1] and bronCzesci[1].Parent == nil)) then
+	if r.rodzaj ~= "awatar" and (bronModel ~= r.model or (bronCzesci[1] and bronCzesci[1].Parent == nil)) then
 		bronModel = r.model
 		bronCzesci = {}
 		for _, m in ipairs(r.model:GetChildren()) do
-			if m:IsA("Model") and czyBron(m) then
+			-- agent Karola, 27.11: broń kota Pawła to model „Bron” w kocie
+			if m:IsA("Model") and (if r.rodzaj == "kot" then m.Name == "Bron" else czyBron(m)) then
 				for _, p in ipairs(m:GetDescendants()) do
 					if p:IsA("BasePart") then
 						table.insert(bronCzesci, p)
@@ -443,9 +500,17 @@ end
 type Miary = { klatka: number, glowaDol: number, wysTulowia: number, bark: Vector3, zasieg: number }
 local miary: Miary? = nil
 
-local function staw(r: Rig, n: string): Motor6D?
+-- agent Karola, 27.11: staw jako para C0 / C1 — Motor6D wprost, AnimationConstraint z zaczepów (awatar Robloxa ma dziś
+-- takie stawy; Attachment1 = Attachment0 * Transform, czyli to samo co C0 * Transform * C1⁻¹ w Motor6D)
+type Staw = { C0: CFrame, C1: CFrame }
+local function staw(r: Rig, n: string): Staw?
 	local j = r.stawy[n]
-	return if j and j:IsA("Motor6D") then j else nil
+	if j and j:IsA("Motor6D") then
+		return { C0 = j.C0, C1 = j.C1 }
+	elseif j and j:IsA("AnimationConstraint") and j.Attachment0 and j.Attachment1 then
+		return { C0 = j.Attachment0.CFrame, C1 = j.Attachment1.CFrame }
+	end
+	return nil
 end
 
 local function dlugosciRamienia(r: Rig, strona: string): (number, number)
@@ -547,11 +612,26 @@ local function ukladKsiazki(M: Miary): (CFrame, number)
 	return CFrame.new(c) * CFrame.Angles(KSIAZKA_TH, 0, 0), s
 end
 
--- sztanga: odległość dłoni od środka tułowia ku niebu (dół nad ubraniem, góra = wyprost)
+-- agent Karola, 27.11 (Karol: „ze sztangą — słabo się podnosi”): jedno powtórzenie = wyciśnięcie (0–0,3, szybko,
+-- z wyhamowaniem), przytrzymanie na wyprostowanych ramionach (do 0,45), wolniejsze opuszczanie (do 0,9) i chwila na
+-- klatce → wysokość 0 (klatka) … 1 (wyprost)
+local function wyciskanie(f: number): number
+	if f < 0.3 then
+		return 1 - (1 - f / 0.3) ^ 2
+	elseif f < 0.45 then
+		return 1
+	elseif f < 0.9 then
+		return 0.5 + 0.5 * math.cos(math.pi * (f - 0.45) / 0.45)
+	end
+	return 0
+end
+
+-- sztanga: odległość dłoni od środka tułowia ku niebu (dół: gryf dotyka ubrania klatki, góra = ramiona prawie proste;
+-- krótkie łapy kota — co najmniej 0,6 st ruchu, bark wysuwa się wtedy do 0,5 st)
 local function torSztangi(M: Miary, f: number): number
-	local dol = M.klatka + 0.32
-	local gora = math.max(dol + 0.4, M.zasieg * 0.95)
-	return dol + (gora - dol) * math.sin(math.pi * math.clamp(f, 0, 1))
+	local dol = M.klatka + 0.18
+	local gora = math.max(dol + 0.6, M.zasieg * 0.97)
+	return dol + (gora - dol) * wyciskanie(f)
 end
 
 ------------------------------------------------------------ rekwizyty stanowiska
@@ -576,6 +656,11 @@ local function przywrocRekwizyty()
 				i:ScaleTo(1) -- agent Karola, sesja 25.11: książka zmniejszona do wzrostu postaci wraca do rozmiaru
 			end
 			i:PivotTo(cf)
+			for _, p in ipairs(i:GetDescendants()) do -- agent Karola, 27.11: kości schowane w kubku znów widać
+				if p:IsA("BasePart") then
+					p.LocalTransparencyModifier = 0
+				end
+			end
 		end
 	end
 	-- agent Karola, 26.11: części po modelach (kartka leży w grupie Kartka — PivotTo grupy przesunąłby ją jeszcze raz)
@@ -611,6 +696,18 @@ local function dzwon(f: number): number -- 0 → 1 → 0 w jednym powtórzeniu
 	return math.sin(math.pi * math.clamp(f, 0, 1))
 end
 
+-- agent Karola, 27.11: bieg w rytmie taśmy — faza kroku i droga taśmy narastają w pętli (zmiana tempa nie szarpie)
+local TASMA = 7 -- st/s taśmy przy tempie 1
+local KADENCJA = 1.35 -- cykli biegu na sekundę przy tempie 1 (dwa kroki na cykl → krok ok. 2,6 st taśmy)
+local fazaBiegu = 0
+local drogaTasmy = 0
+
+-- agent Karola, 27.11: rzut kośćmi Szczęścia (wyniki z serwera); czasy w s od zdarzenia "punkt"
+type RzutKosci = { wyniki: { number }, t0: number, cele: { CFrame }, obroty: { Vector3 }, pokazano: boolean, ile: number }
+local rzutKosci: RzutKosci? = nil
+local KOSC_WYLOT, KOSC_LAD, KOSC_SPOCZYNEK = 0.14, 0.74, 0.98 -- kość wylatuje z kubka, ląduje, nieruchomieje (wynik)
+local KOSC_ZBIERA, KOSC_W_KUBKU = 2.8, 3.15 -- kości wracają do kubka
+
 local POZY: { [string]: (f: number, t: number, r: Rig, M: Miary) -> { [string]: CFrame } } = {
 	Sila = function(f)
 		local p = if f < 0.5 then dzwon(f * 2) else 0
@@ -629,8 +726,8 @@ local POZY: { [string]: (f: number, t: number, r: Rig, M: Miary) -> { [string]: 
 		local bP, lP = celuj(r, "Right", Vector3.new(x, y, -d), 0.5)
 		local bL, lL = celuj(r, "Left", Vector3.new(-x, y, -d), 0.5)
 		if not (bP and bL) then
-			-- szkielet bez Motor6D (awatar na AnimationConstraint): dawna poza
-			local a = 62 * (1 - dzwon(f))
+			-- szkielet bez zaczepów stawów: dawna poza (agent Karola, 27.11: ten sam rytm co tor sztangi)
+			local a = 62 * (1 - wyciskanie(f))
 			bP, lP, bL, lL = R(90 - a, 0, 8 + a * 0.25), R(2 * a), R(90 - a, 0, -8 - a * 0.25), R(2 * a)
 		end
 		return {
@@ -640,15 +737,27 @@ local POZY: { [string]: (f: number, t: number, r: Rig, M: Miary) -> { [string]: 
 			Neck = R(6),
 		}
 	end,
-	Zrecznosc = function(_, t)
-		local fi = t * math.pi * 2 * (1 / D.czasPowtorzenia) * tempo
+	Zrecznosc = function(_, _, _, M)
+		-- agent Karola, 27.11 (Karol: „bieżnia się rusza, ale ludek stoi w miejscu”): prawdziwy bieg na każdym szkielecie
+		-- — noga w przód (biodro), w fazie przenoszenia mocno zgięte kolano, przy odbiciu prawie proste; ręce zgięte
+		-- pracują naprzemiennie z nogami, tułów lekko pochylony i skręca się z krokiem, dwa podskoki na cykl
+		local fi = fazaBiegu
+		local function noga(faza: number): (number, number, number)
+			local s, c = math.sin(faza), math.cos(faza)
+			return 46 * s, -(10 + 88 * math.max(0, c) ^ 1.2), 14 * c -- biodro, kolano, kostka
+		end
+		local hP, kP, aP = noga(fi)
+		local hL, kL, aL = noga(fi + math.pi)
 		local s = math.sin(fi)
+		local podskok = 0.12 * M.wysTulowia * math.abs(math.cos(fi)) -- kot ok. 0,1 st, człowiek ok. 0,2 st
 		return {
-			Root = CFrame.new(0, 0.18 * math.abs(math.cos(fi)), 0) * R(-6),
-			RightHip = R(38 * s), LeftHip = R(-38 * s),
-			RightKnee = R(-(12 + 62 * (0.5 - 0.5 * math.cos(fi)))), LeftKnee = R(-(12 + 62 * (0.5 + 0.5 * math.cos(fi)))),
-			RightShoulder = R(-34 * s, 0, 6), LeftShoulder = R(34 * s, 0, -6),
-			RightElbow = R(85), LeftElbow = R(85),
+			Root = CFrame.new(0, podskok - 0.04 * M.wysTulowia, 0) * R(-9),
+			Waist = R(-4, -10 * s, 0), Neck = R(8, 8 * s, 0),
+			RightHip = R(hP), RightKnee = R(kP), RightAnkle = R(aP),
+			LeftHip = R(hL), LeftKnee = R(kL), LeftAnkle = R(aL),
+			RightShoulder = R(-55 * s, 0, 8), LeftShoulder = R(55 * s, 0, -8),
+			RightElbow = R(95 + 15 * s), LeftElbow = R(95 - 15 * s),
+			RightWrist = R(-10), LeftWrist = R(-10),
 		}
 	end,
 	Inteligencja = function(f, _, r, M)
@@ -680,18 +789,21 @@ local POZY: { [string]: (f: number, t: number, r: Rig, M: Miary) -> { [string]: 
 			RightHip = R(-6), LeftHip = R(14), LeftKnee = R(-18), RightKnee = R(-8),
 		}
 	end,
-	Szczescie = function(f)
+	Szczescie = function(_, t)
 		-- agent Karola, sesja 25.11: kubek przed klatką, nie przy twarzy (było bark 50 / łokieć 75), rzut łapą w przód i w dół
-		-- na niższy stolik
+		-- na niższy stolik. Agent Karola, 27.11: przez cały pasek potrząsanie kubkiem; rzut tylko na końcu paska (zdarzenie
+		-- "punkt" z wynikiem z serwera), potem ręka czeka, aż kości wrócą do kubka
 		local bark, lokiec, nadg = 38, 50, 0
-		if f < 0.35 then
-			nadg = 25 * math.sin(f * math.pi * 14) -- potrząsanie kubkiem
-		elseif f < 0.5 then
-			local k = (f - 0.35) / 0.15
-			bark, lokiec = 38 + 34 * k, 50 - 38 * k -- rzut
-		elseif f < 0.8 then
-			local k = (f - 0.5) / 0.3
-			bark, lokiec = 72 - 34 * k, 12 + 38 * k -- powrót
+		local u = if rzutKosci then os.clock() - rzutKosci.t0 else math.huge
+		if u < KOSC_WYLOT then
+			local k = u / KOSC_WYLOT
+			bark, lokiec = 38 + 36 * k, 50 - 40 * k -- rzut
+		elseif u < KOSC_WYLOT + 0.4 then
+			local k = (u - KOSC_WYLOT) / 0.4
+			bark, lokiec = 74 - 36 * k, 10 + 40 * k -- powrót
+		elseif u >= KOSC_W_KUBKU then
+			nadg = 25 * math.sin(t * math.pi * 7) -- potrząsanie kubkiem (3,5 na sekundę)
+			lokiec = 50 + 6 * math.sin(t * math.pi * 7 + 1)
 		end
 		return {
 			RightShoulder = R(bark, 0, 6), RightElbow = R(lokiec), RightWrist = R(nadg),
@@ -701,9 +813,54 @@ local POZY: { [string]: (f: number, t: number, r: Rig, M: Miary) -> { [string]: 
 }
 
 ------------------------------------------------------------ rekwizyty w ruchu
-local losKosci = { Vector3.new(-0.5, 0, 0.1), Vector3.new(0.4, 0, -0.2) }
-local ostatniaFaza = 0
 local pomidorLot: BasePart? = nil
+
+-- agent Karola, 27.11: kości Szczęścia — widoczność u gracza, obrót kładący ściankę wyniku do góry, cel na blacie
+local function widocznosc(m: Instance, ltm: number)
+	for _, p in ipairs(m:GetDescendants()) do
+		if p:IsA("BasePart") then
+			p.LocalTransparencyModifier = ltm
+		end
+	end
+end
+
+-- obrót w układzie kości, po którym ścianka o wartości w patrzy w górę (+Y); ścianki z D.kosci.sciany (jak na serwerze)
+local function obrotWyniku(w: number): CFrame
+	for _, sc in ipairs(D.kosci.sciany) do
+		if sc.w == w then
+			if sc.n.Y > 0.5 then
+				return CFrame.identity
+			elseif sc.n.Y < -0.5 then
+				return CFrame.Angles(math.pi, 0, 0)
+			end
+			return CFrame.fromAxisAngle(sc.n:Cross(Vector3.yAxis).Unit, math.pi / 2)
+		end
+	end
+	return CFrame.identity
+end
+
+local function rzucKosciU(wyniki: { number }, ile: number)
+	local o = ukladO()
+	local n = #wyniki
+	local cele, obroty = {}, {}
+	for i, w in ipairs(wyniki) do
+		local x = (i - (n + 1) / 2) * 0.85 + (math.random() - 0.5) * 0.3
+		local z = -2.6 + (math.random() - 0.5) * 0.6
+		cele[i] = o * CFrame.new(x, 2.25 + D.kosci.bok / 2, z) * CFrame.Angles(0, math.random() * math.pi * 2, 0) * obrotWyniku(w)
+		obroty[i] = Vector3.new(math.random(4, 7) * math.pi, math.random(3, 6) * math.pi, math.random(4, 7) * math.pi)
+	end
+	rzutKosci = { wyniki = wyniki, t0 = os.clock(), cele = cele, obroty = obroty, pokazano = false, ile = ile }
+end
+
+-- po wylądowaniu (kość leży ścianką wyniku do góry): na ekranie duże „+N LUCK” i drgnięcie panelu
+local function pokazWynikKosci(rz: RzutKosci)
+	local s = D.stanowisko(D.kosci.stanowisko)
+	wyskok("+" .. tostring(rz.ile) .. " " .. (if s then s.nazwa else "LUCK"), if s then s.kolor else Color3.new(1, 1, 1), true)
+	local sc = panel:FindFirstChildOfClass("UIScale") or Instance.new("UIScale")
+	sc.Parent = panel
+	sc.Scale = 1.06
+	TS:Create(sc, TweenInfo.new(0.18), { Scale = 1 }):Play()
+end
 
 local function wDloni(dlon: BasePart?, przes: CFrame): CFrame?
 	return dlon and dlon.CFrame * CFrame.new(0, -dlon.Size.Y / 2 - 0.15, 0) * przes
@@ -766,7 +923,8 @@ local function ruszRekwizyty(f: number, t: number, r: Rig)
 					bazowe[p] = p.CFrame
 				end
 				local z0 = -2.6 + (i - 1) * 1.0
-				p.CFrame = o * CFrame.new(0, 0.84, ((z0 + 2.8 + t * 7 * tempo) % 6) - 2.8)
+				-- agent Karola, 27.11: droga taśmy narasta w pętli (TASMA × tempo), w tym samym rytmie co kroki biegu
+				p.CFrame = o * CFrame.new(0, 0.84, ((z0 + 2.8 + drogaTasmy) % 6) - 2.8)
 			end
 		end
 	elseif id == "Inteligencja" then
@@ -848,69 +1006,109 @@ local function ruszRekwizyty(f: number, t: number, r: Rig)
 		if kub and cp then
 			kub:PivotTo(cp)
 		end
-		for i = 1, 2 do
+		-- agent Karola, 27.11 (Karol: „niech też rzuca się prawdziwymi kośćmi, wypadają prawdziwe wyniki”): przez pasek
+		-- kości są w kubku (schowane); po "punkt" lecą na stolik, koziołkując coraz wolniej, i lądują ścianką wyniku
+		-- z serwera do góry (rz.cele), po chwili wracają do kubka
+		local rz = rzutKosci
+		local u = if rz then os.clock() - rz.t0 else math.huge
+		local n = math.max(if rz then #rz.wyniki else 0, (D.kosciRzutu()))
+		for i = 1, n do
 			local g = grupa("Kosc_" .. i)
 			zapamietajGrupe(g)
+			local cel = rz and rz.cele[i]
 			if g and cp then
-				local cel = o * CFrame.new(losKosci[i].X, 2.48, -2.6 + losKosci[i].Z) -- blat niżej (agent Karola, sesja 25.11)
-				if f < 0.42 then
-					g:PivotTo(cp * CFrame.new(0, 0.6, 0)) -- w kubku (schowane wyżej przez kubek)
-				elseif f < 0.62 then
-					local k = (f - 0.42) / 0.2
-					local poz = cp.Position:Lerp(cel.Position, k) + Vector3.new(0, 1.2 * math.sin(math.pi * k), 0)
-					g:PivotTo(CFrame.new(poz) * CFrame.Angles(k * 9 + i, k * 7, k * 5))
+				if not (rz and cel) or u < KOSC_WYLOT or u >= KOSC_W_KUBKU then
+					g:PivotTo(cp * CFrame.new(0, 0.3, 0))
+					widocznosc(g, 1)
+				elseif u < KOSC_LAD then
+					local k = (u - KOSC_WYLOT) / (KOSC_LAD - KOSC_WYLOT)
+					local rem = (1 - k) ^ 2
+					local a = rz.obroty[i]
+					local poz = cp.Position:Lerp(cel.Position, k) + Vector3.new(0, 1.1 * math.sin(math.pi * k), 0)
+					g:PivotTo(CFrame.new(poz) * cel.Rotation * CFrame.Angles(a.X * rem, a.Y * rem, a.Z * rem))
+					widocznosc(g, 0)
+				elseif u < KOSC_SPOCZYNEK then
+					local k = (u - KOSC_LAD) / (KOSC_SPOCZYNEK - KOSC_LAD)
+					g:PivotTo(cel + Vector3.new(0, 0.22 * math.sin(math.pi * k) * (1 - k), 0)) -- odbicie od blatu
+					widocznosc(g, 0)
+				elseif u < KOSC_ZBIERA then
+					g:PivotTo(cel)
+					widocznosc(g, 0)
 				else
-					local k = math.clamp((f - 0.62) / 0.18, 0, 1)
-					g:PivotTo(cel * CFrame.Angles(math.floor((1 - k) * 4 + i) * math.pi / 2, (1 - k) * 2, 0))
+					local k = (u - KOSC_ZBIERA) / (KOSC_W_KUBKU - KOSC_ZBIERA)
+					local poz = cel.Position:Lerp(cp.Position, k) + Vector3.new(0, 0.6 * math.sin(math.pi * k), 0)
+					g:PivotTo(CFrame.new(poz) * cel.Rotation)
+					widocznosc(g, if k > 0.85 then 1 else 0)
 				end
 			end
 		end
-		if f < ostatniaFaza then
-			-- nowe powtórzenie: inne miejsce wypadnięcia kości
-			for i = 1, 2 do
-				losKosci[i] = Vector3.new(math.random(-8, 8) / 10, 0, math.random(-4, 4) / 10)
-			end
+		if rz and not rz.pokazano and u >= KOSC_SPOCZYNEK then
+			rz.pokazano = true
+			pokazWynikKosci(rz)
 		end
 	end
-	ostatniaFaza = f
 end
 
 ------------------------------------------------------------ pętla animacji (po pętli bohatera Karola)
 local czas = 0
 local ruchStoi = 0
+local ostatniePozy: { [string]: CFrame }? = nil
+local TEMPO_POZY = { Kondycja = 1 / 1.6 } -- agent Karola, 27.11: ruchów na powtórzenie paska (domyślnie 1)
+
+-- agent Karola, 27.11: stawy AnimationConstraint (awatar) przyjmują Transform w PreSimulation — po kroku Animatora;
+-- ta sama poza co w pętli renderowania jeszcze raz (Motor6D bohatera i kota rysują się z pętli renderowania)
+RunService.PreSimulation:Connect(function()
+	local r, cele = rig, ostatniePozy
+	if not (aktywne and r and cele) then
+		return
+	end
+	for _, lista in ipairs({ r.stawy, r.lustro or {} }) do
+		for n, j in pairs(lista) do
+			if j:IsA("AnimationConstraint") then
+				j.Transform = cele[n] or CFrame.identity
+			end
+		end
+	end
+end)
+
 RunService:BindToRenderStep("TreningAFK", Enum.RenderPriority.Last.Value + 1, function(dt)
 	if not aktywne then
 		return
 	end
 	czas += dt
 	postep = math.min(postep + dt * tempo / D.czasPowtorzenia, pasekReps - 0.001)
+	fazaBiegu = (fazaBiegu + dt * math.pi * 2 * KADENCJA * tempo) % (math.pi * 2) -- agent Karola, 27.11
+	drogaTasmy = (drogaTasmy + dt * TASMA * tempo) % 6
 	rysuj(dt)
+	-- agent Karola, 27.11: kot Pawła powstaje po wyborze rasy — gdy pojawi się w trakcie treningu, szkielet od nowa
+	if rig and rig.rodzaj == "awatar" and rig.korzen and kotPawla(rig.korzen) then
+		oddajBron(rig)
+		zerujStawy(rig.stawy) -- Animate i Animator awatara zostają wyłączone (ten sam gracz)
+		rig = nil
+	end
 	if not rig or not rig.model.Parent then
 		rig = znajdzRig()
 		if rig then
 			przejmijAwatara(rig)
 			miary = zmierz(rig) -- agent Karola, sesja 25.11
-			if rig.rodzaj == "bohater" and aktywne == "Zrecznosc" then
-				local ruch = ruchBohatera()
-				if ruch then
-					pcall(function()
-						ruch:Invoke("klip", "bieg")
-					end)
-				end
-			end
 		end
 	end
 	local r = rig
 	if not r then
 		return
 	end
-	local f = postep % 1
-	-- bieg na bohaterze gra jego własny klip; na awatarze nasz
+	-- agent Karola, 27.11: wyciskanie sztangi wolniej niż jedno powtórzenie paska (ok. 1,9 s na ruch — czytelny)
+	local f = (postep * (TEMPO_POZY[aktywne :: string] or 1)) % 1
+	-- agent Karola, 27.11: bieg ma własną pozę na każdym szkielecie (klip "bieg" bohatera nie ruszał nóg na kotwicy)
 	schowajBron(r) -- agent Karola, sesja 25.11: nic w łapach na czas treningu
 	local poza = POZY[aktywne :: string]
-	if poza and not (r.rodzaj == "bohater" and aktywne == "Zrecznosc") then
+	if poza then
 		local cele = poza(f, czas, r, miary or zmierz(r))
+		ostatniePozy = cele
 		for n, j in pairs(r.stawy) do
+			j.Transform = cele[n] or CFrame.identity
+		end
+		for n, j in pairs(r.lustro or {}) do -- kot Pawła kopiuje pozę ze stawów awatara
 			j.Transform = cele[n] or CFrame.identity
 		end
 	end
@@ -957,6 +1155,8 @@ end)
 local function koniec()
 	oddajBron(rig) -- agent Karola, sesja 25.11
 	miary = nil
+	ostatniePozy = nil -- agent Karola, 27.11
+	rzutKosci = nil
 	oddajSzkielet(rig)
 	przywrocRekwizyty()
 	rig = nil
@@ -969,6 +1169,16 @@ local function koniec()
 	if hum and hum:GetState() == Enum.HumanoidStateType.FallingDown then
 		hum:ChangeState(Enum.HumanoidStateType.GettingUp)
 	end
+end
+
+-- agent Karola, 27.11: Szczęście pokazuje zakres rzutu („+1-6 LCK / ROLL”), reszta przyrost za pasek
+local function tekstPrzyrostu(s: any, mnoznik: number): string
+	if s.id == D.kosci.stanowisko then
+		local liczba, scianki = D.kosciRzutu()
+		return string.format("+%d-%d %s / ROLL", math.floor(liczba * mnoznik + 0.5), math.floor(liczba * scianki * mnoznik + 0.5),
+			s.skrot)
+	end
+	return "+" .. tostring(mnoznik) .. " " .. s.skrot .. " / BAR"
 end
 
 Z.OnClientEvent:Connect(function(akcja, a, b, c, d, e, f)
@@ -986,7 +1196,7 @@ Z.OnClientEvent:Connect(function(akcja, a, b, c, d, e, f)
 		tytul.Text = s and s.nazwa or "TRAINING"
 		czynnoscL.Text = s and s.czynnosc or ""
 		ikona.Image = s and s.ikona or ""
-		przyrostL.Text = s and ("+" .. tostring(c or 1) .. " " .. s.skrot .. " / BAR") or ""
+		przyrostL.Text = s and tekstPrzyrostu(s, c or 1) or ""
 		gui.Enabled = true
 		ruchStoi = -10 -- chwila na puszczenie klawiszy po wejściu
 	elseif akcja == "postep" then
@@ -999,14 +1209,27 @@ Z.OnClientEvent:Connect(function(akcja, a, b, c, d, e, f)
 		end
 		pokazLimit(e == true)
 		pokazanyProcent = 1
-		wyskok("+" .. tostring(b) .. " " .. (s and s.skrot or ""), s and s.kolor or Color3.new(1, 1, 1))
-		if s then -- agent Karola, 27.11: przyrost po końcu wzmacniacza wraca do zwykłego
-			przyrostL.Text = "+" .. tostring(b) .. " " .. s.skrot .. " / BAR"
+		-- agent Karola, 27.11: Szczęście — f = oczka z serwera; rzut na stolik, „+N LUCK” dopiero po wylądowaniu kości
+		local kosci = if s and s.id == D.kosci.stanowisko and typeof(f) == "table" and #f > 0 then f else nil
+		if kosci then
+			local suma = 0
+			for _, v in ipairs(kosci) do
+				suma += if typeof(v) == "number" then v else 0
+			end
+			rzucKosciU(kosci, b or suma)
+			if s and suma > 0 and typeof(b) == "number" then -- przyrost po końcu wzmacniacza wraca do zwykłego
+				przyrostL.Text = tekstPrzyrostu(s, math.max(1, math.floor(b / suma + 0.5)))
+			end
+		else
+			wyskok("+" .. tostring(b) .. " " .. (s and s.skrot or ""), s and s.kolor or Color3.new(1, 1, 1))
+			if s then -- agent Karola, 27.11: przyrost po końcu wzmacniacza wraca do zwykłego
+				przyrostL.Text = tekstPrzyrostu(s, b)
+			end
+			local sc = panel:FindFirstChildOfClass("UIScale") or Instance.new("UIScale")
+			sc.Parent = panel
+			sc.Scale = 1.06
+			TS:Create(sc, TweenInfo.new(0.18), { Scale = 1 }):Play()
 		end
-		local sc = panel:FindFirstChildOfClass("UIScale") or Instance.new("UIScale")
-		sc.Parent = panel
-		sc.Scale = 1.06
-		TS:Create(sc, TweenInfo.new(0.18), { Scale = 1 }):Play()
 		task.delay(0.12, function()
 			pokazanyProcent = 0
 		end)
