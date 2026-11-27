@@ -2,16 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T20:41:26+01:00",
+ "aktualizacja": "2026-11-27T20:52:23+01:00",
  "prace": [
   {
    "id": "bronie-mag-zwiad",
    "tytul": "Bronie Maga i Zwiadowcy: ikony do Roblox i modele 3D",
    "stan": "w_toku",
-   "etap": "Wgrywanie 10 ikon broni do Roblox",
+   "etap": "Modele 3D broni w Blenderze, pierwsza wersja",
    "start": "2026-11-27T20:30:17+01:00",
    "koniec_szacowany": "2026-11-27T23:20:17+01:00",
-   "aktualizacja": "2026-11-27T20:34:50+01:00",
+   "aktualizacja": "2026-11-27T20:46:17+01:00",
    "obszary": [
     "swiat/postacie/ikony_broni*",
     "swiat/postacie/bronie_klas",
