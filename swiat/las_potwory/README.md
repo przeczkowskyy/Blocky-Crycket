@@ -113,6 +113,15 @@ lasu w Play (`testy/proba_play.py`, okno Studio na wierzchu, kod końcowy; `wyni
 `…_lista.txt`): **5/5 OK** (L1–L5 jak w nocy). Panel w Borze sprawdza próba lasu-pasa (P15: widoczny tylko panel
 starego lasu), w pasie — P08j. W lesie-pasie: `swiat/las_pas_gra/README.md` (P08j, P11j, P15).
 
+## Tabliczka z nazwą i rangą (27.11.2026, polecenie Karola)
+
+Nad potworem (wszystkie trzy biomy — kod klienta jest wspólny) jeden BillboardGui 180 × 46 px: nazwa z danych
+(LuckiestGuy z obrysem; rzadki złoty, Strażnik pomarańczowo-złoty), pod nią rząd [RARE z gwiazdką / BOSS z koroną]
+[„LV N” — czerwone, gdy poziom ≥ poziom bohatera + 3] [miecze, gdy walka trwa]. Ranga ze strefy w danych (`rzadki`,
+`straznik`). Nazwa zwykłego potwora widać do `Stale.TABLICZKA_NAZWA_DO` (55 studs od kamery), dalej samo „LV” —
+zmiana w wyborze widoków co 0,5 s, nic co klatkę; zasięg tabliczki: zwykły 80, rzadki 110, Strażnik 140 (widok i tak
+znika dalej niż 135). Podpowiedź E: „<nazwa> · LV N”. Próba w Play: `swiat/las_pas_gra/testy/proba_tabliczek.py`.
+
 ## Pliki
 
 | Plik | Co to jest |

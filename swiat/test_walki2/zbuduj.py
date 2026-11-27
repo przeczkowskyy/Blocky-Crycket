@@ -66,6 +66,8 @@ SKRYPTY = [
     ("zrodla/PlanWalki.luau", "ModuleScript", "Moduly/PlanWalki", None),
     ("zrodla/PamiecWalk.luau", "ModuleScript", "Moduly/PamiecWalk", None),
     ("zrodla/Efekty3D.luau", "ModuleScript", "Moduly/Efekty3D", None),
+    # 27.11.2026: portrety potworów (obrazy w Roblox) — wygenerowany przez ikony_potworow.py luau
+    ("zrodla/IkonyPotworow.luau", "ModuleScript", "Moduly/IkonyPotworow", None),
     ("zrodla/InterfejsWalki2.luau", "ModuleScript", "Moduly/InterfejsWalki2", None),
     ("zrodla/WyborWalki2.luau", "ModuleScript", "Moduly/WyborWalki2", None),
     ("zrodla/OdtwarzaczWalki2.luau", "ModuleScript", "Moduly/OdtwarzaczWalki2", None),

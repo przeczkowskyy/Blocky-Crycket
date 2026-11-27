@@ -620,7 +620,8 @@ budowie (i `Moduly/Dziennik` z `src/shared/Walka`) — źródło prawdy zostaje 
   Bryły schowane w modelu tuż pod ścianą (prześwitują na rigu z klocków): `chowane` (kość → kierunek na zewnątrz,
   próg). Inny materiał albo kolor tylko w prototypie (bez Blendera): `wyglad_roblox`.
   Skórowanie modelu (`p.skoruj`) przechodzi samo (opis w `aktorzy.py` i `Klipy.luau`). Portret w interfejsie: ikona
-  8×8 o tym kluczu w `IKONY` w `InterfejsWalki2.luau` (test pilnuje, że jest).
+  8×8 o tym kluczu w `IKONY` w `InterfejsWalki2.luau` (test pilnuje, że jest) — zapas; potwór dostaje też obraz
+  (render z Blendera): dopisz go w `POTWORY` w `ikony_potworow.py`, potem `obrob`, `wgraj`, `zbuduj.py --skrypty`.
 - **Umiejętność:** po dopisaniu do `tools/walka/dane_walki.json` dopisz wpis w `Choreografie.UMIEJETNOSCI` (styl i
   dodatki: `pocisk`, `wybuch`, `smuga`, `fala`, `pazury`, `aura`, `kamera`) oraz klip w tabeli aktorów.
   `testy/test_odtwarzacza.py` i `testy/test_aktorow.py` nie przejdą, dopóki umiejętność nie ma wpisu — nie zostanie
@@ -672,6 +673,19 @@ w grze i lista poprawek po obejrzeniu zrzutów: `swiat/dzungla_pas_gra/README.md
 efektu Dżungli, `OstatnieBrakiChoreografii` = 0, konsola bez błędów. `stan()` podaje też `aura` (chwila błysku
 umiejętności na siebie).
 
+## Portrety potworów z Blendera (27.11.2026)
+
+Na tabliczce walki potwór ma portret z renderu ikony z Blendera (`swiat/postacie/wynik/<postać>/<postać>_ikona.png`)
+zamiast 8×8 pikseli. `ikony_potworow.py obrob` przycina, robi kwadrat 256 px z marginesem 4 % i „rozlewa” kolor pod
+przezroczystymi pikselami (`ikony/<klucz>.png`); `wgraj` wysyła do Roblox przez Studio (konto osoby w Studio, prawo
+„Use” dla gry, jak `swiat/miasteczko_bazar/tekstury.py`), zapisuje numery w `ikony_potworow.json` (z sha256 pliku —
+drugi raz tego samego pliku nie wyśle; numer operacji zapisany przed czekaniem) i generuje moduł
+`zrodla/IkonyPotworow.luau`. Zgoda: Karol 27.11.2026 („Tak, wgraj”). Rejestrem jest ten JSON, nie
+`assets/manifest.json`. `InterfejsWalki2:_portret` kładzie obraz nad pikselami i chowa piksele dopiero, gdy obraz
+się wczyta (atrybut portretu `Portret` = `piksele` / `laduje` / `obraz`) — bez modułu, bez klucza albo bez
+wczytania zostają piksele. 15 obrazów wgranych 27.11.2026 o 17:10, moderacja „Approved”. Próba w Play:
+`swiat/las_pas_gra/testy/proba_tabliczek.py` (punkty T<biom>p).
+
 ## Pliki
 
 | Plik | Co robi |
@@ -685,6 +699,7 @@ umiejętności na siebie).
 | `zrodla/Choreografie.luau` | **dane** choreografii: typ zdarzenia → obsługa, umiejętność → styl i dodatki, efekt → wygląd, ikona, kolor |
 | `zrodla/Efekty3D.luau` | efekty z części i wbudowanych efektów: pociski, rozbłyski, fale, pazury, chmura, korzenie, smugi, ozdoby efektów, łup |
 | `zrodla/InterfejsWalki2.luau` | interfejs walki (paski, rangi, ikony efektów, tura, nazwa umiejętności, tempo, POMIŃ, napisy, panel wyniku) |
+| `ikony_potworow.py`, `ikony_potworow.json`, `ikony/`, `zrodla/IkonyPotworow.luau` | portrety potworów z Blendera: obróbka, wgranie przez Studio, rejestr numerów, moduł dla interfejsu (27.11.2026) |
 | `zrodla/WyborWalki2.luau` | panel wyboru przy tablicy |
 | `zrodla/KlientWalki2.client.luau` | podpowiedź → panel → odtwarzacz; komunikat odmowy serwera; haczyki testowe `Sygnaly/PokazAktora`, `Sygnaly/Sterowanie` (m.in. „kadr”, „napisy”) |
 | `zrodla/Ustawienia.luau`, `Klipy.luau`, `Aktorzy.luau` | z etapu 1 (stałe, odtwarzacz klipów z danych, lokalne klony aktorów); etap 5: `Klipy` udaje skórowanie siatką (galareta slime'a) i wydłuża efekt z klipu (`graj(…, { wydluz = studs })`); etap 6: `Klipy` gra odcinki klipu z własną prędkością (`odcinki`, lot bańki) i chowa bryły schowane w klipie (`chowane`), `Ustawienia` ma listę dźwięków i melodie, `Aktorzy` nie daje skorupy bryłom skóry |

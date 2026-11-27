@@ -66,6 +66,11 @@ S.SKOK_WYGLADZANIA = 20
 S.OBROT_NA_S = 8              -- rad/s
 S.CZERWONA_OD = 3             -- poziomów ponad poziom bohatera
 S.TABLICZKA_ZASIEG = 80
+-- 27.11.2026 (tabliczka z nazwą i rangą): nazwę zwykłego potwora widać do tej odległości od kamery (dalej samo „LV”,
+-- żeby strefa 7–8 slime’ów nie była lasem napisów); rzadki i Strażnik pokazują nazwę zawsze i dalej
+S.TABLICZKA_NAZWA_DO = 55
+S.TABLICZKA_ZASIEG_RZADKIEGO = 110
+S.TABLICZKA_ZASIEG_STRAZNIKA = 140
 S.BANER_S = 5
 -- wdrożenie 15.11 (pomiar w Studio, rozdz. 9.3): dalsze widoki przestawiamy i animujemy rzadziej, z sumą dt
 S.KLATKA_PELNA_RANGA = 3      -- tylu najbliższych kamerze widoków zawsze co klatkę

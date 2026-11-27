@@ -58,6 +58,7 @@ wejścia biomu, przelotu nie da się pominąć, stary las zostaje nietknięty i 
 | `testy/proba_d107.py` | D-107: krótka próba w Play samych punktów D1–D5 jednego biomu (ok. 2,5 min) i dwa zrzuty |
 | `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną P01–P16 i listą zrzutów (od 19.11.2026 też PD1–PD5) |
 | `testy/proba_dodatkowa.py` | druga próba w Play: obie drogi do lasu z przelotem, bieg Polana → brama, ściany i ratunek, walka z każdym gatunkiem, Strażnik (przegrana i wygrana), koszt przy pełnym zestawie, ujęcia potworów |
+| `testy/proba_tabliczek.py` | próba w Play (27.11.2026) trzech biomów: tabliczka zwykłego, rzadkiego i Strażnika (nazwa, „LV N”, RARE / BOSS, czerwień poziomu, nazwa schowana z daleka) i portret przeciwnika w walce z obrazu (T00–T09; ok. 3 min, zrzuty i wycinki 667 × 375 poza repo) |
 | `wyniki/` | zapisy prób w Play (JSON, zapisywane po każdym kroku) |
 | `klatki/` | wybrane zrzuty z gry (bez filmów) |
 

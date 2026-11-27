@@ -5,6 +5,7 @@
 
 	Nowe w v2:
 		• tabliczki z nazwą, poziomem i rangą przeciwnika, portret z pikseli dla każdego aktora;
+		• (27.11.2026) potwory: portret z renderu z Blendera (moduł IkonyPotworow), piksele jako zapas;
 		• pod paskiem ikony aktywnych efektów z licznikiem tur (i zapasem tarczy);
 		• licznik tury pod „VS”, wstęga z nazwą użytej umiejętności;
 		• przyciski tempa ×1 / ×2 / ×4 (wybór gracza, D-068) obok „POMIŃ” — duże, czytelne na telefonie;
@@ -19,6 +20,7 @@ end
 local TweenService = game:GetService("TweenService")
 local GuiService = game:GetService("GuiService")
 local ContextActionService = game:GetService("ContextActionService")
+local ContentProvider = game:GetService("ContentProvider")
 
 local Interfejs = {}
 -- spacja (albo B na padzie) zamyka kartę wyniku; priorytet nad „POMIŃ” odtwarzacza (10001), który w tej fazie nic nie robi
@@ -227,6 +229,21 @@ local IKONY = {
 }
 Interfejs.IKONY = IKONY
 
+-- 27.11.2026: portrety potworów z Blendera (moduł IkonyPotworow obok, wygenerowany przez ikony_potworow.py z
+-- ikony_potworow.json): klucz aktora → "rbxassetid://…". Obraz leży nad portretem z pikseli; piksele znikają
+-- dopiero, gdy obraz się wczyta (ImageLabel.IsLoaded) — brak modułu, brak klucza albo niewczytany obraz = piksele.
+local OBRAZY_PORTRETOW: { [string]: string } = {}
+do
+	local modul = script.Parent:FindFirstChild("IkonyPotworow")
+	if modul and modul:IsA("ModuleScript") then
+		local ok, tabela = pcall(require, modul)
+		if ok and type(tabela) == "table" then
+			OBRAZY_PORTRETOW = tabela
+		end
+	end
+end
+Interfejs.OBRAZY_PORTRETOW = OBRAZY_PORTRETOW
+
 ------------------------------------------------------------------ pomocnicze
 -- wielkie litery z polskimi znakami: string.upper zmienia tylko ASCII („Strażnik Gaju” → „STRAżNIK GAJU”,
 -- zauważone w Studio 17.11.2026); nazwy z Dane są w UTF-8
@@ -300,6 +317,50 @@ function Interfejs:_ikona(rodzic: GuiObject, nazwa: string, margines: number?)
 		end
 	end
 	return pole
+end
+
+-- portret na tabliczce: piksele zawsze (zapas), nad nimi obraz z IkonyPotworow, gdy jest dla tego klucza; piksele
+-- chowają się, gdy obraz się wczyta. Atrybut portretu "Portret" = "piksele" | "laduje" | "obraz" (do prób).
+function Interfejs:_portret(portret: GuiObject, klucz: string)
+	for _, nazwa in { "Ikona", "Obraz" } do
+		local stara = portret:FindFirstChild(nazwa)
+		if stara then
+			stara:Destroy() -- połączenie IsLoaded znika razem z obrazem
+		end
+	end
+	local piksele = self:_ikona(portret, klucz, 0.13)
+	local obraz = OBRAZY_PORTRETOW[klucz]
+	if type(obraz) ~= "string" or obraz == "" then
+		portret:SetAttribute("Portret", "piksele")
+		return
+	end
+	portret:SetAttribute("Portret", "laduje")
+	local img = self:_nowy("ImageLabel", {
+		Name = "Obraz", BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(0.94, 0.94), Image = obraz, ScaleType = Enum.ScaleType.Fit, ZIndex = portret.ZIndex + 1,
+	}, portret)
+	local function wczytany(): boolean
+		if not img.Parent or not piksele.Parent then
+			return true -- portret już podmieniony (następna walka) — koniec czekania
+		end
+		if img.IsLoaded then
+			piksele.Visible = false
+			portret:SetAttribute("Portret", "obraz")
+			return true
+		end
+		return false
+	end
+	-- IsLoaded nie zgłasza zmiany sygnałem (próba w Play 27.11: wczytany, a piksele dalej widać) — krótkie czekanie
+	-- po wczytaniu zasobu (ContentProvider), potem co 0,25 s najwyżej przez 6 s; nie co klatkę
+	task.spawn(function()
+		pcall(ContentProvider.PreloadAsync, ContentProvider, { obraz })
+		for _ = 1, 24 do
+			if wczytany() then
+				return
+			end
+			task.wait(0.25)
+		end
+	end)
 end
 
 function Interfejs:_ramka(rodzic: Instance, wlasciwosci: { [string]: any }, obrysPx: number, rog: number, cien: boolean?)
@@ -988,11 +1049,7 @@ function Interfejs:ustawStrony(strony, aktorzy)
 			m.maks = math.max(1, tonumber(dane.mana_maks) or 100)
 			m.blyskCzas, m.wiek, m.spowolniona, m.gotowa = 0, 0, false, false
 			self:ustawMane(strona, tonumber(dane.mana) or 0, { natychmiast = true })
-			local ikona = p.portret:FindFirstChild("Ikona")
-			if ikona then
-				ikona:Destroy()
-			end
-			self:_ikona(p.portret, aktorzy[strona] or "oko", 0.13)
+			self:_portret(p.portret, aktorzy[strona] or "oko")
 			-- przeciwnik-postać (pojedynek z lustrem, v3) ma w dzienniku rangę „gracz” — na tabliczce „POJEDYNEK”
 			local r = if strona == "wrog" and dane.rodzaj == "postac" then RANGI.pojedynek else (RANGI[dane.ranga] or RANGI.zwykly)
 			p.ranga.Visible = strona == "wrog"
