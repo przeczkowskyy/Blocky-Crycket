@@ -98,8 +98,8 @@ local opis = "brak zapisu"
 local swieza = false
 if type(r) == "table" then
 	local p = if type(r.profil) == "table" then r.profil else {}
-	opis = string.format("poziom %s, doświadczenie %s, Złoto %s, Gemy %s, klasa %s, zapisano %s", tostring(p.poziom),
-		tostring(p.xp), tostring(p.zloto), tostring(p.gemy), tostring(p.idKlasy),
+	opis = string.format("poziom %s, doświadczenie %s, Złoto %s, Gemy %s, klasa %s, rasa %s, zapisano %s", tostring(p.poziom),
+		tostring(p.xp), tostring(p.zloto), tostring(p.gemy), tostring(p.idKlasy), tostring(p.idRasy),
 		if type(r.zapisano) == "number" then os.date("!%Y-%m-%d %H:%M UTC", r.zapisano) else "?")
 	swieza = type(r.sesja) == "table" and type(r.sesja.czas) == "number" and os.time() - r.sesja.czas < __BLOKADA__
 	if swieza then

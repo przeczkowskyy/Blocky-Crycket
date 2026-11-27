@@ -354,6 +354,8 @@ function L.nowyProfil(D)
 		straznicy = {},
 		-- wersja 4 (18.11.2026, zapis postępu): wybrana klasa (atrybut Class) i zapisywane atrybuty innych pakietów
 		idKlasy = nil,
+		-- 27.11.2026 (Karol: „Tak, zapisuj rasę”): wybrana rasa (atrybut Race, D.rasy_gracza); brak = jak dotąd
+		idRasy = nil,
 		atrybuty = {},
 	}
 end
@@ -906,6 +908,10 @@ function L.czystyProfil(D, p)
 	end
 	if k.idKlasy ~= nil and (type(k.idKlasy) ~= "string" or D.klasy_gracza[k.idKlasy] == nil) then
 		return nil, "zla_klasa"
+	end
+	-- 27.11.2026: rasa w zapisie (pole nieobowiązkowe)
+	if k.idRasy ~= nil and (type(k.idRasy) ~= "string" or not table.find(D.rasy_gracza, k.idRasy)) then
+		return nil, "zla_rasa"
 	end
 	if not calkowita(k.poziom, G.poziom_maks) or k.poziom < 1 then
 		return nil, "zly_poziom"

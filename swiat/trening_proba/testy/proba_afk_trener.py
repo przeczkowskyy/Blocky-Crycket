@@ -88,7 +88,10 @@ KOD = {
     "wybor_klasy": (H + LP + 'local g = lp.PlayerGui:FindFirstChild("ClassSelect") local hud = lp.PlayerGui:FindFirstChild("HUD") '
                     'return H:JSONEncode({ ekran = g ~= nil and g.Enabled, hud = hud ~= nil and hud.Enabled, '
                     'klasa = lp:GetAttribute("Class") or false })'),
-    "zmien_klase": 'game:GetService("ReplicatedStorage"):WaitForChild("ChooseClass"):FireServer("Warrior") return "ok"',
+    # 27.11.2026 (Karol: „Tak, zapisuj rasę”): także rasa — bez Race nie ma kota rasy Pawła, a HUD czeka na rasę
+    # (serwer wyboru przyjmuje rasę dopiero po klasie i nie częściej niż co 0,5 s)
+    "zmien_klase": ('local RS = game:GetService("ReplicatedStorage") RS:WaitForChild("ChooseClass"):FireServer("Warrior") '
+                    'task.wait(0.7) local r = RS:FindFirstChild("ChooseRace") if r then r:FireServer("Human") end return "ok"'),
     "stanowiska": (H + J + 'local f = workspace:FindFirstChild("TreningAFK") if not f then return H:JSONEncode({ brak = true }) end '
                    'local o, tab, sg = {}, 0, 0 for _, d in f:GetDescendants() do if string.find(d.Name, "Tabliczka") then '
                    'tab += 1 end if d:IsA("SurfaceGui") then sg += 1 end end for _, m in f:GetChildren() do '

@@ -372,6 +372,9 @@ local function zbierz(gracz: Player)
 	p.shardy = liczba(gracz, A.shardy, 0)
 	local id = gracz:GetAttribute(A.klasa)
 	p.idKlasy = if type(id) == "string" and D.klasy_gracza[id] ~= nil then id else nil
+	-- 27.11.2026 (Karol: „Tak, zapisuj rasę”): rasa z atrybutu Race (ustawia ją serwer wyboru Pawła) do profilu
+	local rasa = gracz:GetAttribute(A.rasa)
+	p.idRasy = if type(rasa) == "string" and table.find(D.rasy_gracza, rasa) then rasa else nil
 	return p
 end
 
@@ -1217,6 +1220,11 @@ local function zastosujProfil(gracz: Player, p)
 		gracz:SetAttribute(n, v)
 	end
 	if p.idKlasy ~= nil then
+		-- 27.11.2026: najpierw rasa, potem klasa — ekran wyboru Pawła i kot rasy widzą od razu obie (rasa tylko razem
+		-- z klasą: serwer wyboru przyjmuje rasę dopiero po klasie)
+		if p.idRasy ~= nil then
+			gracz:SetAttribute(A.rasa, p.idRasy)
+		end
 		-- jedyny zapis atrybutu Class Pawła: przywrócenie wybranej klasy z zapisu (wyścig z ekranem wyboru klasy — README)
 		gracz:SetAttribute(A.klasa, p.idKlasy)
 	end
@@ -1449,7 +1457,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 		for _, s in D.statystyki do
 			atrybuty[D.atrybuty_statystyk[s]] = g:GetAttribute(D.atrybuty_statystyk[s])
 		end
-		for _, n in { A.klasa, A.poziom, A.xp, A.xp_max, A.zloto, A.gemy, A.shardy } do
+		for _, n in { A.klasa, A.rasa, A.poziom, A.xp, A.xp_max, A.zloto, A.gemy, A.shardy } do
 			atrybuty[n] = g:GetAttribute(n)
 		end
 		p.atrybuty = atrybuty

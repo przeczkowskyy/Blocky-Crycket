@@ -234,6 +234,8 @@ def nowy_profil(D):
         # wersja 4 (18.11.2026, zapis postępu): wybrana klasa (atrybut Class) i zapisywane atrybuty innych pakietów
         # (przeloty i strażnicy biomów, strój z przymierzalni — przedrostki D["zapis"]["atrybuty_prefiksy"])
         "idKlasy": None,
+        # 27.11.2026 (Karol: „Tak, zapisuj rasę”): wybrana rasa (atrybut Race, D["rasy_gracza"]); brak = jak dotąd
+        "idRasy": None,
         "atrybuty": {},
     }
 
@@ -663,6 +665,8 @@ def czysty_profil(D, p):
         return None, "zla_klasa"
     if k.get("idKlasy") is not None and k.get("idKlasy") not in D["klasy_gracza"]:
         return None, "zla_klasa"
+    if k.get("idRasy") is not None and k.get("idRasy") not in D["rasy_gracza"]:  # 27.11.2026: rasa w zapisie
+        return None, "zla_rasa"
     if not _calkowita(k.get("poziom"), L["poziom_maks"]) or k["poziom"] < 1:
         return None, "zly_poziom"
     if not _liczba(k.get("xp")) or k["xp"] < 0:

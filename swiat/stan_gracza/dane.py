@@ -38,6 +38,11 @@ STATYSTYKI_LUAU = os.path.join(REPO, "src", "server", "Walka", "Statystyki.luau"
 # atrybut gracza Class (src/server/ClassSelect.server.luau, ClassData.id) → klasa silnika walki
 KLASY_GRACZA = {"Warrior": "wojownik", "Scout": "zwiadowca", "Mage": "mag"}
 
+# atrybut gracza Race (src/server/ClassSelect.server.luau, RaceData.id; D-079) — agent Karola, 27.11.2026 (Karol: „Tak, zapisuj
+# rasę”): rasy, które zapis przywraca. Czytane z src/shared/RaceData.luau (tylko odczyt), razem z rasą premium
+# (dziś zablokowana na serwerze — do zapisu trafia tylko to, co serwer wyboru przyjął).
+RACE_DATA_LUAU = os.path.join(REPO, "src", "shared", "RaceData.luau")
+
 # JEDNO MIEJSCE: które pakiety mogą rozmawiać ze stanem gracza (nazwy kontenerów w Workspace). Jak dodać pakiet:
 # dopisz nazwę jego kontenera tutaj, uruchom `python -B swiat/stan_gracza/dane.py` i testy, przebuduj StanGracza
 # (`zbuduj.py --skrypty` wystarcza — DaneStanu to moduł). Nazwy niezbudowanych jeszcze kontenerów nic nie psują.
@@ -143,6 +148,15 @@ def atrybuty_gracza_silnika():
     return {s: w[s] for s in wzorcowe.STATYSTYKI}
 
 
+def rasy_gracza():
+    """Identyfikatory ras z src/shared/RaceData.luau (Paweł, D-079) → lista w kolejności pliku."""
+    with open(RACE_DATA_LUAU, encoding="utf-8") as f:
+        ids = re.findall(r'\{ id = "(\w+)", name = ', f.read())
+    if len(ids) < 2 or len(set(ids)) != len(ids):
+        raise BladDanych("nie odczytałem ras z %s: %s" % (RACE_DATA_LUAU, ids))
+    return ids
+
+
 def progi_slotow():
     """wzorcowe.sloty(poziom) → lista progów { od, n } od najwyższego (sprawdzane do 200. poziomu)."""
     progi, poprzedni = [], None
@@ -172,7 +186,9 @@ def podstawa():
         "prefiks": "[StanGracza] ",
         # 2 (17.11.2026): pety i licznik wydatków w profilu (swiat/pety_proba); 3 (18.11.2026): dane pakietów
         # (Sygnaly/DanePakietu — pole pakiety; profil 2 dostaje puste pakiety)
-        # 4 (18.11.2026, zapis postępu): idKlasy i atrybuty innych pakietów (przeloty, strażnicy biomów, strój)
+        # 4 (18.11.2026, zapis postępu): idKlasy i atrybuty innych pakietów (przeloty, strażnicy biomów, strój);
+        # 27.11.2026: pole idRasy (atrybut Race) bez zmiany wersji — pole nieobowiązkowe: profil bez niego = gracz bez rasy
+        # (ekran wyboru jak dotąd), a starszy kod przy zapisie je pomija (nie odrzuca profilu)
         "wersja_profilu": 4,
         "krzywa": {"a": tempo.DOMYSLNE_A, "b": 1.6},
         "pula": {"baza": wzorcowe.PUNKTY_START, "na_poziom": wzorcowe.PUNKTY_NA_POZIOM},
@@ -183,6 +199,8 @@ def podstawa():
         "klasy": list(wzorcowe.KLASY),
         "klasa_domyslna": wzorcowe.KLASY[0],
         "klasy_gracza": dict(KLASY_GRACZA),
+        # 27.11.2026 (Karol: „Tak, zapisuj rasę”): rasy, które przywraca zapis (pole profilu idRasy → atrybut Race)
+        "rasy_gracza": rasy_gracza(),
         "nazwy_klas": {k: wzorcowe.postac(k, 1)["nazwa"] for k in wzorcowe.KLASY},
         "rozklady": {k: dict(wzorcowe.ROZKLADY[k]) for k in wzorcowe.KLASY},
         "umiejetnosci": {k: list(wzorcowe.UMIEJETNOSCI[k]) for k in wzorcowe.KLASY},
@@ -190,8 +208,8 @@ def podstawa():
         "atrybuty_statystyk": atrybuty_gracza_silnika(),
         # atrybuty gracza: pięć pierwszych ustawia dziś src/server/PlayerStatsDefaults (Paweł), Class — ClassSelect;
         # ShardyEwolucji i TokenyKrainy_<kraina> są tego pakietu (HUD ich jeszcze nie pokazuje)
-        "atrybuty": {"klasa": "Class", "poziom": "Level", "xp": "XP", "xp_max": "XPMax", "zloto": "Gold", "gemy": "Gems",
-                     "shardy": "ShardyEwolucji", "tokeny_prefiks": "TokenyKrainy_"},
+        "atrybuty": {"klasa": "Class", "rasa": "Race", "poziom": "Level", "xp": "XP", "xp_max": "XPMax", "zloto": "Gold",
+                     "gemy": "Gems", "shardy": "ShardyEwolucji", "tokeny_prefiks": "TokenyKrainy_"},
         "pola_lupu": ["zloto", "doswiadczenie", "tokeny_krainy", "gemy", "shard_ewolucji"],
         "limity": {
             "poziom_maks": 999,             # silnik przyjmuje do 1000
@@ -263,8 +281,8 @@ def podstawa():
                   "proba": {"atrybut_do": "ZapisProbaDo", "atrybut_magazynu": "ZapisProbaMagazyn",
                             "atrybut_bledow": "ZapisProbaBledy", "przyrostek": "_Proba", "czas_s": 900},
                   "przyrostek_studio": "_Studio", "klucz": "player_",
-                  "pola": ["wersja", "klasa", "idKlasy", "poziom", "xp", "zloto", "gemy", "tokeny", "shardy", "wytrenowane",
-                           "walki", "awanse", "pety", "wydatki", "pakiety", "punkty", "straznicy", "atrybuty"],
+                  "pola": ["wersja", "klasa", "idKlasy", "idRasy", "poziom", "xp", "zloto", "gemy", "tokeny", "shardy",
+                           "wytrenowane", "walki", "awanse", "pety", "wydatki", "pakiety", "punkty", "straznicy", "atrybuty"],
                   "atrybuty_prefiksy": ["WidzialPrzelot", "PokonalStraznika", "StrojProba_"],
                   "limity": {"wartosci_maks": 70000, "glebokosc_maks": 10, "napis_maks": 200, "bajty_maks": 3000000},
                   "proby": 4, "odstep_s": 1, "proby_blokady": 6, "czekaj_blokada_s": 5, "blokada_s": 600,
@@ -430,13 +448,15 @@ def przypadki(D):
     P["migruj"] = []
     for dane_ in (None, "x", 7, stary1, stary2, stary3, dict(stary3, wersja=99), dict(stary3, wersja="3"),
                   dict(stary3, wersja=4, punkty={"pula": 3, "rozdane": {s: 1 for s in D["statystyki"]}, "poziom": 7},
-                       straznicy={"straznik_lasu": True}, idKlasy="Mage", atrybuty={"PokonalStraznikaLasu": True})):
+                       straznicy={"straznik_lasu": True}, idKlasy="Mage", atrybuty={"PokonalStraznikaLasu": True}),
+                  dict(stary3, wersja=4, idKlasy="Scout", idRasy="Elf")):  # 27.11: rasa w zapisie
         w, powod = LS.migruj_profil(D, dane_)
         P["migruj"].append({"dane": nil(dane_), "wynik": nil(w), "powod": powod})
     dobry = LS.migruj_profil(D, stary3)[0]
     P["czysty_profil"] = []
     for prof in (dobry, dict(dobry, poziom=0), dict(dobry, poziom=2.5), dict(dobry, zloto=-1), dict(dobry, klasa="lucznik"),
                  dict(dobry, idKlasy="Rogue"), dict(dobry, xp="5"), dict(dobry, tokeny={"las": 1.5}),
+                 dict(dobry, idRasy="Elf"), dict(dobry, idRasy="Robot"), dict(dobry, idRasy=5),  # 27.11: rasa
                  dict(dobry, atrybuty={"Haker": True}), dict(dobry, atrybuty={"StrojProba_mag": "a,b"}),
                  dict(dobry, straznicy={"straznik_lasu": 1}), dict(dobry, wersja=3),
                  dict(dobry, punkty={"pula": -1, "rozdane": {}, "poziom": 1}), dict(dobry, wytrenowane={"sila": 1}),
@@ -444,7 +464,8 @@ def przypadki(D):
         w, powod = LS.czysty_profil(D, prof)
         P["czysty_profil"].append({"p": prof, "wynik": nil(w), "powod": powod})
     P["do_zapisu"] = [{"p": prof, "wynik": LS.profil_do_zapisu(D, prof)}
-                      for prof in (dict(dobry, oczekujace=[1], baza={"klasa": "mag"}), LS.nowy_profil(D))]
+                      for prof in (dict(dobry, oczekujace=[1], baza={"klasa": "mag"}), LS.nowy_profil(D),
+                                   dict(dobry, idKlasy="Mage", idRasy="DarkElf"))]  # 27.11: rasa idzie do zapisu
     # Gemy za strażnika (18.11.2026, D-099)
     P["straznik"] = [{"gatunek": nil(g), "wynik": LS.czy_straznik(D, g)}
                      for g in ("straznik_lasu", "straznik_topieli", "lesny_slime", "straznik", "", None, 7, "xstraznik_lasu")]
