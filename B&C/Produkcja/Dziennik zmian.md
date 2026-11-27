@@ -6,6 +6,10 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-27 (noc) · Claude Code u Karola (rasa w zapisie gracza)
+- **Karol:** „Tak, zapisuj rasę” (po diagnozie: koty Pawła nie pojawiały się, bo rasę trzeba było wybierać przy każdym wejściu). Pakiet `swiat/stan_gracza`: profil ma pole `idRasy` (rasy z `src/shared/RaceData.luau`, inna odrzucana), serwer przy wczytaniu ustawia `Race`, potem `Class`; stary profil bez rasy — jak dotąd. Próby AFK wybierają też rasę. Testy 61 + 15 OK; Play: wybór → wyjście → ponowne wejście = kot od razu, bez ekranu (magazyn próby, prawdziwy zapis nietknięty). Agent ok. 0,1 mln tokenów.
+- **Dla Pawła:** jego ekran wyboru może czekać na wczytanie profilu ([[Zadania]]).
+
 ## 2026-11-27 (noc) · Claude Code u Karola (bronie Maga i Zwiadowcy gotowe)
 - **D-167, dalej:** 10 ikon (Mag A, Zwiadowca B) wgranych przez Studio za zgodą Karola („Tak, wgraj”) — `swiat/postacie/ikony_broni.py`, rejestr `ikony_broni.json`, moduł `roblox/IkonyBroni.luau` (jeszcze niepodpięty). 10 modeli 3D w Blenderze według ikon (`swiat/postacie/bronie_klas.py`, 284–860 trójkątów, kontrola eksportu 50/50; różdżki skrócone, bo w klipie kula_ognia wchodziły w ziemię; łuk z wieszaka węższy, bo zahaczał o głowę) i wgranych do Roblox (`bronie_klas_roblox.py`, `bronie_klas_zasoby.json`) — wszystko Approved, gra ma prawo „Use”.
 - **Studio:** `ReplicatedStorage/BronieKlas` — 10 akcesoriów z zaczepem dłoni (zapis 558, nieopublikowane); w świecie ani w walce jeszcze ich nie ma.
