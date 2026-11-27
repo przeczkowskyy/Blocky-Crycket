@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T20:53:40+01:00",
+ "aktualizacja": "2026-11-27T20:55:24+01:00",
  "prace": [
   {
    "id": "bronie-mag-zwiad",
@@ -16,19 +16,6 @@
     "swiat/postacie/ikony_broni*",
     "swiat/postacie/bronie_klas",
     "studio:BronieKlas"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "przebudowa-bronie_klas",
-   "tytul": "Przebudowa modelu bronie_klas",
-   "stan": "w_toku",
-   "start": "2026-11-27T20:53:40+01:00",
-   "koniec_szacowany": "2026-11-27T21:13:40+01:00",
-   "aktualizacja": "2026-11-27T20:53:40+01:00",
-   "obszary": [
-    "model:bronie_klas"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
