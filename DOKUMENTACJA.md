@@ -263,7 +263,7 @@ Blocky&Crycket/
 │   ├── bohater_swiat/           💡 Bohater klasy jako postać gracza w świecie (pytanie 63): model bohatera w stroju zamiast awatara, bieg, skok (Workspace/BohaterSwiat)
 │   ├── stroje_proba/            💡 ubieranie postaci (D-071): strój w walce (Workspace/StrojeProba; przymierzalnia usunięta 26.11 razem ze starą wioską)
 │   ├── wskazowki_gry/           💡 linijka celu i znacznik w świecie dla nowego gracza (Workspace/WskazowkiGry)
-│   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi
+│   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi; symulator przejścia (odświeżony 27.11.2026) i balans D-165 w `BALANS_2711.md`
 │   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra); od 26.11.2026 tu stoi punkt startu gry (D-159); od 27.11.2026 większy Training Center ze sklepem treningu u trenera (D-163, D-164)
 │   ├── teleport_chmury/       💡 przejście przez chmury zamiast okna mapy (Workspace/TeleportChmury)
 │   ├── bonk/                  💡 BONK (D-112): osobna, samowystarczalna prosta gra z naszych zasobów — bijesz potwory, odlatują; pałki, jajka i pety, Strażnicy, trzy krainy; do 26.11.2026 wejście bramą przy starcie obecnej gry (Workspace/BonkGra; usunięte z miejsca B&C, D-159), grafiki do sklepu w `grafika/`, kroki publikacji w README
