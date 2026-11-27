@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T22:09:16+01:00",
+ "aktualizacja": "2026-11-27T22:19:51+01:00",
  "prace": [
   {
    "id": "smok-mapa2-gra",
@@ -23,10 +23,10 @@
    "id": "ui-broni",
    "tytul": "UI broni: nowe bronie w ekwipunku i sklepie",
    "stan": "w_toku",
-   "etap": "Wdrozenie danych broni do Studio (kowal, przymierzalnia, Items)",
+   "etap": "Proba w Play: Mag i Zwiadowca kupuja bronie",
    "start": "2026-11-27T21:40:06+01:00",
    "koniec_szacowany": "2026-11-27T23:50:06+01:00",
-   "aktualizacja": "2026-11-27T22:09:16+01:00",
+   "aktualizacja": "2026-11-27T22:14:20+01:00",
    "obszary": [
     "src/client/EquipmentPanelClient.client.luau",
     "src/client/ShopClient.client.luau",
