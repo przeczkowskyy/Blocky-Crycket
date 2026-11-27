@@ -2,21 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T17:35:11+01:00",
+ "aktualizacja": "2026-11-27T17:39:48+01:00",
  "prace": [
-  {
-   "id": "balans-2711",
-   "tytul": "Balans: symulator przejścia i propozycja liczb",
-   "stan": "w_toku",
-   "start": "2026-11-27T17:00:47+01:00",
-   "koniec_szacowany": "2026-11-27T18:40:00+01:00",
-   "aktualizacja": "2026-11-27T17:00:47+01:00",
-   "obszary": [
-    "swiat/przejscie_gry/*"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "potwory-nazwy-portrety",
    "tytul": "Potwory: nazwa i oznaczenie nad potworem, portrety w walce",
