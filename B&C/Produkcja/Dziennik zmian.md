@@ -6,6 +6,15 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-27 · Claude Code u Karola (potwory: nazwy i portrety; balans D-165)
+- **Polecenie Karola:** „Bardzo teraz nam zależy na poprawie UI… UI broni, różdżek, łuków oraz ich 3D modele w grze. UI również potworków, parę modeli potworków i optymalizacja ich statystyk i wszystkiego”. Przegląd stanu (agent tylko do odczytu, 0,42 mln tokenów); Karol w oknie pytania wybrał na teraz: nazwy i portrety potworów, „ładniejsze obecne” modele potworów (zadanie, start po jego znaku), wgranie 15 ikon („Tak, wgraj”), balans.
+- **Potwory w grze** (`swiat/las_potwory/zrodla/KlientPotworow.client.luau`, `swiat/test_walki2/`): nad potworem nazwa, „LV N” i znaczek RARE/BOSS we wszystkich biomach; w walce portret z ikony z Blendera (rejestr `swiat/test_walki2/ikony_potworow.json`, 15 obrazów Approved, wgrane przez Studio). Próby: tabliczki 17/17, las, Bagno, Dżungla bez błędów, walka 43/45 (dwa znane punkty panelu próby). Agent ok. 0,32 mln tokenów.
+- **Balans D-165** (decyzja Karola, czeka na Pawła; zmienia D-140): symulator przejścia odświeżony do obecnej gry (`swiat/przejscie_gry/symulacja_przejscia.py`, raport `BALANS_2711.md`); wdrożone: 10 punktów za poziom samo (`swiat/stan_gracza`), limit treningu AFK (pliki Pawła `TreningAFKDane`, `TreningAFK`, `TreningAFKClient` — na polecenie Karola; przed podmianą wersje w Studio równe repo), XP Dżungli ×1,25. Próby w grze bez błędów. Agent ok. 0,6 mln tokenów (analiza i wdrożenie).
+- **Komputer** zrestartował się o 17:20 (zwykłe zamknięcie systemu); panel i tunel uruchomione ponownie, nowy link dla Pawła przekazany Karolowi plikiem; prace agentów wznowione od miejsca przerwania.
+- **Do decyzji:** pytania 119 (drzewko w walce, ceny ulepszeń, zagroda) i 120 (język napisów) w [[Pytania otwarte]]; pytania 117 i 70 rozstrzygnięte przez D-165.
+- **Nie sprawdzono:** telefonu, dwóch graczy, portretów 12 gatunków w samej walce.
+- Notatki: [[Rejestr decyzji]] (D-165, dopisek pod D-140), [[Pytania otwarte]], [[Zadania]]; `DOKUMENTACJA.md`.
+
 ## 2026-11-27 · Claude Code u Karola (większy Training Center, sklep u trenera, wyjaśnione próby)
 - **Po restarcie komputera:** panel i tunel uruchomione, nowy link dla Pawła przekazany Karolowi plikiem.
 - **Wyjaśnione niezaliczenia z 26.11** (agent na Opus, ok. 0,31 mln tokenów): las PD3 — próba mierzyła widoki potworów wokół kamery zostawionej przez haczyk testowy walki (przed D-159 kamerę przywracał krok w starym lesie); z kamerą gracza 8 widoków, gra w porządku; poprawiona próba `swiat/las_pas_gra/testy/pomoc_d107.py`. Zasięg E: kot rasy Pawła to tylko widoczna kopia bez kolizji; Pancerz — postać po ławce leży ok. 1 s i ślizgała się przy przeniesieniu w próbie; Zręczność — rama bieżni wystawała w przejście. Brama Leśna B08 przeszła.
