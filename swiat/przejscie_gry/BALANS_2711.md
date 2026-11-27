@@ -12,6 +12,45 @@
 
 Szczegóły: niżej — co liczy symulator, cele ze źródłami, krzywa dziś, propozycja w liczbach z diffami, otwarte punkty i pełne tabele.
 
+## Wdrożone 27.11 (decyzja Karola, czeka na Pawła)
+
+Karol 27.11 (okno wyboru): „A + B (zalecane)” i „Tak, +25%” (pytanie 70). Zmienia D-140; Paweł potwierdzi albo się sprzeciwi. Każda dźwignia to jedna nazwana liczba — powrót w jednym miejscu:
+
+| Dźwignia | Plik | Liczba (było → jest) | Powrót |
+|---|---|---|---|
+| A | `swiat/stan_gracza/dane.py` | `PUNKTY_SAMO_NA_POZIOM` 5 → 10, `PUNKTY_DO_ROZDANIA` 5 → 0 | 5 i 5 |
+| B | `src/shared/TreningAFKDane.luau` | `D.limitNaPoziom` — → 2, `D.ponadLimitem` — → 0.1 (napis `D.tekstLimitu`) | `limitNaPoziom = 0` |
+| XP Dżungli | `swiat/dzungla_pas_gra/przeciwnicy.py` | `MNOZNIK_DOSWIADCZENIA` — → 1.25 | 1.0 |
+
+Do tego: stan gracza wystawia wytrenowane punkty każdej statystyki jako atrybuty gracza `Wytrenowane<Atrybut>` (np. `WytrenowaneStrength`; z profilu „wytrenowane”, który był już w zapisie — stare zapisy bez zmian); serwer treningu liczy od nich limit i dolicza po każdym pasku; panel treningu ponad limitem pokazuje „LIMIT: LEVEL UP TO TRAIN FASTER” zamiast podpowiedzi o skill checkach.
+
+**Symulacja na prawdziwych danych po zmianie** (nie na nakładce propozycji; 40 graczy na klasę) — zgodna z propozycją „A + B + XP Dżungli ×1,25” liczba w liczbę:
+
+| Sposób gry | Przed 27.11 | Po wdrożeniu | Strażnik za 1. razem po | Utknęło po |
+|---|---:|---:|---|---|
+| Tylko walki | 130 min | **63 min** | 33 / 25 / 29% | 2 / 9 / 8% |
+| Walki + 10 min AFK/h | 85 (17 AFK) | **73 (17 AFK)** | 47 / 50 / 68% | 1 / 2 / 1% |
+| Typowy (AFK + kowal + pety + trener) | 89 | **80** | **60 / 63 / 83%** | 0% |
+| Gracz AFK 20 min/h | 109 (43 AFK) | 101 (40 AFK) | 72 / 73 / 87% | 0% |
+| AFK i przeskakiwanie | 47 | 47 (ale ok. 44 przegranych; Węża bije na 19. poziomie, było 17–18.) | 0 / 1 / 9% | 89 / 68 / 45% |
+
+Minuta AFK oszczędza teraz **0,41 min walki** (było 3,6). Typowy gracz: 80 min, a nie 84, bo doliczone jest doświadczenie Dżungli ×1,25 (bez niego 84). Seria jednego potwora 23 → 19–20. Sam bohater na poziomie Strażnika: 17–42% (było 0–3%).
+
+Uwaga: przeskakujący gracz nadal kończy w 47 min — ale nie dzięki treningowi (punkty z AFK 334 → 65), tylko przez pomijanie walk i dziesiątki przegranych ze Strażnikami; to sprawa stylu, nie limitu.
+
+**Wdrożone w Studio 27.11 ok. 18:15–18:40 i sprawdzone w trybie Play** (miejsce niezapisane — zapisuje koordynator):
+- stan gracza: S14 — awans 3 → 4 daje dokładnie +10 do sumy statystyk samo, licznik „Punkty do rozdania” schowany, atrybuty `Wytrenowane*` są (zrzut `swiat/stan_gracza/klatki/15_awans_10_punktow.jpg`); cała próba bez błędów, próba zapisu Z00–Z08 OK;
+- trening AFK: L01 — przy limicie 4 punktów cztery paski co 4,81 s, potem `TreningAFKLimit` i czerwony napis „LIMIT: LEVEL UP TO TRAIN FASTER”; L02 — następny pasek **47,97 s** (10 × 4,8 s); 28 z 28 punktów próby OK;
+- Dżungla: J08b — wygrana z Zwijogonem 19. poziomu dała **142 XP** (z mnożnikiem 137–168, bez niego najwyżej 134); próba Dżungli bez błędów;
+- próba dymna całej gry D00–D14 OK (90 s).
+
+Co gracz zobaczy inaczej (sprawdzone w kodzie):
+- licznik „Punkty do rozdania” na dole ekranu znika (0); stare zapisy: niewydana pula (5 za każdy dawny poziom) znika przy pierwszym przeliczeniu, a jej wartość daje teraz pula rozdzielana samo (+5 na poziom więcej);
+- komunikat „Brak punktów — zdobądź poziom” pokazuje się tylko przy zmianie statystyki spoza serwera (przycisków „+” nie ma od 24.11) — tekst jest już nieprawdziwy, ale gracz do niego nie dojdzie;
+- Diamenty za poziom (10) i za Strażnika (100) zostają; drzewko dalej nie wpływa na walkę (D-140 w części o Diamentach nie jest wdrożona w walce);
+- limit liczy się na początku treningu i po każdym pasku — awans w trakcie stania na macie zmienia tempo dopiero od następnego paska (awansu w trakcie treningu w grze nie ma, poza paskiem poleceń);
+- ponad limitem podpowiedź panelu zmienia się na czerwone „LIMIT: LEVEL UP TO TRAIN FASTER”, a pasek trwa ok. 48 s.
+
 ## 1. Co symulator liczy od 27.11 (`symulacja_przejscia.py`)
 
 Nowe w symulatorze (wszystko z plików gry przy każdym uruchomieniu):
@@ -121,7 +160,7 @@ Pliki: `symulacja_przejscia.py`, `test_symulacji.py`, wynik `balans_2711.json`, 
 
 ## 6. Tabele (generowane: `python -B swiat/przejscie_gry/symulacja_przejscia.py --przebiegow 40 --warianty po_zmianie --tryby walki,walki_afk,wszystko,ze_sklepem,afk_duzo,afk_przeskok,niecierpliwy --json swiat/przejscie_gry/balans_2711.json --md swiat/przejscie_gry/BALANS_2711.md`)
 
-Druga tabela Strażników jest liczona na propozycji „A + B + C”; C nie zmienia tej tabeli (minuty AFK liczone bez ulepszeń stanowisk), więc to są liczby dla A + B. „Najdłużej bez awansu” liczy się razem z czasem na stanowiskach.
+Od przeliczenia po wdrożeniu (27.11 wieczorem) tabele niżej opisują grę PO zmianach A + B + XP Dżungli (pliki gry); stan sprzed 27.11 jest w porównaniach („Przed 27.11”) i w drugiej tabeli Strażników. Liczby z sekcji 3 i 4 to stan sprzed wdrożenia. „Najdłużej bez awansu” liczy się razem z czasem na stanowiskach.
 
 <!-- TABELE:START -->
 
@@ -129,27 +168,27 @@ Druga tabela Strażników jest liczona na propozycji „A + B + C”; C nie zmie
 
 | Sposób gry | Klasa | 1. wygrana | Strażnik: Las | Strażnik: Bagno | Strażnik: Dżungla | Koniec: 10%–90% graczy | W tym AFK | Skończyło |
 |---|---|---:|---:|---:|---:|---|---:|---:|
-| Tylko walki | Wojownik | 0,8 | 36 | 87 | 145 | 123–167 | 0,0 | 100% |
-| Tylko walki | Zwiadowca | 0,8 | 34 | 76 | 126 | 112–145 | 0,0 | 100% |
-| Tylko walki | Mag | 0,7 | 30 | 71 | 118 | 99–145 | 0,0 | 100% |
-| Walki + trening AFK (10 min na godzinę) | Wojownik | 0,8 | 25 | 56 | 91 | 88–102 | 17 | 100% |
-| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 0,7 | 26 | 50 | 83 | 80–88 | 17 | 100% |
-| Walki + trening AFK (10 min na godzinę) | Mag | 0,7 | 26 | 50 | 80 | 77–84 | 17 | 100% |
-| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 0,7 | 26 | 59 | 95 | 91–103 | 18 | 100% |
-| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 0,8 | 25 | 53 | 88 | 85–92 | 18 | 100% |
-| Walki + AFK + sklep trenera + pety + kowal | Mag | 0,7 | 27 | 53 | 85 | 82–89 | 18 | 100% |
-| Wszystko + sklep z przedmiotami | Wojownik | 0,7 | 27 | 60 | 101 | 91–104 | 23 | 100% |
-| Wszystko + sklep z przedmiotami | Zwiadowca | 0,7 | 26 | 53 | 88 | 85–91 | 17 | 100% |
-| Wszystko + sklep z przedmiotami | Mag | 0,7 | 28 | 54 | 86 | 83–88 | 17 | 100% |
-| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 0,7 | 29 | 76 | 113 | 111–116 | 43 | 100% |
-| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 0,7 | 29 | 59 | 107 | 94–110 | 43 | 100% |
-| Gracz AFK (20 min na godzinę, wszystko) | Mag | 0,7 | 30 | 61 | 107 | 94–109 | 43 | 100% |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 0,6 | 17 | 43 | 49 | 46–51 | 22 | 100% |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 0,6 | 17 | 27 | 44 | 43–46 | 22 | 100% |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 0,6 | 20 | 43 | 48 | 46–51 | 22 | 100% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 0,6 | 20 | 49 | 84 | 69–96 | 0,0 | 100% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 0,5 | 20 | 43 | 77 | 65–89 | 0,0 | 100% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 0,6 | 19 | 45 | 74 | 62–85 | 0,0 | 100% |
+| Tylko walki | Wojownik | 0,8 | 18 | 40 | 67 | 63–72 | 0,0 | 100% |
+| Tylko walki | Zwiadowca | 0,8 | 18 | 40 | 65 | 60–71 | 0,0 | 100% |
+| Tylko walki | Mag | 0,7 | 16 | 38 | 59 | 54–65 | 0,0 | 100% |
+| Walki + trening AFK (10 min na godzinę) | Wojownik | 0,8 | 22 | 47 | 76 | 73–80 | 17 | 100% |
+| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 0,7 | 21 | 47 | 74 | 71–78 | 17 | 100% |
+| Walki + trening AFK (10 min na godzinę) | Mag | 0,7 | 21 | 45 | 70 | 63–74 | 17 | 100% |
+| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 0,7 | 24 | 53 | 82 | 79–85 | 18 | 100% |
+| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 0,8 | 23 | 51 | 81 | 77–85 | 18 | 100% |
+| Walki + AFK + sklep trenera + pety + kowal | Mag | 0,7 | 22 | 49 | 77 | 73–80 | 18 | 100% |
+| Wszystko + sklep z przedmiotami | Wojownik | 0,7 | 24 | 53 | 84 | 80–87 | 17 | 100% |
+| Wszystko + sklep z przedmiotami | Zwiadowca | 0,7 | 24 | 52 | 82 | 78–85 | 17 | 100% |
+| Wszystko + sklep z przedmiotami | Mag | 0,7 | 23 | 50 | 78 | 75–82 | 17 | 100% |
+| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 0,7 | 28 | 62 | 107 | 94–110 | 43 | 100% |
+| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 0,7 | 29 | 60 | 106 | 92–108 | 43 | 100% |
+| Gracz AFK (20 min na godzinę, wszystko) | Mag | 0,7 | 28 | 59 | 91 | 90–94 | 32 | 100% |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 0,6 | 18 | 30 | 48 | 45–51 | 22 | 100% |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 0,6 | 18 | 28 | 46 | 44–49 | 22 | 100% |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 0,6 | 19 | 28 | 46 | 44–51 | 22 | 100% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 0,6 | 10 | 24 | 40 | 37–44 | 0,0 | 100% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 0,5 | 9,9 | 24 | 40 | 37–44 | 0,0 | 100% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 0,6 | 9,7 | 23 | 38 | 34–42 | 0,0 | 100% |
 
 Czas gry liczony razem ze staniem na stanowiskach AFK (kolumna „W tym AFK”). Brama otwiera się od razu po wygranej ze Strażnikiem; dokładne czasy bram są w pliku JSON (pola `brama_…`).
 
@@ -157,79 +196,79 @@ Czas gry liczony razem ze staniem na stanowiskach AFK (kolumna „W tym AFK”).
 
 | Sposób gry | Klasa | Las | Bagno | Dżungla |
 |---|---|---:|---:|---:|
-| Tylko walki | Wojownik | 36 (36) | 52 (52) | 53 (53) |
-| Tylko walki | Zwiadowca | 34 (34) | 41 (41) | 51 (51) |
-| Tylko walki | Mag | 30 (30) | 37 (37) | 50 (50) |
-| Walki + trening AFK (10 min na godzinę) | Wojownik | 25 (19) | 32 (26) | 34 (28) |
-| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 25 (20) | 25 (19) | 33 (27) |
-| Walki + trening AFK (10 min na godzinę) | Mag | 26 (20) | 25 (19) | 30 (24) |
-| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 26 (20) | 32 (27) | 38 (30) |
-| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 25 (19) | 27 (21) | 35 (29) |
-| Walki + AFK + sklep trenera + pety + kowal | Mag | 26 (21) | 27 (22) | 32 (27) |
-| Wszystko + sklep z przedmiotami | Wojownik | 26 (21) | 33 (27) | 39 (29) |
-| Wszystko + sklep z przedmiotami | Zwiadowca | 26 (20) | 27 (21) | 34 (29) |
-| Wszystko + sklep z przedmiotami | Mag | 28 (22) | 27 (21) | 31 (26) |
-| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 29 (18) | 47 (26) | 37 (26) |
-| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 29 (18) | 30 (19) | 48 (26) |
-| Gracz AFK (20 min na godzinę, wszystko) | Mag | 29 (19) | 31 (20) | 45 (24) |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 17 (6,0) | 24 (14) | 9,0 (6,7) |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 16 (5,7) | 10 (10) | 16 (5,4) |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 19 (8,5) | 24 (13) | 4,6 (4,5) |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 20 (20) | 28 (28) | 35 (35) |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 19 (19) | 24 (24) | 31 (31) |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 18 (18) | 25 (25) | 32 (32) |
+| Tylko walki | Wojownik | 18 (18) | 22 (22) | 26 (26) |
+| Tylko walki | Zwiadowca | 18 (18) | 21 (21) | 26 (26) |
+| Tylko walki | Mag | 16 (16) | 21 (21) | 21 (21) |
+| Walki + trening AFK (10 min na godzinę) | Wojownik | 22 (16) | 26 (20) | 28 (22) |
+| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 21 (15) | 26 (20) | 27 (22) |
+| Walki + trening AFK (10 min na godzinę) | Mag | 21 (15) | 24 (18) | 25 (20) |
+| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 24 (18) | 29 (23) | 30 (24) |
+| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 23 (17) | 27 (21) | 29 (23) |
+| Walki + AFK + sklep trenera + pety + kowal | Mag | 22 (16) | 27 (22) | 27 (21) |
+| Wszystko + sklep z przedmiotami | Wojownik | 24 (18) | 28 (23) | 30 (24) |
+| Wszystko + sklep z przedmiotami | Zwiadowca | 24 (18) | 27 (21) | 29 (24) |
+| Wszystko + sklep z przedmiotami | Mag | 23 (17) | 27 (21) | 28 (22) |
+| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 28 (17) | 33 (22) | 45 (24) |
+| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 29 (18) | 31 (20) | 39 (23) |
+| Gracz AFK (20 min na godzinę, wszystko) | Mag | 28 (17) | 31 (20) | 32 (21) |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 18 (7,3) | 11 (11) | 17 (7,5) |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 18 (7,2) | 9,4 (9,4) | 18 (7,4) |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 19 (7,8) | 10 (10) | 17 (5,9) |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 10 (10) | 14 (14) | 16 (16) |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 9,7 (9,7) | 13 (13) | 17 (17) |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 9,5 (9,5) | 13 (13) | 15 (15) |
 
 ### Poziom, walki i Rybki — świat „po zmianie D-107 (pliki gry)” (mediana)
 
 | Sposób gry | Klasa | Poziom przy bramach | Walk | Przegranych | Rybki zarobione (w tym zagroda) | Wydane: przedmioty / kowal / jajka / trener / zagroda | Stracone po przegranych | Punkty z treningu AFK | Diamenty |
 |---|---|---|---:|---:|---:|---|---:|---:|---:|
-| Tylko walki | Wojownik | 14 / 21 / 28 | 314 | 175 | 21074 (0) | 0 / 0 / 0 / 0 / 0 | 17797 | 0 | 572 |
-| Tylko walki | Zwiadowca | 14 / 20 / 27 | 284 | 158 | 19510 (0) | 0 / 0 / 0 / 0 / 0 | 16573 | 0 | 562 |
-| Tylko walki | Mag | 14 / 20 / 27 | 286 | 156 | 19801 (0) | 0 / 0 / 0 / 0 / 0 | 17051 | 0 | 562 |
-| Walki + trening AFK (10 min na godzinę) | Wojownik | 12 / 17 / 23 | 157 | 27 | 22668 (0) | 0 / 0 / 0 / 0 / 0 | 4060 | 186 | 524 |
-| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 12 / 17 / 24 | 156 | 26 | 22953 (0) | 0 / 0 / 0 / 0 / 0 | 4069 | 186 | 528 |
-| Walki + trening AFK (10 min na godzinę) | Mag | 12 / 17 / 23 | 164 | 34 | 22660 (0) | 0 / 0 / 0 / 0 / 0 | 4244 | 186 | 524 |
-| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 12 / 17 / 23 | 146 | 15 | 23648 (490) | 0 / 6950 / 7200 / 600 / 0 | 716 | 198 | 522 |
-| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 11 / 17 / 23 | 143 | 11 | 23978 (489) | 0 / 6900 / 7200 / 300 / 0 | 872 | 192 | 523 |
-| Walki + AFK + sklep trenera + pety + kowal | Mag | 11 / 17 / 23 | 152 | 20 | 23667 (472) | 0 / 7460 / 7200 / 300 / 0 | 814 | 192 | 524 |
-| Wszystko + sklep z przedmiotami | Wojownik | 11 / 17 / 23 | 142 | 10 | 23975 (509) | 6100 / 6100 / 7200 / 300 / 0 | 264 | 255 | 522 |
-| Wszystko + sklep z przedmiotami | Zwiadowca | 11 / 17 / 23 | 143 | 9 | 24063 (452) | 6300 / 5050 / 7200 / 0 / 0 | 363 | 186 | 523 |
-| Wszystko + sklep z przedmiotami | Mag | 12 / 17 / 23 | 146 | 18 | 23343 (389) | 6350 / 4692 / 7200 / 0 / 0 | 336 | 186 | 522 |
-| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 11 / 17 / 23 | 136 | 1 | 24512 (561) | 6200 / 5950 / 7200 / 300 / 0 | 10 | 512 | 522 |
-| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 11 / 17 / 23 | 136 | 1 | 24414 (648) | 6300 / 4900 / 7200 / 1000 / 1000 | 6 | 525 | 522 |
-| Gracz AFK (20 min na godzinę, wszystko) | Mag | 11 / 17 / 23 | 142 | 9 | 24135 (536) | 8300 / 4825 / 7200 / 300 / 0 | 136 | 512 | 522 |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 9 / 16 / 18 | 58 | 36 | 6620 (0) | 0 / 0 / 0 / 1000 / 0 | 2161 | 337 | 471 |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 9 / 15 / 17 | 48 | 27 | 6479 (0) | 0 / 0 / 0 / 1000 / 0 | 2051 | 337 | 461 |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 10 / 16 / 18 | 72 | 46 | 7545 (0) | 0 / 0 / 0 / 650 / 0 | 2317 | 329 | 472 |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 14 / 21 / 28 | 289 | 200 | 15364 (0) | 0 / 0 / 0 / 0 / 0 | 13404 | 0 | 572 |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 13 / 20 / 27 | 278 | 182 | 15576 (0) | 0 / 0 / 0 / 0 / 0 | 14134 | 0 | 560 |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 14 / 20 / 27 | 254 | 170 | 14944 (0) | 0 / 0 / 0 / 0 / 0 | 12584 | 0 | 562 |
+| Tylko walki | Wojownik | 11 / 17 / 24 | 163 | 42 | 20852 (0) | 0 / 0 / 0 / 0 / 0 | 6108 | 0 | 532 |
+| Tylko walki | Zwiadowca | 12 / 17 / 24 | 163 | 44 | 20548 (0) | 0 / 0 / 0 / 0 / 0 | 6402 | 0 | 532 |
+| Tylko walki | Mag | 11 / 18 / 24 | 157 | 39 | 20791 (0) | 0 / 0 / 0 / 0 / 0 | 5519 | 0 | 532 |
+| Walki + trening AFK (10 min na godzinę) | Wojownik | 11 / 17 / 24 | 143 | 23 | 20690 (0) | 0 / 0 / 0 / 0 / 0 | 3291 | 84 | 532 |
+| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 11 / 17 / 24 | 147 | 26 | 20708 (0) | 0 / 0 / 0 / 0 / 0 | 3750 | 85 | 532 |
+| Walki + trening AFK (10 min na godzinę) | Mag | 11 / 17 / 24 | 144 | 24 | 20659 (0) | 0 / 0 / 0 / 0 / 0 | 3236 | 86 | 531 |
+| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 11 / 17 / 24 | 134 | 13 | 21319 (471) | 0 / 6300 / 7200 / 300 / 0 | 560 | 79 | 532 |
+| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 11 / 17 / 24 | 136 | 16 | 21528 (434) | 0 / 6050 / 7200 / 300 / 0 | 940 | 80 | 532 |
+| Walki + AFK + sklep trenera + pety + kowal | Mag | 11 / 17 / 24 | 132 | 14 | 21458 (450) | 0 / 6320 / 7200 / 1000 / 1000 | 564 | 82 | 532 |
+| Wszystko + sklep z przedmiotami | Wojownik | 11 / 17 / 24 | 133 | 11 | 21692 (382) | 4900 / 5700 / 7200 / 0 / 0 | 242 | 77 | 532 |
+| Wszystko + sklep z przedmiotami | Zwiadowca | 11 / 17 / 24 | 132 | 13 | 21570 (400) | 6000 / 5125 / 7200 / 0 / 0 | 358 | 78 | 532 |
+| Wszystko + sklep z przedmiotami | Mag | 11 / 17 / 24 | 132 | 13 | 21546 (390) | 5000 / 5440 / 7200 / 0 / 0 | 276 | 80 | 531 |
+| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 11 / 17 / 24 | 128 | 8 | 21756 (488) | 6250 / 5350 / 7200 / 300 / 0 | 184 | 130 | 531 |
+| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 11 / 17 / 24 | 129 | 8 | 21765 (495) | 6300 / 4900 / 7200 / 0 / 0 | 248 | 128 | 532 |
+| Gracz AFK (20 min na godzinę, wszystko) | Mag | 11 / 17 / 24 | 128 | 9 | 21528 (418) | 5150 / 4565 / 7200 / 0 / 0 | 188 | 94 | 531 |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 10 / 16 / 19 | 70 | 46 | 6738 (0) | 0 / 0 / 0 / 1000 / 0 | 2580 | 65 | 481 |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 10 / 15 / 19 | 66 | 41 | 7617 (0) | 0 / 0 / 0 / 1000 / 0 | 2750 | 65 | 481 |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 10 / 15 / 19 | 70 | 44 | 7264 (0) | 0 / 0 / 0 / 1000 / 0 | 2635 | 65 | 481 |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 11 / 16 / 23 | 150 | 60 | 16846 (0) | 0 / 0 / 0 / 0 / 0 | 8059 | 0 | 521 |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 11 / 16 / 23 | 151 | 60 | 17143 (0) | 0 / 0 / 0 / 0 / 0 | 8228 | 0 | 522 |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 11 / 17 / 23 | 144 | 52 | 17210 (0) | 0 / 0 / 0 / 0 / 0 | 6841 | 0 | 522 |
 
 ### Rybki w kieszeni przy Strażnikach — świat „po zmianie D-107 (pliki gry)” (mediana: posiadane / zarobione do tej chwili; przedmiotów ze sklepu)
 
 | Sposób gry | Klasa | Strażnik: Las | Strażnik: Bagno | Strażnik: Dżungla |
 |---|---|---|---|---|
-| Tylko walki | Wojownik | 2706 / 4030; 0 szt. | 2884 / 11512; 0 szt. | 2484 / 21074; 0 szt. |
-| Tylko walki | Zwiadowca | 2698 / 4372; 0 szt. | 2846 / 10483; 0 szt. | 2786 / 19510; 0 szt. |
-| Tylko walki | Mag | 2864 / 4368; 0 szt. | 2538 / 10038; 0 szt. | 3101 / 19801; 0 szt. |
-| Walki + trening AFK (10 min na godzinę) | Wojownik | 3270 / 3644; 0 szt. | 7210 / 9119; 0 szt. | 18572 / 22668; 0 szt. |
-| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 3140 / 3494; 0 szt. | 8226 / 9416; 0 szt. | 19018 / 22953; 0 szt. |
-| Walki + trening AFK (10 min na godzinę) | Mag | 2687 / 3622; 0 szt. | 7632 / 9719; 0 szt. | 18316 / 22660; 0 szt. |
-| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 1712 / 3492; 0 szt. | 2782 / 9350; 0 szt. | 6762 / 23560; 0 szt. |
-| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 1511 / 3122; 0 szt. | 3441 / 9548; 0 szt. | 8087 / 23964; 0 szt. |
-| Walki + AFK + sklep trenera + pety + kowal | Mag | 1400 / 3151; 0 szt. | 3148 / 9625; 0 szt. | 8274 / 23660; 0 szt. |
-| Wszystko + sklep z przedmiotami | Wojownik | 1227 / 3298; 3 szt. | 1477 / 9571; 5 szt. | 3600 / 23886; 6 szt. |
-| Wszystko + sklep z przedmiotami | Zwiadowca | 1216 / 3119; 3 szt. | 1866 / 9734; 5 szt. | 4953 / 24052; 6 szt. |
-| Wszystko + sklep z przedmiotami | Mag | 1080 / 3389; 2 szt. | 2062 / 9464; 3 szt. | 4080 / 23336; 3 szt. |
-| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 1318 / 3038; 2 szt. | 1496 / 9938; 5 szt. | 4717 / 24504; 6 szt. |
-| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 1249 / 3032; 4 szt. | 2387 / 9906; 5 szt. | 3956 / 24405; 6 szt. |
-| Gracz AFK (20 min na godzinę, wszystko) | Mag | 1154 / 3112; 1 szt. | 1882 / 9589; 3 szt. | 3158 / 24060; 4 szt. |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 1316 / 1377; 0 szt. | 1878 / 3962; 0 szt. | 3512 / 6620; 0 szt. |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 1259 / 1326; 0 szt. | 2609 / 3838; 0 szt. | 3465 / 6479; 0 szt. |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 1194 / 1381; 0 szt. | 2414 / 4818; 0 szt. | 4293 / 7545; 0 szt. |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 2072 / 3188; 0 szt. | 1970 / 8493; 0 szt. | 1843 / 15364; 0 szt. |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 1646 / 2878; 0 szt. | 2160 / 8092; 0 szt. | 1959 / 15576; 0 szt. |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 2000 / 3473; 0 szt. | 1885 / 7650; 0 szt. | 2373 / 14944; 0 szt. |
+| Tylko walki | Wojownik | 3036 / 3510; 0 szt. | 6916 / 9257; 0 szt. | 14516 / 20852; 0 szt. |
+| Tylko walki | Zwiadowca | 2888 / 3316; 0 szt. | 6802 / 9342; 0 szt. | 14434 / 20548; 0 szt. |
+| Tylko walki | Mag | 2834 / 3262; 0 szt. | 7758 / 9925; 0 szt. | 15153 / 20791; 0 szt. |
+| Walki + trening AFK (10 min na godzinę) | Wojownik | 2997 / 3287; 0 szt. | 7846 / 9271; 0 szt. | 17410 / 20690; 0 szt. |
+| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 2916 / 3066; 0 szt. | 7616 / 9408; 0 szt. | 16852 / 20708; 0 szt. |
+| Walki + trening AFK (10 min na godzinę) | Mag | 2910 / 3270; 0 szt. | 7968 / 9422; 0 szt. | 17524 / 20659; 0 szt. |
+| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 1516 / 3150; 0 szt. | 3302 / 9461; 0 szt. | 7062 / 21310; 0 szt. |
+| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 1443 / 3065; 0 szt. | 3346 / 9693; 0 szt. | 6592 / 21507; 0 szt. |
+| Walki + AFK + sklep trenera + pety + kowal | Mag | 1482 / 3055; 0 szt. | 3512 / 9871; 0 szt. | 6077 / 21452; 0 szt. |
+| Wszystko + sklep z przedmiotami | Wojownik | 1234 / 3078; 3 szt. | 1769 / 9653; 4 szt. | 3219 / 21682; 5 szt. |
+| Wszystko + sklep z przedmiotami | Zwiadowca | 1202 / 3184; 3 szt. | 2096 / 9592; 5 szt. | 3472 / 21566; 6 szt. |
+| Wszystko + sklep z przedmiotami | Mag | 1322 / 3068; 1 szt. | 2360 / 9662; 2 szt. | 3672 / 21540; 3 szt. |
+| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 1166 / 3041; 3 szt. | 1992 / 9785; 5 szt. | 2237 / 21739; 6 szt. |
+| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 1109 / 3054; 4 szt. | 2278 / 9758; 5 szt. | 2898 / 21728; 6 szt. |
+| Gracz AFK (20 min na godzinę, wszystko) | Mag | 1327 / 3012; 1 szt. | 2100 / 9908; 3 szt. | 3512 / 21520; 3 szt. |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 1259 / 1387; 0 szt. | 2308 / 4118; 0 szt. | 3021 / 6738; 0 szt. |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 1332 / 1447; 0 szt. | 2454 / 3828; 0 szt. | 3362 / 7617; 0 szt. |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 1218 / 1430; 0 szt. | 2565 / 4078; 0 szt. | 3327 / 7264; 0 szt. |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 2189 / 2526; 0 szt. | 4096 / 7529; 0 szt. | 8476 / 16846; 0 szt. |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 2075 / 2399; 0 szt. | 4380 / 7516; 0 szt. | 9396 / 17143; 0 szt. |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 2142 / 2508; 0 szt. | 4692 / 7948; 0 szt. | 10404 / 17210; 0 szt. |
 
 ### Strażnicy — świat „po zmianie D-107 (pliki gry)”
 
@@ -237,53 +276,53 @@ Dla każdej krainy: poziom przy pierwszej próbie · prób do wygranej (mediana 
 
 | Sposób gry | Klasa | Las | Bagno | Dżungla |
 |---|---|---|---|---|
-| Tylko walki | Wojownik | poz. 10 · 10 / 13 · 1. raz 2% · 90% | poz. 18 · 17 / 33 · 1. raz 5% · 85% | poz. 25 · 16 / 40 · 1. raz 2% · 90% |
-| Tylko walki | Zwiadowca | poz. 10 · 9 / 13 · 1. raz 5% · 75% | poz. 17 · 14 / 22 · 1. raz 2% · 88% | poz. 24 · 13 / 30 · 1. raz 2% · 78% |
-| Tylko walki | Mag | poz. 10 · 8 / 12 · 1. raz 2% · 72% | poz. 17 · 16 / 27 · 1. raz 0% · 90% | poz. 24 · 18 / 42 · 1. raz 0% · 95% |
-| Walki + trening AFK (10 min na godzinę) | Wojownik | poz. 10 · 3 / 4 · 1. raz 28% · 0% | poz. 16 · 3 / 6 · 1. raz 20% · 20% | poz. 23 · 1 / 3 · 1. raz 52% · 0% |
-| Walki + trening AFK (10 min na godzinę) | Zwiadowca | poz. 10 · 2 / 5 · 1. raz 28% · 5% | poz. 16 · 2 / 4 · 1. raz 45% · 0% | poz. 23 · 2 / 3 · 1. raz 42% · 0% |
-| Walki + trening AFK (10 min na godzinę) | Mag | poz. 10 · 3 / 6 · 1. raz 10% · 15% | poz. 16 · 2 / 5 · 1. raz 25% · 0% | poz. 23 · 2 / 3 · 1. raz 50% · 0% |
-| Walki + AFK + sklep trenera + pety + kowal | Wojownik | poz. 10 · 2 / 4 · 1. raz 30% · 0% | poz. 16 · 1 / 3 · 1. raz 55% · 0% | poz. 23 · 1 / 1 · 1. raz 90% · 0% |
-| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | poz. 10 · 1 / 3 · 1. raz 52% · 0% | poz. 16 · 1 / 2 · 1. raz 72% · 0% | poz. 23 · 1 / 3 · 1. raz 72% · 0% |
-| Walki + AFK + sklep trenera + pety + kowal | Mag | poz. 10 · 2 / 4 · 1. raz 30% · 2% | poz. 16 · 2 / 3 · 1. raz 50% · 0% | poz. 23 · 1 / 2 · 1. raz 58% · 0% |
-| Wszystko + sklep z przedmiotami | Wojownik | poz. 10 · 2 / 3 · 1. raz 48% · 0% | poz. 16 · 1 / 2 · 1. raz 72% · 0% | poz. 23 · 1 / 2 · 1. raz 88% · 0% |
-| Wszystko + sklep z przedmiotami | Zwiadowca | poz. 10 · 1 / 2 · 1. raz 60% · 0% | poz. 16 · 1 / 2 · 1. raz 75% · 0% | poz. 23 · 1 / 2 · 1. raz 82% · 0% |
-| Wszystko + sklep z przedmiotami | Mag | poz. 10 · 3 / 5 · 1. raz 22% · 0% | poz. 16 · 2 / 3 · 1. raz 48% · 0% | poz. 23 · 1 / 2 · 1. raz 85% · 0% |
-| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | poz. 10 · 1 / 1 · 1. raz 95% · 0% | poz. 16 · 1 / 1 · 1. raz 100% · 0% | poz. 23 · 1 / 1 · 1. raz 100% · 0% |
-| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | poz. 10 · 1 / 1 · 1. raz 92% · 0% | poz. 16 · 1 / 1 · 1. raz 98% · 0% | poz. 23 · 1 / 1 · 1. raz 100% · 0% |
-| Gracz AFK (20 min na godzinę, wszystko) | Mag | poz. 10 · 1 / 3 · 1. raz 52% · 0% | poz. 16 · 1 / 1 · 1. raz 90% · 0% | poz. 23 · 1 / 1 · 1. raz 100% · 0% |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | poz. 4 · 5 / 6 · 1. raz 0% · 28% | poz. 11 · 12 / 17 · 1. raz 0% · 98% | poz. 16 · 2 / 6 · 1. raz 28% · 20% |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | poz. 4 · 4 / 6 · 1. raz 0% · 15% | poz. 10 · 10 / 16 · 1. raz 0% · 90% | poz. 16 · 2 / 6 · 1. raz 42% · 12% |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | poz. 4 · 10 / 11 · 1. raz 0% · 92% | poz. 12 · 12 / 15 · 1. raz 8% · 82% | poz. 17 · 2 / 7 · 1. raz 35% · 15% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | poz. 9 · 13 / 17 · 1. raz 0% · 98% | poz. 17 · 22 / 31 · 1. raz 0% · 95% | poz. 24 · 27 / 49 · 1. raz 0% · 90% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | poz. 9 · 12 / 17 · 1. raz 2% · 90% | poz. 16 · 14 / 29 · 1. raz 2% · 92% | poz. 23 · 19 / 38 · 1. raz 0% · 95% |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | poz. 9 · 12 / 17 · 1. raz 5% · 92% | poz. 16 · 23 / 36 · 1. raz 2% · 95% | poz. 23 · 20 / 44 · 1. raz 2% · 92% |
+| Tylko walki | Wojownik | poz. 10 · 2 / 4 · 1. raz 28% · 5% | poz. 16 · 2 / 4 · 1. raz 40% · 8% | poz. 23 · 2 / 5 · 1. raz 18% · 8% |
+| Tylko walki | Zwiadowca | poz. 10 · 2 / 4 · 1. raz 32% · 0% | poz. 16 · 2 / 5 · 1. raz 18% · 2% | poz. 23 · 2 / 5 · 1. raz 32% · 10% |
+| Tylko walki | Mag | poz. 10 · 2 / 5 · 1. raz 40% · 2% | poz. 16 · 3 / 6 · 1. raz 18% · 18% | poz. 23 · 2 / 5 · 1. raz 38% · 8% |
+| Walki + trening AFK (10 min na godzinę) | Wojownik | poz. 10 · 2 / 3 · 1. raz 42% · 0% | poz. 16 · 2 / 4 · 1. raz 50% · 2% | poz. 23 · 1 / 2 · 1. raz 72% · 0% |
+| Walki + trening AFK (10 min na godzinę) | Zwiadowca | poz. 10 · 1 / 3 · 1. raz 55% · 0% | poz. 16 · 2 / 4 · 1. raz 50% · 2% | poz. 23 · 1 / 3 · 1. raz 65% · 2% |
+| Walki + trening AFK (10 min na godzinę) | Mag | poz. 10 · 2 / 3 · 1. raz 42% · 2% | poz. 16 · 2 / 3 · 1. raz 50% · 0% | poz. 23 · 1 / 2 · 1. raz 65% · 0% |
+| Walki + AFK + sklep trenera + pety + kowal | Wojownik | poz. 10 · 2 / 3 · 1. raz 50% · 0% | poz. 16 · 1 / 2 · 1. raz 68% · 0% | poz. 23 · 1 / 1 · 1. raz 92% · 0% |
+| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | poz. 10 · 1 / 2 · 1. raz 65% · 0% | poz. 16 · 1 / 2 · 1. raz 68% · 0% | poz. 23 · 1 / 2 · 1. raz 70% · 0% |
+| Walki + AFK + sklep trenera + pety + kowal | Mag | poz. 10 · 1 / 3 · 1. raz 65% · 0% | poz. 16 · 1 / 3 · 1. raz 55% · 0% | poz. 23 · 1 / 2 · 1. raz 88% · 0% |
+| Wszystko + sklep z przedmiotami | Wojownik | poz. 10 · 1 / 2 · 1. raz 70% · 0% | poz. 16 · 1 / 2 · 1. raz 78% · 0% | poz. 23 · 1 / 2 · 1. raz 75% · 0% |
+| Wszystko + sklep z przedmiotami | Zwiadowca | poz. 10 · 1 / 3 · 1. raz 58% · 0% | poz. 16 · 1 / 3 · 1. raz 70% · 0% | poz. 23 · 1 / 2 · 1. raz 75% · 0% |
+| Wszystko + sklep z przedmiotami | Mag | poz. 10 · 1 / 2 · 1. raz 62% · 0% | poz. 16 · 1 / 2 · 1. raz 70% · 0% | poz. 23 · 1 / 2 · 1. raz 85% · 0% |
+| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | poz. 10 · 1 / 2 · 1. raz 82% · 0% | poz. 16 · 1 / 2 · 1. raz 80% · 0% | poz. 23 · 1 / 2 · 1. raz 85% · 0% |
+| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | poz. 10 · 1 / 2 · 1. raz 62% · 0% | poz. 16 · 1 / 2 · 1. raz 75% · 0% | poz. 23 · 1 / 2 · 1. raz 80% · 0% |
+| Gracz AFK (20 min na godzinę, wszystko) | Mag | poz. 10 · 1 / 2 · 1. raz 70% · 0% | poz. 16 · 1 / 2 · 1. raz 65% · 0% | poz. 23 · 1 / 1 · 1. raz 95% · 0% |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | poz. 4 · 7 / 9 · 1. raz 0% · 85% | poz. 11 · 10 / 16 · 1. raz 0% · 72% | poz. 16 · 4 / 11 · 1. raz 8% · 48% |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | poz. 4 · 7 / 10 · 1. raz 0% · 95% | poz. 11 · 6 / 14 · 1. raz 2% · 52% | poz. 16 · 6 / 10 · 1. raz 10% · 50% |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | poz. 4 · 8 / 11 · 1. raz 0% · 88% | poz. 11 · 9 / 14 · 1. raz 0% · 78% | poz. 16 · 4 / 10 · 1. raz 10% · 38% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | poz. 9 · 3 / 5 · 1. raz 20% · 5% | poz. 15 · 4 / 9 · 1. raz 22% · 30% | poz. 22 · 2 / 7 · 1. raz 22% · 12% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | poz. 9 · 3 / 5 · 1. raz 30% · 10% | poz. 15 · 3 / 6 · 1. raz 15% · 22% | poz. 22 · 4 / 8 · 1. raz 40% · 42% |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | poz. 9 · 3 / 6 · 1. raz 22% · 15% | poz. 15 · 4 / 9 · 1. raz 15% · 32% | poz. 22 · 2 / 7 · 1. raz 35% · 18% |
 
 ### Nuda i przestoje — świat „po zmianie D-107 (pliki gry)” (mediana)
 
 | Sposób gry | Klasa | Najdłużej bez awansu | Najdłużej bez nowej zagrody | Najdłuższa seria jednego potwora | Czekanie (odradzanie + blokada) |
 |---|---|---|---|---|---:|
-| Tylko walki | Wojownik | 11 min (dzungla/straznik) | 40 min (bagno/straznik) | 21 × Zwijogon | 0,0 min |
-| Tylko walki | Zwiadowca | 9,9 min (dzungla/straznik) | 31 min (dzungla/straznik) | 22 × Zwijogon | 0,0 min |
-| Tylko walki | Mag | 9,0 min (dzungla/straznik) | 29 min (dzungla/straznik) | 19 × Zwijogon | 0,0 min |
-| Walki + trening AFK (10 min na godzinę) | Wojownik | 11 min (dzungla/z1) | 15 min (bagno/b1) | 25 × Kokosowy Siłacz | 0,0 min |
-| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 10 min (dzungla/z1) | 14 min (dzungla/g1) | 24 × Kokosowy Siłacz | 0,0 min |
-| Walki + trening AFK (10 min na godzinę) | Mag | 9,9 min (dzungla/o1) | 14 min (dzungla/g1) | 24 × Kokosowy Siłacz | 0,0 min |
-| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 12 min (bagno/r1) | 16 min (bagno/b1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 11 min (bagno/b1) | 14 min (dzungla/g1) | 24 × Zwijogon | 0,0 min |
-| Walki + AFK + sklep trenera + pety + kowal | Mag | 10 min (bagno/b1) | 14 min (dzungla/g1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Wszystko + sklep z przedmiotami | Wojownik | 11 min (bagno/b1) | 14 min (bagno/b1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Wszystko + sklep z przedmiotami | Zwiadowca | 11 min (dzungla/g1) | 14 min (dzungla/g1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Wszystko + sklep z przedmiotami | Mag | 10 min (dzungla/g1) | 13 min (dzungla/g1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 16 min (bagno/r1) | 20 min (bagno/k1) | 23 × Kokosowy Siłacz | 0,0 min |
-| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 16 min (dzungla/z1) | 18 min (dzungla/o1) | 22 × Kokosowy Siłacz | 0,0 min |
-| Gracz AFK (20 min na godzinę, wszystko) | Mag | 15 min (dzungla/z1) | 18 min (dzungla/o1) | 22 × Kokosowy Siłacz | 0,0 min |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 13 min (bagno/straznik) | 18 min (bagno/straznik) | 4 × Bulgotnik | 0,0 min |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 13 min (dzungla/straznik) | 13 min (dzungla/straznik) | 2 × Bulgotnik | 0,0 min |
-| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 13 min (bagno/straznik) | 19 min (bagno/straznik) | 6 × Rechotek | 0,0 min |
-| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 5,8 min (dzungla/z1) | 23 min (dzungla/straznik) | 18 × Zwijogon | 0,0 min |
-| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 5,9 min (dzungla/z1) | 20 min (dzungla/o1) | 20 × Zwijogon | 0,0 min |
-| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 5,5 min (dzungla/z1) | 21 min (dzungla/straznik) | 18 × Zwijogon | 0,0 min |
+| Tylko walki | Wojownik | 5,5 min (bagno/r1) | 10 min (bagno/k1) | 20 × Zwijogon | 0,0 min |
+| Tylko walki | Zwiadowca | 5,4 min (dzungla/straznik) | 9,3 min (bagno/k1) | 18 × Zwijogon | 0,0 min |
+| Tylko walki | Mag | 4,6 min (bagno/b1) | 8,4 min (bagno/b1) | 20 × Kłodokłap | 0,0 min |
+| Walki + trening AFK (10 min na godzinę) | Wojownik | 10 min (bagno/k1) | 14 min (bagno/k1) | 20 × Zwijogon | 0,0 min |
+| Walki + trening AFK (10 min na godzinę) | Zwiadowca | 9,8 min (bagno/k1) | 14 min (dzungla/o1) | 20 × Kokosowy Siłacz | 0,0 min |
+| Walki + trening AFK (10 min na godzinę) | Mag | 9,3 min (bagno/k1) | 12 min (bagno/k1) | 20 × Zwijogon | 0,0 min |
+| Walki + AFK + sklep trenera + pety + kowal | Wojownik | 10 min (bagno/b1) | 13 min (bagno/b1) | 19 × Kokosowy Siłacz | 0,0 min |
+| Walki + AFK + sklep trenera + pety + kowal | Zwiadowca | 10,0 min (bagno/b1) | 13 min (bagno/b1) | 19 × Kokosowy Siłacz | 0,0 min |
+| Walki + AFK + sklep trenera + pety + kowal | Mag | 9,8 min (bagno/b1) | 13 min (bagno/b1) | 18 × Kokosowy Siłacz | 0,0 min |
+| Wszystko + sklep z przedmiotami | Wojownik | 11 min (bagno/b1) | 13 min (bagno/b1) | 18 × Kokosowy Siłacz | 0,0 min |
+| Wszystko + sklep z przedmiotami | Zwiadowca | 10 min (bagno/b1) | 13 min (dzungla/g1) | 18 × Kłodokłap | 0,0 min |
+| Wszystko + sklep z przedmiotami | Mag | 9,9 min (bagno/b1) | 13 min (bagno/b1) | 18 × Kokosowy Siłacz | 0,0 min |
+| Gracz AFK (20 min na godzinę, wszystko) | Wojownik | 15 min (bagno/r1) | 18 min (bagno/b1) | 18 × Gębokwiat | 0,0 min |
+| Gracz AFK (20 min na godzinę, wszystko) | Zwiadowca | 15 min (bagno/r1) | 18 min (dzungla/z1) | 18 × Kokosowy Siłacz | 0,0 min |
+| Gracz AFK (20 min na godzinę, wszystko) | Mag | 15 min (bagno/b1) | 17 min (dzungla/z1) | 18 × Kokosowy Siłacz | 0,0 min |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Wojownik | 14 min (dzungla/straznik) | 15 min (bagno/straznik) | 6 × Rechotek | 0,0 min |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Zwiadowca | 13 min (dzungla/straznik) | 14 min (dzungla/straznik) | 4 × Zwijogon | 0,0 min |
+| AFK 20 min/h i przeskakiwanie zagród (pytanie 117) | Mag | 13 min (dzungla/straznik) | 13 min (dzungla/straznik) | 5 × Rechotek | 0,0 min |
+| Niecierpliwy (pomija walki, pcha do przodu) | Wojownik | 3,3 min (bagno/b1) | 6,3 min (bagno/k1) | 21 × Kokosowy Siłacz | 0,0 min |
+| Niecierpliwy (pomija walki, pcha do przodu) | Zwiadowca | 3,3 min (dzungla/z1) | 6,3 min (dzungla/o1) | 21 × Gębokwiat | 0,0 min |
+| Niecierpliwy (pomija walki, pcha do przodu) | Mag | 3,2 min (dzungla/z1) | 5,7 min (dzungla/g1) | 20 × Kokosowy Siłacz | 0,0 min |
 
 ### Gdzie schodzi czas — „Tylko walki”, świat „po zmianie D-107 (pliki gry)” (mediana, średnio z klas)
 
@@ -291,21 +330,21 @@ Minuty liczą się od pierwszego wejścia do zagrody do pierwszego wejścia do n
 
 | Zagroda | Potwór (poziomy) | Poziom na wejściu | Minut | Walk | Przegranych |
 |---|---|---:|---:|---:|---:|
-| las/s1 | Leśny Slime (1–3) | 1 | 1,7 | 10 | 2,3 |
-| las/m1 | Muchomornik (3–5) | 3 | 5,7 | 18 | 4,7 |
-| las/w1 | Cierniowy Wilk (6–8) | 6 | 5,0 | 24 | 6,7 |
-| las/t1 | Leśny Troll (8–9) | 8 | 6,3 | 14 | 8,7 |
-| las/straznik | Strażnik Gaju (10–10) | 10 | 14 | 9 | 8,0 |
-| bagno/r1 | Rechotek (10–12) | 14 | 1,1 | 37 | 13 |
-| bagno/b1 | Bulgotnik (12–14) | 14 | 6,1 | 13 | 8,2 |
-| bagno/k1 | Kłodokłap (14–16) | 15 | 12 | 8 | 4,8 |
-| bagno/t1 | Ropucha z Chatką (16–16) | 17 | 0,8 | 18 | 15 |
-| bagno/straznik | Strażnik Topieli (16–16) | 17 | 22 | 16 | 15 |
-| dzungla/z1 | Zwijogon (17–19) | 20 | 1,8 | 57 | 22 |
-| dzungla/g1 | Gębokwiat (19–21) | 21 | 4,4 | 13 | 8,5 |
-| dzungla/o1 | Kokosowy Siłacz (21–23) | 22 | 17 | 6 | 3,8 |
-| dzungla/t1 | Pancernik Ruin (23–23) | 24 | 1,3 | 16 | 16 |
-| dzungla/straznik | Wąż Stu Lian (23–23) | 24 | 21 | 16 | 15 |
+| las/s1 | Leśny Slime (1–3) | 1 | 1,5 | 4 | 0,8 |
+| las/m1 | Muchomornik (3–5) | 3 | 3,8 | 11 | 1,7 |
+| las/w1 | Cierniowy Wilk (6–8) | 6 | 3,7 | 18 | 2,3 |
+| las/t1 | Leśny Troll (8–9) | 8 | 4,0 | 6 | 2,0 |
+| las/straznik | Strażnik Gaju (10–10) | 10 | 3,2 | 2 | 1,0 |
+| bagno/r1 | Rechotek (10–12) | 11 | 1,2 | 12 | 2,0 |
+| bagno/b1 | Bulgotnik (12–14) | 12 | 7,2 | 17 | 4,7 |
+| bagno/k1 | Kłodokłap (14–16) | 14 | 8,3 | 17 | 4,0 |
+| bagno/t1 | Ropucha z Chatką (16–16) | 16 | 0,9 | 3 | 1,3 |
+| bagno/straznik | Strażnik Topieli (16–16) | 16 | 3,8 | 2 | 1,3 |
+| dzungla/z1 | Zwijogon (17–19) | 17 | 4,5 | 20 | 5,2 |
+| dzungla/g1 | Gębokwiat (19–21) | 19 | 6,9 | 21 | 4,7 |
+| dzungla/o1 | Kokosowy Siłacz (21–23) | 21 | 7,4 | 18 | 3,7 |
+| dzungla/t1 | Pancernik Ruin (23–23) | 23 | 1,4 | 3 | 1,3 |
+| dzungla/straznik | Wąż Stu Lian (23–23) | 23 | 3,5 | 2 | 1,3 |
 
 ### Gdzie schodzi czas — „Walki + AFK + sklep trenera + pety + kowal”, świat „po zmianie D-107 (pliki gry)” (mediana, średnio z klas)
 
@@ -313,39 +352,23 @@ Minuty liczą się od pierwszego wejścia do zagrody do pierwszego wejścia do n
 
 | Zagroda | Potwór (poziomy) | Poziom na wejściu | Minut | Walk | Przegranych |
 |---|---|---:|---:|---:|---:|
-| las/s1 | Leśny Slime (1–3) | 1 | 7,1 | 3 | 0,0 |
-| las/m1 | Muchomornik (3–5) | 3 | 4,4 | 11 | 0,0 |
-| las/w1 | Cierniowy Wilk (6–8) | 6 | 5,7 | 16 | 1,2 |
-| las/t1 | Leśny Troll (8–9) | 8 | 4,6 | 5 | 2,2 |
-| las/straznik | Strażnik Gaju (10–10) | 10 | 3,5 | 2 | 0,7 |
-| bagno/r1 | Rechotek (10–12) | 11 | 2,9 | 7 | 0,7 |
-| bagno/b1 | Bulgotnik (12–14) | 12 | 14 | 14 | 2,0 |
-| bagno/k1 | Kłodokłap (14–16) | 14 | 8,1 | 17 | 0,3 |
-| bagno/t1 | Ropucha z Chatką (16–16) | 16 | 1,1 | 1 | 0,3 |
-| bagno/straznik | Strażnik Topieli (16–16) | 16 | 2,0 | 1 | 0,2 |
-| dzungla/z1 | Zwijogon (17–19) | 17 | 12 | 21 | 2,3 |
-| dzungla/g1 | Gębokwiat (19–21) | 19 | 11 | 22 | 1,0 |
-| dzungla/o1 | Kokosowy Siłacz (21–23) | 21 | 8,5 | 23 | 0,3 |
-| dzungla/t1 | Pancernik Ruin (23–23) | 23 | 1,5 | 1 | 0,0 |
-| dzungla/straznik | Wąż Stu Lian (23–23) | 23 | 1,2 | 1 | 0,0 |
+| las/s1 | Leśny Slime (1–3) | 1 | 7,1 | 3 | 0,3 |
+| las/m1 | Muchomornik (3–5) | 3 | 4,2 | 10 | 1,0 |
+| las/w1 | Cierniowy Wilk (6–8) | 6 | 5,3 | 14 | 1,3 |
+| las/t1 | Leśny Troll (8–9) | 8 | 4,0 | 4 | 1,0 |
+| las/straznik | Strażnik Gaju (10–10) | 10 | 1,8 | 1 | 0,2 |
+| bagno/r1 | Rechotek (10–12) | 11 | 3,4 | 7 | 0,7 |
+| bagno/b1 | Bulgotnik (12–14) | 12 | 14 | 16 | 1,8 |
+| bagno/k1 | Kłodokłap (14–16) | 14 | 7,5 | 18 | 0,3 |
+| bagno/t1 | Ropucha z Chatką (16–16) | 16 | 0,9 | 1 | 0,0 |
+| bagno/straznik | Strażnik Topieli (16–16) | 16 | 1,4 | 1 | 0,0 |
+| dzungla/z1 | Zwijogon (17–19) | 17 | 7,5 | 17 | 2,0 |
+| dzungla/g1 | Gębokwiat (19–21) | 19 | 12 | 17 | 1,0 |
+| dzungla/o1 | Kokosowy Siłacz (21–23) | 21 | 6,9 | 18 | 0,3 |
+| dzungla/t1 | Pancernik Ruin (23–23) | 23 | 1,3 | 1 | 0,0 |
+| dzungla/straznik | Wąż Stu Lian (23–23) | 23 | 0,9 | 1 | 0,0 |
 
 ### Szansa wygranej ze Strażnikiem (%) — pula statystyk „gra”, liczby z plików gry
-
-„Sam” = bohater bez treningu i przedmiotów na poziomie Strażnika −1 / 0 / +1 / +2. „AFK” = na poziomie Strażnika po 5 / 15 / 30 minutach na stanowiskach (bez ulepszeń, bez skill checków, czas dzielony na trzy główne statystyki klasy). „Kowal +2” = pełny zestaw kowala ulepszony o 2, bez treningu. Ostatnia kolumna: ile minut AFK daje 50% / 80% wygranych.
-
-| Strażnik | Klasa | Sam: -1 / +0 / +1 / +2 | AFK: 5 / 15 / 30 min | Kowal +2 | Minut AFK do 50% / 80% |
-|---|---|---|---|---:|---|
-| Strażnik Gaju (poz. 10) | Wojownik | 0 / 1 / 3 / 12 | 39 / 100 / 100 | 11 | 6,6 / 9,4 |
-| Strażnik Gaju (poz. 10) | Zwiadowca | 0 / 2 / 7 / 14 | 38 / 99 / 100 | 14 | 6,6 / 9,4 |
-| Strażnik Gaju (poz. 10) | Mag | 0 / 1 / 4 / 13 | 45 / 100 / 100 | 16 | 5,6 / 8,4 |
-| Strażnik Topieli (poz. 16) | Wojownik | 0 / 0 / 0 / 1 | 7 / 85 / 100 | 3 | 10 / 14 |
-| Strażnik Topieli (poz. 16) | Zwiadowca | 0 / 2 / 2 / 6 | 15 / 74 / 100 | 5 | 11 / 18 |
-| Strażnik Topieli (poz. 16) | Mag | 0 / 0 / 2 / 3 | 9 / 64 / 98 | 3 | 12 / 19 |
-| Wąż Stu Lian (poz. 23) | Wojownik | 1 / 0 / 1 / 1 | 5 / 56 / 99 | 2 | 16 / 20 |
-| Wąż Stu Lian (poz. 23) | Zwiadowca | 1 / 3 / 4 / 6 | 11 / 54 / 93 | 5 | 14 / 24 |
-| Wąż Stu Lian (poz. 23) | Mag | 1 / 1 / 1 / 4 | 9 / 47 / 92 | 2 | 14 / 22 |
-
-### Szansa wygranej ze Strażnikiem (%) — po propozycji „A + B + C: ulepszenia stanowisk 150 / 350 / 800 / 1800 / 4200”
 
 „Sam” = bohater bez treningu i przedmiotów na poziomie Strażnika −1 / 0 / +1 / +2. „AFK” = na poziomie Strażnika po 5 / 15 / 30 minutach na stanowiskach (bez ulepszeń, bez skill checków, czas dzielony na trzy główne statystyki klasy). „Kowal +2” = pełny zestaw kowala ulepszony o 2, bez treningu. Ostatnia kolumna: ile minut AFK daje 50% / 80% wygranych.
 
@@ -361,6 +384,22 @@ Minuty liczą się od pierwszego wejścia do zagrody do pierwszego wejścia do n
 | Wąż Stu Lian (poz. 23) | Zwiadowca | 29 / 31 / 39 / 42 | 53 / 76 / 80 | 37 | 4,7 / 31 |
 | Wąż Stu Lian (poz. 23) | Mag | 24 / 29 / 35 / 45 | 50 / 78 / 81 | 38 | 4,7 / 21 |
 
+### Szansa wygranej ze Strażnikiem (%) — dla porównania: „Przed 27.11 (5 + 5 punktów, bez limitu, Dżungla ×1,0)”
+
+„Sam” = bohater bez treningu i przedmiotów na poziomie Strażnika −1 / 0 / +1 / +2. „AFK” = na poziomie Strażnika po 5 / 15 / 30 minutach na stanowiskach (bez ulepszeń, bez skill checków, czas dzielony na trzy główne statystyki klasy). „Kowal +2” = pełny zestaw kowala ulepszony o 2, bez treningu. Ostatnia kolumna: ile minut AFK daje 50% / 80% wygranych.
+
+| Strażnik | Klasa | Sam: -1 / +0 / +1 / +2 | AFK: 5 / 15 / 30 min | Kowal +2 | Minut AFK do 50% / 80% |
+|---|---|---|---|---:|---|
+| Strażnik Gaju (poz. 10) | Wojownik | 0 / 1 / 3 / 12 | 39 / 100 / 100 | 11 | 6,6 / 9,4 |
+| Strażnik Gaju (poz. 10) | Zwiadowca | 0 / 2 / 7 / 14 | 38 / 99 / 100 | 14 | 6,6 / 9,4 |
+| Strażnik Gaju (poz. 10) | Mag | 0 / 1 / 4 / 13 | 45 / 100 / 100 | 16 | 5,6 / 8,4 |
+| Strażnik Topieli (poz. 16) | Wojownik | 0 / 0 / 0 / 1 | 7 / 85 / 100 | 3 | 10 / 14 |
+| Strażnik Topieli (poz. 16) | Zwiadowca | 0 / 2 / 2 / 6 | 15 / 74 / 100 | 5 | 11 / 18 |
+| Strażnik Topieli (poz. 16) | Mag | 0 / 0 / 2 / 3 | 9 / 64 / 98 | 3 | 12 / 19 |
+| Wąż Stu Lian (poz. 23) | Wojownik | 1 / 0 / 1 / 1 | 5 / 56 / 99 | 2 | 16 / 20 |
+| Wąż Stu Lian (poz. 23) | Zwiadowca | 1 / 3 / 4 / 6 | 11 / 54 / 93 | 5 | 14 / 24 |
+| Wąż Stu Lian (poz. 23) | Mag | 1 / 1 / 1 / 4 | 9 / 47 / 92 | 2 | 14 / 22 |
+
 ### Propozycje zmian liczb — „przed / po” (świat „po zmianie D-107 (pliki gry)”, mediana z trzech klas)
 
 Liczone na kopii danych; pliki gry bez zmian. Kolumny: minuty do końca (razem z AFK) · w tym AFK · różnica między klasami (najwolniejsza − najszybsza) · przegranych · wygrana ze Strażnikiem za pierwszym razem i ilu graczy na nim utknęło (Las / Bagno / Dżungla) · najdłuższa seria jednego potwora · najdłużej bez awansu · punkty z treningu · Rybki stracone po przegranych · wydane u trenera.
@@ -369,66 +408,56 @@ Liczone na kopii danych; pliki gry bez zmian. Kolumny: minuty do końca (razem z
 
 | Zmiana | Koniec (min) | W tym AFK | Różnica klas | Przegranych | Strażnik za 1. razem (%) | Utknęło (%) | Seria | Bez awansu (min) | Punkty AFK | Rybki stracone | U trenera |
 |---|---:|---:|---:|---:|---|---|---:|---:|---:|---:|---:|
-| Bez zmian (liczby z plików gry) | 130 | 0,0 | 28 | 163 | 3 / 2 / 2 | 79 / 88 / 88 | 20 | 10 | 0 | 17140 | 0 |
-| A: 10 punktów za poziom rozdzielanych samo | 68 | 0,0 | 7,9 | 46 | 33 / 25 / 35 | 2 / 9 / 15 | 24 | 5,6 | 0 | 6787 | 0 |
-| B: limit treningu 2 × poziom na statystykę (ponad limitem pasek ×10) | 130 | 0,0 | 28 | 163 | 3 / 2 / 2 | 79 / 88 / 88 | 20 | 10 | 0 | 17140 | 0 |
-| A + B | 68 | 0,0 | 7,9 | 46 | 33 / 25 / 35 | 2 / 9 / 15 | 24 | 5,6 | 0 | 6787 | 0 |
-| A + B + C: ulepszenia stanowisk 150 / 350 / 800 / 1800 / 4200 | 68 | 0,0 | 7,9 | 46 | 33 / 25 / 35 | 2 / 9 / 15 | 24 | 5,6 | 0 | 6787 | 0 |
-| Dla porównania: A + B i doświadczenie Dżungli +25% (pytanie 70) | 63 | 0,0 | 7,9 | 42 | 33 / 25 / 29 | 2 / 9 / 8 | 20 | 5,2 | 0 | 6010 | 0 |
-| Dla porównania: A + B i krzywa doświadczenia ×1,5 (dłuższa gra) | 99 | 0,0 | 7,0 | 70 | 31 / 24 / 28 | 2 / 15 / 12 | 37 | 7,9 | 0 | 10518 | 0 |
-| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 461 | 0,0 | 79 | 581 | 0 / 4 / 1 | 100 / 93 / 94 | 49 | 23 | 0 | 57407 | 0 |
+| Wdrożone 27.11: A + B + doświadczenie Dżungli ×1,25 (pliki gry) | 63 | 0,0 | 7,9 | 42 | 33 / 25 / 29 | 2 / 9 / 8 | 20 | 5,2 | 0 | 6010 | 0 |
+| Przed 27.11 (5 + 5 punktów, bez limitu, Dżungla ×1,0) | 130 | 0,0 | 28 | 163 | 3 / 2 / 2 | 79 / 88 / 88 | 20 | 10 | 0 | 17140 | 0 |
+| Bez B (limitu treningu) | 63 | 0,0 | 7,9 | 42 | 33 / 25 / 29 | 2 / 9 / 8 | 20 | 5,2 | 0 | 6010 | 0 |
+| Bez doświadczenia Dżungli ×1,25 | 68 | 0,0 | 7,9 | 46 | 33 / 25 / 35 | 2 / 9 / 15 | 24 | 5,6 | 0 | 6787 | 0 |
+| Dla porównania: krzywa doświadczenia ×1,5 (dłuższa gra) | 92 | 0,0 | 7,0 | 64 | 31 / 24 / 31 | 2 / 15 / 13 | 30 | 7,1 | 0 | 9342 | 0 |
+| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 420 | 0,0 | 75 | 542 | 0 / 4 / 0 | 100 / 93 / 96 | 39 | 19 | 0 | 48760 | 0 |
 
 **Walki + trening AFK (10 min na godzinę)**
 
 | Zmiana | Koniec (min) | W tym AFK | Różnica klas | Przegranych | Strażnik za 1. razem (%) | Utknęło (%) | Seria | Bez awansu (min) | Punkty AFK | Rybki stracone | U trenera |
 |---|---:|---:|---:|---:|---|---|---:|---:|---:|---:|---:|
-| Bez zmian (liczby z plików gry) | 85 | 17 | 11 | 29 | 22 / 30 / 48 | 7 / 7 / 0 | 24 | 10 | 186 | 4125 | 0 |
-| A: 10 punktów za poziom rozdzielanych samo | 72 | 17 | 4,8 | 8 | 75 / 78 / 83 | 0 / 0 / 0 | 23 | 9,7 | 186 | 1200 | 0 |
-| B: limit treningu 2 × poziom na statystykę (ponad limitem pasek ×10) | 107 | 22 | 16 | 76 | 2 / 10 / 22 | 56 / 48 / 27 | 16 | 12 | 105 | 10254 | 0 |
-| A + B | 78 | 17 | 5,8 | 27 | 47 / 50 / 59 | 1 / 2 / 1 | 24 | 10 | 84 | 3759 | 0 |
-| A + B + C: ulepszenia stanowisk 150 / 350 / 800 / 1800 / 4200 | 78 | 17 | 5,8 | 27 | 47 / 50 / 59 | 1 / 2 / 1 | 24 | 10 | 84 | 3759 | 0 |
-| Dla porównania: A + B i doświadczenie Dżungli +25% (pytanie 70) | 73 | 17 | 5,4 | 24 | 47 / 50 / 68 | 1 / 2 / 1 | 20 | 9,7 | 85 | 3426 | 0 |
-| Dla porównania: A + B i krzywa doświadczenia ×1,5 (dłuższa gra) | 108 | 23 | 7,9 | 34 | 43 / 48 / 68 | 1 / 0 / 0 | 37 | 12 | 107 | 4659 | 0 |
-| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 148 | 31 | 34 | 118 | 0 / 10 / 5 | 97 / 72 / 72 | 17 | 14 | 235 | 13937 | 0 |
+| Wdrożone 27.11: A + B + doświadczenie Dżungli ×1,25 (pliki gry) | 73 | 17 | 5,4 | 24 | 47 / 50 / 68 | 1 / 2 / 1 | 20 | 9,7 | 85 | 3426 | 0 |
+| Przed 27.11 (5 + 5 punktów, bez limitu, Dżungla ×1,0) | 85 | 17 | 11 | 29 | 22 / 30 / 48 | 7 / 7 / 0 | 24 | 10 | 186 | 4125 | 0 |
+| Bez B (limitu treningu) | 65 | 14 | 10 | 8 | 75 / 78 / 83 | 0 / 0 / 0 | 19 | 9,4 | 145 | 1176 | 0 |
+| Bez doświadczenia Dżungli ×1,25 | 78 | 17 | 5,8 | 27 | 47 / 50 / 59 | 1 / 2 / 1 | 24 | 10 | 84 | 3759 | 0 |
+| Dla porównania: krzywa doświadczenia ×1,5 (dłuższa gra) | 100 | 21 | 13 | 32 | 43 / 48 / 71 | 1 / 0 / 0 | 30 | 11 | 97 | 4372 | 0 |
+| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 145 | 31 | 31 | 116 | 0 / 10 / 7 | 97 / 72 / 70 | 16 | 13 | 233 | 13106 | 0 |
 
 **Walki + AFK + sklep trenera + pety + kowal**
 
 | Zmiana | Koniec (min) | W tym AFK | Różnica klas | Przegranych | Strażnik za 1. razem (%) | Utknęło (%) | Seria | Bez awansu (min) | Punkty AFK | Rybki stracone | U trenera |
 |---|---:|---:|---:|---:|---|---|---:|---:|---:|---:|---:|
-| Bez zmian (liczby z plików gry) | 89 | 18 | 9,6 | 15 | 38 / 59 / 73 | 1 / 0 / 0 | 23 | 11 | 194 | 801 | 400 |
-| A: 10 punktów za poziom rozdzielanych samo | 80 | 18 | 6,0 | 4 | 89 / 94 / 93 | 0 / 0 / 0 | 22 | 9,7 | 203 | 151 | 1117 |
-| B: limit treningu 2 × poziom na statystykę (ponad limitem pasek ×10) | 107 | 22 | 18 | 49 | 7 / 26 / 45 | 16 / 13 / 6 | 23 | 11 | 103 | 2060 | 733 |
-| A + B | 84 | 18 | 5,6 | 15 | 60 / 63 / 81 | 0 / 0 / 0 | 23 | 10 | 79 | 765 | 300 |
-| A + B + C: ulepszenia stanowisk 150 / 350 / 800 / 1800 / 4200 | 84 | 18 | 5,6 | 15 | 60 / 64 / 79 | 0 / 0 / 0 | 23 | 10 | 80 | 751 | 500 |
-| Dla porównania: A + B i doświadczenie Dżungli +25% (pytanie 70) | 80 | 18 | 5,0 | 14 | 60 / 63 / 83 | 0 / 0 / 0 | 19 | 10 | 80 | 688 | 533 |
-| Dla porównania: A + B i krzywa doświadczenia ×1,5 (dłuższa gra) | 113 | 24 | 7,1 | 16 | 72 / 74 / 84 | 0 / 0 / 0 | 35 | 12 | 115 | 1018 | 3550 |
-| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 134 | 27 | 22 | 84 | 2 / 7 / 23 | 80 / 48 / 30 | 18 | 13 | 208 | 2729 | 400 |
+| Wdrożone 27.11: A + B + doświadczenie Dżungli ×1,25 (pliki gry) | 80 | 18 | 5,0 | 14 | 60 / 63 / 83 | 0 / 0 / 0 | 19 | 10 | 80 | 688 | 533 |
+| Przed 27.11 (5 + 5 punktów, bez limitu, Dżungla ×1,0) | 89 | 18 | 9,6 | 15 | 38 / 59 / 73 | 1 / 0 / 0 | 23 | 11 | 194 | 801 | 400 |
+| Bez B (limitu treningu) | 76 | 18 | 6,0 | 4 | 89 / 94 / 92 | 0 / 0 / 0 | 18 | 9,5 | 224 | 144 | 1067 |
+| Bez doświadczenia Dżungli ×1,25 | 84 | 18 | 5,6 | 15 | 60 / 63 / 81 | 0 / 0 / 0 | 23 | 10 | 79 | 765 | 300 |
+| Dla porównania: krzywa doświadczenia ×1,5 (dłuższa gra) | 108 | 24 | 6,4 | 15 | 72 / 74 / 78 | 0 / 0 / 0 | 28 | 11 | 116 | 894 | 3483 |
+| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 132 | 27 | 29 | 84 | 2 / 7 / 15 | 80 / 48 / 41 | 15 | 13 | 209 | 2433 | 300 |
 
 **Gracz AFK (20 min na godzinę, wszystko)**
 
 | Zmiana | Koniec (min) | W tym AFK | Różnica klas | Przegranych | Strażnik za 1. razem (%) | Utknęło (%) | Seria | Bez awansu (min) | Punkty AFK | Rybki stracone | U trenera |
 |---|---:|---:|---:|---:|---|---|---:|---:|---:|---:|---:|
-| Bez zmian (liczby z plików gry) | 109 | 43 | 5,8 | 4 | 80 / 96 / 100 | 0 / 0 / 0 | 22 | 16 | 516 | 50 | 533 |
-| A: 10 punktów za poziom rozdzielanych samo | 97 | 36 | 15 | 1 | 97 / 99 / 100 | 0 / 0 / 0 | 22 | 15 | 421 | 23 | 100 |
-| B: limit treningu 2 × poziom na statystykę (ponad limitem pasek ×10) | 123 | 43 | 9,3 | 30 | 13 / 57 / 60 | 0 / 1 / 0 | 24 | 16 | 121 | 810 | 50 |
-| A + B | 109 | 43 | 4,7 | 9 | 72 / 73 / 90 | 0 / 0 / 0 | 23 | 16 | 131 | 235 | 300 |
-| A + B + C: ulepszenia stanowisk 150 / 350 / 800 / 1800 / 4200 | 109 | 43 | 4,6 | 9 | 72 / 72 / 89 | 0 / 0 / 0 | 23 | 16 | 132 | 238 | 433 |
-| Dla porównania: A + B i doświadczenie Dżungli +25% (pytanie 70) | 101 | 40 | 16 | 8 | 72 / 73 / 87 | 0 / 0 / 0 | 18 | 15 | 117 | 207 | 100 |
-| Dla porównania: A + B i krzywa doświadczenia ×1,5 (dłuższa gra) | 142 | 54 | 6,3 | 9 | 79 / 87 / 96 | 0 / 0 / 0 | 35 | 17 | 155 | 458 | 3400 |
-| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 154 | 58 | 32 | 57 | 8 / 22 / 36 | 51 / 27 / 2 | 21 | 18 | 236 | 1227 | 100 |
+| Wdrożone 27.11: A + B + doświadczenie Dżungli ×1,25 (pliki gry) | 101 | 40 | 16 | 8 | 72 / 73 / 87 | 0 / 0 / 0 | 18 | 15 | 117 | 207 | 100 |
+| Przed 27.11 (5 + 5 punktów, bez limitu, Dżungla ×1,0) | 109 | 43 | 5,8 | 4 | 80 / 96 / 100 | 0 / 0 / 0 | 22 | 16 | 516 | 50 | 533 |
+| Bez B (limitu treningu) | 90 | 32 | 3,8 | 1 | 97 / 99 / 100 | 0 / 0 / 0 | 18 | 15 | 375 | 22 | 0 |
+| Bez doświadczenia Dżungli ×1,25 | 109 | 43 | 4,7 | 9 | 72 / 73 / 90 | 0 / 0 / 0 | 23 | 16 | 131 | 235 | 300 |
+| Dla porównania: krzywa doświadczenia ×1,5 (dłuższa gra) | 133 | 51 | 16 | 9 | 79 / 87 / 92 | 0 / 0 / 0 | 28 | 16 | 142 | 433 | 2467 |
+| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 147 | 54 | 17 | 56 | 8 / 22 / 32 | 51 / 27 / 8 | 18 | 17 | 228 | 1096 | 100 |
 
 **AFK 20 min/h i przeskakiwanie zagród (pytanie 117)**
 
 | Zmiana | Koniec (min) | W tym AFK | Różnica klas | Przegranych | Strażnik za 1. razem (%) | Utknęło (%) | Seria | Bez awansu (min) | Punkty AFK | Rybki stracone | U trenera |
 |---|---:|---:|---:|---:|---|---|---:|---:|---:|---:|---:|
-| Bez zmian (liczby z plików gry) | 47 | 22 | 5,6 | 36 | 0 / 2 / 35 | 45 / 90 / 16 | 4 | 13 | 334 | 2176 | 883 |
-| A: 10 punktów za poziom rozdzielanych samo | 34 | 14 | 15 | 24 | 7 / 10 / 14 | 16 / 48 / 52 | 2 | 12 | 214 | 2178 | 333 |
-| B: limit treningu 2 × poziom na statystykę (ponad limitem pasek ×10) | 77 | 33 | 5,0 | 91 | 0 / 5 / 10 | 99 / 68 / 63 | 13 | 15 | 114 | 5496 | 1450 |
-| A + B | 47 | 22 | 3,6 | 45 | 0 / 1 / 10 | 89 / 68 / 50 | 6 | 14 | 65 | 2749 | 1000 |
-| A + B + C: ulepszenia stanowisk 150 / 350 / 800 / 1800 / 4200 | 48 | 22 | 3,5 | 46 | 0 / 1 / 10 | 89 / 68 / 49 | 6 | 14 | 65 | 2775 | 1300 |
-| Dla porównania: A + B i doświadczenie Dżungli +25% (pytanie 70) | 47 | 22 | 2,1 | 44 | 0 / 1 / 9 | 89 / 68 / 45 | 5 | 13 | 65 | 2655 | 1000 |
-| Dla porównania: A + B i krzywa doświadczenia ×1,5 (dłuższa gra) | 54 | 22 | 7,2 | 63 | 0 / 8 / 8 | 98 / 73 / 66 | 9 | 14 | 58 | 3800 | 700 |
-| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 105 | 40 | 20 | 129 | 0 / 18 / 7 | 100 / 55 / 72 | 16 | 15 | 242 | 8564 | 2567 |
+| Wdrożone 27.11: A + B + doświadczenie Dżungli ×1,25 (pliki gry) | 47 | 22 | 2,1 | 44 | 0 / 1 / 9 | 89 / 68 / 45 | 5 | 13 | 65 | 2655 | 1000 |
+| Przed 27.11 (5 + 5 punktów, bez limitu, Dżungla ×1,0) | 47 | 22 | 5,6 | 36 | 0 / 2 / 35 | 45 / 90 / 16 | 4 | 13 | 334 | 2176 | 883 |
+| Bez B (limitu treningu) | 33 | 14 | 15 | 24 | 7 / 10 / 13 | 16 / 48 / 47 | 2 | 12 | 214 | 2111 | 333 |
+| Bez doświadczenia Dżungli ×1,25 | 47 | 22 | 3,6 | 45 | 0 / 1 / 10 | 89 / 68 / 50 | 6 | 14 | 65 | 2749 | 1000 |
+| Dla porównania: krzywa doświadczenia ×1,5 (dłuższa gra) | 54 | 22 | 6,1 | 62 | 0 / 8 / 2 | 98 / 73 / 66 | 8 | 14 | 58 | 3737 | 583 |
+| Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom | 103 | 40 | 18 | 128 | 0 / 18 / 8 | 100 / 55 / 65 | 15 | 15 | 241 | 8043 | 2367 |
 
 _Uruchomienie: `python -B swiat/przejscie_gry/symulacja_przejscia.py --przebiegow 40 --ziarno 1` · 40 przebiegów na komórkę · krzywa doświadczenia 11,71 × L^1,6 · pula statystyk „gra” · trening AFK: pasek 4 × 1,2 s, +1 za pasek (750 punktów na godzinę na stanowisku) · katalog sklepu: swiat/postacie/sklep_liczby.json · liczone 2026-11-27._
 

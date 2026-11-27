@@ -297,7 +297,9 @@ class TestBezMiniGier(unittest.TestCase):
 
     def test_7c_ten_sam_sygnal_co_stan_gracza_i_trening_afk(self):
         T = self.DS["trening"]
-        self.assertEqual(T, {"kontener": self.D["kontener"], "sygnal": "PrzyrostStatystyki"})
+        # 27.11.2026: + prefiks atrybutów wytrenowanych punktów (limit treningu, TestLimitu)
+        self.assertEqual(T, {"kontener": self.D["kontener"], "sygnal": "PrzyrostStatystyki",
+                             "prefiks_wytrenowanych": "Wytrenowane"})
         # skrypt Pawła: szuka Workspace/TreningProba/Sygnaly/PrzyrostStatystyki i strzela { atrybut, przyrost, … }
         f = SERWER[SERWER.index("local function dodajStatystyke"):SERWER.index("local function losujCheck")]
         for kawalek in ('workspace:FindFirstChild("%s")' % T["kontener"], 'FindFirstChild("Sygnaly")',
@@ -584,7 +586,8 @@ class TestSklepu(unittest.TestCase):
         # pasek i przyrost liczy serwer z poziomu i wzmacniacza
         self.assertIn("if t.postep >= t.pasek then", SERWER)
         self.assertIn("local ile = przyrostNaPasek(gracz, s)", SERWER)
-        self.assertIn('Z:FireClient(gracz, "start", id, p, przyrostNaPasek(gracz, s), pasek, zostaloW(gracz, s.atrybut))', SERWER)
+        self.assertIn('Z:FireClient(gracz, "start", id, p, przyrostNaPasek(gracz, s), pasek, zostaloW(gracz, s.atrybut), '
+                      'ponad)', SERWER)
 
     def test_8d_bez_robuxow(self):
         for kod in (SERWER, KLIENT, DANE):
@@ -637,6 +640,85 @@ class TestSklepu(unittest.TestCase):
         self.assertGreater(E["cena_w"] * 3600 / E["czas_w"], max(M.PRZYCHOD_ZAGRODY_H.values()))
         self.assertGreaterEqual(60.0 * sum(E["ceny"]) / max(M.PRZYCHOD_WALK_H.values()), 30.0)
         self.assertLessEqual(60.0 * E["ceny"][0] / M.PRZYCHOD_WALK_H["las"], 5.0)     # pierwszy poziom szybko
+
+
+
+class TestLimitu(unittest.TestCase):
+    """Limit treningu zależny od poziomu (27.11.2026, Karol: „A + B”, swiat/przejscie_gry/BALANS_2711.md, pytanie 117):
+    wytrenowane w statystyce ≥ limitNaPoziom × poziom → pasek ÷ ponadLimitem; wytrenowane punkty pisze stan gracza."""
+
+    @staticmethod
+    def liczba(nazwa):
+        return float(re.search(r"\bD\.%s = ([\d.]+)" % nazwa, DANE).group(1))
+
+    def pasek(self, pasek, wytrenowane, poziom):
+        """Lustro D.pasekPrzyLimicie."""
+        lim, ponad = self.liczba("limitNaPoziom"), self.liczba("ponadLimitem")
+        if lim <= 0 or wytrenowane < lim * max(poziom, 1):
+            return pasek, False
+        return pasek / max(ponad, 0.001), True
+
+    def test_9a_dane(self):
+        self.assertEqual(self.liczba("limitNaPoziom"), 2)
+        self.assertEqual(self.liczba("ponadLimitem"), 0.1)
+        self.assertIn("function D.pasekPrzyLimicie(pasek: number, wytrenowane: number, poziom: number)", DANE)
+        tekst = re.search(r'D\.tekstLimitu = "([^"]+)"', DANE).group(1)
+        self.assertEqual(tekst, tekst.upper())
+        self.assertTrue(all(ord(c) < 128 for c in tekst), "napis po angielsku, bez znaków spoza ASCII")
+        self.assertLessEqual(len(tekst), len("HIT THE SKILL CHECKS FOR 2X SPEED!"), "mieści się w miejscu podpowiedzi")
+        # prefiks taki sam jak w stanie gracza (ten pisze atrybuty)
+        sg = os.path.join(REPO, "swiat", "stan_gracza")
+        if sg not in sys.path:
+            sys.path.append(sg)
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("dane_stanu_limit", os.path.join(sg, "dane.py"))
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        DS = m.dane_z_przypadkami()[1]
+        pref = re.search(r'D\.prefiksWytrenowanych = "([^"]+)"', DANE).group(1)
+        self.assertEqual(pref, DS["trening"]["prefiks_wytrenowanych"])
+        serwer_stanu = czytaj("swiat", "stan_gracza", "zrodla", "SerwerStanu.server.luau")
+        self.assertIn("gracz:SetAttribute(D.trening.prefiks_wytrenowanych .. D.atrybuty_statystyk[s], p.wytrenowane[s])",
+                      serwer_stanu)
+        self.assertIn("pokazWytrenowane(gracz, p)", serwer_stanu)
+
+    def test_9b_wzor(self):
+        self.assertEqual(self.pasek(4, 0, 1), (4, False))
+        self.assertEqual(self.pasek(4, 19, 10), (4, False))
+        self.assertAlmostEqual(self.pasek(4, 20, 10)[0], 40.0)
+        self.assertTrue(self.pasek(4, 20, 10)[1])
+        self.assertEqual(self.pasek(4, 20, 11), (4, False), "awans podnosi limit")
+        # symulator przejścia czyta te same liczby (jedna prawda)
+        sp = os.path.join(REPO, "swiat", "przejscie_gry")
+        if sp not in sys.path:
+            sys.path.append(sp)
+        import symulacja_przejscia as SP  # noqa: E402
+        G = SP.gra()
+        self.assertEqual((G["afk"]["limit_na_poziom"], G["afk"]["ponad_limit"]), (2, 0.1))
+        self.assertEqual(SP.afk_limit(G, 10), 20)
+
+    def test_9c_serwer(self):
+        f = SERWER[SERWER.index("local function pasekDla"):SERWER.index("local function przyrostNaPasek")]
+        self.assertIn("D.pasekPrzyLimicie(D.powtorzenDla(", f)
+        self.assertIn('gracz:GetAttribute("Level")', f)
+        z = SERWER[SERWER.index("local function zacznij"):SERWER.index("-- wejście przez trenera")]
+        self.assertIn("wartosc(gracz, D.prefiksWytrenowanych .. s.atrybut)", z)
+        self.assertIn("wytrenowane = wytr", z)
+        petla = SERWER[SERWER.index("if t.postep >= t.pasek then"):]
+        petla = petla[:petla.index("else")]
+        kol = [petla.index(x) for x in ("dodajStatystyke(gracz, s, ile)", "t.wytrenowane += ile",
+                                         "t.pasek, ponad = pasekDla(gracz, t.id, t.wytrenowane)",
+                                         'Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep, t.pasek, ponad)')]
+        self.assertEqual(kol, sorted(kol))
+        self.assertIn('gracz:SetAttribute("TreningAFKLimit", nil)', SERWER)
+
+    def test_9d_klient(self):
+        self.assertIn("Z.OnClientEvent:Connect(function(akcja, a, b, c, d, e, f)", KLIENT)
+        self.assertIn("podp.Text = if ponad then D.tekstLimitu else PODPOWIEDZ", KLIENT)
+        self.assertIn("pokazLimit(f == true)", KLIENT)
+        p = KLIENT[KLIENT.index('elseif akcja == "punkt" then'):KLIENT.index('elseif akcja == "skillcheck" then')]
+        self.assertIn("pasekReps = d", p)
+        self.assertIn("pokazLimit(e == true)", p)
 
 
 if __name__ == "__main__":

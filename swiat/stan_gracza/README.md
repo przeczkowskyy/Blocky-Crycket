@@ -119,6 +119,7 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
 - **Kara za przegraną (17.11.2026):** `KARA_PROCENT` w `dane.py` (jedna liczba; `0` = wyłączona, potem
   `python -B swiat/stan_gracza/dane.py`) albo atrybut kontenera `KaraPrzegranej`: `false` = wyłączona w czasie gry, liczba
   0..1 = inny ułamek (np. do prób); przechodzi na odbudowany kontener jak `StatystykiKlasy`.
+- **Punkty statystyk od 27.11.2026 (D-165 — decyzja Karola, czeka na Pawła; zmienia D-140):** `PUNKTY_DO_ROZDANIA` = 0, `PUNKTY_SAMO_NA_POZIOM` = 10 — za poziom 10 punktów rozdzielanych samo, licznik „Punkty do rozdania” znika (stara niewydana pula wraca jako punkty rozdzielane samo). Serwer wystawia atrybuty `Wytrenowane<Atrybut>` dla limitu treningu AFK (`src/shared/TreningAFKDane.luau`). Opis niżej to stan z 18.11. Raport: `swiat/przejscie_gry/BALANS_2711.md`.
 - **Punkty statystyk (18.11.2026):** w `dane.py` dwie liczby: `PUNKTY_DO_ROZDANIA` (5, z D-097) i
   `PUNKTY_SAMO_NA_POZIOM` (5 — wariant b; **0 = czysty wariant D-097**, tylko 5 do rozdania); potem
   `python -B swiat/stan_gracza/dane.py` i `zbuduj.py --skrypty`. Atrybut kontenera `PunktyStatystyk = false` w czasie

@@ -115,7 +115,9 @@ class ZgodnoscZDanymiGry(unittest.TestCase):
         ceny = [int(x) for x in re.search(r"ceny = \{([^}]*)\}", t).group(1).replace(" ", "").split(",") if x]
         self.assertEqual(E["ceny"], ceny)
         self.assertEqual(E["maks"], len(ceny))
-        self.assertIsNone(E["limit_na_poziom"])          # limitu treningu w grze nie ma (propozycja)
+        # limit treningu (27.11.2026, dźwignia B): D.limitNaPoziom, D.ponadLimitem
+        self.assertEqual(E["limit_na_poziom"], liczba("limitNaPoziom"))
+        self.assertEqual(E["ponad_limit"], liczba("ponadLimitem"))
 
     def test_bramy_w_kolejnosci(self):
         G = SP.gra()
@@ -179,7 +181,7 @@ class PrzypadkiBrzegowe(unittest.TestCase):
     def test_trening_afk_tempo(self):
         """Sesja na stanowisku: pasek = powtórzenia × czas powtórzenia; ulepszenie skraca pasek; wzmacniacz ×2 tylko
         w swoim czasie; reszta powtórzeń przechodzi na następną sesję; skill checki przyspieszają."""
-        G = SP.gra()
+        G = SP.gra({"afk": dict(SP.BEZ_LIMITU)})          # tempo bez limitu treningu (limit: osobny test)
         E = G["afk"]
         pasek_s = E["powtorzen"] * E["czas_powtorzenia"]
         W, post, dod, t = SP.trening_afk(G, 3600.0, 5, 0, 0.0)
@@ -208,8 +210,16 @@ class PrzypadkiBrzegowe(unittest.TestCase):
         W2, _p, _d, t2 = SP.trening_afk(G2, 3600.0, 5, 0, 0.0)
         self.assertEqual(t2, 3600.0)
         self.assertGreater(W2, 20)
-        self.assertLess(W2, SP.trening_afk(SP.gra(), 3600.0, 5, 0, 0.0)[0])
-        self.assertIsNone(SP.afk_limit(SP.gra(), 5))
+        self.assertLess(W2, SP.trening_afk(SP.gra({"afk": dict(SP.BEZ_LIMITU)}), 3600.0, 5, 0, 0.0)[0])
+        self.assertIsNone(SP.afk_limit(SP.gra({"afk": dict(SP.BEZ_LIMITU)}), 5))
+        # w plikach gry (27.11): 2 × poziom, ponad limitem pasek ×10 — godzina AFK na 5. poziomie: 10 pełnym tempem,
+        # potem co 48 s
+        Gg = SP.gra()
+        self.assertEqual(SP.afk_limit(Gg, 5), 10)
+        Wg, _p, _d, tg = SP.trening_afk(Gg, 3600.0, 5, 0, 0.0)
+        pasek = Gg["afk"]["powtorzen"] * Gg["afk"]["czas_powtorzenia"]
+        self.assertEqual(Wg, 10 + int((3600.0 - 10 * pasek) // (pasek / Gg["afk"]["ponad_limit"])))
+        self.assertEqual(tg, 3600.0)
         self.assertEqual(SP.afk_przyrost(SP.gra({"afk": {"przyrost_co_poziomow": 10}}), 23), G["afk"]["przyrost"] + 2)
         with self.assertRaises(ValueError):
             SP.gra({"afk": {"nie_ma": 1}})
@@ -256,9 +266,13 @@ class PrzypadkiBrzegowe(unittest.TestCase):
                 self.assertEqual(set(Y["afk"]), {str(m) for m in SP.AFK_MINUTY})
                 for v in list(Y["sam"].values()) + list(Y["afk"].values()) + [Y["kowal2"]]:
                     self.assertTrue(0 <= v <= 100)
-        pkt = SP.punkty_afk(G, "wojownik", 30, 16)
+        Gb = SP.gra({"afk": dict(SP.BEZ_LIMITU)})
+        pkt = SP.punkty_afk(Gb, "wojownik", 30, 16)
         self.assertEqual(len(pkt), 3)
-        self.assertAlmostEqual(sum(pkt.values()), SP.trening_afk(G, 1800.0, 16, 0, 0.0)[0], delta=3)
+        self.assertAlmostEqual(sum(pkt.values()), SP.trening_afk(Gb, 1800.0, 16, 0, 0.0)[0], delta=3)
+        # z limitem z plików gry: żadna statystyka nie przekracza limitu o więcej niż wolne paski
+        pkt_g = SP.punkty_afk(G, "wojownik", 30, 16)
+        self.assertTrue(all(v <= SP.afk_limit(G, 16) + 40 for v in pkt_g.values()), pkt_g)
 
     def test_po_zmianie_bez_czekania_na_blokade(self):
         """D-107: po walce nie ma czekania (blokada trwa najwyżej najkrótszy pokaz) — także u niecierpliwego."""

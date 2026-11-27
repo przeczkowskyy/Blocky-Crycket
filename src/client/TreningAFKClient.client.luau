@@ -166,6 +166,12 @@ stopL.ZIndex = 3
 local hp, hs = ulamek(0.17, 0.46, 0.66, 0.11)
 local podp = napis(panel, "Podpowiedz", hp, hs, Color3.fromRGB(255, 236, 180))
 podp.Text = "HIT THE SKILL CHECKS FOR 2X SPEED!"
+-- agent Karola, 27.11 (limit treningu, TreningAFKDane.limitNaPoziom): ponad limitem podpowiedź mówi, że trzeba awansować
+local PODPOWIEDZ, KOLOR_PODPOWIEDZI = podp.Text, podp.TextColor3
+local function pokazLimit(ponad: boolean)
+	podp.Text = if ponad then D.tekstLimitu else PODPOWIEDZ
+	podp.TextColor3 = if ponad then Color3.fromRGB(255, 120, 100) else KOLOR_PODPOWIEDZI
+end
 
 -- skill check: złota moneta z pięścią + „2X”, wokół kurczący się pierścień
 local check = Instance.new("ImageButton")
@@ -965,7 +971,7 @@ local function koniec()
 	end
 end
 
-Z.OnClientEvent:Connect(function(akcja, a, b, c, d, e)
+Z.OnClientEvent:Connect(function(akcja, a, b, c, d, e, f)
 	if akcja == "start" then
 		koniec()
 		aktywne = a
@@ -975,6 +981,7 @@ Z.OnClientEvent:Connect(function(akcja, a, b, c, d, e)
 		postep, tempo, czas = b or 0, 1, 0
 		pasekReps = if typeof(d) == "number" and d > 0 then d else D.powtorzenNaPasek -- agent Karola, 27.11: sklep
 		wzmDo = if typeof(e) == "number" and e > 0 then os.clock() + e else 0
+		pokazLimit(f == true) -- agent Karola, 27.11: limit treningu
 		pokazanyProcent = math.clamp(postep / pasekReps, 0, 1)
 		tytul.Text = s and s.nazwa or "TRAINING"
 		czynnoscL.Text = s and s.czynnosc or ""
@@ -987,6 +994,10 @@ Z.OnClientEvent:Connect(function(akcja, a, b, c, d, e)
 	elseif akcja == "punkt" then
 		local s = aktywne and D.stanowisko(aktywne)
 		postep = c or 0
+		if typeof(d) == "number" and d > 0 then -- agent Karola, 27.11: limit treningu zmienia długość paska
+			pasekReps = d
+		end
+		pokazLimit(e == true)
 		pokazanyProcent = 1
 		wyskok("+" .. tostring(b) .. " " .. (s and s.skrot or ""), s and s.kolor or Color3.new(1, 1, 1))
 		if s then -- agent Karola, 27.11: przyrost po końcu wzmacniacza wraca do zwykłego

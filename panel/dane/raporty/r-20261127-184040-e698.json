@@ -1,0 +1,14 @@
+{
+ "id": "r-20261127-184040-e698",
+ "tytul": "Balans: 10 punktów za poziom, limit treningu, więcej XP w Dżungli",
+ "opis_md": "Karol 27.11: „optymalizacja statystyk i wszystkiego”. Decyzja D-165 (Karol, czeka na Pawła; zmienia D-140).\n\n**Co pokazał symulator (odświeżony do obecnej gry)**\n- Bez treningu AFK gra prawie nie do przejścia: 130 min, u strażników utyka 79–88% graczy, 85% Rybek idzie na kary.\n- Z treningiem za łatwo: minuta AFK zastępowała 3,6 min walki.\n\n**Co zmieniłem w grze**\n- Za każdy poziom +10 punktów statystyk rozdzielanych samo (było 5 + 5 „do rozdania”, których nie było gdzie wydać). Licznik „Punkty do rozdania” znika.\n- Limit treningu AFK: do 2 × poziom gracza punktów na statystykę trening idzie normalnie, powyżej 10 razy wolniej; panel pokazuje „LIMIT: LEVEL UP TO TRAIN FASTER”.\n- Potwory Dżungli dają 25% więcej doświadczenia.\n\n**Efekt w symulacji (na prawdziwych danych po zmianie):** typowy gracz kończy trzy biomy w ok. 80 min (było 89), strażnik za pierwszym razem 60 / 63 / 83%, nikt nie utyka; sama walka 63 min (było 130); minuta AFK oszczędza 0,41 min walki.\n\n**Sprawdzone w grze:** awans daje +10 samo; pasek ponad limitem trwa 48 s zamiast 4,8 s i pojawia się napis; Zwijogon 19. poziomu dał 142 XP (z mnożnikiem); zapis i krótka droga gracza bez błędów.\n\n**Pliki Pawła:** limit w `TreningAFKDane`, `TreningAFK`, `TreningAFKClient` zmienił agent Karola na polecenie Karola — do obejrzenia.\n\n**Do decyzji (pytanie 119):** drzewko umiejętności nie wpływa na walkę; ulepszenia u trenera kosztują 3,7 razy więcej niż wszystkie Rybki z gry; zagroda daje ok. 2% Rybek.\n\nRaport z liczbami: `swiat/przejscie_gry/BALANS_2711.md`.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-27T18:40:40+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg"
+ ],
+ "gra": "bc"
+}

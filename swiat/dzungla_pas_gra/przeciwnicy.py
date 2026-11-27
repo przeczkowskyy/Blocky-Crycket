@@ -35,6 +35,9 @@ if WALKA not in sys.path:
 
 PLIK_WALKI = os.path.join(WALKA, "dane_walki.json")
 K_BIOMU = 1.19   # BALANS_1711.md, część 1: Dżungla (plan rosnący)
+# 27.11.2026 (Karol: „Tak, +25%”, pytanie 70; swiat/przejscie_gry/BALANS_2711.md — czeka na Pawła): doświadczenie z każdego
+# potwora Dżungli × tyle (baza i przyrost na poziom łupu lasu). Powrót: 1.0
+MNOZNIK_DOSWIADCZENIA = 1.25
 KRAINA = "dzungla"
 
 # przepis: potwór lasu (baza) × k, potem zmiany (nadpisania pól i modyfikatorów)
@@ -119,6 +122,7 @@ def przeciwnicy(dane=None):
             "umiejetnosci": list(p["umiejetnosci"]),
             "lup": copy.deepcopy(po_id[LUP_PO_RANDZE[p["ranga"]]]["lup"]),
         }
+        d["lup"]["doswiadczenie"] = [round(x * MNOZNIK_DOSWIADCZENIA, 4) for x in d["lup"]["doswiadczenie"]]
         d["statystyki"]["sila"] = [round(x * k, 4) for x in d["statystyki"]["sila"]]
         for nazwa, para in (p.get("statystyki_zmiana") or {}).items():
             d["statystyki"][nazwa] = list(para)

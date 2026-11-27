@@ -426,6 +426,11 @@ local function przyznajPunkty(gracz: Player)
 		end
 		p.punkty.poziom = poziom -- najwyższy poziom, za który już są punkty i Gemy (spadek i powrót niczego nie dają)
 	end
+	if D.punkty.na_poziom == 0 and p.punkty.pula > 0 then
+		-- agent Karola, 27.11 (dźwignia A, BALANS_2711.md): punkty do rozdania ze starych zapisów nie mają już przycisku —
+		-- ich wartość daje teraz pula rozdzielana samo (10 na poziom), więc stara pula znika (licznik na dole schowany)
+		p.punkty.pula = 0
+	end
 	local v = if punktyWlaczone() then p.punkty.pula else nil
 	if gracz:GetAttribute(D.punkty.atrybut) ~= v then
 		gracz:SetAttribute(D.punkty.atrybut, v)
@@ -1064,6 +1069,7 @@ local function przyrostTreningu(gracz: any, info: any)
 	local s, n = w[1], w[2]
 	local p = profil(gracz)
 	p.wytrenowane[s] += n
+	gracz:SetAttribute(D.trening.prefiks_wytrenowanych .. D.atrybuty_statystyk[s], p.wytrenowane[s])
 	local nazwa = D.atrybuty_statystyk[s]
 	local obecna = L.statystykaZ(D, gracz:GetAttribute(nazwa))
 	if obecna ~= nil then
@@ -1186,7 +1192,19 @@ end
 
 -- profil z zapisu → atrybuty gracza (przed podłączeniem słuchaczy; statystyki liczy potem zastosujBaze od nowa:
 -- rozkład klasy dla poziomu + trening + rozdane punkty)
+-- 27.11.2026 (limit treningu AFK, BALANS_2711.md): wytrenowane punkty każdej statystyki (profil „wytrenowane”) jako
+-- atrybuty gracza D.trening.prefiks_wytrenowanych .. atrybut statystyki — serwer TreningAFK liczy z nich limit
+local function pokazWytrenowane(gracz: Player, p)
+	for s, nazwa in D.atrybuty_statystyk do
+		local v = p.wytrenowane[s] or 0
+		if gracz:GetAttribute(D.trening.prefiks_wytrenowanych .. nazwa) ~= v then
+			gracz:SetAttribute(D.trening.prefiks_wytrenowanych .. nazwa, v)
+		end
+	end
+end
+
 local function zastosujProfil(gracz: Player, p)
+	pokazWytrenowane(gracz, p)
 	gracz:SetAttribute(A.poziom, p.poziom)
 	gracz:SetAttribute(A.xp, p.xp)
 	gracz:SetAttribute(A.zloto, p.zloto)
@@ -1315,6 +1333,11 @@ local function poWczytaniu(gracz: Player, stan: string, dane, powod: string?)
 end
 
 local function nowyGracz(gracz: Player)
+	for _, nazwa in D.atrybuty_statystyk do -- agent Karola, 27.11: wytrenowane od wejścia 0 (wczytany profil nadpisze)
+		if gracz:GetAttribute(D.trening.prefiks_wytrenowanych .. nazwa) == nil then
+			gracz:SetAttribute(D.trening.prefiks_wytrenowanych .. nazwa, 0)
+		end
+	end
 	if zapis and not zapis.wylaczony then
 		zapisy[gracz] = { stan = "wczytywanie", trwa = false, kolejka = {}, wyszedl = false, t0 = os.clock() }
 		gracz:SetAttribute("StanGraczaWczytany", false)

@@ -148,8 +148,8 @@ return {
 	},
 	pakiety = { wartosci_maks = 2000, glebokosc_maks = 8, napis_maks = 200, pakietow_maks = 32 },
 	punkty = {
-		na_poziom = 5,
-		auto_na_poziom = 5,
+		na_poziom = 0,
+		auto_na_poziom = 10,
 		atrybut = "PunktyDoRozdania",
 		atrybut_wylacznika = "PunktyStatystyk",
 		komunikat_brak = "Brak punktów — zdobądź poziom",
@@ -210,7 +210,7 @@ return {
 	},
 	rozklady_klas = { tryb = "wzorcowe", atrybut = "RozkladyKlas", tryby = { "wzorcowe", "classdata" } },
 	klasy_pawla = { folder = "Shared", modul = "ClassData", czekaj_s = 10 },
-	trening = { kontener = "TreningProba", sygnal = "PrzyrostStatystyki" },
+	trening = { kontener = "TreningProba", sygnal = "PrzyrostStatystyki", prefiks_wytrenowanych = "Wytrenowane" },
 	hud = { gui = "HUD", czekaj_s = 60 },
 	baner = {
 		gui = "StanGraczaBaner",
@@ -2300,13 +2300,13 @@ return {
 		pula_sama = {
 			{ poziom = 1, wl = true, wynik = 30 },
 			{ poziom = 1, wl = false, wynik = 30 },
-			{ poziom = 2, wl = true, wynik = 35 },
+			{ poziom = 2, wl = true, wynik = 40 },
 			{ poziom = 2, wl = false, wynik = 40 },
-			{ poziom = 5, wl = true, wynik = 50 },
+			{ poziom = 5, wl = true, wynik = 70 },
 			{ poziom = 5, wl = false, wynik = 70 },
-			{ poziom = 11, wl = true, wynik = 80 },
+			{ poziom = 11, wl = true, wynik = 130 },
 			{ poziom = 11, wl = false, wynik = 130 },
-			{ poziom = 999, wl = true, wynik = 5020 },
+			{ poziom = 999, wl = true, wynik = 10010 },
 			{ poziom = 999, wl = false, wynik = 10010 },
 		},
 		zmiana = {
@@ -2324,5 +2324,5 @@ return {
 			{ znana = 9999, nowa = 10000, pula = 5, wynik = { 9999, 5, "ok" } },
 		},
 	},
-	skrot = "46d26622473e",
+	skrot = "811938dd59d8",
 }

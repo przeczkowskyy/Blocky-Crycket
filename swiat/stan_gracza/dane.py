@@ -53,8 +53,11 @@ PAKIETY_PRZYCHODOW = ["PetyProba"]                                            # 
 # punkty statystyk za poziom (D-097 ✅ 17.11: „5 punktów do rozdania za poziom”). PUNKTY_SAMO_NA_POZIOM = ile
 # punktów na poziom rozdziela się SAMO rozkładem klasy: 5 = wariant b (odstępstwo przyjęte roboczo dla balansu — suma
 # 10 jak przy strojeniu potworów); 0 = czysty wariant a z D-097 (las ok. 61 zamiast 31 min — punkty_statystyk.py)
-PUNKTY_DO_ROZDANIA = 5
-PUNKTY_SAMO_NA_POZIOM = 5
+# 27.11.2026 (Karol, dźwignia A z swiat/przejscie_gry/BALANS_2711.md; zmienia D-140, czeka na Pawła): przyciski „+”
+# zniknęły 24.11, więc punkty do rozdania były martwe — wszystkie 10 na poziom rozdziela się samo, do rozdania 0
+# (licznik na dole ekranu się chowa). Powrót do stanu sprzed 27.11: 5 i 5.
+PUNKTY_DO_ROZDANIA = 0
+PUNKTY_SAMO_NA_POZIOM = 10
 
 # Gemy bez płacenia (D-099 ✅ 17.11; liczby „do zmiany”, tools/walka/REBIRTH_1711.md część 1): za każdy awans i za
 # pierwsze pokonanie strażnika każdego biomu (gatunek zaczyna się od PREFIKS_STRAZNIKA); za co dziesiątą wygraną
@@ -270,7 +273,9 @@ def podstawa():
                   "start": {"gemy": 0, "zloto": 0}},
         "rozklady_klas": {"tryb": ROZKLADY_KLAS, "atrybut": "RozkladyKlas", "tryby": ["wzorcowe", "classdata"]},
         "klasy_pawla": {"folder": "Shared", "modul": "ClassData", "czekaj_s": 10},
-        "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki"},
+        # 27.11.2026 (dźwignia B, BALANS_2711.md): wytrenowane punkty każdej statystyki jako atrybut gracza
+        # prefiks_wytrenowanych .. atrybut statystyki (np. WytrenowaneStrength) — czyta je limit treningu AFK
+        "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki", "prefiks_wytrenowanych": "Wytrenowane"},
         "hud": {"gui": "HUD", "czekaj_s": 60},
         "baner": {"gui": "StanGraczaBaner", "tekst": "POZIOM %d", "podpis": "AWANS!", "podpis_wiele": "AWANS x%d!",
                   "czas_s": 2.6, "opoznienie_po_hud_s": 0.5, "wysokosc": 0.24, "szer_px": 460, "wys_px": 130,

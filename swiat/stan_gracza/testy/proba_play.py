@@ -37,7 +37,10 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
       ekwipunku (AddStatPoint:FireServer("Luck") — StatPoints Pawła) zdejmuje punkt; po wydaniu wszystkich kolejny „+”
       jest cofnięty i klient pokazuje „Brak punktów — zdobądź poziom”. Od 26.11.2026: gdy „+” klienta nic nie zmienia
       (Paweł wyłączył go 24.11, 33a7dbf, D-140) — ten sam przebieg zmianą atrybutu z serwera (strażnik statystyk),
-      a wynik to „?” (punkty bez sposobu wydania w grze, decyzja o wdrożeniu D-140), BŁĄD tylko przy złym strażniku
+      a wynik to „?” (punkty bez sposobu wydania w grze, decyzja o wdrożeniu D-140), BŁĄD tylko przy złym strażniku.
+      Od 27.11.2026 (dźwignia A, swiat/przejscie_gry/BALANS_2711.md: 0 do rozdania, 10 samo): Level + 1 z serwera →
+      suma sześciu statystyk rośnie dokładnie o auto_na_poziom, PunktyDoRozdania 0 (albo brak), licznik na dole ekranu
+      schowany, atrybuty Wytrenowane<Atrybut> są liczbami; zrzut 15_awans_10_punktow
   S15 (18.11.2026) „szczęście początkującego”: przed pierwszą walką S03 źródło modyfikatorów „szczescie_poczatkujacego”
       jest w stanie gracza, po pierwszej wygranej go nie ma (pierwsza walka Wojownika ze slime'em — wygrana)
   S12 (h) konsola: bez błędów naszych skryptów ([StanGracza], [LasPasGra], [LasPotwory], „Script …StanGracza”);
@@ -854,13 +857,43 @@ def main():
                     ok14 = (a1.get("Luck") == (a0.get("Luck") or 0) + 1 and a1.get("PunktyDoRozdania") == pula0 - 1
                             and a2.get("PunktyDoRozdania") == 0 and a2.get("Luck") == (a0.get("Luck") or 0) + pula0
                             and a3.get("Luck") == a2.get("Luck") and kom.get("ostatni") == D["punkty"]["komunikat_brak"])
+                if D["punkty"]["na_poziom"] == 0:
+                    # 27.11.2026 (dźwignia A): bez punktów do rozdania — awans rozdziela samo auto_na_poziom punktów
+                    STATY = ["Strength", "Constitution", "Intelligence", "Dexterity", "Luck", "Armor"]
+                    wytr = ["Wytrenowane" + s_ for s_ in STATY]
+                    b0 = js(KOD["gracz_atr"] % lua_lista(["Level", "PunktyDoRozdania"] + STATY + wytr), "Server")
+                    luau(KOD["plus_serwer"] % ("Level", "Level"), "Server")
+                    b1 = czekaj_na(lambda: (lambda a: a if a.get("Level") == (b0.get("Level") or 0) + 1
+                                            and sum((a.get(s_) or 0) for s_ in STATY) != sum((b0.get(s_) or 0) for s_ in STATY)
+                                            else None)(js(KOD["gracz_atr"] % lua_lista(["Level", "PunktyDoRozdania"] + STATY + wytr),
+                                                          "Server")), 6, 0.3) or {}
+                    time.sleep(0.8)
+                    licz = js('local lp = game:GetService("Players").LocalPlayer local g = lp.PlayerGui:FindFirstChild('
+                              '"StanGraczaPunkty") local l = g and g:FindFirstChild("Tekst") '
+                              'return game:GetService("HttpService"):JSONEncode({ widac = l ~= nil and l.Visible, '
+                              'tekst = l and l.Text or false })', "Client")
+                    ok_z15 = zrzut("15_awans_10_punktow")
+                    przyrost = sum((b1.get(s_) or 0) for s_ in STATY) - sum((b0.get(s_) or 0) for s_ in STATY)
+                    ok14 = (bool(b1) and przyrost == D["punkty"]["auto_na_poziom"]
+                            and (b1.get("PunktyDoRozdania") or 0) == 0 and not licz.get("widac")
+                            and all(isinstance(b1.get(w_), (int, float)) for w_ in wytr))
+                    przebieg14.update(awans={"przed": b0, "po": b1, "przyrost": przyrost, "licznik": licz, "zrzut": ok_z15})
                 zapisz("S14", przebieg14)
                 opis14 = "punkty %s, Luck %s → %s (pula %s) → wszystkie %s → ponad pulę %s, komunikat %r" % (
                     pula0, a0.get("Luck"), (przebieg14.get("po_plusie") or {}).get("Luck"),
                     (przebieg14.get("po_plusie") or {}).get("PunktyDoRozdania"),
                     (przebieg14.get("wszystkie") or {}).get("Luck"), (przebieg14.get("ponad") or {}).get("Luck"),
                     (przebieg14.get("komunikat") or {}).get("ostatni"))
-                if not (isinstance(pula0, (int, float)) and pula0 > 0):
+                if D["punkty"]["na_poziom"] == 0:
+                    aw = przebieg14.get("awans") or {}
+                    punkt("S14", ok14, "awans %s → %s: suma statystyk +%s (ma być +%d samo), PunktyDoRozdania %s, licznik "
+                          "na dole %s, Wytrenowane* %s; zrzut 15 %s" % (
+                              (aw.get("przed") or {}).get("Level"), (aw.get("po") or {}).get("Level"), aw.get("przyrost"),
+                              D["punkty"]["auto_na_poziom"], (aw.get("po") or {}).get("PunktyDoRozdania"),
+                              "widać" if (aw.get("licznik") or {}).get("widac") else "schowany",
+                              "są" if all(isinstance((aw.get("po") or {}).get("Wytrenowane" + s_), (int, float))
+                                          for s_ in ("Strength", "Luck")) else "brak", aw.get("zrzut")))
+                elif not (isinstance(pula0, (int, float)) and pula0 > 0):
                     punkt("S14", None, opis14)
                 elif plus_dziala:
                     punkt("S14", ok14, "„+” klienta (AddStatPoint): " + opis14)

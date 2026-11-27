@@ -775,15 +775,17 @@ class TestSerweraOffline(unittest.TestCase):
         oczek = LS.rozdziel(D, ROZKLADY_GRY["mag"], LS.pula_sama(D, 2))
         self.assertEqual(self.staty(), oczek)
         self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"])
+        # 27.11.2026: przy 0 punktach do rozdania (dźwignia A, BALANS_2711.md) „+” jest cofany — przyjęty tylko z punktem
+        plus = 1 if D["punkty"]["na_poziom"] > 0 else 0
         self.g.ustaw("Luck", self.atr("Luck") + 1)
-        oczek["szczescie"] += 1
-        self.assertEqual(self.staty(), oczek, "„+” z punktem przyjęty")
-        self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"] - 1)
+        oczek["szczescie"] += plus
+        self.assertEqual(self.staty(), oczek, "„+” z punktem przyjęty, bez punktu cofnięty")
+        self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"] - plus)
         self.g.ustaw("Level", 3)
         oczek3 = LS.rozdziel(D, ROZKLADY_GRY["mag"], LS.pula_sama(D, 3))
-        oczek3["szczescie"] += 1
+        oczek3["szczescie"] += plus
         self.assertEqual(self.staty(), oczek3, "awans dopisał różnicę, rozdany punkt został")
-        self.assertEqual(self.atr("PunktyDoRozdania"), 2 * D["punkty"]["na_poziom"] - 1)
+        self.assertEqual(self.atr("PunktyDoRozdania"), 2 * D["punkty"]["na_poziom"] - plus)
 
     def test_8c_pokaz_od_klienta_i_gemy_drzewka(self):
         self.uruchom()
@@ -851,6 +853,9 @@ class TestSerweraOffline(unittest.TestCase):
         self.przyrost.odpal(self.g.t, LM.do_luau({"statystyka": "sila", "atrybut": "Strength", "przyrost": 2}))
         self.przyrost.odpal(self.g.t, LM.do_luau({"atrybut": "Mana", "przyrost": 5}))  # nieznana — pominięta
         self.assertEqual(self.atr("Strength"), przed["sila"] + 2)
+        # 27.11.2026: wytrenowane punkty statystyki jako atrybut (limit treningu AFK); inne statystyki 0 albo brak
+        self.assertEqual(self.atr(D["trening"]["prefiks_wytrenowanych"] + "Strength"), 2)
+        self.assertIn(self.atr(D["trening"]["prefiks_wytrenowanych"] + "Luck"), (None, 0))
         self.g.ustaw("Level", 5)  # np. tester w pasku poleceń
         cel = LS.rozdziel(D, ROZKLADY_GRY["wojownik"], LS.pula_sama(D, 5))
         self.assertEqual(self.atr("Strength"), cel["sila"] + 2)
@@ -884,6 +889,20 @@ class TestSerweraOffline(unittest.TestCase):
         cel = LS.rozdziel(D, ROZKLADY_GRY["zwiadowca"], LS.pula_sama(D, 3))
         self.assertEqual(self.atr("Armor"), cel["pancerz"] + 1)
         self.assertEqual(self.atr("PunktyDoRozdania"), 0, "punkty za poziomy z czasu wyłączenia nie dochodzą")
+
+    def test_8q_stara_pula_bez_punktow_do_rozdania(self):
+        # 27.11.2026 (dźwignia A): profil ze starą pulą do rozdania (np. 45 z czasów 5 na poziom) — przy na_poziom = 0
+        # pula znika przy najbliższym przeliczeniu punktów, licznik 0; statystyki z puli rozdzielanej samo
+        if D["punkty"]["na_poziom"] != 0:
+            self.skipTest("punkty do rozdania włączone w danych")
+        self.uruchom()
+        self.g.ustaw("Class", "Warrior")
+        stan = self.wywolaj("SterowanieSerwera", "stan", self.g.t)
+        self.assertIn("punkty", stan)
+        self.g.ustaw("Level", 4)
+        self.assertEqual(self.atr("PunktyDoRozdania"), 0)
+        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_GRY["wojownik"], LS.pula_sama(D, 4)))
+        self.assertEqual(LS.pula_sama(D, 4) - LS.pula_sama(D, 3), D["punkty"]["auto_na_poziom"])
 
     def test_8p_punkty_do_rozdania(self):
         # D-097: 5 do rozdania za poziom; „+” z punktem przyjęty, bez punktu i spadek cofnięte; trening osobno
@@ -1270,7 +1289,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.k.ustaw(D["rozklady_klas"]["atrybut"], "wzorcowe")
         oczek = LS.rozdziel(D, D["rozklady"]["mag"], LS.pula_sama(D, 2))
         oczek["sila"] += 3
-        oczek["szczescie"] += 1
+        oczek["szczescie"] += 1 if D["punkty"]["na_poziom"] > 0 else 0   # bez punktów do rozdania „+” cofnięty
         self.assertEqual(self.staty(), oczek)
         self.assertEqual(self.k.atrybuty["RozkladyZ"], rozklady_z(tryb="wzorcowe"))
         self.assertEqual(self.ostrzezenia(), [])

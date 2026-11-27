@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Próba wejścia do sali treningu AFK przez trenera (tryb Play, 26.11.2026, zlecenie Karola) i sklepu trenera
 (27.11.2026, polecenie Pawła: ulepszenia stanowisk i wzmacniacze ×2). Nie zmienia miejsca: sama włącza i wyłącza Play,
-niczego nie zapisuje i nie publikuje (bez magazynu próby stan gracza nie zapisuje profilu). Ok. 10–12 minut.
+niczego nie zapisuje i nie publikuje (bez magazynu próby stan gracza nie zapisuje profilu). Ok. 12–14 minut.
 
     python -B swiat/trening_proba/testy/proba_afk_trener.py <folder wyników POZA repo> [--studio <id>] [--bez-zrzutow]
 
@@ -39,6 +39,11 @@ LISTA (OK / BŁĄD / ?):
       trening Szczęścia: pełny pasek w trakcie daje +2 (licznik nad panelem widać — zrzut 05_panel_wzmacniacz), po
       15 s +1; czas przywrócony
   S08 zakup z daleka (25 st od trenera, zdalnym zdarzeniem) → odmowa „daleko”, Gold bez zmian
+  L01 (27.11, limit treningu — swiat/przejscie_gry/BALANS_2711.md) Inteligencja na poziomie, przy którym do limitu
+      (D.limitNaPoziom × poziom) brakuje 3–4 punktów: tyle pasków w zwykłym tempie (co ok. 4,8 s), potem atrybut
+      TreningAFKLimit = true i podpowiedź panelu = D.tekstLimitu; zrzut 07_panel_limit
+  L02 następny pasek ponad limitem trwa ok. 48 s (4 powtórzenia × 1,2 s ÷ D.ponadLimitem 0,1), ±4 s
+  (S03–S07 liczą się na 50. poziomie — limit 100 punktów nie wchodzi w pomiar sklepu)
   B30 zamykanie okna: X (klik), stuknięcie obok okna (klik w tło), przycisk B pada, odejście od trenera
   B40 zrzuty: 01_okno_trenera (okno otwarte), 02_sala_od_wejscia (korytarz od przedsionka), 03_wejscie_placyk (wejście
       do sali i studnia z placyku), 06_sala_z_gory (cała sala przez szklany dach); „?” przy --bez-zrzutow
@@ -155,6 +160,14 @@ KOD = {
                       'local v = f and f:Invoke("czytaj", gracz, "TreningAFK") '
                       'return H:JSONEncode({ stan = s ~= nil, dane = v or false, gold = gracz:GetAttribute("Gold") or 0 })'),
     "zloto": GR + 'gracz:SetAttribute("Gold", %d) return "ok"',
+    # limit treningu (27.11.2026)
+    "poziom": GR + 'gracz:SetAttribute("Level", %d) return "ok"',
+    "limit_s": (H + GR + 'return H:JSONEncode({ poziom = gracz:GetAttribute("Level") or false, '
+                'wytr = gracz:GetAttribute("WytrenowaneIntelligence") or 0, limit = gracz:GetAttribute("TreningAFKLimit") or false, '
+                'intel = gracz:GetAttribute("Intelligence") or 0, afk = gracz:GetAttribute("TreningAFK") or false })'),
+    "limit_k": (H + LP + 'local t = lp.PlayerGui:FindFirstChild("TreningAFK") local p = t and t:FindFirstChild("Panel") '
+                'local d = p and p:FindFirstChild("Podpowiedz") return H:JSONEncode({ podp = d and d.Text or false, '
+                'panel = t ~= nil and t.Enabled })'),
     "kup": 'game:GetService("ReplicatedStorage").TreningAFK:FireServer("kup", "%s", "%s") return "ok"',
     "kup_seria": ('local Z = game:GetService("ReplicatedStorage").TreningAFK for i = 1, 5 do '
                   'Z:FireServer("kup", "wzmacniacz", "%s") task.wait(0.02) end return "ok"'),
@@ -574,6 +587,9 @@ def main():
                   "LV UP Siły → poziom %s, Gold %s, profil %s, tytuł „%s”" % (
                       a["kafle"]["Sila"]["poziom"], pa.get("gold"), dane_, a.get("tytul")))
             # -------------------------------------------------------------- S03 ulepszenie zmienia przyrost
+            # 27.11.2026: limit treningu (2 × poziom) — pomiar sklepu na 50. poziomie, żeby limit nie wydłużał pasków
+            luau(KOD["poziom"] % 50, "Server")
+            time.sleep(0.5)
             u1 = trenuj("Sila", 3, 25)
             u0 = trenuj("Kondycja", 3, 25)
             zakoncz_trening()
@@ -643,6 +659,38 @@ def main():
             zapisz("S08", {"odmowa": a.get("odmowa"), "gold": [g0, pa.get("gold")]})
             punkt("S08", a.get("odmowa") == "daleko" and pa.get("gold") == g0,
                   "zakup 25 st od trenera → odmowa „%s”, Gold %s → %s" % (a.get("odmowa"), g0, pa.get("gold")))
+
+            # -------------------------------------------------------------- L01–L02 limit treningu (27.11.2026)
+            zakoncz_trening()
+            lim0 = js(KOD["limit_s"], "Server")
+            wytr0 = int(lim0.get("wytr") or 0)
+            poz_l = wytr0 // 2 + 2                     # limit 2 × poziom = 3–4 punkty ponad to, co już wytrenowane
+            luau(KOD["poziom"] % poz_l, "Server")
+            time.sleep(0.5)
+            do_limitu = 2 * poz_l - wytr0
+            t_l0 = time.time()
+            l1 = trenuj("Inteligencja", do_limitu, 8 + 6 * do_limitu)
+            pkt_l = l1.get("punkty") or []
+            time.sleep(1.0)
+            ls1, lk1 = js(KOD["limit_s"], "Server"), js(KOD["limit_k"], "Client")
+            ok_z7 = zrzut("07_panel_limit")
+            od_l = odstepy(pkt_l)
+            sr_l = sum(od_l) / len(od_l) if od_l else 0
+            zapisz("L01", {"przed": lim0, "poziom": poz_l, "do_limitu": do_limitu, "odstepy": od_l, "po": ls1, "klient": lk1})
+            punkt("L01", len(pkt_l) >= do_limitu and (not od_l or abs(sr_l - 4.8) < 0.6) and ls1.get("limit") is True
+                  and ls1.get("wytr") == 2 * poz_l and lk1.get("podp") == "LIMIT: LEVEL UP TO TRAIN FASTER",
+                  "poziom %d, wytrenowane %d → %s (limit %d), %d pasków co %.2f s, TreningAFKLimit %s, podpowiedź „%s”, "
+                  "zrzut 07 %s" % (poz_l, wytr0, ls1.get("wytr"), 2 * poz_l, len(pkt_l), sr_l, ls1.get("limit"),
+                                   lk1.get("podp"), ok_z7))
+            # L02: następny pasek ponad limitem (ok. 48 s)
+            t_ost = pkt_l[-1]["t"] if pkt_l else None
+            l2 = czekaj_na(lambda: (lambda s_: s_ if len(s_.get("punkty") or []) >= do_limitu + 1 else None)(sklep()), 62, 1.0)                 or sklep()
+            pkt_l2 = l2.get("punkty") or []
+            wolny = round(pkt_l2[do_limitu]["t"] - t_ost, 2) if t_ost is not None and len(pkt_l2) > do_limitu else None
+            zakoncz_trening()
+            zapisz("L02", {"pasek_ponad_s": wolny, "czas_proby_s": round(time.time() - t_l0, 1)})
+            punkt("L02", wolny is not None and abs(wolny - 48.0) <= 4.0,
+                  "pasek ponad limitem: %s s (ma być ok. 48 s = 10 × 4,8 s)" % wolny)
 
             # -------------------------------------------------------------- B30 zamykanie okna
             zam = {}

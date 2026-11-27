@@ -321,7 +321,7 @@ end
 -- postep liczony w powtórzeniach (0 … D.powtorzenNaPasek); skill check: serwer losuje chwilę i numer,
 -- klient odsyła numer; trafienie w oknie czasu = przyspieszenie
 type Trening = { id: string, postep: number, pasek: number, nastepnyCheck: number, check: number?, checkDo: number,
-	szybkoDo: number }
+	szybkoDo: number, wytrenowane: number } -- agent Karola, 27.11: wytrenowane — limit treningu
 local trwa: { [Player]: Trening } = {}
 local postepy: { [Player]: { [string]: number } } = {} -- niepełny pasek stanowiska zostaje, gdy gracz odejdzie
 local licznikCheck = 0
@@ -430,9 +430,11 @@ local function zostaloW(gracz: Player, atrybut: string): number
 	return if koniec then math.max(0, koniec - os.time()) else 0
 end
 
-local function pasekDla(gracz: Player, id: string): number
+-- agent Karola, 27.11: + limit treningu (D.pasekPrzyLimicie; wytrenowane = punkty tej statystyki z treningu) → (pasek, ponad)
+local function pasekDla(gracz: Player, id: string, wytrenowane: number): (number, boolean)
 	local sk = sklepy[gracz]
-	return D.powtorzenDla(sk and sk.u[id] or 0)
+	local lv = gracz:GetAttribute("Level")
+	return D.pasekPrzyLimicie(D.powtorzenDla(sk and sk.u[id] or 0), wytrenowane, if typeof(lv) == "number" then lv else 1)
 end
 
 local function przyrostNaPasek(gracz: Player, s: any): number
@@ -499,6 +501,7 @@ local function zakoncz(gracz: Player)
 	trwa[gracz] = nil
 	oznaczZajete()
 	gracz:SetAttribute("TreningAFK", nil)
+	gracz:SetAttribute("TreningAFKLimit", nil) -- agent Karola, 27.11: limit treningu
 	local hrp, hum = korzen(gracz)
 	if hrp and hum then
 		hrp.Anchored = false
@@ -531,12 +534,17 @@ local function zacznij(gracz: Player, id: string)
 	hrp.CFrame = pozaKorzenia(id, hum, hrp)
 	hrp.Anchored = true
 	-- agent Karola, 27.11: pasek krótszy o ulepszenie stanowiska, przyrost × wzmacniacz (sklep trenera)
-	local pasek = pasekDla(gracz, id)
+	-- agent Karola, 27.11: wytrenowane punkty z atrybutu stanu gracza; dalej liczone tu po każdym pasku (sygnał do stanu
+	-- gracza może dojść klatkę później)
+	local wytr = wartosc(gracz, D.prefiksWytrenowanych .. s.atrybut)
+	local pasek, ponad = pasekDla(gracz, id, wytr)
 	local p = math.min((postepy[gracz] and postepy[gracz][id]) or 0, pasek * 0.999)
-	trwa[gracz] = { id = id, postep = p, pasek = pasek, nastepnyCheck = losujCheck(), check = nil, checkDo = 0, szybkoDo = 0 }
+	trwa[gracz] = { id = id, postep = p, pasek = pasek, nastepnyCheck = losujCheck(), check = nil, checkDo = 0, szybkoDo = 0,
+		wytrenowane = wytr }
 	oznaczZajete()
 	gracz:SetAttribute("TreningAFK", id)
-	Z:FireClient(gracz, "start", id, p, przyrostNaPasek(gracz, s), pasek, zostaloW(gracz, s.atrybut))
+	gracz:SetAttribute("TreningAFKLimit", ponad)
+	Z:FireClient(gracz, "start", id, p, przyrostNaPasek(gracz, s), pasek, zostaloW(gracz, s.atrybut), ponad)
 end
 
 ------------------------------------------------------------------ wejście przez trenera (agent Karola, 26.11)
@@ -735,7 +743,12 @@ RunService.Heartbeat:Connect(function(dt)
 			t.postep -= t.pasek
 			local ile = przyrostNaPasek(gracz, s)
 			dodajStatystyke(gracz, s, ile)
-			Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep)
+			-- agent Karola, 27.11: limit treningu — następny pasek liczony od nowych wytrenowanych punktów
+			t.wytrenowane += ile
+			local ponad
+			t.pasek, ponad = pasekDla(gracz, t.id, t.wytrenowane)
+			gracz:SetAttribute("TreningAFKLimit", ponad)
+			Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep, t.pasek, ponad)
 		else
 			Z:FireClient(gracz, "postep", t.postep, tempo)
 		end

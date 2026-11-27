@@ -150,10 +150,11 @@ TRYBY = {
                      "trening_min_na_h": 20, "pety": False, "kowal": False, "sklep": False, "sklep_trenera": True},
 }
 
-# Pula statystyk za poziom (serwer stanu, LogikaStanu.pulaSama): "gra" = jak dziś na main — 30 + auto_na_poziom × (L − 1)
-# rozdzielane samo (punktów „do rozdania” od 24.11 nie ma czym wydać, przyciski „+” zniknęły); "rozdane" = gracz wydaje
-# też punkty do rozdania (jak przed 24.11: 30 + 10 × (L − 1)); "d140" = D-140 wdrożona (za poziom tylko Diamenty: 30).
-PUNKTY = ("gra", "rozdane", "d140")
+# Pula statystyk za poziom (serwer stanu, LogikaStanu.pulaSama): "gra" = jak w plikach gry — 30 + auto_na_poziom × (L − 1)
+# rozdzielane samo (od 27.11 auto_na_poziom = 10, do rozdania 0 — dźwignia A z BALANS_2711.md); "rozdane" = pełna pula
+# wzorcowa 30 + 10 × (L − 1); "piec" = stan sprzed 27.11 (5 samo, 5 do rozdania bez przycisków „+”); "d140" = D-140
+# wdrożona (za poziom tylko Diamenty: 30).
+PUNKTY = ("gra", "rozdane", "piec", "d140")
 
 # Zakupy u trenera (D-164) — założenia o graczu, nie liczby gry: kupuje kolejny poziom stanowiska, gdy po zakupie zostaje
 # mu co najmniej tyle × cena (reszta idzie na przedmioty i jajka); wzmacniacz — tylko na sesję ≥ wzmacniacz_od_s
@@ -178,27 +179,24 @@ BIOMY = [  # kolejność krain i ich pliki (dane gry)
 # Propozycje zmian liczb, liczone na KOPII danych (pliki gry zostają nietknięte). Opis pól: zastosuj_zmiany.
 # Życie Strażnika Topieli i Węża Stu Lian −15% jest już w plikach gry (D-111, 19.11) — propozycje −15% / −30% i „razem”
 # z tym życiem zniknęły z listy; „xp_dzungli” liczy się teraz na Strażnikach po D-111.
-# 27.11.2026 (BALANS_2711.md): A = punkty za poziom wracają do 10 rozdzielanych samo (stan gracza), B = limit treningu
-# AFK zależny od poziomu (TreningAFKDane — pola, których w grze jeszcze nie ma), C = tańsze ulepszenia stanowisk.
-LIMIT_AFK = {"limit_na_poziom": 2, "ponad_limit": 0.1}
+# 27.11.2026 (BALANS_2711.md): A (10 punktów samo na poziom), B (limit treningu AFK) i doświadczenie Dżungli ×1,25 są
+# WDROŻONE w plikach gry (Karol 27.11, czeka na Pawła) — „bez zmian” = stan po wdrożeniu; reszta to porównania: stan
+# sprzed 27.11 i pojedyncze dźwignie cofnięte na kopii danych.
+BEZ_LIMITU = {"limit_na_poziom": None, "ponad_limit": 1.0}
+XP_DZUNGLI_COFNIETE = {"dzungla": {"doswiadczenie": 0.8}}          # × 0,8 = z powrotem × 1,0 (dane mają × 1,25)
 PROPOZYCJE = {
-    "bez_zmian": {"nazwa": "Bez zmian (liczby z plików gry)", "zmiany": {}},
-    "a_punkty": {"nazwa": "A: 10 punktów za poziom rozdzielanych samo", "zmiany": {"punkty": "rozdane"}},
-    "b_limit": {"nazwa": "B: limit treningu 2 × poziom na statystykę (ponad limitem pasek ×10)",
-                "zmiany": {"afk": dict(LIMIT_AFK)}},
-    "ab": {"nazwa": "A + B", "zmiany": {"punkty": "rozdane", "afk": dict(LIMIT_AFK)}},
-    "abc": {"nazwa": "A + B + C: ulepszenia stanowisk 150 / 350 / 800 / 1800 / 4200",
-            "zmiany": {"punkty": "rozdane", "afk": dict(LIMIT_AFK, ceny=[150, 350, 800, 1800, 4200])}},
-    "ab_xp_dzungli": {"nazwa": "Dla porównania: A + B i doświadczenie Dżungli +25% (pytanie 70)",
-                      "zmiany": {"punkty": "rozdane", "afk": dict(LIMIT_AFK), "lup": {"dzungla": {"doswiadczenie": 1.25}}}},
-    "ab_dluzsza": {"nazwa": "Dla porównania: A + B i krzywa doświadczenia ×1,5 (dłuższa gra)",
-                   "zmiany": {"punkty": "rozdane", "afk": dict(LIMIT_AFK), "krzywa_a": 1.5}},
+    "bez_zmian": {"nazwa": "Wdrożone 27.11: A + B + doświadczenie Dżungli ×1,25 (pliki gry)", "zmiany": {}},
+    "przed_2711": {"nazwa": "Przed 27.11 (5 + 5 punktów, bez limitu, Dżungla ×1,0)",
+                   "zmiany": {"punkty": "piec", "afk": dict(BEZ_LIMITU), "lup": XP_DZUNGLI_COFNIETE}},
+    "bez_limitu": {"nazwa": "Bez B (limitu treningu)", "zmiany": {"afk": dict(BEZ_LIMITU)}},
+    "bez_xp_dzungli": {"nazwa": "Bez doświadczenia Dżungli ×1,25", "zmiany": {"lup": XP_DZUNGLI_COFNIETE}},
+    "dluzsza": {"nazwa": "Dla porównania: krzywa doświadczenia ×1,5 (dłuższa gra)", "zmiany": {"krzywa_a": 1.5}},
     "d140_limit4": {"nazwa": "Dla porównania: D-140 wdrożona (0 punktów za poziom) i limit 4 × poziom",
                     "zmiany": {"punkty": "d140", "afk": {"limit_na_poziom": 4, "ponad_limit": 0.1}}},
 }
 PROPOZYCJE_TRYBY = ["walki", "walki_afk", "wszystko", "afk_duzo", "afk_przeskok"]
 PROPOZYCJE_WARIANT = "po_zmianie"
-POLECANA = "abc"            # druga tabela Strażników liczy się na tej propozycji
+POLECANA = "przed_2711"     # druga tabela Strażników: stan sprzed 27.11 (dla porównania)
 STOPNIE_SKLEPU = {"start": 0, "las": 1, "bagno": 2, "dzungla": 3}   # nazwy stopni z sklep_ceny.py → numer
 
 
@@ -285,13 +283,18 @@ PLIK_AFK = os.path.join(REPO, "src", "shared", "TreningAFKDane.luau")
 
 def wczytaj_afk(plik=PLIK_AFK):
     """Trening AFK i sklep trenera z TreningAFKDane.luau (moduł czytany przez serwer i klienta) — parser rachunku sklepu
-    (swiat/trening_proba/ekonomia_sklepu_afk.wczytaj) + przyrostCoPoziomow. Pola propozycji (limit_*, ponad_limit) są
-    puste: w grze ich nie ma, dodaje je dopiero zmiana „afk” (zastosuj_zmiany)."""
+    (swiat/trening_proba/ekonomia_sklepu_afk.wczytaj) + przyrostCoPoziomow + limit treningu (27.11.2026:
+    D.limitNaPoziom, D.ponadLimitem — lustro D.pasekPrzyLimicie; brak pól albo limitNaPoziom = 0 = bez limitu)."""
     EA = _modul("ekonomia_sklepu_afk_przejscie", os.path.join(SWIAT, "trening_proba", "ekonomia_sklepu_afk.py"))
     E = EA.wczytaj(plik)
     with open(plik, encoding="utf-8") as f:
-        E["przyrost_co_poziomow"] = EA._liczba(f.read(), r"D\.przyrostCoPoziomow")
+        tekst = f.read()
+    E["przyrost_co_poziomow"] = EA._liczba(tekst, r"D\.przyrostCoPoziomow")
     E.update({"limit_baza": 0.0, "limit_na_poziom": None, "ponad_limit": 1.0})
+    m = re.search(r"\bD\.limitNaPoziom = ([\d.]+)", tekst)
+    if m and float(m.group(1)) > 0:
+        E["limit_na_poziom"] = float(m.group(1))
+        E["ponad_limit"] = max(float(re.search(r"\bD\.ponadLimitem = ([\d.]+)", tekst).group(1)), 0.001)
     return E
 
 
@@ -478,6 +481,8 @@ def pula_poziomu(G, L):
         return LS.pula(Ds, L)
     if G["punkty"] == "d140":
         return Ds["pula"]["baza"]
+    if G["punkty"] == "piec":
+        return Ds["pula"]["baza"] + 5 * (L - 1)
     return LS.pula_sama(Ds, L, True)
 
 
@@ -1322,7 +1327,7 @@ def tabele(R):
                     klucz, nazwa_potwora[s["gatunek"]], s["od"], s["do"], fl(kom[0]), fm(kom[1]), fl(kom[2]), fm(kom[3])))
         w.append("")
     for klucz_sz, tytul in (("szanse_straznikow", "pula statystyk „%s”, liczby z plików gry" % R["meta"].get("punkty", "gra")),
-                            ("szanse_straznikow_propozycji", "po propozycji „%s”" % (
+                            ("szanse_straznikow_propozycji", "dla porównania: „%s”" % (
                                 PROPOZYCJE[R["meta"]["polecana"]]["nazwa"] if R["meta"].get("polecana") else ""))):
         if not R.get(klucz_sz):
             continue

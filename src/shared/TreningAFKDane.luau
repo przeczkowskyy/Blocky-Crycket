@@ -77,6 +77,16 @@ D.czasPowtorzenia = 1.2 -- s na jedno powtórzenie (pełny pasek ≈ 4,8 s)
 D.przyrostNaPasek = 1 -- + tyle do statystyki za pełny pasek
 D.przyrostCoPoziomow = 0 -- 0 = stały przyrost; np. 10 = +1 za każde 10 poziomów gracza
 
+-- agent Karola, 27.11 (Karol: „A + B”, swiat/przejscie_gry/BALANS_2711.md, pytanie 117; czeka na Pawła): limit treningu
+-- zależny od poziomu. Dopóki gracz ma w tej statystyce WYTRENOWANE mniej niż limitNaPoziom × poziom, pasek jak dotąd;
+-- powyżej pasek trwa 1 / ponadLimitem razy dłużej (0.1 = 10× wolniej). Wytrenowane punkty pisze stan gracza
+-- (swiat/stan_gracza) w atrybutach gracza prefiksWytrenowanych .. atrybut (np. WytrenowaneStrength).
+-- Wyłączenie limitu: limitNaPoziom = 0.
+D.limitNaPoziom = 2
+D.ponadLimitem = 0.1
+D.prefiksWytrenowanych = "Wytrenowane"
+D.tekstLimitu = "LIMIT: LEVEL UP TO TRAIN FASTER"
+
 -- skill check
 D.skillCheckCoMin = 3.5 -- s między skill checkami (losowo z przedziału)
 D.skillCheckCoMaks = 6
@@ -121,6 +131,14 @@ end
 -- cena następnego poziomu (z poziomu `poziom` na poziom + 1); nil = już najwyższy
 function D.cenaUlepszenia(poziom: number): number?
 	return D.sklep.ulepszenia.ceny[math.floor(poziom) + 1]
+end
+
+-- agent Karola, 27.11: pasek (powtórzenia) po limicie treningu → (pasek, czy ponad limitem)
+function D.pasekPrzyLimicie(pasek: number, wytrenowane: number, poziom: number): (number, boolean)
+	if D.limitNaPoziom <= 0 or wytrenowane < D.limitNaPoziom * math.max(poziom, 1) then
+		return pasek, false
+	end
+	return pasek / math.max(D.ponadLimitem, 0.001), true
 end
 
 function D.przyrost(poziom: number): number
