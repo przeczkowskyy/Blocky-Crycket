@@ -809,3 +809,23 @@ Karol: „Potrzebujemy też dużo logiczniejszego przejścia do tych ćwiczeń�
 - Układ dwóch rzędów (D-158) i reguła „jedno stanowisko = jeden gracz” (pytanie 109) bez zmian. Robocze ustalenie z D-150 („przy trenerze otwiera się drzewko postaci”) nie jest wdrożone — pytanie 115.
 - **Dopisek z 26.11 wieczorem (Karol: „Usuń placeholdery już”):** tablica mini-gier z sześcioma medalionami na ścianie sali też zniknęła, a arena starych mini-gier została usunięta z mapy — w `Workspace/TreningProba` został tylko sygnał, którym trening na stanowiskach zapisuje statystyki (rozstrzyga pytanie 114, wariant a). Kod mini-gier zostaje w repo za przełącznikiem.
 - **Stan:** w Studio od 26.11, ok. 22:30. Próba okna trenera 17 z 17 punktów; krótka droga gracza i próba treningu bez błędów. Do wyjaśnienia: w próbie zasięgu E przy Pancerzu i Zręczności E z przejścia (3 study) nie włączyło treningu (od frontu rzędu działa). Skrypty stanowisk to pliki Pawła (`src/server/TreningAFK.server.luau`, `src/client/TreningAFKClient.client.luau`, `src/shared/TreningAFKDane.luau`), zmienione przez agenta Karola na polecenie Karola („Rób od razu”) — do obejrzenia przez Pawła.
+
+### D-163 Training Center zajmuje większy obszar: sala na miejscu domu na zachód od niej
+✅ zatwierdzona · świat 3D · 2026-11-27 · źródło: wiadomości Pawła na grupie zespołu na Telegramie 27.11.2026, 01:10–01:15 (zrzut przekazał Karol na czacie z poleceniem „zastosuj się do polecenia”) · zaproponował: Paweł · zdecydował: Paweł 2026-11-27 (jeden podpis — Karol zlecił wykonanie, formalnie nie potwierdził; D-043)
+Gra: bc
+Paweł (z zrzutem miasteczka z góry, czerwone kółko wokół sali i brązowego domu na zachód od niej): „Ja myślę, że ta hala ze sprzętami powinna zajmować mniej więcej taki obszar, żeby było tam dużo przestrzeni. W sensie to Training Center”.
+- Sala 40 × 22 study (było 24 × 20) na miejscu domu `dom_zachod_pn`; pole gry przesunięte na zachód; mapa miasteczka 4202 części (było 4256).
+- Dwa rzędy po trzy stanowiska i przejście środkiem 9,3 studa (D-158 bez zmian, zasięg E 4,5). Podpowiedź E wisi 1,5 studa nad matą, więc pojawia się z podłogi ok. 2 study przed matą; żaden sprzęt nie wystaje w przejście.
+- Trener zostaje w głównym budynku, widoczny z wejścia do sali (przeniesienie do środka wydłużyłoby drogę od startu ponad 5 s).
+- **Stan:** w Studio od 27.11 (miejsce zapisane, nieopublikowane). Próba zasięgu E 27 z 27, próba okna trenera i sklepu 26 z 26, krótka droga gracza 15 z 15, ściany pola gry bez błędów. Skrypty stanowisk to pliki Pawła — zmienione przez agenta Karola (polecenie Pawła i Karola).
+
+### D-164 U trenera sklep treningu: ulepszenia stanowisk i wzmacniacze za Rybki
+✅ zatwierdzona · game design / ekonomia / UI · 2026-11-27 · źródło: wiadomości Pawła na grupie zespołu na Telegramie 27.11.2026, 01:10–01:15 (zrzut przekazał Karol na czacie z poleceniem „zastosuj się do polecenia”) · zaproponował: Paweł (pomysł), Claude Code (liczby) · zdecydował: Paweł 2026-11-27 (jeden podpis — Karol zlecił wykonanie, formalnie nie potwierdził; D-043)
+Gra: bc
+Paweł: „Myślałem, żeby u trenera nie tyle co się wybierało trening, ale też był panel sklepu/ulepszeń, gdzie np. gracz może ulepszyć bieżnię, żeby dawała więcej na powtórzenie, albo kupić jakieś wzmacniacze na trening, np. siła ×2 na 10 min”.
+- W oknie trenera zakładki TRAIN i SHOP. Ulepszenie każdego stanowiska osobno, poziomy 1–5: +10% szybkości za poziom (mniej powtórzeń na pasek), ceny 300 / 700 / 1600 / 3600 / 8400 Rybek (wszystkie sześć do końca: 87 600).
+- Wzmacniacz: ×2 za pasek jednej statystyki przez 10 minut, 600 Rybek, jeden naraz na statystykę; czas płynie także poza grą (zapisany koniec).
+- Płatność przez stan gracza (`swiat/stan_gracza`, liczniki wydatków), zapis w profilu gracza; bez Robuxów — miejsce na zakup za Robuxy jest przygotowane, ale to osobna decyzja.
+- **Liczby robocze agenta** — zob. pytanie 117 (tempo treningu) i 118 (szczegóły sklepu).
+- **Stan:** w Studio od 27.11; próba sklepu: odmowa bez Rybek, zakup poziomu, MAX, ochrona przed podwójnym zakupem, wzmacniacz ×2 i jego koniec, odmowa z daleka; próba zapisu: ulepszenie i wzmacniacz wracają po ponownym wejściu.
+- Uwaga agenta (D-114), zgoda z poprawką: to dobra pętla wydawania Rybek z zagrody i klasyczne miejsce na przyszłą sprzedaż za Robuxy. Poprawka: podstawowe tempo treningu jest już bardzo szybkie (pytanie 117), więc najpierw trzeba ustawić je, a dopiero potem ceny sklepu.

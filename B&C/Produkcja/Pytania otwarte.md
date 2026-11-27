@@ -1128,4 +1128,32 @@ Rozstrzyga: D-162.
 Gra: bc
 
 Szczegóły: w repo jest (a), bez zmian w drzewku. Zdanie agenta (D-114): (a) — jedno okno, jedna czynność.
+Dopisek z 2026-11-27: Paweł na Telegramie (01:15) zaproponował trzecią drogę — u trenera wybór ćwiczeń i sklep ulepszeń treningu (D-164, wdrożone); o drzewku nie pisał.
+**Odpowiedź:**
+
+## 116. Działki z własną zagrodą czy jedna wspólna zagroda?
+- Paweł 27.11 (Telegram): „czy nie dobrze by było zrobić gdzieś działki graczy, żeby każdy tam miał swoją zagrodę… ale czy gracze nie chcą, żeby np. jak mają jakiegoś super epickiego peta, żeby inni mogli go widzieć?”
+- Dziś jest jedna zagroda w miasteczku; przy kilku graczach można skryptem pokazać każdemu tylko jego pety.
+- Do wyboru: (a) w becie zostaje wspólna zagroda, a innym graczom pokazuje się pet idący za graczem; (b) działki graczy z własną zagrodą już w becie; (c) zagroda wspólna, w której inni widzą najlepsze pety każdego gracza.
+Gra: bc
+
+Szczegóły: działka jest już zaplanowana (punkt E „działka” w bazarze: „Twoja działka za tą bramą — już wkrótce”), ale razem z Twierdzą odłożona poza pierwszą wersję (D-149). Zdanie agenta (D-114): (a) — chwalenie się epickim petem działa najlepiej, gdy pet chodzi za graczem po miasteczku; działki to duża praca na aktualizację.
+**Odpowiedź:**
+
+## 117. Trening AFK jest za szybki wobec walki — zwolnić?
+- Jedno stanowisko daje ok. 750 punktów statystyki na godzinę (pełny pasek co 4,8 s, +1 za pasek — liczby robocze z D-141).
+- Według kalkulatora walki (`swiat/trening_proba/ekonomia_sklepu_afk.py --walka`) ok. 1,6 min AFK wystarcza na Strażnika Topieli, a ok. 2,8 min na Węża Stu Lian; sklep z D-164 skraca to do 0,5–0,9 min.
+- Do wyboru: (a) zwolnić podstawowe tempo (np. dłuższy pasek albo przyrost malejący z poziomem statystyki); (b) zostawić — trening ma być szybki, a trudność da się ustawić po stronie potworów; (c) inaczej.
+Gra: bc
+
+Szczegóły: dane w `src/shared/TreningAFKDane.luau` (pliki Pawła): `powtorzenNaPasek`, `czasPowtorzenia`, `przyrostNaPasek`, `przyrostCoPoziomow`. Zdanie agenta (D-114): (a) — gdy kilka minut AFK zastępuje godzinę walk, walka i łup tracą sens, a z nimi pętla gry; najtańszy test to ustawić tempo tak, żeby trening dawał np. połowę przyrostu co walka w tym samym czasie, i sprawdzić w kalkulatorze. Ceny sklepu dopiero po tej decyzji.
+**Odpowiedź:**
+
+## 118. Sklep u trenera: wzmacniacz poza grą, waluta, podpowiedź nad matą
+- Wzmacniacz ×2 na 10 min płynie dalej, gdy gracz wyjdzie z gry — czy ma się zatrzymywać?
+- Wzmacniacz kosztuje Rybki (Diamenty idą na drzewko, D-140) — czy ma być za Diamenty albo za Robuxy (osobna decyzja)?
+- Podpowiedź E stanowiska wisi 1,5 studa nad matą (zasięg 4,5 bez zmian, z podłogi ok. 4,3 studa zamiast 3,5) — czy Paweł to akceptuje?
+Gra: bc
+
+Szczegóły: dziś (D-164) wzmacniacz płynie poza grą, kosztuje 600 Rybek, podpowiedź wisi nad matą. Zdanie agenta (D-114): wzmacniacz za Robuxy to typowe źródło przychodu symulatorów — warto go dodać po ustaleniu tempa treningu (pytanie 117), z jasną ceną i bez losowania.
 **Odpowiedź:**

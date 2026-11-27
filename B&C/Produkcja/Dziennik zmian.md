@@ -6,6 +6,18 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-27 · Claude Code u Karola (większy Training Center, sklep u trenera, wyjaśnione próby)
+- **Po restarcie komputera:** panel i tunel uruchomione, nowy link dla Pawła przekazany Karolowi plikiem.
+- **Wyjaśnione niezaliczenia z 26.11** (agent na Opus, ok. 0,31 mln tokenów): las PD3 — próba mierzyła widoki potworów wokół kamery zostawionej przez haczyk testowy walki (przed D-159 kamerę przywracał krok w starym lesie); z kamerą gracza 8 widoków, gra w porządku; poprawiona próba `swiat/las_pas_gra/testy/pomoc_d107.py`. Zasięg E: kot rasy Pawła to tylko widoczna kopia bez kolizji; Pancerz — postać po ławce leży ok. 1 s i ślizgała się przy przeniesieniu w próbie; Zręczność — rama bieżni wystawała w przejście. Brama Leśna B08 przeszła.
+- **Polecenia Pawła z Telegrama** (27.11, 01:10–01:15; zrzut wkleił Karol z poleceniem „zastosuj się do polecenia”): większy Training Center (**D-163**), sklep u trenera z ulepszeniami i wzmacniaczami (**D-164**) — decyzje Pawła, Karol zlecił wykonanie; pytanie o działki graczy jako **116** w [[Pytania otwarte]].
+- **Sala** (`swiat/miasteczko_bazar/budynki/training_center.py`, `uklad.json`, `generuj.py`, `siatka.py`): 40 × 22 study na miejscu domu `dom_zachod_pn`, pole gry dalej na zachód, przejście 9,3 studa, mapa 4202 części. Stanowiska i trener w `src/shared/TreningAFKDane.luau`; podpowiedź E na wysokości ciała nad matą; po ławce postać od razu wstaje.
+- **Sklep** (`src/server/TreningAFK.server.luau`, `src/client/TreningAFKClient.client.luau`): zakładka SHOP, ulepszenia 1–5 za 300–8400 Rybek (+10% szybkości za poziom), wzmacniacz ×2 na 10 min za 600 Rybek; płatność i zapis przez `swiat/stan_gracza` (nowe źródło wydatków `TreningAFK`); liczby i kalkulator: `swiat/trening_proba/ekonomia_sklepu_afk.py`. Pliki Pawła zmienione przez agenta Karola; przed podmianą wersje w Studio były równe wersjom z GitHuba.
+- **Ważne znalezisko:** trening AFK daje ok. 750 punktów statystyki na godzinę — kilka minut AFK wystarcza na strażników Bagna i Dżungli. Pytanie **117**.
+- **Próby w grze:** zasięg E 27/27, okno trenera i sklep 26/26, zapis 10/10 (ulepszenie i wzmacniacz wracają po ponownym wejściu), krótka droga gracza 15/15, ściany pola gry OK. Miejsce zapisane w Studio (wersja 532), nieopublikowane.
+- **Nie sprawdzono:** telefonu, dwóch graczy naraz, wyjścia i powrotu z działającym wzmacniaczem poza magazynem próby, wyglądu gościa z pomidorami przez okno.
+- **Koszt:** agent od sali i sklepu ok. 0,64 mln tokenów, agent od prób 0,31 mln.
+- Notatki: [[Rejestr decyzji]] (D-163, D-164), [[Pytania otwarte]] (dopisek pod 115, nowe 116–118), [[Zadania]]; `DOKUMENTACJA.md`.
+
 ## 2026-11-26 · Claude Code u Karola (sala treningowa, muzyka i reszta placeholderów w Studio)
 - **Polecenie Karola (ok. 22:00):** „Dokonaj tych poprawek… i pozostałych rzeczy. Ustawmy wszystkie rzeczy na miejscu. Usuń placeholdery już”. Studio było zamknięte — agent otworzył je sam w trybie edycji.
 - **Wdrożone w Studio (ok. 22:30):** mapa miasteczka (4256 części: studnia 6 studów dalej od wejścia do sali, obie ławki i latarnia przestawione, bez tablicy mini-gier na ścianie sali); bazar (podpowiedź trenera „Train”), postacie, wskazówki; trzy skrypty stanowisk Pawła (bez tabliczek, okno wyboru ćwiczenia u trenera — D-162); `TreningProba` bez areny i skryptów, z samym sygnałem przyrostu statystyk (pytanie 114 rozstrzygnięte); muzyka miasteczka A i B; szara płyta pod mapą ukryta (`tools/studio/plyta_bazowa.py`).
