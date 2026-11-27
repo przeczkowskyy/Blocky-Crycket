@@ -2,20 +2,33 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T20:55:24+01:00",
+ "aktualizacja": "2026-11-27T20:58:23+01:00",
  "prace": [
   {
    "id": "bronie-mag-zwiad",
    "tytul": "Bronie Maga i Zwiadowcy: ikony do Roblox i modele 3D",
    "stan": "w_toku",
-   "etap": "Modele 3D broni w Blenderze, pierwsza wersja",
+   "etap": "Wgrywanie modeli broni do Roblox i kontener w Studio",
    "start": "2026-11-27T20:30:17+01:00",
    "koniec_szacowany": "2026-11-27T23:20:17+01:00",
-   "aktualizacja": "2026-11-27T20:46:17+01:00",
+   "aktualizacja": "2026-11-27T20:55:48+01:00",
    "obszary": [
     "swiat/postacie/ikony_broni*",
     "swiat/postacie/bronie_klas",
     "studio:BronieKlas"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "przebudowa-bronie_klas",
+   "tytul": "Przebudowa modelu bronie_klas",
+   "stan": "w_toku",
+   "start": "2026-11-27T20:58:23+01:00",
+   "koniec_szacowany": "2026-11-27T21:18:23+01:00",
+   "aktualizacja": "2026-11-27T20:58:23+01:00",
+   "obszary": [
+    "model:bronie_klas"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
@@ -39,10 +52,10 @@
    "id": "trening-kosci-animacje",
    "tytul": "Sala treningowa: kości szczęścia, bieżnia, sztanga; kamera rzutu u mistrza gier",
    "stan": "w_toku",
-   "etap": "Proby w Play: awatar i kot, zrzuty",
+   "etap": "Agent: gotowe, raport do sesji glownej",
    "start": "2026-11-27T20:11:25+01:00",
    "koniec_szacowany": "2026-11-27T22:10:00+01:00",
-   "aktualizacja": "2026-11-27T20:41:26+01:00",
+   "aktualizacja": "2026-11-27T20:57:35+01:00",
    "obszary": [
     "src/server/TreningAFK.server.luau",
     "src/client/TreningAFKClient.client.luau",
