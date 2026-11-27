@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-27 (wieczór) · Claude Code u Karola (sala treningowa, kości, kamera mistrza gier, bronie)
+- **Polecenie Karola:** kamera przy rzucie kości „bardziej z góry”; w treningu Szczęścia prawdziwe kości i przyrost = wynik; na bieżni postać stała, sztanga „słabo się podnosi”; brak kotów Pawła w grze; modele i sety broni (Higgsfield albo poczekać na Pawła); dalej Training Center, UI i „grand optymalizacja” (Karol: = balans statystyk).
+- **Sala treningowa** (pliki Pawła `src/shared/TreningAFKDane.luau`, `src/server/TreningAFK.server.luau`, `src/client/TreningAFKClient.client.luau` — zgoda z 26.11; pakiet `swiat/trening_proba`): bieg i wycisk działają na kocie i awatarze (pozy w `PreSimulation`, Animator awatara odpięty na czas treningu); kości Szczęścia według D-166. Wersje w Studio przed podmianą równe repo. Testy 55 + 63 OK, Play: 8 rzutów — ścianka = wynik serwera. Agent ok. 0,5 mln tokenów.
+- **Mistrz gier:** w Studio działa nowsza wersja Pawła („Treasure Loop”, 26.11), której nie ma w repo — agent jej nie nadpisał, przygotował zmianę samej kamery; Karol: „Wdróż i daj znać Pawłowi”. Wdrożone tylko wtedy, gdy wersja w Studio była równa migawce; Paweł dostał opis na Telegramie (weź wersję ze Studio przed wgraniem swojej).
+- **Koty Pawła:** pojawiają się dopiero po wyborze rasy (ekran ok. 8 s po starcie); stan gracza zapisuje klasę, ale nie rasę. Karol: „Tak, zapisuj rasę” — w toku.
+- **Bronie (D-167):** 4 arkusze w Higgsfield (12 kredytów), Karol wybrał Mag A i Zwiadowca B oraz „Tak, wgraj”; Open Cloud z repo nie działa (brak ustawień w `.env`), więc ikony idą przez Studio jak portrety potworów; modele 3D w Blenderze — w toku.
+- Notatki: [[Rejestr decyzji]] (D-166, D-167), [[Zadania]].
+
 ## 2026-11-27 · Claude Code u Karola (potwory: nazwy i portrety; balans D-165)
 - **Polecenie Karola:** „Bardzo teraz nam zależy na poprawie UI… UI broni, różdżek, łuków oraz ich 3D modele w grze. UI również potworków, parę modeli potworków i optymalizacja ich statystyk i wszystkiego”. Przegląd stanu (agent tylko do odczytu, 0,42 mln tokenów); Karol w oknie pytania wybrał na teraz: nazwy i portrety potworów, „ładniejsze obecne” modele potworów (zadanie, start po jego znaku), wgranie 15 ikon („Tak, wgraj”), balans.
 - **Potwory w grze** (`swiat/las_potwory/zrodla/KlientPotworow.client.luau`, `swiat/test_walki2/`): nad potworem nazwa, „LV N” i znaczek RARE/BOSS we wszystkich biomach; w walce portret z ikony z Blendera (rejestr `swiat/test_walki2/ikony_potworow.json`, 15 obrazów Approved, wgrane przez Studio). Próby: tabliczki 17/17, las, Bagno, Dżungla bez błędów, walka 43/45 (dwa znane punkty panelu próby). Agent ok. 0,32 mln tokenów.
