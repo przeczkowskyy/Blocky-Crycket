@@ -2,15 +2,16 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T18:15:52+01:00",
+ "aktualizacja": "2026-11-27T18:17:53+01:00",
  "prace": [
   {
    "id": "balans-2711-wdrozenie",
    "tytul": "Balans: punkty za poziom, limit treningu AFK, XP Dzungli",
    "stan": "w_toku",
+   "etap": "wdrozone w Studio, proby Play w toku",
    "start": "2026-11-27T18:15:52+01:00",
-   "koniec_szacowany": "2026-11-27T19:30:52+01:00",
-   "aktualizacja": "2026-11-27T18:15:52+01:00",
+   "koniec_szacowany": "2026-11-27T19:40:00+01:00",
+   "aktualizacja": "2026-11-27T18:17:53+01:00",
    "obszary": [
     "studio:StanGracza",
     "studio:DzunglaPasGra",
