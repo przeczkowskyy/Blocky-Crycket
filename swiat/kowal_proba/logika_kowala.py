@@ -361,12 +361,15 @@ def stac_na(D, dane, klasa, poziom, zloto):
 
 def czy_zalozyc(D, zal, pid):
     """Reguła zakładania po kupnie (i po łupie): przedmiot zakłada się sam, gdy jego slot jest pusty albo założony
-    w nim przedmiot ma niższy stopień; przy tym samym lub wyższym stopniu zostaje dotychczasowy."""
+    w nim przedmiot ma niższy stopień; przy tym samym lub wyższym stopniu zostaje dotychczasowy. W tym samym stopniu
+    (kilka broni puli Lv 1–10, 27.11.2026) decyduje wymagany poziom: wyższy zakłada się sam, niższy i równy czeka."""
     P = D["przedmioty"][pid]
     for z in zal:
         Z = D["przedmioty"][z]
         if z != pid and Z["slot"] == P["slot"]:
-            return Z["nrStopnia"] < P["nrStopnia"]
+            if Z["nrStopnia"] != P["nrStopnia"]:
+                return Z["nrStopnia"] < P["nrStopnia"]
+            return Z["poziom"] < P["poziom"]
     return True
 
 

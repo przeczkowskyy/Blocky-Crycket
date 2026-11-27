@@ -9,6 +9,18 @@ Gracz podchodzi do stojaka „Przymierzalnia” przy placu startowym, naciska **
 zdejmuje przedmioty po jednym na slot. Na podeście przed lustrem stoi jego bohater w tym stroju (z ruchami walki).
 Następna walka — próba walki przy tablicy i walki w lesie — pokazuje bohatera w tym samym stroju.
 
+## Bronie puli Lv 1–10 Maga i Zwiadowcy (27.11.2026, D-167 — wgrane do Studio tego dnia)
+Dane mają **90 przedmiotów**: doszło 10 broni z `swiat/postacie/bronie_klas_sklep.json` (liczby robocze — tabela
+w `swiat/sklep_proba/README.md`). Broń puli nie ma brył: wpis z `segmenty = {}` i polem `akcesorium` (nazwa modelu
+w `ReplicatedStorage/BronieKlas`, zaczep dłoni, rodzaj chwytu, korekta kota), w stopniu „pula” (`K.stopnie`, w module
+głównym `DaneStrojow`, kolejność według poziomu) — przymierzalnia i kowal mogą ją założyć (jeden przedmiot na slot jak
+dotąd). `Ubieranie.luau` dokłada na bohatera kopię uchwytu akcesorium (grupa `Bron_<id>`, Weld do części kości;
+atrybut modelu `StrojBronie` — osobno od `StrojBryly`, który dalej równa się lustru `zloz()`): człowiek — zaczep
+RightGripAttachment / LeftGripAttachment wprost; Kot-Mag — zaczep i korekta chwytu kota z
+`swiat/postacie/wynik/bronie_klas/ekwipunek.json` przeliczona z układu biblioteki postaci (pos (−x, y, −z), kąty
+(−rx, ry, −rz)). Sprawdzone w Play 27.11: Kostur Ucznia stoi u Kota-Maga jak jego kostur (od ziemi nad głowę).
+Słabość: bronie są w skali kota (D-145), więc w dłoni człowieka (Zwiadowca walki) wyglądają na małe.
+
 ## Przedmioty do kupienia w trzech stopniach (D-106, 19.11.2026 — wgrane do Studio tego dnia)
 
 Dane przymierzalni mają teraz **80 przedmiotów**: 20 dzisiejszych (bez zmian, na początku, w dawnej kolejności) i 60

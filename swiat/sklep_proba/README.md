@@ -42,6 +42,38 @@ bez przymierzalni liczy się w każdym slocie posiadany przedmiot najwyższego s
 należy do swojej zbroi (`czesc_od`) — kto ma zbroję, ma i część, a przymierzalnia zakłada je razem (tak jak dziś
 przy zbroi startowej). Odpowiedź kupna podaje ją w polu `czesc`.
 
+## Bronie Maga i Zwiadowcy z puli Lv 1–10 (27.11.2026, D-167) — propozycja, LICZBY ROBOCZE
+10 broni z ikon Higgsfield i modeli `ReplicatedStorage/BronieKlas` (Różdżka z Patyka … Kostur Ucznia, Proca z Gałęzi …
+Łuk Tropiciela) to zwykłe przedmioty kowala: slot broni, tylko swoja klasa, kupno u zbrojmistrza (okno Pawła), wpis
+w `Modyfikatory` jak każda broń. Źródło: drugi katalog `swiat/postacie/bronie_klas_sklep.json` (generator
+`bronie_klas_sklep.py`, te same pola co `sklep_przedmioty.json` + `pula`, `akcesorium`, `ikona_roblox`); katalog sklepu,
+jego testy i symulacja przejścia zostają bez zmian.
+
+| Broń | Klasa | Poziom | Cena (Rybki) | Statystyki +0 | Za ulepszenie |
+|---|---|---:|---:|---|---|
+| Różdżka z Patyka | Mag | 1 | 50 | Broń +1 | Broń +1, Int +1 |
+| Kostur z Miotły | Mag | 3 | 175 | Broń +1, Int +1 | Broń +1, Int +1 |
+| Wałek Czarodziejski | Mag | 5 | 325 | Broń +2, Int +1 | Broń +1, Int +1 |
+| Różdżka ze Świeczki | Mag | 7 | 500 | Broń +2, Int +2 | Broń +1, Int +1 |
+| Kostur Ucznia (zestaw) | Mag | 10 | 725 | Broń +3, Int +3 | Broń +1, Int +1 |
+| Proca z Gałęzi | Zwiadowca | 1 | 35 | Broń +1 | Broń +1 |
+| Łuk z Wieszaka | Zwiadowca | 3 | 125 | Broń +1, Szczęście +1 | Broń +1 |
+| Nóż do Masła | Zwiadowca | 5 | 225 | Broń +2, Szczęście +1 | Broń +1 |
+| Sztylet z Szyszki | Zwiadowca | 7 | 350 | Broń +2, Szczęście +2 | Broń +1 |
+| Łuk Tropiciela (zestaw) | Zwiadowca | 10 | 550 | Broń +3, Szczęście +2 | Broń +1 |
+
+Skąd liczby (jedno zdanie): prosta interpolacja po wymaganym poziomie między bronią startową (Lv 1, Broń +0), leśną
+(Lv 7: Broń +2, 350 Rybek, Mag 500) i bagienną (Lv 15: Broń +4, 850 / 1100) z katalogu sklepu — Mag dostaje
+Inteligencję jak jego kostury, Zwiadowca Szczęście jak jego łuki, waga ulepszeń jak broń klasy (Mag 1,75).
+
+Jak to działa w danych: cała pula leży w stopniu leśnym (nr 1 — kowal i okna liczą stopnie), więc karta w sklepie
+pisze „FOREST”; w jednym stopniu i slocie kolejność idzie według wymaganego poziomu, a reguła zakładania po kupnie
+porównuje (stopień, poziom): Kostur Ucznia Lv 10 zdejmuje Różdżkę Lv 1, broń leśna Lv 7 nie zdejmuje Kostura Ucznia,
+bagienna — zdejmuje. Przymierzalnia zna bronie puli jako przedmioty bez brył; na bohatera walki (`Ubieranie.luau`)
+idzie kopia uchwytu akcesorium z `BronieKlas` (u Kota-Maga z korektą chwytu kota z `wynik/bronie_klas/ekwipunek.json`).
+Okno ekwipunku Pawła bierze ikonę z `Shared.Items` (10 wpisów). Ikony na ladzie, statystyki w podpowiedzi i broń na
+kocie rasy czekają na łatki do plików Pawła w Studio (opis w raporcie z 27.11.2026).
+
 ## Odmowy
 | Powód | Kiedy | Zdanie dla gracza |
 |---|---|---|

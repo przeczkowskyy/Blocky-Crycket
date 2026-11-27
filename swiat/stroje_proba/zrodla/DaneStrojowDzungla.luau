@@ -1,5 +1,5 @@
 --[[
-	DaneStrojowDzungla — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót eab733f216f3.
+	DaneStrojowDzungla — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót deb1089c2044.
 	Przedmioty stopnia „dzungla” (D-106, swiat/postacie/stopnie.py): 20 sztuk, zapis jak w DaneStrojow.
 	Nie czytaj tego modułu wprost — scala go DaneStrojow (materiały brył to indeksy w jego D.materialy).
 ]]

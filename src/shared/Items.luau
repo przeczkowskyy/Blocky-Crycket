@@ -34,6 +34,20 @@ local Items = {
 		category = "Weapons",
 		icon = "rbxassetid://90364220695668", -- WeaponSlingshot (Zwiadowca)
 	},
+	-- bronie Maga i Zwiadowcy z puli Lv 1–10 (Karol 27.11, D-167; nazwy z puli — propozycja): kupuje się je
+	-- u zbrojmistrza (kowal Karola, katalog swiat/postacie/bronie_klas_sklep.json — tam cena, poziom i statystyki,
+	-- LICZBY ROBOCZE), id = id przedmiotu kowala = model w ReplicatedStorage.BronieKlas. Tu tylko ikona do okien
+	-- (EkwipunekStan.definicja bierze Shared.Items przed przedmiotami kowala). Ikony: swiat/postacie/ikony_broni.json.
+	mag_rozdzka_z_patyka = { name = "Różdżka z Patyka", slot = "Weapon", category = "Weapons", icon = "rbxassetid://84907332708348" },
+	mag_kostur_z_miotly = { name = "Kostur z Miotły", slot = "Weapon", category = "Weapons", icon = "rbxassetid://73948961084878" },
+	mag_walek_czarodziejski = { name = "Wałek Czarodziejski", slot = "Weapon", category = "Weapons", icon = "rbxassetid://76821207350979" },
+	mag_rozdzka_ze_swieczki = { name = "Różdżka ze Świeczki", slot = "Weapon", category = "Weapons", icon = "rbxassetid://120086401556569" },
+	mag_kostur_ucznia = { name = "Kostur Ucznia", slot = "Weapon", category = "Weapons", icon = "rbxassetid://81130849751144" },
+	zwiad_proca_z_galezi = { name = "Proca z Gałęzi", slot = "Weapon", category = "Weapons", icon = "rbxassetid://88443827869989" },
+	zwiad_luk_z_wieszaka = { name = "Łuk z Wieszaka", slot = "Weapon", category = "Weapons", icon = "rbxassetid://95890663840529" },
+	zwiad_noz_do_masla = { name = "Nóż do Masła", slot = "Weapon", category = "Weapons", icon = "rbxassetid://78117130092048" },
+	zwiad_sztylet_z_szyszki = { name = "Sztylet z Szyszki", slot = "Weapon", category = "Weapons", icon = "rbxassetid://82943053367365" },
+	zwiad_luk_tropiciela = { name = "Łuk Tropiciela", slot = "Weapon", category = "Weapons", icon = "rbxassetid://110256058556217" },
 }
 
 return Items

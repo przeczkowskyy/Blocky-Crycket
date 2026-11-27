@@ -3,7 +3,8 @@
 """Testy kowala na próbę bez Studio (swiat/kowal_proba). Uruchom: python -B swiat/kowal_proba/testy/test_kowala.py
 
 1. Dane: pliki aktualne, katalog przedmiotów (stopień startowy: 18 całych + 2 części zbroi = 20 przedmiotów bohaterów;
-   z przedmiotami do kupienia D-106 razem 72 całe + 8 części — kupno sprawdza swiat/sklep_proba/testy), podstawowe
+   z przedmiotami do kupienia D-106 razem 72 całe + 8 części, od 27.11.2026 także 10 broni puli Lv 1–10 Maga
+   i Zwiadowcy z bronie_klas_sklep.json — kupno sprawdza swiat/sklep_proba/testy), podstawowe
    zestawy, koszty, miejsce kuźni w bazarze, teksty dla gracza bez języka twórców.
 2. Balans: podstawowy zestaw = dzisiejszy bohater ze wzoru (co do pola opisu) na poziomach 1–30; każdy wpis kowala
    przechodzi walidację Sygnaly/Modyfikatory (prawdziwa logika stanu gracza); bez tarczy Wojownik traci blok tarczy;
@@ -78,6 +79,32 @@ def _stan():
 
 # ------------------------------------------------------------------------------------------------ 1. dane
 class TestDanych(unittest.TestCase):
+    def test_1p_bronie_puli(self):
+        """27.11.2026: 10 broni puli (5 Maga, 5 Zwiadowcy) — slot broni, stopień leśny, w stopniu według poziomu;
+        wyższy poziom tego samego stopnia zakłada się sam, równy i niższy czeka; inny stopień jak dotąd."""
+        pula = [i for i, P in D["przedmioty"].items() if P.get("pula")]
+        self.assertEqual(len(pula), 10)
+        self.assertEqual(sorted({D["przedmioty"][i]["klasa"] for i in pula}), ["mag", "zwiadowca"])
+        for k in ("mag", "zwiadowca"):
+            bronie = [i for i in D["klasy"][k]["wszystkie"] if D["przedmioty"][i]["slot"] == "Weapon"
+                      and D["przedmioty"][i]["nrStopnia"] == 1]
+            poz = [D["przedmioty"][i]["poziom"] for i in bronie]
+            self.assertEqual(poz, sorted(poz), k)
+            self.assertEqual(len(bronie), 6, k)   # 5 z puli + broń stopnia leśnego
+        P = D["przedmioty"]
+        self.assertTrue(LK.czy_zalozyc(D, ["kot_mag_kostur"], "mag_rozdzka_z_patyka"))          # start → las
+        self.assertTrue(LK.czy_zalozyc(D, ["mag_rozdzka_z_patyka"], "mag_kostur_ucznia"))       # Lv 1 → Lv 10
+        self.assertFalse(LK.czy_zalozyc(D, ["mag_kostur_ucznia"], "mag_kostur_z_miotly"))       # Lv 10 → Lv 3
+        self.assertFalse(LK.czy_zalozyc(D, ["mag_rozdzka_ze_swieczki"], "kot_mag_las_kostur"))  # Lv 7 = Lv 7
+        self.assertFalse(LK.czy_zalozyc(D, ["kot_mag_bagno_kostur"], "mag_kostur_ucznia"))      # bagno > las
+        self.assertTrue(LK.czy_zalozyc(D, ["mag_kostur_ucznia"], "kot_mag_bagno_kostur"))
+        zal = LK.zalozone(D, "zwiadowca", {"przedmioty": {i: {"poziom": 0, "zapas": 0} for i in
+                                                         ("zwiadowca_sztylet", "zwiad_proca_z_galezi",
+                                                          "zwiad_luk_tropiciela", "zwiad_noz_do_masla")},
+                                           "materialy": 0}, None)
+        self.assertIn("zwiad_luk_tropiciela", zal)
+        self.assertEqual(sum(1 for i in zal if P[i]["slot"] == "Weapon"), 1)
+
     def test_1a_aktualne(self):
         zle, _D, _p = DANE.aktualny()
         self.assertEqual(zle, [], "uruchom python -B swiat/kowal_proba/dane.py")
@@ -91,7 +118,7 @@ class TestDanych(unittest.TestCase):
         czesci_start = {c for c, cal in D["czesci"].items() if D["przedmioty"][cal]["nrStopnia"] == 0}
         self.assertEqual(len(startowe) + len(czesci_start), 20)
         self.assertEqual(czesci_start, {"rycerz_nogawice", "zwiadowca_spodnie"})
-        self.assertEqual((len(D["przedmioty"]), len(D["czesci"])), (72, 8))
+        self.assertEqual((len(D["przedmioty"]), len(D["czesci"])), (82, 8))
         self.assertEqual(sorted(startowe), sorted(DANE.ustawienia()["przedmioty"]), "stopień startowy = ustawienia kowala")
         for k, Kl in D["klasy"].items():
             self.assertEqual(Kl["przedmioty"], [i for i in Kl["wszystkie"] if D["przedmioty"][i]["nrStopnia"] == 0], k)

@@ -42,6 +42,12 @@ for _s in (REPO, os.path.join(REPO, "tools"), os.path.join(REPO, "swiat", "test_
 USTAWIENIA = os.path.join(TU, "ustawienia.json")
 KATALOG = os.path.join(REPO, "swiat", "postacie", "przedmioty.json")
 KATALOG_SKLEPU = os.path.join(REPO, "swiat", "postacie", "sklep_przedmioty.json")
+# 27.11.2026 (UI broni, D-167): bronie puli Lv 1–10 Maga i Zwiadowcy — bez brył przymierzalni (czesci = []), na postaci
+# akcesorium z ReplicatedStorage/BronieKlas (Ubieranie.luau); przymierzalnia zna je, żeby kowal mógł je założyć
+KATALOG_BRONI = os.path.join(REPO, "swiat", "postacie", "bronie_klas_sklep.json")
+EKWIPUNEK_BRONI = os.path.join(REPO, "swiat", "postacie", "wynik", "bronie_klas", "ekwipunek.json")  # korekty kota
+ID_PULI = "pula"
+NAZWA_PULI = "broń Lv 1–10"
 ZRODLA = os.path.join(TU, "zrodla")
 PLIK_LUAU = "DaneStrojow.luau"
 LIMIT_MODULU = 199000        # znaków w jednym module (Roblox: Source do 200 000)
@@ -300,6 +306,39 @@ def _stopnie_klasy(klucz, K, pom, sklep):
     return wynik
 
 
+def _bronie_puli(klucz, K):
+    """Bronie puli klasy z bronie_klas_sklep.json → przedmioty bez segmentów z polem „akcesorium” (nazwa modelu
+    w BronieKlas, zaczep dłoni, rodzaj chwytu); w K.stopnie dochodzi stopień „pula” (kolejność według poziomu)."""
+    if not os.path.isfile(KATALOG_BRONI):
+        return collections.OrderedDict()
+    wpisy = sorted((p for p in _czytaj_json(KATALOG_BRONI)["przedmioty"] if p["klasa"] == klucz),
+                   key=lambda p: (p["poziom"], p["id"]))
+    kot = {}
+    if os.path.isfile(EKWIPUNEK_BRONI):
+        for e in _czytaj_json(EKWIPUNEK_BRONI)["przedmioty"]:
+            c = e["czesci"][0]
+            kot[e["id"]] = collections.OrderedDict([("zaczep", c["zaczep"]), ("pos", list(c["pos"])),
+                                                    ("rot", list(c["rot"]))])
+    wynik = collections.OrderedDict()
+    for p in wpisy:
+        if p["id"] not in kot:
+            raise BladDanych("broń puli %s: brak korekty chwytu kota w %s" % (p["id"], os.path.relpath(EKWIPUNEK_BRONI, REPO)))
+        if p["slot"] != "Weapon" or p.get("czesci") or not p.get("akcesorium"):
+            raise BladDanych("broń puli %s: slot Weapon, bez brył, z akcesorium" % p["id"])
+        wynik[p["id"]] = collections.OrderedDict([
+            ("nazwa", p["nazwa"]), ("slot", p["slot"]), ("kategoria", p["kategoria"]), ("cialo", p["cialo"]),
+            ("klasy", list(p["klasy"])), ("czescOd", None), ("ukrywa", []), ("zestaw", p["zestaw"]),
+            ("segmenty", []),
+            ("akcesorium", collections.OrderedDict([("nazwa", p["akcesorium"]), ("zaczep", p["zaczep"]),
+                                                    ("chwyt", p["chwyt"]), ("lapa", p["lapa"]),
+                                                    ("kot", kot[p["id"]])]))])
+    if wynik:
+        if ID_PULI in [s["id"] for s in K.get("stopnie", [])]:
+            raise BladDanych("klasa %s: stopień %s już istnieje" % (klucz, ID_PULI))
+        K.setdefault("stopnie", []).append({"id": ID_PULI, "nazwa": NAZWA_PULI, "przedmioty": list(wynik)})
+    return wynik
+
+
 # --------------------------------------------------------------------------------------------- całość
 def zbierz():
     """Słownik danych pakietu (to, co trafia do DaneStrojow.luau) + pomocnicze obiekty Pythona (do testów)."""
@@ -324,6 +363,12 @@ def zbierz():
         for i in P:
             if i in przedmioty:
                 raise BladDanych("przedmiot stopnia %s powtarza istniejący (%s)" % (i, klucz))
+        przedmioty.update(P)
+    for klucz in klasy:
+        P = _bronie_puli(klucz, klasy[klucz])
+        for i in P:
+            if i in przedmioty:
+                raise BladDanych("broń puli %s powtarza istniejący przedmiot (%s)" % (i, klucz))
         przedmioty.update(P)
     for z in U["zestawy_okna"]:
         for klucz, K in klasy.items():
@@ -489,6 +534,8 @@ def _przedmiot_luau(tab, i, P):
         if s["grupa"]:
             pola += ", grupa = %s, zaczep = %s" % (_napis(s["grupa"]), _napis(s["zaczep"]))
         segs.append("\t{ %s, czesci = %s }" % (pola, _bryly_luau(s["czesci"], 2)))
+    if not segs:   # broń puli Lv 1–10: bez brył (akcesorium z BronieKlas)
+        return ["%s[%s] = %s" % (tab, _napis(i), _luau(meta, 1)), "%s[%s].segmenty = {}" % (tab, _napis(i))]
     return ["%s[%s] = %s" % (tab, _napis(i), _luau(meta, 1)),
             "%s[%s].segmenty = {\n%s,\n}" % (tab, _napis(i), ",\n".join(segs))]
 

@@ -68,8 +68,14 @@ _STOPIEN_LAS = os.path.join(STROJE, "zrodla", "DaneStrojowLas.luau")
 NOWE_W_PRZYMIERZALNI = os.path.isfile(_STOPIEN_LAS) and '"rycerz_las_zbroja"' in czytaj(_STOPIEN_LAS)
 
 
+# 27.11.2026: bronie puli Lv 1–10 Maga i Zwiadowcy (swiat/postacie/bronie_klas_sklep.json) — kilka w stopniu leśnym;
+# testy kompletów stopni idą bez nich (nowe()), bronie puli sprawdza test_3p
+BRONIE_PULI = json.loads(czytaj(REPO, "swiat", "postacie", "bronie_klas_sklep.json"))["przedmioty"]
+
+
 def nowe(klasa, slot=None, nr=None):
     return [i for i in DK["klasy"][klasa]["wszystkie"] if DK["przedmioty"][i]["nrStopnia"] > 0
+            and not DK["przedmioty"][i].get("pula")
             and (slot is None or DK["przedmioty"][i]["slot"] == slot)
             and (nr is None or DK["przedmioty"][i]["nrStopnia"] == nr)]
 
@@ -84,6 +90,8 @@ class TestDanych(unittest.TestCase):
         sprzedawane = [p for p in KATALOG["przedmioty"] if p["sprzedawany"]]
         czesci = [p for p in KATALOG["przedmioty"] if not p["sprzedawany"]]
         self.assertEqual((len(sprzedawane), len(czesci)), (72, 8))
+        self.assertEqual(len(BRONIE_PULI), 10)
+        sprzedawane = sprzedawane + BRONIE_PULI
         self.assertEqual(set(DK["przedmioty"]), {p["id"] for p in sprzedawane})
         for p in sprzedawane:
             P = DK["przedmioty"][p["id"]]
@@ -97,7 +105,8 @@ class TestDanych(unittest.TestCase):
                          [(s["id"], s["nr"], s["nazwa"]) for s in KATALOG["stopnie"]])
         self.assertEqual([s["id"] for s in DK["stopnie"]], [s["id"] for s in D["stopnie"]])
         for k, Kl in DK["klasy"].items():
-            self.assertEqual(len(Kl["wszystkie"]), 4 * len(Kl["przedmioty"]), k)
+            bez_puli = [i for i in Kl["wszystkie"] if not DK["przedmioty"][i].get("pula")]
+            self.assertEqual(len(bez_puli), 4 * len(Kl["przedmioty"]), k)
 
     def test_1c_teksty_dla_gracza(self):
         zle = re.compile(r"(swiat/|D-\d|atrybut|Studio|pakiet|SklepProba|KowalProba|_|\bid\b)")
@@ -261,6 +270,33 @@ class TestKupnaNaAtrapie(unittest.TestCase):
         dane = LK.podstawowe(DK, LK.nowe(DK), klasa)[0]
         return dane, LK.na_napis(LK.zalozone(DK, klasa, dane, None))
 
+    def test_3p_bronie_puli(self):
+        """Bronie puli Lv 1–10: tylko swoja klasa; kupowane od najniższego poziomu zakładają się same i zmieniają
+        wpis Modyfikatory; broń leśna Lv 7 nie zdejmuje broni puli Lv 10, bagienna — zdejmuje."""
+        for k in ("mag", "zwiadowca"):
+            dane, napis = self.start(k)
+            portfel = Portfel(10 ** 6)
+            pula = sorted((p for p in BRONIE_PULI if p["klasa"] == k), key=lambda p: p["poziom"])
+            self.assertEqual(len(pula), 5)
+            for p in pula:
+                przed = LK.mod(DK, k, dane, LK.zalozone(DK, k, dane, napis))
+                dane, napis, r = kup_na_atrapie(dane, k, 30, portfel, p["id"], napis)
+                self.assertTrue(r["ok"] and r["zalozony"], (p["id"], r))
+                po = LK.mod(DK, k, dane, LK.zalozone(DK, k, dane, napis))
+                self.assertNotEqual(przed, po, "%s zmienia wpis Modyfikatory" % p["id"])
+            zal = LK.zalozone(DK, k, dane, napis)
+            self.assertIn(pula[-1]["id"], zal)
+            las = nowe(k, "Weapon", 1)[0]
+            dane, napis, r = kup_na_atrapie(dane, k, 30, portfel, las, napis)
+            self.assertTrue(r["ok"] and not r["zalozony"], (las, r))
+            bagno = nowe(k, "Weapon", 2)[0]
+            dane, napis, r = kup_na_atrapie(dane, k, 30, portfel, bagno, napis)
+            self.assertTrue(r["ok"] and r["zalozony"], (bagno, r))
+            inna = "zwiadowca" if k == "mag" else "mag"
+            obca = next(p["id"] for p in BRONIE_PULI if p["klasa"] == inna)
+            ok, powod, _ = LK.kup(DK, dane, k, 30, 10 ** 6, obca)
+            self.assertEqual((ok, powod), (False, "inna_klasa"))
+
     def test_3a_wszystkie_nowe_przedmioty(self):
         for k in DK["klasy"]:
             dane, napis = self.start(k)
@@ -280,8 +316,10 @@ class TestKupnaNaAtrapie(unittest.TestCase):
             zal = LK.zalozone(DK, k, dane, napis)
             self.assertEqual({DK["przedmioty"][i]["nrStopnia"] for i in zal}, {3}, "na końcu cały komplet Dżungli")
             self.assertEqual(len(zal), len({DK["przedmioty"][i]["slot"] for i in zal}), "jeden przedmiot na slot")
+            # do kupienia zostają nieposiadane przedmioty startowe i bronie puli (te kupuje test_3p)
             self.assertEqual(LK.stac_na(DK, dane, k, 30, 10 ** 6),
-                             len([i for i in DK["klasy"][k]["przedmioty"] if i not in dane["przedmioty"]]))
+                             len([i for i in DK["klasy"][k]["przedmioty"] if i not in dane["przedmioty"]])
+                             + sum(1 for p in BRONIE_PULI if p["klasa"] == k))
 
     def test_3b_odmowy(self):
         dane, napis = self.start("wojownik")

@@ -465,7 +465,11 @@ function L.czyZalozyc(D, zal, id)
 	for _, z in zal do
 		local Z = D.przedmioty[z]
 		if z ~= id and Z.slot == P.slot then
-			return Z.nrStopnia < P.nrStopnia
+			-- 27.11.2026: w tym samym stopniu (bronie puli Lv 1–10) decyduje wymagany poziom
+			if Z.nrStopnia ~= P.nrStopnia then
+				return Z.nrStopnia < P.nrStopnia
+			end
+			return Z.poziom < P.poziom
 		end
 	end
 	return true

@@ -1,5 +1,5 @@
 --[[
-	DaneStrojow — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót eab733f216f3.
+	DaneStrojow — WYGENEROWANE przez swiat/stroje_proba/dane.py (nie edytuj ręcznie), skrót deb1089c2044.
 	Źródła: swiat/postacie/przedmioty.json, moduły bohaterów (cialo(), przedmioty()), ustawienia.json;
 	przedmioty stopni (swiat/postacie/stopnie.py, sklep_przedmioty.json) w modułach DaneStrojowLas, DaneStrojowBagno, DaneStrojowDzungla — scalane na końcu.
 	Bryła = { kształt (0 klocek, 1 kula, 2 walec, 3 klin, 4 narożnik), nazwa, x, y, z, rx, ry, rz, sx, sy, sz,
@@ -13,7 +13,7 @@ end
 
 local D = {}
 D.wersja = 1
-D.skrot = "eab733f216f3"
+D.skrot = "deb1089c2044"
 D.kontener = "StrojeProba"
 D.atrybut = "StrojProba_"
 D.dobor = "klasa"
@@ -531,6 +531,11 @@ D.klasy["zwiadowca"] = {
 				"zwiadowca_dzungla_sztylet",
 			},
 		},
+		{
+			id = "pula",
+			nazwa = "broń Lv 1–10",
+			przedmioty = { "zwiad_proca_z_galezi", "zwiad_luk_z_wieszaka", "zwiad_noz_do_masla", "zwiad_sztylet_z_szyszki", "zwiad_luk_tropiciela" },
+		},
 	},
 }
 D.klasy["zwiadowca"].kosci = {
@@ -751,6 +756,11 @@ D.klasy["mag"] = {
 			id = "dzungla",
 			nazwa = "Dżungli",
 			przedmioty = { "kot_mag_dzungla_kapelusz", "kot_mag_dzungla_szata", "kot_mag_dzungla_pas", "kot_mag_dzungla_kostur" },
+		},
+		{
+			id = "pula",
+			nazwa = "broń Lv 1–10",
+			przedmioty = { "mag_rozdzka_z_patyka", "mag_kostur_z_miotly", "mag_walek_czarodziejski", "mag_rozdzka_ze_swieczki", "mag_kostur_ucznia" },
 		},
 	},
 }
@@ -1528,6 +1538,168 @@ D.przedmioty["kot_mag_kostur"].segmenty = {
 		{0,"Odlamek",0.44,2.14,0,0,-2.35619,-0.34907,0.1,0.16,0.1,"9B4DFF",5,""},
 	} },
 }
+D.przedmioty["zwiad_proca_z_galezi"] = {
+	nazwa = "Proca z Gałęzi",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "zwiadowca" },
+	ukrywa = {},
+	akcesorium = {
+		nazwa = "zwiad_proca_z_galezi",
+		zaczep = "RightGripAttachment",
+		chwyt = "proca",
+		lapa = "prawa",
+		kot = { zaczep = "KosturAttachment", pos = { -0.12, 0.03, 0 }, rot = { -85, 30, 0 } },
+	},
+}
+D.przedmioty["zwiad_proca_z_galezi"].segmenty = {}
+D.przedmioty["zwiad_luk_z_wieszaka"] = {
+	nazwa = "Łuk z Wieszaka",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "zwiadowca" },
+	ukrywa = {},
+	akcesorium = {
+		nazwa = "zwiad_luk_z_wieszaka",
+		zaczep = "LeftGripAttachment",
+		chwyt = "luk",
+		lapa = "lewa",
+		kot = { zaczep = "LeftGripAttachment", pos = { 0.2, 0.25, 0 }, rot = { -3.149, -48.362, 45.274 } },
+	},
+}
+D.przedmioty["zwiad_luk_z_wieszaka"].segmenty = {}
+D.przedmioty["zwiad_noz_do_masla"] = {
+	nazwa = "Nóż do Masła",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "zwiadowca" },
+	ukrywa = {},
+	akcesorium = {
+		nazwa = "zwiad_noz_do_masla",
+		zaczep = "RightGripAttachment",
+		chwyt = "miecz",
+		lapa = "prawa",
+		kot = { zaczep = "KosturAttachment", pos = { -0.08, 0.08, 0.03 }, rot = { -41.641, -61.118, 62.764 } },
+	},
+}
+D.przedmioty["zwiad_noz_do_masla"].segmenty = {}
+D.przedmioty["zwiad_sztylet_z_szyszki"] = {
+	nazwa = "Sztylet z Szyszki",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "zwiadowca" },
+	ukrywa = {},
+	akcesorium = {
+		nazwa = "zwiad_sztylet_z_szyszki",
+		zaczep = "RightGripAttachment",
+		chwyt = "miecz",
+		lapa = "prawa",
+		kot = { zaczep = "KosturAttachment", pos = { -0.08, 0.08, 0.03 }, rot = { -41.641, -61.118, 62.764 } },
+	},
+}
+D.przedmioty["zwiad_sztylet_z_szyszki"].segmenty = {}
+D.przedmioty["zwiad_luk_tropiciela"] = {
+	nazwa = "Łuk Tropiciela",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "zwiadowca" },
+	ukrywa = {},
+	zestaw = "kot_zwiadowca_tropiciel",
+	akcesorium = {
+		nazwa = "zwiad_luk_tropiciela",
+		zaczep = "LeftGripAttachment",
+		chwyt = "luk",
+		lapa = "lewa",
+		kot = { zaczep = "LeftGripAttachment", pos = { 0.2, 0.25, 0 }, rot = { -3.149, -48.362, 45.274 } },
+	},
+}
+D.przedmioty["zwiad_luk_tropiciela"].segmenty = {}
+D.przedmioty["mag_rozdzka_z_patyka"] = {
+	nazwa = "Różdżka z Patyka",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "mag" },
+	ukrywa = {},
+	akcesorium = {
+		nazwa = "mag_rozdzka_z_patyka",
+		zaczep = "RightGripAttachment",
+		chwyt = "rozdzka",
+		lapa = "prawa",
+		kot = { zaczep = "KosturAttachment", pos = { -0.08, 0, 0 }, rot = { -30, 10, 0 } },
+	},
+}
+D.przedmioty["mag_rozdzka_z_patyka"].segmenty = {}
+D.przedmioty["mag_kostur_z_miotly"] = {
+	nazwa = "Kostur z Miotły",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "mag" },
+	ukrywa = {},
+	akcesorium = {
+		nazwa = "mag_kostur_z_miotly",
+		zaczep = "RightGripAttachment",
+		chwyt = "drzewce",
+		lapa = "prawa",
+		kot = { zaczep = "KosturAttachment", pos = { -0.12, 0.03, 0 }, rot = { -90, 5, 0 } },
+	},
+}
+D.przedmioty["mag_kostur_z_miotly"].segmenty = {}
+D.przedmioty["mag_walek_czarodziejski"] = {
+	nazwa = "Wałek Czarodziejski",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "mag" },
+	ukrywa = {},
+	akcesorium = {
+		nazwa = "mag_walek_czarodziejski",
+		zaczep = "RightGripAttachment",
+		chwyt = "miecz",
+		lapa = "prawa",
+		kot = { zaczep = "KosturAttachment", pos = { -0.08, 0.08, 0.03 }, rot = { -41.641, -61.118, 62.764 } },
+	},
+}
+D.przedmioty["mag_walek_czarodziejski"].segmenty = {}
+D.przedmioty["mag_rozdzka_ze_swieczki"] = {
+	nazwa = "Różdżka ze Świeczki",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "mag" },
+	ukrywa = {},
+	akcesorium = {
+		nazwa = "mag_rozdzka_ze_swieczki",
+		zaczep = "RightGripAttachment",
+		chwyt = "rozdzka",
+		lapa = "prawa",
+		kot = { zaczep = "KosturAttachment", pos = { -0.08, 0, 0 }, rot = { -30, 10, 0 } },
+	},
+}
+D.przedmioty["mag_rozdzka_ze_swieczki"].segmenty = {}
+D.przedmioty["mag_kostur_ucznia"] = {
+	nazwa = "Kostur Ucznia",
+	slot = "Weapon",
+	kategoria = "Weapons",
+	cialo = "dowolne",
+	klasy = { "mag" },
+	ukrywa = {},
+	zestaw = "kot_mag_uczen",
+	akcesorium = {
+		nazwa = "mag_kostur_ucznia",
+		zaczep = "RightGripAttachment",
+		chwyt = "drzewce",
+		lapa = "prawa",
+		kot = { zaczep = "KosturAttachment", pos = { -0.12, 0.03, 0 }, rot = { -90, 5, 0 } },
+	},
+}
+D.przedmioty["mag_kostur_ucznia"].segmenty = {}
 -- Przedmioty stopni (D-106) leżą w osobnych modułach obok (granica długości jednego modułu). Scalenie jest TUTAJ, więc
 -- każdy czytelnik dalej bierze jedno D. Moduł szukany obok tego modułu, a gdy go tam nie ma — w
 -- Workspace/<kontener>/Moduly. Gdy modułu stopnia nie ma wcale (np. test wczytujący sam ten plik), stopnia po prostu

@@ -54,7 +54,10 @@ KATALOG = json.load(open(DN.KATALOG, encoding="utf-8"))
 SKLEP = json.load(open(DN.KATALOG_SKLEPU, encoding="utf-8"))
 from swiat.postacie import stopnie as ST  # noqa: E402
 STOPNIE = list(ST.STOPNIE)
-DZIS = [i for i, P in D["przedmioty"].items() if not P.get("stopien")]      # 20 dzisiejszych przedmiotów
+DZIS = [i for i, P in D["przedmioty"].items() if not P.get("stopien") and not P.get("akcesorium")]  # 20 dzisiejszych
+# 27.11.2026 (UI broni): bronie puli Lv 1–10 Maga i Zwiadowcy — bez brył, akcesorium z BronieKlas, stopień „pula”
+PULA = [i for i, P in D["przedmioty"].items() if P.get("akcesorium")]
+BRONIE_PULI = json.load(open(DN.KATALOG_BRONI, encoding="utf-8"))["przedmioty"]
 
 
 def czytaj(plik):
@@ -136,7 +139,8 @@ class TestDane(unittest.TestCase):
             pom = PY[klasa]
             po_id = {p.id: p for p in pom["przedmioty"]}
             for plan in wszystkie_stroje(klasa):
-                lib = RK.rig(ubierz(pom["cialo"], [po_id[i] for i in plan["przedmioty"]], korekty=pom["korekty"]))
+                lib = RK.rig(ubierz(pom["cialo"], [po_id[i] for i in plan["przedmioty"] if i in po_id],  # bez broni puli
+                            korekty=pom["korekty"]))
                 lw = [list(c[:13]) + [tuple(lib["materialy"][c[13]]), lib["grupy"][c[14]], c[15]] for c in lib["czesci"]]
                 self.assertEqual(collections.Counter(DN.klucz_bryly(w) for w in DN.zloz(D, klasa, plan)),
                                  collections.Counter(DN.klucz_bryly(w) for w in lw), (klasa, plan["przedmioty"]))
@@ -183,8 +187,8 @@ class TestDane(unittest.TestCase):
         w_danych = {i: P for i, P in D["przedmioty"].items() if P.get("stopien")}
         self.assertEqual(len(nowe), 60)
         self.assertEqual(set(nowe), set(w_danych))
-        self.assertEqual(len(D["przedmioty"]), 80)
-        self.assertEqual({p["id"] for p in SKLEP["przedmioty"]}, set(D["przedmioty"]))
+        self.assertEqual(len(D["przedmioty"]), 90)
+        self.assertEqual({p["id"] for p in SKLEP["przedmioty"]} | {p["id"] for p in BRONIE_PULI}, set(D["przedmioty"]))
         for i, P in w_danych.items():
             k = nowe[i]
             self.assertEqual((P["nazwa"], P["slot"], P["kategoria"], P["cialo"], P["klasy"], P["czescOd"], P["ukrywa"],
@@ -195,14 +199,17 @@ class TestDane(unittest.TestCase):
             self.assertEqual(P["klasy"], [k["klasa"]], i)
             self.assertTrue(all(s["czesci"] for s in P["segmenty"]), i)
         for klasa, K in D["klasy"].items():
-            self.assertEqual([s["id"] for s in K["stopnie"]], STOPNIE)
-            for s in K["stopnie"]:
+            # stopień „pula” (bronie Lv 1–10, 27.11.2026) na końcu — u Maga i Zwiadowcy; sprawdza go test_2b
+            stopnie_kl = [s for s in K["stopnie"] if s["id"] != DN.ID_PULI]
+            self.assertEqual([s["id"] for s in stopnie_kl], STOPNIE)
+            self.assertEqual([s["id"] for s in K["stopnie"]][len(STOPNIE):], [] if klasa == "wojownik" else [DN.ID_PULI])
+            for s in stopnie_kl:
                 self.assertEqual(set(s["przedmioty"]), {i for i, k in nowe.items()
                                                         if k["klasa"] == klasa and k["stopien"] == s["id"]})
                 self.assertEqual(s["przedmioty"][:len(ST.komplet(klasa, s["id"]))], list(ST.komplet(klasa, s["id"])))
                 z = next(z for z in K["zestawy"] if z["id"] == s["id"])
                 self.assertEqual(z["przedmioty"], list(ST.komplet(klasa, s["id"])))
-            self.assertEqual(len(L.przedmioty_klasy(D, klasa)), 4 * len(K["przedmioty"]))
+            self.assertEqual(len([i for i in L.przedmioty_klasy(D, klasa) if i not in PULA]), 4 * len(K["przedmioty"]))
         self.assertEqual([m["modul"] for m in D["modulyStopni"]], ["DaneStrojowLas", "DaneStrojowBagno", "DaneStrojowDzungla"])
         self.assertEqual(D["brakStopni"], [])
         self.assertEqual(D["zestawyOkna"], ["golas", "komplet"])     # okno bez zmian; zestawy stopni są w danych
@@ -214,7 +221,8 @@ class TestDane(unittest.TestCase):
         po_id = {p.id: p for p in pom["przedmioty"]}
         for prz in pom["stopnie"].values():
             po_id.update((p.id, p) for p in prz)
-        lib = RK.rig(ubierz(pom["cialo"], [po_id[i] for i in plan["przedmioty"]], korekty=pom["korekty"]))
+        lib = RK.rig(ubierz(pom["cialo"], [po_id[i] for i in plan["przedmioty"] if i in po_id],  # bez broni puli
+                            korekty=pom["korekty"]))
         lw = [list(c[:13]) + [tuple(lib["materialy"][c[13]]), lib["grupy"][c[14]], c[15]] for c in lib["czesci"]]
         self.assertEqual(collections.Counter(DN.klucz_bryly(w) for w in DN.zloz(D, klasa, plan)),
                          collections.Counter(DN.klucz_bryly(w) for w in lw), (klasa, plan["przedmioty"]))
@@ -352,12 +360,16 @@ class TestLogika(unittest.TestCase):
         ok, st = L.zdejmij(Ds, "wojownik", ["rycerz_zbroja", "rycerz_nogawice"], "Chest")
         self.assertEqual(st, ["rycerz_nogawice"])
         self.assertEqual(L.oferta(D, "nie_ma"), [])
-        # w każdym slocie cztery przedmioty: dzisiejszy i trzy stopnie (w tej kolejności)
+        # w każdym slocie cztery przedmioty: dzisiejszy i trzy stopnie (w tej kolejności); broń Maga i Zwiadowcy
+        # ma na końcu jeszcze 5 broni puli Lv 1–10 (według poziomu)
         for k in D["klasy"]:
             for o in L.oferta(D, k):
-                self.assertEqual(len(o["przedmioty"]), 4, (k, o["slot"]))
+                pula = [i for i in o["przedmioty"] if i in PULA]
+                self.assertEqual(len(pula), 5 if (k != "wojownik" and o["slot"] == "Weapon") else 0, (k, o["slot"]))
+                self.assertEqual(o["przedmioty"][4:], pula, (k, o["slot"]))
+                self.assertEqual(len(o["przedmioty"]) - len(pula), 4, (k, o["slot"]))
                 self.assertIn(o["przedmioty"][0], DZIS)
-                self.assertEqual([D["przedmioty"][i]["stopien"] for i in o["przedmioty"][1:]], STOPNIE)
+                self.assertEqual([D["przedmioty"][i]["stopien"] for i in o["przedmioty"][1:4]], STOPNIE)
 
     def test_2c_napis(self):
         self.assertIsNone(L.z_napisu(None))
@@ -488,7 +500,7 @@ class TestLuau(unittest.TestCase):
         it = LM.Interpreter()
         Dl = LM.z_luau(_luau_dane(it))
         self.assertEqual(set(Dl["przedmioty"]), set(D["przedmioty"]))
-        self.assertEqual(len(Dl["przedmioty"]), 80)
+        self.assertEqual(len(Dl["przedmioty"]), 90)
         self.assertFalse(Dl.get("brakStopni"))
         for i, P in D["przedmioty"].items():
             Pl = Dl["przedmioty"][i]
@@ -516,7 +528,7 @@ class TestLuau(unittest.TestCase):
         Ll = it.wykonaj(czytaj("LogikaStrojow.luau"), "LogikaStrojow.luau")[0]
         Dp = LM.z_luau(Dl)
         self.assertEqual(list(Dp["brakStopni"]), ["bagno"])
-        self.assertEqual(len(Dp["przedmioty"]), 60)
+        self.assertEqual(len(Dp["przedmioty"]), 70)   # 60 + 10 broni puli (w module głównym)
         self.assertEqual([s["id"] for s in Dp["klasy"]["wojownik"]["stopnie"]], ["las", "dzungla"])
         self.assertEqual(self.wolaj(it, Ll, "zestaw", Dl, "wojownik", "bagno"), [False, "nieznany_zestaw"])
         self.assertEqual(self.wolaj(it, Ll, "normalizuj", Dl, "wojownik", LM.do_luau(["rycerz_bagno_helm"])),
@@ -529,10 +541,11 @@ class TestLuau(unittest.TestCase):
         Ll = it.wykonaj(czytaj("LogikaStrojow.luau"), "LogikaStrojow.luau")[0]
         Dp = LM.z_luau(Dl)
         self.assertEqual(list(Dp["brakStopni"]), STOPNIE)
-        self.assertEqual(set(Dp["przedmioty"]), set(DZIS))
+        self.assertEqual(set(Dp["przedmioty"]), set(DZIS) | set(PULA))
         for klasa, K in D["klasy"].items():
             self.assertEqual(self.wolaj(it, Ll, "zestaw", Dl, klasa, "komplet"), [True, K["odniesienie"]])
-            self.assertEqual(self.wolaj(it, Ll, "przedmiotyKlasy", Dl, klasa), [K["przedmioty"]])
+            self.assertEqual(self.wolaj(it, Ll, "przedmiotyKlasy", Dl, klasa),
+                             [K["przedmioty"] + [i for i in PULA if D["przedmioty"][i]["klasy"] == [klasa]]])
 
     def test_2f_zepsuta_logika_wykryta(self):
         zepsute = [

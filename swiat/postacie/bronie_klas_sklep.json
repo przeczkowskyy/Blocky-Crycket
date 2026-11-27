@@ -1,0 +1,381 @@
+{
+ "opis": "Bronie Maga i Zwiadowcy (pula Lv 1-10) jako przedmioty gry — drugi katalog obok sklep_przedmioty.json, te same pola wpisu. WYGENEROWANE przez swiat/postacie/bronie_klas_sklep.py — nie edytować ręcznie. Status: propozycja, LICZBY ROBOCZE.",
+ "status": "propozycja",
+ "wersja": 1,
+ "kontener": "ReplicatedStorage/BronieKlas",
+ "przedmioty": [
+  {
+   "id": "mag_rozdzka_z_patyka",
+   "nazwa": "Różdżka z Patyka",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, pojedyncza",
+   "klasa": "mag",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 50,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 1
+   },
+   "krok": {
+    "bron": 1,
+    "Intelligence": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [],
+   "ikona": "assets/processed/ItemStickWand.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "mag_rozdzka_z_patyka",
+   "chwyt": "rozdzka",
+   "lapa": "prawa",
+   "zaczep": "RightGripAttachment",
+   "ikona_roblox": "rbxassetid://84907332708348"
+  },
+  {
+   "id": "mag_kostur_z_miotly",
+   "nazwa": "Kostur z Miotły",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, pojedyncza",
+   "klasa": "mag",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 175,
+   "poziom": 3,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 1,
+    "Intelligence": 1
+   },
+   "krok": {
+    "bron": 1,
+    "Intelligence": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [],
+   "ikona": "assets/processed/ItemBroomStaff.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "mag_kostur_z_miotly",
+   "chwyt": "drzewce",
+   "lapa": "prawa",
+   "zaczep": "RightGripAttachment",
+   "ikona_roblox": "rbxassetid://73948961084878"
+  },
+  {
+   "id": "mag_walek_czarodziejski",
+   "nazwa": "Wałek Czarodziejski",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, pojedyncza",
+   "klasa": "mag",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 325,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 2,
+    "Intelligence": 1
+   },
+   "krok": {
+    "bron": 1,
+    "Intelligence": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [],
+   "ikona": "assets/processed/ItemMagicRollingPin.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "mag_walek_czarodziejski",
+   "chwyt": "miecz",
+   "lapa": "prawa",
+   "zaczep": "RightGripAttachment",
+   "ikona_roblox": "rbxassetid://76821207350979"
+  },
+  {
+   "id": "mag_rozdzka_ze_swieczki",
+   "nazwa": "Różdżka ze Świeczki",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, pojedyncza",
+   "klasa": "mag",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 500,
+   "poziom": 7,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 2,
+    "Intelligence": 2
+   },
+   "krok": {
+    "bron": 1,
+    "Intelligence": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [],
+   "ikona": "assets/processed/ItemCandleWand.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "mag_rozdzka_ze_swieczki",
+   "chwyt": "rozdzka",
+   "lapa": "prawa",
+   "zaczep": "RightGripAttachment",
+   "ikona_roblox": "rbxassetid://120086401556569"
+  },
+  {
+   "id": "mag_kostur_ucznia",
+   "nazwa": "Kostur Ucznia",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, przedmiot zestawu",
+   "klasa": "mag",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 725,
+   "poziom": 10,
+   "podstawowy": false,
+   "waga": 1.75,
+   "baza": {
+    "bron": 3,
+    "Intelligence": 3
+   },
+   "krok": {
+    "bron": 1,
+    "Intelligence": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_uczen",
+   "czesci": [],
+   "ikona": "assets/processed/ItemApprenticeStaff.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "mag_kostur_ucznia",
+   "chwyt": "drzewce",
+   "lapa": "prawa",
+   "zaczep": "RightGripAttachment",
+   "ikona_roblox": "rbxassetid://81130849751144"
+  },
+  {
+   "id": "zwiad_proca_z_galezi",
+   "nazwa": "Proca z Gałęzi",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, pojedyncza",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 35,
+   "poziom": 1,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 1
+   },
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [],
+   "ikona": "assets/processed/ItemBranchSlingshot.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "zwiad_proca_z_galezi",
+   "chwyt": "proca",
+   "lapa": "prawa",
+   "zaczep": "RightGripAttachment",
+   "ikona_roblox": "rbxassetid://88443827869989"
+  },
+  {
+   "id": "zwiad_luk_z_wieszaka",
+   "nazwa": "Łuk z Wieszaka",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, pojedyncza",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 125,
+   "poziom": 3,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 1,
+    "Luck": 1
+   },
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [],
+   "ikona": "assets/processed/ItemHangerBow.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "zwiad_luk_z_wieszaka",
+   "chwyt": "luk",
+   "lapa": "lewa",
+   "zaczep": "LeftGripAttachment",
+   "ikona_roblox": "rbxassetid://95890663840529"
+  },
+  {
+   "id": "zwiad_noz_do_masla",
+   "nazwa": "Nóż do Masła",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, pojedyncza",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 225,
+   "poziom": 5,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 2,
+    "Luck": 1
+   },
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [],
+   "ikona": "assets/processed/ItemButterKnife.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "zwiad_noz_do_masla",
+   "chwyt": "miecz",
+   "lapa": "prawa",
+   "zaczep": "RightGripAttachment",
+   "ikona_roblox": "rbxassetid://78117130092048"
+  },
+  {
+   "id": "zwiad_sztylet_z_szyszki",
+   "nazwa": "Sztylet z Szyszki",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, pojedyncza",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 350,
+   "poziom": 7,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 2,
+    "Luck": 2
+   },
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [],
+   "ikona": "assets/processed/ItemPineconeDagger.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "zwiad_sztylet_z_szyszki",
+   "chwyt": "miecz",
+   "lapa": "prawa",
+   "zaczep": "RightGripAttachment",
+   "ikona_roblox": "rbxassetid://82943053367365"
+  },
+  {
+   "id": "zwiad_luk_tropiciela",
+   "nazwa": "Łuk Tropiciela",
+   "opis": "broń puli Lv 1-10 (D-142, D-167): model z ikony, przedmiot zestawu",
+   "klasa": "zwiadowca",
+   "stopien": "las",
+   "nr_stopnia": 1,
+   "slot": "Weapon",
+   "sprzedawany": true,
+   "cena": 550,
+   "poziom": 10,
+   "podstawowy": false,
+   "waga": 1,
+   "baza": {
+    "bron": 3,
+    "Luck": 2
+   },
+   "krok": {
+    "bron": 1
+   },
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_zwiadowca_tropiciel",
+   "czesci": [],
+   "ikona": "assets/processed/ItemTrackerBow.png",
+   "pula": "Lv 1-10",
+   "akcesorium": "zwiad_luk_tropiciela",
+   "chwyt": "luk",
+   "lapa": "lewa",
+   "zaczep": "LeftGripAttachment",
+   "ikona_roblox": "rbxassetid://110256058556217"
+  }
+ ]
+}

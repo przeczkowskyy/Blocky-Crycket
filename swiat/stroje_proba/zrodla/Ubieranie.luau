@@ -216,8 +216,51 @@ function U.zbuduj(klasa, plan, wzor)
 			end
 		end
 	end
+	-- 27.11.2026 (UI broni): broń puli Lv 1–10 nie ma brył — na postać idzie kopia uchwytu akcesorium z
+	-- ReplicatedStorage/BronieKlas: jej zaczep (RightGripAttachment / LeftGripAttachment) na zaczepie dłoni postaci,
+	-- u kota (Kot-Mag) na zaczepie z korektą chwytu (ekwipunek.json: kot = zaczep, pos, rot — jak przy przebudowie)
+	local bronie = game:GetService("ReplicatedStorage"):FindFirstChild("BronieKlas")
+	local nBroni = 0 -- osobno od StrojBryly (bryły z danych = lustro Pythona zloz())
+	for _, id in plan.przedmioty do
+		local a = D.przedmioty[id].akcesorium
+		local wzorBroni = a and bronie and bronie:FindFirstChild(a.nazwa)
+		local uchwyt = wzorBroni and wzorBroni:FindFirstChild("Handle")
+		local zaczepBroni = uchwyt and uchwyt:FindFirstChild(a.zaczep)
+		if not (zaczepBroni and zaczepBroni:IsA("Attachment")) then
+			continue
+		end
+		local naKocie = K.cialo == "kot" and a.kot ~= nil
+		local cel = model:FindFirstChild(if naKocie then a.kot.zaczep else a.zaczep, true)
+		if not (cel and cel:IsA("Attachment") and cel.Parent and cel.Parent:IsA("BasePart")) then
+			continue
+		end
+		local korekta = CFrame.new()
+		if naKocie then
+			-- korekta liczona w układzie biblioteki postaci (przód +Z), a akcesorium wgrane z obrotem Y180 (atrybut
+			-- ObrotImportu): ta sama korekta w układzie Roblox = sprzężenie obrotem 180° wokół Y — pos (−x, y, −z),
+			-- kąty (−rx, ry, −rz); sprawdzone 27.11: Kostur Ucznia stoi jak kostur Kota-Maga (od ziemi nad głowę)
+			local p, r = a.kot.pos, a.kot.rot
+			korekta = CFrame.new(-p[1], p[2], -p[3])
+				* CFrame.fromOrientation(math.rad(-r[1]), math.rad(r[2]), math.rad(-r[3]))
+		end
+		local h = uchwyt:Clone()
+		h.Name = a.nazwa
+		h.Anchored = false
+		bezFizyki(h)
+		local c0 = cel.CFrame * korekta * zaczepBroni.CFrame:Inverse()
+		h.CFrame = cel.Parent.CFrame * c0
+		local w = Instance.new("Weld")
+		w.Name = "SpawStroju"
+		w.Part0 = cel.Parent
+		w.Part1 = h
+		w.C0 = c0
+		w.Parent = h
+		h.Parent = grupa("Bron_" .. a.nazwa)
+		nBroni += 1
+	end
 	model:SetAttribute("Stroj", L.naNapis(plan.przedmioty))
 	model:SetAttribute("StrojBryly", n)
+	model:SetAttribute("StrojBronie", nBroni)
 	return model
 end
 
