@@ -19,6 +19,9 @@
 	schowana, a narzędzie awatara w plecaku; sztanga i książka liczone z wymiarów postaci (kot ma krótkie łapy i szatę).
 	Ograniczenie: pozę i ruch rekwizytów widzi tylko trenujący gracz — dla innych graczy trzeba będzie te same ruchy
 	wgrać jako animacje Roblox (osobna zgoda na wgranie).
+	Agent Karola, 27.11 (polecenie Pawła: sklep u trenera): długość paska przychodzi z serwera ("start", …, pasek,
+	wzmocnienie_s — ulepszenie stanowiska skraca pasek), nad panelem licznik wzmacniacza; okno trenera ma dwie zakładki:
+	TRAIN (sześć ćwiczeń) i SHOP (ulepszenia stanowisk i wzmacniacze ×2 za Rybki — cenę i saldo liczy serwer).
 ]]
 
 local Players = game:GetService("Players")
@@ -203,9 +206,14 @@ local aktywne: string? = nil
 local postep = 0 -- w powtórzeniach, płynnie liczony u gracza między wiadomościami serwera
 local tempo = 1
 local pokazanyProcent = 0
+-- agent Karola, 27.11: sklep trenera — pasek z serwera (ulepszenie stanowiska), wzmacniacz ×2 z licznikiem nad panelem
+local pasekReps = D.powtorzenNaPasek
+local wzmDo = 0 -- os.clock() końca wzmacniacza statystyki trenowanej teraz
+local wzmL = napis(panel, "Wzmocnienie", UDim2.fromScale(0.2, -0.17), UDim2.fromScale(0.6, 0.15), Color3.fromRGB(255, 214, 90))
+wzmL.Visible = false
 
 local function rysuj(dt: number)
-	local cel = math.clamp(postep / D.powtorzenNaPasek, 0, 1)
+	local cel = math.clamp(postep / pasekReps, 0, 1)
 	-- żwawe, płynne dociąganie do celu (nie skacze przy poprawkach z serwera)
 	if cel < pokazanyProcent - 0.5 then
 		pokazanyProcent = cel -- nowy pasek po pełnym
@@ -218,6 +226,13 @@ local function rysuj(dt: number)
 	wyp.Visible = pokazanyProcent > 0.01
 	wyp.Size = UDim2.new(0, math.max(wys, pokazanyProcent * szer), 0.78, 0)
 	liczba.Text = string.format("%d%%", math.floor(pokazanyProcent * 100 + 0.5)) .. (if tempo > 1 then "  x" .. tostring(tempo) else "")
+	local zostalo = wzmDo - os.clock()
+	local s = aktywne and D.stanowisko(aktywne)
+	wzmL.Visible = zostalo > 0 and s ~= nil
+	if wzmL.Visible and s then
+		wzmL.Text = string.format("%s X%d  %d:%02d", s.skrot, D.sklep.wzmacniacze.mnoznik, math.floor(zostalo / 60),
+			math.floor(zostalo % 60))
+	end
 end
 
 local function wyskok(tekst: string, kolor: Color3)
@@ -862,7 +877,7 @@ RunService:BindToRenderStep("TreningAFK", Enum.RenderPriority.Last.Value + 1, fu
 		return
 	end
 	czas += dt
-	postep = math.min(postep + dt * tempo / D.czasPowtorzenia, D.powtorzenNaPasek - 0.001)
+	postep = math.min(postep + dt * tempo / D.czasPowtorzenia, pasekReps - 0.001)
 	rysuj(dt)
 	if not rig or not rig.model.Parent then
 		rig = znajdzRig()
@@ -942,9 +957,15 @@ local function koniec()
 	schowajCheck()
 	aktywne = nil
 	gui.Enabled = false
+	wzmDo = 0
+	-- agent Karola, 27.11: po ławce (Kondycja) Humanoid zostawał ok. 1 s w FallingDown i postać się ślizgała — wstaje od razu
+	local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if hum and hum:GetState() == Enum.HumanoidStateType.FallingDown then
+		hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+	end
 end
 
-Z.OnClientEvent:Connect(function(akcja, a, b, c)
+Z.OnClientEvent:Connect(function(akcja, a, b, c, d, e)
 	if akcja == "start" then
 		koniec()
 		aktywne = a
@@ -952,7 +973,9 @@ Z.OnClientEvent:Connect(function(akcja, a, b, c)
 		local k = workspace:FindFirstChild("TreningAFK")
 		stanowiskoM = k and k:FindFirstChild(a)
 		postep, tempo, czas = b or 0, 1, 0
-		pokazanyProcent = math.clamp(postep / D.powtorzenNaPasek, 0, 1)
+		pasekReps = if typeof(d) == "number" and d > 0 then d else D.powtorzenNaPasek -- agent Karola, 27.11: sklep
+		wzmDo = if typeof(e) == "number" and e > 0 then os.clock() + e else 0
+		pokazanyProcent = math.clamp(postep / pasekReps, 0, 1)
 		tytul.Text = s and s.nazwa or "TRAINING"
 		czynnoscL.Text = s and s.czynnosc or ""
 		ikona.Image = s and s.ikona or ""
@@ -966,6 +989,9 @@ Z.OnClientEvent:Connect(function(akcja, a, b, c)
 		postep = c or 0
 		pokazanyProcent = 1
 		wyskok("+" .. tostring(b) .. " " .. (s and s.skrot or ""), s and s.kolor or Color3.new(1, 1, 1))
+		if s then -- agent Karola, 27.11: przyrost po końcu wzmacniacza wraca do zwykłego
+			przyrostL.Text = "+" .. tostring(b) .. " " .. s.skrot .. " / BAR"
+		end
 		local sc = panel:FindFirstChildOfClass("UIScale") or Instance.new("UIScale")
 		sc.Parent = panel
 		sc.Scale = 1.06
@@ -1005,7 +1031,12 @@ end)
 	odległość od trenera i stawia gracza na stanowisku tak jak E przy macie ("start" zamyka okno). Zamykanie: X,
 	przycisk B pada, Escape, stuknięcie obok okna, odejście od trenera dalej niż D.trener.zasieg.
 	Układ w pikselach z rozmiaru ekranu (bez paska Robloxa): poziomo 3 × 2 kafelki, pionowo 2 × 3. Telefon 667 × 375
-	(pasek 36): okno 635 × 315, kafelek 199 × 123 px; przy pasku 58 — 199 × 112; pionowo 375 × 667 — 157 × 101. ]]
+	(pasek 36): okno 635 × 315, kafelek 199 × 121 px; przy pasku 58 — 199 × 110; pionowo 375 × 667 — 157 × 100.
+	Agent Karola, 27.11 (polecenie Pawła: „u trenera … panel sklepu/ulepszeń”): w nagłówku dwie zakładki (TRAIN, SHOP,
+		każda ≥ 44 px). SHOP: sześć kafelków stanowisk (ten sam układ siatki) z poziomem ulepszenia i dwoma przyciskami
+		(ulepszenie za Rybki, wzmacniacz ×2 na 10 min za Rybki; przycisk ≥ 44 px wysokości). Klik = "kup", rodzaj, id —
+		cenę, saldo, odległość od trenera i limit liczy serwer; stan sklepu przychodzi jako "sklep". Tytuł w SHOP pokazuje
+		saldo Rybek. ]]
 local GuiService = game:GetService("GuiService")
 local UIS = game:GetService("UserInputService")
 
@@ -1023,7 +1054,9 @@ okna:SetAttribute(D.trener.miejsce, true) -- okno jest: bazar nie pokazuje dymka
 
 local ZLOTY = Color3.fromRGB(252, 227, 176)
 local NAPIS_MENU = "CHOOSE YOUR TRAINING"
-local MENU = { pasek = 48, margines = 10, odstep = 8, maksSzer = 640, maksWys = 380, brzegX = 16, brzegY = 12 }
+local MENU = { pasek = 52, margines = 10, odstep = 8, maksSzer = 640, maksWys = 380, brzegX = 16, brzegY = 12,
+	zakladka = 124, przycisk = 44 }
+local NAPIS_SKLEPU = "SHOP"
 
 local menu = Instance.new("ScreenGui")
 menu.Name = "TreningAFKMenu"
@@ -1078,6 +1111,28 @@ obrys(zamknijB, 2).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 local zp = Instance.new("UIPadding")
 zp.PaddingTop, zp.PaddingBottom = UDim.new(0.18, 0), UDim.new(0.14, 0)
 zp.Parent = zamknijB
+
+-- agent Karola, 27.11: zakładki TRAIN / SHOP w nagłówku
+local function zakladkaB(nazwa: string, tekst: string): TextButton
+	local b = Instance.new("TextButton")
+	b.Name = nazwa
+	b.Text = tekst
+	b.FontFace = FONT
+	b.TextScaled = true
+	b.TextColor3 = Color3.new(1, 1, 1)
+	b.BackgroundColor3 = Color3.fromRGB(96, 70, 52)
+	b.ZIndex = 3
+	b.Parent = okno
+	rog(b, 0.25)
+	obrys(b, 2).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	local pd = Instance.new("UIPadding")
+	pd.PaddingTop, pd.PaddingBottom = UDim.new(0.2, 0), UDim.new(0.16, 0)
+	pd.PaddingLeft, pd.PaddingRight = UDim.new(0.08, 0), UDim.new(0.08, 0)
+	pd.Parent = b
+	return b
+end
+local zakladkaTrening = zakladkaB("ZakladkaTrening", "TRAIN")
+local zakladkaSklep = zakladkaB("ZakladkaSklep", NAPIS_SKLEPU)
 
 local cwiczenia = Instance.new("Frame")
 cwiczenia.Name = "Cwiczenia"
@@ -1146,6 +1201,78 @@ for i, s in ipairs(D.stanowiska) do
 	table.insert(kafle, { b = b, ikona = ik, wartosc = w, zajete = z, s = s })
 end
 
+-- agent Karola, 27.11: zakładka SHOP — kafelek stanowiska: ikona, nazwa, poziom ulepszenia i premia, dwa przyciski
+local sklepF = Instance.new("Frame")
+sklepF.Name = "Sklep"
+sklepF.BackgroundTransparency = 1
+sklepF.ZIndex = 2
+sklepF.Visible = false
+sklepF.Parent = okno
+local siatkaS = Instance.new("UIGridLayout")
+siatkaS.SortOrder = Enum.SortOrder.LayoutOrder
+siatkaS.HorizontalAlignment = Enum.HorizontalAlignment.Center
+siatkaS.VerticalAlignment = Enum.VerticalAlignment.Center
+siatkaS.Parent = sklepF
+
+local function przyciskSklepu(rodzic: Instance, nazwa: string, kolor: Color3): TextButton
+	local b = Instance.new("TextButton")
+	b.Name = nazwa
+	b.Text = ""
+	b.FontFace = FONT
+	b.TextScaled = true
+	b.TextColor3 = Color3.new(1, 1, 1)
+	b.BackgroundColor3 = kolor
+	b.ZIndex = 5
+	b.Parent = rodzic
+	rog(b, 0.2)
+	obrys(b, 2).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	local pd = Instance.new("UIPadding")
+	pd.PaddingTop, pd.PaddingBottom = UDim.new(0.1, 0), UDim.new(0.08, 0)
+	pd.PaddingLeft, pd.PaddingRight = UDim.new(0.06, 0), UDim.new(0.06, 0)
+	pd.Parent = b
+	maksTekst(b :: any, 20)
+	return b
+end
+
+type KafelSklepu = { f: Frame, poziom: TextLabel, ulepsz: TextButton, wzm: TextButton, s: any }
+local kafleS: { KafelSklepu } = {}
+for i, s in ipairs(D.stanowiska) do
+	local f = Instance.new("Frame")
+	f.Name = s.id
+	f.LayoutOrder = i
+	f.BackgroundColor3 = s.kolor
+	f.BorderSizePixel = 0
+	f.ZIndex = 3
+	f.Parent = sklepF
+	rog(f, 0.1)
+	obrys(f, 2.5).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	local gora = Instance.new("Frame")
+	gora.Name = "Gora"
+	gora.BackgroundTransparency = 1
+	gora.ZIndex = 4
+	gora.Parent = f
+	local ik = Instance.new("ImageLabel")
+	ik.Name = "Ikona"
+	ik.BackgroundTransparency = 1
+	ik.Image = s.ikona
+	ik.ScaleType = Enum.ScaleType.Fit
+	ik.Position, ik.Size = UDim2.fromScale(0.03, 0.05), UDim2.fromScale(0.26, 0.9)
+	ik.ZIndex = 4
+	ik.Parent = gora
+	local n = napis(gora, "Nazwa", UDim2.fromScale(0.31, 0.04), UDim2.fromScale(0.66, 0.5), Color3.new(1, 1, 1))
+	n.Text = s.nazwa
+	n.TextXAlignment = Enum.TextXAlignment.Left
+	n.ZIndex = 4
+	maksTekst(n, 26)
+	local pz = napis(gora, "Poziom", UDim2.fromScale(0.31, 0.54), UDim2.fromScale(0.66, 0.42), ZLOTY)
+	pz.TextXAlignment = Enum.TextXAlignment.Left
+	pz.ZIndex = 4
+	maksTekst(pz, 20)
+	local u = przyciskSklepu(f, "Ulepsz", Color3.fromRGB(70, 150, 70))
+	local w = przyciskSklepu(f, "Wzmacniacz", Color3.fromRGB(214, 150, 40))
+	table.insert(kafleS, { f = f, poziom = pz, ulepsz = u, wzm = w, s = s })
+end
+
 local function uloz()
 	local ekran = menu.AbsoluteSize
 	if ekran.X < 50 or ekran.Y < 50 then
@@ -1158,13 +1285,30 @@ local function uloz()
 	local h = math.floor(math.min(ekran.Y - 2 * M.brzegY, M.maksWys))
 	okno.Size = UDim2.fromOffset(w, h)
 	zamknijB.Position, zamknijB.Size = UDim2.new(1, -4, 0, 2), UDim2.fromOffset(M.pasek - 4, M.pasek - 4)
-	tytulMenu.Position = UDim2.fromOffset(M.margines + 4, 8)
-	tytulMenu.Size = UDim2.fromOffset(w - 2 * M.margines - M.pasek - 8, M.pasek - 14)
+	-- agent Karola, 27.11: zakładki w nagłówku (≥ 44 px), tytuł za nimi
+	local zw = math.floor(math.min(M.zakladka, (w - 2 * M.margines - M.pasek - 8) / 3))
+	zakladkaTrening.Position, zakladkaTrening.Size = UDim2.fromOffset(M.margines, 3), UDim2.fromOffset(zw, M.pasek - 6)
+	zakladkaSklep.Position, zakladkaSklep.Size = UDim2.fromOffset(M.margines + zw + 6, 3), UDim2.fromOffset(zw, M.pasek - 6)
+	local tx = M.margines + 2 * (zw + 6) + 4
+	tytulMenu.Position = UDim2.fromOffset(tx, 10)
+	tytulMenu.Size = UDim2.fromOffset(w - tx - M.pasek - 8, M.pasek - 18)
 	local sw, sh = w - 2 * M.margines, h - M.pasek - 2 - M.margines
 	cwiczenia.Position, cwiczenia.Size = UDim2.fromOffset(M.margines, M.pasek + 2), UDim2.fromOffset(sw, sh)
 	siatkaM.CellPadding = UDim2.fromOffset(M.odstep, M.odstep)
-	siatkaM.CellSize = UDim2.fromOffset(math.floor((sw - (kol - 1) * M.odstep) / kol),
-		math.floor((sh - (rzedy - 1) * M.odstep) / rzedy))
+	local cw = math.floor((sw - (kol - 1) * M.odstep) / kol)
+	local ch = math.floor((sh - (rzedy - 1) * M.odstep) / rzedy)
+	siatkaM.CellSize = UDim2.fromOffset(cw, ch)
+	sklepF.Position, sklepF.Size = cwiczenia.Position, cwiczenia.Size
+	siatkaS.CellPadding, siatkaS.CellSize = siatkaM.CellPadding, siatkaM.CellSize
+	-- przyciski sklepu: wysokość z kafelka (44 … 56 px), dwa obok siebie na dole
+	local bh = math.clamp(math.floor(ch * 0.42), M.przycisk, 56)
+	local bw = math.floor((cw - 18) / 2)
+	for _, k in ipairs(kafleS) do
+		k.ulepsz.Position, k.ulepsz.Size = UDim2.new(0, 6, 1, -bh - 6), UDim2.fromOffset(bw, bh)
+		k.wzm.Position, k.wzm.Size = UDim2.new(0, 12 + bw, 1, -bh - 6), UDim2.fromOffset(bw, bh)
+		local g = k.f:FindFirstChild("Gora") :: Frame
+		g.Position, g.Size = UDim2.fromOffset(4, 3), UDim2.new(1, -8, 1, -bh - 12)
+	end
 end
 
 local function punktTrenera(): Vector3
@@ -1178,6 +1322,65 @@ end
 local menuOtwarte = false
 local komunikatDo = 0
 local czekaDo = 0
+-- agent Karola, 27.11: sklep — ostatni stan z serwera ("sklep"), końce wzmacniaczy u klienta, otwarta zakładka
+local stanSklepu: any = nil
+local wzmKoniec: { [string]: number } = {}
+local wSklepie = false
+
+local function czasNapis(s: number): string
+	return string.format("%d:%02d", math.floor(s / 60), math.floor(s % 60))
+end
+
+local function odswiezSklep()
+	local zloto = player:GetAttribute("Gold")
+	zloto = if typeof(zloto) == "number" then math.floor(zloto) else 0
+	local U = D.sklep.ulepszenia
+	for _, k in ipairs(kafleS) do
+		local s = k.s
+		local lv = (stanSklepu and stanSklepu.u and stanSklepu.u[s.id]) or 0
+		k.poziom.Text = string.format("LV %d/%d  +%d%%", lv, U.maks, math.floor(lv * U.premia * 100 + 0.5))
+		local cena = D.cenaUlepszenia(lv)
+		if cena then
+			k.ulepsz.Text = string.format("LV UP %d", cena)
+			k.ulepsz.BackgroundColor3 = if zloto >= cena then Color3.fromRGB(70, 150, 70) else Color3.fromRGB(110, 110, 116)
+		else
+			k.ulepsz.Text = "MAX"
+			k.ulepsz.BackgroundColor3 = Color3.fromRGB(110, 110, 116)
+		end
+		local zostalo = (wzmKoniec[s.atrybut] or 0) - os.clock()
+		if zostalo > 0 then
+			k.wzm.Text = "X" .. tostring(D.sklep.wzmacniacze.mnoznik) .. " " .. czasNapis(zostalo)
+			k.wzm.BackgroundColor3 = Color3.fromRGB(240, 190, 60)
+		else
+			k.wzm.Text = string.format("X%d %d", D.sklep.wzmacniacze.mnoznik, D.sklep.wzmacniacze.cena)
+			k.wzm.BackgroundColor3 = if zloto >= D.sklep.wzmacniacze.cena then Color3.fromRGB(214, 150, 40)
+				else Color3.fromRGB(110, 110, 116)
+		end
+		k.f:SetAttribute("Poziom", lv)
+		k.f:SetAttribute("Wzmacniacz", math.max(0, math.floor(zostalo)))
+	end
+	if wSklepie and os.clock() > komunikatDo then
+		tytulMenu.Text = string.format("%s  %d FISH", NAPIS_SKLEPU, zloto)
+		tytulMenu.TextColor3 = ZLOTY
+	end
+end
+
+local function pokazZakladke(sklep: boolean)
+	wSklepie = sklep
+	cwiczenia.Visible = not sklep
+	sklepF.Visible = sklep
+	zakladkaTrening.BackgroundColor3 = if sklep then Color3.fromRGB(96, 70, 52) else Color3.fromRGB(214, 160, 60)
+	zakladkaSklep.BackgroundColor3 = if sklep then Color3.fromRGB(214, 160, 60) else Color3.fromRGB(96, 70, 52)
+	menu:SetAttribute("Sklep", sklep)
+	komunikatDo = 0
+	if sklep then
+		Z:FireServer("sklep")
+		odswiezSklep()
+	else
+		tytulMenu.Text = NAPIS_MENU
+		tytulMenu.TextColor3 = ZLOTY
+	end
+end
 
 local function odswiezMenu()
 	local k = workspace:FindFirstChild("TreningAFK")
@@ -1192,15 +1395,18 @@ local function odswiezMenu()
 		kf.ikona.ImageTransparency = if zajete then 0.5 else 0
 		kf.b:SetAttribute("Zajete", zajete)
 	end
-	if os.clock() > komunikatDo then
+	if os.clock() > komunikatDo and not wSklepie then
 		tytulMenu.Text = NAPIS_MENU
 		tytulMenu.TextColor3 = ZLOTY
 	end
+	if wSklepie then
+		odswiezSklep()
+	end
 end
 
-local function komunikatMenu(tekst: string)
+local function komunikatMenu(tekst: string, kolor: Color3?)
 	tytulMenu.Text = tekst
-	tytulMenu.TextColor3 = Color3.fromRGB(255, 140, 120)
+	tytulMenu.TextColor3 = kolor or Color3.fromRGB(255, 140, 120)
 	komunikatDo = os.clock() + 1.8
 end
 
@@ -1224,6 +1430,8 @@ local function otworzMenu()
 	menuOtwarte = true
 	komunikatDo = 0
 	uloz()
+	pokazZakladke(false) -- agent Karola, 27.11: okno otwiera się na ćwiczeniach
+	Z:FireServer("sklep")
 	odswiezMenu()
 	menu.Enabled = true
 	menu:SetAttribute("Otwarte", true)
@@ -1250,6 +1458,28 @@ for _, kf in ipairs(kafle) do
 		Z:FireServer("wybierz", kf.s.id)
 	end)
 end
+-- agent Karola, 27.11: zakładki i przyciski sklepu (serwer sprawdza wszystko jeszcze raz)
+zakladkaTrening.Activated:Connect(function()
+	pokazZakladke(false)
+end)
+zakladkaSklep.Activated:Connect(function()
+	pokazZakladke(true)
+end)
+for _, k in ipairs(kafleS) do
+	local function kup(rodzaj: string)
+		if not menuOtwarte or not wSklepie or os.clock() < czekaDo then
+			return
+		end
+		czekaDo = os.clock() + D.sklep.odstep + 0.1
+		Z:FireServer("kup", rodzaj, k.s.id)
+	end
+	k.ulepsz.Activated:Connect(function()
+		kup("ulepszenie")
+	end)
+	k.wzm.Activated:Connect(function()
+		kup("wzmacniacz")
+	end)
+end
 tlo.Activated:Connect(zamknijMenu)
 zamknijB.Activated:Connect(zamknijMenu)
 UIS.InputBegan:Connect(function(input)
@@ -1262,14 +1492,43 @@ okna.Event:Connect(function(id)
 		otworzMenu()
 	end
 end)
-Z.OnClientEvent:Connect(function(akcja, powod)
+Z.OnClientEvent:Connect(function(akcja, powod, id, brakuje)
 	if akcja == "start" then
 		zamknijMenu()
 	elseif akcja == "odmowa" and menuOtwarte then
+		if powod == "za_malo" and typeof(brakuje) == "number" then -- agent Karola, 27.11: odmowy sklepu
+			komunikatMenu(string.format("NEED %d MORE FISH", math.ceil(brakuje)))
+			return
+		end
 		komunikatMenu(if powod == "zajete" then "SOMEONE IS TRAINING THERE"
 			elseif powod == "daleko" then "COME CLOSER TO THE TRAINER"
 			elseif powod == "trening" then "STOP YOUR TRAINING FIRST"
+			elseif powod == "za_malo" then "NOT ENOUGH FISH"
+			elseif powod == "maks" then "ALREADY MAX LEVEL"
+			elseif powod == "aktywny" then "BOOST ALREADY ACTIVE"
+			elseif powod == "wczytywanie" then "STILL LOADING TRY AGAIN"
+			elseif powod == "sklep" then "SHOP IS CLOSED"
 			else "TRY AGAIN")
+	elseif akcja == "sklep" and typeof(powod) == "table" then
+		stanSklepu = powod
+		table.clear(wzmKoniec)
+		if typeof(powod.w) == "table" then
+			for atrybut, s in pairs(powod.w) do
+				if typeof(s) == "number" then
+					wzmKoniec[atrybut] = os.clock() + s
+				end
+			end
+		end
+		if menuOtwarte and wSklepie then
+			odswiezSklep()
+		end
+	elseif akcja == "kupiono" and menuOtwarte then
+		local s = typeof(id) == "string" and D.stanowisko(id)
+		if s then
+			komunikatMenu(if powod == "ulepszenie" then s.nazwa .. " UPGRADED"
+				else s.skrot .. string.format(" X%d FOR %d MIN", D.sklep.wzmacniacze.mnoznik,
+					math.floor(D.sklep.wzmacniacze.czas / 60)), Color3.fromRGB(150, 240, 110))
+		end
 	end
 end)
 menu:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()

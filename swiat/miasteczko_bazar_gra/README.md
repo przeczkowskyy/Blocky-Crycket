@@ -31,7 +31,7 @@ próbie w grze (kolizje dla kamery, nowe postacie) opisuje jej README.*
 | `zrodla/KlientBazaru.client.luau` | klient: `OknoMiejsca`, sygnał HUD, dymki, portal → chmury, kłódka lochów u siebie, haczyk `SterowanieKlienta` |
 | `zrodla/DaneBazaru.luau` | **wygenerowany** — nie edytować ręcznie |
 | `sprawdz_luau_bazaru.py` | kontrola statyczna Luau (reguły `swiat/las_potwory/sprawdz_luau.py`, parser `tools/walka/luau_mini.py`, bez liczb położeń w kodzie, bez zmian cudzych instancji) |
-| `czasy_biegu.py` | plan czasów biegu ze startu do każdego E (siatka chodzenia mapy, tylko odczyt) i punkty przy ścianach — dla testów i próby |
+| `czasy_biegu.py` | plan czasów biegu ze startu do każdego E (siatka chodzenia mapy, tylko odczyt) i punkty przy ścianach — dla testów i próby (27.11.2026: punkty tylko z pola gry, „zachód” na południe od przedniego boku dużej sali Training Center, która wychodzi za zachodni brzeg pola — próba B12; sprawdzone offline) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
 | `testy/test_bazaru.py` | 38 testów offline (opis w nagłówku pliku) |
 | `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną B01–B15 i 8 zrzutami (uruchomiona 17.11.2026, wyniki niżej) |

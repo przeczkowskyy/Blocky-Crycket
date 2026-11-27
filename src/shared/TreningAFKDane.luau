@@ -24,14 +24,24 @@ D.obrot = 180 -- stopni: obrót stanowiska (gracz patrzy na rekwizyt)
 -- (od placyku do tylnej ściany). Lewy rząd od frontu: Pancerz twarzą do placyku (NPC z pomidorami 11 st przed graczem
 -- stoi na placyku), Szczęście i Zręczność twarzą do lewej ściany; prawy rząd: Siła, Inteligencja, Kondycja twarzą
 -- do tylnej ściany.
+-- agent Karola, 27.11 (polecenie Pawła: „hala ze sprzętami powinna zajmować mniej więcej taki obszar, żeby było tam dużo
+-- przestrzeni”): duża sala 40 × 22 st z korytarzem 9,3 st pośrodku, maty co 9 st. Tylny rząd: Siła, Inteligencja twarzą
+-- do tylnej ściany, Szczęście bokiem (stolik ku zachodniej ścianie); przedni rząd: Pancerz twarzą do okna na placyk
+-- (NPC 11 st przed graczem stoi na placyku), Kondycja i Zręczność bokiem (ławka i bieżnia wzdłuż ściany) — żaden
+-- rekwizyt z kolizją nie wystaje za matę w stronę korytarza. zejscie = gdzie staje gracz po treningu, w układzie
+-- stanowiska (gracz patrzy w −Z, +X po jego prawej): zawsze w korytarz. Bez zejscie — 3 st za matą, jak dotąd.
 D.miejsca = {
-	Pancerz = { pozycja = Vector3.new(904.2, 0.5, -719.356), obrot = 183 },
-	Szczescie = { pozycja = Vector3.new(905.873, 0.5, -725.652), obrot = 93 },
-	Zrecznosc = { pozycja = Vector3.new(905.58, 0.5, -731.244), obrot = 93 },
-	Sila = { pozycja = Vector3.new(922.176, 0.5, -720.298), obrot = 3 },
-	Inteligencja = { pozycja = Vector3.new(921.875, 0.5, -726.04), obrot = 3 },
-	Kondycja = { pozycja = Vector3.new(921.574, 0.5, -731.782), obrot = 3 },
+	Sila = { pozycja = Vector3.new(908.082, 0.5, -731.275), obrot = 3, zejscie = Vector3.new(0, 0, 3.4) },
+	Inteligencja = { pozycja = Vector3.new(899.094, 0.5, -730.804), obrot = 3, zejscie = Vector3.new(0, 0, 3.4) },
+	Szczescie = { pozycja = Vector3.new(890.106, 0.5, -730.333), obrot = 93, zejscie = Vector3.new(-3.4, 0, 0) },
+	Pancerz = { pozycja = Vector3.new(908.799, 0.5, -717.594), obrot = 183, zejscie = Vector3.new(0, 0, 3.4) },
+	Kondycja = { pozycja = Vector3.new(899.811, 0.5, -717.123), obrot = 93, zejscie = Vector3.new(3.4, 0, 0) },
+	Zrecznosc = { pozycja = Vector3.new(890.823, 0.5, -716.652), obrot = 93, zejscie = Vector3.new(3.4, 0, 0) },
 }
+-- agent Karola, 27.11: podpowiedź E stanowiska wisi tyle studów nad środkiem maty (na wysokości bioder), nie w macie —
+-- zasięg 4,5 (Paweł 26.11) liczy się wtedy prawie w poziomie: E sięga z krawędzi maty od strony korytarza, a sąsiednia
+-- mata (≥ 9 st dalej) jest poza zasięgiem
+D.podpowiedzWysokosc = 1.5
 
 -- agent Karola, 26.11 (polecenie Karola: „podchodzimy do trenera, klikamy E i klikamy, w co chcemy wejść — i nas
 -- teleportuje”): E przy trenerze w Training Center otwiera okno sześciu ćwiczeń; klik = serwer stawia gracza na
@@ -76,6 +86,42 @@ D.czasPrzyspieszenia = 2.4 -- s przyspieszenia po trafieniu
 
 D.zasieg = 5 -- studów w poziomie od miejsca stanowiska: dalej trening się kończy (gracz odszedł)
 D.krokSerwera = 0.2 -- s między krokami licznika na serwerze
+
+-- sklep trenera (agent Karola, 27.11; Paweł 27.11: „u trenera nie tyle co się wybierało trening, ale też był panel
+-- sklepu/ulepszeń, gdzie np. gracz może ulepszyć bieżnię, żeby dawała więcej na powtórzenie, albo kupić jakieś
+-- wzmacniacze na trening, np. siła ×2 na 10 min”). LICZBY ROBOCZE — rachunek i tabela:
+-- swiat/trening_proba/ekonomia_sklepu_afk.py. Płaci się Rybkami (atrybut Gold) przez stan gracza (Sygnaly/WydajZloto,
+-- źródło D.sklep.zrodlo — musi być na liście PAKIETY_WYDATKOW w swiat/stan_gracza/dane.py); poziomy i koniec
+-- wzmacniaczy zapisuje profil gracza (Sygnaly/DanePakietu, pakiet D.sklep.pakiet). BEZ Robuxów: sprzedaż za Robuxy to
+-- osobna decyzja — w serwerze są dwa miejsca przyznania (przyznajUlepszenie, przyznajWzmacniacz), które zawołałby też
+-- przyszły ProcessReceipt.
+D.sklep = {
+	ulepszenia = {
+		maks = 5, -- poziomy 0 … 5, osobno dla każdego gracza i stanowiska
+		premia = 0.10, -- +10% tempa na poziom: pasek = D.powtorzenNaPasek / (1 + premia × poziom) powtórzeń („więcej na powtórzenie”)
+		ceny = { 300, 700, 1600, 3600, 8400 }, -- Rybki za poziom 1, 2, 3, 4, 5
+	},
+	wzmacniacze = {
+		mnoznik = 2, -- × statystyki za pełny pasek tego stanowiska
+		czas = 600, -- s (10 min) czasu rzeczywistego od zakupu — wyjście z gry go nie zatrzymuje; jeden na statystykę
+		cena = 600, -- Rybki
+	},
+	odstep = 0.4, -- s między zakupami gracza (częstsze serwer pomija)
+	zrodlo = "TreningAFK", -- źródło wydatku w stanie gracza
+	pakiet = "TreningAFK", -- klucz danych w profilu: { u = { [id stanowiska] = poziom }, w = { [atrybut] = koniec (os.time) } }
+	cele = { ulepszenie = "trening_ulepszenie", wzmacniacz = "trening_wzmacniacz" }, -- liczniki wydatków w profilu
+}
+
+-- powtórzeń na pełny pasek przy danym poziomie ulepszenia stanowiska
+function D.powtorzenDla(poziom: number): number
+	local p = math.clamp(math.floor(poziom), 0, D.sklep.ulepszenia.maks)
+	return D.powtorzenNaPasek / (1 + D.sklep.ulepszenia.premia * p)
+end
+
+-- cena następnego poziomu (z poziomu `poziom` na poziom + 1); nil = już najwyższy
+function D.cenaUlepszenia(poziom: number): number?
+	return D.sklep.ulepszenia.ceny[math.floor(poziom) + 1]
+end
 
 function D.przyrost(poziom: number): number
 	if D.przyrostCoPoziomow <= 0 then

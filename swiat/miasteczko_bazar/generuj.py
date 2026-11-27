@@ -287,7 +287,9 @@ def kulisy_i_tlo(s, U, rnd):
         for x, z in ((-8.0, 42.0), (6.0, 44.0), (-1.0, 50.0)):
             zestaw.drzewo_lisciaste(s, (x, y, z), rnd, skala=1.05)
         for x, z in ((-103.0, -30.0), (-103.0, 0.0), (-103.0, 30.0)):
-            zestaw.drzewo_iglaste(s, (x, y, z), rnd, skala=1.1)
+            # 27.11.2026: drzewo (−103; −30) stałoby w dużej sali Training Center — budowane „na brudno” (scena
+            # do kosza), żeby losowania dalszych drzew, pagórków i chmur zostały te same
+            zestaw.drzewo_iglaste(Scena("kosz", paleta=PALETA) if z == -30.0 else s, (x, y, z), rnd, skala=1.1)
     with s.grupa("Tlo"), s.cechy(kolizja=False, cien=False):
         # pagórki z trzech klocków (schodkowe, jak w stylu miasteczka) — nic nie schodzi pod grunt (Baseplate pod spodem)
         kol = (("lisc_ciemny", "igla", "lisc"), ("igla", "lisc_ciemny", "lisc_jasny"))
@@ -313,8 +315,11 @@ def niewidzialne(s, U):
     with s.grupa("Niewidzialne"), s.cechy(cien=False):
         for z in (pz0 - 1.5, pz1 + 1.5):
             s.blok("Niewidzialna ściana", ((px0 + px1) / 2.0, 30.0, z), (px1 - px0 + 4.0, 60.0, 2.0), "biel", alfa=1.0)
-        for x in (px0 - 1.5, px1 + 1.5):
-            s.blok("Niewidzialna ściana", (x, 30.0, (pz0 + pz1) / 2.0), (2.0, 60.0, pz1 - pz0 + 4.0), "biel", alfa=1.0)
+        # 27.11.2026: zachodnia część dużej sali Training Center wychodzi za pole gry — zachodnia ściana biegnie od
+        # przedniego boku sali (wnętrze sali zamykają jej ściany z kolizją), wschodnia bez zmian
+        za = g.get("sala_poza_polem", {}).get("zachodnia_sciana_od_z", pz0 - 2.0)
+        s.blok("Niewidzialna ściana", (px0 - 1.5, 30.0, (za + pz1 + 2.0) / 2.0), (2.0, 60.0, pz1 + 2.0 - za), "biel", alfa=1.0)
+        s.blok("Niewidzialna ściana", (px1 + 1.5, 30.0, (pz0 + pz1) / 2.0), (2.0, 60.0, pz1 - pz0 + 4.0), "biel", alfa=1.0)
     return 4
 
 

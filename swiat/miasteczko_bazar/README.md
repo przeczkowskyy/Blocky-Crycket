@@ -19,7 +19,7 @@ przejściem na działkę, zagrodą petów, tablicą z rankingiem i Bramą Leśn�
 | `tekstury.py` | kafelki z arkusza, mapy do barwienia, wgrywanie do Roblox, raport przypisania, pomiar w emulacji telefonu |
 | `ujecia_tekstury.json`, `podglad/tekstury_*` | cztery kadry przed/po (plac, uliczka, karczma z bliska, całość z góry) i wyniki pomiaru `tekstury_pomiar.json` |
 
-**Liczby:** 4256 części (26.11.2026 ok. 22:00, po usunięciu tablicy wyboru mini-gry z Training Center — 4289 → 4256; wcześniej tego wieczoru 4289 po przesunięciu studni i ławek; tuż przed tym generator dawał 4286 — po sprzątaniu mapy; wcześniej 4318 po wydłużeniu sali Training Center, 25.11 po sali i zagrodzie 4312, jeszcze wcześniej 4410; cel ok. 8000, twardy limit 12 000), 84 grupy. Kontener `Workspace/MiasteczkoBazar`.
+**Liczby:** 4202 części (27.11.2026, duża sala Training Center — 4256 → 4202; 26.11.2026 ok. 22:00, po usunięciu tablicy wyboru mini-gry z Training Center — 4289 → 4256; wcześniej tego wieczoru 4289 po przesunięciu studni i ławek; tuż przed tym generator dawał 4286 — po sprzątaniu mapy; wcześniej 4318 po wydłużeniu sali Training Center, 25.11 po sali i zagrodzie 4312, jeszcze wcześniej 4410; cel ok. 8000, twardy limit 12 000), 84 grupy. Kontener `Workspace/MiasteczkoBazar`.
 Świat = (994 + x; y; −700 + z), bez obrotu: części stoją w pliku już tam, gdzie mają stanąć (X 882…1066,
 Z −790…−610), więc przy budowie i zrzutach **nie podaje się `--przesun`**. Wschodni brzeg (X 1066) to początek pasa
 Lasu. Bazar stoi na wschodnim końcu płyty Baseplate (PROJEKT.md, wybór 1).
@@ -34,6 +34,63 @@ python -B swiat/miasteczko_bazar/podglad.py      # → podglad/*.jpg i ujecia.js
 
 Wynik kontroli z 17.11.2026: **0 błędów, 2 ostrzeżenia** (ok. 85 drobnych części wtopionych w grunt do 0,4 st, czyli
 w płytę Baseplate — jak w dzisiejszym miasteczku; 31 drobiazgów mniejszych niż 0,5 — oczy, guziki, oczka kostki).
+
+## Duża sala Training Center (27.11.2026, polecenie Pawła)
+
+Paweł na Telegramie zespołu (27.11, 01:10, zrzut miasteczka z góry z czerwonym kołem wokół szklanej sali i brązowego
+domu na zachód od niej, do zachodniego brzegu miasta): „Ja myślę, że ta hala ze sprzętami powinna zajmować mniej więcej
+taki obszar, żeby było tam dużo przestrzeni. W sensie to Training Center.” Karol: „zastosuj się do polecenia”. Status:
+**propozycja** do obejrzenia (etap 1 bez Studio; w Studio — etap 2). Brązowy dom z koła odczytany jako dom zachodni
+`dom_zachod_pn` (−102; −15, dach ceglasty) — jedyny dom między salą a zachodnim brzegiem.
+
+| Co | Było (bazar x; z) | Jest |
+|---|---|---|
+| sala (obrys z murami) | x −94,3 … −69,1, z −36,6 … −15,4 (24,2 × 20 st w module) | x −110,1 … −69,0, z −36,6 … −12,5 (40 × 22 st w module: `SALA_X` −51 … −11, `SALA_Z` −13,2 … 8,8) |
+| front sali | otwarty na całą szerokość (24 st) | przedni bok: wejście z placyku 11,5 st (x −80,5 … −69,0, przedsionek przy budynku), okno przed Pancerzem (x −88,0 … −82,0, parapet 3 st), dalej ściana z oknem nad Zręcznością |
+| dom `dom_zachod_pn` | (−102; −15), 16 × 14 | pominięty (`uklad.json`, pole `pominiety` — losowania innych domów bez zmian) |
+| mur „róg pn.-zach. placyku” | x −95,5, z −35 … −23,2 | usunięty (stałby w sali) |
+| mur „zachód” | x −101,5, z −7 … 7 | x −101,5, z −12,4 … 7 (domyka placyk od przedniego boku sali) |
+| drzewo z kulis | (−103; −30) | usunięte; budowane do sceny „kosz”, żeby dalsze losowania (drzewa, pagórki, chmury) zostały te same |
+| niewidzialna ściana zachodnia | x −96,5, z −38 … 38 | x −96,5, z −13 … 38 (od przedniego boku sali; zachodnią część sali zamykają jej ściany z kolizją — `granice.sala_poza_polem` w `uklad.json`) |
+| siatka chodzenia (`siatka.py`) | pole gry ± 3 | obejmuje też `granice.sala_poza_polem` (zachodnia część sali) |
+
+**Układ sali** (`budynki/training_center.py`; liczby w układzie modułu, x na zachód ujemne, z ku placykowi dodatnie):
+przedsionek x −22,5 … −11 bez stanowisk (wejście z placyku i otwarty bok budynku: z przedsionka widać trenera w głównej
+izbie, ok. 25 st — test 6i); korytarz pośrodku sali **9,3 st** między krawędziami mat (z −6,5 … 2,8), lampy nad osią,
+na końcu okno i wielka hantla na zachodniej ścianie; dwa rzędy po trzy (D-158), maty co 9 st:
+
+| Stanowisko | Rząd | Moduł x; z | Obrót (świat) | Gracz patrzy | Świat Studio (X; Y; Z) | Zejście (układ stanowiska) |
+|---|---|---|---|---|---|---|
+| Siła | tylny | −27; −8,7 | 3 | na tylną ścianę (stojak z hantlami po prawej) | 908,082; 0,5; −731,275 | 0; 3,4 |
+| Inteligencja | tylny | −36; −8,7 | 3 | na tylną ścianę | 899,094; 0,5; −730,804 | 0; 3,4 |
+| Szczęście | tylny | −45; −8,7 | 93 | na zachodnią ścianę (stolik przed graczem) | 890,106; 0,5; −730,333 | −3,4; 0 |
+| Pancerz | przedni | −27; 5 | 183 | przez okno na placyk (NPC 11 st przed graczem stoi na placyku) | 908,799; 0,5; −717,594 | 0; 3,4 |
+| Kondycja | przedni | −36; 5 | 93 | ławka wzdłuż ściany (leży głową na wschód) | 899,811; 0,5; −717,123 | 3,4; 0 |
+| Zręczność | przedni | −45; 5 | 93 | na zachodnią ścianę (bieżnia wzdłuż ściany) | 890,823; 0,5; −716,652 | 3,4; 0 |
+
+- **Krawędź od strony korytarza jest wolna** (wymiary rekwizytów z kolizją przepisane ze skryptu Pawła do
+  `REKWIZYTY` w module; test 6f): nic nie wystaje za matę (2,2 st od środka) w stronę korytarza, więc gracz staje przy
+  macie na równej posadzce. Wcześniej rama bieżni wystawała 3,4 st (1,2 za matę) i podnosiła postać o 0,6–0,7 st, a mata
+  Pancerza stała głębiej niż sąsiednie — teraz krawędzie mat w każdym rzędzie leżą na jednej linii. Ławka i bieżnia stoją
+  bokiem (wzdłuż ściany), Szczęście bokiem przy zachodniej ścianie (stolik 3,9 st przed graczem nie zmieściłby się
+  przodem do tylnej ściany).
+- **Zasięg E** (diagnoza 27.11 w Play: Roblox liczy 3-D od korzenia postaci, ok. 3,54 nad ziemią, do podpowiedzi;
+  w macie, 0,65 nad ziemią, zasięg 4,5 dawał w poziomie tylko 3,45 st): skrypt Pawła wiesza podpowiedź na zaczepie
+  `D.podpowiedzWysokosc` = 1,5 st nad matą (zasięg 4,5 bez zmian, D-158). Gracz na posadzce 0,5 / 1,0 / 1,3 st przed
+  krawędzią maty (2,7 / 3,2 / 3,5 st od środka) ma do podpowiedzi 3,04 / 3,49 / 3,77 st — zapas ≥ 0,73 st; z 5,5 st
+  (5,67) i z osi korytarza (6,85 st od środka maty) E nie działa; sąsiednia mata ≥ 9 st dalej (test 6k).
+- **Zejście** ze stanowiska w korytarz (`D.miejsca[id].zejscie`), tyłem do maty — nie na sąsiednią matę.
+- **Bruk** omija nowy obrys (`OBRYSY_DODATKOWE`); **znaczniki**: zmienił się tylko blok `trening_afk` (doszły pola
+  `korytarz`, `zejscie`, `rzad` i `przejscie` z osią korytarza) i liczby części; punkty E, kotwice NPC, miejsca petów
+  i start bez zmian, więc dane pakietów gry (bazar, NPC, wskazówki, pety, kowal, sklep, trening, Bagno, Dżungla) są
+  aktualne bez przeliczania (`--sprawdz` każdego: aktualne).
+- **Próba bazaru B12** (marsz do niewidzialnych ścian): `swiat/miasteczko_bazar_gra/czasy_biegu.py`
+  (`punkty_przy_scianach`) bierze punkty startowe tylko z pola gry, a „zachód” — na południe od przedniego boku sali
+  (inaczej marsz na zachód szedłby w głąb sali); sprawdzone offline: wszystkie cztery marsze kończą się przy ścianach pola.
+
+Kontrola: `sprawdz.py` **0 błędów, 2 ostrzeżenia** (te same co przed zmianą), czas biegu do trenera 4,3 s (bez zmian),
+studnia 4,1 s. Części: **4256 → 4202** (TrainingCenter 234 → 259, Domy 193 → 130, Mury 85 → 80, kulisy i tło
+271 → 266, bruk 290 → 284). Plan z góry: `podglad/plan_gora.jpg` (odświeżony 27.11).
 
 ## Zagroda „tylko zagrodą” i sala treningowa w Training Center (noc 25/26.11.2026)
 

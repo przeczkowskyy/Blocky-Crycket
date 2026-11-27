@@ -940,7 +940,7 @@
  ],
  "czesci_na_budynek": {
   "Teren": 2,
-  "TrainingCenter": 234,
+  "TrainingCenter": 259,
   "Karczma": 318,
   "PortalKrain": 54,
   "Tablica": 41,
@@ -951,14 +951,14 @@
   "BramaLochow": 271,
   "StudniaPomnik": 77,
   "BramaLesna": 39,
-  "Domy": 193,
+  "Domy": 130,
   "Kulisy/Domy": 1149,
   "Stragany": 75,
-  "Mury": 85,
+  "Mury": 80,
   "Rekwizyty": 290,
-  "Kulisy i tło": 271,
+  "Kulisy i tło": 266,
   "Niewidzialne": 4,
-  "Uliczka (bruk)": 290,
+  "Uliczka (bruk)": 284,
   "Start": 7,
   "Uliczka (kody)": 57
  },
@@ -1875,91 +1875,165 @@
   }
  ],
  "trening_afk": {
-  "opis": "miejsca sześciu stanowisk treningu AFK w sali Training Center (środek maty na posadzce, świat Studio; obrot = stopnie obrotu stanowiska w Roblox, gracz patrzy w −Z stanowiska = „przod”). Wpisane do src/shared/TreningAFKDane.luau (D.miejsca).",
+  "opis": "miejsca sześciu stanowisk treningu AFK w dużej sali Training Center (27.11.2026; środek maty na posadzce, świat Studio; obrot = stopnie obrotu stanowiska w Roblox, gracz patrzy w −Z stanowiska = „przod”; „korytarz” = kierunek od środka maty ku przejściu między rzędami; „zejscie” = gdzie staje gracz po treningu, w układzie stanowiska x, z). Wpisane do src/shared/TreningAFKDane.luau (D.miejsca).",
+  "przejscie": {
+   "szer": 9.3,
+   "os_z_modulu": -1.85,
+   "przedsionek": [
+    919.234,
+    0.5,
+    -714.335
+   ],
+   "koniec": [
+    887.669,
+    0.5,
+    -723.346
+   ]
+  },
   "stanowiska": [
+   {
+    "id": "Sila",
+    "pozycja": [
+     908.082,
+     0.5,
+     -731.275
+    ],
+    "obrot": 3.0,
+    "przod": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ],
+    "korytarz": [
+     0.0523,
+     0.0,
+     0.9986
+    ],
+    "zejscie": [
+     0.0,
+     3.4
+    ],
+    "rzad": "tylny"
+   },
+   {
+    "id": "Inteligencja",
+    "pozycja": [
+     899.094,
+     0.5,
+     -730.804
+    ],
+    "obrot": 3.0,
+    "przod": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ],
+    "korytarz": [
+     0.0523,
+     0.0,
+     0.9986
+    ],
+    "zejscie": [
+     0.0,
+     3.4
+    ],
+    "rzad": "tylny"
+   },
+   {
+    "id": "Szczescie",
+    "pozycja": [
+     890.106,
+     0.5,
+     -730.333
+    ],
+    "obrot": 93.0,
+    "przod": [
+     -0.9986,
+     0.0,
+     0.0523
+    ],
+    "korytarz": [
+     0.0523,
+     0.0,
+     0.9986
+    ],
+    "zejscie": [
+     -3.4,
+     0.0
+    ],
+    "rzad": "tylny"
+   },
    {
     "id": "Pancerz",
     "pozycja": [
-     904.2,
+     908.799,
      0.5,
-     -719.356
+     -717.594
     ],
     "obrot": 183.0,
     "przod": [
      0.0523,
      0.0,
      0.9986
-    ]
-   },
-   {
-    "id": "Szczescie",
-    "pozycja": [
-     905.873,
-     0.5,
-     -725.652
     ],
-    "obrot": 93.0,
-    "przod": [
-     -0.9986,
-     0.0,
-     0.0523
-    ]
-   },
-   {
-    "id": "Zrecznosc",
-    "pozycja": [
-     905.58,
-     0.5,
-     -731.244
-    ],
-    "obrot": 93.0,
-    "przod": [
-     -0.9986,
-     0.0,
-     0.0523
-    ]
-   },
-   {
-    "id": "Sila",
-    "pozycja": [
-     922.176,
-     0.5,
-     -720.298
-    ],
-    "obrot": 3.0,
-    "przod": [
+    "korytarz": [
      -0.0523,
      0.0,
      -0.9986
-    ]
-   },
-   {
-    "id": "Inteligencja",
-    "pozycja": [
-     921.875,
-     0.5,
-     -726.04
     ],
-    "obrot": 3.0,
-    "przod": [
-     -0.0523,
+    "zejscie": [
      0.0,
-     -0.9986
-    ]
+     3.4
+    ],
+    "rzad": "przedni"
    },
    {
     "id": "Kondycja",
     "pozycja": [
-     921.574,
+     899.811,
      0.5,
-     -731.782
+     -717.123
     ],
-    "obrot": 3.0,
+    "obrot": 93.0,
     "przod": [
+     -0.9986,
+     0.0,
+     0.0523
+    ],
+    "korytarz": [
      -0.0523,
      0.0,
      -0.9986
-    ]
+    ],
+    "zejscie": [
+     3.4,
+     0.0
+    ],
+    "rzad": "przedni"
+   },
+   {
+    "id": "Zrecznosc",
+    "pozycja": [
+     890.823,
+     0.5,
+     -716.652
+    ],
+    "obrot": 93.0,
+    "przod": [
+     -0.9986,
+     0.0,
+     0.0523
+    ],
+    "korytarz": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ],
+    "zejscie": [
+     3.4,
+     0.0
+    ],
+    "rzad": "przedni"
    }
   ]
  }

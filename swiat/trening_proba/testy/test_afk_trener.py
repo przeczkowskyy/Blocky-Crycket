@@ -18,8 +18,16 @@ DaneTreningu.luau, KlientTreningu) i mapy (uklad.json, czesci.json, znaczniki.js
      ekranie, X ≥ 44 px — telefon 667 × 375 (pasek 36 i 58), pionowo 375 × 667, 568 × 320, tablet, monitor;
   5. bazar: podpowiedź trenera „Train”, dymek bez mini-gier; ten pakiet: wybor_od_trenera = false w ustawieniach,
      w DaneTreningu i w kliencie mini-gier;
-  6. mapa (siatka chodzenia z czesci.json): przed frontem sali Training Center pas 8 st na 10 st w głąb bez przeszkód,
-     studnia i ławki poza tym pasem, każde stanowisko AFK i trener osiągalne ze startu.
+  6. mapa (siatka chodzenia z czesci.json): przed wejściem do sali Training Center pas 8 st na 10 st w głąb bez
+     przeszkód, studnia i ławki poza tym pasem, każde stanowisko AFK i trener osiągalne ze startu;
+     od 27.11.2026 (duża sala, polecenie Pawła): rekwizyty z kolizją nie wystają za matę w stronę korytarza, krawędzie
+     mat w rzędzie na jednej linii, korytarz ≥ 9 st, maty co ≥ 9 st, zejście w korytarzu i wolne, NPC Pancerza na
+     placyku, trener widoczny z wejścia do sali, D.miejsca = znaczniki mapy; zasięg E (model: korzeń postaci 3,54 nad
+     ziemią — R15, HipHeight 2,0 — do zaczepu podpowiedzi D.podpowiedzWysokosc nad matą): z krawędzi maty od strony
+     korytarza zapas ≥ 0,5 st, z 5,5 st i z osi korytarza — nic, sąsiednie maty poza zasięgiem;
+  8. sklep trenera (27.11.2026, polecenie Pawła): dane D.sklep, kolejność sprawdzeń na serwerze, cena tylko z danych,
+     jedno miejsce przyznania, bez Robuxów, stan gracza przyjmuje wydatek i dane pakietu, zakładki i przyciski ≥ 44 px,
+     rachunek ekonomia_sklepu_afk.py zgodny z danymi.
 """
 import json
 import math
@@ -69,7 +77,7 @@ def stale_menu():
 
 
 def uloz(ekran_x, ekran_y, M, n=6):
-    """Lustro uloz() z klienta: rozmiar okna i kafelka w pikselach."""
+    """Lustro uloz() z klienta: rozmiar okna i kafelka w pikselach; od 27.11.2026 też zakładki i przyciski sklepu."""
     kol = 3 if ekran_x >= ekran_y else 2
     rzedy = math.ceil(n / kol)
     w = math.floor(min(ekran_x - 2 * M["brzegX"], M["maksSzer"]))
@@ -77,7 +85,13 @@ def uloz(ekran_x, ekran_y, M, n=6):
     sw, sh = w - 2 * M["margines"], h - M["pasek"] - 2 - M["margines"]
     cw = math.floor((sw - (kol - 1) * M["odstep"]) / kol)
     ch = math.floor((sh - (rzedy - 1) * M["odstep"]) / rzedy)
-    return {"okno": (w, h), "kafel": (cw, ch), "kolumny": kol, "rzedy": rzedy, "siatka": (sw, sh), "x": M["pasek"] - 4}
+    zw = math.floor(min(M["zakladka"], (w - 2 * M["margines"] - M["pasek"] - 8) / 3))
+    tx = M["margines"] + 2 * (zw + 6) + 4
+    bh = min(max(math.floor(ch * 0.42), M["przycisk"]), 56)
+    bw = math.floor((cw - 18) / 2)
+    return {"okno": (w, h), "kafel": (cw, ch), "kolumny": kol, "rzedy": rzedy, "siatka": (sw, sh), "x": M["pasek"] - 4,
+            "zakladka": (zw, M["pasek"] - 6), "tytul": (w - tx - M["pasek"] - 8, M["pasek"] - 18), "przycisk": (bw, bh),
+            "gora_kafla": ch - bh - 12}
 
 
 class TestSerwera(unittest.TestCase):
@@ -118,7 +132,11 @@ class TestKlienta(unittest.TestCase):
         for kawalek in ('menu.Name = "TreningAFKMenu"', 'tlo.Name = "Tlo"', 'okno.Name = "Okno"', 'napis(okno, "Tytul"',
                         'zamknijB.Name = "Zamknij"', 'cwiczenia.Name = "Cwiczenia"', "b.Name = s.id",
                         'menu:SetAttribute("Otwarte", true)', 'menu:SetAttribute("Otwarte", false)',
-                        'kf.b:SetAttribute("Zajete", zajete)'):
+                        'kf.b:SetAttribute("Zajete", zajete)',
+                        # 27.11.2026: zakładki i sklep (nazwy, których używa próba proba_afk_trener.py)
+                        'zakladkaB("ZakladkaTrening", "TRAIN")', 'zakladkaB("ZakladkaSklep", NAPIS_SKLEPU)',
+                        'sklepF.Name = "Sklep"', "f.Name = s.id", 'przyciskSklepu(f, "Ulepsz"', 'przyciskSklepu(f, "Wzmacniacz"',
+                        'k.f:SetAttribute("Poziom", lv)', 'k.f:SetAttribute("Wzmacniacz"', 'menu:SetAttribute("Sklep", sklep)'):
             self.assertIn(kawalek, MENU_KOD, kawalek)
 
     def test_2b_zdarzenie_i_atrybut(self):
@@ -178,22 +196,38 @@ class TestUkladuOkna(unittest.TestCase):
     def test_4a_kafelki_dotykowe(self):
         M = stale_menu()
         self.assertGreaterEqual(M["pasek"] - 4, 44)            # X
+        self.assertGreaterEqual(M["pasek"] - 6, 44)            # zakładki TRAIN / SHOP (27.11.2026)
         for nazwa, (ex, ey) in self.EKRANY.items():
             u = uloz(ex, ey, M)
             cw, ch = u["kafel"]
             self.assertGreaterEqual(min(cw, ch), 44, (nazwa, u))
+            # sklep: dwa przyciski ≥ 44 × 44 px w kafelku i miejsce nad nimi na ikonę z nazwą (≥ 30 px)
+            bw, bh = u["przycisk"]
+            self.assertGreaterEqual(min(bw, bh), 44, (nazwa, u))
+            self.assertLessEqual(2 * bw + 18, cw, nazwa)
+            self.assertGreaterEqual(u["gora_kafla"], 30, (nazwa, u))
+            self.assertGreaterEqual(u["zakladka"][0], 44, (nazwa, u))
             self.assertLessEqual(u["okno"][0], ex, nazwa)
             self.assertLessEqual(u["okno"][1], ey, nazwa)
             self.assertLessEqual(u["kolumny"] * cw + (u["kolumny"] - 1) * M["odstep"], u["siatka"][0], nazwa)
             self.assertLessEqual(u["rzedy"] * ch + (u["rzedy"] - 1) * M["odstep"], u["siatka"][1], nazwa)
 
     def test_4b_telefon_667x375_liczby_z_opisu(self):
+        # 27.11.2026: nagłówek 48 → 52 px (zakładki ≥ 44 px), kafelki o 2–4 px niższe
         M = stale_menu()
         self.assertEqual(uloz(667, 339, M)["okno"], (635, 315))
-        self.assertEqual(uloz(667, 339, M)["kafel"], (199, 123))
-        self.assertEqual(uloz(667, 317, M)["kafel"], (199, 112))
-        self.assertEqual(uloz(375, 631, M)["kafel"], (157, 101))
-        self.assertIn("okno 635 × 315, kafelek 199 × 123 px", KLIENT)
+        self.assertEqual(uloz(667, 339, M)["kafel"], (199, 121))
+        self.assertEqual(uloz(667, 317, M)["kafel"], (199, 110))
+        self.assertEqual(uloz(375, 631, M)["kafel"], (157, 100))
+        self.assertIn("okno 635 × 315, kafelek 199 × 121 px; przy pasku 58 — 199 × 110; pionowo 375 × 667 — 157 × 100", KLIENT)
+
+    def test_4c_telefon_844x390(self):
+        # drugi telefon z polecenia (844 × 390, pasek 36): okno 640 × 330, kafelek 201 × 129, przyciski sklepu 91 × 54
+        u = uloz(844, 390 - 36, stale_menu())
+        self.assertEqual(u["okno"], (640, 330))
+        self.assertEqual(u["kafel"], (201, 129))
+        self.assertEqual(u["przycisk"], (91, 54))
+        self.assertGreaterEqual(u["tytul"][0], 250)          # tytuł z saldem Rybek obok zakładek
 
 
 class TestBazaruIMiniGier(unittest.TestCase):
@@ -309,7 +343,8 @@ class TestMapy(unittest.TestCase):
 
         def bazar(xm, zm):
             return (b["x"] + xm * math.cos(r) + zm * math.sin(r), b["z"] - xm * math.sin(r) + zm * math.cos(r))
-        cls.front = bazar(TC.LAMPY_SALI[0], TC.SALA_Z[1])          # środek frontu sali na osi przejścia
+        cls.bazar = staticmethod(bazar)
+        cls.front = bazar((TC.WEJSCIE_SALI[0] + TC.WEJSCIE_SALI[1]) / 2.0, TC.SALA_Z[1])   # środek wejścia z placyku
         cls.n = (math.sin(r), math.cos(r))                           # na zewnątrz sali (ku placykowi)
         cls.t = (math.cos(r), -math.sin(r))                          # wzdłuż frontu
 
@@ -356,6 +391,252 @@ class TestMapy(unittest.TestCase):
         st = self.U["start"]
         iz, ix = self.S.komorka(st["x"], st["z"])
         self.assertFalse(self.S.zajete[iz, ix])
+
+    # ------------------------------------------------------------ duża sala (27.11.2026, polecenie Pawła)
+    @staticmethod
+    def lok(st, lx, lz):
+        """Punkt w układzie stanowiska (gracz patrzy w −Z) → układ budynku (x, z)."""
+        _, x, z, o, _ = st
+        a = math.radians(o)
+        return x + lx * math.cos(a) + lz * math.sin(a), z - lx * math.sin(a) + lz * math.cos(a)
+
+    def test_6e_wymiary_sali(self):
+        TC = self.TC
+        self.assertGreaterEqual(TC.SALA_X[1] - TC.SALA_X[0], 40.0)             # sala sięga do zachodniego brzegu
+        self.assertGreaterEqual(TC.PRZEJSCIE[1] - TC.PRZEJSCIE[0], 9.0)         # szeroki korytarz
+        self.assertGreaterEqual(TC.WEJSCIE_SALI[1] - TC.WEJSCIE_SALI[0], 10.0)  # wejście z placyku ≥ 10 st
+        rzedy = {}
+        for st in TC.STANOWISKA:
+            rzedy.setdefault(st[2], []).append(st)
+        self.assertEqual(sorted(len(v) for v in rzedy.values()), [3, 3])        # D-158: dwa rzędy po trzy
+        for z, rz in rzedy.items():
+            xs = sorted(s[1] for s in rz)
+            self.assertGreaterEqual(min(b - a for a, b in zip(xs, xs[1:])), 9.0, ("odstęp mat", z))
+            # krawędź maty od strony korytarza — ta sama dla całego rzędu (problem Pancerza z 26.11)
+            krawedz = z + (TC.MATA_POL if z < 0 else -TC.MATA_POL)
+            self.assertAlmostEqual(krawedz, TC.PRZEJSCIE[0] if z < 0 else TC.PRZEJSCIE[1])
+
+    def test_6f_rekwizyty_nie_wchodza_w_korytarz_ani_w_sciany(self):
+        TC = self.TC
+        T = TC.T_SALI
+        x_sc, z_tyl, z_front = TC.SALA_X[0] + T, TC.SALA_Z[0] + T, TC.SALA_Z[1] - T
+        prostokaty = {}
+        for st in TC.STANOWISKA:
+            x0, x1, z0, z1 = TC.REKWIZYTY[st[0]]
+            pkt = [self.lok(st, a, b) for a in (x0, x1) for b in (z0, z1)]
+            pkt += [self.lok(st, a, b) for a in (-TC.MATA_POL, TC.MATA_POL) for b in (-TC.MATA_POL, TC.MATA_POL)]
+            xs, zs = [p[0] for p in pkt], [p[1] for p in pkt]
+            prostokaty[st[0]] = (min(xs), max(xs), min(zs), max(zs))
+            # nic z kolizją nie wystaje za matę w stronę korytarza (gracz staje na równej posadzce)
+            if st[2] < 0:
+                self.assertLessEqual(max(zs), TC.PRZEJSCIE[0] + 1e-6, st[0])
+            else:
+                self.assertGreaterEqual(min(zs), TC.PRZEJSCIE[1] - 1e-6, st[0])
+            self.assertGreater(min(xs), x_sc + 0.3, ("zachodnia ściana", st[0]))
+            self.assertGreater(min(zs), z_tyl + 0.3, ("tylna ściana", st[0]))
+            self.assertLess(max(zs), z_front - 0.3, ("przedni bok", st[0]))
+            self.assertLess(max(xs), TC.WEJSCIE_SALI[0], ("przedsionek wolny", st[0]))
+        ids = sorted(prostokaty)
+        for i, a in enumerate(ids):
+            for b in ids[i + 1:]:
+                A, B = prostokaty[a], prostokaty[b]
+                nachodzi = A[0] < B[1] - 0.5 and B[0] < A[1] - 0.5 and A[2] < B[3] - 0.5 and B[2] < A[3] - 0.5
+                self.assertFalse(nachodzi, (a, b))
+
+    def test_6g_zejscie_w_korytarz_i_wolne(self):
+        TC = self.TC
+        for st in TC.STANOWISKA:
+            x, z = self.lok(st, *st[4])
+            self.assertTrue(TC.PRZEJSCIE[0] + 0.5 < z < TC.PRZEJSCIE[1] - 0.5, (st[0], z))
+            bx, bz = self.bazar(x, z)
+            iz, ix = self.S.komorka(bx, bz)
+            self.assertFalse(self.S.surowe[iz, ix], st[0])
+
+    def test_6h_npc_pancerza_na_placyku(self):
+        TC = self.TC
+        st = [s for s in TC.STANOWISKA if s[0] == "Pancerz"][0]
+        nx, nz = self.lok(st, 0, -11)                                 # 11 st przed graczem (skrypt Pawła)
+        bx, bz = self.bazar(nx, nz)
+        g = self.U["granice"]
+        self.assertTrue(g["pole_gry_x"][0] < bx < g["pole_gry_x"][1] and nz > TC.SALA_Z[1], (bx, bz))
+        # tor rzutu przez okno w przednim boku sali
+        self.assertTrue(TC.OKNO_PANCERZA[0] < st[1] < TC.OKNO_PANCERZA[1])
+        iz, ix = self.S.komorka(bx, bz)
+        self.assertFalse(self.S.surowe[iz, ix])                      # NPC nie stoi w murze ani w studni
+
+    def test_6i_trener_widoczny_z_wejscia(self):
+        # linia wzroku na wysokości oczu (5 st) od środka wejścia do sali do głowy trenera: żadna nieprzezroczysta część
+        from swiat.miasteczko_bazar import siatka
+        X0, Z0 = self.U["swiat"]["X0"], self.U["swiat"]["Z0"]
+        a = self.bazar((self.TC.WEJSCIE_SALI[0] + self.TC.WEJSCIE_SALI[1]) / 2.0, self.TC.SALA_Z[1] + 1.0)
+        b = self.bazar(*self.TC.TRENER)
+        zaslony = []
+        for c in self.D["czesci"]:
+            if c[13] >= 0.5:
+                continue
+            W = siatka.wierzcholki(c)
+            if not (W[:, 1].min() < 5.0 < W[:, 1].max()):
+                continue
+            xs, zs = W[:, 0] - X0, W[:, 2] - Z0
+            for k in range(1, 40):                                    # próbki co ok. 0,7 st, bez końców
+                px, pz = a[0] + (b[0] - a[0]) * k / 40.0, a[1] + (b[1] - a[1]) * k / 40.0
+                if xs.min() < px < xs.max() and zs.min() < pz < zs.max():
+                    if "Trener" not in self.D["grupy"][c[1]]:
+                        zaslony.append(c[14])
+                    break
+        self.assertEqual(zaslony, [])
+
+    def test_6j_dane_pawla_zgodne_z_mapa(self):
+        Z = {s["id"]: s for s in self.Z["trening_afk"]["stanowiska"]}
+        blok = DANE[DANE.index("D.miejsca = {"):]
+        blok = blok[:blok.index("\n}")]
+        wpisy = re.findall(r"(\w+) = \{ pozycja = Vector3\.new\(([-\d., ]+)\), obrot = ([-\d.]+), "
+                           r"zejscie = Vector3\.new\(([-\d., ]+)\) \}", blok)
+        self.assertEqual(sorted(w[0] for w in wpisy), sorted(Z))
+        for id_, poz, obrot, zj in wpisy:
+            p = [float(v) for v in poz.split(",")]
+            self.assertLess(max(abs(a - b) for a, b in zip(p, Z[id_]["pozycja"])), 0.01, id_)
+            self.assertAlmostEqual(float(obrot), Z[id_]["obrot"], places=1)
+            v = [float(x) for x in zj.split(",")]
+            self.assertEqual([v[0], v[2]], Z[id_]["zejscie"], id_)
+        self.assertEqual(self.Z["trening_afk"]["przejscie"]["szer"], round(self.TC.PRZEJSCIE[1] - self.TC.PRZEJSCIE[0], 2))
+
+    def test_6k_zasieg_e_z_krawedzi_maty(self):
+        """Model zasięgu podpowiedzi (diagnoza 27.11.2026 w Play): Roblox liczy 3-D od korzenia postaci (R15, HipHeight
+        2,0, korzeń 2 × 2 × 1 → 3,54 w świecie, posadzka 0,5) do zaczepu podpowiedzi. Zaczep: środek maty (0,65) +
+        D.podpowiedzWysokosc. Gracz stoi na posadzce przy macie od strony korytarza: korzeń 0,5 … 1,3 st za krawędzią
+        maty (2,7 … 3,5 od środka), także przesunięty wzdłuż rzędu do 1 st — zapas do 4,5 ≥ 0,5 st."""
+        TC = self.TC
+        zasieg = float(re.search(r"pp\.MaxActivationDistance = ([\d.]+)", SERWER).group(1))
+        self.assertEqual(zasieg, 4.5)                                   # D-158: zasięg bez zmian
+        wys = float(re.search(r"D\.podpowiedzWysokosc = ([\d.]+)", DANE).group(1))
+        self.assertIn("zaczep.Position = Vector3.new(0, D.podpowiedzWysokosc or 0, 0)", SERWER)
+        self.assertIn("pp.Parent = zaczep", SERWER)
+        dy = 3.54 - (0.65 + wys)
+        for st in TC.STANOWISKA:
+            for d in (2.7, 3.0, 3.5):
+                for bok in (-1.0, 0.0, 1.0):
+                    odl = math.sqrt(d * d + bok * bok + dy * dy)
+                    self.assertLessEqual(odl, zasieg - 0.5, (st[0], d, bok, round(odl, 2)))
+            self.assertGreater(math.sqrt(5.5 ** 2 + dy * dy), zasieg)    # z 5,5 st — nic (próba A2x)
+        # oś korytarza — żadna podpowiedź (gracz idzie korytarzem i nic się samo nie proponuje)
+        os_z = (TC.PRZEJSCIE[0] + TC.PRZEJSCIE[1]) / 2.0
+        for st in TC.STANOWISKA:
+            self.assertGreater(math.sqrt((st[2] - os_z) ** 2 + dy * dy), zasieg + 0.5, st[0])
+        # gracz przy macie (3,5 st od środka) jest daleko od każdej innej maty
+        for st in TC.STANOWISKA:
+            kx, kz = self.lok(st, *[3.5 * v / math.hypot(*st[4]) for v in st[4]])
+            for inna in TC.STANOWISKA:
+                if inna is not st:
+                    self.assertGreater(math.sqrt((inna[1] - kx) ** 2 + (inna[2] - kz) ** 2 + dy * dy), zasieg + 0.5,
+                                       (st[0], inna[0]))
+
+
+class TestSklepu(unittest.TestCase):
+    """Sklep trenera (27.11.2026, polecenie Pawła: ulepszenia stanowisk i wzmacniacze ×2)."""
+
+    @classmethod
+    def setUpClass(cls):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("ekonomia_sklepu_afk", os.path.join(PAKIET, "ekonomia_sklepu_afk.py"))
+        cls.E_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.E_mod)
+        cls.E = cls.E_mod.wczytaj()
+        cls.KUP = SERWER[SERWER.index("local function kup("):SERWER.index("local ostatniStanSklepu")]
+
+    def test_8a_dane(self):
+        E = self.E
+        self.assertEqual(len(E["ceny"]), E["maks"])
+        self.assertEqual(E["ceny"], sorted(E["ceny"]))
+        self.assertTrue(all(c >= 1 for c in E["ceny"]))
+        self.assertLessEqual(E["premia"] * E["maks"], 0.5)                  # najwyżej +50% tempa
+        self.assertEqual(E["mnoznik"], 2)                                    # Paweł: „siła ×2 na 10 min”
+        self.assertEqual(E["czas_w"], 600)
+        self.assertGreater(E["odstep"], 0)
+        self.assertIn('zrodlo = "TreningAFK"', DANE)
+
+    def test_8b_kolejnosc_sprawdzen(self):
+        f = self.KUP
+        kol = [f.index(k) for k in ("D.sklep.odstep", '"ulepszenie" and rodzaj ~= "wzmacniacz"', "D.stanowisko(id",
+                                    'sygnalStanu("WydajZloto")', "wczytajSklep(gracz)", "sk.zajety then", "D.trener.zasieg",
+                                    '"odmowa", "maks"', '"odmowa", "aktywny"', 'wolajStan("WydajZloto"', "przyznajUlepszenie(",
+                                    '"kupiono"')]
+        self.assertEqual(kol, sorted(kol))
+        for powod in ('"sklep"', '"wczytywanie"', '"daleko"', '"maks"', '"aktywny"', '"za_malo"'):
+            self.assertIn(powod, f, powod)
+        # cena tylko z danych: zdalne zdarzenie niesie rodzaj i id, nigdy kwotę
+        self.assertIn("local function kup(gracz: Player, rodzaj: unknown, id: unknown)", SERWER)
+        self.assertIn("ile = cena, zrodlo = D.sklep.zrodlo", f)
+        self.assertIn("D.cenaUlepszenia(sk.u[s.id] or 0)", f)
+        self.assertIn("cena = D.sklep.wzmacniacze.cena", f)
+        self.assertIn('elseif akcja == "kup" then', SERWER)
+        h = SERWER[SERWER.index("Z.OnServerEvent:Connect"):]
+        self.assertLess(h.index('akcja == "kup"'), h.index("local t = trwa[gracz]"))
+
+    def test_8c_jedno_miejsce_przyznania(self):
+        # poza odczytem profilu (czystySklep) poziom i wzmacniacz zmienia tylko przyznajUlepszenie / przyznajWzmacniacz
+        f = SERWER[SERWER.index("local function czystySklep"):SERWER.index("local function wczytajSklep")]
+        bez = SERWER.replace(f, "")
+        self.assertEqual(len(re.findall(r"sk\.u\[[^\]]+\] = ", bez)), 1)
+        self.assertEqual(len(re.findall(r"sk\.w\[[^\]]+\] = ", bez)), 1)
+        self.assertEqual(len(re.findall(r"przyznajUlepszenie\(gracz, ", SERWER)), 1)
+        self.assertEqual(len(re.findall(r"przyznajWzmacniacz\(gracz, ", SERWER)), 1)
+        # pasek i przyrost liczy serwer z poziomu i wzmacniacza
+        self.assertIn("if t.postep >= t.pasek then", SERWER)
+        self.assertIn("local ile = przyrostNaPasek(gracz, s)", SERWER)
+        self.assertIn('Z:FireClient(gracz, "start", id, p, przyrostNaPasek(gracz, s), pasek, zostaloW(gracz, s.atrybut))', SERWER)
+
+    def test_8d_bez_robuxow(self):
+        for kod in (SERWER, KLIENT, DANE):
+            for zakaz in ("MarketplaceService", "ProcessReceipt =", "PromptProductPurchase", "PromptGamePassPurchase",
+                          "DeveloperProduct"):
+                self.assertNotIn(zakaz, kod, zakaz)
+
+    def test_8e_profil_stare_zapisy(self):
+        f = SERWER[SERWER.index("local function czystySklep"):SERWER.index("local function wczytajSklep")]
+        for kawalek in ('type(v) ~= "table"', "math.min(math.floor(n), D.sklep.ulepszenia.maks)", "n >= 1",
+                        "k > teraz and k <= teraz + D.sklep.wzmacniacze.czas + 60"):
+            self.assertIn(kawalek, f, kawalek)
+        w = SERWER[SERWER.index("local function wczytajSklep"):SERWER.index("local function zapiszSklep")]
+        self.assertIn('gracz:GetAttribute("StanGraczaWczytany") == false', w)
+        self.assertIn('wolajStan("DanePakietu", "czytaj", gracz, D.sklep.pakiet)', w)
+
+    def test_8f_stan_gracza_przyjmuje(self):
+        import importlib.util
+        sg = os.path.join(REPO, "swiat", "stan_gracza")
+        if sg not in sys.path:
+            sys.path.append(sg)
+        spec = importlib.util.spec_from_file_location("dane_stanu_sklep", os.path.join(sg, "dane.py"))
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        DS = m.dane_z_przypadkami()[1]
+        import logika_stanu as LS  # noqa: E402
+        self.assertIn("TreningAFK", m.PAKIETY_WYDATKOW)
+        for cel, ile in (("trening_ulepszenie", self.E["ceny"][-1]), ("trening_wzmacniacz", self.E["cena_w"])):
+            w, powod = LS.czysty_wydatek(DS, {"ile": ile, "zrodlo": "TreningAFK", "cel": cel})
+            self.assertEqual(powod, "ok", cel)
+        w, powod = LS.czyste_dane_pakietu(DS, {"u": {s: 5 for s in ("Sila", "Kondycja", "Pancerz", "Zrecznosc",
+                                                                    "Inteligencja", "Szczescie")},
+                                               "w": {"Strength": 1795000000, "Luck": 1795000600}})
+        self.assertEqual(powod, "ok")
+        self.assertTrue(LS.nazwa_ok(DS, "TreningAFK"))
+
+    def test_8g_klient_sklepu(self):
+        for kawalek in ('Z:FireServer("kup", rodzaj, k.s.id)', 'Z:FireServer("sklep")', "D.cenaUlepszenia(lv)",
+                        'akcja == "sklep" and typeof(powod) == "table"', 'akcja == "kupiono"', "pasekReps = if typeof(d)",
+                        "postep / pasekReps", "pasekReps - 0.001", "hum:ChangeState(Enum.HumanoidStateType.GettingUp)"):
+            self.assertIn(kawalek, KLIENT, kawalek)
+        self.assertNotIn("D.powtorzenNaPasek - 0.001", KLIENT)
+
+    def test_8h_rachunek(self):
+        E, M = self.E, self.E_mod
+        self.assertAlmostEqual(M.tempo_h(E, E["maks"]) / M.tempo_h(E), 1 + E["premia"] * E["maks"])
+        self.assertAlmostEqual(M.tempo_h(E, 0, True) / M.tempo_h(E), E["mnoznik"])
+        # odpływ Rybek: wzmacniacz bez przerwy kosztuje więcej, niż daje typowa zagroda; pełne stanowisko ≥ 30 min walk
+        # w najbogatszym biomie
+        self.assertGreater(E["cena_w"] * 3600 / E["czas_w"], max(M.PRZYCHOD_ZAGRODY_H.values()))
+        self.assertGreaterEqual(60.0 * sum(E["ceny"]) / max(M.PRZYCHOD_WALK_H.values()), 30.0)
+        self.assertLessEqual(60.0 * E["ceny"][0] / M.PRZYCHOD_WALK_H["las"], 5.0)     # pierwszy poziom szybko
 
 
 if __name__ == "__main__":

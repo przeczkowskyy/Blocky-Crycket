@@ -47,7 +47,7 @@ KLASY_GRACZA = {"Warrior": "wojownik", "Scout": "zwiadowca", "Mage": "mag"}
 #  • PRZYCHODY — kontenery, które mogą DOPISAĆ Złoto (Rybki, D-146) poza walką (Sygnaly/Pety "przychod"; 25.11.2026:
 #    zagroda petów — pety stojące w zagrodzie dają Rybki na sekundę, kwotę liczy serwer petów).
 PAKIETY_BIOMOW = ["LasPotwory", "LasPasGra", "BagnoPasGra", "DzunglaPasGra"]   # 18.11: Dżungla (trzeci biom)
-PAKIETY_WYDATKOW = ["PetyProba", "KowalProba"]                                # 18.11: Kowal (D-102)
+PAKIETY_WYDATKOW = ["PetyProba", "KowalProba", "TreningAFK"]                  # 18.11: Kowal (D-102); 27.11: sklep trenera (TreningAFK)
 PAKIETY_PRZYCHODOW = ["PetyProba"]                                            # 25.11: zagroda petów (Rybki/s)
 
 # punkty statystyk za poziom (D-097 ✅ 17.11: „5 punktów do rozdania za poziom”). PUNKTY_SAMO_NA_POZIOM = ile

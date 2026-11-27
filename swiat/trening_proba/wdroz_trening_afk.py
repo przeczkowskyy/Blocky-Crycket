@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Wdrożenie trzech skryptów treningu AFK Pawła do otwartego Studio (bez Rojo) — z kontrolą, że w Studio stoi wersja
-sprzed zmiany z 26.11.2026 (okno trenera, bez tabliczek). Inna wersja w Studio = STOP: ktoś zmienił skrypt w Studio
+sprzed zmiany z 27.11.2026 (duża sala, sklep trenera; wcześniej 26.11: okno trenera, bez tabliczek). Inna wersja
+w Studio = STOP: ktoś zmienił skrypt w Studio
 i zmiany trzeba najpierw zebrać, nie nadpisywać.
 
     python -B swiat/trening_proba/wdroz_trening_afk.py --sucho      # tylko porównanie (niczego nie zmienia)
@@ -14,7 +15,7 @@ Skrypty (istniejące instancje — narzędzie ich nie tworzy, nie usuwa i nie pr
     src/shared/TreningAFKDane.luau           → ReplicatedStorage.Shared.TreningAFKDane          (ModuleScript)
 Wersja sprzed zmiany = bloby git zapisane niżej (PRZED). Porównanie bez różnic końców wierszy i końcowych spacji.
 Wynik: 0 = wdrożone (albo przy --sucho: można wdrażać / już wdrożone), 3 = STOP (inna wersja w Studio albo brak
-instancji), 1 = błąd Studio. Jedna zmiana w historii („Trening AFK: okno trenera”, Ctrl+Z ją cofa). Tylko tryb Edit.
+instancji), 1 = błąd Studio. Jedna zmiana w historii („Trening AFK: duża sala i sklep trenera”, Ctrl+Z ją cofa). Tylko tryb Edit.
 """
 import json
 import os
@@ -28,13 +29,14 @@ for _s in (os.path.join(REPO, "tools"), os.path.join(REPO, "swiat", "test_walki_
         sys.path.insert(0, _s)
 
 SKRYPTY = [
-    # (plik w repo, ścieżka w Studio, klasa, blob sprzed zmiany 26.11.2026)
+    # (plik w repo, ścieżka w Studio, klasa, blob sprzed zmiany 27.11.2026 = main 5ab7a86; przed nim 26.11: 6c8c2b4…,
+    # c3a0a35…, 4a5e13f…)
     ("src/server/TreningAFK.server.luau", ("ServerScriptService", "Server", "TreningAFK"), "Script",
-     "6c8c2b42511da4ef60b67b411e215b8016cdad5e"),
+     "87cda65031325be2bc79ecc996b6ca6def1fd7df"),
     ("src/client/TreningAFKClient.client.luau", ("StarterPlayer", "StarterPlayerScripts", "Client", "TreningAFKClient"),
-     "LocalScript", "c3a0a353b67a31a721ce22c049606589d4c15c9b"),
+     "LocalScript", "c123413e271f304e597d1e6bd44580a1766303ec"),
     ("src/shared/TreningAFKDane.luau", ("ReplicatedStorage", "Shared", "TreningAFKDane"), "ModuleScript",
-     "4a5e13f94bf14a4f3014295cbbb8a0a29954f607"),
+     "7cc45dddaaf698d657c8c2c750ea934bdde17738"),
 ]
 KONIEC = "]======]"
 
@@ -123,7 +125,7 @@ def main(argv):
             print("WYNIK (--sucho): można wdrażać %d skrypt(y)" % len(do_podmiany))
             return 0
         kod = ['local CHS = game:GetService("ChangeHistoryService")',
-               'local rec = CHS:TryBeginRecording("Trening AFK: okno trenera")', "local n = 0"]
+               'local rec = CHS:TryBeginRecording("Trening AFK: duża sala i sklep trenera")', "local n = 0"]
         for p, sc, _, _ in do_podmiany:
             kod.append("do local s = %s if s then s.Source = [======[%s%s n += 1 end end" % (
                 sciezka_lua(sc), "\n" + nowe[p] if nowe[p].startswith("\n") else nowe[p], KONIEC))

@@ -20,6 +20,7 @@
   "czesci_y": [-1.0, 120.0],
   "pole_gry_x": [-95.0, 68.0],
   "pole_gry_z": [-36.0, 36.0],
+  "sala_poza_polem": {"x": [-111.0, -95.0], "z": [-36.0, -12.4], "zachodnia_sciana_od_z": -13.0, "opis": "27.11.2026: zachodnia część dużej sali Training Center wychodzi poza pole gry (x < −95); zamykają ją ściany sali (z kolizją), więc niewidzialna ściana zachodnia biegnie dopiero od przedniego boku sali (z ≥ zachodnia_sciana_od_z), a siatka chodzenia obejmuje też tę skrzynkę"},
   "opis": "czesci_* = skrzynka na wszystkie części (x 72 = świat X 1066 = początek pasa Lasu); pole_gry = tam, gdzie chodzi gracz (niewidzialne ściany na brzegach)"
  },
  "poziomy": {"grunt": 0.1, "fuga": 0.2, "bruk": 0.3, "kody": 0.38, "posadzka": 0.5, "budynki_y0": 0.3, "stare_y0": 0.27},
@@ -54,7 +55,7 @@
  "domy": [
   {"id": "dom_placyk_pn", "x": -81.0, "z": -27.0, "ry": 0, "szer": 16, "gl": 14, "wys": 22, "wariant": "a", "sciana": "tynk_blekit", "dach": "dach_dom_ceglasty", "pochyl": 1, "pominiety": "25.11.2026: w tym miejscu stoi sala treningowa Training Center (budynki/training_center.py); wpis zostaje, żeby pozostałe domy miały te same losowania"},
   {"id": "dom_placyk_pd", "x": -81.0, "z": 27.0, "ry": 180, "szer": 16, "gl": 14, "wys": 23, "wariant": "c", "sciana": "tynk_brzoskwinia", "dach": "dach_dom_lupek", "pochyl": -1},
-  {"id": "dom_zachod_pn", "x": -102.0, "z": -15.0, "ry": 90, "szer": 16, "gl": 14, "wys": 24, "wariant": "b", "sciana": "tynk_mieta", "dach": "dach_dom_ceglasty", "pochyl": -1},
+  {"id": "dom_zachod_pn", "x": -102.0, "z": -15.0, "ry": 90, "szer": 16, "gl": 14, "wys": 24, "wariant": "b", "sciana": "tynk_mieta", "dach": "dach_dom_ceglasty", "pochyl": -1, "pominiety": "27.11.2026 (polecenie Pawła: duża sala Training Center „mniej więcej taki obszar” — sala i dom na zachód od niej): w tym miejscu stoi zachodnia część sali; wpis zostaje, żeby pozostałe domy miały te same losowania"},
   {"id": "dom_zachod_pd", "x": -102.0, "z": 15.0, "ry": 90, "szer": 16, "gl": 14, "wys": 21, "wariant": "d", "sciana": "tynk_krem", "dach": "drewno", "pochyl": 1}
  ],
  "kulisy_domy": [
@@ -93,8 +94,7 @@
   {"a": [16.2, 34.6], "b": [29.4, 34.6], "wys": 10, "opis": "za kioskiem"},
   {"a": [64.5, -36.0], "b": [64.5, -12.6], "wys": 12, "opis": "wschód: od Bramy Leśnej na północ"},
   {"a": [64.5, 12.6], "b": [64.5, 36.0], "wys": 12, "opis": "wschód: od Bramy Leśnej na południe"},
-  {"a": [-101.5, -7.0], "b": [-101.5, 7.0], "wys": 11, "opis": "zachód: między domami placyku"},
-  {"a": [-95.5, -35.0], "b": [-95.5, -23.2], "wys": 10, "opis": "róg pn.-zach. placyku"},
+  {"a": [-101.5, -12.4], "b": [-101.5, 7.0], "wys": 11, "opis": "zachód: od przedniego boku sali Training Center do domu placyku (27.11.2026: było od z −7 — między domami; mur w rogu pn.-zach. placyku (−95,5; −35 … −23,2) usunięty, stał w sali)"},
   {"a": [-95.5, 23.2], "b": [-95.5, 35.0], "wys": 10, "opis": "róg pd.-zach. placyku"}
  ],
  "latarnie": [

@@ -58,7 +58,9 @@ class Siatka:
     def __init__(self, dane, U, krok=KROK, promien=PROMIEN):
         self.X0, self.Z0 = U["swiat"]["X0"], U["swiat"]["Z0"]
         g = U["granice"]
-        self.x0, self.x1 = g["pole_gry_x"][0] - 3.0, g["pole_gry_x"][1] + 3.0
+        sp = g.get("sala_poza_polem")           # 27.11.2026: część sali Training Center za zachodnim brzegiem pola
+        self.x0 = min(g["pole_gry_x"][0], sp["x"][0] if sp else 1e9) - 3.0
+        self.x1 = g["pole_gry_x"][1] + 3.0
         self.z0, self.z1 = g["pole_gry_z"][0] - 3.0, g["pole_gry_z"][1] + 3.0
         self.krok = krok
         self.nx = int(round((self.x1 - self.x0) / krok))

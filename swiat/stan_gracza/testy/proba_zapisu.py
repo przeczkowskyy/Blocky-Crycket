@@ -17,7 +17,9 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
   Z01 Play 1 (magazyn próby, rekord skasowany): ZapisStan „włączony (magazyn próby)”, ZapisMagazyn …_Studio_Proba,
       StanGraczaZapis „aktywny”, LicznikWczytan 1, nowy gracz: poziom 1, Złoto 0, Gemy = D.zapis.start
   Z02 gra: klasa (ChooseClass), łup z walki haczykiem „przyznaj” (awans), „+” ×2, kupno w sklepie, ulepszenie u kowala,
-      przymierzalnia (zdjęty slot), jajko peta, mini-gra Siły (autogra), Strażnik (łup strażnika + brama), przelot (oznacz)
+      przymierzalnia (zdjęty slot), jajko peta, mini-gra Siły (autogra), Strażnik (łup strażnika + brama), przelot (oznacz),
+      sklep trenera (27.11.2026: przy trenerze ulepszenie Siły i wzmacniacz Siły zdalnym zdarzeniem TreningAFK →
+      w profilu pakiety.TreningAFK = { u = { Sila = 1 }, w = { Strength = koniec } }; Z04 porównuje całe pakiety)
   Z03 Stop → rekord w magazynie próby: poziom, Złoto, Gemy i klasa jak przed Stop
   Z04 Play 2: wszystko wróciło co do wartości (atrybuty gracza, profil: pakiety kowala i treningu, pety, punkty,
       strażnicy…); czas wczytania (StanGraczaWczytanieMs)
@@ -123,6 +125,12 @@ KOD = {
                         'elseif o.stan == "zalozone" and o.slot ~= "%s" and not w.inny then w.inny = o.slot end end '
                         'return H:JSONEncode(w)'),
     "bledy": KS + 's:SetAttribute("%s", %d) return "ok"',
+    # sklep trenera (27.11.2026): postać przed trenerem (punkt E bazaru), zakupy zdalnym zdarzeniem jak z okna trenera
+    "do_trenera": GR + ('local e = workspace.MiasteczkoBazarGra.Punkty:FindFirstChild("E training_center") '
+                        'gracz.Character:PivotTo(CFrame.new(e.Position.X, 3.6, e.Position.Z + 3)) return "ok"'),
+    "sklep_trenera": H + ('local Z = game:GetService("ReplicatedStorage"):WaitForChild("TreningAFK") '
+                          'Z:FireServer("kup", "ulepszenie", "Sila") task.wait(0.7) Z:FireServer("kup", "wzmacniacz", "Sila") '
+                          'task.wait(1.0) return H:JSONEncode({ ok = true })'),
     # strój, w który klient ubiera bohatera walki (Ubieranie przymierzalni — ten sam kod co aktor walki)
     "stroj_klienta": H + ('local U = require(workspace.StrojeProba.Moduly.Ubieranie) '
                           'return H:JSONEncode(U.strojGracza(game:GetService("Players").LocalPlayer, "%s") or {})'),
@@ -351,6 +359,12 @@ def main():
                 time.sleep(1.0)
             krok("straznik", lambda: js(KOD["straznik"] % D["gemy"]["prefiks_straznika"]))
             krok("przelot", lambda: luau(KOD["przelot"], "Server"))
+            # 27.11.2026: sklep trenera — Rybki na zakup (łup czeka na pokazanie, WydajZloto go najpierw dopisuje)
+            krok("lup_sklep", lambda: js(KOD["przyznaj"] % (1000, 0)))
+            time.sleep(3.0)
+            luau(KOD["do_trenera"], "Server")
+            time.sleep(1.0)
+            krok("sklep_trenera", lambda: js(KOD["sklep_trenera"], "Client"))
             time.sleep(2.0)
             przed = migawka()
             a = przed.get("a", {})
@@ -366,7 +380,9 @@ def main():
                 ("kupiony założony", (kroki.get("oferta_po_stroju") or {}).get("stan") == "zalozone" and item in stroj.split(",")),
                 ("pet", kroki["pet"].get("ok") and a.get("PetAktywny")), ("mini-gra", not mini or ((a.get("TreningSila") or 0) > 0 and "trening" in pak)),
                 ("Strażnik", kroki["straznik"].get("ok") and a.get("PokonalStraznikaLasu") is True),
-                ("przelot", a.get("WidzialPrzelotLasu") is True), ("kowal w profilu", "kowal" in pak)) if not ok]
+                ("przelot", a.get("WidzialPrzelotLasu") is True), ("kowal w profilu", "kowal" in pak),
+                ("sklep trenera w profilu", ((pak.get("TreningAFK") or {}).get("u") or {}).get("Sila") == 1
+                 and "Strength" in ((pak.get("TreningAFK") or {}).get("w") or {}))) if not ok]
             punkt("Z02", True if not braki else None, "braki: %s; kroki: %s" % (braki or "brak", json.dumps(kroki, ensure_ascii=False)[:1200]))
             zapisz("Z02", {"kroki": kroki, "przed": przed, "braki": braki})
         finally:

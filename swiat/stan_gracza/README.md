@@ -136,7 +136,8 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
 **Jak dodać pakiet (jedno miejsce, 18.11.2026):** listy kontenerów, które rozmawiają ze stanem gracza, są na górze
 `dane.py`: `PAKIETY_BIOMOW` (walki biomu — łup przez `PrzyznajLup` i kara za przegraną; dziś `LasPotwory`,
 `LasPasGra`, `BagnoPasGra` i od razu `DzunglaPasGra`) i `PAKIETY_WYDATKOW` (wydawanie Złota — `PetyProba`,
-`KowalProba`), od 25.11.2026 też `PAKIETY_PRZYCHODOW` (dopisywanie Złota / Rybek poza walką przez `Pety("przychod")` — `PetyProba`, zagroda petów). Nowy pakiet: dopisz nazwę jego kontenera, `python -B swiat/stan_gracza/dane.py`, testy, potem
+`KowalProba`, od 27.11.2026 `TreningAFK` — sklep trenera w skrypcie Pawła: ulepszenia stanowisk i wzmacniacze, cele
+`trening_ulepszenie` / `trening_wzmacniacz`, dane w profilu przez `DanePakietu`, pakiet `TreningAFK`), od 25.11.2026 też `PAKIETY_PRZYCHODOW` (dopisywanie Złota / Rybek poza walką przez `Pety("przychod")` — `PetyProba`, zagroda petów). Nowy pakiet: dopisz nazwę jego kontenera, `python -B swiat/stan_gracza/dane.py`, testy, potem
 `zbuduj.py --skrypty`. Cele wydatków (`jajko_lesne`, `ulepszenie`, `zakup_przedmiotu`…) listy nie mają — przechodzi każda
 nazwa z liter, cyfr i „_”. Test `6b` sam znajduje pakiety `swiat/*_pas_gra` i oblewa, gdy kontener biomu nie jest na
 liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyKrainy_<kraina>`) też listy nie mają.

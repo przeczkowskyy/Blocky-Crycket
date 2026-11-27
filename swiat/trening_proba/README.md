@@ -1,5 +1,36 @@
 # Training Center — próba sześciu mini-gier
 
+> **Duża sala i sklep trenera (27.11.2026, polecenie Pawła na Telegramie zespołu; Karol: „zastosuj się”).** Status:
+> **propozycja**, etap 1 bez Studio (wdrożenie i próby w Play — etap 2). Paweł: „ta hala ze sprzętami powinna zajmować
+> mniej więcej taki obszar, żeby było tam dużo przestrzeni” oraz „u trenera … panel sklepu/ulepszeń, gdzie np. gracz może
+> ulepszyć bieżnię, żeby dawała więcej na powtórzenie, albo kupić jakieś wzmacniacze na trening, np. siła ×2 na 10 min”.
+> - **Sala** (mapa: `swiat/miasteczko_bazar/README.md`, „Duża sala Training Center”): 40 × 22 st, korytarz 9,3 st, maty
+>   co 9 st, krawędź od korytarza wolna, podpowiedź E na zaczepie 1,5 st nad matą (zasięg 4,5 bez zmian), zejście
+>   w korytarz. Dane: `src/shared/TreningAFKDane.luau` (`D.miejsca`, `D.podpowiedzWysokosc`).
+> - **Sklep** (skrypty Pawła `src/server/TreningAFK.server.luau`, `src/client/TreningAFKClient.client.luau`; liczby
+>   w `D.sklep`): okno trenera ma zakładki TRAIN i SHOP. **Ulepszenie stanowiska** (poziom 0–5, osobno dla gracza
+>   i stanowiska): +10% tempa na poziom — pasek ma mniej powtórzeń (`D.powtorzenDla`, 4 → 3,64 → … → 2,67), czyli każde
+>   powtórzenie daje więcej („więcej na powtórzenie”); ceny 300 / 700 / 1600 / 3600 / 8400 Rybek. **Wzmacniacz**: ×2
+>   statystyki za pasek jednego stanowiska przez 10 min czasu rzeczywistego (wyjście z gry go nie zatrzymuje, koniec
+>   zapisany w profilu), jeden na statystykę, 600 Rybek. Płaci stan gracza (`Sygnaly/WydajZloto`, źródło `TreningAFK`
+>   dopisane do `PAKIETY_WYDATKOW` w `swiat/stan_gracza/dane.py`), poziomy i końce wzmacniaczy zapisuje profil
+>   (`Sygnaly/DanePakietu`, pakiet `TreningAFK`: `{ u = { [id] = poziom }, w = { [atrybut] = os.time końca } }`;
+>   stare zapisy bez pakietu = poziomy 0). Serwer: limit 0,4 s, typy, wczytany profil, odległość od trenera
+>   (`D.trener.zasieg`), najwyższy poziom / aktywny wzmacniacz, saldo; odmowy po angielsku w tytule okna. **Bez Robuxów**
+>   — sprzedaż za Robuxy to osobna decyzja; hak: `przyznajUlepszenie` / `przyznajWzmacniacz` w skrypcie serwera to
+>   jedyne miejsca przyznania (przyszły ProcessReceipt zawołałby je po sprawdzeniu paragonu).
+> - **Rachunek** `ekonomia_sklepu_afk.py` (`--walka` — strażnicy Bagna i Dżungli silnikiem walki): pełne stanowisko
+>   14 600 Rybek (sześć: 87 600 = 11,1 h walk w lesie, 5,4 h w Dżungli), wzmacniacz bez przerwy 3600 Rybek/h (więcej niż
+>   typowa zagroda). **Uwaga do balansu:** już dziś trening AFK daje 750 punktów statystyki na godzinę na stanowisku —
+>   strażnikowi Bagna wystarcza ok. 19 punktów ponad pulę (1,6 min AFK), Wężowi Stu Lian ok. 36 (2,8 min); sklep skraca to
+>   ×1,5 (pełne ulepszenie), ×2 (wzmacniacz), ×3 (oba) — w minutach mało, bo wolne nie jest samo tempo AFK (do decyzji).
+> - **Próby w Play** (etap 2): `testy/proba_afk_zasieg.py` (A1x–A4x: E z krawędzi maty od korytarza, 5,5 st i oś
+>   korytarza — nic, marsz do maty bez wypychania na rekwizyt, postać stoi po zejściu), `testy/proba_afk_trener.py`
+>   (S00–S08: zakładka SHOP, brak Rybek, zakup, krótszy pasek, najwyższy poziom, spam, aktywny wzmacniacz, ×2 i koniec,
+>   z daleka; zrzuty 02 korytarz od wejścia, 04 SHOP z licznikiem wzmacniacza, 05 panel z licznikiem, 06 sala z góry),
+>   zapis: `swiat/stan_gracza/testy/proba_zapisu.py` (Z02 kupuje przy trenerze, Z04 porównuje pakiety profilu).
+>   `--sprawdz` w obu próbach AFK parsuje ich kawałki Luau bez Studio. Testy offline: `testy/test_afk_trener.py` (40).
+
 > **Mini-gry wyłączone z gry (26.11.2026 ok. 22:00, Karol: „usuń placeholdery”, „pozbądź się starych rzeczy”).**
 > `ustawienia.json → mini_gry.w_grze = false` (→ `DaneTreningu.mini_gry.w_grze`). `zbuduj.py` stawia wtedy
 > `Workspace/TreningProba` **bez areny (ok. 2800 części), bez modułów, skryptów i haczyków** — tylko folder `Sygnaly`
@@ -168,11 +199,12 @@ python -B swiat/trening_proba/zbuduj.py --usun           # usuwa Workspace/Treni
 python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>   # próba T01–T22 w trybie Play (ok. 12 min)
 python -B swiat/trening_proba/testy/proba_play.py <folder> --nowe      # tylko T01 i T15–T22 (ok. 8 min)
 python -B swiat/trening_proba/testy/proba_play.py <folder> --walka     # tylko T01, T22 i T23–T27 — wygląd jak w walce (ok. 7 min)
-python -B swiat/trening_proba/testy/proba_afk_zasieg.py <folder>       # stanowiska AFK w sali: zasięg podpowiedzi E (ok. 2 min)
-python -B swiat/trening_proba/testy/test_afk_trener.py                 # 20 testów offline okna trenera, sali i mapy (bez Studio)
-python -B swiat/trening_proba/wdroz_trening_afk.py --sucho             # Studio Edit: czy w Studio stoją skrypty AFK sprzed 26.11
+python -B swiat/trening_proba/testy/proba_afk_zasieg.py <folder>       # stanowiska AFK w sali: zasięg podpowiedzi E (ok. 6–8 min)
+python -B swiat/trening_proba/testy/test_afk_trener.py                 # 40 testów offline okna trenera, sklepu, sali i mapy (bez Studio)
+python -B swiat/trening_proba/ekonomia_sklepu_afk.py [--walka]         # rachunek sklepu trenera (ceny, tempo, strażnicy)
+python -B swiat/trening_proba/wdroz_trening_afk.py --sucho             # Studio Edit: czy w Studio stoją skrypty AFK sprzed 27.11
 python -B swiat/trening_proba/wdroz_trening_afk.py                     # podmiana Source trzech skryptów AFK (inna wersja = STOP)
-python -B swiat/trening_proba/testy/proba_afk_trener.py <folder>       # Play: okno trenera, sześć ćwiczeń, odmowy, zrzuty (ok. 7 min)
+python -B swiat/trening_proba/testy/proba_afk_trener.py <folder>       # Play: okno trenera, sześć ćwiczeń, sklep, odmowy, zrzuty (ok. 10–12 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py                      # 24 zrzuty do klatki/ (ok. 7 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py --nowe               # tylko 09–24 (cztery nowe gry, ok. 5 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py --telefon            # 26–37: sześć gier na telefonie (ok. 5 min)

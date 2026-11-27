@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Próba wejścia do sali treningu AFK przez trenera (tryb Play, 26.11.2026, zlecenie Karola). Nie zmienia miejsca:
-sama włącza i wyłącza Play, niczego nie zapisuje i nie publikuje. Ok. 6–8 minut.
+"""Próba wejścia do sali treningu AFK przez trenera (tryb Play, 26.11.2026, zlecenie Karola) i sklepu trenera
+(27.11.2026, polecenie Pawła: ulepszenia stanowisk i wzmacniacze ×2). Nie zmienia miejsca: sama włącza i wyłącza Play,
+niczego nie zapisuje i nie publikuje (bez magazynu próby stan gracza nie zapisuje profilu). Ok. 10–12 minut.
 
     python -B swiat/trening_proba/testy/proba_afk_trener.py <folder wyników POZA repo> [--studio <id>] [--bez-zrzutow]
 
@@ -24,9 +25,22 @@ LISTA (OK / BŁĄD / ?):
   B21 prośba z daleka (25 st od trenera, wprost zdalnym zdarzeniem): odmowa „daleko”, trening nie startuje
   B22 limit: zła prośba i zaraz poprawna (< 0,5 s) → poprawna pominięta; po 0,8 s ta sama → trening startuje
   B23 prośba w trakcie treningu → odmowa „trening”, stanowisko bez zmian
+  S00 (sklep, 27.11) prawdziwy klik zakładki SHOP → sześć kafelków stanowisk, stan sklepu z serwera, poziomy 0
+  S01 bez Rybek (Gold = 0): klik „LV UP” Siły → odmowa „za_malo” (brakuje 300), poziom i Gold bez zmian
+  S02 Gold = 20000: klik „LV UP” Siły → poziom 1, Gold 19700, w profilu stanu gracza pakiet TreningAFK u.Sila = 1
+  S03 ulepszenie zmienia przyrost: trening Siły (poziom 1) — pasek 3,64 powtórzenia, pełne paski co ok. 4,4 s;
+      Kondycja (poziom 0) — pasek 4, co ok. 4,8 s (bez klikania skill checków)
+  S04 Siła do poziomu 5 (4 kliki) → kolejny klik: odmowa „maks”, Gold bez zmian
+  S05 spam: 5 próśb o wzmacniacz Kondycji w 0,1 s (zdalnym zdarzeniem) → jeden zakup (−600), wzmacniacz ok. 600 s
+  S06 drugi wzmacniacz Kondycji → odmowa „aktywny”, Gold bez zmian; zrzut 04_sklep_wzmacniacz (zakładka SHOP, kafelek
+      z licznikiem)
+  S07 wzmacniacz ×2 i jego koniec: czas wzmacniacza w module danych na serwerze skrócony do 15 s, zakup dla Szczęścia,
+      trening Szczęścia: pełny pasek w trakcie daje +2 (licznik nad panelem widać — zrzut 05_panel_wzmacniacz), po
+      15 s +1; czas przywrócony
+  S08 zakup z daleka (25 st od trenera, zdalnym zdarzeniem) → odmowa „daleko”, Gold bez zmian
   B30 zamykanie okna: X (klik), stuknięcie obok okna (klik w tło), przycisk B pada, odejście od trenera
-  B40 zrzuty: 01_okno_trenera (okno otwarte), 02_sala_bez_tabliczek (sala od wejścia), 03_wejscie_placyk (front sali
-      i studnia z placyku); „?” przy --bez-zrzutow
+  B40 zrzuty: 01_okno_trenera (okno otwarte), 02_sala_od_wejscia (korytarz od przedsionka), 03_wejscie_placyk (wejście
+      do sali i studnia z placyku), 06_sala_z_gory (cała sala przez szklany dach); „?” przy --bez-zrzutow
   B50 konsola bez błędów skryptów TreningAFK
 """
 import io
@@ -114,6 +128,36 @@ KOD = {
     "wyslij_dwa": ('local Z = game:GetService("ReplicatedStorage").TreningAFK Z:FireServer("wybierz", "Nic") '
                    'task.wait(0.1) Z:FireServer("wybierz", "%s") return "ok"'),
     "zajete": 'workspace.TreningAFK["%s"]:SetAttribute("Zajete", %s) return "ok"',
+    # sklep trenera (27.11.2026)
+    "sluchacz_sklepu": (LP + 'if not lp:GetAttribute("ProbaSluchaczSklepu") then lp:SetAttribute("ProbaSluchaczSklepu", true) '
+                        'local H = game:GetService("HttpService") local punkty = {} '
+                        'game:GetService("ReplicatedStorage").TreningAFK.OnClientEvent:Connect(function(a, b, c, d, e) '
+                        'if a == "odmowa" then lp:SetAttribute("ProbaOdmowa", tostring(b)) lp:SetAttribute("ProbaBrakuje", d) '
+                        'elseif a == "start" then lp:SetAttribute("ProbaPasek", d) lp:SetAttribute("ProbaPrzyrost", c) '
+                        'lp:SetAttribute("ProbaWzm", e) table.clear(punkty) lp:SetAttribute("ProbaPunkty", "[]") '
+                        'elseif a == "punkt" then table.insert(punkty, { t = os.clock(), ile = c }) '
+                        'lp:SetAttribute("ProbaPunkty", H:JSONEncode(punkty)) end end) end '
+                        'lp:SetAttribute("ProbaOdmowa", nil) lp:SetAttribute("ProbaBrakuje", nil) return "ok"'),
+    "stan_sklepu": (H + LP + 'local g = lp.PlayerGui:FindFirstChild("TreningAFKMenu") local o = g and g:FindFirstChild("Okno") '
+                    'local s = o and o:FindFirstChild("Sklep") local k = {} if s then for _, f in s:GetChildren() do '
+                    'if f:IsA("Frame") then k[f.Name] = { poziom = f:GetAttribute("Poziom"), wzm = f:GetAttribute("Wzmacniacz"), '
+                    'ulepsz = f.Ulepsz.Text, wzm_tekst = f.Wzmacniacz.Text } end end end '
+                    'local t = lp.PlayerGui:FindFirstChild("TreningAFK") local w = t and t.Panel:FindFirstChild("Wzmocnienie") '
+                    'return H:JSONEncode({ sklep = g ~= nil and g:GetAttribute("Sklep") == true and s ~= nil and s.Visible, '
+                    'tytul = o and o.Tytul.Text, kafle = k, odmowa = lp:GetAttribute("ProbaOdmowa") or false, '
+                    'brakuje = lp:GetAttribute("ProbaBrakuje") or false, pasek = lp:GetAttribute("ProbaPasek") or false, '
+                    'przyrost = lp:GetAttribute("ProbaPrzyrost") or false, wzm_start = lp:GetAttribute("ProbaWzm") or false, '
+                    'punkty = H:JSONDecode(lp:GetAttribute("ProbaPunkty") or "[]"), panel_wzm = w ~= nil and w.Visible, '
+                    'panel_wzm_tekst = w and w.Text or false })'),
+    "profil_sklepu": (H + GR + 'local s = workspace:FindFirstChild("StanGracza") local f = s and s.Sygnaly:FindFirstChild("DanePakietu") '
+                      'local v = f and f:Invoke("czytaj", gracz, "TreningAFK") '
+                      'return H:JSONEncode({ stan = s ~= nil, dane = v or false, gold = gracz:GetAttribute("Gold") or 0 })'),
+    "zloto": GR + 'gracz:SetAttribute("Gold", %d) return "ok"',
+    "kup": 'game:GetService("ReplicatedStorage").TreningAFK:FireServer("kup", "%s", "%s") return "ok"',
+    "kup_seria": ('local Z = game:GetService("ReplicatedStorage").TreningAFK for i = 1, 5 do '
+                  'Z:FireServer("kup", "wzmacniacz", "%s") task.wait(0.02) end return "ok"'),
+    "czas_wzm": ('local D = require(game:GetService("ReplicatedStorage").Shared.TreningAFKDane) '
+                 'D.sklep.wzmacniacze.czas = %d return "ok"'),
 }
 
 
@@ -125,8 +169,26 @@ def odl_xz(a, b):
     return math.hypot(a[0] - b[0], a[2] - b[2])
 
 
+
+def sprawdz_kod():
+    """Bez Studio (27.11.2026): każdy kawałek Luau z KOD (po podstawieniu zer) parsuje się w tools/walka/luau_mini."""
+    import re
+    sys.path.insert(0, os.path.join(REPO, "tools", "walka"))
+    import luau_mini as LM  # noqa: E402
+    bledy = []
+    for n, k in KOD.items():
+        kod = re.sub(r"%[sd]", "0", re.sub(r"%[-+]?[\d.]*[fr]", "0.5", k))
+        try:
+            LM.Parser(kod, n, LM.Interpreter()).program()
+        except LM.BladSkladni as e:
+            bledy.append("%s: %s" % (n, e))
+    print("sprawdz: %d kawałków Luau, %s" % (len(KOD), "OK" if not bledy else "BŁĘDY:\n  " + "\n  ".join(bledy)))
+    return 0 if not bledy else 1
+
 def main():
     argv = sys.argv[1:]
+    if argv[:1] == ["--sprawdz"]:
+        return sprawdz_kod()
     if not argv or argv[0].startswith("--"):
         sys.exit(__doc__)
     wyj = os.path.abspath(argv[0])
@@ -156,6 +218,8 @@ def main():
     TC = ZN["training_center"]
     STOISKO = TC["stoisko"]                       # gdzie stoi gracz przed trenerem (świat)
     PODP = TC["podpowiedz"]                       # punkt E trenera
+    KOR_A = ZN["trening_afk"]["przejscie"]["przedsionek"]   # wejście do sali z placyku (27.11.2026)
+    KOR_B = ZN["trening_afk"]["przejscie"]["koniec"]        # koniec korytarza przy zachodniej ścianie
 
     WYNIKI, LISTA, nazwa = {}, [], [None]
 
@@ -364,7 +428,8 @@ def main():
                           i, a.get("afk"), "zamknięte" if not a.get("menu") else "OTWARTE", a.get("kotwica"), od,
                           (a.get("zajete") or {}).get(i), a.get("panel"), b.get("afk"), b.get("kotwica")))
                 if n == 0:
-                    zrzut("02_sala_bez_tabliczek", (913.5, 9.0, -705.0), (913.5, 2.5, -728.0))
+                    # 27.11.2026: duża sala — z przedsionka wzdłuż korytarza ku zachodniej ścianie
+                    zrzut("02_sala_od_wejscia", (KOR_A[0] + 1.0, 8.0, KOR_A[2] - 2.0), (KOR_B[0], 3.0, KOR_B[2]))
 
             # -------------------------------------------------------------- B20 zajęte stanowisko
             zakoncz_trening()
@@ -424,6 +489,144 @@ def main():
             punkt("B23", a.get("afk") == "Pancerz" and a.get("odmowa") == "trening",
                   "prośba w trakcie: trening „%s” (ma zostać Pancerz), odmowa „%s”" % (a.get("afk"), a.get("odmowa")))
 
+            # ============================================================== sklep trenera (27.11.2026)
+            def sklep():
+                return js(KOD["stan_sklepu"], "Client")
+
+            def profil():
+                return js(KOD["profil_sklepu"], "Server")
+
+            def otworz_sklep():
+                zakoncz_trening()
+                do_trenera()
+                otworz_menu()
+                klik("TreningAFKMenu.Okno.ZakladkaSklep")
+                return czekaj_na(lambda: (lambda s_: s_ if s_.get("sklep") and len(s_.get("kafle") or {}) == 6
+                                          and all(v.get("poziom") is not None for v in s_["kafle"].values()) else None)(sklep()), 5) \
+                    or sklep()
+
+            def klik_kup(id_, rodzaj):
+                luau(KOD["sluchacz_sklepu"], "Client")
+                klik("TreningAFKMenu.Okno.Sklep.%s.%s" % (id_, "Ulepsz" if rodzaj == "ulepszenie" else "Wzmacniacz"))
+                time.sleep(1.0)
+                return sklep(), profil()
+
+            def odstepy(punkty):
+                return [round(b_["t"] - a_["t"], 2) for a_, b_ in zip(punkty, punkty[1:])]
+
+            def trenuj(id_, paskow, limit):
+                """Trening przez okno (zakładka TRAIN) do `paskow` pełnych pasków → stan sklepu u klienta."""
+                zakoncz_trening()
+                do_trenera()
+                otworz_menu()
+                luau(KOD["sluchacz_sklepu"], "Client")
+                klik("TreningAFKMenu.Okno.Cwiczenia." + id_)
+                czekaj_na(lambda: (lambda t_: t_ if t_.get("afk") == id_ else None)(stan()), 6)
+                return czekaj_na(lambda: (lambda s_: s_ if len(s_.get("punkty") or []) >= paskow else None)(sklep()), limit) \
+                    or sklep()
+
+            luau(KOD["sluchacz_sklepu"], "Client")
+            # -------------------------------------------------------------- S00 zakładka SHOP
+            s0 = otworz_sklep()
+            pr0 = profil()
+            zapisz("S00", {"sklep": s0, "profil": pr0})
+            poziomy0 = {k_: v.get("poziom") for k_, v in (s0.get("kafle") or {}).items()}
+            punkt("S00", (s0.get("sklep") is True and sorted(poziomy0) == sorted(IDS) and pr0.get("stan") is True)
+                  if all(v == 0 for v in poziomy0.values()) else None,
+                  "SHOP %s, kafelków %d, poziomy %s, stan gracza %s, tytuł „%s”" % (
+                      s0.get("sklep"), len(poziomy0), poziomy0, pr0.get("stan"), s0.get("tytul")))
+            # -------------------------------------------------------------- S01 bez Rybek
+            luau(KOD["zloto"] % 0, "Server")
+            time.sleep(0.6)
+            a, pa = klik_kup("Sila", "ulepszenie")
+            zapisz("S01", {"sklep": a, "profil": pa})
+            punkt("S01", a.get("odmowa") == "za_malo" and a.get("brakuje") == 300 and a["kafle"]["Sila"]["poziom"] == 0
+                  and pa.get("gold") == 0,
+                  "Gold 0, LV UP Siły → odmowa „%s”, brakuje %s, poziom %s, Gold %s, tytuł „%s”" % (
+                      a.get("odmowa"), a.get("brakuje"), a["kafle"]["Sila"]["poziom"], pa.get("gold"), a.get("tytul")))
+            # -------------------------------------------------------------- S02 zakup ulepszenia
+            luau(KOD["zloto"] % 20000, "Server")
+            time.sleep(0.6)
+            a, pa = klik_kup("Sila", "ulepszenie")
+            dane_ = pa.get("dane") or {}
+            zapisz("S02", {"sklep": a, "profil": pa})
+            punkt("S02", a["kafle"]["Sila"]["poziom"] == 1 and pa.get("gold") == 19700 and (dane_.get("u") or {}).get("Sila") == 1,
+                  "LV UP Siły → poziom %s, Gold %s, profil %s, tytuł „%s”" % (
+                      a["kafle"]["Sila"]["poziom"], pa.get("gold"), dane_, a.get("tytul")))
+            # -------------------------------------------------------------- S03 ulepszenie zmienia przyrost
+            u1 = trenuj("Sila", 3, 25)
+            u0 = trenuj("Kondycja", 3, 25)
+            zakoncz_trening()
+            o1, o0 = odstepy(u1.get("punkty") or []), odstepy(u0.get("punkty") or [])
+            zapisz("S03", {"sila_lv1": {"pasek": u1.get("pasek"), "odstepy": o1}, "kondycja_lv0": {"pasek": u0.get("pasek"), "odstepy": o0}})
+            sr1 = sum(o1) / len(o1) if o1 else 0
+            sr0 = sum(o0) / len(o0) if o0 else 0
+            punkt("S03", abs((u1.get("pasek") or 0) - 4 / 1.1) < 0.01 and abs((u0.get("pasek") or 0) - 4) < 0.01
+                  and abs(sr1 - 4.36) < 0.45 and abs(sr0 - 4.8) < 0.45,
+                  "Siła poz. 1: pasek %s, pełne paski co %.2f s; Kondycja poz. 0: pasek %s, co %.2f s" % (
+                      u1.get("pasek"), sr1, u0.get("pasek"), sr0))
+            # -------------------------------------------------------------- S04 najwyższy poziom
+            otworz_sklep()
+            for _ in range(4):
+                klik_kup("Sila", "ulepszenie")
+                time.sleep(0.3)
+            a, pa = klik_kup("Sila", "ulepszenie")
+            zapisz("S04", {"sklep": a, "profil": pa})
+            punkt("S04", a["kafle"]["Sila"]["poziom"] == 5 and a.get("odmowa") == "maks" and pa.get("gold") == 19700 - 14300
+                  and a["kafle"]["Sila"]["ulepsz"] == "MAX",
+                  "Siła poziom %s (przycisk „%s”), kolejny klik → odmowa „%s”, Gold %s (ma być %d)" % (
+                      a["kafle"]["Sila"]["poziom"], a["kafle"]["Sila"]["ulepsz"], a.get("odmowa"), pa.get("gold"), 19700 - 14300))
+            # -------------------------------------------------------------- S05 spam wzmacniacza
+            g0 = profil().get("gold")
+            luau(KOD["kup_seria"] % "Kondycja", "Client")
+            time.sleep(1.5)
+            a, pa = sklep(), profil()
+            wzm = (pa.get("dane") or {}).get("w") or {}
+            zapisz("S05", {"sklep": a, "profil": pa, "gold_przed": g0})
+            punkt("S05", pa.get("gold") == (g0 or 0) - 600 and "Constitution" in wzm and 590 <= a["kafle"]["Kondycja"]["wzm"] <= 600,
+                  "5 próśb w 0,1 s → Gold %s → %s (jeden zakup = −600), wzmacniacz Kondycji %s s (napis „%s”)" % (
+                      g0, pa.get("gold"), a["kafle"]["Kondycja"]["wzm"], a["kafle"]["Kondycja"]["wzm_tekst"]))
+            # -------------------------------------------------------------- S06 drugi wzmacniacz tej samej statystyki
+            a, pa = klik_kup("Kondycja", "wzmacniacz")
+            zapisz("S06", {"sklep": a, "profil": pa})
+            ok_z4 = zrzut("04_sklep_wzmacniacz")
+            punkt("S06", a.get("odmowa") == "aktywny" and pa.get("gold") == (g0 or 0) - 600,
+                  "drugi wzmacniacz Kondycji → odmowa „%s”, Gold %s; zrzut 04_sklep_wzmacniacz %s" % (
+                      a.get("odmowa"), pa.get("gold"), ok_z4))
+            # -------------------------------------------------------------- S07 ×2 i koniec wzmacniacza
+            luau(KOD["czas_wzm"] % 15, "Server")
+            try:
+                otworz_sklep()
+                t_zakupu = time.time()
+                klik_kup("Szczescie", "wzmacniacz")
+                w1 = trenuj("Szczescie", 1, 12)
+                ok_z5 = zrzut("05_panel_wzmacniacz")
+                koniec_ = t_zakupu + 16.0
+                while time.time() < koniec_:
+                    time.sleep(0.5)
+                n0 = len(w1.get("punkty") or [])
+                w2 = czekaj_na(lambda: (lambda s_: s_ if len(s_.get("punkty") or []) >= n0 + 2 else None)(sklep()), 15) or sklep()
+            finally:
+                luau(KOD["czas_wzm"] % 600, "Server")
+            zakoncz_trening()
+            p1 = [x["ile"] for x in (w1.get("punkty") or [])]
+            p2 = [x["ile"] for x in (w2.get("punkty") or [])]
+            zapisz("S07", {"w_trakcie": {"przyrost_start": w1.get("przyrost"), "wzm_start": w1.get("wzm_start"), "punkty": p1,
+                                         "panel": w1.get("panel_wzm"), "napis": w1.get("panel_wzm_tekst")}, "po": p2})
+            punkt("S07", w1.get("przyrost") == 2 and p1[:1] == [2] and w1.get("panel_wzm") is True and p2[-1:] == [1],
+                  "wzmacniacz 15 s: start +%s/pasek, pierwszy pasek +%s, licznik nad panelem %s („%s”); po końcu ostatni pasek +%s;"
+                  " zrzut 05 %s" % (w1.get("przyrost"), p1[:1], w1.get("panel_wzm"), w1.get("panel_wzm_tekst"), p2[-1:], ok_z5))
+            # -------------------------------------------------------------- S08 z daleka
+            g0 = profil().get("gold")
+            przestaw((PODP[0], STOISKO[1] + 3.2, PODP[2] + 25.0), PODP)
+            luau(KOD["sluchacz_sklepu"], "Client")
+            luau(KOD["kup"] % ("ulepszenie", "Inteligencja"), "Client")
+            time.sleep(1.2)
+            a, pa = sklep(), profil()
+            zapisz("S08", {"odmowa": a.get("odmowa"), "gold": [g0, pa.get("gold")]})
+            punkt("S08", a.get("odmowa") == "daleko" and pa.get("gold") == g0,
+                  "zakup 25 st od trenera → odmowa „%s”, Gold %s → %s" % (a.get("odmowa"), g0, pa.get("gold")))
+
             # -------------------------------------------------------------- B30 zamykanie okna
             zam = {}
             do_trenera()
@@ -444,11 +647,14 @@ def main():
             punkt("B30", all(zam.values()), "zamknięte: " + ", ".join("%s %s" % (k_, "tak" if v else "NIE") for k_, v in zam.items()))
 
             # -------------------------------------------------------------- B40 zrzuty
-            ok_z2 = os.path.isfile(os.path.join(wyj, "02_sala_bez_tabliczek.jpg"))
+            ok_z2 = os.path.isfile(os.path.join(wyj, "02_sala_od_wejscia.jpg"))
             # z uliczki na skos (linia widzenia mija studnię od północy): front sali, wolny pas, studnia z lewej
-            ok_z3 = zrzut("03_wejscie_placyk", (937.0, 13.0, -690.0), (910.0, 3.0, -716.0))
-            punkt("B40", None if bez_zrzutow else bool(ok_z1 and ok_z2 and ok_z3),
-                  "01_okno_trenera %s, 02_sala_bez_tabliczek %s, 03_wejscie_placyk %s" % (ok_z1, ok_z2, ok_z3))
+            ok_z3 = zrzut("03_wejscie_placyk", (KOR_A[0] + 6.0, 12.0, KOR_A[2] + 24.0), (KOR_A[0] - 4.0, 4.0, KOR_A[2] - 6.0))
+            ok_z6 = zrzut("06_sala_z_gory", ((KOR_A[0] + KOR_B[0]) / 2.0 + 4.0, 62.0, KOR_B[2] + 30.0),
+                          ((KOR_A[0] + KOR_B[0]) / 2.0, 0.0, KOR_B[2]))
+            punkt("B40", None if bez_zrzutow else bool(ok_z1 and ok_z2 and ok_z3 and ok_z6),
+                  "01_okno_trenera %s, 02_sala_od_wejscia %s, 03_wejscie_placyk %s, 06_sala_z_gory %s" % (
+                      ok_z1, ok_z2, ok_z3, ok_z6))
 
             # -------------------------------------------------------------- B50 konsola
             out = call("get_console_output")["text"]

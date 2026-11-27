@@ -64,7 +64,7 @@ return {
 	},
 	publikacja = { zapas_s = 6, min_s = 1.5, odstep_pokaz_s = 0.5 },
 	zrodla = { "LasPotwory", "LasPasGra", "BagnoPasGra", "DzunglaPasGra" },
-	wydatki = { zrodla = { "PetyProba", "KowalProba" }, kwota_maks = 1000000 },
+	wydatki = { zrodla = { "PetyProba", "KowalProba", "TreningAFK" }, kwota_maks = 1000000 },
 	przychody = { zrodla = { "PetyProba" }, kwota_maks = 100000 },
 	pety = {
 		rodzajow_maks = 100,
@@ -2324,5 +2324,5 @@ return {
 			{ znana = 9999, nowa = 10000, pula = 5, wynik = { 9999, 5, "ok" } },
 		},
 	},
-	skrot = "78a9a0863430",
+	skrot = "46d26622473e",
 }

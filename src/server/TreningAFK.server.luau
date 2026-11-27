@@ -20,14 +20,24 @@
 	wprost do atrybutu gracza — tylko do prób.
 
 	Zdalne: ReplicatedStorage.TreningAFK (RemoteEvent)
-		klient → serwer: "check", numer | "stop" | "wybierz", id
-		serwer → klient: "start", id, postep, przyrost | "postep", postep, tempo | "punkt", atrybut, ile, postep
-		                 | "skillcheck", numer, okno | "trafiony", czas | "koniec" | "odmowa", powod, id
+		klient → serwer: "check", numer | "stop" | "wybierz", id | "sklep" | "kup", rodzaj ("ulepszenie" | "wzmacniacz"), id
+		serwer → klient: "start", id, postep, przyrost, pasek, wzmocnienie_s | "postep", postep, tempo
+		                 | "punkt", atrybut, ile, postep | "skillcheck", numer, okno | "trafiony", czas | "koniec"
+		                 | "odmowa", powod, id, brakuje | "sklep", stan | "kupiono", rodzaj, id
 
 	Agent Karola, 26.11 (polecenie Karola): bez tabliczek z nazwami przy stanowiskach; wejście przez trenera — okno
 	sześciu ćwiczeń u klienta (E przy trenerze), klik = "wybierz", id. Serwer przyjmuje prośbę tylko od gracza przy
 	trenerze (D.trener.zasieg), który jeszcze nie trenuje, nie częściej niż co D.trener.odstep s; zajęte stanowisko =
 	"odmowa", "zajete". Atrybut Zajete na modelu stanowiska (Workspace/TreningAFK/<id>) mówi oknu, które są zajęte.
+
+	Agent Karola, 27.11 (polecenie Pawła: sklep u trenera — ulepszenia stanowisk i wzmacniacze): okno trenera ma zakładkę
+	SHOP. Ulepszenie stanowiska (poziom 0 … D.sklep.ulepszenia.maks, osobno dla gracza) skraca pasek: D.powtorzenDla(poziom)
+	powtórzeń zamiast D.powtorzenNaPasek. Wzmacniacz = ×D.sklep.wzmacniacze.mnoznik statystyki za pasek przez
+	D.sklep.wzmacniacze.czas s, jeden na statystykę. Klient przysyła tylko "kup", rodzaj, id — cenę liczy serwer, płaci
+	stan gracza (Sygnaly/WydajZloto; saldo nigdy poniżej zera), a poziomy i koniec wzmacniaczy zapisuje profil
+	(Sygnaly/DanePakietu). Sprawdzenia: limit częstości (D.sklep.odstep), typy, wczytany profil, odległość od trenera,
+	najwyższy poziom / aktywny wzmacniacz, saldo. Bez stanu gracza sklep jest zamknięty ("odmowa", "sklep").
+	Podpowiedź E stanowiska wisi D.podpowiedzWysokosc nad matą; zejście ze stanowiska w korytarz (D.miejsca[id].zejscie).
 ]]
 
 local Players = game:GetService("Players")
@@ -278,7 +288,13 @@ local function zbuduj()
 		-- 26.11.2026 (Paweł: „4.5 git”): 10 studów łapało sąsiednie stanowisko przy podejściu wzdłuż rzędu
 		pp.MaxActivationDistance = 4.5
 		pp.RequiresLineOfSight = false
-		pp.Parent = mata
+		-- agent Karola, 27.11: podpowiedź na zaczepie D.podpowiedzWysokosc nad matą (zasięg liczy się prawie w poziomie —
+		-- E sięga z krawędzi maty od strony korytarza; w macie 4,5 w 3D dawało ok. 3,2 w poziomie)
+		local zaczep = Instance.new("Attachment")
+		zaczep.Name = "Podpowiedz"
+		zaczep.Position = Vector3.new(0, D.podpowiedzWysokosc or 0, 0)
+		zaczep.Parent = mata
+		pp.Parent = zaczep
 		m.PrimaryPart = mata
 		m.Parent = f
 		miejsca[s.id] = o
@@ -304,7 +320,8 @@ end
 ------------------------------------------------------------------ stan treningu graczy (tylko w sesji)
 -- postep liczony w powtórzeniach (0 … D.powtorzenNaPasek); skill check: serwer losuje chwilę i numer,
 -- klient odsyła numer; trafienie w oknie czasu = przyspieszenie
-type Trening = { id: string, postep: number, nastepnyCheck: number, check: number?, checkDo: number, szybkoDo: number }
+type Trening = { id: string, postep: number, pasek: number, nastepnyCheck: number, check: number?, checkDo: number,
+	szybkoDo: number }
 local trwa: { [Player]: Trening } = {}
 local postepy: { [Player]: { [string]: number } } = {} -- niepełny pasek stanowiska zostaje, gdy gracz odejdzie
 local licznikCheck = 0
@@ -339,6 +356,128 @@ local function korzen(gracz: Player): (BasePart?, Humanoid?)
 	return char and char:FindFirstChild("HumanoidRootPart") :: BasePart?, char and char:FindFirstChildOfClass("Humanoid")
 end
 
+------------------------------------------------------------------ sklep trenera: stan gracza (agent Karola, 27.11)
+-- u = poziomy ulepszeń stanowisk, w = koniec wzmacniacza statystyki (os.time); wczytane z profilu stanu gracza
+type Sklep = { u: { [string]: number }, w: { [string]: number }, zajety: boolean }
+local sklepy: { [Player]: Sklep } = {}
+
+local function sygnalStanu(nazwa: string): BindableFunction?
+	local k = workspace:FindFirstChild("StanGracza")
+	local sy = k and k:FindFirstChild("Sygnaly")
+	local f = sy and sy:FindFirstChild(nazwa)
+	return if f and f:IsA("BindableFunction") then f else nil
+end
+
+-- jedno wywołanie sygnału stanu gracza (pcall) → wynik albo nil
+local function wolajStan(nazwa: string, a: any, b: any, c: any, d: any): any
+	local f = sygnalStanu(nazwa)
+	if not f then
+		return nil
+	end
+	local ok, w = pcall(function()
+		return f:Invoke(a, b, c, d)
+	end)
+	if not ok then
+		warn("[TreningAFK] StanGracza/" .. nazwa .. ": " .. tostring(w))
+		return nil
+	end
+	return w
+end
+
+-- dane z profilu → czysty stan sklepu (stare zapisy i śmieci: poziom 0, bez wzmacniaczy)
+local function czystySklep(v: any): Sklep
+	local sk: Sklep = { u = {}, w = {}, zajety = false }
+	if type(v) ~= "table" then
+		return sk
+	end
+	local teraz = os.time()
+	for _, s in ipairs(D.stanowiska) do
+		local n = type(v.u) == "table" and v.u[s.id]
+		if type(n) == "number" and n == n and n >= 1 then
+			sk.u[s.id] = math.min(math.floor(n), D.sklep.ulepszenia.maks)
+		end
+		local k = type(v.w) == "table" and v.w[s.atrybut]
+		if type(k) == "number" and k > teraz and k <= teraz + D.sklep.wzmacniacze.czas + 60 then
+			sk.w[s.atrybut] = math.floor(k)
+		end
+	end
+	return sk
+end
+
+-- profil czytamy, gdy stan gracza go wczytał (atrybut StanGraczaWczytany ≠ false); do tego czasu sklep czeka
+local function wczytajSklep(gracz: Player)
+	if sklepy[gracz] or gracz.Parent == nil or not sygnalStanu("DanePakietu")
+		or gracz:GetAttribute("StanGraczaWczytany") == false then
+		return
+	end
+	local v = wolajStan("DanePakietu", "czytaj", gracz, D.sklep.pakiet)
+	if gracz.Parent ~= nil and not sklepy[gracz] then
+		sklepy[gracz] = czystySklep(v)
+	end
+end
+
+local function zapiszSklep(gracz: Player, sk: Sklep)
+	local r = wolajStan("DanePakietu", "zapisz", gracz, D.sklep.pakiet, { u = table.clone(sk.u), w = table.clone(sk.w) })
+	if type(r) ~= "table" or r.ok ~= true then
+		warn("[TreningAFK] zapis sklepu w profilu: " .. tostring(type(r) == "table" and r.powod or r))
+	end
+end
+
+-- s do końca wzmacniacza statystyki (0 = brak)
+local function zostaloW(gracz: Player, atrybut: string): number
+	local sk = sklepy[gracz]
+	local koniec = sk and sk.w[atrybut]
+	return if koniec then math.max(0, koniec - os.time()) else 0
+end
+
+local function pasekDla(gracz: Player, id: string): number
+	local sk = sklepy[gracz]
+	return D.powtorzenDla(sk and sk.u[id] or 0)
+end
+
+local function przyrostNaPasek(gracz: Player, s: any): number
+	local ile = przyrostDla(gracz)
+	if zostaloW(gracz, s.atrybut) > 0 then
+		ile *= D.sklep.wzmacniacze.mnoznik
+	end
+	return ile
+end
+
+-- JEDYNE miejsca przyznania ulepszenia i wzmacniacza (zmiana w pamięci + zapis w profilu). Hak pod przyszłą sprzedaż
+-- za Robuxy (osobna decyzja): ProcessReceipt po sprawdzeniu paragonu zawołałby te funkcje zamiast płacenia Rybkami.
+local function przyznajUlepszenie(gracz: Player, id: string): boolean
+	local sk = sklepy[gracz]
+	if not sk or not D.stanowisko(id) then
+		return false
+	end
+	sk.u[id] = math.min((sk.u[id] or 0) + 1, D.sklep.ulepszenia.maks)
+	zapiszSklep(gracz, sk)
+	return true
+end
+
+local function przyznajWzmacniacz(gracz: Player, atrybut: string, sekund: number): boolean
+	local sk = sklepy[gracz]
+	if not sk then
+		return false
+	end
+	sk.w[atrybut] = os.time() + math.floor(sekund)
+	zapiszSklep(gracz, sk)
+	return true
+end
+
+local function wyslijSklep(gracz: Player)
+	local sk = sklepy[gracz]
+	local w = {}
+	for _, s in ipairs(D.stanowiska) do
+		local z = zostaloW(gracz, s.atrybut)
+		if z > 0 then
+			w[s.atrybut] = z
+		end
+	end
+	Z:FireClient(gracz, "sklep", { u = if sk then table.clone(sk.u) else {}, w = w, wczytany = sk ~= nil,
+		dostepny = sygnalStanu("WydajZloto") ~= nil })
+end
+
 -- agent Karola, 26.11: atrybut Zajete na modelach stanowisk (okno trenera u klienta szarzy zajęte)
 local function oznaczZajete()
 	local zajete: { [string]: boolean } = {}
@@ -363,9 +502,13 @@ local function zakoncz(gracz: Player)
 	local hrp, hum = korzen(gracz)
 	if hrp and hum then
 		hrp.Anchored = false
-		-- zejście ze stanowiska: przed matę, na stojąco
+		-- zejście ze stanowiska: przed matę, na stojąco (agent Karola, 27.11: w korytarz sali — D.miejsca[id].zejscie,
+		-- tyłem do maty; bez wpisu 3 st za matą jak dotąd)
 		local o = miejsca[t.id]
-		hrp.CFrame = o * CFrame.new(0, 0.3 + hum.HipHeight + hrp.Size.Y / 2, 3) * CFrame.Angles(0, math.rad(180), 0)
+		local m = D.miejsca and D.miejsca[t.id]
+		local zj = (m and m.zejscie) or Vector3.new(0, 0, 3)
+		local y = 0.3 + hum.HipHeight + hrp.Size.Y / 2
+		hrp.CFrame = o * CFrame.lookAt(Vector3.new(zj.X, y, zj.Z), Vector3.new(zj.X * 2, y, zj.Z * 2))
 	end
 	Z:FireClient(gracz, "koniec")
 end
@@ -387,11 +530,13 @@ local function zacznij(gracz: Player, id: string)
 	hrp.AssemblyLinearVelocity = Vector3.zero
 	hrp.CFrame = pozaKorzenia(id, hum, hrp)
 	hrp.Anchored = true
-	local p = (postepy[gracz] and postepy[gracz][id]) or 0
-	trwa[gracz] = { id = id, postep = p, nastepnyCheck = losujCheck(), check = nil, checkDo = 0, szybkoDo = 0 }
+	-- agent Karola, 27.11: pasek krótszy o ulepszenie stanowiska, przyrost × wzmacniacz (sklep trenera)
+	local pasek = pasekDla(gracz, id)
+	local p = math.min((postepy[gracz] and postepy[gracz][id]) or 0, pasek * 0.999)
+	trwa[gracz] = { id = id, postep = p, pasek = pasek, nastepnyCheck = losujCheck(), check = nil, checkDo = 0, szybkoDo = 0 }
 	oznaczZajete()
 	gracz:SetAttribute("TreningAFK", id)
-	Z:FireClient(gracz, "start", id, p, przyrostDla(gracz))
+	Z:FireClient(gracz, "start", id, p, przyrostNaPasek(gracz, s), pasek, zostaloW(gracz, s.atrybut))
 end
 
 ------------------------------------------------------------------ wejście przez trenera (agent Karola, 26.11)
@@ -441,9 +586,92 @@ local function wybierzOdTrenera(gracz: Player, id: unknown)
 	zacznij(gracz, id)
 end
 
+------------------------------------------------------------------ sklep trenera: zakupy (agent Karola, 27.11)
+-- "kup", rodzaj, id: limit częstości → typy → stan gracza (sklep otwarty, profil wczytany) → odległość od trenera →
+-- najwyższy poziom / aktywny wzmacniacz → zapłata (WydajZloto sprawdza saldo) → przyznanie. Cena tylko z D.sklep.
+local ostatniZakup: { [Player]: number } = {}
+
+local function kup(gracz: Player, rodzaj: unknown, id: unknown)
+	local teraz = os.clock()
+	if teraz - (ostatniZakup[gracz] or -math.huge) < D.sklep.odstep then
+		return -- za często: bez odpowiedzi
+	end
+	ostatniZakup[gracz] = teraz
+	if (rodzaj ~= "ulepszenie" and rodzaj ~= "wzmacniacz") or typeof(id) ~= "string" then
+		return
+	end
+	local s = D.stanowisko(id :: string)
+	if not s then
+		return
+	end
+	if not sygnalStanu("WydajZloto") then
+		Z:FireClient(gracz, "odmowa", "sklep", s.id)
+		return
+	end
+	wczytajSklep(gracz)
+	local sk = sklepy[gracz]
+	if not sk then
+		Z:FireClient(gracz, "odmowa", "wczytywanie", s.id)
+		return
+	end
+	if sk.zajety then
+		return
+	end
+	local hrp, hum = korzen(gracz)
+	local p = punktTrenera()
+	if not (hrp and hum and hum.Health > 0)
+		or Vector2.new(hrp.Position.X - p.X, hrp.Position.Z - p.Z).Magnitude > D.trener.zasieg then
+		Z:FireClient(gracz, "odmowa", "daleko", s.id)
+		return
+	end
+	local cena: number?
+	local cel: string
+	if rodzaj == "ulepszenie" then
+		cena = D.cenaUlepszenia(sk.u[s.id] or 0)
+		cel = D.sklep.cele.ulepszenie
+		if not cena then
+			Z:FireClient(gracz, "odmowa", "maks", s.id)
+			return
+		end
+	else
+		cena = D.sklep.wzmacniacze.cena
+		cel = D.sklep.cele.wzmacniacz
+		if zostaloW(gracz, s.atrybut) > 0 then
+			Z:FireClient(gracz, "odmowa", "aktywny", s.id)
+			return
+		end
+	end
+	sk.zajety = true
+	local w = wolajStan("WydajZloto", gracz, { ile = cena, zrodlo = D.sklep.zrodlo, cel = cel })
+	sk.zajety = false
+	if type(w) ~= "table" or w.ok ~= true then
+		local zaMalo = type(w) == "table" and w.powod == "za_malo"
+		Z:FireClient(gracz, "odmowa", if zaMalo then "za_malo" else "blad", s.id, if zaMalo then w.brakuje else nil)
+		return
+	end
+	if rodzaj == "ulepszenie" then
+		przyznajUlepszenie(gracz, s.id)
+	else
+		przyznajWzmacniacz(gracz, s.atrybut, D.sklep.wzmacniacze.czas)
+	end
+	Z:FireClient(gracz, "kupiono", rodzaj, s.id)
+	wyslijSklep(gracz)
+end
+
+local ostatniStanSklepu: { [Player]: number } = {}
+local function prosbaOSklep(gracz: Player)
+	local teraz = os.clock()
+	if teraz - (ostatniStanSklepu[gracz] or -math.huge) < 0.25 then
+		return
+	end
+	ostatniStanSklepu[gracz] = teraz
+	wczytajSklep(gracz)
+	wyslijSklep(gracz)
+end
+
 for _, m in ipairs(kontener:GetChildren()) do
 	local mata = (m :: Model).PrimaryPart
-	local pp = mata and mata:FindFirstChildOfClass("ProximityPrompt")
+	local pp = mata and mata:FindFirstChildWhichIsA("ProximityPrompt", true) -- agent Karola, 27.11: na zaczepie
 	if pp then
 		local id = m.Name
 		pp.Triggered:Connect(function(gracz)
@@ -456,9 +684,15 @@ for _, m in ipairs(kontener:GetChildren()) do
 	end
 end
 
-Z.OnServerEvent:Connect(function(gracz: Player, akcja: unknown, numer: unknown)
+Z.OnServerEvent:Connect(function(gracz: Player, akcja: unknown, numer: unknown, id: unknown)
 	if akcja == "wybierz" then
 		wybierzOdTrenera(gracz, numer)
+		return
+	elseif akcja == "kup" then -- agent Karola, 27.11: sklep trenera (numer = rodzaj)
+		kup(gracz, numer, id)
+		return
+	elseif akcja == "sklep" then
+		prosbaOSklep(gracz)
 		return
 	end
 	local t = trwa[gracz]
@@ -497,9 +731,9 @@ RunService.Heartbeat:Connect(function(dt)
 		end
 		local tempo = if teraz < t.szybkoDo then D.mnoznikSkillCheck else 1
 		t.postep += krok * tempo / D.czasPowtorzenia
-		if t.postep >= D.powtorzenNaPasek then
-			t.postep -= D.powtorzenNaPasek
-			local ile = przyrostDla(gracz)
+		if t.postep >= t.pasek then -- agent Karola, 27.11: pasek i przyrost ze sklepu trenera
+			t.postep -= t.pasek
+			local ile = przyrostNaPasek(gracz, s)
 			dodajStatystyke(gracz, s, ile)
 			Z:FireClient(gracz, "punkt", s.atrybut, ile, t.postep)
 		else
@@ -521,5 +755,24 @@ Players.PlayerRemoving:Connect(function(gracz)
 	trwa[gracz] = nil
 	postepy[gracz] = nil
 	ostatniWybor[gracz] = nil
+	sklepy[gracz] = nil -- agent Karola, 27.11: sklep (dane są już w profilu stanu gracza)
+	ostatniZakup[gracz] = nil
+	ostatniStanSklepu[gracz] = nil
 	oznaczZajete()
 end)
+
+-- agent Karola, 27.11: dane sklepu z profilu — po wczytaniu profilu przez stan gracza (atrybut StanGraczaWczytany);
+-- wcześniejszy odczyt (stan gracza jeszcze nie zaczął wczytywać) jest zastępowany odczytem po wczytaniu
+local function podepnijSklep(gracz: Player)
+	gracz:GetAttributeChangedSignal("StanGraczaWczytany"):Connect(function()
+		if gracz:GetAttribute("StanGraczaWczytany") ~= false then
+			sklepy[gracz] = nil
+			wczytajSklep(gracz)
+		end
+	end)
+	task.delay(3, wczytajSklep, gracz)
+end
+Players.PlayerAdded:Connect(podepnijSklep)
+for _, g in ipairs(Players:GetPlayers()) do
+	podepnijSklep(g)
+end
