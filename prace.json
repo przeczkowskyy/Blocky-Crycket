@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T22:30:36+01:00",
+ "aktualizacja": "2026-11-27T22:37:43+01:00",
  "prace": [
   {
    "id": "smok-mapa2-gra",
@@ -15,23 +15,6 @@
    "obszary": [
     "swiat/ewolucja/**",
     "studio:EwolucjaGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "ui-broni",
-   "tytul": "UI broni: nowe bronie w ekwipunku i sklepie",
-   "stan": "w_toku",
-   "etap": "Wdrozone i sprawdzone w Play; lataki dla Pawla gotowe, raport",
-   "start": "2026-11-27T21:40:06+01:00",
-   "koniec_szacowany": "2026-11-27T23:50:06+01:00",
-   "aktualizacja": "2026-11-27T22:29:16+01:00",
-   "obszary": [
-    "src/client/EquipmentPanelClient.client.luau",
-    "src/client/ShopClient.client.luau",
-    "swiat/sklep_proba",
-    "studio:BronieKlas"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
