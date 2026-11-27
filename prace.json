@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T17:57:07+01:00",
+ "aktualizacja": "2026-11-27T17:58:26+01:00",
  "prace": [
   {
    "id": "balans-wdrozenie",
@@ -18,24 +18,6 @@
     "studio:StanGracza",
     "studio:TreningAFK",
     "studio:DzunglaPasGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
-  {
-   "id": "potwory-nazwy-portrety",
-   "tytul": "Potwory: nazwa i oznaczenie nad potworem, portrety w walce",
-   "stan": "w_toku",
-   "start": "2026-11-27T17:00:43+01:00",
-   "koniec_szacowany": "2026-11-27T19:30:43+01:00",
-   "aktualizacja": "2026-11-27T17:00:43+01:00",
-   "obszary": [
-    "swiat/las_potwory/*",
-    "swiat/test_walki2/*",
-    "studio:LasPasGra",
-    "studio:BagnoPasGra",
-    "studio:DzunglaPasGra",
-    "studio:TestWalki2"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
