@@ -2,8 +2,28 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T17:58:26+01:00",
+ "aktualizacja": "2026-11-27T18:15:52+01:00",
  "prace": [
+  {
+   "id": "balans-2711-wdrozenie",
+   "tytul": "Balans: punkty za poziom, limit treningu AFK, XP Dzungli",
+   "stan": "w_toku",
+   "start": "2026-11-27T18:15:52+01:00",
+   "koniec_szacowany": "2026-11-27T19:30:52+01:00",
+   "aktualizacja": "2026-11-27T18:15:52+01:00",
+   "obszary": [
+    "studio:StanGracza",
+    "studio:DzunglaPasGra",
+    "studio:TreningAFK",
+    "src/shared/TreningAFKDane.luau",
+    "src/server/TreningAFK.server.luau",
+    "src/client/TreningAFKClient.client.luau",
+    "swiat/stan_gracza",
+    "swiat/dzungla_pas_gra/przeciwnicy.py"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
   {
    "id": "balans-wdrozenie",
    "tytul": "Balans: 10 punktów za poziom, limit treningu, więcej doświadczenia w Dżungli",
