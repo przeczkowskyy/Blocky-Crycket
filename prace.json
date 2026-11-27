@@ -2,26 +2,8 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T18:38:23+01:00",
+ "aktualizacja": "2026-11-27T18:41:56+01:00",
  "prace": [
-  {
-   "id": "balans-wdrozenie",
-   "tytul": "Balans: 10 punktów za poziom, limit treningu, więcej doświadczenia w Dżungli",
-   "stan": "w_toku",
-   "start": "2026-11-27T17:41:05+01:00",
-   "koniec_szacowany": "2026-11-27T20:41:05+01:00",
-   "aktualizacja": "2026-11-27T17:41:05+01:00",
-   "obszary": [
-    "swiat/stan_gracza/*",
-    "swiat/dzungla_pas_gra/*",
-    "swiat/trening_proba/*",
-    "studio:StanGracza",
-    "studio:TreningAFK",
-    "studio:DzunglaPasGra"
-   ],
-   "kto": "Claude (Karol)",
-   "komputer": "3f925810"
-  },
   {
    "id": "smok-mapa2-gra",
    "tytul": "Gra o smoku: mapa v2 w grze — etap płaski, potem teren z wysokościami za przełącznikiem",
