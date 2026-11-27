@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-27 (noc) · Claude Code u Karola (UI broni)
+- **Karol:** wybrał „UI broni” (ikony nowych broni w oknie ekwipunku i sklepu, bronie na kocie) — wiedząc, że to okna Pawła.
+- **Rozpoznanie:** zakup i posiadanie prowadzi kowal Karola (`swiat/kowal_proba`), okno sklepu Pawła bierze z niego ofertę, założenie zapisuje strój przymierzalni (`swiat/stroje_proba`), na walkę działa wpis kowala. Wersje w Studio różne od repo albo tylko w Studio (`ShopClient`, `EquipmentPanelClient`, `EkwipunekStan`, `HUDClient`, `IkonyPrzedmiotow`, `IndeksPrzedmioty`, `PodpowiedzPrzedmiotu`, `KotRasySwiatClient`) potraktowane jako praca Pawła w toku — nieruszone.
+- **Wdrożone (Studio równe repo przed zmianą):** `src/shared/Items.luau` (+10 ikon), pakiety kowala i przymierzalni (drugi katalog `swiat/postacie/bronie_klas_sklep.py/.json`, zakładanie po kupnie, uchwyt z `BronieKlas` na bohaterze walki). Liczby robocze w README `swiat/sklep_proba`. Testy kowala 36, sklepu 27, przymierzalni 30 OK; Play 13/13 + 7/7. Agent ok. 0,47 mln tokenów.
+- **Łatki dla Pawła (niewdrożone):** ikony na ladzie, statystyki w podpowiedzi i Index, broń na kocie — zapis do Studio tylko przy zgodnej migawce ([[Zadania]]).
+- **Uwaga:** kowal, sklep i przymierzalnia działają tylko w Studio (`IsStudio`) — w opublikowanej grze ich nie ma.
+
 ## 2026-11-27 (noc) · Claude Code u Karola (rasa w zapisie gracza)
 - **Karol:** „Tak, zapisuj rasę” (po diagnozie: koty Pawła nie pojawiały się, bo rasę trzeba było wybierać przy każdym wejściu). Pakiet `swiat/stan_gracza`: profil ma pole `idRasy` (rasy z `src/shared/RaceData.luau`, inna odrzucana), serwer przy wczytaniu ustawia `Race`, potem `Class`; stary profil bez rasy — jak dotąd. Próby AFK wybierają też rasę. Testy 61 + 15 OK; Play: wybór → wyjście → ponowne wejście = kot od razu, bez ekranu (magazyn próby, prawdziwy zapis nietknięty). Agent ok. 0,1 mln tokenów.
 - **Dla Pawła:** jego ekran wyboru może czekać na wczytanie profilu ([[Zadania]]).
