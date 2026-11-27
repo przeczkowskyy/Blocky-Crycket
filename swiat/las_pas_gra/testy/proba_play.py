@@ -244,6 +244,22 @@ def main():
         def poz():
             return js(HRP + 'return H:JSONEncode(J(hrp.Position))', "Server")
 
+        # 27.11.2026 (PD3): ślad kamery klienta w punktach P11–P12 — po drodze kamera zostawała skryptowa
+        slad_kamery = []
+
+        def kamera_slad(znacznik):
+            try:
+                slad_kamery.append([znacznik, time.strftime("%H:%M:%S"), js(
+                    'local c = workspace.CurrentCamera local h = game:GetService("Players").LocalPlayer.Character '
+                    'h = h and h:FindFirstChild("HumanoidRootPart") local o = c.CFrame.Position '
+                    'local cs = workspace:FindFirstChild("CutscenkaBiomu") '
+                    'return H:JSONEncode({ typ = c.CameraType.Name, odl = h and math.floor((o - h.Position).Magnitude) or -1, '
+                    'poz = { math.floor(o.X), math.floor(o.Y), math.floor(o.Z) }, '
+                    'cutscenka = cs and tostring(cs:GetAttribute("KlientTrwa")) or "brak" })', "Client")])
+                zapisz("kamera_slad", slad_kamery)
+            except Exception as e:  # noqa: BLE001
+                log("kamera_slad:", str(e)[:120])
+
         def nacisnij(klawisz):
             call("user_keyboard_input", {"datamodel_type": "Client", "actions": [{"action": "keyPress", "key_code": klawisz}]})
 
@@ -728,6 +744,7 @@ def main():
                     continue
                 przestaw(G["straznik"] - 9, 3.5, -700, 1)
                 time.sleep(1.5)
+                kamera_slad("P11 przed walką")
                 luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("walcz", "%s"))' % sid_str, "Client")
                 if czekaj_na(lambda: klient_potworow().get("walka"), 10, 0.5):
                     # przewijać można dopiero odtwarzanie (w czasie prośby do serwera przewinięcie nic nie robi, a „zamknij”
@@ -736,6 +753,7 @@ def main():
                     odtw('"przewinDo", 1000')
                     time.sleep(2.5)
                     odtw('"zamknij"')
+                    kamera_slad("P11 po zamknięciu walki")
                     # P11j: banery od razu po zamknięciu walki — przez 10 s co 0,25 s (baner klienta potworów żyje 5 s,
                     # zapasowy baner KlientPasa pokazałby się po 8 s bez walki)
                     banery = js('local g = game:GetService("Players").LocalPlayer.PlayerGui local wid, maks, podpisy = {}, 0, {} '
@@ -781,10 +799,12 @@ def main():
                                                                                "jest" if bagno.get("zaBrama") else "usunięta"))
             pasa("przenies", None, "przed_brama")
             time.sleep(1.5)
+            kamera_slad("P11 przed bramą")
             zrzut("15_brama_otwarta")
             cof = atrybuty("LasPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
             call("character_navigation", {"datamodel_type": "Client", "x": G["brama"] + 14, "y": 3, "z": -700})
             time.sleep(6)
+            kamera_slad("P11 za bramą (nawigacja)")
             p11 = poz()
             cof2 = atrybuty("LasPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
             zrzut("16_za_brama_tabliczka")
@@ -797,6 +817,7 @@ def main():
             ratunki = licz_ratunki()
             przestaw(G["brama"] + 56, -60, -700)
             time.sleep(2)
+            kamera_slad("P11 po ratunku")
             p11b = poz()
             ratunki2 = licz_ratunki()
             zapisz("P11", {"proby": proby, "jak": jak_otwarta, "wrota_klient": wrota_k2, "wrota_serwer": wrota_s,
@@ -807,6 +828,7 @@ def main():
                   % (jak_otwarta, wrota_k2, wrota_s, p11[0], cof, cof2, p11b[0], p11b[1], p11b[2]))
 
             # ---------------------------------------------------------------- P12 Kamień Powrotu
+            kamera_slad("P12 start")
             kam = js('local p = k.Punkty.KamienPowrotu return H:JSONEncode(J(p.Position))', "Server")
             przestaw(kam[0] + 4, kam[1] + 1, kam[2] + 3, -1)
             time.sleep(1.5)
@@ -839,7 +861,8 @@ def main():
                 jak12 = "haczyk (E nie przeniosło)"
                 time.sleep(2)
                 p12 = poz()
-            zapisz("P12", {"podpowiedz": pp, "jak": jak12, "pozycja": p12, "cel": "bazar" if bazar12 else "stare"})
+            zapisz("P12", {"podpowiedz": pp, "jak": jak12, "pozycja": p12, "cel": "bazar" if bazar12 else "stare",
+                            "kamera": js('local c = workspace.CurrentCamera local h = game:GetService("Players").LocalPlayer.Character h = h and h:FindFirstChild("HumanoidRootPart") return H:JSONEncode({ typ = c.CameraType.Name, odl = h and math.floor((c.CFrame.Position - h.Position).Magnitude) or -1 })', "Client")})
             punkt("P12", pp.get("wlaczona") and jak12.startswith("E") and w_miasteczku(p12), "podpowiedź %s, %s → %s (%.0f; %.0f; %.0f)"
                   % (pp, jak12, "nowe miasteczko" if bazar12 else "stare miasteczko", p12[0], p12[1], p12[2]))
 
@@ -859,6 +882,7 @@ def main():
                     "serwer_pasa": pasa("koszt"),
                     "klient_potworow": js('return H:JSONEncode(J(k.Sygnaly.SterowanieKlienta:Invoke("koszt")))', "Client"),
                     "klatki": klatki,
+                    "kamera": js('local c = workspace.CurrentCamera local h = game:GetService("Players").LocalPlayer.Character h = h and h:FindFirstChild("HumanoidRootPart") return H:JSONEncode({ typ = c.CameraType.Name, odl = h and math.floor((c.CFrame.Position - h.Position).Magnitude) or -1 })', "Client"),  # 27.11: widoki liczy klient wokół kamery
                 }
             zapisz("P14", koszt)
             punkt("P14", None, "koszt zapisany w wyniki.json (P14) — ocenia człowiek; klatka śr. %s ms"
