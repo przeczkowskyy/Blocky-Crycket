@@ -2,7 +2,7 @@
  "wersja": 1,
  "osoba": "karol",
  "nazwa": "Karol",
- "aktualizacja": "2026-11-27T17:00:47+01:00",
+ "aktualizacja": "2026-11-27T17:05:39+01:00",
  "prace": [
   {
    "id": "balans-2711",
@@ -31,6 +31,24 @@
     "studio:BagnoPasGra",
     "studio:DzunglaPasGra",
     "studio:TestWalki2"
+   ],
+   "kto": "Claude (Karol)",
+   "komputer": "3f925810"
+  },
+  {
+   "id": "potwory-ui-2711",
+   "tytul": "Tabliczki potworów i portrety w walce",
+   "stan": "w_toku",
+   "start": "2026-11-27T17:05:39+01:00",
+   "koniec_szacowany": "2026-11-27T19:35:39+01:00",
+   "aktualizacja": "2026-11-27T17:05:39+01:00",
+   "obszary": [
+    "studio:LasPasGra",
+    "studio:BagnoPasGra",
+    "studio:DzunglaPasGra",
+    "studio:TestWalki2",
+    "swiat/las_potwory",
+    "swiat/test_walki2"
    ],
    "kto": "Claude (Karol)",
    "komputer": "3f925810"
