@@ -1,0 +1,262 @@
+{
+  "mag_rozdzka_z_patyka": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/mag_rozdzka_z_patyka.glb",
+    "sha256": "869ff0fedc376085b59029aa2864adfb7c281e5f4f57cdce8fca76304a21370d",
+    "czas": "2026-11-27 21:00",
+    "operacja": "e793914b-bcb0-485b-90a6-457722c33a1e",
+    "asset": "89589227420285",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/mag_rozdzka_z_patyka",
+    "zaczep": {
+      "nazwa": "RightGripAttachment",
+      "pos": [
+        0.04,
+        -0.5085,
+        0.0085
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "mag_kostur_z_miotly": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/mag_kostur_z_miotly.glb",
+    "sha256": "bde0c702fba9ddee34e175d8c2c707d036fd160a444f3b3e1e439b4aa1471e8c",
+    "czas": "2026-11-27 21:10",
+    "nieudane": [
+      {
+        "operacja": "cf9be5ce-90c2-47ef-8706-7d28279b55a2",
+        "blad": {
+          "code": "Unknown",
+          "message": "Unknown Error",
+          "details": []
+        },
+        "czas": "2026-11-27 21:08"
+      }
+    ],
+    "operacja": "3d416b62-eb32-43a2-ae1b-35a802209943",
+    "asset": "103461172403422",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/mag_kostur_z_miotly",
+    "zaczep": {
+      "nazwa": "RightGripAttachment",
+      "pos": [
+        0.0185,
+        -0.8855,
+        -0.031
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "opis": "Zasoby Model broni Maga i Zwiadowcy (GLB z wynik/bronie_klas/przedmioty) wgrane do Roblox przez Studio. Pisze swiat/postacie/bronie_klas_roblox.py — nie edytować ręcznie.",
+  "zgoda": "Karol 2026-11-14: modele i materiały do gry B&C bez pytania, póki gra jest w testach",
+  "mag_walek_czarodziejski": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/mag_walek_czarodziejski.glb",
+    "sha256": "d1fc81eec4abcabb2638654a6dbd2ea86b77c71175188b29e74714e742f204b8",
+    "czas": "2026-11-27 21:08",
+    "operacja": "09be47bb-f4f7-469d-93dc-bf4ab9f846a9",
+    "asset": "131901584276334",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/mag_walek_czarodziejski",
+    "zaczep": {
+      "nazwa": "RightGripAttachment",
+      "pos": [
+        0.004,
+        -0.7825,
+        0.0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "mag_rozdzka_ze_swieczki": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/mag_rozdzka_ze_swieczki.glb",
+    "sha256": "f570a1e9a67d05fb6fe03a5d4f25fd7425039b735f1ddbf9158af9c72d3f2e96",
+    "czas": "2026-11-27 21:08",
+    "operacja": "64390471-6118-409d-a7cf-14c246287123",
+    "asset": "92862588806991",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/mag_rozdzka_ze_swieczki",
+    "zaczep": {
+      "nazwa": "RightGripAttachment",
+      "pos": [
+        0.0095,
+        -0.517,
+        -0.003
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "mag_kostur_ucznia": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/mag_kostur_ucznia.glb",
+    "sha256": "d01631becce43f0e17f933c790491f8d39f99cf95a9cd3373f754b7c714157c9",
+    "czas": "2026-11-27 21:08",
+    "operacja": "85377ab6-b003-4116-a09c-d66ad7b2e7a4",
+    "asset": "107189194128307",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/mag_kostur_ucznia",
+    "zaczep": {
+      "nazwa": "RightGripAttachment",
+      "pos": [
+        0.006,
+        -0.826,
+        0.0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "zwiad_proca_z_galezi": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/zwiad_proca_z_galezi.glb",
+    "sha256": "4f896e398e715fb51eda24ee2a4b6b2cb06da1c524a891c9be0919a30aa4e2fb",
+    "czas": "2026-11-27 21:09",
+    "operacja": "d4bb5906-2b0e-4279-90a7-03c3e6efbf43",
+    "asset": "112623929537195",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/zwiad_proca_z_galezi",
+    "zaczep": {
+      "nazwa": "RightGripAttachment",
+      "pos": [
+        -0.019,
+        -0.428,
+        0.1585
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "zwiad_luk_z_wieszaka": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/zwiad_luk_z_wieszaka.glb",
+    "sha256": "e9ab1d6c96a65c8a5677ee0f8a70e9b8b8099a44d4db3ab1f61ef1ecd0fc7ae8",
+    "czas": "2026-11-27 21:09",
+    "operacja": "9163f2d6-4c3e-4401-bffa-9ff484fc7544",
+    "asset": "94227783025221",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/zwiad_luk_z_wieszaka",
+    "zaczep": {
+      "nazwa": "LeftGripAttachment",
+      "pos": [
+        0.0,
+        0.0,
+        0.071
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "zwiad_noz_do_masla": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/zwiad_noz_do_masla.glb",
+    "sha256": "b1a3aaca49d2e04bbac330bcca8cd52d2417c53912fef159e3bff785d16a3ace",
+    "czas": "2026-11-27 21:09",
+    "operacja": "3954b6fc-6489-447b-b9e5-a5f1b3988851",
+    "asset": "74528201886264",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/zwiad_noz_do_masla",
+    "zaczep": {
+      "nazwa": "RightGripAttachment",
+      "pos": [
+        0.0115,
+        -0.48,
+        0.0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "zwiad_sztylet_z_szyszki": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/zwiad_sztylet_z_szyszki.glb",
+    "sha256": "4a05369a1d0f5496a355f5b7874c25d10d9241ab573060a598c34a881dc34570",
+    "czas": "2026-11-27 21:09",
+    "operacja": "b572bafa-8d03-4fed-b2a4-dd50fb6e7216",
+    "asset": "135459604354016",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/zwiad_sztylet_z_szyszki",
+    "zaczep": {
+      "nazwa": "RightGripAttachment",
+      "pos": [
+        0.0005,
+        -0.165,
+        0.0015
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "zwiad_luk_tropiciela": {
+    "etap": "zasob",
+    "plik": "swiat/postacie/wynik/bronie_klas/przedmioty/zwiad_luk_tropiciela.glb",
+    "sha256": "a3c5ffb05a9047a8183b386946b394bdf57ccef1f869d2edc7bbdaee1c1c1784",
+    "czas": "2026-11-27 21:09",
+    "operacja": "2ea394db-aa7d-436a-a6f9-71bc27372e28",
+    "asset": "113928002303156",
+    "moderacja": "Approved",
+    "use": true,
+    "kontener": "ReplicatedStorage/BronieKlas/zwiad_luk_tropiciela",
+    "zaczep": {
+      "nazwa": "LeftGripAttachment",
+      "pos": [
+        0.048,
+        0.0,
+        -0.098
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "_import": {
+    "obrot": "Y180",
+    "glosy": {
+      "Y180": 6
+    },
+    "sprawdzono": "2026-11-27 21:11"
+  }
+}

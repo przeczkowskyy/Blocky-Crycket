@@ -1,0 +1,258 @@
+RAPORT — bronie_klas
+BRONIE KLAS — Mag i Zwiadowca, pula Lv 1–10 (10 broni według ikon z 27.11.2026). Status: propozycja (nazwy
+
+Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
+Źródło: swiat/postacie/bronie_klas.py · wygenerowano 27.11.2026 poleceniem:
+  python -B swiat/postacie/przebuduj.py bronie_klas
+Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
+
+PODSUMOWANIE
+- modele z kośćmi: na_kocie_mag_rozdzka_z_patyka, na_kocie_mag_kostur_z_miotly, na_kocie_mag_walek_czarodziejski, na_kocie_mag_rozdzka_ze_swieczki, na_kocie_mag_kostur_ucznia, na_kocie_zwiad_proca_z_galezi, na_kocie_zwiad_luk_z_wieszaka, na_kocie_zwiad_noz_do_masla, na_kocie_zwiad_sztylet_z_szyszki, na_kocie_zwiad_luk_tropiciela
+- przedmioty (akcesoria): 10
+- kontrola eksportów (plik wczytany z powrotem do pustego Blendera): 50 plików, zgodnych 50
+- ostrzeżenia z raportu: 10; uwagi podglądu: 10
+
+ZNANE SŁABOŚCI
+- Propozycja: nazwy z notatki puli Lv 1–10 (niekanoniczne); wygląd według ikon Higgsfield z 27.11.2026.
+- Rodzaje chwytu wybrane przy budowie (chwyty.py): różdżki „rozdzka”, kostury „drzewce”, Wałek Czarodziejski, Nóż do Masła i Sztylet z Szyszki „miecz” (broń jednoręczna), proca „proca” w prawej łapie, łuki „luk” w lewej łapie (kontrakt EKWIPUNEK.md pkt 15). Łuk w slocie Weapon trzymany w LEWEJ łapie zostawia prawą pustą — do decyzji przy integracji.
+- Korekty kota liczone tabelą chwyty.py dla atrap i broni puli wojownika; dla tych broni sprawdza je `bronie_klas.py --ruch` (całe ciało i ziemia, klatka po klatce). Klipy kota są pisane pod kostur: w klipach walki lewa łapa idzie przed tułów (łuk wchodzi w ciało), a pod pięścią prawej łapy przy barku to, co wystaje (głowica, szyszka, stopka) wchodzi w ramię — jak w puli wojownika.
+- Poświata przedmiotów zestawu to materiał (emisja) kryształu, cięciwy i iskier; w Roblox emisja z GLB może nie przejść — w Studio przedmiot zestawu dostaje słabe PointLight.
+- Runy na wałku to proste rysy (romb, daszek, kropki, kreski) — bez liter, mimo że ikona ma znaki podobne do liter.
+
+MODEL na_kocie_mag_rozdzka_z_patyka „Kot — Różdżka z Patyka” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,28 × 3,82 × 2,34
+  trójkąty: 3044 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: mag_rozdzka_z_patyka na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL na_kocie_mag_kostur_z_miotly „Kot — Kostur z Miotły” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,76 × 3,82 × 2,10
+  trójkąty: 3392 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: mag_kostur_z_miotly na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL na_kocie_mag_walek_czarodziejski „Kot — Wałek Czarodziejski” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,48 × 3,82 × 2,10
+  trójkąty: 3224 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: mag_walek_czarodziejski na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL na_kocie_mag_rozdzka_ze_swieczki „Kot — Różdżka ze Świeczki” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,23 × 3,82 × 2,42
+  trójkąty: 3308 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: mag_rozdzka_ze_swieczki na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL na_kocie_mag_kostur_ucznia „Kot — Kostur Ucznia” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,72 × 3,82 × 2,10
+  trójkąty: 3196 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: mag_kostur_ucznia na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL na_kocie_zwiad_proca_z_galezi „Kot — Proca z Gałęzi” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 3,15 × 3,82 × 2,10
+  trójkąty: 2896 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: zwiad_proca_z_galezi na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL na_kocie_zwiad_luk_z_wieszaka „Kot — Łuk z Wieszaka” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,76 × 3,82 × 2,10
+  trójkąty: 3256 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: zwiad_luk_z_wieszaka na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL na_kocie_zwiad_noz_do_masla „Kot — Nóż do Masła” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,35 × 3,82 × 2,10
+  trójkąty: 2816 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: zwiad_noz_do_masla na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL na_kocie_zwiad_sztylet_z_szyszki „Kot — Sztylet z Szyszki” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,28 × 3,82 × 2,10
+  trójkąty: 3316 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: zwiad_sztylet_z_szyszki na KosturAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+MODEL na_kocie_zwiad_luk_tropiciela „Kot — Łuk Tropiciela” (r15)
+  wymiary ciała: 2,18 × 3,82 × 2,10; z akcesoriami: 2,74 × 3,82 × 2,15
+  trójkąty: 3184 (siatek: 20)
+  budżety ciała R15: Head 680/4000, Torso 404/1750, LeftArm 264/1248, RightArm 264/1248, LeftLeg 244/1248, RightLeg 244/1248
+  kości (23): Root, HumanoidRootNode, LowerTorso, UpperTorso, Head, LeftUpperArm, LeftLowerArm, LeftHand, LeftUpperLeg, LeftLowerLeg, LeftFoot, RightUpperArm, RightLowerArm, RightHand, RightUpperLeg, RightLowerLeg, RightFoot, LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot
+  klipy: idle 60 kl. 2,00 s pętla
+  punkty zaczepienia: FaceCenterAttachment, FaceFrontAttachment, HatAttachment, HairAttachment, NeckAttachment, BodyFrontAttachment, BodyBackAttachment, LeftCollarAttachment, RightCollarAttachment, WaistCenterAttachment, WaistFrontAttachment, WaistBackAttachment, LeftShoulderAttachment, LeftGripAttachment, LeftFootAttachment, RightShoulderAttachment, RightGripAttachment, RightFootAttachment, KapeluszAttachment, KosturAttachment
+  założone: zwiad_luk_tropiciela na LeftGripAttachment (tylko podgląd, bez eksportu)
+  OSTRZEŻENIE: ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)
+
+PRZEDMIOTY (każdy = jedna sztywna siatka; (0,0,0) = punkt zaczepienia)
+id                     zaczep                     typ       trójk.  wymiary              attachment_pos        
+mag_rozdzka_z_patyka   RightGripAttachment        Bron         512  0,42 × 1,51 × 0,19   (-0,04; -0,51; -0,01) 
+mag_kostur_z_miotly    RightGripAttachment        Bron         860  0,97 × 3,54 × 0,95   (-0,02; -0,89; 0,03)  
+mag_walek_czarodziejski RightGripAttachment        Bron         692  0,38 × 2,23 × 0,36   (-0,00; -0,78; -0,00) 
+mag_rozdzka_ze_swieczki RightGripAttachment        Bron         776  0,32 × 1,69 × 0,28   (-0,01; -0,52; 0,00)  
+mag_kostur_ucznia      RightGripAttachment        Bron         664  0,95 × 3,45 × 0,24   (-0,01; -0,83; -0,00) 
+zwiad_proca_z_galezi   RightGripAttachment        Bron         364  1,04 × 1,77 × 0,61   (0,02; -0,43; -0,16)  
+zwiad_luk_z_wieszaka   LeftGripAttachment         Bron         724  0,15 × 1,60 × 0,81   (-0,00; -0,00; -0,07) 
+zwiad_noz_do_masla     RightGripAttachment        Bron         284  0,34 × 1,66 × 0,20   (-0,01; -0,48; -0,00) 
+zwiad_sztylet_z_szyszki RightGripAttachment        Bron         784  0,36 × 1,91 × 0,36   (-0,00; -0,17; -0,00) 
+zwiad_luk_tropiciela   LeftGripAttachment         Bron         652  0,45 × 1,89 × 0,40   (-0,05; -0,00; 0,10)  
+attachment_pos = minus środek skrzynki siatki od punktu zaczepienia (w ramce zaczepu, przód +Z);
+importer stawia środek MeshPart w środku skrzynki, więc tak trzeba ustawić Attachment w Handle.
+
+
+UWAGI PODGLĄDU
+- na_kocie_mag_kostur_ucznia: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- na_kocie_mag_kostur_z_miotly: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- na_kocie_mag_rozdzka_z_patyka: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- na_kocie_mag_rozdzka_ze_swieczki: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- na_kocie_mag_walek_czarodziejski: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- na_kocie_zwiad_luk_tropiciela: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- na_kocie_zwiad_luk_z_wieszaka: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- na_kocie_zwiad_noz_do_masla: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- na_kocie_zwiad_proca_z_galezi: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+- na_kocie_zwiad_sztylet_z_szyszki: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15
+
+KONTROLA EKSPORTÓW
+- na_kocie_mag_rozdzka_z_patyka.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_mag_rozdzka_z_patyka__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_rozdzka_z_patyka|Scene 1-61 -> ZGODNE
+- na_kocie_mag_rozdzka_z_patyka.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- na_kocie_mag_kostur_z_miotly.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_mag_kostur_z_miotly__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_kostur_z_miotly|Scene 1-61 -> ZGODNE
+- na_kocie_mag_kostur_z_miotly.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- na_kocie_mag_walek_czarodziejski.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_mag_walek_czarodziejski__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_walek_czarodziejski|Scene 1-61 -> ZGODNE
+- na_kocie_mag_walek_czarodziejski.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- na_kocie_mag_rozdzka_ze_swieczki.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_mag_rozdzka_ze_swieczki__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_rozdzka_ze_swieczki|Scene 1-61 -> ZGODNE
+- na_kocie_mag_rozdzka_ze_swieczki.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- na_kocie_mag_kostur_ucznia.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_mag_kostur_ucznia__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_kostur_ucznia|Scene 1-61 -> ZGODNE
+- na_kocie_mag_kostur_ucznia.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- na_kocie_zwiad_proca_z_galezi.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_zwiad_proca_z_galezi__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_proca_z_galezi|Scene 1-61 -> ZGODNE
+- na_kocie_zwiad_proca_z_galezi.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- na_kocie_zwiad_luk_z_wieszaka.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_zwiad_luk_z_wieszaka__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_luk_z_wieszaka|Scene 1-61 -> ZGODNE
+- na_kocie_zwiad_luk_z_wieszaka.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- na_kocie_zwiad_noz_do_masla.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_zwiad_noz_do_masla__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_noz_do_masla|Scene 1-61 -> ZGODNE
+- na_kocie_zwiad_noz_do_masla.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- na_kocie_zwiad_sztylet_z_szyszki.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_zwiad_sztylet_z_szyszki__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_sztylet_z_szyszki|Scene 1-61 -> ZGODNE
+- na_kocie_zwiad_sztylet_z_szyszki.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- na_kocie_zwiad_luk_tropiciela.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE
+- na_kocie_zwiad_luk_tropiciela__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_luk_tropiciela|Scene 1-61 -> ZGODNE
+- na_kocie_zwiad_luk_tropiciela.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE
+- mag_rozdzka_z_patyka.fbx: siatki 1, kości 0, trójkąty 512, wzrost 1.51 st., akcje brak -> ZGODNE
+- mag_rozdzka_z_patyka.glb: siatki 1, kości 0, trójkąty 512, wzrost 1.51 st., akcje brak -> ZGODNE
+- mag_kostur_z_miotly.fbx: siatki 1, kości 0, trójkąty 860, wzrost 3.54 st., akcje brak -> ZGODNE
+- mag_kostur_z_miotly.glb: siatki 1, kości 0, trójkąty 860, wzrost 3.54 st., akcje brak -> ZGODNE
+- mag_walek_czarodziejski.fbx: siatki 1, kości 0, trójkąty 692, wzrost 2.23 st., akcje brak -> ZGODNE
+- mag_walek_czarodziejski.glb: siatki 1, kości 0, trójkąty 692, wzrost 2.23 st., akcje brak -> ZGODNE
+- mag_rozdzka_ze_swieczki.fbx: siatki 1, kości 0, trójkąty 776, wzrost 1.69 st., akcje brak -> ZGODNE
+- mag_rozdzka_ze_swieczki.glb: siatki 1, kości 0, trójkąty 776, wzrost 1.69 st., akcje brak -> ZGODNE
+- mag_kostur_ucznia.fbx: siatki 1, kości 0, trójkąty 664, wzrost 3.45 st., akcje brak -> ZGODNE
+- mag_kostur_ucznia.glb: siatki 1, kości 0, trójkąty 664, wzrost 3.45 st., akcje brak -> ZGODNE
+- zwiad_proca_z_galezi.fbx: siatki 1, kości 0, trójkąty 364, wzrost 1.77 st., akcje brak -> ZGODNE
+- zwiad_proca_z_galezi.glb: siatki 1, kości 0, trójkąty 364, wzrost 1.77 st., akcje brak -> ZGODNE
+- zwiad_luk_z_wieszaka.fbx: siatki 1, kości 0, trójkąty 724, wzrost 1.60 st., akcje brak -> ZGODNE
+- zwiad_luk_z_wieszaka.glb: siatki 1, kości 0, trójkąty 724, wzrost 1.60 st., akcje brak -> ZGODNE
+- zwiad_noz_do_masla.fbx: siatki 1, kości 0, trójkąty 284, wzrost 1.66 st., akcje brak -> ZGODNE
+- zwiad_noz_do_masla.glb: siatki 1, kości 0, trójkąty 284, wzrost 1.66 st., akcje brak -> ZGODNE
+- zwiad_sztylet_z_szyszki.fbx: siatki 1, kości 0, trójkąty 784, wzrost 1.91 st., akcje brak -> ZGODNE
+- zwiad_sztylet_z_szyszki.glb: siatki 1, kości 0, trójkąty 784, wzrost 1.91 st., akcje brak -> ZGODNE
+- zwiad_luk_tropiciela.fbx: siatki 1, kości 0, trójkąty 652, wzrost 1.89 st., akcje brak -> ZGODNE
+- zwiad_luk_tropiciela.glb: siatki 1, kości 0, trójkąty 652, wzrost 1.89 st., akcje brak -> ZGODNE
+
+PLIKI
+- na_kocie_mag_rozdzka_z_patyka_plansza.jpg
+- na_kocie_mag_kostur_z_miotly_plansza.jpg
+- na_kocie_mag_walek_czarodziejski_plansza.jpg
+- na_kocie_mag_rozdzka_ze_swieczki_plansza.jpg
+- na_kocie_mag_kostur_ucznia_plansza.jpg
+- na_kocie_zwiad_proca_z_galezi_plansza.jpg
+- na_kocie_zwiad_luk_z_wieszaka_plansza.jpg
+- na_kocie_zwiad_noz_do_masla_plansza.jpg
+- na_kocie_zwiad_sztylet_z_szyszki_plansza.jpg
+- na_kocie_zwiad_luk_tropiciela_plansza.jpg
+- przedmioty/mag_rozdzka_z_patyka.fbx
+- przedmioty/mag_rozdzka_z_patyka.glb
+- przedmioty/mag_rozdzka_z_patyka_tekstury/
+- ikony/mag_rozdzka_z_patyka_ikona.png
+- przedmioty/mag_kostur_z_miotly.fbx
+- przedmioty/mag_kostur_z_miotly.glb
+- przedmioty/mag_kostur_z_miotly_tekstury/
+- ikony/mag_kostur_z_miotly_ikona.png
+- przedmioty/mag_walek_czarodziejski.fbx
+- przedmioty/mag_walek_czarodziejski.glb
+- przedmioty/mag_walek_czarodziejski_tekstury/
+- ikony/mag_walek_czarodziejski_ikona.png
+- przedmioty/mag_rozdzka_ze_swieczki.fbx
+- przedmioty/mag_rozdzka_ze_swieczki.glb
+- przedmioty/mag_rozdzka_ze_swieczki_tekstury/
+- ikony/mag_rozdzka_ze_swieczki_ikona.png
+- przedmioty/mag_kostur_ucznia.fbx
+- przedmioty/mag_kostur_ucznia.glb
+- przedmioty/mag_kostur_ucznia_tekstury/
+- ikony/mag_kostur_ucznia_ikona.png
+- przedmioty/zwiad_proca_z_galezi.fbx
+- przedmioty/zwiad_proca_z_galezi.glb
+- przedmioty/zwiad_proca_z_galezi_tekstury/
+- ikony/zwiad_proca_z_galezi_ikona.png
+- przedmioty/zwiad_luk_z_wieszaka.fbx
+- przedmioty/zwiad_luk_z_wieszaka.glb
+- przedmioty/zwiad_luk_z_wieszaka_tekstury/
+- ikony/zwiad_luk_z_wieszaka_ikona.png
+- przedmioty/zwiad_noz_do_masla.fbx
+- przedmioty/zwiad_noz_do_masla.glb
+- przedmioty/zwiad_noz_do_masla_tekstury/
+- ikony/zwiad_noz_do_masla_ikona.png
+- przedmioty/zwiad_sztylet_z_szyszki.fbx
+- przedmioty/zwiad_sztylet_z_szyszki.glb
+- przedmioty/zwiad_sztylet_z_szyszki_tekstury/
+- ikony/zwiad_sztylet_z_szyszki_ikona.png
+- przedmioty/zwiad_luk_tropiciela.fbx
+- przedmioty/zwiad_luk_tropiciela.glb
+- przedmioty/zwiad_luk_tropiciela_tekstury/
+- ikony/zwiad_luk_tropiciela_ikona.png
+- bronie_klas_ikony_arkusz.jpg
+- ekwipunek.json
+- bronie_klas_porownanie.png
+- bronie_klas_na_kocie.jpg
+- raport.json
+- raport.txt

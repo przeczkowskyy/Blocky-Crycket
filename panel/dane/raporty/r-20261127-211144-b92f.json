@@ -1,0 +1,19 @@
+{
+ "id": "r-20261127-211144-b92f",
+ "tytul": "Sala treningowa: bieg, sztanga, kość Szczęścia; mistrz gier z góry",
+ "opis_md": "**Polecenie Karola (27.11 wieczorem):** kamera przy rzucie kości z góry, prawdziwe kości w treningu Szczęścia, bieżnia i sztanga bez ruchu.\n\n- **Bieżnia i sztanga:** postać naprawdę biegnie w rytmie taśmy i wyciska sztangę (z przytrzymaniem na górze). Przyczyna: Animator awatara nadpisywał pozy treningu, a kot rasy Pawła kopiował zera.\n- **Szczęście (D-166):** przez cały pasek kot potrząsa kubkiem, na końcu rzuca kością. Serwer losuje wynik, kość ląduje tą ścianką do góry, Szczęście rośnie o oczka („+N LUCK”). Pasek 3,5× dłuższy — średnio tyle co inne statystyki.\n- **Mistrz gier:** na czas rzutu kamera nad planszą z góry, po nagrodzie wraca do kadru Pawła. Zmiana w wersji Pawła w Studio (zgoda Karola, Paweł powiadomiony).\n- Sprawdzone w Play na kocie i awatarze (8 rzutów: ścianka = wynik). Testy 55 + 63 OK. Studio zapis 556, nieopublikowane.\n- Nie sprawdzono: telefon, inni gracze (rekwizyty widzi tylko trenujący).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-27T21:11:44+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "Rejestr decyzji",
+   "etykieta": "D-166"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg"
+ ],
+ "gra": "bc"
+}
