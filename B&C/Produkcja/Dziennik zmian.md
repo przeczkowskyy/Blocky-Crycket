@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-27 (noc) · Claude Code u Karola (bronie Maga i Zwiadowcy gotowe)
+- **D-167, dalej:** 10 ikon (Mag A, Zwiadowca B) wgranych przez Studio za zgodą Karola („Tak, wgraj”) — `swiat/postacie/ikony_broni.py`, rejestr `ikony_broni.json`, moduł `roblox/IkonyBroni.luau` (jeszcze niepodpięty). 10 modeli 3D w Blenderze według ikon (`swiat/postacie/bronie_klas.py`, 284–860 trójkątów, kontrola eksportu 50/50; różdżki skrócone, bo w klipie kula_ognia wchodziły w ziemię; łuk z wieszaka węższy, bo zahaczał o głowę) i wgranych do Roblox (`bronie_klas_roblox.py`, `bronie_klas_zasoby.json`) — wszystko Approved, gra ma prawo „Use”.
+- **Studio:** `ReplicatedStorage/BronieKlas` — 10 akcesoriów z zaczepem dłoni (zapis 558, nieopublikowane); w świecie ani w walce jeszcze ich nie ma.
+- **Do decyzji:** chwyt łuków i Wałka; podpięcie do ekwipunku i kotów z Pawłem ([[Zadania]]). Agent ok. 0,49 mln tokenów.
+
 ## 2026-11-27 (wieczór) · Claude Code u Karola (sala treningowa, kości, kamera mistrza gier, bronie)
 - **Polecenie Karola:** kamera przy rzucie kości „bardziej z góry”; w treningu Szczęścia prawdziwe kości i przyrost = wynik; na bieżni postać stała, sztanga „słabo się podnosi”; brak kotów Pawła w grze; modele i sety broni (Higgsfield albo poczekać na Pawła); dalej Training Center, UI i „grand optymalizacja” (Karol: = balans statystyk).
 - **Sala treningowa** (pliki Pawła `src/shared/TreningAFKDane.luau`, `src/server/TreningAFK.server.luau`, `src/client/TreningAFKClient.client.luau` — zgoda z 26.11; pakiet `swiat/trening_proba`): bieg i wycisk działają na kocie i awatarze (pozy w `PreSimulation`, Animator awatara odpięty na czas treningu); kości Szczęścia według D-166. Wersje w Studio przed podmianą równe repo. Testy 55 + 63 OK, Play: 8 rzutów — ścianka = wynik serwera. Agent ok. 0,5 mln tokenów.

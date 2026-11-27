@@ -7,9 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [ ] Bronie Maga i Zwiadowcy w grze (D-167): 10 gotowych akcesoriów z `ReplicatedStorage/BronieKlas` podpiąć do ekwipunku, sklepu, walki i kotów ras (okna i podgląd kotów to praca Pawła); do decyzji: łuk w lewej łapie (prawa pusta — kontrakt ekwipunku, pkt 15), Wałek Czarodziejski trzymany jak miecz albo jak różdżka; w klipach walki kota łuki wchodzą w tułów (jak w puli wojownika) · Karol, Paweł · #wysoki #gra/bc
 - [ ] Paweł: mistrz gier — w Twojej wersji „Treasure Loop” w Studio (`MistrzGier3DClient`, nie ma jej na GitHubie) agent Karola dodał 27.11 kamerę z góry na czas rzutu (polecenie Karola). Zanim wgrasz swój plik do Studio albo na GitHuba, weź wersję ze Studio, inaczej kamera zniknie; potwierdzić D-166 i D-167 · Paweł · #wysoki #gra/bc
 - [ ] Rasa zapisywana w stanie gracza jak klasa — kot rasy od razu po wejściu, bez ekranu wyboru przy każdym wejściu (Karol 27.11: „Tak, zapisuj rasę”) · agent: Karol · w toku 27.11 · #wysoki #gra/bc
-- [ ] Bronie Maga i Zwiadowcy (D-167): 10 ikon do Roblox i modele 3D według ikon w Blenderze · agent: Karol · w toku 27.11 · #wysoki #gra/bc
 - [ ] Paweł: potwierdzić albo odrzucić D-165 (balans: 10 punktów za poziom samo — zmienia D-140; limit treningu AFK w Twoim `TreningAFKDane`; XP Dżungli ×1,25) · Paweł · #wysoki #gra/bc
 - [ ] Karol i Paweł: pytania 119 (drzewko nie działa w walce, ceny ulepszeń u trenera, zagroda) i 120 (język napisów potworów i walki) · #średni #gra/bc
 - [ ] Potwory: ładniejsze modele obecnych 15 gatunków (gładkie siatki z Blendera zamiast klocków, świecące elementy) — wybór Karola 27.11, start po jego znaku · agent: Karol · #średni #gra/bc
@@ -212,6 +212,7 @@ Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky 
 - [ ] Budynek Karczmy · [ ] Beczka do rozbijania · [ ] Dropper Twierdzy (3D)
 
 ## ✅ Zrobione
+- [x] 2026-11-27: Bronie Maga i Zwiadowcy (D-167) — 10 ikon z Higgsfield wgranych do Roblox (Approved; rejestr `swiat/postacie/ikony_broni.json`) i 10 modeli 3D z Blendera według ikon (Approved; `swiat/postacie/bronie_klas.py`, w Studio `ReplicatedStorage/BronieKlas`, zapis 558); sprawdzone w chodzie, spoczynku i upadku kota
 - [x] 2026-11-27: Sala treningowa — postać naprawdę biegnie na bieżni i wyciska sztangę (przyczyna: Animator awatara nadpisywał pozy, a kot Pawła je kopiował); Szczęście z prawdziwą kością (D-166); próby w Play na kocie i awatarze, testy 55 + 63 OK; Studio zapis 555
 - [x] 2026-11-27: Mistrz gier — kamera z góry nad planszą na czas rzutu, potem powrót do kadru Pawła (polecenie Karola; zmiana w wersji Pawła w Studio za zgodą Karola, Paweł powiadomiony na Telegramie); Studio zapis 556
 - [x] 2026-11-27: Balans D-165 w grze — 10 punktów za poziom samo, limit treningu AFK, XP Dżungli ×1,25; symulator przejścia odświeżony do obecnej gry (`swiat/przejscie_gry/BALANS_2711.md`); próby: awans, limit, Dżungla, zapis, krótka droga — bez błędów
