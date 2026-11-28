@@ -1503,20 +1503,65 @@ local function odslonKadr(dt: number)
 		table.insert(pomin, player.Character)
 	end
 	local teraz: { [BasePart]: boolean } = {}
-	local mistrz = karczma:FindFirstChild("MistrzGier")
+	-- figury mistrza gier: część mapy (Karczma/MistrzGier) i lokalna, animowana figura NPC u gracza
+	-- (Workspace/NpcLokalni/Npc_mistrz_gier — to ją było widać z bliska na teście 28.11)
+	local figury: { Instance } = {}
+	local naMapie = karczma:FindFirstChild("MistrzGier")
+	if naMapie then
+		table.insert(figury, naMapie)
+	end
+	local npc = workspace:FindFirstChild("NpcLokalni")
+	local lokalny = npc and npc:FindFirstChild("Npc_mistrz_gier")
+	if lokalny then
+		table.insert(figury, lokalny)
+	end
 	local calyMistrz = false
+	local function zFigury(p: Instance): boolean
+		for _, f in ipairs(figury) do
+			if p:IsDescendantOf(f) then
+				return true
+			end
+		end
+		return false
+	end
 	for _, p in ipairs(k:GetPartsObscuringTarget(punkty, pomin)) do
 		if p:IsA("BasePart") and p.Transparency < 1 then
 			teraz[p] = true
-			if mistrz and p:IsDescendantOf(mistrz) then
+			if zFigury(p) then
 				calyMistrz = true
 			end
 		end
 	end
-	if calyMistrz and mistrz then
-		for _, p in ipairs(mistrz:GetDescendants()) do
-			if p:IsA("BasePart") and p.Transparency < 1 then
-				teraz[p] = true
+	-- Paweł 28.11 (po teście): na skrajnym polu przy mistrzu kamera wchodziła W jego figurę i było widać tylko środek
+	-- głowy. Promienie z wnętrza części niczego nie trafiają, więc osobno: gdy kamera jest w obrysie figury mistrza
+	-- (z zapasem 1,5 studa), znikają obie figury; to samo dotyczy każdej części, w której kamera akurat siedzi.
+	local oko = k.CFrame.Position
+	for _, f in ipairs(figury) do
+		if f:IsA("Model") then
+			local ramka, rozmiar = f:GetBoundingBox()
+			local w = ramka:PointToObjectSpace(oko)
+			if math.abs(w.X) < rozmiar.X / 2 + 1.5 and math.abs(w.Y) < rozmiar.Y / 2 + 1.5 and math.abs(w.Z) < rozmiar.Z / 2 + 1.5 then
+				calyMistrz = true
+			end
+		end
+	end
+	local wokol = OverlapParams.new()
+	wokol.FilterType = Enum.RaycastFilterType.Exclude
+	wokol.FilterDescendantsInstances = pomin
+	for _, p in ipairs(workspace:GetPartBoundsInRadius(oko, 0.7, wokol)) do
+		if p.Transparency < 1 then
+			teraz[p] = true
+			if zFigury(p) then
+				calyMistrz = true
+			end
+		end
+	end
+	if calyMistrz then
+		for _, f in ipairs(figury) do
+			for _, p in ipairs(f:GetDescendants()) do
+				if p:IsA("BasePart") and p.Transparency < 1 then
+					teraz[p] = true
+				end
 			end
 		end
 	end
