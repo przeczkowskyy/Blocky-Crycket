@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-28 · Claude Code u Pawła (okienka podpowiedzi „E” w naszej kresce; mistrz gier znika przy planszy)
+- **Mistrz gier znika na cały czas gry przy planszy** (Paweł: „żeby on znikał, jak wchodzisz w interakcję z planszą”) — obie figury (mapa i lokalna NPC), tylko u gracza; wraca po LEAVE. Wgrane, nieoglądane w Play po tej zmianie.
+- **Okienka podpowiedzi interakcji (Paweł: „pod nasz kreskowy styl, z lekką ciemną obwódką, popodmieniać z bazowych Robloxowych”):** nowy skrypt `src/client/PodpowiedziEClient.client.luau` przełącza u gracza wszystkie 35 podpowiedzi ProximityPrompt na styl własny i rysuje naszą tabliczkę: nazwa obiektu na ciemnej plakietce, żółty klawisz z literą, napis akcji, pasek przytrzymania; dotyk i mysz działają przez przycisk na tabliczce. Skryptów i części Karola nie zmienia (zmiana stylu jest lokalna, na czas gry); atrybut gracza `PodpowiedziWlasne = false` przywraca bazowe okienka. Sprawdzone w Play: wszystkie podpowiedzi mają styl własny; samego okienka na zrzucie nie złapałem (gracz nie stał przy żadnej podpowiedzi).
+- **Grafiki z Higgsfield do tych okienek:** jeden arkusz (nano_banana_2_1, 1 wariant, ref KeyArt), pięć pustych elementów w `assets/processed/PodpowiedzE/` (tabliczka, plakietka, klawisz, przycisk dotyku, pierścień), narzędzie `tools/podpowiedz_e.py`, makieta `build/podpowiedz_e_makieta.jpg`. Status w manifeście: czekają na „tak” Pawła przed wgraniem; do tego czasu okienka są rysowane ramkami.
+- **Uwaga:** tabliczki imion NPC w miasteczku („Mistrz gier · Zagraj”, ciemna ramka, Gotham) to osobny element lokalnych NPC Karola — nie są podpowiedzią ProximityPrompt i ten skrypt ich nie zmienia.
+- Pliki: `src/client/PodpowiedziEClient.client.luau`, `src/client/MistrzGier3DClient.client.luau` (oba wdrożone w Studio), `tools/podpowiedz_e.py`, `assets/manifest.json`.
+
 ## 2026-11-28 · Claude Code u Pawła (mistrz gier: licznik nad pionkiem, odsłanianie kadru; slime na makiecie)
 - **Styl low poly z konturem:** Paweł zostawia go do decyzji z Karolem (pytania 122 i 124, propozycje D-168, D-170–D-172) — dalszych zmian stylu nie robimy do odpowiedzi.
 - **Licznik pól nad pionkiem (Paweł: „zaraz nad pionkiem i lekko mniejszy”):** dymek stał obok pionka, bo był zaczepiony do podstawki — walca obróconego o 90°, a przesunięcie BillboardGui liczy się w osiach zaczepu. Teraz ma własną kotwicę bez obrotu nad czubkiem kapelusza i rozmiar 0,36 × 0,42 studa (było 0,46 × 0,54). Położenie kotwicy sprawdzone w Play pomiarem (wypada dokładnie nad środkiem pionka); samego dymka na zrzucie nie udało się złapać.

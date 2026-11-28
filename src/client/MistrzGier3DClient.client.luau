@@ -1515,7 +1515,8 @@ local function odslonKadr(dt: number)
 	if lokalny then
 		table.insert(figury, lokalny)
 	end
-	local calyMistrz = false
+	-- Paweł 28.11 (kolejna uwaga): mistrz gier znika na CAŁY czas gry przy planszy, nie tylko gdy kamera jest przy nim
+	local calyMistrz = true
 	local function zFigury(p: Instance): boolean
 		for _, f in ipairs(figury) do
 			if p:IsDescendantOf(f) then

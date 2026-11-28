@@ -7138,7 +7138,57 @@
       "usage": "Ekran walki w naszej kresce (zestaw z 28.11)",
       "notes": "nano_banana_2_1, 1 wariant, arkusz 10 elementow, ref KeyArt; job be5dcec8; tools/walka_ui.py; Pawel 28.11",
       "updated_at": "2026-11-28T12:36:06+00:00"
+    },
+    "PodpowiedzTabliczka": {
+      "created_at": "2026-11-28T14:12:38+00:00",
+      "history": [],
+      "category": "button",
+      "status": "awaiting_approval",
+      "processed": "assets/processed/PodpowiedzE/PodpowiedzTabliczka.png",
+      "raw": "assets/raw/PodpowiedzE",
+      "usage": "Okienko podpowiedzi interakcji (zamiast bazowego ProximityPrompt)",
+      "updated_at": "2026-11-28T14:12:38+00:00"
+    },
+    "PodpowiedzPlakietka": {
+      "created_at": "2026-11-28T14:12:39+00:00",
+      "history": [],
+      "category": "button",
+      "status": "awaiting_approval",
+      "processed": "assets/processed/PodpowiedzE/PodpowiedzPlakietka.png",
+      "raw": "assets/raw/PodpowiedzE",
+      "usage": "Okienko podpowiedzi interakcji (zamiast bazowego ProximityPrompt)",
+      "updated_at": "2026-11-28T14:12:39+00:00"
+    },
+    "PodpowiedzKlawisz": {
+      "created_at": "2026-11-28T14:12:39+00:00",
+      "history": [],
+      "category": "button",
+      "status": "awaiting_approval",
+      "processed": "assets/processed/PodpowiedzE/PodpowiedzKlawisz.png",
+      "raw": "assets/raw/PodpowiedzE",
+      "usage": "Okienko podpowiedzi interakcji (zamiast bazowego ProximityPrompt)",
+      "updated_at": "2026-11-28T14:12:39+00:00"
+    },
+    "PodpowiedzDotyk": {
+      "created_at": "2026-11-28T14:12:39+00:00",
+      "history": [],
+      "category": "button",
+      "status": "awaiting_approval",
+      "processed": "assets/processed/PodpowiedzE/PodpowiedzDotyk.png",
+      "raw": "assets/raw/PodpowiedzE",
+      "usage": "Okienko podpowiedzi interakcji (zamiast bazowego ProximityPrompt)",
+      "updated_at": "2026-11-28T14:12:39+00:00"
+    },
+    "PodpowiedzPierscien": {
+      "created_at": "2026-11-28T14:12:39+00:00",
+      "history": [],
+      "category": "button",
+      "status": "awaiting_approval",
+      "processed": "assets/processed/PodpowiedzE/PodpowiedzPierscien.png",
+      "raw": "assets/raw/PodpowiedzE",
+      "usage": "Okienko podpowiedzi interakcji (zamiast bazowego ProximityPrompt)",
+      "updated_at": "2026-11-28T14:12:39+00:00"
     }
   },
-  "updated_at": "2026-11-28T12:36:06+00:00"
+  "updated_at": "2026-11-28T14:12:39+00:00"
 }
