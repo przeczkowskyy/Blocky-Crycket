@@ -10,6 +10,11 @@
 -- kolorowe dachy z wiatrownicami, lukarny, ceglane kominy, wieża zegarowa, studnia, wóz, płot, świerki) i NASZE tekstury
 -- z paczki sali wyboru klasy (CsTex: tynk, kamień, cegła, belka, deski, gont, bruk, skrzynia — już wgrane do Roblox,
 -- rejestr assets/manifest.json). Parter każdego domu jest pusty w środku (drzwi 5 × 7): wnętrze i NPC się mieszczą.
+-- Wersja 3 (Paweł 28.11: „dodajmy ciemne obrysy, kontur jak w kreskówce”): każda bryła ma ciemny kontur — Highlight
+-- z samym obrysem (bez wypełnienia) na TRZECH grupach: „Mury i rekwizyty”, „Dachy i nadbudówki”, „Zieleń i drobiazgi”.
+-- Tylko trzy, bo silnik rysuje naraz najwyżej 31 Highlightów, a gra ma już 28 (17 w sali wyboru klasy, 11 na planszy
+-- mistrza gier) — pierwsza wersja z 16 konturami mogłaby zgasić obrysy w grze. Kreska między dachem a murem zostaje,
+-- bo to różne grupy; grubość linii Highlightu jest stała.
 local CHS = game:GetService("ChangeHistoryService")
 local NAZWA = "MiasteczkoLowPolyPodglad"
 local X0, Z0 = 976, -500 -- wolne miejsce na południe od miasteczka (sprawdzone 28.11: tylko Baseplate)
@@ -85,10 +90,33 @@ local function cz(rodzic: Instance, nazwa: string, rozmiar: Vector3, cf: CFrame,
 	return p
 end
 
-local function oddaj(m: Instance)
-	m.Parent = kont
+local function oddaj(m: Instance, dokad: Instance?)
+	m.Parent = dokad or kont
 	task.wait()
 end
+
+local TUSZ = C(46, 32, 34)
+local function kontur(m: Instance)
+	local h = Instance.new("Highlight")
+	h.Name = "Kontur"
+	h.FillTransparency, h.OutlineTransparency = 1, 0
+	h.OutlineColor = TUSZ
+	h.DepthMode = Enum.HighlightDepthMode.Occluded
+	h.Parent = m
+end
+local function grupa(nazwa: string): Model
+	local m = Instance.new("Model")
+	m.Name = nazwa
+	return m
+end
+local G_MURY, G_DACHY, G_ZIELEN = grupa("Mury i rekwizyty"), grupa("Dachy i nadbudówki"), grupa("Zieleń i drobiazgi")
+for _, g in ipairs({ G_MURY, G_DACHY, G_ZIELEN }) do
+	kontur(g)
+	g.Parent = kont
+end
+local nadbudowki = grupa("Kominy, lukarny i hełm wieży")
+local zielen = grupa("Zieleń")
+local drobne = grupa("Latarnie i płot")
 
 -- ostrosłup z czterech CornerWedgePart (wierzchołek klina leży nad jego rogiem +X, −Z)
 local function ostroslup(m: Instance, nazwa: string, podstawa: CFrame, bok: number, wys: number, kolor: Color3)
@@ -128,8 +156,8 @@ type Opcje = { szczytem: boolean?, szyld: Color3?, markiza: { Color3 }?, komin: 
 local function dom(nazwa: string, x: number, z: number, w: number, g: number, h1: number, h2: number, dachH: number,
 	kolDachu: Color3, odcienTynku: Color3, opcje: Opcje?)
 	local op: Opcje = opcje or {}
-	local m = Instance.new("Model")
-	m.Name = nazwa
+	local m = grupa(nazwa .. " — mury")
+	local dachM = grupa(nazwa .. " — dach")
 	local o = CFrame.new(X0 + x, YB, Z0 + z)
 	local T, J, B = 1, 1, 0.8 -- grubość ściany, wysunięcie piętra, grubość belki
 	local TYNK = C(250, 236, 208)
@@ -242,18 +270,18 @@ local function dom(nazwa: string, x: number, z: number, w: number, g: number, h1
 	local ciemny = kolDachu:Lerp(Color3.new(0, 0, 0), 0.32)
 	for _, obrot in ipairs({ 0, math.pi }) do -- obie połacie w tym samym układzie: lokalne +Z biegnie w dół połaci
 		local f = rama * CFrame.Angles(0, obrot, 0)
-		local polac = cz(m, "Połać", Vector3.new(Wr + 2 * okapX, 1.1, dl), f * CFrame.new(0, dachH - bieg * tg / 2 + 0.6, bieg / 2) * CFrame.Angles(kat, 0, 0), kolDachu)
+		local polac = cz(dachM, "Połać", Vector3.new(Wr + 2 * okapX, 1.1, dl), f * CFrame.new(0, dachH - bieg * tg / 2 + 0.6, bieg / 2) * CFrame.Angles(kat, 0, 0), kolDachu)
 		tex(polac, TEX.gont, 5, { N.Top }, BIALY, 0.5)
-		cz(m, "Okap", Vector3.new(Wr + 2 * okapX + 0.3, 0.6, 1.1), f * CFrame.new(0, dachH - bieg * tg + 0.6, bieg - 0.2) * CFrame.Angles(kat, 0, 0), ciemny)
+		cz(dachM, "Okap", Vector3.new(Wr + 2 * okapX + 0.3, 0.6, 1.1), f * CFrame.new(0, dachH - bieg * tg + 0.6, bieg - 0.2) * CFrame.Angles(kat, 0, 0), ciemny)
 		for _, sx in ipairs({ -1, 1 }) do
 			-- wiatrownica: ciemna deska wzdłuż krawędzi szczytu
-			cz(m, "Wiatrownica", Vector3.new(0.5, 1.6, dl + 0.3), f * CFrame.new(sx * (Wr / 2 + okapX - 0.05), dachH - bieg * tg / 2 + 0.45, bieg / 2) * CFrame.Angles(kat, 0, 0), ciemny)
+			cz(dachM, "Wiatrownica", Vector3.new(0.5, 1.6, dl + 0.3), f * CFrame.new(sx * (Wr / 2 + okapX - 0.05), dachH - bieg * tg / 2 + 0.45, bieg / 2) * CFrame.Angles(kat, 0, 0), ciemny)
 			-- szczyt z tynku (klin: wysoka krawędź leży po jego stronie +Z, więc obrót o 180° kieruje ją do kalenicy)
 			local szczyt = cz(m, "Szczyt", Vector3.new(T, dachH, Gr / 2), f * CFrame.new(sx * (Wr / 2 - T / 2), dachH / 2, Gr / 4) * CFrame.Angles(0, math.pi, 0), TYNK, nil, "WedgePart")
 			tex(szczyt, TEX.tynk, 9, { N.Left, N.Right }, odcienTynku)
 		end
 	end
-	cz(m, "Kalenica", Vector3.new(Wr + 2 * okapX + 0.5, 1.1, 1.1), rama * CFrame.new(0, dachH + 0.95, 0) * CFrame.Angles(math.pi / 4, 0, 0), ciemny)
+	cz(dachM, "Kalenica", Vector3.new(Wr + 2 * okapX + 0.5, 1.1, 1.1), rama * CFrame.new(0, dachH + 0.95, 0) * CFrame.Angles(math.pi / 4, 0, 0), ciemny)
 	for _, sx in ipairs({ -1, 1 }) do -- mur pruski i okienko na szczytach
 		local sc = rama * CFrame.new(sx * Wr / 2, 0, 0) * CFrame.Angles(0, sx * math.pi / 2, 0)
 		cz(m, "Słupek szczytu", Vector3.new(0.6, dachH * 0.86, 0.3), sc * CFrame.new(0, dachH * 0.43, 0.12), DREWNO)
@@ -269,20 +297,23 @@ local function dom(nazwa: string, x: number, z: number, w: number, g: number, h1
 			local ysl = dachH - z0 * tg
 			local sz, gl = 4.2, 4.6
 			local l = rama * CFrame.new(lx, ysl, z0)
-			tynk(cz(m, "Lukarna", Vector3.new(sz, 5.4, gl), l * CFrame.new(0, -0.3, gl / 2 - 0.6), TYNK), { N.Back, N.Left, N.Right })
-			okno(m, l * CFrame.new(0, 0.9, gl - 0.6), 2, 2.2)
+			tynk(cz(nadbudowki, "Lukarna", Vector3.new(sz, 5.4, gl), l * CFrame.new(0, -0.3, gl / 2 - 0.6), TYNK), { N.Back, N.Left, N.Right })
+			okno(nadbudowki, l * CFrame.new(0, 0.9, gl - 0.6), 2, 2.2)
 			for _, s in ipairs({ -1, 1 }) do
 				-- daszek lukarny: dwa kliny, wysoka krawędź do środka
-				cz(m, "Daszek lukarny", Vector3.new(gl + 1.2, 1.9, sz / 2 + 0.7), l * CFrame.new(s * (sz / 4 + 0.35), 3.35, gl / 2 - 0.4) * CFrame.Angles(0, -s * math.pi / 2, 0), kolDachu, nil, "WedgePart")
+				cz(nadbudowki, "Daszek lukarny", Vector3.new(gl + 1.2, 1.9, sz / 2 + 0.7), l * CFrame.new(s * (sz / 4 + 0.35), 3.35, gl / 2 - 0.4) * CFrame.Angles(0, -s * math.pi / 2, 0), kolDachu, nil, "WedgePart")
 			end
 		end
 	end
 	if op.komin ~= false then -- ceglany komin z czapą
 		local kx, kz = W * 0.27, -G * 0.2
 		local wysK = dachH + 3
-		tex(P("Komin", 2.6, wysK, 2.6, kx, y1 + h2 + wysK / 2 - 1, kz, CEGLA), TEX.cegla, 4, BOKI)
-		P("Komin czapa", 3.3, 0.6, 3.3, kx, y1 + h2 + wysK - 0.7, kz, KAMIEN)
-		P("Komin wylot", 1.6, 0.9, 1.6, kx, y1 + h2 + wysK - 0.1, kz, C(70, 60, 64))
+		local function K(n: string, sx: number, sy: number, py: number, kol: Color3): BasePart
+			return cz(nadbudowki, n, Vector3.new(sx, sy, sx), o * CFrame.new(kx, py, kz), kol)
+		end
+		tex(K("Komin", 2.6, wysK, y1 + h2 + wysK / 2 - 1, CEGLA), TEX.cegla, 4, BOKI)
+		K("Komin czapa", 3.3, 0.6, y1 + h2 + wysK - 0.7, KAMIEN)
+		K("Komin wylot", 1.6, 0.9, y1 + h2 + wysK - 0.1, C(70, 60, 64))
 	end
 	if op.szyld then -- szyld na wysięgniku
 		P("Wysięgnik", 0.4, 0.4, 4, -w / 2 + 3, y1 - 0.9, g / 2 + 2 + J, DREWNO)
@@ -299,7 +330,8 @@ local function dom(nazwa: string, x: number, z: number, w: number, g: number, h1
 			P("Słupek markizy", 0.35, dH + 0.6, 0.35, s * (dW / 2 + 2.6), (dH + 0.6) / 2, g / 2 + 3.9 + J, DREWNO)
 		end
 	end
-	oddaj(m)
+	oddaj(m, G_MURY)
+	oddaj(dachM, G_DACHY)
 end
 
 local function drzewo(x: number, z: number, s: number, kol: Color3)
@@ -313,7 +345,7 @@ local function drzewo(x: number, z: number, s: number, kol: Color3)
 			o * CFrame.new(0, w[3] * s, 0) * CFrame.Angles(math.rad(los:NextNumber(-6, 6)), math.rad(w[4]), math.rad(los:NextNumber(-6, 6))),
 			kol:Lerp(Color3.new(1, 1, 0.6), (i - 1) * 0.12))
 	end
-	oddaj(m)
+	m.Parent = zielen
 end
 
 local function swierk(x: number, z: number, s: number)
@@ -325,7 +357,7 @@ local function swierk(x: number, z: number, s: number)
 	for _, p in ipairs(pietra) do
 		ostroslup(m, "Piętro świerka", o * CFrame.new(0, p[3] * s, 0), p[1] * s, p[2] * s, p[4])
 	end
-	oddaj(m)
+	m.Parent = zielen
 end
 
 local function latarnia(x: number, z: number)
@@ -343,7 +375,7 @@ local function latarnia(x: number, z: number)
 		sw.Color, sw.Range, sw.Brightness = OKNO, 20, 1.1
 		sw.Parent = l
 	end
-	oddaj(m)
+	m.Parent = drobne
 end
 
 ------------------------------------------------------------ plac
@@ -406,11 +438,11 @@ do
 		okno(m, o * CFrame.new(0, wys * 0.25, sz * bok / 2) * CFrame.Angles(0, if sz == 1 then 0 else math.pi, 0), 1.8, 3)
 	end
 	local yd = wys + 0.8 + gw
-	cz(m, "Okap wieży", Vector3.new(gb + 2.6, 0.6, gb + 2.6), o * CFrame.new(0, yd + 0.3, 0), C(120, 44, 44))
-	ostroslup(m, "Hełm wieży", o * CFrame.new(0, yd + 0.6, 0), gb + 2.2, 12, C(190, 70, 62))
-	cz(m, "Iglica", Vector3.new(0.4, 3, 0.4), o * CFrame.new(0, yd + 13.5, 0), C(60, 56, 64))
-	cz(m, "Gałka", Vector3.new(1, 1, 1), o * CFrame.new(0, yd + 15, 0), C(255, 206, 80)).Shape = Enum.PartType.Ball
-	oddaj(m)
+	cz(nadbudowki, "Okap wieży", Vector3.new(gb + 2.6, 0.6, gb + 2.6), o * CFrame.new(0, yd + 0.3, 0), C(120, 44, 44))
+	ostroslup(nadbudowki, "Hełm wieży", o * CFrame.new(0, yd + 0.6, 0), gb + 2.2, 12, C(190, 70, 62))
+	cz(nadbudowki, "Iglica", Vector3.new(0.4, 3, 0.4), o * CFrame.new(0, yd + 13.5, 0), C(60, 56, 64))
+	cz(nadbudowki, "Gałka", Vector3.new(1, 1, 1), o * CFrame.new(0, yd + 15, 0), C(255, 206, 80)).Shape = Enum.PartType.Ball
+	oddaj(m, G_MURY)
 end
 
 ------------------------------------------------------------ studnia
@@ -432,7 +464,7 @@ do
 	cz(m, "Korba", Vector3.new(0.3, 1.6, 0.3), o * CFrame.new(4.4, 6, 0), C(60, 60, 70))
 	cz(m, "Wiadro", Vector3.new(1.2, 1.3, 1.2), o * CFrame.new(0.6, 4.2, 0), DREWNO_J)
 	cz(m, "Lina", Vector3.new(0.15, 1.9, 0.15), o * CFrame.new(0.6, 5.6, 0), C(224, 206, 160))
-	oddaj(m)
+	oddaj(m, G_MURY)
 end
 
 ------------------------------------------------------------ stragan
@@ -455,7 +487,7 @@ do
 	for i = 1, 8 do
 		cz(m, "Towar", Vector3.new(0.9, 0.9, 0.9), o * CFrame.new(-3.8 + i * 0.95, 3.75, 1.2 + los:NextNumber(-0.7, 0.7)) * CFrame.Angles(0, math.rad(los:NextNumber(0, 60)), 0), owoce[(i % 4) + 1])
 	end
-	oddaj(m)
+	oddaj(m, G_MURY)
 end
 
 ------------------------------------------------------------ wóz z sianem
@@ -472,7 +504,7 @@ do
 	end
 	cz(m, "Siano", Vector3.new(3.4, 1.6, 6.4), o * CFrame.new(0, 3.2, 0) * CFrame.Angles(0, 0.05, 0.04), C(232, 196, 88))
 	cz(m, "Siano", Vector3.new(2.6, 1.2, 4.4), o * CFrame.new(0.2, 4.4, -0.4) * CFrame.Angles(0.06, 0.2, 0), C(240, 208, 104))
-	oddaj(m)
+	oddaj(m, G_MURY)
 end
 
 ------------------------------------------------------------ płot od strony łąki
@@ -490,7 +522,7 @@ do
 	end
 	odcinek(-57, -14, 36.5)
 	odcinek(14, 57, 36.5)
-	oddaj(m)
+	m.Parent = drobne
 end
 
 ------------------------------------------------------------ drobiazgi
@@ -508,7 +540,7 @@ do
 		local y = if s[3] == 1.8 then 2.6 + 0.9 else s[3] / 2
 		tex(cz(m, "Skrzynia", Vector3.new(s[3], s[3], s[3]), CFrame.new(X0 + s[1], YB + y, Z0 + s[2]) * CFrame.Angles(0, math.rad(s[4]), 0), C(196, 150, 96)), TEX.skrzynia, s[3], WSZYSTKIE)
 	end
-	oddaj(m)
+	oddaj(m, G_MURY)
 end
 drzewo(-55, 10, 1.15, C(92, 160, 78))
 drzewo(57, 20, 1, C(104, 172, 84))
@@ -522,6 +554,9 @@ latarnia(-17, 3)
 latarnia(13, 3)
 latarnia(-40, 28)
 latarnia(22, 30)
+oddaj(nadbudowki, G_DACHY)
+oddaj(zielen, G_ZIELEN)
+oddaj(drobne, G_ZIELEN)
 
 if rec then
 	CHS:FinishRecording(rec, Enum.FinishRecordingOperation.Commit)
