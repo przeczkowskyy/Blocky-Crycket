@@ -38,6 +38,7 @@ local PX, PZ = 1 / 56.57, 1 / 47.2 -- piksel rysunku → kratki: poziomo i piono
 local RAMA, TH = 46 * PZ, 10 * PZ -- grubość ramy i wysokość pola
 local CT = 0.05 -- grubość wierzchu pola
 local NOZKI, EPS = 0.1, 0.003 -- studów: nóżki ramy, odstęp płaskich warstw
+local OBROT_PODPISU = 0 -- stopnie: wspólna poprawka obrotu płaskich podpisów pól (patrz „Podpis”)
 local ZT = 7 * EPS / U -- poziom trawy (kratki)
 local LICZBA_POL = 4 * (NS + 1)
 
@@ -741,7 +742,10 @@ local function dodajPole(gx: number, gy: number, typ: string)
 		-- złotym podpis leży w bliższym rogu, przed skrzynią.
 		local bb = Instance.new("Frame")
 		bb.Name = "Podpis"
-		bb.BackgroundTransparency, bb.AnchorPoint, bb.Rotation = 1, Vector2.new(0.5, 0.5), 45
+		-- Paweł 28.11 (trzecia uwaga): kamera idzie za pionkiem, więc podpis leży zgodnie z kierunkiem marszu po
+		-- swoim boku pętli (0°, 90°, 180°, 270°) — z kamery za pionkiem pola przed nim czyta się prosto.
+		local bokPetli = if i == 1 then 3 else ((i - 2) // (NS + 1)) % 4
+		bb.BackgroundTransparency, bb.AnchorPoint, bb.Rotation = 1, Vector2.new(0.5, 0.5), 90 * bokPetli + OBROT_PODPISU
 		bb.Position = if typ == "gold" then UDim2.fromScale(0.33, 0.67) else UDim2.fromScale(0.5, 0.5)
 		bb.Size = if typ == "gold" then UDim2.fromScale(0.5, 0.26) else UDim2.fromScale(0.7, 0.7)
 		local skalaPodpisu = Instance.new("UIScale")
@@ -1200,11 +1204,16 @@ end
 local dymek = Instance.new("BillboardGui")
 dymek.Name = "Dymek"
 dymek.Adornee, dymek.LightInfluence, dymek.Enabled = pionekKotwica, 0, false
-dymek.Size = UDim2.fromScale(0.34, 0.4)
--- Paweł 28.11: dymek ma być tuż nad pionkiem. Kotwica to czubek pionka, a w górę przesuwamy go w ekranie
--- (SizeOffset), nie w powietrzu — z kamery z góry dymek 0,7 studa nad pionkiem „odjeżdżał” w bok.
-dymek.StudsOffsetWorldSpace = UP * (60 * PZ * U)
-dymek.SizeOffset, dymek.AlwaysOnTop = Vector2.new(0, 0.62), true
+dymek.Size = UDim2.fromScale(0.46, 0.54)
+-- Paweł 28.11 (po kamerze za pionkiem): licznik pól ma stać centralnie NAD pionkiem. Kotwica to podstawka pionka,
+-- więc dymek podnosimy o zmierzoną wysokość figurki (do czubka kapelusza) i stawiamy jego dół w tym punkcie —
+-- wcześniej wisiał 0,4 studa nad podstawką, czyli z niskiej kamery wypadał na tułowiu pionka.
+do
+	local ramkaCF, ramkaRozmiar = pionekG:GetBoundingBox()
+	local czubek = ramkaCF.Position.Y + ramkaRozmiar.Y / 2 - pionekKotwica.Position.Y
+	dymek.StudsOffsetWorldSpace = UP * math.max(60 * PZ * U, czubek * 0.96)
+end
+dymek.SizeOffset, dymek.AlwaysOnTop = Vector2.new(0, 0.5), true
 local dymekSkala = Instance.new("UIScale")
 dymekSkala.Parent = dymek
 local dymekOgon = Instance.new("Frame")
@@ -1382,11 +1391,20 @@ local function ulepszPola(nowy: any)
 end
 
 local function pokazNagrode(t: any, tekst: string, typ: string?)
-	local bb = Instance.new("BillboardGui")
-	bb.Adornee = t.czapka
-	bb.Size = UDim2.fromScale(1.5, 1.5)
-	bb.StudsOffsetWorldSpace = Vector3.new(0, 1.0, 0)
-	bb.AlwaysOnTop = true
+	-- Paweł 28.11: nagroda nie wyskakuje już nad pionkiem (z kamery za pionkiem była za duża i nie mieściła się
+	-- w ekranie), tylko jako mniejsza plakietka z boku — pod tabliczką GAME MASTER.
+	local _ = t
+	local bb = Instance.new("Frame")
+	bb.Name = "Reward"
+	bb.BackgroundTransparency = 1
+	bb.AnchorPoint, bb.Position, bb.Size = Vector2.new(0.5, 0.5), UDim2.fromScale(0.105, 0.43), UDim2.fromScale(0.125, 1)
+	local proporcje = Instance.new("UIAspectRatioConstraint")
+	proporcje.AspectRatio, proporcje.AspectType, proporcje.DominantAxis = 1, Enum.AspectType.ScaleWithParentSize, Enum.DominantAxis.Width
+	proporcje.Parent = bb
+	local skala = Instance.new("UIScale")
+	skala.Scale = 0.5
+	skala.Parent = bb
+	TS:Create(skala, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	local gw = Instance.new("ImageLabel")
 	gw.BackgroundTransparency = 1
 	gw.Size = UDim2.fromScale(1, 1)
@@ -1407,7 +1425,7 @@ local function pokazNagrode(t: any, tekst: string, typ: string?)
 	ik.Parent = bb
 	bb.Parent = gui
 	local zanik = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false, 1.0)
-	TS:Create(bb, TweenInfo.new(1.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { StudsOffsetWorldSpace = Vector3.new(0, 1.7, 0) }):Play()
+	TS:Create(bb, TweenInfo.new(1.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.fromScale(0.105, 0.39) }):Play()
 	TS:Create(gw, zanik, { ImageTransparency = 1 }):Play()
 	TS:Create(tl, zanik, { TextTransparency = 1 }):Play()
 	TS:Create(st, zanik, { Transparency = 1 }):Play()
@@ -1421,28 +1439,146 @@ end
 -- było widać, co jest rzucane”): widokStolu() Pawła (25.11: cała plansza i mistrz w kadrze) zostaje, gdy gracz nie rzuca;
 -- na czas rzutu kamera przechodzi prawie pionowo nad stół — w kadrze cała plansza i taca z kostką, górna ścianka kostki
 -- czytelna — i po nagrodzie wraca do widoku Pawła
-local kameraRzutu = 0 -- numer rzutu: do widoku Pawła wraca tylko ostatni
-local tweenKamery: Tween? = nil
-local widokPowrotu: (() -> CFrame)? = nil -- widokStolu (przypisany niżej, przy kamerze Pawła)
-local FOV_POWROTU = 65
-local function widokRzutu(): CFrame
-	local srodek = miejsce(0.9, 0, 0.35) -- między środkiem planszy a tacą z kostką (miejsce(3.5, …, 2.0))
-	return CFrame.lookAt(srodek + UP * 6.4 - przod * 1.4, srodek, przod) -- góra kadru = strona mistrza
+--
+-- Paweł 28.11 (trzecia uwaga) zastępuje to: kamera stoi ZA PIONKIEM i idzie za nim po planszy („żeby gracz miał
+-- odczucie, jak się porusza po tej planszy”); przy rzucie kamera się nie zmienia, tylko pojawia się okienko z podglądem
+-- kostki na tacy, a gdy wypadnie liczba — znika. Cel Karola (widać, co jest rzucane) zostaje spełniony okienkiem.
+local FOV_PIONKA = 62
+local KAM_TYL, KAM_GORA, KAM_PRZOD = 4.4 * U, 4.6 * U, 3.2 * U -- za pionkiem, nad planszą, punkt patrzenia przed pionkiem
+local kamOko: Vector3? = nil
+local kamCel: Vector3? = nil
+local function celKamery(): (Vector3, Vector3)
+	-- kierunek NASTĘPNEGO kroku z pola, na którym stoi (albo na które skacze) pionek: na narożniku i na START kamera
+	-- patrzy już wzdłuż kolejnego boku pętli, a nie tam, skąd pionek przyszedł (test 28.11: przy START patrzyła za stół)
+	local d = KIERUNKI[((pionek.pole - 1) // (NS + 1)) % 4]
+	local p = pionek.poz - UP * pionek.skok -- bez podskoku: kamera nie skacze razem z pionkiem
+	return p - d * KAM_TYL + UP * KAM_GORA, p + d * KAM_PRZOD + UP * (0.4 * U)
 end
-local function kameraNa(cf: CFrame, czas: number)
-	if tweenKamery then
-		tweenKamery:Cancel()
+local function kameraZaPionkiem(dt: number)
+	local oko0, cel0 = kamOko, kamCel
+	if not oko0 or not cel0 then
+		return
 	end
-	tweenKamery = TS:Create(workspace.CurrentCamera, TweenInfo.new(czas, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-		{ CFrame = cf, FieldOfView = FOV_POWROTU })
-	tweenKamery:Play()
+	local oko, cel = celKamery()
+	local a = 1 - math.exp(-dt * 5)
+	local noweOko, nowyCel = oko0:Lerp(oko, a), cel0:Lerp(cel, a)
+	kamOko, kamCel = noweOko, nowyCel
+	local k = workspace.CurrentCamera
+	if k.CameraType ~= Enum.CameraType.Scriptable then
+		k.CameraType = Enum.CameraType.Scriptable
+	end
+	k.CFrame = CFrame.lookAt(noweOko, nowyCel)
+	k.FieldOfView += (FOV_PIONKA - k.FieldOfView) * a
 end
-local function wrocPoRzucie(moj: number)
-	task.delay(0.6, function()
-		if kameraRzutu == moj and otwarte and not toczy and widokPowrotu then
-			kameraNa(widokPowrotu(), 0.5)
+
+-- okienko kostki: ViewportFrame z kopią tacy i kostki; kopia co klatkę przyjmuje położenie prawdziwej kostki.
+-- Ścianki prawdziwej kostki to SurfaceGui (nie rysują się w ViewportFrame), więc kopia ma oczka z części.
+local oknoKostki = Instance.new("Frame")
+oknoKostki.Name = "DiceWindow"
+oknoKostki.Visible = false
+oknoKostki.AnchorPoint, oknoKostki.Position, oknoKostki.Size = Vector2.new(0.5, 0.5), UDim2.fromScale(0.8725, 0.395), UDim2.fromScale(0.17, 1) -- między LEAVE a tabliczką ceny
+oknoKostki.BackgroundColor3, oknoKostki.BorderSizePixel = hex("#b56d30"), 0
+local oknoSkala = Instance.new("UIScale")
+oknoSkala.Parent = oknoKostki
+local kostkaOkna = Instance.new("Model")
+local cienOkna: Part
+do
+	local ar = Instance.new("UIAspectRatioConstraint")
+	ar.AspectRatio, ar.AspectType, ar.DominantAxis = 1.25, Enum.AspectType.ScaleWithParentSize, Enum.DominantAxis.Width
+	ar.Parent = oknoKostki
+	local rog = Instance.new("UICorner")
+	rog.CornerRadius = UDim.new(0.1, 0)
+	rog.Parent = oknoKostki
+	local obrys = Instance.new("UIStroke")
+	obrys.Thickness, obrys.Color = 3, Color3.fromRGB(26, 20, 16)
+	obrys.Parent = oknoKostki
+	local vf = Instance.new("ViewportFrame")
+	vf.Name = "Dice"
+	vf.AnchorPoint, vf.Position, vf.Size = Vector2.new(0.5, 0.5), UDim2.fromScale(0.5, 0.5), UDim2.fromScale(0.94, 0.9)
+	vf.BackgroundColor3, vf.BorderSizePixel = hex("#4a2e1a"), 0
+	vf.Ambient, vf.LightColor, vf.LightDirection = Color3.fromRGB(190, 190, 200), Color3.new(1, 1, 1), Vector3.new(-0.5, -1, -0.4)
+	local rog2 = Instance.new("UICorner")
+	rog2.CornerRadius = UDim.new(0.08, 0)
+	rog2.Parent = vf
+	local obrys2 = Instance.new("UIStroke")
+	obrys2.Thickness, obrys2.Color = 2, Color3.fromRGB(26, 20, 16)
+	obrys2.Parent = vf
+	local kam = Instance.new("Camera")
+	-- Paweł 28.11: kadr ma obejmować dokładnie miejsce rzutu, bez pustych pól. Kamera okienka patrzy wzdłuż boku
+	-- tacy (taca stoi rombem, więc w okienku wychodzi prosto, jako kwadrat) i z góry pod kątem ok. 60° — taca
+	-- wypełnia okienko, a kostka ma ok. jednej czwartej jego wysokości.
+	kam.FieldOfView = 40
+	local srodekTacy = T.Position
+	kam.CFrame = CFrame.lookAt(srodekTacy + UP * 1.75 + vx * 1.0, srodekTacy + UP * 0.16)
+	kam.Parent = vf
+	vf.CurrentCamera = kam
+	local tacaWzor = model:FindFirstChild("Taca")
+	if tacaWzor then
+		tacaWzor:Clone().Parent = vf
+	end
+	local function czesc(nazwa: string, rozmiar: Vector3, cf: CFrame, kolor: Color3, walcowata: boolean?): Part
+		local p = Instance.new("Part")
+		p.Name, p.Size, p.CFrame, p.Color = nazwa, rozmiar, cf, kolor
+		p.Material, p.Anchored, p.CanCollide, p.CastShadow = Enum.Material.SmoothPlastic, true, false, false
+		p.TopSurface, p.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+		if walcowata then
+			p.Shape = Enum.PartType.Cylinder
 		end
-	end)
+		p.Parent = kostkaOkna
+		return p
+	end
+	local rdzen = czesc("Kostka", Vector3.one * KOSTKA, CFrame.new(), kostka.Color)
+	kostkaOkna.PrimaryPart = rdzen
+	local X, Y, Z = Vector3.xAxis, Vector3.yAxis, Vector3.zAxis
+	-- układ jak na prawdziwej kostce: góra 1, dół 6, +Z 2, −Z 5, +X 3, −X 4
+	local SCIANKI = { [1] = { Y, X, Z }, [6] = { -Y, X, Z }, [2] = { Z, X, Y }, [5] = { -Z, X, Y }, [3] = { X, Z, Y }, [4] = { -X, Z, Y } }
+	local UKLAD = {
+		[1] = { { 0, 0 } }, [2] = { { -1, -1 }, { 1, 1 } }, [3] = { { -1, -1 }, { 0, 0 }, { 1, 1 } },
+		[4] = { { -1, -1 }, { 1, -1 }, { -1, 1 }, { 1, 1 } }, [5] = { { -1, -1 }, { 1, -1 }, { 0, 0 }, { -1, 1 }, { 1, 1 } },
+		[6] = { { -1, -1 }, { -1, 0 }, { -1, 1 }, { 1, -1 }, { 1, 0 }, { 1, 1 } },
+	}
+	for wartosc, s in pairs(SCIANKI) do
+		local n, a, b = s[1], s[2], s[3]
+		local function plytka(nazwa: string, bok: number, wysun: number, kolor: Color3)
+			czesc(nazwa, Vector3.new(bok * KOSTKA, bok * KOSTKA, 0.004), CFrame.fromMatrix(n * (KOSTKA / 2 + wysun), a, b, a:Cross(b)), kolor)
+		end
+		plytka("Obrys ścianki", 0.8, 0.001, hex("#7a4315"))
+		plytka("Ścianka", 0.72, 0.003, hex("#eeb068"))
+		for _, o in ipairs(UKLAD[wartosc]) do
+			local srodek = n * (KOSTKA / 2 + 0.006) + a * (o[1] * 0.22 * KOSTKA) + b * (o[2] * 0.22 * KOSTKA)
+			czesc("Oczko", Vector3.new(0.005, 0.16 * KOSTKA, 0.16 * KOSTKA), CFrame.fromMatrix(srodek, n, a, n:Cross(a)), hex("#2a1a14"), true)
+		end
+	end
+	kostkaOkna.Name = "Kostka okna"
+	kostkaOkna:PivotTo(kostka.CFrame)
+	kostkaOkna.Parent = vf
+	cienOkna = cienKostki:Clone()
+	cienOkna.Parent = vf
+	vf.Parent = oknoKostki
+	oknoKostki.Parent = gui
+end
+local oknoKostkiNr = 0
+local function pokazOknoKostki(pokaz: boolean)
+	oknoKostkiNr += 1
+	local moj = oknoKostkiNr
+	if pokaz then
+		oknoKostki.Visible = true
+		oknoSkala.Scale = 0.6
+		TS:Create(oknoSkala, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	elseif oknoKostki.Visible then
+		TS:Create(oknoSkala, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Scale = 0.6 }):Play()
+		task.delay(0.16, function()
+			if oknoKostkiNr == moj then
+				oknoKostki.Visible = false
+			end
+		end)
+	end
+end
+local function odswiezOknoKostki()
+	if oknoKostki.Visible then
+		kostkaOkna:PivotTo(kostka.CFrame)
+		cienOkna.Size, cienOkna.CFrame, cienOkna.Transparency = cienKostki.Size, cienKostki.CFrame, cienKostki.Transparency
+	end
 end
 
 local function rzuc()
@@ -1450,9 +1586,7 @@ local function rzuc()
 		return
 	end
 	toczy = true
-	kameraRzutu += 1 -- agent Karola, 27.11: kamera z góry na czas rzutu
-	local mojRzut = kameraRzutu
-	kameraNa(widokRzutu(), 0.35)
+	pokazOknoKostki(true) -- Paweł 28.11: okienko z kostką zamiast zmiany kamery
 	komunikat("")
 	rollBtn.ImageColor3 = Color3.fromRGB(150, 150, 150)
 	rollNapis.TextTransparency = 0.4
@@ -1467,11 +1601,13 @@ local function rzuc()
 	end)
 	if not ok or type(w) ~= "table" or not w.ok then
 		komunikat(if ok and type(w) == "table" and w.tekst then w.tekst else "…")
+		pokazOknoKostki(false)
 	else
 		rzutKostka(w.kostka)
 		iskry(kostka.Position, 10)
 		pokazDymek(w.na - w.z)
-		task.wait(0.5)
+		task.wait(0.5) -- chwila na odczytanie wyniku w okienku
+		pokazOknoKostki(false)
 		skok(w.z, w.na)
 		local t = pola[indeksPola(w.na)]
 		t.liftT = 16
@@ -1501,13 +1637,14 @@ local function rzuc()
 	rollBtn.ImageColor3 = Color3.new(1, 1, 1)
 	rollNapis.TextTransparency = 0
 	toczy = false
-	wrocPoRzucie(mojRzut) -- agent Karola, 27.11
 end
 
 -- pola w ruchu, połysk złotych narożników, portal, gwiazdki i mgiełka nad stawem
 local czas = 0
 RunService.RenderStepped:Connect(function(dt)
 	dt = math.min(dt, 0.05)
+	kameraZaPionkiem(dt)
+	odswiezOknoKostki()
 	if (workspace.CurrentCamera.CFrame.Position - baza).Magnitude > 60 then
 		return
 	end
@@ -1633,7 +1770,9 @@ local function widokStolu(): CFrame
 	return CFrame.lookAt(srodek + UP * 4.9 - przod * 3.1, srodek)
 end
 
-widokPowrotu, FOV_POWROTU = widokStolu, FOV_STOLU -- agent Karola, 27.11: powrót kamery po rzucie
+-- Od trzeciej uwagi Pawła z 28.11 kamera idzie za pionkiem (kameraZaPionkiem); widokStolu i FOV_STOLU zostają
+-- nieużywane na wypadek przełącznika „widok całej planszy”.
+local _ = { widokStolu, FOV_STOLU }
 
 local ukrywanie: RBXScriptConnection? = nil
 local function przezroczystoscPostaci(wartosc: number)
@@ -1675,7 +1814,8 @@ local function otworz()
 	kamera = workspace.CurrentCamera
 	poprzedniFov = kamera.FieldOfView
 	kamera.CameraType = Enum.CameraType.Scriptable
-	TS:Create(kamera, TweenInfo.new(0.7, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { CFrame = widokStolu(), FieldOfView = FOV_STOLU }):Play()
+	-- kamera dolatuje z miejsca, w którym była, za pionek (wygładzanie w kameraZaPionkiem)
+	kamOko, kamCel = kamera.CFrame.Position, kamera.CFrame.Position + kamera.CFrame.LookVector * 4
 	sterowanie(false)
 	ukryjPostac(true)
 	local hud = player.PlayerGui:FindFirstChild("HUD")
@@ -1693,11 +1833,9 @@ local function zamknij()
 		return
 	end
 	otwarte = false
-	kameraRzutu += 1 -- agent Karola, 27.11: przerwany powrót kamery po rzucie
-	if tweenKamery then
-		tweenKamery:Cancel()
-		tweenKamery = nil
-	end
+	kamOko, kamCel = nil, nil
+	oknoKostkiNr += 1
+	oknoKostki.Visible = false
 	gui.Enabled = false
 	PPS.Enabled = true
 	kamera.CameraType = Enum.CameraType.Custom

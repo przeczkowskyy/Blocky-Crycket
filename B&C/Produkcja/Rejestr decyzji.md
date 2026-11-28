@@ -866,7 +866,8 @@ Gra: bc
 Gra: bc
 - Budynki i rekwizyty miasteczka w stylu low poly z referencji Pawła: proste bryły, gładkie kolory bez tekstur, kamienny parter, piętro z muru pruskiego wysunięte nad parter, strome kolorowe dachy, świecące okna.
 - Plac nieco większy; układ, wnętrza budynków i NPC zostają.
-- Stan: tylko podgląd stylu — osobny kontener `Workspace/MiasteczkoLowPolyPodglad` (cztery domy, studnia, stragan, drzewa, latarnie; 638 części) w wolnym miejscu mapy, źródło `tools/studio/miasteczko_lowpoly_podglad.luau`. Miasteczko Karola (`Workspace/MiasteczkoBazar`, generator `swiat/miasteczko_bazar/`) jest nietknięte.
+- Wersja 2 podglądu (28.11, po uwadze Pawła o „pustych klockach”): na bryłach leżą nasze tekstury z paczki sali wyboru klasy (tynk z cegłami, kamień, gont, deski), doszły wieża zegarowa, lukarny, świerki, płot, wóz — czyli low poly w kształtach, a w materiałach to samo, o czym mówi D-147.
+- Stan: tylko podgląd stylu — osobny kontener `Workspace/MiasteczkoLowPolyPodglad` (cztery domy, wieża zegarowa, studnia, stragan, wóz, drzewa; 929 części) w wolnym miejscu mapy, źródło `tools/studio/miasteczko_lowpoly_podglad.luau`. Miasteczko Karola (`Workspace/MiasteczkoBazar`, generator `swiat/miasteczko_bazar/`) jest nietknięte.
 - Jeśli Karol przyjmie styl: wchodzi do generatora miasteczka (jedno miasto, nie dwa), razem z większym placem.
 - Rozbieżność z D-147 (miasto w kresce sali wyboru rasy, tekstury i obrys; podpis Karola, czeka na Pawła): pytanie 122 w [[Pytania otwarte]]. Notatka: [[Miasteczko — większy plac i Brama Leśna z kłódką (propozycja)]].
 
