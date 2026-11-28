@@ -6,6 +6,11 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-28 · Claude Code u Pawła (podgląd sali wyboru low poly; lista zadań dla agenta Karola)
+- **Podgląd sali wyboru klasy w stylu low poly (Paweł: „bardziej low poly, lekko inne tekstury; zrób podgląd, na razie nie zmieniaj”):** `tools/studio/sala_lowpoly_podglad.luau` → osobny kontener `Workspace/SalaLowPolyPodglad` (976; 0; −385), 178 części: tynk z łatami cegieł nad kamiennym cokołem zamiast desek, gładkie drewno, kilka grubych belek i gładki strop, podłoga z dużych płyt, okno z nocnym niebem, kominek, regał, lada, stół, podest z trzema manekinami, kontur z trzech grup. Prawdziwa sala `Workspace/WyborKlasy` bez zmian. Pierwsza wersja wyszła ciemna i niebieskawa (strop odcinał światło); druga ma wyłączone cienie ścian i stropu oraz ciepłe lampy — tej drugiej nie widziałem, bo zrzut ekranu Studio wracał czarny.
+- **Okienka podpowiedzi:** Paweł zostaje przy rysowanych ramkach („są okej”); pięć grafik `PodpowiedzE` z Higgsfield zostaje jako podgląd (`build/podpowiedz_e_makieta.jpg`), bez wgrywania.
+- **Lista dla agenta Karola** (miasteczko, las, brama z kłódką, przejście pieszo, kontur i limit Highlightów, ekran walki, tabliczki NPC) spisana do wysłania przez Pawła na Telegram: `build/raport2811/dla_agenta_karola.md` (plik lokalny, poza repozytorium).
+
 ## 2026-11-28 · Claude Code u Pawła (sala wyboru klasy i rasy: pierwsze odświeżenie w stronę stylu low poly)
 - **Polecenie Pawła:** „przebudujmy ekran wyboru klas i ras na ten styl z poly miasteczka, poprawiając tekstury i dając obrysy lekkie… żeby tekstury nie były poglitchowane, ładniejszy”; w oknie pytania wybrał „Odświeżyć obecną salę” (wnętrze karczmy zostaje).
 - **Co zmienione w Studio (`tools/studio/sala_odswiez.luau`, jeden punkt cofania):** słoje na dużym drewnie (belki, więźba, szkielet ścian — 588 tekstur) w połowie wtopione w kolor i dwa razy większe, bo gęsty rysunek na dziesiątkach belek migotał; kamień muru czystszy (1272 tekstury), żelazo spokojniejsze (396); jasne szczyty dachu między krokwiami przyciemnione (wyglądały jak dziury w stropie); obrys 17 grup sali ciemny tusz 2E2022 / 0,3 (było 3A2A20 / 0,5).
