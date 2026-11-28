@@ -6,6 +6,14 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-28 · Claude Code u Pawła (mistrz gier: licznik nad pionkiem, odsłanianie kadru; slime na makiecie)
+- **Styl low poly z konturem:** Paweł zostawia go do decyzji z Karolem (pytania 122 i 124, propozycje D-168, D-170–D-172) — dalszych zmian stylu nie robimy do odpowiedzi.
+- **Licznik pól nad pionkiem (Paweł: „zaraz nad pionkiem i lekko mniejszy”):** dymek stał obok pionka, bo był zaczepiony do podstawki — walca obróconego o 90°, a przesunięcie BillboardGui liczy się w osiach zaczepu. Teraz ma własną kotwicę bez obrotu nad czubkiem kapelusza i rozmiar 0,36 × 0,42 studa (było 0,46 × 0,54). Położenie kotwicy sprawdzone w Play pomiarem (wypada dokładnie nad środkiem pionka); samego dymka na zrzucie nie udało się złapać.
+- **Odsłanianie kadru:** przy dalszych bokach planszy kamera za pionkiem wypadała za ścianą karczmy i ściana zasłaniała cały widok. Części stojące między kamerą a pionkiem i planszą znikają u gracza na czas gry przy stole (sama przezroczystość lokalna, mapa Karola bez zmian); gdy zasłania mistrz gier, znika cała jego figura. Sprawdzone na zrzutach na START i w połowie pierwszego boku; trzy dalsze boki — do obejrzenia przez Pawła.
+- **Sprawdzone przy okazji na zrzutach z gry Pawła:** okienko kostki pokazuje tacę i kostkę ciasno w kadrze, plakietka nagrody pojawia się pod tabliczką GAME MASTER.
+- **Slime na makiecie lasu:** `tools/studio/slime_podglad.luau` — poglądowy skaczący slime z konturem (model + skrypt `RuchSlime` w kontenerze makiety), skacze po leśnej ścieżce tam i z powrotem; nie jest potworem z gry.
+- Pliki: `src/client/MistrzGier3DClient.client.luau` (wdrożony w Studio), `tools/studio/slime_podglad.luau`.
+
 ## 2026-11-28 · Claude Code u Pawła (obrys kota i peta, makieta lasu low poly, propozycje D-170–D-172)
 - **Obrys postaci (Paweł po próbie w Play: „wygląda to bardzo dobrze, zapisz”):** kot gracza i jego aktywny pet mają lekki ciemny obrys — tylko własna para u każdego gracza (limit 31 Highlightów). Kontury makiet włączają się dopiero blisko kamery, żeby nie zabierały limitu grze. Plik `src/client/KotRasySwiatClient.client.luau`, wdrożony w Studio; po wdrożeniu nieoglądany jeszcze w Play (próba ręczna wcześniej — tak). Propozycja D-172.
 - **Makieta lasu low poly (propozycja D-171):** `tools/studio/las_lowpoly_podglad.luau` → kontener `Workspace/LasLowPolyPodglad` (826; 0; −500), 1109 części: brama z kłódką i kluczem, ścieżka, świerki i drzewa, polana z ogniskiem, krąg areny, leże potwora, gniazdo z jajem, staw, chata, grzyby, głazy. Las Karola nietknięty.

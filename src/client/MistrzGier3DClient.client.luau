@@ -914,6 +914,20 @@ local function obrotKierunku(k: number): CFrame
 end
 local pionek = { poz = stoi(pola[1]), obrot = obrotKierunku(3), sx = 1, sy = 1, pole = 1, skok = 0 }
 
+-- Kotwica licznika pól (Paweł 28.11: „znacznik zaraz nad pionkiem”): osobna, niewidoczna część bez obrotu, trzymana
+-- nad czubkiem figurki. Wcześniej dymek był zaczepiony do podstawki, a ta jest walcem obróconym o 90° — przesunięcie
+-- BillboardGui liczy się w osiach zaczepu, więc „w górę” wychodziło w bok i licznik stał obok pionka.
+local kotwicaDymka = Instance.new("Part")
+kotwicaDymka.Name = "Kotwica dymka"
+kotwicaDymka.Size, kotwicaDymka.Transparency = Vector3.new(0.05, 0.05, 0.05), 1
+kotwicaDymka.Anchored, kotwicaDymka.CanCollide, kotwicaDymka.CanQuery, kotwicaDymka.CastShadow = true, false, false, false
+kotwicaDymka.Parent = model
+local wysPionka = 0 -- od stóp do czubka kapelusza, w osiach świata
+for _, c in ipairs(pionekCzesci) do
+	local s = c.rozmiar
+	wysPionka = math.max(wysPionka, c.rel.Y + (c.pion.X * s.X + c.pion.Y * s.Y + c.pion.Z * s.Z) / 2)
+end
+
 local function odswiezPionek()
 	local t = pola[pionek.pole]
 	local unies = if pionek.skok > 0 then 0 else (t.lift - t.dip * 3) * PZ * U
@@ -929,6 +943,7 @@ local function odswiezPionek()
 		end
 		c.p.CFrame = cf * (r.Rotation + Vector3.new(r.X * sx, r.Y * sy, r.Z * sx))
 	end
+	kotwicaDymka.CFrame = CFrame.new(pionek.poz + UP * (unies + wysPionka * sy))
 	local k = math.max(0.3, 1 - pionek.skok / (140 * PZ * U))
 	cienPionka.Size = Vector3.new(0.004, 42 * PX * U * 0.9 * k, 42 * PX * U * 0.9 * k)
 	cienPionka.CFrame = CFrame.new(pionek.poz + UP * (unies - pionek.skok + 0.004)) * CFrame.Angles(0, 0, math.pi / 2)
@@ -1203,16 +1218,10 @@ end
 -- dymek nad pionkiem z artefaktu: ile skoków zostało
 local dymek = Instance.new("BillboardGui")
 dymek.Name = "Dymek"
-dymek.Adornee, dymek.LightInfluence, dymek.Enabled = pionekKotwica, 0, false
-dymek.Size = UDim2.fromScale(0.46, 0.54)
--- Paweł 28.11 (po kamerze za pionkiem): licznik pól ma stać centralnie NAD pionkiem. Kotwica to podstawka pionka,
--- więc dymek podnosimy o zmierzoną wysokość figurki (do czubka kapelusza) i stawiamy jego dół w tym punkcie —
--- wcześniej wisiał 0,4 studa nad podstawką, czyli z niskiej kamery wypadał na tułowiu pionka.
-do
-	local ramkaCF, ramkaRozmiar = pionekG:GetBoundingBox()
-	local czubek = ramkaCF.Position.Y + ramkaRozmiar.Y / 2 - pionekKotwica.Position.Y
-	dymek.StudsOffsetWorldSpace = UP * math.max(60 * PZ * U, czubek * 0.96)
-end
+dymek.Adornee, dymek.LightInfluence, dymek.Enabled = kotwicaDymka, 0, false
+-- Paweł 28.11: licznik pól stoi zaraz nad czubkiem pionka (kotwica bez obrotu, patrz kotwicaDymka) i jest lekko
+-- mniejszy (0,36 × 0,42 studa; wcześniej 0,46 × 0,54). SizeOffset stawia dół dymka w punkcie kotwicy.
+dymek.Size = UDim2.fromScale(0.36, 0.42)
 dymek.SizeOffset, dymek.AlwaysOnTop = Vector2.new(0, 0.5), true
 local dymekSkala = Instance.new("UIScale")
 dymekSkala.Parent = dymek
@@ -1471,6 +1480,63 @@ local function kameraZaPionkiem(dt: number)
 	k.FieldOfView += (FOV_PIONKA - k.FieldOfView) * a
 end
 
+-- Test 28.11: gdy pionek idzie dalszymi bokami planszy, kamera za nim wypada za ścianą karczmy albo za mistrzem gier
+-- i cały kadr zasłania ściana. Dlatego wszystko, co stoi między kamerą a pionkiem i planszą, znika — tylko u tego
+-- gracza i tylko na czas gry przy stole (LocalTransparencyModifier; części mapy Karola nie są zmieniane). Jeśli zasłania
+-- choć jedna część mistrza gier, znika cała jego figura, żeby nie zostawały pojedyncze klocki w powietrzu.
+local zasloniete: { [BasePart]: boolean } = {}
+local zaslonaZa = 0
+local function odslonKadr(dt: number)
+	for p in pairs(zasloniete) do -- co klatkę, bo silnik potrafi wyzerować modyfikator
+		p.LocalTransparencyModifier = 1
+	end
+	zaslonaZa -= dt
+	if zaslonaZa > 0 or not kamOko then
+		return
+	end
+	zaslonaZa = 0.15
+	local k = workspace.CurrentCamera
+	local stopy = pionek.poz - UP * pionek.skok
+	local punkty = { stopy + UP * 0.1, stopy + UP * 0.6, kamCel or stopy, miejsce(0, 0.2, 0) }
+	local pomin: { Instance } = { model }
+	if player.Character then
+		table.insert(pomin, player.Character)
+	end
+	local teraz: { [BasePart]: boolean } = {}
+	local mistrz = karczma:FindFirstChild("MistrzGier")
+	local calyMistrz = false
+	for _, p in ipairs(k:GetPartsObscuringTarget(punkty, pomin)) do
+		if p:IsA("BasePart") and p.Transparency < 1 then
+			teraz[p] = true
+			if mistrz and p:IsDescendantOf(mistrz) then
+				calyMistrz = true
+			end
+		end
+	end
+	if calyMistrz and mistrz then
+		for _, p in ipairs(mistrz:GetDescendants()) do
+			if p:IsA("BasePart") and p.Transparency < 1 then
+				teraz[p] = true
+			end
+		end
+	end
+	for p in pairs(zasloniete) do
+		if not teraz[p] then
+			p.LocalTransparencyModifier = 0
+		end
+	end
+	for p in pairs(teraz) do
+		p.LocalTransparencyModifier = 1
+	end
+	zasloniete = teraz
+end
+local function przywrocZasloniete()
+	for p in pairs(zasloniete) do
+		p.LocalTransparencyModifier = 0
+	end
+	zasloniete = {}
+end
+
 -- okienko kostki: ViewportFrame z kopią tacy i kostki; kopia co klatkę przyjmuje położenie prawdziwej kostki.
 -- Ścianki prawdziwej kostki to SurfaceGui (nie rysują się w ViewportFrame), więc kopia ma oczka z części.
 local oknoKostki = Instance.new("Frame")
@@ -1644,6 +1710,7 @@ local czas = 0
 RunService.RenderStepped:Connect(function(dt)
 	dt = math.min(dt, 0.05)
 	kameraZaPionkiem(dt)
+	odslonKadr(dt)
 	odswiezOknoKostki()
 	if (workspace.CurrentCamera.CFrame.Position - baza).Magnitude > 60 then
 		return
@@ -1834,6 +1901,7 @@ local function zamknij()
 	end
 	otwarte = false
 	kamOko, kamCel = nil, nil
+	przywrocZasloniete()
 	oknoKostkiNr += 1
 	oknoKostki.Visible = false
 	gui.Enabled = false
