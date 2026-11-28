@@ -6,6 +6,12 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-28 · Claude Code u Pawła (sala wyboru klasy i rasy: pierwsze odświeżenie w stronę stylu low poly)
+- **Polecenie Pawła:** „przebudujmy ekran wyboru klas i ras na ten styl z poly miasteczka, poprawiając tekstury i dając obrysy lekkie… żeby tekstury nie były poglitchowane, ładniejszy”; w oknie pytania wybrał „Odświeżyć obecną salę” (wnętrze karczmy zostaje).
+- **Co zmienione w Studio (`tools/studio/sala_odswiez.luau`, jeden punkt cofania):** słoje na dużym drewnie (belki, więźba, szkielet ścian — 588 tekstur) w połowie wtopione w kolor i dwa razy większe, bo gęsty rysunek na dziesiątkach belek migotał; kamień muru czystszy (1272 tekstury), żelazo spokojniejsze (396); jasne szczyty dachu między krokwiami przyciemnione (wyglądały jak dziury w stropie); obrys 17 grup sali ciemny tusz 2E2022 / 0,3 (było 3A2A20 / 0,5).
+- **W plikach:** te same liczby w `swiat/wybor_klasy/tekstury.json` (reguła „według materiału”) i w `tools/studio/deploy_classselect.py` (obrys). Pełnego wdrożenia sali nie uruchamiałem — nadpisałoby figury kotów ras wstawione 26.11 wprost w Studio; po każdym pełnym wdrożeniu trzeba ponownie uruchomić `sala_odswiez.luau`.
+- **Czego to nie obejmuje:** kształty sali bez zmian (to praca w generatorze `swiat/wybor_klasy/generuj.py`); deski ścian dalej mają mocny rysunek; efekt oceniony tylko na zrzutach z kamery wyboru klasy w trybie Edit, nie w Play.
+
 ## 2026-11-28 · Claude Code u Pawła (okienka podpowiedzi „E” w naszej kresce; mistrz gier znika przy planszy)
 - **Mistrz gier znika na cały czas gry przy planszy** (Paweł: „żeby on znikał, jak wchodzisz w interakcję z planszą”) — obie figury (mapa i lokalna NPC), tylko u gracza; wraca po LEAVE. Wgrane, nieoglądane w Play po tej zmianie.
 - **Okienka podpowiedzi interakcji (Paweł: „pod nasz kreskowy styl, z lekką ciemną obwódką, popodmieniać z bazowych Robloxowych”):** nowy skrypt `src/client/PodpowiedziEClient.client.luau` przełącza u gracza wszystkie 35 podpowiedzi ProximityPrompt na styl własny i rysuje naszą tabliczkę: nazwa obiektu na ciemnej plakietce, żółty klawisz z literą, napis akcji, pasek przytrzymania; dotyk i mysz działają przez przycisk na tabliczce. Skryptów i części Karola nie zmienia (zmiana stylu jest lokalna, na czas gry); atrybut gracza `PodpowiedziWlasne = false` przywraca bazowe okienka. Sprawdzone w Play: wszystkie podpowiedzi mają styl własny; samego okienka na zrzucie nie złapałem (gracz nie stał przy żadnej podpowiedzi).
