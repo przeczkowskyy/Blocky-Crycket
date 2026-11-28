@@ -28,9 +28,22 @@
 | `wskazowki_gry/` | Wskazówka celu (propozycja, kontener `Workspace/WskazowkiGry`, tylko kod klienta): linijka celu i znacznik w świecie, kroki wynikają ze stanu gracza. |
 | `przejscie_gry/` | `RAPORT_PRZEJSCIA.md` — przejście gry okiem nowego gracza (trzy części, 17.11) i `proba_dymna.py`, krótka próba całej drogi do puszczania po każdej zmianie; `regresja_calosci.py` puszcza po kolei próby wszystkich pakietów w Studio (ok. godziny, wyniki poza repozytorium). |
 | `miasteczko_bazar/` | Miasteczko jako ciasny bazar (propozycja, D-084, D-085): pierwszy blok pasa przed Lasem, sklepy z wnętrzami i sprzedawcami, portal do krain, działka, zagroda petów, tablica; `uklad.json` → `generuj.py` → `czesci.json` (4410 części, kontener `Workspace/MiasteczkoBazar`) + `znaczniki.json`, `sprawdz.py`, `podglad.py` → `podglad/` (Pillow); w Studio stoi od 17.11.2026, zrzuty w `klatki/` — README |
-| `miasteczko_bazar_gra/` | Skrypty gry miasteczka-bazaru (propozycja, kontener `Workspace/MiasteczkoBazarGra`): 13 miejsc z klawiszem E (`miejsca.json`), zdarzenie `OknoMiejsca` dla okien 2D, dymki sprzedawców, portal krain, Brama Leśna, tablica z rankingiem, przejścia stare ↔ nowe miasteczko; `zbuduj.py`, `testy/`, `klatki/` — README |
+| `miasteczko_bazar_gra/` | Skrypty gry miasteczka-bazaru (propozycja, kontener `Workspace/MiasteczkoBazarGra`): 11 miejsc z klawiszem E (`miejsca.json`; do 26.11.2026 13 — z przejściami stare ↔ nowe miasteczko), zdarzenie `OknoMiejsca` dla okien 2D, dymki sprzedawców, portal krain, Brama Leśna, tablica z rankingiem; `zbuduj.py`, `testy/`, `klatki/` — README |
 | `teleport_chmury/` | Przejście przez chmury zamiast okna mapy (propozycja, D-075; kontener `Workspace/TeleportChmury`): makieta dziewięciu krain widziana z góry, wybór dotknięciem, kamera opada na gracza; `krainy.json`, `zbuduj.py`, `testy/`, `klatki/` — README |
 | `test_walki_roblox/` | test cutscenki auto-walki w samym Roblox (kontener `Workspace/TestWalki`): źródła Luau, `zbuduj.py`, testy, klatki, README z pomiarami |
+
+## Sprzątanie mapy (26.11.2026, zlecenie Karola)
+Gracz zaczyna od razu w miasteczku-bazarze. Z miejsca gry znikają (źródła ZOSTAJĄ w repozytorium, każdy kontener da się
+zbudować od nowa jego `zbuduj.py` / `tools/studio_buduj.py`): `DemoLesnaBaza` (stara wioska startowa), `BonkGra`,
+`LasTeleport`, `BiomLas`, `LasPotwory`, `LasMgla`, `RasyProba`, `TestWalki` (v1), `KrzyweMiasteczko`, a w kontenerach,
+które zostają: tablica `TreningProba/TablicaWejscia`, przymierzalnia `StrojeProba/Przymierzalnia` i przejścia
+stare ↔ nowe miasteczko w `MiasteczkoBazarGra`. Narzędzia (oba z `--sucho`, tylko tryb Edit, punkty historii):
+```
+python -B tools/studio/sprzatanie_mapy.py --sucho      # co zniknie (instancje, części); bez --sucho usuwa po kawałku
+python -B tools/studio/start_w_miasteczku.py --sucho   # Workspace/SpawnLocation → znacznik start bazaru (niewidzialny)
+```
+Zostają m.in. `TestPostaci`, `TestWalki2`, `WyborKlasy*`, kontenery `*Podglad`, `Baseplate`. Uwaga: wdrożenie wyboru
+klasy (`tools/studio/deploy_classselect.py`) kopiuje figury z `Workspace/RasyProba` — przed nim `swiat/rasy_proba/zbuduj.py`.
 
 ## Polecenia (z głównego folderu repozytorium)
 ```

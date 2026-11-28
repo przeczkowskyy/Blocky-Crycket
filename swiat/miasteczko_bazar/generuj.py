@@ -144,6 +144,10 @@ def budynki(s, U, obrysy):
         raport[m.NAZWA] = len(s.czesci) - n0
         w, d = m.OBRYS
         obrysy.append(Obrys(m.NAZWA, b["x"], b["z"], b["ry"], w, d, 0.2))
+        r = math.radians(b["ry"])
+        for cx, cz, w2, d2 in getattr(m, "OBRYSY_DODATKOWE", ()):     # dobudówki poza OBRYS (sala Training Center)
+            obrysy.append(Obrys(m.NAZWA + "+", b["x"] + cx * math.cos(r) + cz * math.sin(r),
+                                b["z"] - cx * math.sin(r) + cz * math.cos(r), b["ry"], w2, d2, 0.2))
     return raport
 
 
@@ -151,6 +155,8 @@ def domy(s, U, rnd, obrysy):
     P = U["poziomy"]
     n0 = len(s.czesci)
     for i, d in enumerate(U["domy"]):
+        if d.get("pominiety"):                                 # np. dom placyku zastąpiony salą Training Center
+            continue
         with s.uklad(pos=(d["x"], P["budynki_y0"], d["z"]), obrot=(0, d["ry"], 0), grupa="Domy/" + d["id"]):
             zestaw.dom_mieszkalny(s, random.Random(100 + i), wariant=d["wariant"], kolor_dachu=d["dach"],
                                   kolor_sciany=d["sciana"], szer=d["szer"], gl=d["gl"], wys=d["wys"], pochyl=d["pochyl"],
@@ -237,9 +243,12 @@ def rekwizyty(s, U, rnd):
         zestaw.skrzynia(s, (-17.0, y, -30.5), ry=-15, dl=3.4, a=3.0, przechyl=6)
         zestaw.beczka(s, (-13.6, y, -29.0), "woda", przechyl=(0, -7))
     with s.grupa("Rekwizyty/Placyk"):
-        zestaw.lawka(s, (-81.0, y, -14.5), ry=0)
-        zestaw.lawka(s, (-81.0, y, 14.5), ry=180)
-        zestaw.drzewo_lisciaste(s, (-92.0, y, -29.5), random.Random(11), skala=0.9)
+        # 26.11.2026 (zlecenie Karola: „ławka przy siłowni przeszkadza”): ławka z (−81; −14,5) stała w otwartym froncie
+        # sali Training Center na osi przejścia — obie ławki stoją teraz w południowej części placyku, twarzą do studni
+        # (studnia przesunięta na z = 6, uklad.json)
+        zestaw.lawka(s, (-76.5, y, 18.0), ry=180)
+        zestaw.lawka(s, (-85.5, y, 18.0), ry=180)
+        # drzewo z kąta pn.-zach. placyku (−92; −29,5) usunięte 25.11.2026: w tym miejscu stoi sala Training Center
         zestaw.drzewo_lisciaste(s, (-92.0, y, 29.5), random.Random(12), skala=0.95, owoce=True)
         zestaw.kwiaty(s, (-92.0, y, -3.0), ry=90, kolory=("czerwien", "biel"))
         zestaw.kwiaty(s, (-92.0, y, 3.0), ry=90, kolory=("dach_sklep", "zloto"))
@@ -278,7 +287,9 @@ def kulisy_i_tlo(s, U, rnd):
         for x, z in ((-8.0, 42.0), (6.0, 44.0), (-1.0, 50.0)):
             zestaw.drzewo_lisciaste(s, (x, y, z), rnd, skala=1.05)
         for x, z in ((-103.0, -30.0), (-103.0, 0.0), (-103.0, 30.0)):
-            zestaw.drzewo_iglaste(s, (x, y, z), rnd, skala=1.1)
+            # 27.11.2026: drzewo (−103; −30) stałoby w dużej sali Training Center — budowane „na brudno” (scena
+            # do kosza), żeby losowania dalszych drzew, pagórków i chmur zostały te same
+            zestaw.drzewo_iglaste(Scena("kosz", paleta=PALETA) if z == -30.0 else s, (x, y, z), rnd, skala=1.1)
     with s.grupa("Tlo"), s.cechy(kolizja=False, cien=False):
         # pagórki z trzech klocków (schodkowe, jak w stylu miasteczka) — nic nie schodzi pod grunt (Baseplate pod spodem)
         kol = (("lisc_ciemny", "igla", "lisc"), ("igla", "lisc_ciemny", "lisc_jasny"))
@@ -304,8 +315,11 @@ def niewidzialne(s, U):
     with s.grupa("Niewidzialne"), s.cechy(cien=False):
         for z in (pz0 - 1.5, pz1 + 1.5):
             s.blok("Niewidzialna ściana", ((px0 + px1) / 2.0, 30.0, z), (px1 - px0 + 4.0, 60.0, 2.0), "biel", alfa=1.0)
-        for x in (px0 - 1.5, px1 + 1.5):
-            s.blok("Niewidzialna ściana", (x, 30.0, (pz0 + pz1) / 2.0), (2.0, 60.0, pz1 - pz0 + 4.0), "biel", alfa=1.0)
+        # 27.11.2026: zachodnia część dużej sali Training Center wychodzi za pole gry — zachodnia ściana biegnie od
+        # przedniego boku sali (wnętrze sali zamykają jej ściany z kolizją), wschodnia bez zmian
+        za = g.get("sala_poza_polem", {}).get("zachodnia_sciana_od_z", pz0 - 2.0)
+        s.blok("Niewidzialna ściana", (px0 - 1.5, 30.0, (za + pz1 + 2.0) / 2.0), (2.0, 60.0, pz1 + 2.0 - za), "biel", alfa=1.0)
+        s.blok("Niewidzialna ściana", (px1 + 1.5, 30.0, (pz0 + pz1) / 2.0), (2.0, 60.0, pz1 - pz0 + 4.0), "biel", alfa=1.0)
     return 4
 
 
@@ -406,6 +420,8 @@ def zapisz_znaczniki(U, plik, raport):
         "czesci_na_budynek": raport,
         "wszystkie": wszystkie,
     }
+    for k, v in wspolne.DODATKI.items():                       # bloki spoza „wszystkie” (np. trening_afk)
+        d[k] = v
     with open(plik, "w", encoding="utf-8", newline="\n") as f:
         json.dump(d, f, ensure_ascii=False, indent=1)
         f.write("\n")
@@ -415,6 +431,7 @@ def zapisz_znaczniki(U, plik, raport):
 def generuj(U=None):
     U = U or wczytaj_uklad()
     wspolne.ZNACZNIKI.clear()
+    wspolne.DODATKI.clear()
     X0, Z0 = U["swiat"]["X0"], U["swiat"]["Z0"]
     s = Scena(U["swiat"]["kontener"], paleta=PALETA)
     rnd = random.Random(U["ziarno"])

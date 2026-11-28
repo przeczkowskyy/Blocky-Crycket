@@ -1,7 +1,7 @@
 --[[
 	DaneNpc — WYGENEROWANE przez swiat/npc_gra/dane.py z ustawienia.json, modułów postaci (swiat/postacie)
 	i pakietu bazaru (miejsca.json, znaczniki.json, czesci.json). NIE EDYTUJ RĘCZNIE: zmień źródło i uruchom
-	python -B swiat/npc_gra/dane.py. Kąty wzroku w radianach. Skrót danych: d66df4377d67. Status: propozycja (D-109).
+	python -B swiat/npc_gra/dane.py. Kąty wzroku w radianach. Skrót danych: 032e0f59b7a3. Status: propozycja (D-109).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return {}
@@ -281,13 +281,13 @@ return {
 			kier = { -0.4226, 0.9063 },
 			skala = 1.15,
 			zastepuje = "Workspace/MiasteczkoBazar/TrainingCenter/Trener",
-			rola = "Trener · Mini-gry",
+			rola = "Trener · Train",
 		},
 		{
 			klucz = "zagroda_petow",
 			npc = "opiekunka",
-			poz = { 959.69, 0.5, -670.516 },
-			kier = { 0.1736, -0.9848 },
+			poz = { 953.993, 0.3, -687.528 },
+			kier = { 0.2079, -0.9782 },
 			skala = 1.1,
 			zastepuje = "Workspace/MiasteczkoBazar/ZagrodaPetow/Opiekunka",
 			rola = "Opiekunka · Zagroda petów",
@@ -305,5 +305,5 @@ return {
 			szczescie = "trener_szczescie",
 		},
 	},
-	skrot = "d66df4377d67",
+	skrot = "032e0f59b7a3",
 }

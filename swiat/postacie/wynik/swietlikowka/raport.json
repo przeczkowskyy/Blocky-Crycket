@@ -9,220 +9,220 @@
     {
      "nazwa": "Tulow_Geo",
      "kosc": "Tulow",
-     "trojkaty": 220,
-     "wierzcholki": 120,
+     "trojkaty": 1464,
+     "wierzcholki": 748,
      "wymiary": [
-      1.15,
-      1.37,
-      1.02
+      1.286,
+      1.23,
+      1.389
      ],
      "min": [
-      -0.575,
-      0.03,
-      -0.475
+      -0.643,
+      -0.01,
+      -0.654
      ],
      "max": [
-      0.575,
-      1.4,
-      0.545
+      0.643,
+      1.22,
+      0.735
      ]
     },
     {
      "nazwa": "Glowa_Geo",
      "kosc": "Glowa",
-     "trojkaty": 380,
-     "wierzcholki": 216,
+     "trojkaty": 1892,
+     "wierzcholki": 970,
      "wymiary": [
-      1.25,
-      1.0,
-      1.16
+      1.6,
+      1.3,
+      1.468
      ],
      "min": [
-      -0.625,
-      1.33,
-      -0.48
+      -0.8,
+      1.15,
+      -0.63
      ],
      "max": [
-      0.625,
-      2.33,
-      0.68
+      0.8,
+      2.45,
+      0.838
      ]
     },
     {
      "nazwa": "PiorkoL_Geo",
      "kosc": "PiorkoL",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 160,
+     "wierzcholki": 84,
      "wymiary": [
+      0.391,
       0.37,
-      0.476,
-      0.2
+      0.12
      ],
      "min": [
-      0.325,
-      2.222,
-      -0.1
+      0.54,
+      2.325,
+      -0.01
      ],
      "max": [
-      0.695,
-      2.698,
-      0.1
+      0.931,
+      2.695,
+      0.11
      ]
     },
     {
      "nazwa": "SkrzydloL_Geo",
      "kosc": "SkrzydloL",
-     "trojkaty": 96,
-     "wierzcholki": 54,
+     "trojkaty": 312,
+     "wierzcholki": 164,
      "wymiary": [
-      0.342,
-      1.031,
-      0.934
+      0.71,
+      1.009,
+      0.838
      ],
      "min": [
-      0.504,
-      0.371,
-      -0.577
+      0.513,
+      0.201,
+      -0.367
      ],
      "max": [
-      0.846,
-      1.402,
-      0.357
+      1.223,
+      1.21,
+      0.471
      ]
     },
     {
      "nazwa": "PiorkoP_Geo",
      "kosc": "PiorkoP",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 160,
+     "wierzcholki": 84,
      "wymiary": [
+      0.391,
       0.37,
-      0.476,
-      0.2
+      0.12
      ],
      "min": [
-      -0.695,
-      2.222,
-      -0.1
+      -0.931,
+      2.325,
+      -0.01
      ],
      "max": [
-      -0.325,
-      2.698,
-      0.1
+      -0.54,
+      2.695,
+      0.11
      ]
     },
     {
      "nazwa": "SkrzydloP_Geo",
      "kosc": "SkrzydloP",
-     "trojkaty": 96,
-     "wierzcholki": 54,
+     "trojkaty": 312,
+     "wierzcholki": 164,
      "wymiary": [
-      0.342,
-      1.031,
-      0.934
+      0.71,
+      1.009,
+      0.838
      ],
      "min": [
-      -0.846,
-      0.371,
-      -0.577
+      -1.223,
+      0.201,
+      -0.367
      ],
      "max": [
-      -0.504,
-      1.402,
-      0.357
+      -0.513,
+      1.21,
+      0.471
      ]
     },
     {
      "nazwa": "Swietlik1_Geo",
      "kosc": "Swietlik1",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 176,
+     "wierzcholki": 94,
      "wymiary": [
-      0.17,
-      0.17,
-      0.17
+      0.15,
+      0.232,
+      0.272
      ],
      "min": [
-      -0.085,
-      0.365,
-      1.165
+      1.075,
+      0.945,
+      -0.136
      ],
      "max": [
-      0.085,
-      0.535,
-      1.335
+      1.225,
+      1.177,
+      0.136
      ]
     },
     {
      "nazwa": "Swietlik2_Geo",
      "kosc": "Swietlik2",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 176,
+     "wierzcholki": 94,
      "wymiary": [
-      0.17,
-      0.17,
-      0.17
+      0.15,
+      0.232,
+      0.272
      ],
      "min": [
-      0.796,
-      1.365,
-      -0.824
+      -1.275,
+      1.195,
+      -0.136
      ],
      "max": [
-      0.966,
-      1.535,
-      -0.654
+      -1.125,
+      1.427,
+      0.136
      ]
     },
     {
      "nazwa": "Swietlik3_Geo",
      "kosc": "Swietlik3",
-     "trojkaty": 44,
-     "wierzcholki": 24,
+     "trojkaty": 176,
+     "wierzcholki": 94,
      "wymiary": [
-      0.17,
-      0.17,
-      0.17
+      0.269,
+      0.232,
+      0.161
      ],
      "min": [
-      -1.354,
-      0.865,
-      -0.547
+      -0.562,
+      0.645,
+      -1.255
      ],
      "max": [
-      -1.184,
-      1.035,
-      -0.377
+      -0.293,
+      0.877,
+      -1.094
      ]
     }
    ],
-   "trojkaty_razem": 1012,
+   "trojkaty_razem": 4828,
    "tekstury": {
     "rozmiar_px": 32,
-    "kolory_materialy": 12
+    "kolory_materialy": 11
    },
    "typ": "stwor",
    "skala": 1.0,
    "wymiary_ciala": [
-    2.32,
-    2.668,
-    2.159
+    2.5,
+    2.705,
+    2.093
    ],
    "wymiary_z_akcesoriami": [
-    2.32,
-    2.668,
-    2.159
+    2.5,
+    2.705,
+    2.093
    ],
    "zakres_z_akcesoriami": [
     [
-     -1.354,
-     0.03,
-     -0.824
+     -1.275,
+     -0.01,
+     -1.255
     ],
     [
-     0.966,
-     2.698,
-     1.335
+     1.225,
+     2.695,
+     0.838
     ]
    ],
    "kosci": [
@@ -288,11 +288,11 @@
   "klip spoczynek: Swietlik3.obrot — klatka 0 ≠ klatka 60, pętla skoczy"
  ],
  "kontrola": [
-  "swietlikowka.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje brak -> ZGODNE",
-  "swietlikowka__spoczynek.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-61 -> ZGODNE",
-  "swietlikowka__chod.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-25 -> ZGODNE",
-  "swietlikowka__radosc.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-37 -> ZGODNE",
-  "swietlikowka__wyklucie.fbx: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje swietlikowka|Scene 1-31 -> ZGODNE",
-  "swietlikowka.glb: siatki 11, kości 10, trójkąty 1036, wzrost 2.67 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
+  "swietlikowka.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje brak -> ZGODNE",
+  "swietlikowka__spoczynek.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje swietlikowka|Scene 1-61 -> ZGODNE",
+  "swietlikowka__chod.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje swietlikowka|Scene 1-25 -> ZGODNE",
+  "swietlikowka__radosc.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje swietlikowka|Scene 1-37 -> ZGODNE",
+  "swietlikowka__wyklucie.fbx: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje swietlikowka|Scene 1-31 -> ZGODNE",
+  "swietlikowka.glb: siatki 11, kości 10, trójkąty 4852, wzrost 2.71 st., akcje chod 0-24, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE"
  ]
 }

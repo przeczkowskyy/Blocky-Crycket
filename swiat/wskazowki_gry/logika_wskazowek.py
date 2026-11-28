@@ -17,8 +17,8 @@ Stan gracza (słownik, wszystkie pola opcjonalne):
   trening_wzmacnia (bool) — stan gracza słucha treningu (TreningPodlaczony)
   poziom (int | None)     — atrybut Level
   bagno (bool)            — Bagno stoi w miejscu (kontener BagnoPasGra)
-  jajko (bool)            — stoi inkubator biomu, w którym jest gracz (w mieście: lasu; swiat/pety_proba), i Złoto
-                            gracza ≥ cena jajka tego biomu (17.11.2026)
+  jajko (bool)            — działa pakiet petów (swiat/pety_proba), a Rybki gracza ≥ cena jajka biomu, w którym jest
+                            gracz (w mieście: lasu — leśne jajko stoi od 26.11.2026 w mieście przy zagrodzie)
   kupione (int)           — ile jajek tego biomu gracz już kupił; krok o jajku tylko do pierwszego jajka biomu
   kowal (bool)            — działa kowal na próbę (kontener KowalProba, gracz ma atrybut KowalDostepne; 18.11.2026)
   kowal_zapas (bool)      — gracz ma zapasowy przedmiot do rozbiórki (KowalZapasy > 0)
@@ -89,7 +89,8 @@ def _krok_glowny(D, s):
     miejsce = s.get("miejsce") or "miasto"
     kraina = s.get("kraina") or ("las" if miejsce in ("las", "za_brama") else None)
     # pierwsze jajko biomu: gdy Złota wystarcza na jajko biomu, w którym jest gracz (w mieście: lasu), a gracz nie kupił
-    # jeszcze żadnego jajka tego biomu (nie za bramą — inkubator daleko)
+    # jeszcze żadnego jajka tego biomu (nie za bramą — jajko daleko); w lesie krok prowadzi do Kamienia Powrotu, bo leśne
+    # jajko stoi w mieście (26.11.2026)
     if s.get("jajko") and not s.get("kupione") and miejsce != "za_brama":
         if miejsce == "miasto" or kraina is None:
             return _krok(D, "f_jajko_miasto")
@@ -181,13 +182,13 @@ def przypadki(D):
       bagno=True)
     k("za bramą Bagna", kraina="bagno", miejsce="za_brama", straznik=True, straznik_bagna=True, bagno=True)
     k("za bramą Bagna bez Strażnika Topieli (cofany)", kraina="bagno", miejsce="za_brama", straznik=True, bagno=True)
-    k("Złoto na jajko w lesie: inkubator", miejsce="las", kraina="las", wygrane=3, ostatni="wygrana", jajko=True,
+    k("Złoto na jajko w lesie: Kamień Powrotu (jajko w mieście)", miejsce="las", kraina="las", wygrane=3, ostatni="wygrana", jajko=True,
       kupione=0)
-    k("Złoto na jajko w mieście: TELEPORT", wygrane=3, ostatni="wygrana", jajko=True)
+    k("Złoto na jajko w mieście: jajko przy zagrodzie", wygrane=3, ostatni="wygrana", jajko=True)
     k("Złoto na jajko po przegranej — jajko wygrywa", miejsce="las", przegrane=1, ostatni="przegrana", jajko=True,
       stan_gracza=True, trening_wzmacnia=True)
     k("Złoto na jajko, ale kupił już jajko lasu", miejsce="las", wygrane=3, ostatni="wygrana", jajko=True, kupione=1)
-    k("Złoto na jajko Bagna w Bagnie: inkubator przy pomoście", kraina="bagno", miejsce="las", straznik=True, bagno=True,
+    k("Złoto na jajko Bagna w Bagnie: jajko przy pomoście", kraina="bagno", miejsce="las", straznik=True, bagno=True,
       jajko=True, kupione=0)
     k("Złoto na jajko Bagna, ale kupił już jajko Bagna", kraina="bagno", miejsce="las", straznik=True, bagno=True,
       jajko=True, kupione=2)
@@ -201,7 +202,7 @@ def przypadki(D):
     k("za bramą Bagna, jest Dżungla", kraina="bagno", miejsce="za_brama", **dz)
     k("Strażnik Topieli pokonany, jest Dżungla, w mieście: TELEPORT → Dżungla", **dz)
     k("w Dżungli bez walki: potwór", kraina="dzungla", miejsce="las", **dz)
-    k("Złoto na jajko Dżungli w Dżungli: inkubator na tarasie", kraina="dzungla", miejsce="las", jajko=True, kupione=0,
+    k("Złoto na jajko Dżungli w Dżungli: jajko na tarasie", kraina="dzungla", miejsce="las", jajko=True, kupione=0,
       **dz)
     k("Złoto na jajko Dżungli, ale kupił już jajko Dżungli", kraina="dzungla", miejsce="las", jajko=True, kupione=1, **dz)
     k("w Dżungli po wygranej ze stanem gracza: poziomy, Wąż Stu Lian", kraina="dzungla", miejsce="las", wygrane=1,

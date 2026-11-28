@@ -1,5 +1,7 @@
 # Miasteczko-bazar w grze — podpowiedzi E, uchwyt okien 2D, portal krain, przejścia
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** gracz zaczyna od razu na starcie bazaru (wspólny `Workspace/SpawnLocation` przeniesiony na znacznik `start`), więc tymczasowe przejścia **„Stare miasteczko (E)” i „Nowe miasteczko (E)” zniknęły** — pakiet ma **11 miejsc z E** zamiast 13, nie czyta już `swiat/krzywe_miasteczko/uklad.json`, nie stawia punktu w starym miasteczku (`zbuduj.py` bez kroku „stare miasteczko”), a logika nie ma akcji `przenies` ani kandydatów (uchwyt `Sygnaly/PrzeniesDoBazaru` zostaje). Opisy przejść niżej są historią. Próby: `B09` sprawdza teraz start gry w bazarze, `proba_dodatkowa.py D03` — brak starych przejść. Usuwanie z miejsca: `python -B tools/studio/sprzatanie_mapy.py` (najpierw `--sucho`); start gry na starcie bazaru: `python -B tools/studio/start_w_miasteczku.py`.
+
 *Status: **propozycja** (17.11.2026). **Wdrożone w Studio i sprawdzone w trybie Play w nocy 16/17.11.2026** — wyniki
 w „Co sprawdzone w grze” niżej, zrzuty w `klatki/`.
 Wymagania: D-084 (do sklepu się wchodzi, E na sprzedawcy otwiera okno 2D Pawła), D-085 (portal krain, przejście na
@@ -29,11 +31,11 @@ próbie w grze (kolizje dla kamery, nowe postacie) opisuje jej README.*
 | `zrodla/KlientBazaru.client.luau` | klient: `OknoMiejsca`, sygnał HUD, dymki, portal → chmury, kłódka lochów u siebie, haczyk `SterowanieKlienta` |
 | `zrodla/DaneBazaru.luau` | **wygenerowany** — nie edytować ręcznie |
 | `sprawdz_luau_bazaru.py` | kontrola statyczna Luau (reguły `swiat/las_potwory/sprawdz_luau.py`, parser `tools/walka/luau_mini.py`, bez liczb położeń w kodzie, bez zmian cudzych instancji) |
-| `czasy_biegu.py` | plan czasów biegu ze startu do każdego E (siatka chodzenia mapy, tylko odczyt) i punkty przy ścianach — dla testów i próby |
+| `czasy_biegu.py` | plan czasów biegu ze startu do każdego E (siatka chodzenia mapy, tylko odczyt) i punkty przy ścianach — dla testów i próby (27.11.2026: punkty tylko z pola gry, „zachód” na południe od przedniego boku dużej sali Training Center, która wychodzi za zachodni brzeg pola — próba B12; sprawdzone offline) |
 | `zbuduj.py` | budowa w Studio: `--sucho`, `--skrypty`, `--usun`, `--studio` |
 | `testy/test_bazaru.py` | 38 testów offline (opis w nagłówku pliku) |
 | `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną B01–B15 i 8 zrzutami (uruchomiona 17.11.2026, wyniki niżej) |
-| `testy/proba_dodatkowa.py` | uzupełnienie próby: kamera za plecami i odwrócona na 6 stoiskach (D01), dymki 13 miejsc (D02), stare ↔ nowe prawdziwym E (D03), Kamień Powrotu z bazarem i bez (D04), koszt u klienta (D05), zrzuty z gry do README (Z) |
+| `testy/proba_dodatkowa.py` | uzupełnienie próby: kamera za plecami i odwrócona na 6 stoiskach (D01), dymki 11 miejsc (D02), brak starych przejść (D03; do 26.11.2026: stare ↔ nowe prawdziwym E), Kamień Powrotu z bazarem i bez — w obu przypadkach start bazaru (D04), koszt u klienta (D05), zrzuty z gry do README (Z) |
 | `wyniki/` | zapisy prób w Studio (bez nazwy konta — `<gracz>`) |
 | `klatki/` | zrzuty z gry (tryb Play) — tabela niżej |
 
@@ -65,7 +67,7 @@ w Edit i przenoszone przy odbudowie: `DymkiWylaczone`, `BezDymku` (np. `"zbrojow
 | `mistrz_gier` | `sklepy/mistrz_gier` | Mistrz gier / Zagraj | `OknoMiejsca`, dymek „Mistrz gier: plansza w budowie” | — |
 | `sklep_magiczny` | `sklepy/sklep_magiczny` | Mag / Sklep | `OknoMiejsca` + HUD, dymek „Mag: sklep w budowie” | `Shop` |
 | `zbrojownia` | `sklepy/zbrojownia` | Zbrojmistrz / Sklep | `OknoMiejsca` + HUD, dymek „Zbrojmistrz: sklep w budowie” | `Shop` |
-| `training_center` | `training_center` | Trener / Mini-gry | `OknoMiejsca`, dymek „Trener: mini-gry w budowie” | — |
+| `training_center` | `training_center` | Trener / Train (od 26.11.2026; wcześniej „Mini-gry”) | `OknoMiejsca` → okno sześciu stanowisk AFK w `src/client/TreningAFKClient.client.luau` (zgłasza się atrybutem, więc dymku nie ma; zapasowy dymek „Trainer: training is closed right now.”) | — |
 | `zagroda_petow` | `zagroda/punkt_e` | Opiekunka / Zagroda petów | `OknoMiejsca` + HUD, dymek „Opiekunka: zagroda w budowie” | `Pets` |
 | `tablica` | `tablica/tablica` | Tablica ogłoszeń / Ranking | `OknoMiejsca`, dymek „Pełny ranking — wkrótce” | — |
 | `dzialka` | `dzialka` (Brama Twierdzy) | Brama Twierdzy / Na działkę | `OknoMiejsca`, dymek „Działka — wkrótce” | — |
@@ -200,7 +202,10 @@ jak dotąd. Odmowa uchwytu (np. `trwa`) nie przenosi nigdzie indziej. Sprawdzone
   spawnem, karczmą i kołem fortuny), a nie w `Workspace/KrzyweMiasteczko` (ono nie ma prawdziwego spawnu — jego
   README). Budowa wypisuje więc uwagę „start poza obszarem starego miasteczka” i stawia „Nowe miasteczko (E)” w
   (11,7; 1,0; −2,7): 12,0 st od spawnu, 22,1 st od `LasTeleport/PortalStart`, niczego nie zasłania (zrzut
-  `klatki/12_przejscie_nowe_w_starym.jpg`). To miejsce, w którym gracz dziś wchodzi do gry, więc rano: spawn → E →
+  `klatki/12_przejscie_nowe_w_starym.jpg`). **26.11.2026:** od 20.11 stoi tam też brama BONK (`swiat/bonk`, atrybut
+  `BonkGra.PortalPoz` (16; 1; 0), wejście w promieniu 5 st) — 5,1 st od tabliczki, więc postać przy tabliczce lądowała
+  w BONK (B09). Budowa pomija teraz kandydatów bliżej niż 12 st od stref wejścia innych pakietów (`STREFY_WEJSCIA`
+  w `zbuduj.py`); punkt stoi w (6,4; 1,0; −10,2): 12 st od spawnu, 14 st od bramy BONK. To miejsce, w którym gracz dziś wchodzi do gry, więc rano: spawn → E →
   bazar. „Stare miasteczko (E)” w bazarze prowadzi więc z powrotem na ten plac startowy, a nie do Krzywego
   Miasteczka — do decyzji (wybór 9).
 

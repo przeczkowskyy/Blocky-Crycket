@@ -1,7 +1,7 @@
 --[[
 	SerwerBazaru — serwerowa połowa „miasteczka-bazaru w grze” (Script, RunContext = Server, w kontenerze
 	Workspace/MiasteczkoBazarGra; budowa: swiat/miasteczko_bazar_gra/zbuduj.py). Działa tylko w Roblox Studio:
-	poza Studio usuwa cały kontener, jak pozostałe prototypy (LasTeleport, LasPasGra, TeleportChmury).
+	poza Studio usuwa cały kontener, jak pozostałe prototypy (LasPasGra, TeleportChmury).
 
 	Co robi:
 		1. zgodność logiki: przypadki wzorcowe z lustra w Pythonie (DaneBazaru.przypadki) → atrybut ZgodnoscLogikiBazaru;
@@ -11,9 +11,9 @@
 		   dymek    → klient ("dymek", id, tekst): odmowa albo „Zamknięte” nad miejscem;
 		   chmury   → klient ("chmury", id): Workspace/TeleportChmury/Otworz:Fire() (przejście przez chmury);
 		   las      → uchwyt Workspace/LasPasGra/Sygnaly/PrzeniesDoLasu (przenosi serwer pasa: wczytanie okolicy,
-		              własny odstęp 2 s); bez uchwytu czytelna odmowa;
-		   przenies → ten serwer: stare miasteczko ↔ start bazaru (RequestStreamAroundAsync, potem PivotTo,
-		              zerowanie prędkości), blokada czasu odstep_przejsc_s po udanym przejściu i „w trakcie”;
+		              własny odstęp 2 s); bez uchwytu czytelna odmowa; blokada czasu odstep_przejsc_s po udanym
+		              przejściu i „w trakcie” (26.11.2026: przejścia stare ↔ nowe miasteczko usunięte razem ze starym
+		              miasteczkiem; start bazaru jest miejscem startu gry — tools/studio/start_w_miasteczku.py);
 		4. lochy (D-042): stan osobno dla gracza, w pamięci serwera (bez zapisu); atrybut gracza BazarLochyOtwarte
 		   (klient chowa u siebie kłódkę); odblokowanie haczykiem albo poziomem, gdy D.lochy.wymagany_poziom jest liczbą;
 		5. tablica: SurfaceGui Tablica/Ekran/Ranking — ranking graczy serwera z atrybutów gracza (Level, XP, statystyki
@@ -122,7 +122,7 @@ local function postacGracza(gracz: Player): (Model?, Humanoid?, BasePart?)
 	return postac, hum, hrp
 end
 
------------------------------------------------------------------- przenoszenie (stare miasteczko ↔ bazar)
+------------------------------------------------------------------ przenoszenie na start bazaru (uchwyt PrzeniesDoBazaru)
 local function pominDlaPromienia(): { Instance }
 	local t: { Instance } = { kontener }
 	for _, g in Players:GetPlayers() do
@@ -184,17 +184,6 @@ local function celBazaru()
 	return { punkt = v3(D.start.punkt), patrz = v3(D.start.patrz) }
 end
 
--- punkt powrotu w starym miasteczku wybrał zbuduj.py w Studio (atrybuty kontenera, tylko odczyt)
-local function celStarego()
-	local p, q = kontener:GetAttribute("PunktPowrotuStare"), kontener:GetAttribute("PatrzPowrotuStare")
-	if typeof(p) == "Vector3" and typeof(q) == "Vector3" then
-		return { punkt = p, patrz = q }
-	end
-	return nil
-end
-
-local CELE = { bazar = celBazaru, stare = celStarego }
-
 ------------------------------------------------------------------ lochy (D-042, osobno dla gracza)
 local function odswiezLochy(gracz: Player)
 	local otwarte = L.lochyOtwarte(D, stanGracza(gracz), gracz:GetAttribute("Level"))
@@ -220,28 +209,16 @@ local function przejscie(gracz: Player, id: string, w)
 	task.spawn(function()
 		local udane, powod = false, "blad"
 		local ok, blad = pcall(function()
-			if w.akcja == "las" then
-				local f = uchwytLasu()
-				if not f then
-					powod = "brak_lasu"
-					return
-				end
-				local r = f:Invoke(gracz, { punkt = D.las.punkt, przelotPo = 0 })
-				if type(r) == "table" and r.ok == true then
-					udane = true
-				elseif type(r) == "table" and type(r.powod) == "string" then
-					powod = r.powod
-				end
-			else
-				local zrob = CELE[w.cel]
-				local cel = zrob and zrob()
-				if not cel then
-					powod = "brak_celu"
-					return
-				end
-				local ok2, powod2 = przenies(gracz, cel)
-				udane = ok2
-				powod = powod2 or powod
+			local f = uchwytLasu()
+			if not f then
+				powod = "brak_lasu"
+				return
+			end
+			local r = f:Invoke(gracz, { punkt = D.las.punkt, przelotPo = 0 })
+			if type(r) == "table" and r.ok == true then
+				udane = true
+			elseif type(r) == "table" and type(r.powod) == "string" then
+				powod = r.powod
 			end
 		end)
 		if not ok then
@@ -249,7 +226,7 @@ local function przejscie(gracz: Player, id: string, w)
 		end
 		L.koniecPrzejscia(s, udane, os.clock())
 		if udane then
-			zdarzenia:FireClient(gracz, "przeniesiono", id, if w.akcja == "las" then "las" else w.cel)
+			zdarzenia:FireClient(gracz, "przeniesiono", id, "las")
 		else
 			zdarzenia:FireClient(gracz, "dymek", id, L.tekstOdmowy(D, powod, 0))
 		end
@@ -259,13 +236,10 @@ end
 
 local function swiatDla(gracz: Player, id: string, czesc: BasePart?, bezOdleglosci: boolean?)
 	local _, _, hrp = postacGracza(gracz)
-	local m = D.miejsca[id]
-	local zrob = m and m.cel and CELE[m.cel]
 	return {
 		odleglosc = if bezOdleglosci or not hrp or not czesc then nil else (hrp.Position - czesc.Position).Magnitude,
 		chmury = chmuryDostepne(),
 		las = uchwytLasu() ~= nil,
-		cel = zrob ~= nil and zrob() ~= nil,
 		poziom = gracz:GetAttribute("Level"),
 	}
 end
@@ -276,7 +250,7 @@ local function obsluz(gracz: Player, id: string, czesc: BasePart?, bezOdleglosci
 	dolicz("LicznikE")
 	kontener:SetAttribute("OstatnieE", string.format("%s:%s:%s%s", gracz.Name, id, w.akcja,
 		if w.powod then "/" .. w.powod else ""))
-	if w.akcja == "las" or w.akcja == "przenies" then
+	if w.akcja == "las" then
 		przejscie(gracz, id, w)
 	else
 		wynikDoKlienta(gracz, id, w)
@@ -450,7 +424,6 @@ sterowanie.OnInvoke = function(polecenie: any, a: any, b: any)
 			podpowiedzi = liczbaPodpowiedzi,
 			las = uchwytLasu() ~= nil,
 			chmury = chmuryDostepne(),
-			stare = celStarego() ~= nil,
 			zgodnosc = kontener:GetAttribute("ZgodnoscLogikiBazaru"),
 			tablica = ostatnieWiersze,
 			gracze = gracze,
@@ -463,14 +436,12 @@ sterowanie.OnInvoke = function(polecenie: any, a: any, b: any)
 		end
 		return obsluz(g, a, czesciPunktow[a], true)
 	elseif polecenie == "przenies" then
-		-- test: przeniesienie bez blokady czasu; a = "bazar" | "stare", b = gracz
+		-- test: przeniesienie na start bazaru bez blokady czasu; a = "bazar", b = gracz
 		local g = znajdzGracza(b)
-		local zrob = type(a) == "string" and CELE[a]
-		local cel = zrob and zrob()
-		if not g or not cel then
+		if not g or a ~= "bazar" then
 			return { ok = false, powod = "zle_dane" }
 		end
-		local ok, powod, punkt = przenies(g, cel)
+		local ok, powod, punkt = przenies(g, celBazaru())
 		return { ok = ok, powod = powod, punkt = punkt }
 	elseif polecenie == "zeruj" then
 		local g = znajdzGracza(a)

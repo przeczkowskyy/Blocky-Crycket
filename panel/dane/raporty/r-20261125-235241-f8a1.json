@@ -1,0 +1,27 @@
+{
+ "id": "r-20261125-235241-f8a1",
+ "tytul": "Miasto: zagroda bez dodatków i Training Center ze stanowiskami w środku",
+ "opis_md": "Trzy rzeczy z sesji 25.11 są w Studio: zagroda bez dodatków, większy Training Center i stanowiska treningu w środku z poprawionymi animacjami.\n\n**Zagroda**\n- Zniknęły pies, smok, slime, budka opiekunki i psia buda. Slime'a nie było na liście — usunięty, bo ozdobny pet myliłby się z petami gracza (przywrócenie to jedna linia).\n- Jagoda stoi przed zagrodą, przy bramce. W środku osiem legowisk; zagroda ma ten sam obrys.\n\n**Training Center**\n- Nowa sala przy lewym boku budynku: otwarty front, szklany dach, przejście z budynku.\n- Sala stoi w miejscu niebieskiego domu przy placyku — obok nie było innego miejsca na sześć stanowisk. Zniknęło też jedno drzewo, a latarnia przesunęła się o 4 study. Zmianę da się cofnąć.\n- Sześć stanowisk stoi w dwóch rzędach po trzy. Jest ciasno: do tylnego rzędu przechodzi się między stanowiskami przedniego.\n\n**Animacje treningu** (pliki Pawła, zmiana uzgodniona na sesji)\n- Podczas treningu postać nie trzyma broni.\n- Sztanga nie wchodzi w ubranie (w pomiarze co najmniej 0,42 studa nad szatą). U kota ruch sztangi jest mały, bo ma krótkie łapy.\n- Książka jest w łapach przed klatką, pod brodą.\n- Stolik z kośćmi obniżony, kubek trzymany przed klatką.\n\n**Sprawdzone**\n- Wszystkie sześć stanowisk na Kocie-Magu i Wojowniku w trybie Play, konsola bez błędów treningu.\n- Kontrola miasta: 0 błędów. Testy bazaru: te same dwa niezaliczone co przed pracą (po zmianach HUD Pawła).\n\n**Nie sprawdzone i znane braki**\n- Koty ras (D-143): kod liczy wymiary z każdego szkieletu, ale na modelach ras nie był próbowany.\n- Animację widzi tylko trenujący gracz; inni widzą postać stojącą na stanowisku. Tak było przed zmianą.\n- Telefon, dwóch graczy naraz i czas klatki — bez pomiaru.\n- Pety gracza stoją jeszcze na starych miejscach; nowe legowiska zaczną działać po wdrożeniu pakietu petów.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-25T23:52:41+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/MiasteczkoBazar",
+   "etykieta": "Miasteczko"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg",
+  "zrzut_7.jpg",
+  "zrzut_8.jpg"
+ ],
+ "pytanie": "Sala treningowa stoi w miejscu niebieskiego domu przy placyku — zostaje tak?",
+ "gra": "bc"
+}

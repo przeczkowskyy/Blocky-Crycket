@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-"""ŻOŁĘDZIAK — pet pospolity z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+"""ŻOŁĘDZIAK — pet pospolity z leśnego jajka (próba swiat/pety_proba; status: propozycja).
 
-Pulchny żołądź na krótkich nóżkach (ok. 1,75 studa z ogonkiem): kanciasty orzech z jaśniejszym brzuszkiem i spiczastym
-spodem, czapeczka w paski z daszkiem, ogonek z listkiem, patyczkowe rączki, duże błyszczące oczy i rumieńce.
-Sylwetka: pionowa „kropla” — najmniejszy i najprostszy z piątki (pospolity = najskromniejszy).
+Przebudowa 25/26.11.2026 według arkusza obrotów Pawła (`zoledziak_obroty.jpg`: przód, bok, tył, drugi bok; model
+z 17.11 był kanciastym klockiem). Wzór wyglądu: wydłużony, obły żołądź (ok. 2,2 studa z ogonkiem) na dwóch krótkich
+nóżkach-walcach, jaśniejszy dół brzuszka z przodu, czapka-kopułka w ciemniejsze pasy z DASZKIEM z przodu (jak czapka
+z daszkiem), ogonek z jednym liściem, rączki-patyczki z rozgałęzionymi palcami, okrągłe oczy z odblaskami, rumieńce
+i uśmiech. Kości, nazwy kości i klipy jak w modelu z 17.11 (gra: wyklucie, chodzenie za graczem, zagroda).
 
     python -B swiat/postacie/przebuduj.py zoledziak --bez-filmow
 
@@ -12,71 +14,79 @@ Budowa (typ="stwor", 1 jednostka = 1 stud, patrzy w +Z, lewa = +X):
 Klipy: spoczynek (pętla), chod (kaczy chód z podskokiem, pętla), radosc (podskok z obrotem), wyklucie (z jajka).
 """
 from swiat.postacie.biblioteka.postac import Postac
-from swiat.postacie.pety_lesne import klip_radosc, klip_wyklucie, oczy
+from swiat.postacie.pety_lesne import (klip_radosc, klip_wyklucie, lata_przez, model, naklejka, oczy_okragle,
+                                       usmiech)
 
 ID = "zoledziak"
 
 PALETA = {
-    "orzech": "C98A3E", "orzech_jasny": "E8BC72", "orzech_ciemny": "8E5A26",
-    "czapka": "7A5230", "czapka_ciemna": "5A3B20", "czapka_jasna": "9A7046",
-    "lisc": "6DB33F", "rumieniec": "F08C8C", "buzia": "5A2A18",
+    "orzech": "DE8E30", "orzech_jasny": "F5C874", "orzech_ciemny": "A8692C",
+    "czapka": "7E5230", "czapka_ciemna": "5A371C", "ogonek": "6B4423", "patyk": "6E4626",
+    "lisc": "5DBB3F", "lisc_zylka": "3E8A2C", "oko": "2E180C", "rumieniec": "F4A2A2", "buzia": "4A2414",
 }
 
-CIALO = (1.2, 1.0, 1.1)       # orzech: szer, wys, głęb
-Y_STAW = 0.42                 # staw tułowia (nisko — kołysze się od spodu)
-Y_SRODEK = 0.8                # środek orzecha nad ziemią
+ORZECH = ((0.0, 0.84, 0.0), (1.0, 1.42, 0.92))        # elipsoida ciała: środek, średnice
+Y_STAW = 0.42                                         # staw tułowia (nisko — kołysze się od spodu)
+KOPULA = ((0.0, 1.57, 0.0), (1.18, 0.64, 1.18))       # kopułka czapki (okrągła w poziomie — pasy po obrocie pasują)
+Y_CZAPKI = 1.32
+Y_OGONKA = 1.86
+RAMIE = (0.47, 0.83, 0.02)                             # staw rączki (lewej; prawa: −x)
+NOGA = (0.21, 0.33, 0.02)
 
 
 def zbuduj():
-    p = Postac(ID, "Żołędziak", typ="stwor", skala=1.0, faza=0.08, paleta=PALETA)
-    w, h, d = CIALO
-    p.kosc("Tulow", "Root", staw=(0, Y_STAW, 0), czesc=CIALO, srodek=(0, Y_SRODEK - Y_STAW, 0))
-    y_gora = Y_SRODEK + h / 2
-    p.kosc("Czapka", "Tulow", staw=(0, y_gora - 0.08, 0), czesc=(1.45, 0.46, 1.35), srodek=(0, 0.2, 0))
-    p.kosc("Ogonek", "Czapka", staw=(0, y_gora + 0.34, 0), czesc=(0.2, 0.4, 0.2), srodek=(0, 0.18, 0))
+    p = Postac(ID, "Żołędziak", typ="stwor", skala=1.0, faza=0.06, paleta=PALETA)
+    (cx, cy, cz), (w, h, d) = ORZECH
+    p.kosc("Tulow", "Root", staw=(0, Y_STAW, 0), czesc=(w, h, d), srodek=(0, cy - Y_STAW, 0))
+    p.kosc("Czapka", "Tulow", staw=(0, Y_CZAPKI, 0), czesc=(1.24, 0.6, 1.24), srodek=(0, 0.25, 0))
+    p.kosc("Ogonek", "Czapka", staw=(0, Y_OGONKA, 0), czesc=(0.14, 0.32, 0.14), srodek=(0, 0.15, 0))
     for s, zn in (("L", 1), ("P", -1)):
-        p.kosc("Reka" + s, "Tulow", staw=(zn * (w / 2 + 0.02), Y_SRODEK + 0.02, 0.05), czesc=(0.14, 0.44, 0.14),
-               srodek=(zn * 0.07, -0.18, 0))
-        p.kosc("Noga" + s, "Tulow", staw=(zn * 0.3, 0.3, 0.02), czesc=(0.36, 0.24, 0.46), srodek=(0, -0.18, 0.04))
+        p.kosc("Reka" + s, "Tulow", staw=(zn * RAMIE[0], RAMIE[1], RAMIE[2]), czesc=(0.08, 0.4, 0.08),
+               srodek=(zn * 0.12, -0.15, 0))
+        p.kosc("Noga" + s, "Tulow", staw=(zn * NOGA[0], NOGA[1], NOGA[2]), czesc=(0.2, 0.3, 0.2),
+               srodek=(0, -0.15, 0))
 
-    # ------------------------------------------------------------------ orzech
-    with p.na("Tulow", od="srodek"):
-        z = d / 2
-        p.blok("Orzech", (0, 0, 0), CIALO, "orzech", faza=0.14)
-        p.blok("Spod", (0, -h / 2 - 0.08, 0), (0.78, 0.24, 0.74), "orzech_ciemny", faza=0.08)
-        p.blok("Czubek spodu", (0, -h / 2 - 0.22, 0), (0.34, 0.14, 0.32), "orzech_ciemny", faza=0.04)
-        oczy(p, 0.3, 0.12, z, szer=0.2, wys=0.28)
+    # ------------------------------------------------------------------ orzech: obła kropla, jasny dół brzuszka z przodu
+    with model(p, "Tulow"):
+        p.kula("Orzech", (cx, cy, cz), (w, h, d), "orzech", segm=28)
+        # jasny dół brzuszka: łata z granicą ukośną jak na boku arkusza (z przodu ok. 0,7 studa, z tyłu przy spodzie)
+        p.kula("Brzuszek", *lata_przez(ORZECH, (0.78, 1), (0.22, -1), s=0.14, bok=(0, -1, 1)), "orzech_jasny", segm=28)
+        p.kula("Czubek spodu", (0, 0.16, 0.02), (0.2, 0.2, 0.19), "orzech_ciemny", segm=10)
+        oczy_okragle(p, ORZECH, 0.2, 1.1, szer=0.19, wys=0.22, kolor="oko", grub=0.07)
         for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Rumieniec " + s, (zn * 0.45, -0.06, z + 0.02), (0.18, 0.09, 0.04), "rumieniec", "matowy", faza=0.0)
-        p.blok("Buzia", (0, -0.06, z + 0.03), (0.14, 0.06, 0.04), "buzia", "matowy", faza=0.0)
+            naklejka(p, "Rumieniec " + s, ORZECH, zn * 0.34, 0.97, (0.15, 0.08, 0.03), "rumieniec")
+        usmiech(p, ORZECH, 0.96, szer=0.15, kolor="buzia", grub=0.032)
 
-    # ------------------------------------------------------------------ czapeczka: kopułka z łuskami
-    with p.na("Czapka", od="srodek"):
-        p.blok("Czapka", (0, -0.04, 0), (1.45, 0.34, 1.35), "czapka", faza=0.1)
-        p.blok("Kopula", (0, 0.18, 0), (1.12, 0.2, 1.04), "czapka", faza=0.08)
-        p.blok("Szczyt", (0, 0.31, 0), (0.62, 0.1, 0.58), "czapka_jasna", faza=0.04)
-        p.blok("Daszek", (0, -0.2, 0.02), (1.56, 0.1, 1.46), "czapka_ciemna", faza=0.04)
-        # łuski: jasne kropki w szachownicę (dwa rzędy) — faktura kapelusza żołędzia
-        for x, y in ((-0.48, 0.04), (0.0, 0.04), (0.48, 0.04), (-0.24, -0.1), (0.24, -0.1)):
-            p.blok("Luska", (x, y, 0.69), (0.12, 0.09, 0.03), "czapka_jasna", "matowy", faza=0.0)
-        for zn in (1, -1):
-            for zz, y in ((-0.3, 0.04), (0.3, 0.04), (0.0, -0.1)):
-                p.blok("Luska", (zn * 0.74, y, zz), (0.03, 0.09, 0.12), "czapka_jasna", "matowy", faza=0.0)
+    # ------------------------------------------------------------------ czapka-kopułka w pasy, z daszkiem z przodu
+    with model(p, "Czapka"):
+        (kx, ky, kz), (kw, kh, kd) = KOPULA
+        p.kula("Czapka", (kx, ky, kz), (kw, kh, kd), "czapka", segm=20)
+        p.walec("Brzeg czapki", (0, 1.34, 0), (kw + 0.06, 0.12, kd + 0.06), "czapka", segm=20, faza=0.03)
+        # pasy: cienkie „plastry” kopułki 5% większe — wystają wąskim pasem wzdłuż południka (4 plastry = 8 pasów)
+        for kat in (0, 45, 90, 135):
+            p.kula("Pas czapki", (kx, ky, kz), (0.3, kh * 1.05, kd * 1.05), "czapka_ciemna", rot=(0, kat, 0),
+                   segm=16)
+        p.kula("Daszek", (0, 1.35, 0.5), (0.86, 0.07, 0.66), "czapka", rot=(8, 0, 0), segm=16)
 
-    # ------------------------------------------------------------------ ogonek z listkiem
-    with p.na("Ogonek", od="staw"):
-        p.blok("Ogonek", (0.02, 0.18, 0), (0.2, 0.4, 0.2), "czapka_ciemna", rot=(0, 0, -10), faza=0.04)
-        p.blok("Listek", (0.3, 0.32, 0.0), (0.5, 0.05, 0.3), "lisc", "matowy", rot=(0, 25, 28), faza=0.0)
+    # ------------------------------------------------------------------ ogonek z jednym liściem
+    with model(p, "Ogonek"):
+        p.walec("Ogonek", (0.0, 2.0, 0), (0.13, 0.32, 0.13), "ogonek", rot=(0, 0, -6), segm=10, faza=0.02)
+        with p.uklad(pos=(0.24, 2.1, 0.0), obrot=(0, -25, 28)):
+            p.kula("Listek", (0, 0, 0), (0.4, 0.21, 0.045), "lisc", "matowy", segm=12)
+            p.blok("Listek zylka", (0, 0, 0.022), (0.32, 0.025, 0.022), "lisc_zylka", "matowy", faza=0.0)
 
-    # ------------------------------------------------------------------ rączki i nóżki
+    # ------------------------------------------------------------------ rączki-patyczki z trzema palcami, nóżki-walce
     for s, zn in (("L", 1), ("P", -1)):
-        with p.na("Reka" + s, od="srodek"):
-            p.blok("Raczka", (0, 0, 0), (0.14, 0.44, 0.14), "orzech_ciemny", rot=(0, 0, zn * 22), faza=0.03)
-        with p.na("Noga" + s, od="srodek"):
-            p.blok("Nozka", (0, 0, 0), (0.36, 0.24, 0.46), "orzech_ciemny", faza=0.06)
+        with p.na("Reka" + s, od="staw"), p.uklad(obrot=(0, 0, zn * 42)):
+            p.walec("Raczka", (0, -0.18, 0), (0.075, 0.4, 0.075), "patyk", segm=8, faza=0.0)
+            for kat, dl in ((-zn * 38, 0.13), (zn * 34, 0.12)):
+                with p.uklad(pos=(0, -0.34, 0), obrot=(0, 0, kat)):
+                    p.walec("Palec", (0, -0.06, 0), (0.05, dl, 0.05), "patyk", segm=6, faza=0.0)
+        with p.na("Noga" + s, od="staw"):
+            p.walec("Nozka", (0, -0.165, 0), (0.2, 0.33, 0.2), "orzech", segm=14, faza=0.04)
 
     p.zaczep("RootAttachment", "Tulow", (0, -Y_STAW, 0))
-    p.zaczep("GlowaAttachment", "Czapka", (0, 0.75, 0))
+    p.zaczep("GlowaAttachment", "Czapka", (0, 0.88, 0))
     _klipy(p)
     p.ustaw_poze_renderu("spoczynek", 0)
     return p
@@ -84,6 +94,11 @@ def zbuduj():
 
 SLABOSCI = [
     "Kości własne (nie R15) — klipy idą przez Motor6D w grze (prototyp z klocków).",
+    "Obłe bryły to elipsoidy i walce (w Roblox Part Ball / Cylinder albo SpecialMesh) — w grze są gładkie, ale bez "
+    "fazowania krawędzi i bez komiksowego obrysu z renderu.",
+    "Pasy czapki to cienkie plastry kopułki (wystają o 5%) — z bliska widać, że są wypukłe, a nie namalowane.",
+    "Liść na arkuszu w bokach przeczy sobie (raz widać go z jednej, raz z drugiej strony) — w modelu jest po lewej "
+    "stronie peta (+X), obrócony o 25°, więc widać go z przodu, z tyłu i z lewego boku.",
     "Brak nóg w klipie wyklucia: w jajku żołądź siedzi cały, nóżki są schowane w skorupce.",
 ]
 

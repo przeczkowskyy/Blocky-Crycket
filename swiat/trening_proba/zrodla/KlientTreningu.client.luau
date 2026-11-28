@@ -3295,9 +3295,14 @@ end)
 -- BindableEvent w ReplicatedStorage (tworzy go pierwszy, kto potrzebuje — bazar albo ten skrypt); słuchamy każdego
 -- o tej nazwie, gdyby dwa skrypty utworzyły go naraz. Atrybut "training_center" = true wyłącza dymek bazaru
 -- „Trener: mini-gry w budowie”, póki działa ten tymczasowy wybór.
+-- 26.11.2026 (zlecenie Karola, D-141): D.bazar.wybor_od_trenera = false — E przy trenerze otwiera okno stanowisk AFK
+-- (src/client/TreningAFKClient.client.luau); ten wybór na E trenera się nie otwiera i nie zgłasza się atrybutem.
 local zdarzeniaOkien = {}
 local function tymczasowyWlaczony()
 	return kontener:GetAttribute("WyborTymczasowy") ~= false
+end
+local function wyborOdTrenera()
+	return D.bazar.wybor_od_trenera ~= false and tymczasowyWlaczony()
 end
 
 local function podepnijOkna(okna)
@@ -3306,11 +3311,11 @@ local function podepnijOkna(okna)
 	end
 	zdarzeniaOkien[okna] = true
 	okna.Event:Connect(function(id)
-		if id == D.id_miejsca_bazaru and tymczasowyWlaczony() then
+		if id == D.id_miejsca_bazaru and wyborOdTrenera() then
 			pokazWybor("bazar")
 		end
 	end)
-	if tymczasowyWlaczony() then
+	if wyborOdTrenera() then
 		okna:SetAttribute(D.id_miejsca_bazaru, true)
 	end
 end

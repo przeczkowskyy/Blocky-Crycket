@@ -1,5 +1,7 @@
 # Test walki 3D w Roblox — prototyp cutscenki
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** kontener `Workspace/TestWalki` (stara próba walki v1) **usunięty z miejsca** — walki grają w `TestWalki2`. Źródła i `cel_studio.py` (wybór okna Studio dla wszystkich narzędzi) zostają.
+
 > **Status: prototyp do decyzji „walka jako ekran 2D czy cutscenka 3D”.** Nie jest to kanon ani kod gry.
 > Działa wyłącznie w Roblox Studio (każdy skrypt zaczyna się od strażnika `RunService:IsStudio()`; poza Studio
 > serwer usuwa cały kontener przy starcie — patrz „Bezpieczeństwo”).

@@ -16,7 +16,8 @@
 		• co klatkę (RunService.PreSimulation, jak moduł Klipy): wygładzanie punktu bazowego z atrybutu Pozycja (4 Hz),
 		  jeden promień w dół do gruntu BiomLas na każdy nowy cel, obrót do Kierunek 8 rad/s, klip „ruch” albo
 		  „spoczynek” (rozdz. 4.2), ikona mieczy przy Stan = "zajety";
-		• tabliczka „poz. N” (czerwona, gdy poziom ≥ poziom bohatera + 3) i miecze z ramek, bez obrazków (rozdz. 4.4);
+		• tabliczka: nazwa, „LV N” (czerwone, gdy poziom ≥ poziom bohatera + 3), znaczek RARE / BOSS i miecze z ramek,
+		  bez obrazków (rozdz. 4.4; nazwa i ranga od 27.11.2026);
 		• co 0,1 s podpowiedź E (na telefonie stuknięcie) przy najbliższym dozwolonym potworze (rozdz. 4.5);
 		• panel bohatera (klasa i poziom — reguła testowa T1, rozdz. 5.2), start walki w odtwarzaczu, odczyt
 		  OstatniWynik po walce, ukrycie pokonanego, baner po Strażniku (rozdz. 4.6);
@@ -33,7 +34,7 @@
 		• w czasie walki (Odtwarzacz.czyTrwa()) wybór widoków i budowa stoją, a klipy nie są liczone — kamera stoi
 		  wtedy przy arenie prototypu, ponad 2000 studów od lasu, więc „najbliższe kamerze” wyrzuciłoby wszystkie
 		  widoki, a po walce las budowałby się od nowa; położenia widoków dalej idą za serwerem (tanie);
-		• tabliczka ma 76 × 30 px na środku BillboardGui 140 × 30, a miecze stoją obok w tym samym BillboardGui
+		• tabliczka to jeden BillboardGui 180 × 46 px: nazwa nad rzędem [ranga][LV][miecze] — wszystko w środku
 		  (nie poza jego brzegiem — nie zakładamy, że BillboardGui nie przycina potomków);
 		• tryb wybrany po czekaniu na serwer już się nie zmienia (gdy szablony przyjdą później — trzeba zatrzymać i uruchomić Play);
 		• po walce, gdy kamera mimo sprzątania odtwarzacza została skryptowa, klient wraca do zwykłej kamery postaci
@@ -77,6 +78,8 @@ local GATUNKI_ZAPASOWE = {
 	straznik_lasu = { nazwa = "Strażnik Gaju", predkosc = 0, promien = 4.45, wymiary = { 8.9, 14.5, 5.0 } },
 }
 local gatunki: { [string]: any } = GATUNKI_ZAPASOWE
+-- 27.11.2026: ranga strefy z danych (strefy[i].rzadki / .straznik) → znaczek RARE / BOSS na tabliczce
+local rangaStrefy: { [string]: string } = {}
 -- prostokąt lasu (płyta biomu z danych + zapas) — panel bohatera widać tylko w nim (Stale.PANEL_TYLKO_W_LESIE)
 local obszarLasu: { x1: number, x2: number, z1: number, z2: number }? = nil
 do
@@ -87,6 +90,17 @@ do
 	end
 	if ok and type(dane) == "table" and type(dane.gatunki) == "table" then
 		gatunki = dane.gatunki
+		if type(dane.strefy) == "table" then
+			for _, st in dane.strefy do
+				if type(st) == "table" and type(st.id) == "string" then
+					if st.straznik == true then
+						rangaStrefy[st.id] = "boss"
+					elseif st.rzadki == true then
+						rangaStrefy[st.id] = "rare"
+					end
+				end
+			end
+		end
 		local plyta = type(dane.biom) == "table" and dane.biom.plyta
 		if type(plyta) == "table" and type(plyta.pozycja) == "table" and type(plyta.rozmiar) == "table" then
 			local z = Stale.PANEL_ZAPAS or 0
@@ -539,59 +553,148 @@ local function budujZastepczy(w, cfg: Instance, cf: CFrame)
 	model.Parent = folderWidokow
 end
 
--- tabliczka „poz. N” i miecze (rozdz. 4.4)
-local SZER_TABLICZKI = 76
-local SZER_BILLBOARDU = 140 -- tabliczka na środku, miecze obok w środku tego samego BillboardGui
+-- tabliczka nad potworem (rozdz. 4.4; 27.11.2026 — nazwa, „LV N” i ranga, polecenie Karola): dwa rzędy w jednym
+-- BillboardGui o stałym rozmiarze w pikselach (czytelne na telefonie 667 × 375 i 844 × 390):
+--   górny — nazwa z danych (Configuration „Nazwa”), komiksowe LuckiestGuy z obrysem tuszu; rzadki złoty, Strażnik
+--           pomarańczowo-złoty;
+--   dolny — [RARE z gwiazdką | BOSS z koroną] [LV N — czerwone, gdy poziom ≥ poziom bohatera + CZERWONA_OD] [miecze
+--           przy Stan = "zajety"]; UIListLayout pomija niewidoczne, więc rząd zawsze stoi na środku.
+-- Ranga ze strefy w danych (rzadki / straznik; zapas: atrybut Straznik). Bez pracy co klatkę: tekst i kolory zmieniają
+-- się tylko przy zmianie, a odległość (co Stale.WYBOR_CO w wyborze widoków) chowa nazwę zwykłych potworów dalej niż
+-- Stale.TABLICZKA_NAZWA_DO — z daleka strefa pełna slime’ów to same małe „LV”, a nie las napisów. Bez obrazków.
+local SZER_BILLBOARDU = 180
+local WYS_NAZWY, WYS_RZEDU = 20, 24
+local WYS_BILLBOARDU = WYS_NAZWY + 2 + WYS_RZEDU
+local NAPISY = Enum.Font.LuckiestGuy
+local KOLOR_NAZWY = { zwykly = K.bialy, rare = Color3.fromHex("#FFE27A"), boss = Color3.fromHex("#FFB13D") }
+local ZASIEG_RANGI = { rare = "TABLICZKA_ZASIEG_RZADKIEGO", boss = "TABLICZKA_ZASIEG_STRAZNIKA" }
+
+local function rangaWidoku(cfg: Instance): string?
+	local strefa = cfg:GetAttribute("Strefa")
+	local r = type(strefa) == "string" and rangaStrefy[strefa] or nil
+	if not r and cfg:GetAttribute("Straznik") == true then
+		r = "boss"
+	end
+	return r
+end
 
 local function odswiezTabliczke(w)
 	if not w.etykieta then
 		return -- tabliczka się nie zbudowała (błąd zgłoszony w pętli budowy)
 	end
 	local poziom = w.cfg:GetAttribute("Poziom")
-	local tekst = "poz. " .. tostring(poziom or "?")
+	local tekst = "LV " .. tostring(poziom or "?")
 	if w.etykieta.Text ~= tekst then
 		w.etykieta.Text = tekst
+	end
+	local nazwa = w.cfg:GetAttribute("Nazwa")
+	if type(nazwa) ~= "string" or nazwa == "" then
+		local g = gatunek(w.gatunek)
+		nazwa = g and g.nazwa or "?"
+	end
+	if w.nazwaEt.Text ~= nazwa then
+		w.nazwaEt.Text = nazwa
 	end
 	local pb = poziomBohatera()
 	local czerwona = pb ~= nil and type(poziom) == "number" and poziom >= pb + Stale.CZERWONA_OD
 	if w.czerwona ~= czerwona then
 		w.czerwona = czerwona
 		w.etykieta.BackgroundColor3 = if czerwona then K.czerwony else K.krem
+		w.etykieta.TextColor3 = if czerwona then K.bialy else K.tusz
+	end
+end
+
+-- nazwa zwykłego potwora tylko z bliska; rzadki i Strażnik zawsze (wołane z wyboru widoków, nie co klatkę)
+local function odlegloscTabliczki(w)
+	if not w.nazwaEt then
+		return
+	end
+	local widac = w.rangaTabliczki ~= nil or (w.odl or 0) <= Stale.TABLICZKA_NAZWA_DO
+	if w.nazwaEt.Visible ~= widac then
+		w.nazwaEt.Visible = widac
+	end
+end
+
+-- znaczek rangi z ramek (bez obrazków): gwiazdka = dwa kwadraty (0° i 45°), korona = podstawa i trzy zęby
+local function znaczekRangi(r: string, rodzic: Instance)
+	local pole = nowy("Frame", { Name = "Znak", Size = UDim2.fromOffset(14, 14), BackgroundTransparency = 1, LayoutOrder = 1 }, rodzic)
+	if r == "rare" then
+		for i, kat in { 0, 45 } do
+			local k = nowy("Frame", { Name = "Ramie" .. i, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+				Size = UDim2.fromOffset(9, 9), Rotation = kat, BackgroundColor3 = K.bialy, BorderSizePixel = 0 }, pole)
+			obrys(k, 1)
+		end
+	else
+		local podstawa = nowy("Frame", { Name = "Podstawa", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -1),
+			Size = UDim2.fromOffset(13, 5), BackgroundColor3 = K.zolty, BorderSizePixel = 0, ZIndex = 2 }, pole)
+		obrys(podstawa, 1)
+		for i, x in { 2, 6.5, 11 } do
+			local zab = nowy("Frame", { Name = "Zab" .. i, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(x, 6),
+				Size = UDim2.fromOffset(4, 4), Rotation = 45, BackgroundColor3 = K.zolty, BorderSizePixel = 0 }, pole)
+			obrys(zab, 1)
+		end
 	end
 end
 
 local function dodajTabliczke(w)
+	local r = rangaWidoku(w.cfg)
 	local bb = Instance.new("BillboardGui")
 	bb.Name = "Tabliczka"
 	bb.Adornee = w.glowa
-	bb.Size = UDim2.fromOffset(SZER_BILLBOARDU, 30)
-	bb.MaxDistance = Stale.TABLICZKA_ZASIEG
+	bb.Size = UDim2.fromOffset(SZER_BILLBOARDU, WYS_BILLBOARDU)
+	-- dolny rząd (LV) stoi tam, gdzie dawna tabliczka (punkt nad głową), nazwa rośnie nad nim
+	bb.SizeOffset = Vector2.new(0, (WYS_BILLBOARDU / 2 - WYS_RZEDU / 2) / WYS_BILLBOARDU)
+	bb.MaxDistance = if r then (Stale :: any)[ZASIEG_RANGI[r]] or Stale.TABLICZKA_ZASIEG else Stale.TABLICZKA_ZASIEG
 	bb.AlwaysOnTop = false
 	bb.LightInfluence = 0
-	local etykieta = nowy("TextLabel", { Name = "Poziom", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromOffset(SZER_TABLICZKI, 30), BackgroundColor3 = K.krem, BorderSizePixel = 0, Font = KOMIKS,
-		TextScaled = true, TextColor3 = K.bialy, Text = "poz. ?" }, bb)
+	bb:SetAttribute("Ranga", r or "zwykly")
+	local nazwaEt = nowy("TextLabel", { Name = "Nazwa", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0),
+		Size = UDim2.new(1, -8, 0, WYS_NAZWY), BackgroundTransparency = 1, Font = NAPISY, TextScaled = true,
+		TextColor3 = KOLOR_NAZWY[r or "zwykly"], Text = "" }, bb)
+	nowy("UITextSizeConstraint", { MaxTextSize = 19, MinTextSize = 10 }, nazwaEt)
+	obrys(nazwaEt, 2, true)
+	local rzad = nowy("Frame", { Name = "Rzad", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1),
+		Size = UDim2.new(1, 0, 0, WYS_RZEDU), BackgroundTransparency = 1 }, bb)
+	nowy("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center,
+		VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 4) }, rzad)
+	if r then
+		local chip = nowy("Frame", { Name = "Ranga", Size = UDim2.fromOffset(if r == "boss" then 64 else 62, 20), LayoutOrder = 1,
+			BackgroundColor3 = if r == "boss" then K.fiolet else K.zolty, BorderSizePixel = 0 }, rzad)
+		rog(chip, 0.3)
+		obrys(chip, 2)
+		nowy("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 3) }, chip)
+		znaczekRangi(r, chip)
+		local napis = nowy("TextLabel", { Name = "Napis", Size = UDim2.fromOffset(38, 16), BackgroundTransparency = 1, LayoutOrder = 2,
+			Font = NAPISY, TextScaled = true, Text = if r == "boss" then "BOSS" else "RARE",
+			TextColor3 = if r == "boss" then K.bialy else K.tusz }, chip)
+		if r == "boss" then
+			obrys(napis, 1.5, true)
+		end
+	end
+	local etykieta = nowy("TextLabel", { Name = "Poziom", Size = UDim2.fromOffset(54, 22), LayoutOrder = 2, BackgroundColor3 = K.krem,
+		BorderSizePixel = 0, Font = NAPISY, TextScaled = true, TextColor3 = K.tusz, Text = "LV ?" }, rzad)
 	rog(etykieta, 0.3)
-	obrys(etykieta, 2, true) -- biały tekst z obrysem tuszu
-	nowy("UIPadding", { PaddingTop = UDim.new(0, 2), PaddingBottom = UDim.new(0, 2), PaddingLeft = UDim.new(0, 4),
-		PaddingRight = UDim.new(0, 4) }, etykieta)
-	-- miecze: dwa paski 4 × 24 obrócone o ±45° z poprzeczkami 10 × 3 (bez obrazków — zakaz uploadu)
-	local miecze = nowy("Frame", { Name = "Miecze", AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0.5, SZER_TABLICZKI / 2 + 4, 0.5, 0), Size = UDim2.fromOffset(28, 28),
-		BackgroundTransparency = 1, Visible = false }, bb)
+	obrys(etykieta, 2)
+	nowy("UIPadding", { PaddingTop = UDim.new(0, 3), PaddingBottom = UDim.new(0, 2), PaddingLeft = UDim.new(0, 5),
+		PaddingRight = UDim.new(0, 5) }, etykieta)
+	-- miecze (walka trwa): dwa paski obrócone o ±45° z poprzeczkami — bez obrazków
+	local miecze = nowy("Frame", { Name = "Miecze", Size = UDim2.fromOffset(22, 22), LayoutOrder = 3,
+		BackgroundTransparency = 1, Visible = false }, rzad)
 	for i, kat in { 45, -45 } do
 		local miecz = nowy("Frame", { Name = "Miecz" .. i, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
-			Size = UDim2.fromOffset(28, 28), BackgroundTransparency = 1, Rotation = kat }, miecze)
+			Size = UDim2.fromOffset(22, 22), BackgroundTransparency = 1, Rotation = kat }, miecze)
 		local ostrze = nowy("Frame", { Name = "Ostrze", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
-			Size = UDim2.fromOffset(4, 24), BackgroundColor3 = K.bialy, BorderSizePixel = 0 }, miecz)
+			Size = UDim2.fromOffset(4, 20), BackgroundColor3 = K.bialy, BorderSizePixel = 0 }, miecz)
 		obrys(ostrze, 1)
-		local jelec = nowy("Frame", { Name = "Jelec", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 7),
+		local jelec = nowy("Frame", { Name = "Jelec", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 6),
 			Size = UDim2.fromOffset(10, 3), BackgroundColor3 = K.zolty, BorderSizePixel = 0 }, miecz)
 		obrys(jelec, 1)
 	end
 	bb.Parent = w.model
-	w.etykieta, w.miecze, w.czerwona = etykieta, miecze, nil
+	w.etykieta, w.nazwaEt, w.miecze, w.czerwona, w.rangaTabliczki = etykieta, nazwaEt, miecze, nil, r
 	odswiezTabliczke(w)
+	odlegloscTabliczki(w)
 end
 
 local function zniszczWidok(id: string)
@@ -715,6 +818,7 @@ local function wybierzWidoki()
 			n += 1
 			w.animowany = n <= Stale.MAKS_WIDOKOW
 			w.odl, w.ranga = e.d, n
+			odlegloscTabliczki(w)
 		end
 	end
 	liczbaAnimowanych = math.min(n, Stale.MAKS_WIDOKOW)
@@ -900,7 +1004,7 @@ local function odswiezPodpowiedz()
 		return
 	end
 	local nazwa = cfg:GetAttribute("Nazwa")
-	local obiekt = string.format("%s · poz. %s", tostring(nazwa or "?"), tostring(cfg:GetAttribute("Poziom") or "?"))
+	local obiekt = string.format("%s · LV %s", tostring(nazwa or "?"), tostring(cfg:GetAttribute("Poziom") or "?"))
 	local akcja
 	if not Odtwarzacz then
 		akcja = "Walka niedostępna"

@@ -1,0 +1,1936 @@
+{
+ "modul": "pula_wojownika_giermek",
+ "modele": [
+  {
+   "id": "pula_wojownika_giermek",
+   "nazwa": "Kot-wojownik — Zestaw Giermka",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 544,
+     "wierzcholki": 320,
+     "wymiary": [
+      1.54,
+      0.561,
+      1.396
+     ],
+     "min": [
+      -0.77,
+      0.444,
+      -0.616
+     ],
+     "max": [
+      0.77,
+      1.005,
+      0.78
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 244,
+     "wierzcholki": 152,
+     "wymiary": [
+      1.47,
+      0.86,
+      1.21
+     ],
+     "min": [
+      -0.735,
+      0.995,
+      -0.595
+     ],
+     "max": [
+      0.735,
+      1.855,
+      0.615
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      0.52,
+      0.425,
+      0.52
+     ],
+     "min": [
+      0.6,
+      1.425,
+      -0.26
+     ],
+     "max": [
+      1.12,
+      1.85,
+      0.26
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 236,
+     "wierzcholki": 136,
+     "wymiary": [
+      0.56,
+      0.48,
+      0.56
+     ],
+     "min": [
+      0.58,
+      0.7,
+      -0.28
+     ],
+     "max": [
+      1.14,
+      1.18,
+      0.28
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      0.67,
+      0.355,
+      0.64
+     ],
+     "min": [
+      -0.02,
+      0.165,
+      -0.32
+     ],
+     "max": [
+      0.65,
+      0.52,
+      0.32
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 168,
+     "wierzcholki": 96,
+     "wymiary": [
+      0.63,
+      0.24,
+      1.2
+     ],
+     "min": [
+      0.0,
+      -0.005,
+      -0.325
+     ],
+     "max": [
+      0.63,
+      0.235,
+      0.875
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 100,
+     "wierzcholki": 56,
+     "wymiary": [
+      0.52,
+      0.425,
+      0.52
+     ],
+     "min": [
+      -1.12,
+      1.425,
+      -0.26
+     ],
+     "max": [
+      -0.6,
+      1.85,
+      0.26
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 236,
+     "wierzcholki": 136,
+     "wymiary": [
+      0.56,
+      0.48,
+      0.56
+     ],
+     "min": [
+      -1.14,
+      0.7,
+      -0.28
+     ],
+     "max": [
+      -0.58,
+      1.18,
+      0.28
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      0.67,
+      0.355,
+      0.64
+     ],
+     "min": [
+      -0.65,
+      0.165,
+      -0.32
+     ],
+     "max": [
+      0.02,
+      0.52,
+      0.32
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 168,
+     "wierzcholki": 96,
+     "wymiary": [
+      0.63,
+      0.24,
+      1.2
+     ],
+     "min": [
+      -0.63,
+      -0.005,
+      -0.325
+     ],
+     "max": [
+      0.0,
+      0.235,
+      0.875
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "kot_rycerz_giermek_helm_Akc",
+     "kosc": "HatPivot",
+     "trojkaty": 744,
+     "wierzcholki": 430,
+     "wymiary": [
+      2.134,
+      2.11,
+      1.802
+     ],
+     "min": [
+      -1.067,
+      2.508,
+      -0.902
+     ],
+     "max": [
+      1.067,
+      4.618,
+      0.9
+     ]
+    },
+    {
+     "nazwa": "kot_rycerz_giermek_miecz_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 372,
+     "wierzcholki": 212,
+     "wymiary": [
+      0.703,
+      2.42,
+      1.018
+     ],
+     "min": [
+      -1.397,
+      0.375,
+      -0.211
+     ],
+     "max": [
+      -0.694,
+      2.795,
+      0.807
+     ]
+    }
+   ],
+   "trojkaty_razem": 4496,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 24
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.28,
+    3.155,
+    2.114
+   ],
+   "wymiary_z_akcesoriami": [
+    2.537,
+    4.623,
+    2.139
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.397,
+     -0.005,
+     -1.239
+    ],
+    [
+     1.14,
+     4.618,
+     0.9
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "kot_rycerz_giermek_helm",
+     "zaczep": "KapeluszAttachment",
+     "eksport": false
+    },
+    {
+     "id": "kot_rycerz_giermek_miecz",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 788,
+     "limit": 1750,
+     "wymiary": [
+      1.54,
+      1.411,
+      1.396
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 424,
+     "limit": 1248,
+     "wymiary": [
+      0.56,
+      1.15,
+      0.56
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 424,
+     "limit": 1248,
+     "wymiary": [
+      0.56,
+      1.15,
+      0.56
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 356,
+     "limit": 1248,
+     "wymiary": [
+      0.67,
+      0.755,
+      1.2
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 356,
+     "limit": 1248,
+     "wymiary": [
+      0.67,
+      0.755,
+      1.2
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "kot_rycerz_giermek_helm",
+   "nazwa": "Hełm Giermka",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "kot_rycerz_giermek_helm",
+     "kosc": null,
+     "trojkaty": 744,
+     "wierzcholki": 430,
+     "wymiary": [
+      2.134,
+      2.11,
+      1.802
+     ],
+     "min": [
+      -1.067,
+      -0.662,
+      -0.902
+     ],
+     "max": [
+      1.067,
+      1.448,
+      0.9
+     ]
+    }
+   ],
+   "trojkaty_razem": 744,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "HatAttachment",
+   "typ_roblox": "Hat",
+   "zakres_od_zaczepu": [
+    [
+     -1.067,
+     -0.662,
+     -0.902
+    ],
+    [
+     1.067,
+     1.448,
+     0.9
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.393,
+    -0.001
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "kot_rycerz_giermek_miecz",
+   "nazwa": "Miecz Giermka",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "kot_rycerz_giermek_miecz",
+     "kosc": null,
+     "trojkaty": 372,
+     "wierzcholki": 212,
+     "wymiary": [
+      0.62,
+      2.58,
+      0.28
+     ],
+     "min": [
+      -0.31,
+      -0.58,
+      -0.14
+     ],
+     "max": [
+      0.31,
+      2.0,
+      0.14
+     ]
+    }
+   ],
+   "trojkaty_razem": 372,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.31,
+     -0.58,
+     -0.14
+    ],
+    [
+     0.31,
+     2.0,
+     0.14
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.71,
+    0.0
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [
+  "pula_wojownika_giermek: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15"
+ ],
+ "kontrola": [
+  "pula_wojownika_giermek.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje brak -> ZGODNE",
+  "pula_wojownika_giermek__idle.fbx: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje pula_wojownika_giermek|Scene 1-61 -> ZGODNE",
+  "pula_wojownika_giermek.glb: siatki 38, kości 23, trójkąty 3632, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
+  "kot_rycerz_giermek_helm.fbx: siatki 1, kości 0, trójkąty 744, wzrost 2.11 st., akcje brak -> ZGODNE",
+  "kot_rycerz_giermek_helm.glb: siatki 1, kości 0, trójkąty 744, wzrost 2.11 st., akcje brak -> ZGODNE",
+  "kot_rycerz_giermek_miecz.fbx: siatki 1, kości 0, trójkąty 372, wzrost 2.58 st., akcje brak -> ZGODNE",
+  "kot_rycerz_giermek_miecz.glb: siatki 1, kości 0, trójkąty 372, wzrost 2.58 st., akcje brak -> ZGODNE",
+  "ekwipunek: pula_wojownika_giermek_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "ekwipunek: pula_wojownika_giermek_cialo__idle.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje pula_wojownika_giermek_cialo|Scene 1-61 -> ZGODNE",
+  "ekwipunek: pula_wojownika_giermek_cialo.glb: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_zbroja_tulow.fbx: siatki 1, kości 0, trójkąty 244, wzrost 0.86 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_zbroja_tulow.glb: siatki 1, kości 0, trójkąty 244, wzrost 0.86 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_zbroja_ramie_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.42 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_zbroja_ramie_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.42 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_zbroja_ramie_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.42 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_zbroja_ramie_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.42 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_zbroja_biodra.fbx: siatki 1, kości 0, trójkąty 164, wzrost 0.56 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_zbroja_biodra.glb: siatki 1, kości 0, trójkąty 164, wzrost 0.56 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_pas_biodra.fbx: siatki 1, kości 0, trójkąty 380, wzrost 0.39 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_pas_biodra.glb: siatki 1, kości 0, trójkąty 380, wzrost 0.39 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 236, wzrost 0.48 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 236, wzrost 0.48 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 236, wzrost 0.48 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 236, wzrost 0.48 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 168, wzrost 0.24 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 168, wzrost 0.24 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_buty_golen_l.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_buty_golen_l.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 168, wzrost 0.24 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 168, wzrost 0.24 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_buty_golen_p.fbx: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_giermek_buty_golen_p.glb: siatki 1, kości 0, trójkąty 100, wzrost 0.35 st., akcje brak -> ZGODNE"
+ ],
+ "ekwipunek": {
+  "stroje": {
+   "golas": [],
+   "komplet": [
+    "kot_rycerz_giermek_helm",
+    "kot_rycerz_giermek_zbroja",
+    "kot_rycerz_giermek_pas",
+    "kot_rycerz_giermek_rekawice",
+    "kot_rycerz_giermek_buty",
+    "kot_rycerz_giermek_miecz"
+   ]
+  },
+  "filmy": [],
+  "modele": [
+   {
+    "id": "kot_rycerz_giermek_buty_golen_l",
+    "nazwa": "Trzewiki Giermka (golen_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_buty_golen_l",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       0.67,
+       0.355,
+       0.64
+      ],
+      "min": [
+       -0.32,
+       -0.15,
+       -0.32
+      ],
+      "max": [
+       0.35,
+       0.205,
+       0.32
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftLowerLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.32,
+      -0.15,
+      -0.32
+     ],
+     [
+      0.35,
+      0.205,
+      0.32
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.015,
+     0.027,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_buty_golen_p",
+    "nazwa": "Trzewiki Giermka (golen_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_buty_golen_p",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       0.67,
+       0.355,
+       0.64
+      ],
+      "min": [
+       -0.35,
+       -0.15,
+       -0.32
+      ],
+      "max": [
+       0.32,
+       0.205,
+       0.32
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightLowerLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.35,
+      -0.15,
+      -0.32
+     ],
+     [
+      0.32,
+      0.205,
+      0.32
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     -0.015,
+     0.027,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_buty_stopa_l",
+    "nazwa": "Trzewiki Giermka (stopa_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_buty_stopa_l",
+      "kosc": null,
+      "trojkaty": 168,
+      "wierzcholki": 96,
+      "wymiary": [
+       0.63,
+       0.24,
+       1.2
+      ],
+      "min": [
+       -0.3,
+       -0.095,
+       -0.41
+      ],
+      "max": [
+       0.33,
+       0.145,
+       0.79
+      ]
+     }
+    ],
+    "trojkaty_razem": 168,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwLeftFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.3,
+      -0.095,
+      -0.41
+     ],
+     [
+      0.33,
+      0.145,
+      0.79
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.015,
+     0.025,
+     0.19
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_buty_stopa_p",
+    "nazwa": "Trzewiki Giermka (stopa_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_buty_stopa_p",
+      "kosc": null,
+      "trojkaty": 168,
+      "wierzcholki": 96,
+      "wymiary": [
+       0.63,
+       0.24,
+       1.2
+      ],
+      "min": [
+       -0.33,
+       -0.095,
+       -0.41
+      ],
+      "max": [
+       0.3,
+       0.145,
+       0.79
+      ]
+     }
+    ],
+    "trojkaty_razem": 168,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwRightFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.33,
+      -0.095,
+      -0.41
+     ],
+     [
+      0.3,
+      0.145,
+      0.79
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     -0.015,
+     0.025,
+     0.19
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_pas_biodra",
+    "nazwa": "Pas Giermka (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_pas_biodra",
+      "kosc": null,
+      "trojkaty": 380,
+      "wierzcholki": 216,
+      "wymiary": [
+       1.5,
+       0.39,
+       1.385
+      ],
+      "min": [
+       -0.75,
+       -0.28,
+       -0.605
+      ],
+      "max": [
+       0.75,
+       0.11,
+       0.78
+      ]
+     }
+    ],
+    "trojkaty_razem": 380,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 5
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.75,
+      -0.28,
+      -0.605
+     ],
+     [
+      0.75,
+      0.11,
+      0.78
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.085,
+     0.088
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_rekawice_dlon_l",
+    "nazwa": "Rękawice Giermka (dlon_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_rekawice_dlon_l",
+      "kosc": null,
+      "trojkaty": 236,
+      "wierzcholki": 136,
+      "wymiary": [
+       0.56,
+       0.48,
+       0.56
+      ],
+      "min": [
+       -0.28,
+       -0.26,
+       -0.28
+      ],
+      "max": [
+       0.28,
+       0.22,
+       0.28
+      ]
+     }
+    ],
+    "trojkaty_razem": 236,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwLeftHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.28,
+      -0.26,
+      -0.28
+     ],
+     [
+      0.28,
+      0.22,
+      0.28
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.02,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_rekawice_dlon_p",
+    "nazwa": "Rękawice Giermka (dlon_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_rekawice_dlon_p",
+      "kosc": null,
+      "trojkaty": 236,
+      "wierzcholki": 136,
+      "wymiary": [
+       0.56,
+       0.48,
+       0.56
+      ],
+      "min": [
+       -0.28,
+       -0.26,
+       -0.28
+      ],
+      "max": [
+       0.28,
+       0.22,
+       0.28
+      ]
+     }
+    ],
+    "trojkaty_razem": 236,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwRightHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.28,
+      -0.26,
+      -0.28
+     ],
+     [
+      0.28,
+      0.22,
+      0.28
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.02,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_zbroja_biodra",
+    "nazwa": "Kirys Giermka (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_zbroja_biodra",
+      "kosc": null,
+      "trojkaty": 164,
+      "wierzcholki": 104,
+      "wymiary": [
+       1.54,
+       0.561,
+       1.232
+      ],
+      "min": [
+       -0.77,
+       -0.431,
+       -0.616
+      ],
+      "max": [
+       0.77,
+       0.13,
+       0.616
+      ]
+     }
+    ],
+    "trojkaty_razem": 164,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.77,
+      -0.431,
+      -0.616
+     ],
+     [
+      0.77,
+      0.13,
+      0.616
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.15,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_zbroja_ramie_l",
+    "nazwa": "Kirys Giermka (ramie_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_zbroja_ramie_l",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       0.52,
+       0.425,
+       0.52
+      ],
+      "min": [
+       -0.26,
+       -0.215,
+       -0.26
+      ],
+      "max": [
+       0.26,
+       0.21,
+       0.26
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftUpperArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.26,
+      -0.215,
+      -0.26
+     ],
+     [
+      0.26,
+      0.21,
+      0.26
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.003,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_zbroja_ramie_p",
+    "nazwa": "Kirys Giermka (ramie_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_zbroja_ramie_p",
+      "kosc": null,
+      "trojkaty": 100,
+      "wierzcholki": 56,
+      "wymiary": [
+       0.52,
+       0.425,
+       0.52
+      ],
+      "min": [
+       -0.26,
+       -0.215,
+       -0.26
+      ],
+      "max": [
+       0.26,
+       0.21,
+       0.26
+      ]
+     }
+    ],
+    "trojkaty_razem": 100,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightUpperArmAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.26,
+      -0.215,
+      -0.26
+     ],
+     [
+      0.26,
+      0.21,
+      0.26
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.003,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_giermek_zbroja_tulow",
+    "nazwa": "Kirys Giermka (tulow)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_giermek_zbroja_tulow",
+      "kosc": null,
+      "trojkaty": 244,
+      "wierzcholki": 152,
+      "wymiary": [
+       1.47,
+       0.86,
+       1.21
+      ],
+      "min": [
+       -0.735,
+       -0.43,
+       -0.595
+      ],
+      "max": [
+       0.735,
+       0.43,
+       0.615
+      ]
+     }
+    ],
+    "trojkaty_razem": 244,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 6
+    },
+    "zaczep": "EkwUpperTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.735,
+      -0.43,
+      -0.595
+     ],
+     [
+      0.735,
+      0.43,
+      0.615
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.0,
+     0.01
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "pula_wojownika_giermek_cialo",
+    "nazwa": "Kot-wojownik (ciało bazowe)",
+    "rodzaj": "postac",
+    "siatki": [
+     {
+      "nazwa": "LowerTorso_Geo",
+      "kosc": "LowerTorso",
+      "trojkaty": 176,
+      "wierzcholki": 96,
+      "wymiary": [
+       1.3,
+       0.88,
+       1.155
+      ],
+      "min": [
+       -0.65,
+       0.12,
+       -0.66
+      ],
+      "max": [
+       0.65,
+       1.0,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "UpperTorso_Geo",
+      "kosc": "UpperTorso",
+      "trojkaty": 228,
+      "wierzcholki": 138,
+      "wymiary": [
+       1.36,
+       0.85,
+       1.0
+      ],
+      "min": [
+       -0.68,
+       1.0,
+       -0.505
+      ],
+      "max": [
+       0.68,
+       1.85,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "Head_Geo",
+      "kosc": "Head",
+      "trojkaty": 680,
+      "wierzcholki": 400,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ],
+      "min": [
+       -1.08,
+       1.85,
+       -0.74
+      ],
+      "max": [
+       1.08,
+       3.15,
+       0.825
+      ]
+     },
+     {
+      "nazwa": "LeftUpperArm_Geo",
+      "kosc": "LeftUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftLowerArm_Geo",
+      "kosc": "LeftLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftHand_Geo",
+      "kosc": "LeftHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       0.67,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       1.05,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftUpperLeg_Geo",
+      "kosc": "LeftUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       0.09,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       0.51,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "LeftLowerLeg_Geo",
+      "kosc": "LeftLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       0.1,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       0.5,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftFoot_Geo",
+      "kosc": "LeftFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       0.03,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       0.57,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "RightUpperArm_Geo",
+      "kosc": "RightUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightLowerArm_Geo",
+      "kosc": "RightLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightHand_Geo",
+      "kosc": "RightHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       -1.05,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       -0.67,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightUpperLeg_Geo",
+      "kosc": "RightUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       -0.51,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       -0.09,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "RightLowerLeg_Geo",
+      "kosc": "RightLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       -0.5,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       -0.1,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightFoot_Geo",
+      "kosc": "RightFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       -0.57,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       -0.03,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "LeftEar_Geo",
+      "kosc": "LeftEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       0.392,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       0.973,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "RightEar_Geo",
+      "kosc": "RightEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       -0.973,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       -0.392,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "Tail_Geo",
+      "kosc": "Tail",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.894,
+       0.32,
+       0.806
+      ],
+      "min": [
+       0.013,
+       0.08,
+       -1.205
+      ],
+      "max": [
+       0.907,
+       0.4,
+       -0.399
+      ]
+     },
+     {
+      "nazwa": "TailTip_Geo",
+      "kosc": "TailTip",
+      "trojkaty": 264,
+      "wierzcholki": 144,
+      "wymiary": [
+       0.627,
+       1.433,
+       0.728
+      ],
+      "min": [
+       0.429,
+       0.055,
+       -1.239
+      ],
+      "max": [
+       1.056,
+       1.488,
+       -0.511
+      ]
+     }
+    ],
+    "trojkaty_razem": 2532,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 11
+    },
+    "typ": "r15",
+    "skala": 1.0,
+    "wymiary_ciala": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "wymiary_z_akcesoriami": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "zakres_z_akcesoriami": [
+     [
+      -1.09,
+      0.0,
+      -1.239
+     ],
+     [
+      1.09,
+      3.822,
+      0.857
+     ]
+    ],
+    "kosci": [
+     "Root",
+     "HumanoidRootNode",
+     "LowerTorso",
+     "UpperTorso",
+     "Head",
+     "LeftUpperArm",
+     "LeftLowerArm",
+     "LeftHand",
+     "LeftUpperLeg",
+     "LeftLowerLeg",
+     "LeftFoot",
+     "RightUpperArm",
+     "RightLowerArm",
+     "RightHand",
+     "RightUpperLeg",
+     "RightLowerLeg",
+     "RightFoot",
+     "LeftEar",
+     "RightEar",
+     "Tail",
+     "TailTip",
+     "HatPivot",
+     "StaffPivot"
+    ],
+    "zaczepy": [
+     "FaceCenterAttachment",
+     "FaceFrontAttachment",
+     "HatAttachment",
+     "HairAttachment",
+     "NeckAttachment",
+     "BodyFrontAttachment",
+     "BodyBackAttachment",
+     "LeftCollarAttachment",
+     "RightCollarAttachment",
+     "WaistCenterAttachment",
+     "WaistFrontAttachment",
+     "WaistBackAttachment",
+     "LeftShoulderAttachment",
+     "LeftGripAttachment",
+     "LeftFootAttachment",
+     "RightShoulderAttachment",
+     "RightGripAttachment",
+     "RightFootAttachment",
+     "KapeluszAttachment",
+     "KosturAttachment",
+     "EkwLowerTorsoAttachment",
+     "EkwUpperTorsoAttachment",
+     "EkwHeadAttachment",
+     "EkwLeftUpperArmAttachment",
+     "EkwLeftLowerArmAttachment",
+     "EkwLeftHandAttachment",
+     "EkwRightUpperArmAttachment",
+     "EkwRightLowerArmAttachment",
+     "EkwRightHandAttachment",
+     "EkwLeftUpperLegAttachment",
+     "EkwLeftLowerLegAttachment",
+     "EkwLeftFootAttachment",
+     "EkwRightUpperLegAttachment",
+     "EkwRightLowerLegAttachment",
+     "EkwRightFootAttachment"
+    ],
+    "znaczniki_att": [
+     "FaceCenter_Att",
+     "FaceFront_Att",
+     "Hat_Att",
+     "Hair_Att",
+     "Neck_Att",
+     "BodyFront_Att",
+     "BodyBack_Att",
+     "LeftCollar_Att",
+     "RightCollar_Att",
+     "WaistCenter_Att",
+     "WaistFront_Att",
+     "WaistBack_Att",
+     "LeftShoulder_Att",
+     "LeftGrip_Att",
+     "LeftFoot_Att",
+     "RightShoulder_Att",
+     "RightGrip_Att",
+     "RightFoot_Att",
+     "Kapelusz_Att",
+     "Kostur_Att",
+     "EkwLowerTorso_Att",
+     "EkwUpperTorso_Att",
+     "EkwHead_Att",
+     "EkwLeftUpperArm_Att",
+     "EkwLeftLowerArm_Att",
+     "EkwLeftHand_Att",
+     "EkwRightUpperArm_Att",
+     "EkwRightLowerArm_Att",
+     "EkwRightHand_Att",
+     "EkwLeftUpperLeg_Att",
+     "EkwLeftLowerLeg_Att",
+     "EkwLeftFoot_Att",
+     "EkwRightUpperLeg_Att",
+     "EkwRightLowerLeg_Att",
+     "EkwRightFoot_Att",
+     "Root_Att"
+    ],
+    "klipy": [
+     {
+      "n": "idle",
+      "dlugosc": 60,
+      "fps": 30,
+      "sekundy": 2.0,
+      "petla": true
+     }
+    ],
+    "akcesoria": [],
+    "grupy_ciala": {
+     "Head": {
+      "trojkaty": 680,
+      "limit": 4000,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ]
+     },
+     "Torso": {
+      "trojkaty": 404,
+      "limit": 1750,
+      "wymiary": [
+       1.36,
+       1.73,
+       1.155
+      ]
+     },
+     "LeftArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "RightArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "LeftLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     },
+     "RightLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     }
+    },
+    "ostrzezenia": [
+     "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+    ]
+   }
+  ]
+ }
+}

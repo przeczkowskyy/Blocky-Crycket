@@ -144,12 +144,17 @@ class TestLogiki(unittest.TestCase):
                          "e_koniec_bagno")
 
     def test_2g_jajko(self):
-        # 17.11.2026 (swiat/pety_proba): Złoto na pierwsze jajko — znacznik nad inkubatorem w lesie, TELEPORT w mieście
+        # 17.11.2026 (swiat/pety_proba): Złoto na pierwsze jajko. 26.11.2026: leśne jajko (scenka Pawła) stoi w mieście
+        # przy zagrodzie — w lesie znacznik nad Kamieniem Powrotu, w mieście nad jajkiem
         las = LW.krok(D, s(miejsce="las", kraina="las", wygrane=2, ostatni="wygrana", jajko=True))
-        self.assertEqual((las["id"], las["cel"]), ("f_jajko", "jajko"))
+        self.assertEqual((las["id"], las["cel"]), ("f_jajko", "kamien"))
         self.assertIn("jajko", las["tekst"])
+        self.assertIn("Kamień Powrotu", las["tekst"])
         miasto = LW.krok(D, s(wygrane=2, ostatni="wygrana", jajko=True, kupione=0))
-        self.assertEqual((miasto["id"], miasto["cel"]), ("f_jajko_miasto", "teleport"))
+        self.assertEqual((miasto["id"], miasto["cel"]), ("f_jajko_miasto", "jajko"))
+        self.assertIn("zagrod", miasto["tekst"])
+        teksty = " ".join(k["tekst"] for k in D["kroki"].values())
+        self.assertNotIn("inkubator", teksty.lower(), "starych inkubatorów nie ma (26.11.2026)")
         # 17.11 wieczór: jajko Bagna — w Bagnie znacznik nad inkubatorem Bagna, dopóki gracz nie kupi jajka Bagna
         bag = LW.krok(D, s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=True, kupione=0))
         self.assertEqual((bag["id"], bag["cel"]), ("f_jajko_bagno", "jajko"))
@@ -162,8 +167,9 @@ class TestLogiki(unittest.TestCase):
         self.assertNotEqual(LW.krok(D, s(kraina="dzungla", miejsce="las", jajko=True, kupione=1, **dz))["id"],
                             "f_jajko_dzungla")
         b = next(x for x in D["zrodla"]["biomy"] if x["id"] == "dzungla")
-        self.assertEqual((b["inkubator"], b["atrybut_ceny_jajka"], b["atrybut_kupionych_jajek"]),
-                         ("PetyProba/Punkty/E inkubator Dzungli", "PetyCenaJajkaDzungli", "PetyKupioneJajkaDzungli"))
+        self.assertEqual((b["jajko"], b["atrybut_ceny_jajka"], b["atrybut_kupionych_jajek"]),
+                         (["JajkaBiomowPodglad/Punkt Jajko Dżungli", "JajkaBiomowPodglad/Jajko Dżungli"],
+                          "PetyCenaJajkaDzungli", "PetyKupioneJajkaDzungli"))
         for st in (s(miejsce="las", jajko=True, kupione=1), s(miejsce="las", jajko=False), s(miejsce="las"),
                    s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=True, kupione=1),
                    s(kraina="bagno", miejsce="las", straznik=True, bagno=True, jajko=False),
@@ -341,9 +347,14 @@ class TestStykow(unittest.TestCase):
 
     def test_5c_trening_bazar_chmury_hud(self):
         Z = D["zrodla"]
-        self.assertIn('gracz:SetAttribute("%s"' % Z["atrybut_treningu"],
-                      czytaj(REPO, "swiat", "trening_proba", "zrodla", "SerwerTreningu.server.luau"))
-        self.assertIn('("TablicaWejscia/E"', czytaj(REPO, "swiat", "trening_proba", "zbuduj.py"))
+        # 26.11.2026: mini-gry wyłączone (TreningProba bez areny) — „trenuje” = stanowisko AFK (atrybut TreningAFK
+        # ustawia skrypt Pawła src/server/TreningAFK.server.luau przy starcie treningu, zdejmuje przy końcu)
+        self.assertIn('gracz:SetAttribute("%s", id)' % Z["atrybut_treningu"],
+                      czytaj(REPO, "src", "server", "TreningAFK.server.luau"))
+        self.assertIn('gracz:SetAttribute("%s", nil)' % Z["atrybut_treningu"],
+                      czytaj(REPO, "src", "server", "TreningAFK.server.luau"))
+        # 26.11.2026: tablica wejścia treningu znika z mapy — trenerem jest tylko punkt E Training Center w bazarze
+        self.assertEqual(Z["trenerzy"], ["MiasteczkoBazarGra/Punkty/E training_center"])
         self.assertIn('"training_center"', czytaj(REPO, "swiat", "miasteczko_bazar_gra", "miejsca.json"))
         self.assertIn('SetAttribute("%s"' % Z["chmury_trwa"],
                       czytaj(REPO, "swiat", "teleport_chmury", "zrodla", "KlientTeleportu.client.luau"))
@@ -367,20 +378,29 @@ class TestStykow(unittest.TestCase):
         P = json.loads(czytaj(ust))
         self.assertEqual(Z["pety"], P["kontener"])
         self.assertEqual(Z["atrybut_zlota"], P["stan_gracza"]["atrybut_zlota"])
-        # każdy biom wskazówek z inkubatorem: E, cena i licznik kupionych z jajka tego biomu (jajko = wpis w danych petów)
-        zb = czytaj(REPO, "swiat", "pety_proba", "zbuduj.py")
+        # każdy biom wskazówek z jajkiem: cena i licznik kupionych z jajka tego biomu (jajko = wpis w danych petów),
+        # punkt celu = punkt E jajka ze scenką Pawła (26.11.2026; leśne — src/server/JajkoKorowe.server.luau,
+        # Bagno i Dżungla — swiat/jajka_biomow, „Punkt <nazwa modelu>”), zapas — model jajka
         jajka = {j["kraina"]: j for j in P["jajka"]}
+        scenka = czytaj(REPO, "src", "server", "JajkoKorowe.server.luau")
+        self.assertIn('punkt = "PunktJajka"', scenka)
+        self.assertIn('punkt = "Punkt " .. m.Name', scenka)
+        biomy_jajek = czytaj(REPO, "swiat", "jajka_biomow", "testy", "proba_play.py")
         for b in Z["biomy"]:
-            if "inkubator" not in b:
-                continue
             j = jajka[b["id"]]
-            kontener, punkty, e = b["inkubator"].split("/")
-            self.assertEqual((kontener, e), (P["kontener"], j["punkt_e"]), b["id"])
-            self.assertIn('"%s"' % punkty, zb)
-            self.assertIn("punktE(f.%s, J.punkt_e" % punkty, zb)
+            self.assertEqual(len(b["jajko"]), 2, b["id"])
+            punkt, model = b["jajko"]
+            if b["id"] == "las":
+                self.assertEqual((punkt, model), ("JajkoKorowePodglad/PunktJajka", "JajkoKorowePodglad/Jajko korowe"))
+            else:
+                kontener, nazwa = model.split("/")
+                self.assertEqual((kontener, punkt), ("JajkaBiomowPodglad", "JajkaBiomowPodglad/Punkt " + nazwa), b["id"])
+                self.assertIn('"model": "%s"' % nazwa, biomy_jajek)
+                self.assertIn('"id": "%s"' % j["id"], biomy_jajek)
             self.assertEqual(b["atrybut_ceny_jajka"], j["atrybuty"]["cena"], b["id"])
             self.assertEqual(b["atrybut_kupionych_jajek"], j["atrybuty"]["kupione"], b["id"])
-        self.assertEqual({b["id"] for b in Z["biomy"] if "inkubator" in b}, set(jajka))
+            self.assertNotIn("inkubator", b)
+        self.assertEqual({b["id"] for b in Z["biomy"] if "jajko" in b}, set(jajka))
 
     def test_5f_kowal_proba_gdy_jest(self):
         # 18.11.2026: krok „kowal” czyta atrybuty gracza od serwera swiat/kowal_proba i punkt E jego kuźni

@@ -1,0 +1,1717 @@
+{
+ "modul": "pula_wojownika_targowy",
+ "modele": [
+  {
+   "id": "pula_wojownika_targowy",
+   "nazwa": "Kot-wojownik — Targowy",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 772,
+     "wierzcholki": 426,
+     "wymiary": [
+      1.59,
+      0.48,
+      1.355
+     ],
+     "min": [
+      -0.795,
+      0.525,
+      -0.605
+     ],
+     "max": [
+      0.795,
+      1.005,
+      0.75
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 1604,
+     "wierzcholki": 856,
+     "wymiary": [
+      1.424,
+      0.9,
+      1.076
+     ],
+     "min": [
+      -0.712,
+      0.955,
+      -0.538
+     ],
+     "max": [
+      0.712,
+      1.855,
+      0.538
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 276,
+     "wierzcholki": 156,
+     "wymiary": [
+      0.48,
+      0.641,
+      0.48
+     ],
+     "min": [
+      0.62,
+      0.7,
+      -0.24
+     ],
+     "max": [
+      1.1,
+      1.341,
+      0.24
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 224,
+     "wierzcholki": 128,
+     "wymiary": [
+      0.6,
+      0.296,
+      1.298
+     ],
+     "min": [
+      0.0,
+      -0.005,
+      -0.295
+     ],
+     "max": [
+      0.6,
+      0.291,
+      1.003
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 168,
+     "wierzcholki": 96,
+     "wymiary": [
+      0.48,
+      0.45,
+      0.48
+     ],
+     "min": [
+      -1.1,
+      0.7,
+      -0.24
+     ],
+     "max": [
+      -0.62,
+      1.15,
+      0.24
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 224,
+     "wierzcholki": 128,
+     "wymiary": [
+      0.6,
+      0.296,
+      1.298
+     ],
+     "min": [
+      -0.6,
+      -0.005,
+      -0.295
+     ],
+     "max": [
+      0.0,
+      0.291,
+      1.003
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "kot_rycerz_targowy_helm_Akc",
+     "kosc": "HatPivot",
+     "trojkaty": 856,
+     "wierzcholki": 504,
+     "wymiary": [
+      2.3,
+      1.645,
+      1.8
+     ],
+     "min": [
+      -1.15,
+      2.389,
+      -0.91
+     ],
+     "max": [
+      1.15,
+      4.034,
+      0.89
+     ]
+    },
+    {
+     "nazwa": "kot_rycerz_targowy_miecz_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 292,
+     "wierzcholki": 168,
+     "wymiary": [
+      0.839,
+      1.689,
+      0.872
+     ],
+     "min": [
+      -1.623,
+      0.573,
+      -0.224
+     ],
+     "max": [
+      -0.784,
+      2.262,
+      0.648
+     ]
+    }
+   ],
+   "trojkaty_razem": 5976,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 31
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.2,
+    3.155,
+    2.242
+   ],
+   "wymiary_z_akcesoriami": [
+    2.773,
+    4.039,
+    2.242
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.623,
+     -0.005,
+     -1.239
+    ],
+    [
+     1.15,
+     4.034,
+     1.003
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "kot_rycerz_targowy_helm",
+     "zaczep": "KapeluszAttachment",
+     "eksport": false
+    },
+    {
+     "id": "kot_rycerz_targowy_miecz",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 2376,
+     "limit": 1750,
+     "wymiary": [
+      1.59,
+      1.33,
+      1.355
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 452,
+     "limit": 1248,
+     "wymiary": [
+      0.48,
+      1.15,
+      0.48
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 344,
+     "limit": 1248,
+     "wymiary": [
+      0.48,
+      1.15,
+      0.48
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 312,
+     "limit": 1248,
+     "wymiary": [
+      0.6,
+      0.755,
+      1.298
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 312,
+     "limit": 1248,
+     "wymiary": [
+      0.6,
+      0.755,
+      1.298
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało Torso: 2376 trójkątów > 1750 (budżet części ciała awatara)",
+    "ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "kot_rycerz_targowy_helm",
+   "nazwa": "Durszlak Bojowy",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "kot_rycerz_targowy_helm",
+     "kosc": null,
+     "trojkaty": 856,
+     "wierzcholki": 504,
+     "wymiary": [
+      2.3,
+      1.645,
+      1.8
+     ],
+     "min": [
+      -1.15,
+      -0.781,
+      -0.91
+     ],
+     "max": [
+      1.15,
+      0.864,
+      0.89
+     ]
+    }
+   ],
+   "trojkaty_razem": 856,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 6
+   },
+   "zaczep": "HatAttachment",
+   "typ_roblox": "Hat",
+   "zakres_od_zaczepu": [
+    [
+     -1.15,
+     -0.781,
+     -0.91
+    ],
+    [
+     1.15,
+     0.864,
+     0.89
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.041,
+    -0.01
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "kot_rycerz_targowy_miecz",
+   "nazwa": "Tasak Rzeźnika Bolka",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "kot_rycerz_targowy_miecz",
+     "kosc": null,
+     "trojkaty": 292,
+     "wierzcholki": 168,
+     "wymiary": [
+      0.748,
+      1.72,
+      0.19
+     ],
+     "min": [
+      -0.633,
+      -0.36,
+      -0.09
+     ],
+     "max": [
+      0.115,
+      1.36,
+      0.1
+     ]
+    }
+   ],
+   "trojkaty_razem": 292,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.633,
+     -0.36,
+     -0.09
+    ],
+    [
+     0.115,
+     1.36,
+     0.1
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.259,
+    0.5,
+    0.005
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [
+  "pula_wojownika_targowy: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15"
+ ],
+ "kontrola": [
+  "pula_wojownika_targowy.fbx: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje brak -> ZGODNE",
+  "pula_wojownika_targowy__idle.fbx: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje pula_wojownika_targowy|Scene 1-61 -> ZGODNE",
+  "pula_wojownika_targowy.glb: siatki 38, kości 23, trójkąty 5080, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
+  "kot_rycerz_targowy_helm.fbx: siatki 1, kości 0, trójkąty 856, wzrost 1.65 st., akcje brak -> ZGODNE",
+  "kot_rycerz_targowy_helm.glb: siatki 1, kości 0, trójkąty 856, wzrost 1.65 st., akcje brak -> ZGODNE",
+  "kot_rycerz_targowy_miecz.fbx: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE",
+  "kot_rycerz_targowy_miecz.glb: siatki 1, kości 0, trójkąty 292, wzrost 1.72 st., akcje brak -> ZGODNE",
+  "ekwipunek: pula_wojownika_targowy_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "ekwipunek: pula_wojownika_targowy_cialo__idle.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje pula_wojownika_targowy_cialo|Scene 1-61 -> ZGODNE",
+  "ekwipunek: pula_wojownika_targowy_cialo.glb: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_zbroja_tulow.fbx: siatki 1, kości 0, trójkąty 1604, wzrost 0.90 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_zbroja_tulow.glb: siatki 1, kości 0, trójkąty 1604, wzrost 0.90 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_zbroja_biodra.fbx: siatki 1, kości 0, trójkąty 284, wzrost 0.32 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_zbroja_biodra.glb: siatki 1, kości 0, trójkąty 284, wzrost 0.32 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_pas_biodra.fbx: siatki 1, kości 0, trójkąty 488, wzrost 0.45 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_pas_biodra.glb: siatki 1, kości 0, trójkąty 488, wzrost 0.45 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 276, wzrost 0.64 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 276, wzrost 0.64 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 168, wzrost 0.45 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 168, wzrost 0.45 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 224, wzrost 0.30 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 224, wzrost 0.30 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 224, wzrost 0.30 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_targowy_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 224, wzrost 0.30 st., akcje brak -> ZGODNE"
+ ],
+ "ekwipunek": {
+  "stroje": {
+   "golas": [],
+   "komplet": [
+    "kot_rycerz_targowy_helm",
+    "kot_rycerz_targowy_zbroja",
+    "kot_rycerz_targowy_pas",
+    "kot_rycerz_targowy_rekawice",
+    "kot_rycerz_targowy_buty",
+    "kot_rycerz_targowy_miecz"
+   ]
+  },
+  "filmy": [],
+  "modele": [
+   {
+    "id": "kot_rycerz_targowy_buty_stopa_l",
+    "nazwa": "Trepy z Podkową (stopa_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_targowy_buty_stopa_l",
+      "kosc": null,
+      "trojkaty": 224,
+      "wierzcholki": 128,
+      "wymiary": [
+       0.6,
+       0.296,
+       1.298
+      ],
+      "min": [
+       -0.3,
+       -0.095,
+       -0.38
+      ],
+      "max": [
+       0.3,
+       0.201,
+       0.918
+      ]
+     }
+    ],
+    "trojkaty_razem": 224,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.3,
+      -0.095,
+      -0.38
+     ],
+     [
+      0.3,
+      0.201,
+      0.918
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.053,
+     0.269
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_targowy_buty_stopa_p",
+    "nazwa": "Trepy z Podkową (stopa_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_targowy_buty_stopa_p",
+      "kosc": null,
+      "trojkaty": 224,
+      "wierzcholki": 128,
+      "wymiary": [
+       0.6,
+       0.296,
+       1.298
+      ],
+      "min": [
+       -0.3,
+       -0.095,
+       -0.38
+      ],
+      "max": [
+       0.3,
+       0.201,
+       0.918
+      ]
+     }
+    ],
+    "trojkaty_razem": 224,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.3,
+      -0.095,
+      -0.38
+     ],
+     [
+      0.3,
+      0.201,
+      0.918
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.053,
+     0.269
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_targowy_pas_biodra",
+    "nazwa": "Pas z Uprzęży (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_targowy_pas_biodra",
+      "kosc": null,
+      "trojkaty": 488,
+      "wierzcholki": 274,
+      "wymiary": [
+       1.59,
+       0.45,
+       1.355
+      ],
+      "min": [
+       -0.795,
+       -0.35,
+       -0.605
+      ],
+      "max": [
+       0.795,
+       0.1,
+       0.75
+      ]
+     }
+    ],
+    "trojkaty_razem": 488,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.795,
+      -0.35,
+      -0.605
+     ],
+     [
+      0.795,
+      0.1,
+      0.75
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.125,
+     0.073
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_targowy_rekawice_dlon_l",
+    "nazwa": "Rękawice Ogrodnika (dlon_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_targowy_rekawice_dlon_l",
+      "kosc": null,
+      "trojkaty": 276,
+      "wierzcholki": 156,
+      "wymiary": [
+       0.48,
+       0.641,
+       0.48
+      ],
+      "min": [
+       -0.24,
+       -0.26,
+       -0.24
+      ],
+      "max": [
+       0.24,
+       0.381,
+       0.24
+      ]
+     }
+    ],
+    "trojkaty_razem": 276,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 5
+    },
+    "zaczep": "EkwLeftHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.24,
+      -0.26,
+      -0.24
+     ],
+     [
+      0.24,
+      0.381,
+      0.24
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.06,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_targowy_rekawice_dlon_p",
+    "nazwa": "Rękawice Ogrodnika (dlon_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_targowy_rekawice_dlon_p",
+      "kosc": null,
+      "trojkaty": 168,
+      "wierzcholki": 96,
+      "wymiary": [
+       0.48,
+       0.45,
+       0.48
+      ],
+      "min": [
+       -0.24,
+       -0.26,
+       -0.24
+      ],
+      "max": [
+       0.24,
+       0.19,
+       0.24
+      ]
+     }
+    ],
+    "trojkaty_razem": 168,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwRightHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.24,
+      -0.26,
+      -0.24
+     ],
+     [
+      0.24,
+      0.19,
+      0.24
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.035,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_targowy_zbroja_biodra",
+    "nazwa": "Kolczuga z Kapsli (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_targowy_zbroja_biodra",
+      "kosc": null,
+      "trojkaty": 284,
+      "wierzcholki": 152,
+      "wymiary": [
+       1.34,
+       0.32,
+       1.033
+      ],
+      "min": [
+       -0.67,
+       -0.19,
+       -0.495
+      ],
+      "max": [
+       0.67,
+       0.13,
+       0.538
+      ]
+     }
+    ],
+    "trojkaty_razem": 284,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 5
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.67,
+      -0.19,
+      -0.495
+     ],
+     [
+      0.67,
+      0.13,
+      0.538
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.03,
+     0.022
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_targowy_zbroja_tulow",
+    "nazwa": "Kolczuga z Kapsli (tulow)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_targowy_zbroja_tulow",
+      "kosc": null,
+      "trojkaty": 1604,
+      "wierzcholki": 856,
+      "wymiary": [
+       1.424,
+       0.9,
+       1.076
+      ],
+      "min": [
+       -0.712,
+       -0.47,
+       -0.538
+      ],
+      "max": [
+       0.712,
+       0.43,
+       0.538
+      ]
+     }
+    ],
+    "trojkaty_razem": 1604,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 5
+    },
+    "zaczep": "EkwUpperTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.712,
+      -0.47,
+      -0.538
+     ],
+     [
+      0.712,
+      0.43,
+      0.538
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.02,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "pula_wojownika_targowy_cialo",
+    "nazwa": "Kot-wojownik (ciało bazowe)",
+    "rodzaj": "postac",
+    "siatki": [
+     {
+      "nazwa": "LowerTorso_Geo",
+      "kosc": "LowerTorso",
+      "trojkaty": 176,
+      "wierzcholki": 96,
+      "wymiary": [
+       1.3,
+       0.88,
+       1.155
+      ],
+      "min": [
+       -0.65,
+       0.12,
+       -0.66
+      ],
+      "max": [
+       0.65,
+       1.0,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "UpperTorso_Geo",
+      "kosc": "UpperTorso",
+      "trojkaty": 228,
+      "wierzcholki": 138,
+      "wymiary": [
+       1.36,
+       0.85,
+       1.0
+      ],
+      "min": [
+       -0.68,
+       1.0,
+       -0.505
+      ],
+      "max": [
+       0.68,
+       1.85,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "Head_Geo",
+      "kosc": "Head",
+      "trojkaty": 680,
+      "wierzcholki": 400,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ],
+      "min": [
+       -1.08,
+       1.85,
+       -0.74
+      ],
+      "max": [
+       1.08,
+       3.15,
+       0.825
+      ]
+     },
+     {
+      "nazwa": "LeftUpperArm_Geo",
+      "kosc": "LeftUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftLowerArm_Geo",
+      "kosc": "LeftLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftHand_Geo",
+      "kosc": "LeftHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       0.67,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       1.05,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftUpperLeg_Geo",
+      "kosc": "LeftUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       0.09,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       0.51,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "LeftLowerLeg_Geo",
+      "kosc": "LeftLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       0.1,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       0.5,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftFoot_Geo",
+      "kosc": "LeftFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       0.03,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       0.57,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "RightUpperArm_Geo",
+      "kosc": "RightUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightLowerArm_Geo",
+      "kosc": "RightLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightHand_Geo",
+      "kosc": "RightHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       -1.05,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       -0.67,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightUpperLeg_Geo",
+      "kosc": "RightUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       -0.51,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       -0.09,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "RightLowerLeg_Geo",
+      "kosc": "RightLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       -0.5,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       -0.1,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightFoot_Geo",
+      "kosc": "RightFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       -0.57,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       -0.03,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "LeftEar_Geo",
+      "kosc": "LeftEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       0.392,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       0.973,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "RightEar_Geo",
+      "kosc": "RightEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       -0.973,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       -0.392,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "Tail_Geo",
+      "kosc": "Tail",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.894,
+       0.32,
+       0.806
+      ],
+      "min": [
+       0.013,
+       0.08,
+       -1.205
+      ],
+      "max": [
+       0.907,
+       0.4,
+       -0.399
+      ]
+     },
+     {
+      "nazwa": "TailTip_Geo",
+      "kosc": "TailTip",
+      "trojkaty": 264,
+      "wierzcholki": 144,
+      "wymiary": [
+       0.627,
+       1.433,
+       0.728
+      ],
+      "min": [
+       0.429,
+       0.055,
+       -1.239
+      ],
+      "max": [
+       1.056,
+       1.488,
+       -0.511
+      ]
+     }
+    ],
+    "trojkaty_razem": 2532,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 11
+    },
+    "typ": "r15",
+    "skala": 1.0,
+    "wymiary_ciala": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "wymiary_z_akcesoriami": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "zakres_z_akcesoriami": [
+     [
+      -1.09,
+      0.0,
+      -1.239
+     ],
+     [
+      1.09,
+      3.822,
+      0.857
+     ]
+    ],
+    "kosci": [
+     "Root",
+     "HumanoidRootNode",
+     "LowerTorso",
+     "UpperTorso",
+     "Head",
+     "LeftUpperArm",
+     "LeftLowerArm",
+     "LeftHand",
+     "LeftUpperLeg",
+     "LeftLowerLeg",
+     "LeftFoot",
+     "RightUpperArm",
+     "RightLowerArm",
+     "RightHand",
+     "RightUpperLeg",
+     "RightLowerLeg",
+     "RightFoot",
+     "LeftEar",
+     "RightEar",
+     "Tail",
+     "TailTip",
+     "HatPivot",
+     "StaffPivot"
+    ],
+    "zaczepy": [
+     "FaceCenterAttachment",
+     "FaceFrontAttachment",
+     "HatAttachment",
+     "HairAttachment",
+     "NeckAttachment",
+     "BodyFrontAttachment",
+     "BodyBackAttachment",
+     "LeftCollarAttachment",
+     "RightCollarAttachment",
+     "WaistCenterAttachment",
+     "WaistFrontAttachment",
+     "WaistBackAttachment",
+     "LeftShoulderAttachment",
+     "LeftGripAttachment",
+     "LeftFootAttachment",
+     "RightShoulderAttachment",
+     "RightGripAttachment",
+     "RightFootAttachment",
+     "KapeluszAttachment",
+     "KosturAttachment",
+     "EkwLowerTorsoAttachment",
+     "EkwUpperTorsoAttachment",
+     "EkwHeadAttachment",
+     "EkwLeftUpperArmAttachment",
+     "EkwLeftLowerArmAttachment",
+     "EkwLeftHandAttachment",
+     "EkwRightUpperArmAttachment",
+     "EkwRightLowerArmAttachment",
+     "EkwRightHandAttachment",
+     "EkwLeftUpperLegAttachment",
+     "EkwLeftLowerLegAttachment",
+     "EkwLeftFootAttachment",
+     "EkwRightUpperLegAttachment",
+     "EkwRightLowerLegAttachment",
+     "EkwRightFootAttachment"
+    ],
+    "znaczniki_att": [
+     "FaceCenter_Att",
+     "FaceFront_Att",
+     "Hat_Att",
+     "Hair_Att",
+     "Neck_Att",
+     "BodyFront_Att",
+     "BodyBack_Att",
+     "LeftCollar_Att",
+     "RightCollar_Att",
+     "WaistCenter_Att",
+     "WaistFront_Att",
+     "WaistBack_Att",
+     "LeftShoulder_Att",
+     "LeftGrip_Att",
+     "LeftFoot_Att",
+     "RightShoulder_Att",
+     "RightGrip_Att",
+     "RightFoot_Att",
+     "Kapelusz_Att",
+     "Kostur_Att",
+     "EkwLowerTorso_Att",
+     "EkwUpperTorso_Att",
+     "EkwHead_Att",
+     "EkwLeftUpperArm_Att",
+     "EkwLeftLowerArm_Att",
+     "EkwLeftHand_Att",
+     "EkwRightUpperArm_Att",
+     "EkwRightLowerArm_Att",
+     "EkwRightHand_Att",
+     "EkwLeftUpperLeg_Att",
+     "EkwLeftLowerLeg_Att",
+     "EkwLeftFoot_Att",
+     "EkwRightUpperLeg_Att",
+     "EkwRightLowerLeg_Att",
+     "EkwRightFoot_Att",
+     "Root_Att"
+    ],
+    "klipy": [
+     {
+      "n": "idle",
+      "dlugosc": 60,
+      "fps": 30,
+      "sekundy": 2.0,
+      "petla": true
+     }
+    ],
+    "akcesoria": [],
+    "grupy_ciala": {
+     "Head": {
+      "trojkaty": 680,
+      "limit": 4000,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ]
+     },
+     "Torso": {
+      "trojkaty": 404,
+      "limit": 1750,
+      "wymiary": [
+       1.36,
+       1.73,
+       1.155
+      ]
+     },
+     "LeftArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "RightArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "LeftLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     },
+     "RightLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     }
+    },
+    "ostrzezenia": [
+     "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+    ]
+   }
+  ]
+ }
+}

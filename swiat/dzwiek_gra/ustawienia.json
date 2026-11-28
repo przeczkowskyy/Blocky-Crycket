@@ -79,7 +79,8 @@
   "przyciszenie_s": 0.8,
   "arkusze_opis": "arkusz muzyki = kilka pętli w jednym pliku (tools/audio_arkusz_muzyki.py); utwór z arkusza gra jako odcinek pliku (Sound.PlaybackRegion). Identyfikator arkusza: identyfikatory.json → arkusze_muzyki",
   "arkusze": {
-   "muzyka_arkusz_b": {"mapa": "assets/audio/arkusz/muzyka_arkusz_b.json"}
+   "muzyka_arkusz_b": {"mapa": "assets/audio/arkusz/muzyka_arkusz_b.json"},
+   "muzyka_arkusz_c": {"mapa": "assets/audio/arkusz/muzyka_arkusz_c.json"}
   },
   "konteksty_opis": "muzyka kontekstu zastępuje muzykę strefy (przenikanie przejscie_s) i oddaje jej miejsce po kontekście. Gra tylko wtedy, gdy utwór ma identyfikator i plik się wczytał; inaczej zostaje muzyka strefy (w walce przyciszona jak dotąd). walka_straznik bez utworu gra utwór zwykłej walki. gatunki = gatunki Strażników krain (walka z tablicy prototypu podaje gatunek; walka w krainie — potwora z atrybutem Straznik). atrybut_gracza = atrybut, który serwer mini-gier ustawia graczowi na czas pobytu na stanowisku",
   "konteksty": {
@@ -103,7 +104,9 @@
     "glosnosc": 0.8,
     "mapy": ["swiat/miasteczko_bazar/czesci.json"],
     "kontener": "MiasteczkoBazar",
-    "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]
+    "uwaga": "26.11.2026: nowe utwory miasteczka wybrane przez Karola (A — targ kotów, B — psotny), oba z arkusza muzyka_arkusz_c. Dopóki plik się nie wczyta (prawa gry do zasobu, moderacja), grają zastępcze — trzy dotychczasowe utwory bazaru.",
+    "utwory": ["muzyka_16_bazar_targ_kotow_petla", "muzyka_17_bazar_psotny_petla"],
+    "zastepcze": {"glosnosc": 0.8, "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]}
    },
    "las": {
     "glosnosc": 0.8,
@@ -126,27 +129,6 @@
     "kontener": "DzunglaPas",
     "utwory": ["muzyka_07_dzungla_petla", "muzyka_07_dzungla_b_petla"],
     "zastepcze": {"glosnosc": 0.7, "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]}
-   },
-   "start": {
-    "glosnosc": 0.8,
-    "uwaga": "plac startowy (Workspace/DemoLesnaBaza) — utwory miasteczka; granice podane wprost, bo to miejsce nie ma mapy z bryłą gruntu w czesci.json",
-    "kontener": "DemoLesnaBaza",
-    "prostokaty": [[-125, 125, -125, 125]],
-    "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]
-   },
-   "miasteczko": {
-    "glosnosc": 0.8,
-    "uwaga": "stare Krzywe Miasteczko (Workspace/KrzyweMiasteczko) — utwory miasteczka; grunt ma dwie części, więc granice podane wprost",
-    "kontener": "KrzyweMiasteczko",
-    "prostokaty": [[-300, 400, -960, -440]],
-    "utwory": ["muzyka_02_bazar_targ_petla", "muzyka_03_bazar_rzemieslnicy_petla", "muzyka_04_bazar_wieczor_petla"]
-   },
-   "bor": {
-    "glosnosc": 0.8,
-    "uwaga": "stary las (Workspace/BiomLas) — utwory lasu",
-    "mapy": ["swiat/biom_las/czesci.json"],
-    "kontener": "BiomLas",
-    "utwory": ["muzyka_05_las_a_petla", "muzyka_05_las_b_petla"]
    },
    "menu": {
     "glosnosc": 0.35,

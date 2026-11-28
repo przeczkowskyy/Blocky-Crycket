@@ -161,6 +161,38 @@ class TestZapisu(unittest.TestCase):
         self.assertEqual((stan["kopie"], stan["aktywny"], stan["wydatki"]), ({"zoledziak": 1}, "zoledziak", {"jajko_lesne": 1}))
         self.assertEqual((a.ostrzezenia(), b.ostrzezenia()), ([], []))
 
+    def test_z2b_rasa_miedzy_sesjami(self):
+        """27.11.2026 (Karol: „Tak, zapisuj rasę”): Race wraca razem z Class; profil bez rasy = gracz bez rasy (ekran
+        wyboru jak dotąd); rasa spoza RaceData nie trafia do zapisu."""
+        self.assertIn("idRasy", G["pola"])
+        self.assertEqual(D["atrybuty"]["rasa"], "Race")
+        self.assertIn("Elf", D["rasy_gracza"])
+        m = AR.Magazyn()
+        a = Serwer(m)
+        g = a.dolacz()
+        g.ustaw("Class", "Scout")
+        g.ustaw("Race", "Elf")
+        a.wyjdz(g)
+        prof = m.rekordy[klucz(101)]["profil"]
+        self.assertEqual((prof.get("idKlasy"), prof.get("idRasy"), prof["wersja"]), ("Scout", "Elf", D["wersja_profilu"]))
+        b = Serwer(m)
+        g2 = b.dolacz()
+        self.assertEqual((b.atr(g2, "Class"), b.atr(g2, "Race")), ("Scout", "Elf"), "rasa i klasa wracają z zapisu")
+        b.wyjdz(g2)
+        # stary profil (przed 27.11) bez pola idRasy: klasa wraca, rasy nie ma — jak dotąd
+        stary = dict(m.rekordy[klucz(101)]["profil"])
+        del stary["idRasy"]
+        m.rekordy[klucz(101)] = {"profil": stary, "zapisano": 1}
+        c = Serwer(m)
+        g3 = c.dolacz()
+        self.assertEqual((c.atr(g3, "Class"), g3.atrybuty.get("Race")), ("Scout", None))
+        self.assertEqual(c.atr(g3, "StanGraczaZapis"), "aktywny", "stary profil przyjęty")
+        # rasa spoza listy (atrybut ustawiony obok serwera wyboru) — do zapisu nie idzie
+        g3.ustaw("Race", "Robot")
+        c.wyjdz(g3)
+        self.assertIsNone(m.rekordy[klucz(101)]["profil"].get("idRasy"))
+        self.assertEqual((a.ostrzezenia(), b.ostrzezenia(), c.ostrzezenia()), ([], [], []))
+
     def test_z3_migracja_starego_profilu(self):
         m = AR.Magazyn()
         stary = next(c["dane"] for c in D["przypadki"]["migruj"] if isinstance(c["dane"], dict) and c["dane"].get("wersja") == 2)

@@ -43,7 +43,8 @@ dłoni pasuje do każdego typu ciała.
   (jak oczy). Nie robimy wcięć, bo wcięty tułów zostawiłby szparę 0,08 między tułowiem a ramieniem. **Wyjątek:
   spodenki** (ściągacz i nogawka) wystają tylko o 0,01, bo pas i poły tuniki leżą o 0,02 nad klockiem — przy tej samej
   odległości ściany migotałyby, gdy pas albo kirys są założone bez spodni (pkt 12).
-- Twarz, uszy i ogon nigdy nie znikają. Włosy są akcesorium ciała, więc hełm może je schować (`ukrywa`).
+- Twarz i ogon nigdy nie znikają. Włosy są akcesorium ciała, więc hełm może je schować (`ukrywa`). Uszy kota
+  znikają tylko pod hełmem, który mieści je w całości i deklaruje `ukrywa=("Uszy",)` (od 26.11.2026, pkt 14).
 - Kości nośne kota `HatPivot` i `StaffPivot` zostają w gołym ciele bez brył. Klipy dalej nimi ruszają, co bez
   przedmiotu nic nie zmienia.
 - Goły bohater wygląda sympatycznie: ta sama mina co w pełnym stroju, jasna koszula, kolorowe spodenki. Bez nagości.
@@ -574,3 +575,184 @@ O zaczepie przedmiotu na zaczepie:
   `--kontrola` bohaterów i regresja z tego etapu (poza repozytorium);
 - `katalog_ekwipunku.jpg` (tryb Blendera w `zestawienie.py`) nie pokazuje jeszcze przedmiotów bohaterów:
   `ikony_katalogu()` i `ZESTAWY` (podpis „Rekwizyty Kota-Maga”) są sprzed tego etapu.
+
+## 14. Uszy kota pod hełmem (`ukrywa` „Uszy”, 26.11.2026, propozycja)
+Paweł (26.11.2026, przez Karola): hełmy puli wojownika mają zasłaniać kocie uszy. Uszy kota to gołe bryły kości
+`LeftEar`/`RightEar` (ostrosłupy), a nie akcesorium ze `znacznik`, więc dawne `ukrywa` (tylko akcesoria ciała,
+pkt 9) ich nie obejmowało. Najmniejsze rozszerzenie, bez nowego pola:
+- `ekwipunek.ZNACZNIKI_CIALA = {"Uszy": ("LeftEar", "RightEar")}` — znacznik w `ukrywa`, który jest w tej tabeli,
+  zdejmuje w `ubierz()` gołe bryły (`golas`) tych kości, tak jak powłoka zdejmuje gołe bryły swojej kości, ale bez
+  własnych brył na tych kościach. Znaczniki spoza tabeli (np. „Wlosy”) działają jak dotąd. Ciało bez tych kości
+  (człowiek): znacznik nic nie robi.
+- **Warunek:** przedmiot z `ukrywa=("Uszy",)` musi mieścić całe uszy w pozie spoczynku — chowamy ucho pod hełmem,
+  a nie ucinamy je hełmowi za małemu. Pomiar: `python -B swiat/postacie/pula_wojownika.py --uszy` (zapas = o ile każdy
+  punkt brył uszu da się przesunąć w 26 kierunkach, nie wychodząc z hełmu; walce jak gładkie walce Roblox; kod 1, gdy
+  zapas < 0,04). Uszy w ramce `HatAttachment` kota: x 0,35…0,98 (na zewnątrz głowy 0,825), y −0,04…0,70 nad czubkiem
+  głowy, z −0,21…0,14.
+- **Kształt (Karol 26.11.2026: „hełm wygląda dobrze zostawiając sylwetkę”):** hełm ma niską kopułę jak na arkuszu
+  i dwie osłony w kształcie kocich uszu w materiale hełmu (`pula_wojownika._oslony_uszu`: trójkątne graniastosłupy
+  z dwóch klinów w ramce kości ucha, 0,8 u podstawy, 0,98 wysokości, 0,5 grubości) — zapas 0,065 we wszystkich pięciu
+  hełmach puli. Odrzucony wariant z rundy 1: kopuła ok. 2,2 szerokości i 0,8–1,3 nad głową (plansza
+  `d2611_helm_uszy_porownanie.jpg` z historii).
+- **Dane dla gry:** `ukrywa: ["Uszy"]` w przedmiocie i `znaczniki_ciala: {"Uszy": ["LeftEar", "RightEar"]}` w
+  `ekwipunek.json` bohatera (pula wojownika). Rig z części: `Transparency = 1` części kości uszu, gdy przedmiot jest
+  założony (jak włosy); rig z siatek: siatki `LeftEar_Geo`/`RightEar_Geo`.
+- **Upadek:** w klipie `upadek` hełm zsuwa się z głowy (kość `HatPivot`), a uszu w modelu nie ma przez cały klip —
+  eksport (FBX/GLB, części Roblox) nie zna przełączania widoczności w czasie klipu, a klipy nie mają kanału skali.
+  W grze może to zrobić skrypt: odsłonić uszy w chwili zsunięcia hełmu (klatka 30 klipu upadku kota,
+  `kot_mag.UPADEK_LOT`; ten sam skrypt przestawia spaw hełmu na korektę upadku — pkt 15, „Korekta upadku”).
+  Niezrobione. Od 26.11.2026 hełm nie kończy upadku pod ziemią: stoi obok głowy (korekta upadku, pkt 15).
+- W ruchu uszy (gdyby były widoczne) wychodziłyby poza hełm do 0,17 studa (`trafienie`, `unik` — uszy kładą się po
+  sobie); są schowane, więc nie przenikają.
+- Stan kontraktu dla innych ciał bez zmian: kapelusz Kota-Maga dalej nic nie ukrywa (uszy przez rondo).
+
+## 15. Rodzaje chwytu broni (`Akcesorium.chwyt`, 26.11.2026, propozycja)
+Karol (26.11.2026): „odróżniaj różdżkę od miecza i łuk itd.”. Do dziś każda broń w prawej łapie kota szła przez
+jedną korektę — chwyt kostura (`KosturAttachment`, obrót (−90, 0, 0)), więc miecz stał pionowo przy biodrze jak
+kostur. Teraz broń deklaruje rodzaj, a ciało ma korektę na każdy rodzaj:
+- **Deklaracja w broni:** pole `Akcesorium.chwyt` (to samo, które biblioteka ma od dawna dla „drzewce” w przymiarce),
+  np. `Akcesorium(..., zaczep="RightGripAttachment", typ="Bron", chwyt="miecz")`. Konwencja modelu bez zmian
+  (rękojeść w (0, 0, 0), oś główna w +Y, lico +Z); tarcza i księga jak tarcza Rycerza (blok `uklad(obrot=(−90, 0,
+  0))`, osie dłoni).
+- **Korekta w ciele:** `KOREKTY_CHWYTU` bohatera ma obok kluczy-zaczepów klucze-rodzaje: {rodzaj: (zaczep ciała, pos,
+  obrot)}. `ekwipunek.korekta()` (używają jej `ubierz()` i `Przedmiot.opis()`) bierze najpierw wpis rodzaju, potem
+  wpis zaczepu, potem brak korekty — **broń bez rodzaju i ciała bez wpisów rodzajów budują się co do bitu jak
+  dotąd** (sprawdzone 26.11.2026: JSON postaci, strojów i `ekwipunek_json` Kota-Maga, Rycerza, Zwiadowcy,
+  Kota-Demona, kotów ras i kotów klas — 40 pozycji identycznych przed i po zmianie).
+- **Tabela rodzajów i korekty kota:** `swiat/postacie/chwyty.py` (`RODZAJE`, `POCHYLENIE_KOTA` → `KOREKTY_KOTA`).
+  Korekta kota to pochylenie broni w ramce dłoni (do przodu, na zewnątrz, skręt), w pozie spoczynku dłoń kota ≈ osie
+  świata. Na dziś korekty ma tylko kot (pula wojownika: `KOREKTY_CHWYTU = KM.KOREKTY_CHWYTU + chwyty.KOREKTY_KOTA`);
+  Kot-Mag (`kot_mag.py`, zamrożony) i koty klas Pawła (`kot_klasy.py`) mają dawne korekty.
+
+**Kryterium (Karol 26.11.2026: „miecz ma być tak wychylony, że podczas animacji chodzenia się nie bugował”):**
+w chodzie (`chod`) i spoczynku (`idle`) broń nie wchodzi w żadną bryłę ciała, stroju ani hełmu i nie schodzi pod
+ziemię — zapas ≥ 0,05 studa w każdej klatce; ziemia czysta także w klipach walki; głowa, nakrycie i tułów w klipach
+walki jak dotąd (`--przenikanie`). Kot nie ma klipu biegu (bieg w świecie liczy gra, `swiat/bohater_swiat`) —
+niesprawdzany. Kontrola: `python -B swiat/postacie/pula_wojownika.py --ruch` (`bron_w_ruchu`): punkty broni co
+0,04 studa względem wszystkich brył postaci (skrzynki dokładnie, walce i kule jak w Roblox) i ziemi, klatka po
+klatce, w każdym klipie kota. Nie liczą się: punkty broni schowane w łapie, która ją trzyma (pięść), i styk
+z przedramieniem tej łapy w promieniu 0,45 od środka łapy (rękojeść i jelec przy nadgarstku; kanoniczny kostur
+Kota-Maga siedzi w mankiecie na 0,24 w każdym klipie) — ten styk raport pokazuje osobno („chwyt”); tarcza: całe
+przedramię to chwyt (pasy).
+
+| rodzaj | łapa | zaczep kota | pochylenie (przód, zewnątrz, skręt, wokół osi broni) | pos | rot korekty |
+|---|---|---|---|---|---|
+| `miecz` — miecz, tasak, pałka, pogrzebacz | prawa | `KosturAttachment` (StaffPivot) | 20°, 10°, 0, −45° | (−0,08, 0,08, 0,03) | (−41,64, −61,12, 62,76) |
+| `rozdzka` — różdżka | prawa | `KosturAttachment` | 60°, 10°, 0 | (−0,08, 0, 0) | (−30, 10, 0) |
+| `drzewce` — kostur, włócznia | prawa | `KosturAttachment` | 0, 5°, 0 | (−0,12, 0,03, 0) | (−90, 5, 0) |
+| `proca` | prawa | `KosturAttachment` | 5°, 30°, 0 | (−0,12, 0,03, 0) | (−85, 30, 0) |
+| `luk` | lewa | `LeftGripAttachment` | 50°, 30°, −55° (łuk bokiem do patrzącego z przodu) | (0,2, 0,25, 0) | (−3,15, −48,36, 45,27) |
+| `tarcza` | lewa | `LeftGripAttachment` | jak u człowieka | (0, 0, 0,08) | (0, 0, 0) |
+| `ksiega` | lewa | `LeftGripAttachment` | jak u człowieka (mała atrapa wisi przed bokiem) | (0,2, 0,4, −0,2) | (0, 0, 0) |
+
+Wynik `--ruch` 26.11.2026 (najmniejszy odstęp w studach; ciało / ziemia):
+- **miecz** (5 mieczy puli na swoich kotach): chód i spoczynek +0,070…+0,080 / ≥ +0,49 — czysto; walka: ziemia
+  ≥ +0,077 (kula_ognia, pogrzebacz), głowa/hełm/tułów 0 (`--przenikanie`), ale głowica albo koniec rękojeści wchodzi
+  w ramię (rękaw) do 0,11 w `atak`, `kula_ognia`, `lodowy_pocisk` — łapa stoi tam przy barku, a wszystko, co
+  wystaje pod pięść, idzie w ramię (wcześniej do 0,18). Upadek: czubek do 0,54 pod ziemią — od 26.11.2026
+  poprawione korektą upadku (niżej, „Korekta upadku”).
+- **Pochylenie miecza:** 25° do przodu (zapas w chodzie +0,075) wbija pogrzebacz w ziemię w `kula_ognia`
+  (−0,06), 15° jest czyste (+0,058 / +0,22), ale mniej wychylone — wybrane 20°. Obrót −45° wokół osi broni odsuwa
+  wewnętrzną krawędź ostrza od przedramienia (bez niego 20° daje w chodzie tylko +0,02…+0,04).
+- **rozdzka:** czysto w każdym klipie poza upadkiem (+0,15…+0,25; upadek −0,69 pod ziemią — poprawione korektą
+  upadku).
+- **drzewce:** chód/spoczynek +0,083; walka do −0,04 (drzewce w ramię, `kula_ognia`).
+- **proca:** chód/spoczynek +0,076; walka do −0,21 (stopka rękojeści w ramię w `atak`, `kula_ognia`,
+  `lodowy_pocisk`).
+- **luk:** spoczynek +0,050, chód −0,048 (owijka majdanu przy zawijasie ogona); walka do −0,42 (łuk w głowę
+  i tułów — lewa łapa idzie w klipach walki przed ciało).
+- **tarcza:** chód/spoczynek +0,068…+0,105; walka do −0,28 (tarcza w tułów i głowę).
+- **ksiega:** spoczynek +0,124, chód +0,029 (zawijas ogona); walka do −0,18.
+- **Czego nie naprawi jedna stała korekta:** (1) lewa łapa sama wchodzi w ogon — goła łapa −0,138 w `chod` (kl. 14)
+  i −0,052 w `idle` (kl. 45); to klip ciała (zamach lewej łapy ±24° i kołysanie ogona), więc wszystko w lewej łapie
+  bywa przy ogonie; (2) w klipach walki (pisanych pod kostur) lewa łapa idzie przed tułów i do głowy — łuk, tarcza
+  i księga wchodzą w ciało w każdym klipie walki; (3) w `atak`, `kula_ognia`, `lodowy_pocisk` prawa łapa stoi przy
+  barku — to, co wystaje pod pięść (głowica, stopka procy, dół drzewca), wchodzi w ramię. Propozycje (gra albo
+  klipy klasy, nie wspólne klipy kota): mniejszy zamach lewej łapy z przedmiotem (np. ±7° jak prawa z bronią)
+  i odchylenie jej w barku o ok. 15° na zewnątrz; własne klipy walki dla łuku i tarczy.
+- **Upadek:** tor lotu `StaffPivot` liczono dla kostura (oś dłoni „do przodu” leży na ziemi pionowo w dół), więc
+  broń pochylona do przodu wbijała się w ziemię. Od 26.11.2026 poprawione **korektą upadku** — opis, dane dla gry
+  i liczby niżej („Korekta upadku”).
+- **Lewa łapa kota nie ma kości nośnej** (jak `StaffPivot` w prawej): łuk, tarcza i księga zostają przy łapie także
+  w upadku; łuk i tarcza kładą się płasko pod łapą (korekta upadku), księga jest nad ziemią i bez niej.
+- **Dane dla gry:** część broni w `ekwipunek.json` ma pole `chwyt` (tylko gdy broń je deklaruje), `zaczep`/`pos`/`rot`
+  już po korekcie rodzaju; bohater ma `korekty_chwytu` (klucze: zaczepy i rodzaje) i `rodzaje_chwytu` (rodzaj →
+  łapa, zaczep standardowy, opis, korekta kota) — `chwyty.dla_gry()`.
+- **Jak nowa broń deklaruje rodzaj:** `chwyt="<rodzaj>"` w `Akcesorium`; nowy rodzaj — wpis w `chwyty.RODZAJE` i
+  w `chwyty.POCHYLENIE_KOTA` (pochylenie może mieć 4. liczbę: obrót wokół osi broni), potem `--ruch` i
+  `--przenikanie` puli i plansze `pula_wojownika_chwyty`.
+- **Sprawdzenie:** `pula_wojownika.py --ruch` (całe ciało i ziemia, każdy klip; kod 1, gdy miecz zestawu nie ma
+  zapasu w chodzie albo spoczynku), `pula_wojownika.py --przenikanie` (głowa, nakrycie, tułów w klipach walki, próg
+  głowy 0,02, tułowia 0,10), plansze `wynik/_pula_wojownika/d2611_chwyty.jpg` (przód i 3/4 każdego rodzaju),
+  `d2611_chod_miecz.jpg` (Giermek w 8 klatkach chodu, przód i bok) i `d2611_chod_chwyty.jpg` (każdy rodzaj w 4
+  klatkach chodu): `python -B swiat/postacie/przebuduj.py pula_wojownika_chwyty` (z krótkim filmem chodu).
+- **Uwaga dla katalogu:** `zestawienie.py` odwraca `korekty_chwytu` po zaczepie ciała (`{v["zaczep"]: …}`); gdy
+  kiedyś obejmie bohatera z rodzajami, kilka kluczy ma ten sam `KosturAttachment` — trzeba będzie brać rodzaj z pola
+  `chwyt` części. Dziś katalog czyta tylko Rycerza, Kota-Maga i Zwiadowcę (bez rodzajów).
+
+### Korekta upadku (26.11.2026, propozycja)
+Paweł (26.11.2026, po planszach przedmiotów kota-wojownika): **„poprawić, żeby nie były pod ziemią”**. Klip `upadek`
+kota jest wspólny dla każdego stroju; kości nośne `StaffPivot` (broń w prawej łapie) i `HatPivot` (hełm) lecą w nim
+po torach policzonych dla kostura i kapelusza Kota-Maga (`kot_mag.UPADEK_LOT`), a lewa łapa kości nośnej nie ma.
+Miecze, hełmy z osłonami poniżej obręczy oraz łuk i tarcza w lewej łapie kończyły więc upadek pod ziemią.
+- **Zasada:** poprawka jest **daną przedmiotu**, nie nowym klipem ani nową kością. Część na zaczepie dostaje drugą
+  korektę (pos, rot) w ramce **tego samego zaczepu** co korekta chwytu; w klipie upadku gra przechodzi z jednej na
+  drugą: `a = clamp((klatka − od_klatki) / (do_klatki − od_klatki), 0, 1)`, `C0 = C0_chwytu:Lerp(C0_upadku, a)`
+  (`C0_x = zaczep · CFrame.new(pos) · CFrame.fromOrientation(rot)`, rot w stopniach, kolejność Y·X·Z jak
+  `macierz_obrotu`; klatka = czas klipu × 30). Przed `od_klatki` i po wyjściu z klipu (wstawanie, odrodzenie) —
+  korekta chwytu. Klipy ciała, rig i chwyt w chodzie, spoczynku i walce bez zmian (`--ruch` dla tych klipów, `--uszy`,
+  `--przenikanie` i `--kontrola` dają te same liczby co przed zmianą).
+- **Ułożenie (grupy w `chwyty.UPADEK_KOTA`):** *prawa łapa* (miecz, różdżka, drzewce, proca; kl. 22→33, tor
+  kostura) — broń w locie obraca się do ułożenia kostura Kota-Maga i leży płasko przed kotem, lico do ziemi;
+  *hełm* (domyślnie kl. 30→40) — prostuje się i stoi kopułą do góry obok głowy, odsunięty od niej (0,4–0,7 studa
+  w bok i w górę względem toru kapelusza); okno przejścia dobiera budowa (Mleczarz 30→36, Giermek 30→38, reszta
+  30→40), żeby hełm szybciej schodził z głowy; *lewa łapa* (łuk, tarcza; księga nie potrzebuje) — przedmiot zostaje
+  przy łapie i kładzie się płasko na ziemi pod nią (najcieńszą osią pionowo), okno tak, żeby w żadnej klatce nie
+  zszedł pod ziemię (łuk kl. 16→32, tarcza kl. 20→28).
+- **Liczenie (`pula_wojownika.korekta_upadku`):** z geometrii przedmiotu na gołym kocie (nie zależy od reszty stroju):
+  ułożenie jak wyżej, przesunięcie w poziomie i skręt (lewa łapa) dobrane tak, żeby jak najmniej wchodził w leżącego
+  kota, potem pion: najniższy punkt po lądowaniu `chwyty.ZAPAS_UPADKU` = 0,02 studa nad ziemią. Twardy warunek: w każdej
+  pół klatce klipu (gra w 60 kl./s) najniższy punkt ≥ `chwyty.PROG_UPADKU` = 0,01. Próg jest niższy niż 0,05 z kontroli
+  chodu, bo w upadku przedmiot ma **leżeć** na ziemi, a nie wisieć nad nią.
+- **Dane dla gry (`ekwipunek.json` puli):** część na zaczepie ma `korekta_upadku` = {`grupa`, `od_klatki`,
+  `do_klatki`, `pos`, `rot`} albo `null` (zostaje korekta chwytu); bohater ma `upadek` (`chwyty.upadek_dla_gry()`:
+  klip, fps, zapas, wzór przejścia, grupy z zaczepem, kością, domyślnym oknem i opisem ułożenia), a każdy rodzaj
+  w `rodzaje_chwytu` — pole `upadek` (grupa). Skryptu w grze, który robi przejście, **jeszcze nie ma**.
+- **Modele i plansze:** eksport FBX/GLB zna tylko korektę chwytu (zestawy puli eksportują sam klip `idle`; klip
+  upadku w grze jest wspólny z Kotem-Magiem). Kadry plansz upadku budują postać z korektą danej klatki
+  (`pula_wojownika.korekty_w_klatce_upadku`) — tą samą funkcją, którą liczy kontrola (`korekta_w_klatce`); `--ruch`
+  sprawdza, że oba sposoby dają to samo położenie (różnica 0).
+
+Najniższy punkt względem ziemi w klipie `upadek` (studa; przed — stała korekta chwytu, klatki całe; po — z korektą
+upadku, co pół klatki; `--ruch`):
+
+| przedmiot | przed | po |
+|---|---|---|
+| miecz: Podwórkowy / Targowy / Kuchenny / Mleczarz / Giermek | −0,51 / −0,35 / −0,54 / −0,24 / −0,51 | +0,019 / +0,020 / +0,020 / +0,020 / +0,020 |
+| hełm: Podwórkowy / Targowy / Kuchenny / Mleczarz / Giermek | −0,79 / −0,74 / −0,59 / −0,25 / −0,62 | +0,020 w każdym |
+| rodzaj `miecz` (Miecz Giermka) | −0,51 | +0,020 |
+| `rozdzka` (atrapa) | −0,69 | +0,020 |
+| `drzewce` (kostur Kota-Maga w chwycie drzewca) | −0,03 | +0,019 |
+| `proca` | −0,35 | +0,020 |
+| `luk` | −0,63 | +0,013 (kl. 29,5, w trakcie przejścia; po lądowaniu +0,020) |
+| `tarcza` | −0,15 | +0,020 |
+| `ksiega` | +0,035 | +0,035 (bez korekty) |
+
+- **Hełm a głowa:** przed poprawką hełm po lądowaniu wchodził w głowę na 0,06, a w czasie zsuwania (kl. 32–39) na
+  0,51–0,58; po poprawce po lądowaniu stoi 0,19–0,33 od głowy (Mleczarz: −0,15 w kl. 36, jeszcze w locie), w czasie
+  zsuwania wchodzi na 0,21–0,41 — tyle co w noszeniu (hełm obejmuje głowę: 0,24–0,31), Giermek o 0,17 głębiej.
+  Przyczyna: tor kapelusza zsuwa nakrycie w bok, a osłony policzków i uszu obejmują głowę; bez zmiany wspólnego
+  klipu (albo osobnego toru hełmu) tego nie usuniemy. Uszu po zsunięciu hełmu dalej nie widać (pkt 14).
+- **Lewa łapa:** łuk pod łapą dotyka przedramienia (0,024 studa w głąb), tarcza nie (+0,03); w widoku z góry łuk
+  częściowo zasłania głowa leżącego kota (leży pod brodą); księga zostaje w łapie
+  jak dotąd (+0,035 nad ziemią, w kl. 30 okładka dotyka wąsa: −0,019).
+- **Ciało w stroju:** klip ciała kładzie gołego kota na ziemi; powłoki stroju są grubsze od futra, więc w upadku
+  stroje puli schodzą w upadku do 0,03 studa pod ziemię (kl. 24; `--ruch`, „ciało ze strojem w upadku”) — to klip
+  ciała, korekta przedmiotów tego nie dotyczy.
+- **Plansze:** `wynik/_pula_wojownika/d2611_upadek_zestawy.jpg` (pięć zestawów w ostatniej klatce, z boku i z
+  góry-skosa), `d2611_upadek_giermek.jpg` (Giermek w 6 klatkach upadku, z boku i z góry-skosa), `d2611_upadek_chwyty.jpg`
+  (każdy rodzaj w ostatniej klatce, z boku i z góry-skosa); zielona płyta = ziemia (w widoku z boku jej pas to
+  linia ziemi). `python -B swiat/postacie/przebuduj.py pula_wojownika_chwyty --bez-filmow`.
+- **Czego nie ma:** skryptu w grze (przejście spawu, odsłonięcie uszu); sprawdzenia w Roblox Studio; korekty upadku
+  dla Kota-Maga, kotów klas i kotów ras (`kot_mag.py`, `kot_klasy.py` bez zmian — kostur Kota-Maga leży jak dotąd);
+  kontroli przedmiotu przechodzącego przez przedmiot (np. tarcza i miecz razem); klipu biegu.

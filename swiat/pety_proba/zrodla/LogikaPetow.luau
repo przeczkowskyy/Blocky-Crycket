@@ -11,11 +11,20 @@
 		kupione(D, jajko, wydatki, tryb?)         → ile jajek liczy się do ceny (licznik osobny / wspólny)
 		cena(D, jajko, kupione, tryb?)            → cena NASTĘPNEGO jajka: "stala" (domyślnie, decyzja 17.11),
 		                                            "rosnaca" (rośnie z kupionymi do maks) albo "kalkulator"
-		opisCeny(D, jajko, tryb?)                 → „cena: 300 Złota” albo „od 300 Złota · rośnie z każdym jajkiem”
+		opisCeny(D, jajko, tryb?)                 → „cena: 300 Rybek” albo „od 300 Rybek · rośnie z każdym jajkiem”
+		forma(formy, n), ileRybek(D, n, przypadek?) → „3 Rybki” (waluta Rybki = atrybut Gold, D-146; przypadek "m"
+		                                            mianownik — domyślnie, "b" biernik „Kup za 1 Rybkę”, "d" dopełniacz)
 		losuj(D, jajko, r)                        → id peta (r ∈ [0, 1), jawne szanse po kolei)
 		procent(szansa), opisSkilla(D, pet), premiaPeta(D, id), tekstBraku(D, brakuje, zloto, cena)
 		modPeta(D, id)                            → modyfikator bohatera od peta (Sygnaly/Modyfikatory stanu gracza)
-		wierszeSzans(D, jajko), wierszeZagrody(D, kopie, aktywny), decyzja(D, stan), czasWyklucia(D)
+		wierszeSzans(D, jajko), wierszeZagrody(D, kopie, aktywny, stoja?), decyzja(D, stan)
+		zagroda — Rybki (25.11.2026, propozycja, liczby robocze): stawka(D, id), poziomZagrody(D, wydatki),
+		miejscaZagrody(D, poziom), cenaUlepszenia(D, poziom) (nil = najwyższy), czystyWybor(D, wybor) (nil = najrzadsze),
+		wZagrodzie(D, kopie, aktywny, wybor, miejsc, poza), przychodS(D, lista), opisPrzychodu(D, s),
+		stanZagrody(D, kopie, aktywny, wybor, wydatki, poza), zmienWybor(D, …, pet, tak) → wybór, powód,
+		poWyborze(D, wybor, stary, nowy), poOdstawieniu(D, wybor, stary), tik(D, reszta, s, dt) → ile, reszta,
+		tekstBrakuUlepszenia(D, brakuje, zloto, cena)
+		sprzedaż (26.11.2026): rybkiTekst(v) → „+0.04/s”, cenaSprzedazy(D, id), sprzedaz(D, kopie, aktywny, stoja, lista)
 		rowne(a, b), sprawdzPrzypadki(D) → ok, n, bledy
 ]]
 if not game:GetService("RunService"):IsStudio() then
@@ -109,13 +118,33 @@ function L.cena(D, j, kupione, tryb): number
 	return math.min(c.maks, c.start + c.krok * n)
 end
 
+-- odmiana przy liczbie: formy = { 1, 2–4, 5+ }; 0 i 12–14 jak 5+, 22–24, 32–34… jak 2–4
+function L.forma(formy, n: number)
+	n = math.floor(math.abs(n))
+	if n == 1 then
+		return formy[1]
+	end
+	local j, d = n % 10, n % 100
+	if j >= 2 and j <= 4 and not (d >= 12 and d <= 14) then
+		return formy[2]
+	end
+	return formy[3]
+end
+
+local PRZYPADKI_RYBEK = { m = "formy_rybki", b = "formy_rybki_biernik", d = "formy_rybki_dopelniacz" }
+
+-- waluta Rybki (atrybut Gold, D-146): „1 Rybka / 3 Rybki / 5 Rybek” (m), „Kup za 1 Rybkę” (b), „Brakuje ci 1 Rybki” (d)
+function L.ileRybek(D, n: number, przypadek: string?): string
+	return string.format("%d %s", n, L.forma(D.teksty[PRZYPADKI_RYBEK[przypadek or "m"]], n))
+end
+
 function L.opisCeny(D, j, tryb): string
 	local T = D.teksty
 	local t = tryb or j.cena.tryb
 	if t == "rosnaca" then
-		return string.format(T.cena_od, L.cena(D, j, 0, t)) .. " · " .. T.rosnie
+		return string.format(T.cena_od, L.ileRybek(D, L.cena(D, j, 0, t), "d")) .. " · " .. T.rosnie
 	end
-	return string.format(T.cena_tablica, L.cena(D, j, 0, t))
+	return string.format(T.cena_tablica, L.ileRybek(D, L.cena(D, j, 0, t)))
 end
 
 function L.losuj(D, j, r): string
@@ -273,7 +302,7 @@ function L.premiaPeta(D, id)
 end
 
 function L.tekstBraku(D, brakuje: number, zloto: number, c: number): string
-	return string.format(D.teksty.za_malo, brakuje, zloto, c)
+	return string.format(D.teksty.za_malo, L.ileRybek(D, brakuje, "d"), zloto, c)
 end
 
 function L.wierszeSzans(D, j)
@@ -287,14 +316,27 @@ function L.wierszeSzans(D, j)
 	return w
 end
 
-function L.wierszeZagrody(D, kopie, aktywny)
+local function zawiera(lista, x): boolean
+	for _, v in (if type(lista) == "table" then lista else {}) do
+		if v == x then
+			return true
+		end
+	end
+	return false
+end
+
+-- 26.11.2026: też Rybki na sekundę peta w zagrodzie (rybki_s — ta sama liczba, którą płaci serwer; rybki — „+0.04/s”),
+-- czy pet stoi teraz w zagrodzie (w_zagrodzie; stoja = lista id ze stanu zagrody, bez niej false) i cena kopii (sprzedaz)
+function L.wierszeZagrody(D, kopie, aktywny, stoja)
 	local w = {}
 	for _, p in D.pety do
 		local n = if type(kopie) == "table" then kopie[p.id] else nil
 		if calkowitaNieujemna(n) and n > 0 then
 			local r = L.rzadkosc(D, p.rzadkosc)
 			table.insert(w, { pet = p.id, nazwa = p.nazwa, rzadkosc = r.nazwa, kolor = r.kolor, kopie = n,
-				skill = L.opisSkilla(D, p), krotko = L.opisSkillaKrotki(D, p), aktywny = p.id == aktywny, jajko = p.jajko })
+				skill = L.opisSkilla(D, p), krotko = L.opisSkillaKrotki(D, p), aktywny = p.id == aktywny, jajko = p.jajko,
+				rybki_s = p.rybki_s, rybki = L.rybkiTekst(p.rybki_s), w_zagrodzie = zawiera(stoja, p.id),
+				sprzedaz = L.cenaSprzedazy(D, p.id) })
 		end
 	end
 	return w
@@ -314,12 +356,334 @@ function L.decyzja(D, stan)
 	return { ok = true, powod = "ok", tekst = "" }
 end
 
-function L.czasWyklucia(D): number
-	local W = D.wyklucie
-	return W.trzesienie_s + W.pekniecie_s + W.wyskok_s + W.radosc_s
+-- równość głęboka (tabele: te same klucze i wartości; liczby z tolerancją 1e-9)
+------------------------------------------------------------------ zagroda: Rybki (25.11.2026, propozycja)
+-- Pety stojące w zagrodzie dają Rybki (atrybut Gold, D-146) na sekundę; pet idący za graczem i pety na wyprawie
+-- (`poza` — wypraw jeszcze nie ma) nie stoją w zagrodzie. Miejsca z D.zagroda.poziomy (2 → 4 → 6 → 8), poziom z licznika
+-- wydatków na cel D.zagroda.cel_ulepszenia w profilu StanGracza. Liczby robocze (ustawienia.json → zagroda).
+function L.stawka(D, id): number
+	local p = L.pet(D, id)
+	return if p then p.rybki_s else 0
 end
 
--- równość głęboka (tabele: te same klucze i wartości; liczby z tolerancją 1e-9)
+function L.poziomZagrody(D, wydatki): number
+	local v = if type(wydatki) == "table" then wydatki[D.zagroda.cel_ulepszenia] else nil
+	local n = if calkowitaNieujemna(v) then v else 0
+	return math.min(1 + n, #D.zagroda.poziomy)
+end
+
+function L.miejscaZagrody(D, poziom): number
+	local poz = D.zagroda.poziomy
+	local i = if calkowitaNieujemna(poziom) then poziom else 1
+	return poz[math.max(1, math.min(i, #poz))].miejsc
+end
+
+function L.cenaUlepszenia(D, poziom): number?
+	local poz = D.zagroda.poziomy
+	local i = if calkowitaNieujemna(poziom) then poziom else 1
+	if i >= #poz then
+		return nil
+	end
+	return poz[math.max(1, i) + 1].cena
+end
+
+function L.czystyWybor(D, wybor)
+	if type(wybor) ~= "table" then
+		return nil
+	end
+	local n = 0
+	for k in wybor do
+		if type(k) ~= "number" or k < 1 or math.floor(k) ~= k then
+			return nil
+		end
+		n += 1
+	end
+	local w = {}
+	for i = 1, n do
+		local x = wybor[i]
+		if type(x) == "string" and L.pet(D, x) ~= nil and not zawiera(w, x) and #w < #D.pety then
+			table.insert(w, x)
+		end
+	end
+	return w
+end
+
+local function nrRzadkosci(D, id): number
+	local p = L.pet(D, id)
+	for i, r in D.rzadkosci do
+		if p and r.id == p.rzadkosc then
+			return i
+		end
+	end
+	return 0
+end
+
+local function przed(D, a, b, kolejnosc): boolean
+	local ra, rb = nrRzadkosci(D, a), nrRzadkosci(D, b)
+	if ra ~= rb then
+		return ra > rb
+	end
+	local sa, sb = L.stawka(D, a), L.stawka(D, b)
+	if sa ~= sb then
+		return sa > sb
+	end
+	return kolejnosc[a] < kolejnosc[b]
+end
+
+function L.wZagrodzie(D, kopie, aktywny, wybor, miejsc, poza)
+	local k = if type(kopie) == "table" then kopie else {}
+	local pz = if type(poza) == "table" then poza else {}
+	local kolejnosc, kandydaci = {}, {}
+	for i, p in D.pety do
+		kolejnosc[p.id] = i
+		local n = k[p.id]
+		if calkowitaNieujemna(n) and n > 0 and p.id ~= aktywny and not pz[p.id] then
+			table.insert(kandydaci, p.id)
+		end
+	end
+	local m = if calkowitaNieujemna(miejsc) then miejsc else 0
+	local czysty = L.czystyWybor(D, wybor)
+	local w = {}
+	if czysty ~= nil then
+		for _, x in czysty do
+			if zawiera(kandydaci, x) and #w < m then
+				table.insert(w, x)
+			end
+		end
+		return w
+	end
+	-- wstawianie (luau_mini bez table.sort i table.insert z pozycją) — ta sama kolejność co w lustrze Pythona
+	local lista = {}
+	for _, x in kandydaci do
+		local i = #lista + 1
+		while i > 1 and przed(D, x, lista[i - 1], kolejnosc) do
+			lista[i] = lista[i - 1]
+			i -= 1
+		end
+		lista[i] = x
+	end
+	for i = 1, math.min(m, #lista) do
+		w[i] = lista[i]
+	end
+	return w
+end
+
+function L.przychodS(D, lista): number
+	local s = 0
+	for _, x in (if type(lista) == "table" then lista else {}) do
+		s += L.stawka(D, x)
+	end
+	return s
+end
+
+function L.opisPrzychodu(D, s): string
+	local v = if liczba(s) and s > 0 then s * 60 else 0
+	local t
+	if v >= 10 then
+		t = string.format("%d", math.floor(v + 0.5))
+	else
+		local dz = math.floor(v * 10 + 0.5)
+		t = if dz % 10 == 0 then string.format("%d", math.floor(dz / 10))
+			else string.format("%d,%d", math.floor(dz / 10), dz % 10)
+	end
+	-- przy ułamku dopełniacz liczby pojedynczej („+2,4 Rybki/min”), przy całej liczbie odmiana („+3 Rybki”, „+12 Rybek”)
+	local T = D.teksty
+	local slowo = if string.find(t, ",", 1, true) then T.formy_rybki_dopelniacz[1]
+		else L.forma(T.formy_rybki, tonumber(t) or 0)
+	return string.format(T.przychod_min, t, slowo)
+end
+
+function L.stanZagrody(D, kopie, aktywny, wybor, wydatki, poza)
+	local poziom = L.poziomZagrody(D, wydatki)
+	local miejsc = L.miejscaZagrody(D, poziom)
+	local stoja = L.wZagrodzie(D, kopie, aktywny, wybor, miejsc, poza)
+	local s = L.przychodS(D, stoja)
+	return { poziom = poziom, miejsc = miejsc, miejsc_maks = D.zagroda.poziomy[#D.zagroda.poziomy].miejsc,
+		stoja = stoja, stawka_s = s, opis = L.opisPrzychodu(D, s), cena = L.cenaUlepszenia(D, poziom),
+		reczny = L.czystyWybor(D, wybor) ~= nil }
+end
+
+local function bez(lista, x)
+	local w = {}
+	for _, v in lista do
+		if v ~= x then
+			table.insert(w, v)
+		end
+	end
+	return w
+end
+
+function L.zmienWybor(D, kopie, aktywny, wybor, wydatki, poza, id, tak)
+	local st = L.stanZagrody(D, kopie, aktywny, wybor, wydatki, poza)
+	local stoja = st.stoja
+	local n = if type(kopie) == "table" and type(id) == "string" then kopie[id] else nil
+	if L.pet(D, id) == nil or not (calkowitaNieujemna(n) and n > 0) then
+		return L.czystyWybor(D, wybor), "nie_masz"
+	end
+	if tak then
+		if id == aktywny then
+			return L.czystyWybor(D, wybor), "aktywny"
+		end
+		if zawiera(stoja, id) then
+			return stoja, "juz"
+		end
+		if #stoja >= st.miejsc then
+			return L.czystyWybor(D, wybor), "pelna"
+		end
+		local w = bez(stoja, nil)
+		table.insert(w, id)
+		return w, "ok"
+	end
+	if not zawiera(stoja, id) then
+		return L.czystyWybor(D, wybor), "nie_stoi"
+	end
+	return bez(stoja, id), "ok"
+end
+
+function L.poWyborze(D, wybor, stary, nowy)
+	local w = L.czystyWybor(D, wybor)
+	if w == nil then
+		return nil
+	end
+	if not zawiera(w, nowy) then
+		return w
+	end
+	local zamiana = type(stary) == "string" and L.pet(D, stary) ~= nil and not zawiera(w, stary)
+	local wynik = {}
+	for _, x in w do
+		if x ~= nowy then
+			table.insert(wynik, x)
+		elseif zamiana then
+			table.insert(wynik, stary)
+		end
+	end
+	return wynik
+end
+
+function L.poOdstawieniu(D, wybor, stary)
+	local w = L.czystyWybor(D, wybor)
+	if w == nil then
+		return nil
+	end
+	if type(stary) == "string" and L.pet(D, stary) ~= nil and not zawiera(w, stary) then
+		table.insert(w, stary)
+	end
+	return w
+end
+
+function L.tik(D, reszta, s, dt): (number, number)
+	local d = math.min(math.max(if liczba(dt) then dt else 0, 0), D.zagroda.tik_maks_s)
+	local r = if liczba(reszta) and reszta >= 0 and reszta < 1 then reszta else 0
+	local st = if liczba(s) and s > 0 then s else 0
+	local suma = r + st * d
+	local ile = math.floor(suma + 1e-9)
+	return ile, math.max(0, suma - ile)
+end
+
+function L.tekstBrakuUlepszenia(D, brakuje: number, zloto: number, c: number): string
+	return string.format(D.teksty.za_malo_ulepszenie, L.ileRybek(D, brakuje, "d"), zloto, c)
+end
+
+------------------------------------------------------------------ sprzedaż petów (26.11.2026, propozycja)
+-- Rybki na sekundę jako napis na kafelek okna (HUD po angielsku, kropka): „+0.015/s”, „+0.04/s”, „+0.25/s”, „+1.2/s”
+function L.rybkiTekst(v): string
+	if not liczba(v) or v <= 0 then
+		return "+0/s"
+	end
+	local t = nil
+	if v < 0.1 then
+		local m = math.floor(v * 1000 + 0.5)
+		if m < 100 then
+			t = string.format("0.%03d", m)
+		end
+	end
+	if t == nil and v < 1 then
+		local h = math.floor(v * 100 + 0.5)
+		if h < 100 then
+			t = string.format("0.%02d", h)
+		end
+	end
+	if t == nil then
+		local d = math.floor(v * 10 + 0.5)
+		t = string.format("%d.%d", math.floor(d / 10), d % 10)
+	end
+	while string.sub(t, -1) == "0" do
+		t = string.sub(t, 1, -2)
+	end
+	if string.sub(t, -1) == "." then
+		t = string.sub(t, 1, -2)
+	end
+	return "+" .. t .. "/s"
+end
+
+function L.cenaSprzedazy(D, id): number
+	local p = L.pet(D, id)
+	return if p then p.sprzedaz else 0
+end
+
+-- decyzja sprzedaży: lista = { id | { pet = id, ile = n } } (1..maks_pozycji; samo id = jedna kopia), po kolei,
+-- z kopiami, które zostały; odmowa pozycji: nieznany, nie_masz, aktywny (ostatnia kopia peta za graczem),
+-- w_zagrodzie (ostatnia kopia peta stojącego w zagrodzie), ostatni (ostatni pet gracza), za_duzo (suma > maks_kwoty)
+function L.sprzedaz(D, kopie, aktywny, stoja, lista)
+	local S = D.sprzedaz
+	if type(lista) ~= "table" or #lista < 1 or #lista > S.maks_pozycji then
+		return { ok = false, powod = "zla_lista", pozycje = {}, suma = 0, sztuk = 0, wyniki = {} }
+	end
+	local zostalo, razem = {}, 0
+	for k, v in (if type(kopie) == "table" then kopie else {}) do
+		if type(k) == "string" and calkowitaNieujemna(v) and v > 0 then
+			zostalo[k] = v
+			razem += v
+		end
+	end
+	local pozycje, wyniki, suma, sztuk = {}, {}, 0, 0
+	for _, x in lista do
+		local id, ile = nil, nil
+		if type(x) == "string" then
+			id, ile = x, 1
+		elseif type(x) == "table" and type(x.pet) == "string" then
+			id, ile = x.pet, x.ile
+		end
+		if id == nil then
+			table.insert(wyniki, { pet = "", ile = 0, ok = false, powod = "zly_wpis", cena = 0 })
+		elseif not (calkowitaNieujemna(ile) and ile >= 1) then
+			table.insert(wyniki, { pet = id, ile = 0, ok = false, powod = "zly_wpis", cena = 0 })
+		else
+			local ma = zostalo[id] or 0
+			local cena1 = L.cenaSprzedazy(D, id)
+			local powod = "ok"
+			if L.pet(D, id) == nil then
+				powod = "nieznany"
+			elseif ma < ile then
+				powod = "nie_masz"
+			elseif ma == ile and id == aktywny then
+				powod = "aktywny"
+			elseif ma == ile and zawiera(stoja, id) then
+				powod = "w_zagrodzie"
+			elseif razem - ile < 1 then
+				powod = "ostatni"
+			elseif suma + cena1 * ile > S.maks_kwoty then
+				powod = "za_duzo"
+			end
+			if powod ~= "ok" then
+				table.insert(wyniki, { pet = id, ile = ile, ok = false, powod = powod, cena = 0 })
+			else
+				zostalo[id] = ma - ile
+				razem -= ile
+				pozycje[id] = (pozycje[id] or 0) + ile
+				suma += cena1 * ile
+				sztuk += ile
+				table.insert(wyniki, { pet = id, ile = ile, ok = true, powod = "ok", cena = cena1 * ile })
+			end
+		end
+	end
+	local powod = "ok"
+	if sztuk == 0 then
+		powod = if #wyniki > 0 then wyniki[1].powod else "zla_lista"
+	end
+	return { ok = sztuk > 0, powod = powod, pozycje = pozycje, suma = suma, sztuk = sztuk, wyniki = wyniki }
+end
+
 function L.rowne(a, b): boolean
 	if type(a) ~= type(b) then
 		return false
@@ -395,6 +759,48 @@ function L.sprawdzPrzypadki(D)
 	end
 	for i, c in P.szanse do
 		sprawdz("szanse", i, L.rowne(L.wierszeSzans(D, L.jajko(D, c.jajko)), c.wynik))
+	end
+	-- zagroda: Rybki, miejsca, wybór (25.11.2026)
+	for i, c in P.stawka do
+		sprawdz("stawka", i, L.rowne(L.stawka(D, c.pet), c.wynik))
+	end
+	for i, c in P.poziom_zagrody do
+		sprawdz("poziom_zagrody", i, L.poziomZagrody(D, c.wydatki) == c.wynik)
+	end
+	for i, c in P.miejsca_zagrody do
+		sprawdz("miejsca_zagrody", i, L.miejscaZagrody(D, c.poziom) == c.wynik and L.cenaUlepszenia(D, c.poziom) == c.cena)
+	end
+	for i, c in P.opis_przychodu do
+		sprawdz("opis_przychodu", i, L.opisPrzychodu(D, c.s) == c.wynik)
+	end
+	for i, c in P.rybki or {} do
+		sprawdz("rybki", i, L.ileRybek(D, c.n) == c.m and L.ileRybek(D, c.n, "b") == c.b and L.ileRybek(D, c.n, "d") == c.d
+			and L.tekstBraku(D, c.n, 7, 300) == c.brak and L.tekstBrakuUlepszenia(D, c.n, 7, 1000) == c.brakUlepszenia)
+	end
+	for i, c in P.stan_zagrody do
+		sprawdz("stan_zagrody", i, L.rowne(L.stanZagrody(D, c.kopie, c.aktywny, c.wybor, c.wydatki, c.poza), c.wynik))
+	end
+	for i, c in P.zmien_wybor do
+		local w, powod = L.zmienWybor(D, c.kopie, c.aktywny, c.wybor, c.wydatki, nil, c.pet, c.tak)
+		sprawdz("zmien_wybor", i, L.rowne(w, c.wynik) and powod == c.powod)
+	end
+	for i, c in P.po_wyborze do
+		sprawdz("po_wyborze", i, L.rowne(L.poWyborze(D, c.wybor, c.stary, c.nowy), c.wynik)
+			and L.rowne(L.poOdstawieniu(D, c.wybor, c.stary), c.odstaw))
+	end
+	for i, c in P.tik do
+		local ile, reszta = L.tik(D, c.r, c.s, c.dt)
+		sprawdz("tik", i, ile == c.ile and L.rowne(reszta, c.reszta))
+	end
+	-- sprzedaż (26.11.2026)
+	for i, c in P.rybki_tekst or {} do
+		sprawdz("rybki_tekst", i, L.rybkiTekst(c.v) == c.wynik)
+	end
+	for i, c in P.cena_sprzedazy or {} do
+		sprawdz("cena_sprzedazy", i, L.cenaSprzedazy(D, c.pet) == c.wynik)
+	end
+	for i, c in P.sprzedaz or {} do
+		sprawdz("sprzedaz", i, L.rowne(L.sprzedaz(D, c.kopie, c.aktywny, c.stoja, c.lista), c.wynik))
 	end
 	return #bledy == 0, n, bledy
 end

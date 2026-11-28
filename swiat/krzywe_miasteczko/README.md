@@ -1,5 +1,7 @@
 # Krzywe Miasteczko — mapa v2
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** kontener `Workspace/KrzyweMiasteczko` (ok. 5,3 tys. części) **usunięty z miejsca** (Karol: też usunąć) — miasteczkiem gry jest bazar (`swiat/miasteczko_bazar`). Źródła zostają; `Workspace/TestPostaci`, który stał w tym rejonie, zostaje nietknięty.
+
 Komiksowy hub gry zbudowany z samych prymitywów Roblox (bloki, kliny, walce, kule) — bez siatek, tekstur i uploadów. Status: **propozycja D-025**; według propozycji v2 gry miasteczko wchodzi do rozgrywki dopiero po sprawdzeniu samej pętli, więc na razie to demo stylu i poligon narzędzi.
 
 | Plik | Co to jest |

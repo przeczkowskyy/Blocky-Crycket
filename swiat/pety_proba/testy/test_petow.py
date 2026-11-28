@@ -26,6 +26,7 @@
    brak ścieżek lokalnych.
 """
 import json
+import math
 import os
 import random
 import re
@@ -84,7 +85,7 @@ class TestDanych(unittest.TestCase):
     def test_1a_aktualne(self):
         zle, _, pliki = DP.aktualny()
         self.assertEqual(zle, [], "uruchom python -B swiat/pety_proba/dane_petow.py")
-        self.assertEqual(len(pliki), 1 + len(U["pety"]) + len(U["jajka"]))
+        self.assertEqual(len(pliki), 1 + len(U["pety"]))   # od 26.11.2026 bez rigów jajek
 
     def test_1b_szanse_i_cena_z_kalkulatora(self):
         rz = [r["id"] for r in U["rzadkosci"]]
@@ -102,33 +103,70 @@ class TestDanych(unittest.TestCase):
         for p in D["pety"]:
             self.assertEqual(LP.jajko_peta(D, p["id"])["id"], p["jajko"])
 
+    def test_1d_wybieg_z_legowisk(self):
+        """26.11.2026: pety chodzą luzem — prostokąt wybiegu z miejsc petów na mapie i marginesów; klient ma spacer
+        i wyłącznik; od decyzji Pawła „legowiska znikają” pet nie wraca na swoje miejsce, tylko odpoczywa, gdzie stoi."""
+        G, W = D["polozenia"], U["zagroda"]["wybieg"]
+        wb = G["wybieg"]
+        s, ox, oz = wb["srodek"], wb["os_x"], wb["os_z"]
+        self.assertAlmostEqual(ox[0] * oz[0] + ox[2] * oz[2], 0.0, places=3)        # osie prostopadłe
+        self.assertAlmostEqual(oz[0], G["zagroda_kier"][0], places=3)                # oś z = przód zagrody (ku bramce)
+        ab = [((m[0] - s[0]) * ox[0] + (m[2] - s[2]) * ox[2], (m[0] - s[0]) * oz[0] + (m[2] - s[2]) * oz[2])
+              for m in G["miejsca_petow"]]
+        for a, b in ab:                                                             # każde legowisko w wybiegu
+            self.assertLessEqual(abs(a), wb["pol_x"] + 0.01)
+            self.assertLessEqual(abs(b), wb["pol_z"] + 0.01)
+        # boki = rozpiętość legowisk + marginesy (z dokładnością zaokrąglenia znaczników)
+        self.assertAlmostEqual(2 * wb["pol_x"], max(a for a, _ in ab) - min(a for a, _ in ab) + 2 * W["margines_bok"],
+                               delta=0.02)
+        self.assertAlmostEqual(2 * wb["pol_z"], max(b for _, b in ab) - min(b for _, b in ab) + W["margines_tyl"]
+                               + W["margines_przod"], delta=0.02)
+        # przód (bramka, miski) dalej od legowisk niż tył (koryto): większy margines z przodu
+        self.assertAlmostEqual(max(b for _, b in ab), wb["pol_z"] - W["margines_przod"], delta=0.02)
+        # w wybiegu mieści się tyle petów, ile jest miejsc: koła o średnicy odstępu nie zajmują więcej niż pół pola
+        n = len(G["miejsca_petow"])
+        self.assertLess(n * math.pi * (W["odstep"] / 2.0) ** 2, 0.5 * 4 * wb["pol_x"] * wb["pol_z"])
+        self.assertLess(W["mijanie"], W["odstep"])
+        for para in ("predkosc", "start_s", "postoj_s", "drzemka_s", "mijanie_s"):
+            self.assertTrue(0 < W[para][0] <= W[para][1], para)
+        self.assertTrue(0 <= W["drzemka_szansa"] <= 1)
+        k = bez_komentarzy(KLIENT)
+        for pole in set(re.findall(r"\bust\.(\w+)", k)) | set(re.findall(r"Wybieg\.ust\.(\w+)", k)):
+            self.assertIn(pole, W, "wybieg.%s" % pole)
+        for pole in set(re.findall(r"\bo\.(\w+)", k.split("local Wybieg = {", 1)[1].split("local function ustawPetyZagrody", 1)[0])):
+            self.assertIn(pole, wb, "polozenia.wybieg.%s" % pole)
+        self.assertIn("pcall(Wybieg.krok, dt, t)", k)
+        self.assertIn("if Wybieg.czynny then", k)
+        self.assertNotIn("cel = z.dom", k)                                          # bez powrotu na legowisko (26.11)
+        # bez ustawień wybiegu dane nie mają prostokąta (klient zostawia pety na legowiskach)
+        stare = U["zagroda"].pop("wybieg")
+        try:
+            self.assertNotIn("wybieg", DP.polozenia(U))
+        finally:
+            U["zagroda"]["wybieg"] = stare
+
     def test_1c_polozenia_ze_znacznikow(self):
-        for j, ju in zip(D["jajka"], U["jajka"]):
-            z = json.loads(czytaj(REPO, *ju["stanowisko"]["znaczniki"].split("/")))
-            m = next(x for x in z["miejsca"] if x["id"] == "jajko")
-            e = next(x for x in z["punkty_e"] if x["grupa"] == "Punkty/StanowiskoJajka")
-            G = j["polozenie"]
-            self.assertEqual(G["gniazdo"], [round(v, 3) for v in m["punkt_swiat"]], j["id"])
-            self.assertEqual(G["e"], [round(v, 3) for v in e["punkt_swiat"]], j["id"])
-            # stanowisko przy miejscu przybycia biomu, w prostokącie strefy spokoju „wejscie”
-            przyb = z["przybycie"]["punkt_swiat"]
-            self.assertLess(((G["gniazdo"][0] - przyb[0]) ** 2 + (G["gniazdo"][2] - przyb[2]) ** 2) ** 0.5, 40)
-            wej = next(s for s in z["strefy_spokoju"] if s["id"] == "wejscie")["prostokat_swiat"]
-            self.assertTrue(wej["x"][0] <= G["gniazdo"][0] <= wej["x"][1] and wej["z"][0] <= G["gniazdo"][2] <= wej["z"][1])
-            # obrót stanowiska jak w mapie (swiat/las_pas/punkty.py, stanowisko_jajka — Bagno stawia to samo)
-            punkty = czytaj(REPO, "swiat", "las_pas", "punkty.py")
-            cialo = punkty.split("def stanowisko_jajka", 1)[1].split("\ndef ", 1)[0]
-            self.assertIn("obrot=(0, %d, 0)" % G["obrot"], cialo)
-        self.assertIn("punkty_lasu.stanowisko_jajka(s, K)", czytaj(REPO, "swiat", "bagno_pas", "miejsca.py"))
+        # 26.11.2026 (Karol): starych inkubatorów nie ma — jajka nie mają już stanowisk z map biomów (zakup przy
+        # nowych jajkach ze scenką Pawła); położenia w danych ma tylko zagroda w bazarze
+        for j in D["jajka"]:
+            self.assertEqual(set(j), {"id", "nazwa", "kraina", "tytul", "pula", "cena", "atrybuty", "opis_miejsca",
+                                      "kolor", "podloga_ceny", "szanse"}, j["id"])
+        for ju in U["jajka"]:
+            self.assertFalse({"model", "stanowisko", "folder", "punkt_e"} & set(ju), ju["id"])
         G = D["polozenia"]
+        self.assertEqual(sorted(G), sorted(["zagroda_e", "zagroda_kier", "zagroda_tablica", "miejsca_petow",
+                                            "zagroda_podpowiedz", "wybieg"]))
         baz = json.loads(czytaj(REPO, "swiat", "miasteczko_bazar", "znaczniki.json"))["zagroda"]
         self.assertEqual(G["zagroda_e"], [round(v, 3) for v in baz["punkt_e"]["swiat"]])
-        self.assertEqual(len(G["miejsca_petow"]), 6)
+        # 25.11.2026: tyle miejsc, ile znaczników zagroda_miejsce_N ma mapa (było 6, przebudowa miasta daje 8)
+        self.assertEqual(len(G["miejsca_petow"]), len(baz["miejsca_petow"]))
+        self.assertIn(len(G["miejsca_petow"]), (6, 8))
 
     def test_1d_teksty_dla_gracza(self):
         tworcy = re.compile(r"D-0\d\d|Paweł|Karol|\btest|placeholder|atrybut|lorem|TODO", re.I)
         for k, t in U["teksty"].items():
-            self.assertIsNone(tworcy.search(t), (k, t))
+            for x in (t if isinstance(t, list) else [t]):
+                self.assertIsNone(tworcy.search(x), (k, x))
         for p in U["pety"]:
             self.assertIsNone(tworcy.search(p["nazwa"] + p["skill"]["nazwa"]), p["id"])
         self.assertEqual(U["zagroda"]["napis_proby"], "PRÓBA")
@@ -137,12 +175,52 @@ class TestDanych(unittest.TestCase):
         for p in U["pety"]:
             self.assertNotIn(p["nazwa"].lower(), obce)
 
-    def test_1e_paski_podgladu_tablicy_jak_szanse(self):
-        for j in U["jajka"]:
-            modul = czytaj(REPO, "swiat", "postacie", j["model"]["modul"] + ".py")
-            paski = re.search(r"PASKI = \[(.*?)\]\n", modul, re.S).group(1)
-            self.assertEqual([float(x) for x in re.findall(r", ([\d.]+)\)", paski)],
-                             list(progresja.ZALOZENIA["szanse_jajka"]), j["id"])
+    def test_1e_sprzedaz_nigdy_sie_nie_oplaca(self):
+        # 26.11.2026 (Karol: „dodaj opcję sprzedawania petów”): cena kopii = podłoga ceny jajka × ułamek rzadkości;
+        # kupno jajka i sprzedaż peta nie może się opłacić ani wyjść na zero w żadnym trybie ceny i przy żadnej liczbie
+        # kupionych jajek (cena jajka nigdy nie spada poniżej podłogi)
+        S = U["sprzedaz"]
+        kolejnosc = [r["id"] for r in U["rzadkosci"]]
+        poprz = None
+        for j in D["jajka"]:
+            dol = j["podloga_ceny"]
+            tryby = j["cena"].get("tryby") or [j["cena"]["tryb"]]
+            self.assertEqual(dol, min(LP.cena(D, j, 0, tr) for tr in tryby), j["id"])
+            ceny = [LP.cena_sprzedazy(D, pid) for pid in j["pula"]]
+            self.assertEqual(ceny, sorted(ceny), "rzadszy pet droższy: %s" % ceny)
+            self.assertTrue(all(isinstance(c, int) and c >= 1 for c in ceny), ceny)
+            for tr in tryby:
+                for n in range(0, 40):
+                    cena = LP.cena(D, j, n, tr)
+                    ocz = sum(s["szansa"] * LP.cena_sprzedazy(D, s["pet"]) for s in j["szanse"])
+                    self.assertLess(ocz / cena, 1.0)
+                    self.assertLessEqual(ocz / cena, S["maks_zwrot_oczekiwany"] + 1e-9, (j["id"], tr, n))
+                    self.assertLess(max(ceny) / float(cena), 1.0, "nawet legendarny nie zwraca ceny jajka")
+            # dalszy biom: droższe jajko, droższe pety tej samej rzadkości
+            if poprz:
+                self.assertTrue(all(a < b for a, b in zip(poprz, ceny)), (poprz, ceny))
+            poprz = ceny
+            for pid, c in zip(j["pula"], ceny):
+                p = LP.pet(D, pid)
+                self.assertEqual(c, max(1, int(math.floor(dol * S["ulamki_rzadkosci"][p["rzadkosc"]] + 1e-9))), pid)
+        self.assertEqual(kolejnosc, ["pospolity", "zwykly", "rzadki", "epicki", "legendarny"])
+        # generator odmawia ustawień, przy których sprzedaż by się opłacała
+        import copy
+        for zmiana in ({"legendarny": 1.0}, {"pospolity": 0.9, "zwykly": 0.9}):
+            U2 = copy.deepcopy(U)
+            U2["sprzedaz"]["ulamki_rzadkosci"].update(zmiana)
+            with self.assertRaises(DP.BladDanych):
+                DP.ceny_sprzedazy(U2, DP.szanse_i_cena(U2))
+        U2 = copy.deepcopy(U)
+        U2["sprzedaz"]["maks_zwrot_oczekiwany"] = 1.0
+        with self.assertRaises(DP.BladDanych):
+            DP.ceny_sprzedazy(U2, DP.szanse_i_cena(U2))
+        # tryb „rosnaca” z niższym startem obniża podłogę — sprzedaż liczy się od niej
+        U2 = copy.deepcopy(U)
+        U2["jajka"][0]["cena"]["start"] = 100
+        j2 = DP.szanse_i_cena(U2)[0]
+        self.assertEqual(j2["podloga_ceny"], 100)
+        self.assertEqual(DP.ceny_sprzedazy(U2, [j2])[0]["zoledziak"], 6)
 
     def test_1f_skille_d101_w_granicach_stanu_gracza(self):
         # D-101: różne premie i żywioły; pospolite i zwykłe tylko mała pasywka; każdy skill przechodzi
@@ -197,14 +275,8 @@ class TestModeli(unittest.TestCase):
             self.assertLessEqual(len(R["kosci"]), 12, p["id"])
             self.assertIsNotNone(R["glowa"], p["id"])
             self.assertTrue(1.4 <= R["wysokosc"] <= 3.4, (p["id"], R["wysokosc"]))
-        for j in U["jajka"]:
-            J = self.rigi[j["model"]["jajko"]]
-            self.assertEqual(set(J["klipy"]), {"spoczynek", "trzesienie", "pekniecie"}, j["id"])
-            self.assertTrue(any(c[2] == "Wnetrze" for c in J["czesci"]), "jajko bez świecącego Wnetrza (kolor rzadkości)")
-            self.assertLessEqual(len(J["czesci"]), 30, j["id"])
-            # gładkie jajko (17.11): skorupka i czubek to elipsoidy (SpecialMesh Sphere albo kula Ball), nie schodki
-            kule = [c for c in J["czesci"] if c[14] == "Sphere" or c[1] == 1]
-            self.assertGreaterEqual(len([c for c in kule if c[2] in ("Skorupka", "Skorupka gora", "Czubek")]), 3, j["id"])
+        # 26.11.2026: rigów jajek z klocków nie ma (jajka mają scenkę Pawła) — tylko pety
+        self.assertEqual(set(self.rigi), {p["id"] for p in U["pety"]})
 
     def test_2b_rozne_sylwetki_i_efektowniejsze_rzadsze(self):
         wymiary = []
@@ -226,29 +298,35 @@ class TestModeli(unittest.TestCase):
 
     def test_2c_plansze_i_portrety_z_blendera(self):
         modele = [(p["id"], p["id"]) for p in U["pety"]]
-        modele += [(j["model"]["modul"], m) for j in U["jajka"] for m in (j["model"]["jajko"], j["model"]["inkubator"])]
         for folder, mid in modele:
             for przyrostek in ("_plansza.jpg", "_bohater.jpg", "_ikona.png", ".glb", ".fbx"):
                 sciezka = os.path.join(REPO, "swiat", "postacie", "wynik", folder, mid + przyrostek)
                 self.assertTrue(os.path.isfile(sciezka), "brak %s — python -B swiat/postacie/przebuduj.py %s --bez-filmow"
                                 % (os.path.relpath(sciezka, REPO), folder))
 
-    def test_2d_stale_bryly_inkubatorow(self):
-        for j, ju in zip(D["jajka"], U["jajka"]):
-            T = j["stale"]
-            kosci = {c[0] for c in T["czesci"]}
-            nazwy = [c[2] for c in T["czesci"]]
-            self.assertEqual(kosci, set(ju["model"]["kosci_stale"]), j["id"])
-            self.assertIn(U["modele"]["papier"], nazwy, j["id"])
-            self.assertFalse(any(n.startswith(("Pasek szansy", "Znak peta")) for n in nazwy), "paski rysuje SurfaceGui")
-            self.assertLessEqual(len(T["czesci"]), 60, j["id"])
-        las, bagno = D["jajka"][:2]
-        self.assertAlmostEqual(las["y_jajka"], 0.92, places=2)    # jajko na mchu gniazda z mapy lasu
-        self.assertTrue(las["jajko_na_mchu"] and not bagno["jajko_na_mchu"])
-        # Bagno: gniazdo na palach nad korzeniami stanowiska z mapy (wierzch korzeni ok. 1,8) — jajko wyżej
-        self.assertGreater(bagno["y_jajka"], 1.8)
-        for n in ("Pal", "Platforma", "Trzcina", "Ognik", "Tyczka"):
-            self.assertIn(n, [c[2] for c in bagno["stale"]["czesci"]])
+    def test_2d_bez_starych_inkubatorow(self):
+        # 26.11.2026 (Karol: „usuń stare jajka … i zastąp je nowymi, w 100%”): pakiet nie buduje inkubatorów, nie ma
+        # ich podpowiedzi E ani animacji u klienta; zakup tylko przez haczyk scenki jajka (src/server/JajkoKorowe)
+        self.assertEqual(sorted(f for f in os.listdir(os.path.join(PAKIET, "zrodla", "rigi")) if f.endswith(".luau")),
+                         sorted("Rig_%s.luau" % p["id"] for p in U["pety"]))
+        self.assertEqual(ZB.FOLDERY, ["Moduly", "Moduly/Rigi", "Zdalne", "Sygnaly", "Zagroda"])
+        self.assertIn(("RemoteFunction", "Zdalne/SprzedajPety"), ZB.INNE)
+        cz = bez_komentarzy(ZB.CZESCI)
+        self.assertNotIn("inkubator", cz.lower())
+        self.assertNotIn("D.jajka", cz)
+        s, k = bez_komentarzy(SERWER), bez_komentarzy(KLIENT)
+        for zakazane in ("punkt_e", "przyInkubatorze", "D.inkubator", "polozenie.e"):
+            self.assertNotIn(zakazane, s, zakazane)
+        for zakazane in ("przygotujInkubator", "sekwencjaWyklucia", "D.inkubator", "polozenie", "PodstawaJajka",
+                         "Rig.zbuduj(dj"):
+            self.assertNotIn(zakazane, k, zakazane)
+        self.assertFalse({"inkubator", "modele"} & set(D), "sekcje inkubatora w danych")
+        self.assertEqual(set(D["wyklucie"]), {"_opis", "blokada_s"})
+        # haczyk zakupu, z którego korzysta scenka Pawła, jest na miejscu (z opcją bezPokazu)
+        scenka = czytaj(REPO, "src", "server", "JajkoKorowe.server.luau")
+        self.assertIn('haczyk:Invoke("kup", gracz, st.id, { bezPokazu = true })', scenka)
+        self.assertIn('polecenie == "kup"', s)
+        self.assertIn("opcje.bezPokazu == true", s)
 
 
 # ============================================================================================== 3. logika
@@ -287,9 +365,9 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(LP.cena(D, dict(las, cena=dict(las["cena"], tryb="kalkulator")), 3), las["cena"]["kalkulator"])
         self.assertGreater(bagno["cena"]["stala"], las["cena"]["stala"], "w Bagnie więcej Złota — droższe jajko")
         # napis ceny na tablicy i nad jajkiem
-        self.assertEqual(LP.opis_ceny(D, las), "cena: 300 Złota")
-        self.assertEqual(LP.opis_ceny(D, bagno), "cena: 750 Złota")
-        self.assertEqual(LP.opis_ceny(D, las, "rosnaca"), "od 300 Złota · rośnie z każdym jajkiem")
+        self.assertEqual(LP.opis_ceny(D, las), "cena: 300 Rybek")
+        self.assertEqual(LP.opis_ceny(D, bagno), "cena: 750 Rybek")
+        self.assertEqual(LP.opis_ceny(D, las, "rosnaca"), "od 300 Rybek · rośnie z każdym jajkiem")
 
     def test_3b2_licznik_osobny_i_wspolny(self):
         las, bagno = D["jajka"][:2]
@@ -312,14 +390,34 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(LP.decyzja(D, {"stan_gracza": True, "jajko": "xx"})["powod"], "nieznane_jajko")
         self.assertEqual(LP.decyzja(D, {"stan_gracza": True, "jajko": "jajko_lesne", "zajety": True})["powod"],
                          "trwa_wyklucie")
-        self.assertEqual(LP.tekst_braku(D, 120, 180, 300), "Brakuje ci 120 Złota (masz 180, jajko kosztuje 300)")
+        self.assertEqual(LP.tekst_braku(D, 120, 180, 300), "Brakuje ci 120 Rybek (masz 180, jajko kosztuje 300)")
+        self.assertEqual(LP.tekst_braku(D, 1, 299, 300), "Brakuje ci 1 Rybki (masz 299, jajko kosztuje 300)")
+        self.assertEqual(LP.tekst_braku_ulepszenia(D, 1, 999, 1000),
+                         "Brakuje ci 1 Rybki (masz 999, ulepszenie kosztuje 1000)")
         self.assertEqual([LP.procent(x) for x in (0.5, 0.02, 0.005)], ["50%", "2%", "0,5%"])
-        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "zoledziak")), "+2% Złota z walk")
+        self.assertEqual(LP.opis_skilla(D, LP.pet(D, "zoledziak")), "+2% Rybek z walk")
         self.assertEqual(LP.opis_skilla(D, LP.pet(D, "lisciolis")), "+15% Zręczności i Szczęścia")
         self.assertEqual(LP.opis_skilla(D, LP.pet(D, "ognik")), "Ogień: podpala wroga przy ciosie (25%)")
         self.assertEqual(LP.opis_skilla(D, LP.pet(D, "wazeczka")), "Jad: zatruwa wroga przy ciosie (30%)")
         self.assertEqual(LP.opis_skilla(D, LP.pet(D, "jelonek_gaju")),
-                         "Kryształ: ciosy mocniej trafiają, +20% Siły, +5% Złota i doświadczenia z walk")
+                         "Kryształ: ciosy mocniej trafiają, +20% Siły, +5% Rybek i doświadczenia z walk")
+        # waluta to Rybki (D-146, atrybut Gold): odmiana przy liczbie w mianowniku, bierniku i dopełniaczu
+        oczek = {0: ("Rybek", "Rybek", "Rybek"), 1: ("Rybka", "Rybkę", "Rybki"), 2: ("Rybki", "Rybki", "Rybek"),
+                 4: ("Rybki", "Rybki", "Rybek"), 5: ("Rybek", "Rybek", "Rybek"), 11: ("Rybek", "Rybek", "Rybek"),
+                 12: ("Rybek", "Rybek", "Rybek"), 14: ("Rybek", "Rybek", "Rybek"), 21: ("Rybek", "Rybek", "Rybek"),
+                 22: ("Rybki", "Rybki", "Rybek"), 25: ("Rybek", "Rybek", "Rybek"), 100: ("Rybek", "Rybek", "Rybek"),
+                 101: ("Rybek", "Rybek", "Rybek"), 102: ("Rybki", "Rybki", "Rybek"), 112: ("Rybek", "Rybek", "Rybek")}
+        for n, (m, b, d) in oczek.items():
+            self.assertEqual([LP.ile_rybek(D, n), LP.ile_rybek(D, n, "b"), LP.ile_rybek(D, n, "d")],
+                             ["%d %s" % (n, m), "%d %s" % (n, b), "%d %s" % (n, d)], n)
+        T = D["teksty"]
+        self.assertEqual(T["ulepsz"] % (4, LP.ile_rybek(D, 1000, "b")), "Więcej miejsc: 4 za 1000 Rybek")
+        self.assertEqual([LP.opis_przychodu(D, s) for s in (0, 1 / 60.0, 0.05, 0.1, 0.04, 0.2, 22 / 60.0, 0.25)],
+                         ["+0 Rybek/min", "+1 Rybka/min", "+3 Rybki/min", "+6 Rybek/min", "+2,4 Rybki/min",
+                          "+12 Rybek/min", "+22 Rybki/min", "+15 Rybek/min"])
+        teksty = [x for t in list(T.values()) + [v["pl"] for v in D["sprzedaz"]["teksty"].values()]
+                  for x in (t if isinstance(t, list) else [t])]
+        self.assertFalse([t for t in teksty if "Złot" in t or "złot" in t], "waluta to Rybki, nie Złoto")
         self.assertEqual((LP.opis_skilla_krotki(D, LP.pet(D, "ognik")), LP.opis_skilla_krotki(D, LP.pet(D, "lisciolis"))),
                          ("Ogień", "+15% Zręczności i Szczęścia"))
         self.assertEqual(LP.mod_peta(D, "ognik"), {"pasywki": ["ognista_rozdzka"], "zaklecie": "podpalenie"})
@@ -330,6 +428,30 @@ class TestLogiki(unittest.TestCase):
         self.assertEqual(LP.jajko_krainy(D, "bagno")["id"], "jajko_bagienne")
         self.assertEqual(LP.jajko_krainy(D, "dzungla")["id"], "jajko_dzungli")
         self.assertIsNone(LP.jajko_krainy(D, "pustynia"))
+
+    def test_3j_rybki_na_sekunde_i_sprzedaz(self):
+        # 26.11.2026: każdy pet ma swoje Rybki/s (ta sama liczba, którą płaci zagroda) i cenę kopii w wierszach okna
+        self.assertEqual([LP.rybki_tekst(v) for v in (0.015, 0.04, 0.1, 0.1625, 0.25, 0.45, 1.25, 0, None)],
+                         ["+0.015/s", "+0.04/s", "+0.1/s", "+0.16/s", "+0.25/s", "+0.45/s", "+1.3/s", "+0/s", "+0/s"])
+        w = LP.wiersze_zagrody(D, {"zoledziak": 2, "ognik": 1}, "zoledziak", ["ognik"])
+        self.assertEqual([(x["pet"], x["rybki_s"], x["rybki"], x["w_zagrodzie"], x["sprzedaz"]) for x in w],
+                         [("zoledziak", LP.stawka(D, "zoledziak"), "+0.015/s", False, 18),
+                          ("ognik", LP.stawka(D, "ognik"), "+0.16/s", True, 337)])
+        self.assertFalse(LP.wiersze_zagrody(D, {"ognik": 1}, None)[0]["w_zagrodzie"], "bez listy stojących — False")
+        # decyzja: pozycje po kolei, z kopiami, które zostały
+        kop = {"zoledziak": 3, "ognik": 1, "jelonek_gaju": 1, "palkus": 2}
+        d = LP.sprzedaz(D, kop, "zoledziak", ["ognik"], ["zoledziak", {"pet": "palkus", "ile": 2}, "ognik",
+                                                         {"pet": "zoledziak", "ile": 2}, "obcy", {"pet": "palkus"}])
+        self.assertEqual([(r["pet"], r["ok"], r["powod"]) for r in d["wyniki"]],
+                         [("zoledziak", True, "ok"), ("palkus", True, "ok"), ("ognik", False, "w_zagrodzie"),
+                          ("zoledziak", False, "aktywny"), ("obcy", False, "nieznany"), ("palkus", False, "zly_wpis")])
+        self.assertEqual((d["ok"], d["sztuk"], d["suma"], d["pozycje"]), (True, 3, 18 + 2 * 45, {"zoledziak": 1, "palkus": 2}))
+        # ostatni pet gracza zostaje (bez aktywnego i bez zagrody)
+        d = LP.sprzedaz(D, {"ognik": 2}, None, [], [{"pet": "ognik", "ile": 2}])
+        self.assertEqual((d["ok"], d["powod"]), (False, "ostatni"))
+        self.assertEqual(LP.sprzedaz(D, {"ognik": 2}, None, [], ["ognik"])["suma"], 337)
+        for zla in ([], "x", None, ["ognik"] * (D["sprzedaz"]["maks_pozycji"] + 1)):
+            self.assertEqual(LP.sprzedaz(D, kop, None, [], zla)["powod"], "zla_lista")
 
 
 def luau_logika():
@@ -345,6 +467,68 @@ def luau_logika():
 
 
 @unittest.skipIf(LM is None, "brak tools/walka/luau_mini.py — Luau nie wykonany")
+class TestZagrody(unittest.TestCase):
+    """Zagroda petów (25.11.2026): stawki, miejsca, wybór — lustro w Pythonie (Luau: przypadki wzorcowe)."""
+
+    def test_3g_stawki_rosna_z_rzadkoscia_i_biomem(self):
+        Z = D["zagroda"]
+        for j in D["jajka"]:
+            st = [LP.stawka(D, x) for x in j["pula"]]
+            self.assertEqual(st, sorted(st), j["id"])
+            for x in j["pula"]:
+                p = LP.pet(D, x)
+                self.assertAlmostEqual(p["rybki_s"], Z["stawki_s"][p["rzadkosc"]] * Z["mnozniki_jajek"][j["id"]], 4)
+        self.assertEqual([p["miejsc"] for p in Z["poziomy"]], [2, 4, 6, 8])
+        self.assertEqual(LP.stawka(D, "obcy"), 0)
+
+    def test_3h_kto_stoi_w_zagrodzie(self):
+        ids = [p["id"] for p in D["pety"]]
+        kopie = {x: 1 for x in ids}
+        # najrzadsze: legendarne trzech jajek, potem epickie; przy tej samej rzadkości wyższa stawka (dalszy biom)
+        st = LP.w_zagrodzie(D, kopie, None, None, 8)
+        self.assertEqual(st[:3], ["jaguarek", "perlowa_wydra", "jelonek_gaju"])
+        self.assertEqual(st[3:6], ["posazek", "ognik", "swietlikowka"])
+        # aktywny i pety na wyprawie nie stoją; kopie 0 = nieposiadany
+        st = LP.w_zagrodzie(D, dict(kopie, perlowa_wydra=0), "jaguarek", None, 8, {"jelonek_gaju": True})
+        self.assertNotIn("jaguarek", st)
+        self.assertNotIn("perlowa_wydra", st)
+        self.assertNotIn("jelonek_gaju", st)
+        self.assertEqual(len(st), 8)
+        # wybór ręczny w kolejności gracza, bez powtórzeń i obcych, najwyżej tyle, ile miejsc
+        self.assertEqual(LP.w_zagrodzie(D, kopie, None, ["zoledziak", "zoledziak", "obcy", "palkus", "ognik"], 2),
+                         ["zoledziak", "palkus"])
+        self.assertEqual(LP.w_zagrodzie(D, kopie, None, [], 8), [])
+        # tik: tylko całe Rybki, reszta czeka; długa przerwa nie daje zaległości
+        self.assertEqual(LP.tik(D, 0, 0.3, 5), (1, 0.5))
+        ile, r = LP.tik(D, 0.5, 0.3, 5)
+        self.assertEqual((ile, round(r, 9)), (2, 0.0))
+        self.assertEqual(LP.tik(D, 0, 1, 10 ** 6)[0], D["zagroda"]["tik_maks_s"])
+
+    def test_3i_szesc_albo_osiem_znacznikow(self):
+        """Mapa może mieć 6 albo 8 znaczników zagroda_miejsce_N: dane biorą tyle, ile jest; logika miejsc (2–8) od mapy
+        nie zależy, a klient stawia najwyżej tyle modeli, ile znaczników."""
+        stary = DP._znaczniki
+        for n in (6, 8):
+            def podmiana(sciezka, n=n):
+                z = stary(sciezka)
+                if "zagroda" in z:
+                    m = z["zagroda"]["miejsca_petow"]
+                    while len(m) < n:
+                        m.append(dict(m[-1]))
+                    z["zagroda"]["miejsca_petow"] = m[:n]
+                return z
+            DP._znaczniki = podmiana
+            try:
+                Dn = DP.podstawa()
+            finally:
+                DP._znaczniki = stary
+            self.assertEqual(len(Dn["polozenia"]["miejsca_petow"]), n)
+            self.assertEqual(LP.miejsca_zagrody(Dn, 4), 8)
+        k = bez_komentarzy(KLIENT)
+        self.assertIn("local miejsca = D.polozenia.miejsca_petow", k)
+        self.assertIn("if i < #miejsca then", k)
+
+
 class TestLuau(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -523,7 +707,7 @@ class TestSerweraOffline(unittest.TestCase):
             self.gracz = sw.gracz("Gracz1", {"Gold": zloto})
         kp = AR.Inst(sw, "PetyProba", "Folder", sw.workspace)
         kp.ustaw("Wygenerowane", True)
-        f = {n: AR.Inst(sw, n, "Folder", kp) for n in ("Moduly", "Zdalne", "Sygnaly", "Punkty", "Zagroda")}
+        f = {n: AR.Inst(sw, n, "Folder", kp) for n in ("Moduly", "Zdalne", "Sygnaly", "Zagroda")}
         sw.modul(f["Moduly"], "DanePetow", dane)
         sw.modul(f["Moduly"], "LogikaPetow", LOGIKA)
         ev = AR.Inst(sw, "ZdarzeniaPetow", "RemoteEvent", f["Zdalne"])
@@ -531,8 +715,9 @@ class TestSerweraOffline(unittest.TestCase):
         ev.t.set("OnServerEvent", ev.na_serwer.t)
         ev.t.set("FireClient", lambda _s, gracz, *a: sw.do_klienta.append((gracz, [AR.py(x) for x in a])))
         self.ster = AR.Inst(sw, "SterowanieSerwera", "BindableFunction", f["Sygnaly"])
+        self.rf = AR.Inst(sw, "SprzedajPety", "RemoteFunction", f["Zdalne"])   # 26.11.2026: sprzedaż petów
         self.prompty = {}
-        for folder, nazwa in [("Punkty", j["punkt_e"]) for j in D["jajka"]] + [("Zagroda", "E wybor")]:
+        for folder, nazwa in [("Zagroda", "E wybor")]:
             cz = AR.Inst(sw, nazwa, "BasePart", f[folder])
             pp = AR.Inst(sw, "Podpowiedz", "ProximityPrompt", cz)
             pp.t.set("Enabled", False)
@@ -553,12 +738,15 @@ class TestSerweraOffline(unittest.TestCase):
     def od_serwera(self, polecenie):
         return [a for gr, a in self.sw.do_klienta if a and a[0] == polecenie]
 
-    def e_jajka(self, nr=0, stoi_przy=None):
-        """Prawdziwe E przy inkubatorze jajka nr (gracz stoi przy nim — serwer sprawdza zasięg; stoi_przy = nr innego
-        inkubatora, przy którym gracz naprawdę stoi — podpowiedź odpalona „z daleka”)."""
-        e = D["jajka"][nr if stoi_przy is None else stoi_przy]["polozenie"]["e"]
-        self.postaw(e[0] + 1.5, e[2] - 1.0)
-        self.prompty[D["jajka"][nr]["punkt_e"]][1].odpal(self.gracz.t)
+    def e_jajka(self, nr=0):
+        """Zakup tak, jak kupuje gracz od 26.11.2026: E przy jajku ze scenką Pawła → jego serwer (src/server/
+        JajkoKorowe.server.luau, sam sprawdza zasięg) woła haczyk SterowanieSerwera("kup", gracz, id, { bezPokazu })."""
+        return self.hak("kup", self.gracz.t, D["jajka"][nr]["id"], {"bezPokazu": True})
+
+    def sprzedaj(self, lista):
+        """Okno Pets → Zdalne/SprzedajPety (RemoteFunction) z listą petów."""
+        w = self.sw.wolaj(self.rf.t.get("OnServerInvoke"), self.gracz.t, LM.do_luau(lista))
+        return LM.z_luau(w[0]) if w else None
 
     def hak(self, *argi):
         w = self.sw.wolaj(self.ster.t.get("OnInvoke"), *[a if isinstance(a, LM.Tabela) else LM.do_luau(a) for a in argi])
@@ -577,7 +765,6 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(self.kp.atrybuty["SerwerPetowGotowy"], True)
         self.assertEqual(self.kp.atrybuty["ZgodnoscLogikiPetow"], "OK %d/%d" % (n, n))
         for j in D["jajka"]:
-            self.assertTrue(self.prompty[j["punkt_e"]][0].t.get("Enabled"), j["id"])
             self.assertEqual(self.atr(j["atrybuty"]["cena"]), j["cena"]["stala"], j["id"])
             self.assertEqual(self.atr(j["atrybuty"]["kupione"]), 0, j["id"])
         self.assertTrue(self.prompty["E wybor"][0].t.get("Enabled"), "bez MiasteczkoBazarGra — zapasowe E włączone")
@@ -601,7 +788,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.uruchom(zloto=120)
         self.e_jajka()
         odm = self.od_serwera("odmowa")
-        self.assertEqual(odm, [["odmowa", "Brakuje ci 180 Złota (masz 120, jajko kosztuje 300)", "za_malo"]])
+        self.assertEqual(odm, [["odmowa", "Brakuje ci 180 Rybek (masz 120, jajko kosztuje 300)", "za_malo"]])
         self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba"), self.atr("PetAktywny")), (120, 0, None))
         self.assertEqual(self.od_serwera("wyklucie"), [])
         # od razu można spróbować znowu (blokada zdjęta po odmowie)
@@ -622,35 +809,72 @@ class TestSerweraOffline(unittest.TestCase):
         self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
         self.e_jajka()
         odm = self.od_serwera("odmowa")[-1]
-        self.assertEqual(odm[1:], ["Brakuje ci %d Złota (masz %d, jajko kosztuje %d)" % (3 * c - 700, 700 - 2 * c, c),
+        self.assertNotEqual(3 * c - 700, 1)
+        self.assertEqual(odm[1:], ["Brakuje ci %d Rybek (masz %d, jajko kosztuje %d)" % (3 * c - 700, 700 - 2 * c, c),
                                    "za_malo"])
         self.assertEqual((self.atr("PetyLiczba"), self.atr(D["jajka"][0]["atrybuty"]["kupione"])), (2, 2))
         self.assertEqual(self.sw.ostrzezenia, [])
 
-    def test_5c1_dwa_inkubatory_gracz_przy_drugim(self):
-        # 17.11 (próba w Studio): E przy inkubatorze Bagna — serwer kupuje jajko TEJ podpowiedzi i sam sprawdza, że
-        # gracz przy niej stoi; podpowiedź odpalona spod drugiego inkubatora (albo bez postaci) → odmowa, Złoto bez zmian
+    def test_5c1_zakup_ze_scenki_jajka(self):
+        # 26.11.2026: jedyna droga zakupu — scenka jajka Pawła (haczyk z bezPokazu): wyklucie do klienta z bezPokazu,
+        # jajko z id, blokada do „zwolnij”; haczyk bez opcji (próby) — bezPokazu = false
         self.uruchom(zloto=3000)
         las, bagno = D["jajka"][:2]
-        self.e_jajka(1)
+        w = self.e_jajka(1)
+        self.assertTrue(w["ok"])
         info = self.od_serwera("wyklucie")[-1][1]
-        self.assertEqual((info["jajko"], info["cena"]), (bagno["id"], bagno["cena"]["stala"]))
+        self.assertEqual((info["jajko"], info["cena"], info["bezPokazu"]), (bagno["id"], bagno["cena"]["stala"], True))
         self.assertIn(info["pet"], bagno["pula"])
         self.assertEqual((self.atr(bagno["atrybuty"]["kupione"]), self.atr(las["atrybuty"]["kupione"])), (1, 0))
-        zloto = self.atr("Gold")
-        self.assertEqual(zloto, 3000 - bagno["cena"]["stala"])
-        self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
-        self.e_jajka(1, stoi_przy=0)          # podpowiedź Bagna, gracz w lesie
-        self.assertEqual(self.od_serwera("odmowa")[-1][1:], [U["teksty"]["za_daleko_jajko"], "za_daleko_jajko"])
-        self.e_jajka(0, stoi_przy=1)          # podpowiedź lasu, gracz w Bagnie
-        self.assertEqual(self.od_serwera("odmowa")[-1][2], "za_daleko_jajko")
-        self.gracz.t.set("Character", None)   # bez postaci (np. w trakcie odrodzenia)
-        self.prompty[bagno["punkt_e"]][1].odpal(self.gracz.t)
-        self.assertEqual(self.od_serwera("odmowa")[-1][2], "za_daleko_jajko")
-        self.assertEqual((self.atr("Gold"), self.atr(bagno["atrybuty"]["kupione"]), self.atr(las["atrybuty"]["kupione"])),
-                         (zloto, 1, 0))
-        # haczyk testowy (próby w Play) kupuje bez sprawdzania zasięgu
+        self.assertEqual(self.e_jajka(0)["powod"], "trwa_wyklucie", "blokada między zakupami jednego gracza")
+        self.assertTrue(self.hak("zwolnij", self.gracz.t))
+        self.assertTrue(self.e_jajka(0)["ok"])
+        self.hak("zwolnij", self.gracz.t)
         self.assertTrue(self.hak("kup", self.gracz.t, las["id"], 0.1)["ok"])
+        self.assertFalse(self.od_serwera("wyklucie")[-1][1]["bezPokazu"])
+        self.assertEqual(self.atr("Gold"), 3000 - bagno["cena"]["stala"] - 2 * las["cena"]["stala"])
+        self.assertEqual(self.sw.ostrzezenia, [])
+
+    def test_5q_sprzedaz_petow(self):
+        # 26.11.2026: sprzedaż przez Zdalne/SprzedajPety — decyzja serwera, kopie i Rybki jednym wywołaniem StanGracza,
+        # odpowiedź na każdą pozycję, limit czasu, pet za graczem i pety w zagrodzie chronione, zagroda bez sprzedanych
+        self.uruchom(zloto=5000)
+        for r in (0.1, 0.1, 0.1, 0.6, 0.995):       # Żołędziak ×3 (za graczem), Mchowy Ślimak, Jelonek Gaju
+            self.assertTrue(self.hak("kup", self.gracz.t, "jajko_lesne", r)["ok"])
+            self.hak("zwolnij", self.gracz.t)
+        zl0 = self.atr("Gold")
+        z = self.hak("zagroda", self.gracz.t)
+        self.assertEqual(z["stan"]["stoja"], ["jelonek_gaju", "mchowy_slimak"])
+        w = self.sprzedaj([{"pet": "zoledziak", "ile": 2}, "jelonek_gaju", "zoledziak", "smok", 5])
+        self.assertEqual([(x["pet"], x["ok"], x["powod"]) for x in w["wyniki"]],
+                         [("zoledziak", True, "ok"), ("jelonek_gaju", False, "w_zagrodzie"),
+                          ("zoledziak", False, "aktywny"), ("smok", False, "nieznany"), ("", False, "zly_wpis")])
+        self.assertEqual((w["ok"], w["sztuk"], w["suma"], w["zloto"]), (True, 2, 36, zl0 + 36))
+        self.assertEqual((w["tekst"], w["tekst_pl"]), ("Sold 2 pets for 36 fish", "Sprzedano: 2 pety za 36 Rybek"))
+        self.assertEqual(w["wyniki"][1]["tekst"], U["sprzedaz"]["teksty"]["w_zagrodzie"]["en"])
+        self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba"), self.atr("PetAktywny")), (zl0 + 36, 3, "zoledziak"))
+        self.assertEqual(self.kp.atrybuty["LicznikSprzedazy"], 1)
+        # za szybko: druga prośba w czasie odstep_s — odmowa bez zmian
+        self.assertEqual(self.sprzedaj(["mchowy_slimak"])["powod"], "za_szybko")
+        self.sw.krok(U["sprzedaz"]["odstep_s"] + 0.1)
+        # Ślimak stoi w zagrodzie — po zdjęciu z zagrody (wybór ręczny) da się sprzedać, wybór bez niego
+        self.assertTrue(self.hak("zagroda_zmien", self.gracz.t, "mchowy_slimak", False)["ok"])
+        w = self.sprzedaj(["mchowy_slimak"])
+        self.assertEqual((w["ok"], w["suma"]), (True, LP.cena_sprzedazy(D, "mchowy_slimak")))
+        z = self.hak("zagroda", self.gracz.t)
+        self.assertNotIn("mchowy_slimak", z["wybor"] or [])
+        self.assertEqual(z["stan"]["stoja"], ["jelonek_gaju"])
+        # złe listy (od klienta mogą przyjść śmieci) — odmowa całości
+        self.sw.krok(U["sprzedaz"]["odstep_s"] + 0.1)
+        self.assertEqual(self.sprzedaj([])["powod"], "zla_lista")
+        self.sw.krok(U["sprzedaz"]["odstep_s"] + 0.1)
+        self.assertEqual(self.sprzedaj("zoledziak")["powod"], "zla_lista")
+        # haczyk (okno Pets przez serwer Pawła, próby): to samo, bezLimitu tylko w próbach
+        st = self.hak("stan", self.gracz.t)
+        self.assertEqual(sorted(st["zagroda"]["stoja"]), ["jelonek_gaju"])
+        w = self.hak("sprzedaj", self.gracz.t, ["jelonek_gaju"], True)
+        self.assertEqual((w["ok"], w["powod"]), (False, "w_zagrodzie"))
+        self.assertEqual(self.atr("PetyLiczba"), 2)
         self.assertEqual(self.sw.ostrzezenia, [])
 
     def test_5c_kupno_e_podwojne_naraz_i_cena_rosnaca(self):
@@ -756,7 +980,8 @@ class TestSerweraOffline(unittest.TestCase):
         # drugie jajko Bagna: za mało Złota — odmowa z kwotą braku
         self.sw.krok(D["wyklucie"]["blokada_s"] + 0.1)
         self.assertEqual(self.hak("kup", self.gracz.t, bagno["id"], 0.995)["powod"], "za_malo")
-        self.assertEqual(self.od_serwera("odmowa")[-1][1], "Brakuje ci %d Złota (masz %d, jajko kosztuje %d)" % (
+        self.assertNotEqual(cb - self.atr("Gold"), 1)
+        self.assertEqual(self.od_serwera("odmowa")[-1][1], "Brakuje ci %d Rybek (masz %d, jajko kosztuje %d)" % (
             cb - self.atr("Gold"), self.atr("Gold"), cb))
         self.assertEqual(self.sw.ostrzezenia, [])
 
@@ -853,6 +1078,148 @@ class TestSerweraOffline(unittest.TestCase):
         self.assertEqual(self.od_serwera("lista")[-1][1], {"brak": True, "tekst": U["teksty"]["brak_stanu"]})
         self.assertEqual(self.sw.ostrzezenia, [])
 
+    # ------------------------------------------------------------------ zagroda: Rybki (25.11.2026)
+    def kup_las(self, *losy):
+        for r in losy:
+            w = self.hak("kup", self.gracz.t, "jajko_lesne", r)
+            self.assertTrue(w and w.get("ok"), w)
+            self.hak("zwolnij", self.gracz.t)
+
+    def zagroda(self):
+        return self.hak("zagroda", self.gracz.t)
+
+    def test_5j_zagroda_daje_rybki_aktywny_nie(self):
+        """Pety stojące w zagrodzie dają Rybki co tik_s przez StanGracza Pety("przychod"); pet za graczem nie stoi
+        w zagrodzie; dopisane tylko całe Rybki, ułamek czeka na następny raz."""
+        Z = D["zagroda"]
+        self.uruchom(zloto=5000)
+        self.kup_las(0.0, 0.95, 0.99)            # Żołędziak (idzie za graczem), Świetlikówka, Jelonek Gaju
+        self.assertEqual(self.atr("PetAktywny"), "zoledziak")
+        st = self.zagroda()
+        self.assertTrue(st["wczytany"])
+        self.assertEqual((st["stan"]["poziom"], st["stan"]["miejsc"], st["stan"]["stoja"], st["stan"]["reczny"]),
+                         (1, Z["poziomy"][0]["miejsc"], ["jelonek_gaju", "swietlikowka"], False))
+        s = LP.stawka(D, "jelonek_gaju") + LP.stawka(D, "swietlikowka")
+        self.assertAlmostEqual(st["stan"]["stawka_s"], s)
+        zloto0 = self.atr("Gold")
+        self.sw.krok(Z["tik_s"])                 # pierwszy tik: tylko punkt startu (bez zaległości)
+        self.assertEqual(self.atr("Gold"), zloto0)
+        self.sw.krok(Z["tik_s"] * 12)            # 60 s
+        oczek = int(s * Z["tik_s"] * 12 + 1e-9)
+        self.assertEqual(self.atr("Gold"), zloto0 + oczek)
+        plusy = self.od_serwera("zagroda_plus")
+        self.assertEqual(sum(a[1] for a in plusy), oczek)
+        self.assertEqual(self.kstan.atrybuty.get("LicznikPrzychodow"), len(plusy))
+        # aktywny pet zmienia się na Jelonka: Jelonek wychodzi z zagrody, wchodzi Żołędziak (wybór domyślny)
+        self.assertTrue(self.hak("wybierz", self.gracz.t, "jelonek_gaju", True)["ok"])
+        st = self.zagroda()["stan"]
+        self.assertEqual(st["stoja"], ["swietlikowka", "zoledziak"])
+        self.assertEqual(self.od_serwera("lista")[-1][1]["zagroda"]["stoja"], ["swietlikowka", "zoledziak"])
+        # bez przychodu offline i bez zaległości po przerwie serwera: dt przycięte do tik_maks_s
+        self.sw.zadania.clear()
+        self.sw.krok(600)
+        zl = self.atr("Gold")
+        w = self.hak("nalicz", self.gracz.t)
+        s2 = LP.stawka(D, "swietlikowka") + LP.stawka(D, "zoledziak")
+        reszta = self.zagroda()["reszta"]
+        self.assertEqual(self.atr("Gold") - zl, w or 0)
+        self.assertLessEqual(self.atr("Gold") - zl, int(s2 * Z["tik_maks_s"] + 1))
+        self.assertLess(reszta, 1)
+        self.assertEqual(self.sw.ostrzezenia, [])
+
+    def test_5k_miejsca_ulepszenie_za_rybki(self):
+        """Więcej miejsc u opiekunki: cena z poziomu, Rybki przez WydajZloto (licznik ulepszeń = poziom), za mało =
+        odmowa z kwotą bez zmian, najwyższy poziom = odmowa; z daleka — odmowa; pety ponad miejsca nic nie dają."""
+        Z = D["zagroda"]
+        poz = Z["poziomy"]
+        self.uruchom(zloto=300 * 6)
+        self.kup_las(0.0, 0.6, 0.8, 0.95, 0.99)  # pięć petów lasu, pierwszy za graczem → 4 chętne do zagrody
+        self.assertEqual(self.atr("Gold"), 300)
+        st = self.zagroda()["stan"]
+        self.assertEqual(len(st["stoja"]), poz[0]["miejsc"], "pety ponad liczbę miejsc nie stoją")
+        # z daleka: odmowa
+        e = D["polozenia"]["zagroda_e"]
+        self.postaw(e[0] + 200, e[2])
+        self.ev.na_serwer.odpal(self.gracz.t, "ulepsz_zagrode")
+        self.assertEqual(self.od_serwera("odmowa")[-1][2], "za_daleko")
+        # za mało Rybek
+        w = self.hak("ulepsz", self.gracz.t)
+        self.assertEqual((w["ok"], w["powod"]), (False, "za_malo"))
+        self.assertEqual(w["tekst"], LP.tekst_braku_ulepszenia(D, poz[1]["cena"] - 300, 300, poz[1]["cena"]))
+        self.assertEqual(self.atr("Gold"), 300)
+        # po kolei do najwyższego poziomu (prawdziwe zdarzenie od klienta przy zagrodzie)
+        self.postaw(e[0] + 3, e[2] - 2)
+        for i in range(1, len(poz)):
+            self.gracz.ustaw("Gold", poz[i]["cena"] + 7)
+            self.sw.krok(1)
+            self.ev.na_serwer.odpal(self.gracz.t, "ulepsz_zagrode")
+            self.assertEqual(self.atr("Gold"), 7, i)
+            self.assertEqual(self.od_serwera("zagroda_ulepszona")[-1], ["zagroda_ulepszona", poz[i]["miejsc"]])
+            st = self.zagroda()["stan"]
+            self.assertEqual((st["poziom"], st["miejsc"]), (i + 1, poz[i]["miejsc"]))
+        self.assertEqual(len(st["stoja"]), 4, "4 chętne pety, 8 miejsc — stoją wszystkie")
+        self.assertNotIn("cena", st)
+        self.gracz.ustaw("Gold", 10 ** 6)
+        w = self.hak("ulepsz", self.gracz.t)
+        self.assertEqual((w["ok"], w["powod"]), (False, "max"))
+        self.assertEqual(self.atr("Gold"), 10 ** 6)
+        stan = self.hak("stan", self.gracz.t)["pety"]
+        self.assertEqual(stan["wydatki"][Z["cel_ulepszenia"]], len(poz) - 1)
+        self.assertEqual(self.kp.atrybuty.get("LicznikUlepszen"), len(poz) - 1)
+        self.assertEqual(self.sw.ostrzezenia, [])
+
+    def test_5l_wybor_do_zagrody_i_zapis(self):
+        """„Do zagrody” / „Z zagrody” (wybór ręczny w DanePakietu), pet za graczem nie wchodzi do zagrody, pełna zagroda,
+        „Najrzadsze” wraca do wyboru domyślnego; po ponownym wczytaniu profilu wybór zostaje."""
+        self.uruchom(zloto=300 * 4)
+        self.kup_las(0.0, 0.6, 0.8, 0.95)        # Żołędziak (za graczem), Ślimak, Liściolis, Świetlikówka
+        self.assertEqual(self.zagroda()["stan"]["stoja"], ["swietlikowka", "lisciolis"])
+        w = self.hak("zagroda_zmien", self.gracz.t, "lisciolis", False)
+        self.assertEqual((w["ok"], w["powod"], w["wybor"]), (True, "ok", ["swietlikowka"]))
+        w = self.hak("zagroda_zmien", self.gracz.t, "mchowy_slimak", True)
+        self.assertEqual(w["wybor"], ["swietlikowka", "mchowy_slimak"])
+        self.assertEqual(self.hak("zagroda_zmien", self.gracz.t, "lisciolis", True)["powod"], "pelna")
+        self.assertEqual(self.hak("zagroda_zmien", self.gracz.t, "zoledziak", True)["powod"], "aktywny")
+        self.assertEqual(self.hak("zagroda_zmien", self.gracz.t, "jelonek_gaju", True)["powod"], "nie_masz")
+        st = self.zagroda()
+        self.assertEqual((st["stan"]["stoja"], st["stan"]["reczny"]), (["swietlikowka", "mchowy_slimak"], True))
+        dane = self.sw.wolaj(self.inne["DanePakietu"].t.get("OnInvoke"), "czytaj", self.gracz.t,
+                             D["zagroda"]["pakiet_danych"])
+        self.assertEqual(LM.z_luau(dane[0])["zagroda"], ["swietlikowka", "mchowy_slimak"])
+        # zamiana miejscami: Ślimak idzie za graczem, Żołędziak staje na jego miejscu
+        self.assertTrue(self.hak("wybierz", self.gracz.t, "mchowy_slimak", True)["ok"])
+        self.assertEqual(self.zagroda()["stan"]["stoja"], ["swietlikowka", "zoledziak"])
+        # ponowne wczytanie profilu (zapis postępu): wybór z DanePakietu
+        self.gracz.ustaw("StanGraczaWczytany", False)
+        self.gracz.ustaw("StanGraczaWczytany", True)
+        self.assertEqual(self.zagroda()["wybor"], ["swietlikowka", "zoledziak"])
+        # „Najrzadsze”
+        self.assertEqual(self.hak("zagroda_auto", self.gracz.t), {"ok": True})
+        st = self.zagroda()
+        self.assertEqual((st["stan"]["stoja"], st["stan"]["reczny"]), (["swietlikowka", "lisciolis"], False))
+        # w trakcie wczytywania profilu zagroda nic nie nalicza
+        self.gracz.ustaw("StanGraczaWczytany", False)
+        zl = self.atr("Gold")
+        self.sw.krok(60)
+        self.assertEqual(self.atr("Gold"), zl)
+        self.assertEqual(self.sw.ostrzezenia, [])
+
+    def test_5m_bez_przychodu_w_stanie_gracza(self):
+        """Starszy stan gracza (Pety bez "przychod"): zagroda nie daje Rybek, jedno ostrzeżenie, bez błędów."""
+        self.uruchom(zloto=900)
+        self.kup_las(0.0, 0.99)
+        fn = self.inne["Pety"].t.get("OnInvoke")
+
+        def stary(polecenie, *argi):
+            if polecenie == "przychod":
+                return LM.do_luau({"ok": False, "powod": "nieznane_polecenie"})
+            return self.sw.wolaj(fn, polecenie, *argi)[0]
+        self.inne["Pety"].t.set("OnInvoke", stary)
+        zl = self.atr("Gold")
+        self.sw.krok(120)
+        self.assertEqual(self.atr("Gold"), zl)
+        self.assertEqual(len([o for o in self.sw.ostrzezenia if "przychod" in o]), 1)
+
     def test_5h_wyjscie_gracza_i_bazar(self):
         import atrapa_roblox as AR
         self.uruchom(zloto=500)
@@ -908,11 +1275,13 @@ class TestStykow(unittest.TestCase):
     def test_6c_wiadomosci_klient_serwer(self):
         s, k = bez_komentarzy(SERWER), bez_komentarzy(KLIENT)
         do_klienta = set(re.findall(r'zdarzenia:FireClient\(gracz, "(\w+)"', s))
-        self.assertEqual(do_klienta, {"wyklucie", "odmowa", "lista", "wybrany", "okno"})
+        self.assertEqual(do_klienta, {"wyklucie", "odmowa", "lista", "wybrany", "okno", "zagroda_plus",
+                                      "zagroda_ulepszona"})
         for p in do_klienta:
             self.assertIn('polecenie == "%s"' % p, k, p)
         do_serwera = set(re.findall(r'zdarzenia:FireServer\("(\w+)"', k))
-        self.assertEqual(do_serwera, {"lista", "wybierz", "odstaw", "czekaj"})
+        self.assertEqual(do_serwera, {"lista", "wybierz", "odstaw", "czekaj", "zagroda_dodaj", "zagroda_zdejmij",
+                                      "zagroda_auto", "ulepsz_zagrode"})
         for p in do_serwera:
             self.assertIn('polecenie == "%s"' % p, s, p)
         # klient nie podaje ceny ani losu: FireServer najwyżej z id peta / tak-nie
@@ -926,11 +1295,11 @@ class TestStykow(unittest.TestCase):
                                 ("AG", "atrybuty_gracza"), ("U", "ukrycie")):
             for pole in set(re.findall(r"\b%s\.(\w+)" % przedr, k)):
                 self.assertIn(pole, D[slownik], "%s.%s" % (przedr, pole))
-        for sekcja in ("inkubator", "zagroda", "wyklucie", "limity", "polozenia", "licznik_ceny", "modele", "teksty"):
+        for sekcja in ("zagroda", "wyklucie", "limity", "polozenia", "licznik_ceny", "sprzedaz", "teksty"):
             for pole in set(re.findall(r"\bD\.%s\.(\w+)" % sekcja, k)):
                 self.assertIn(pole, D[sekcja], "D.%s.%s" % (sekcja, pole))
         cz = bez_komentarzy(ZB.CZESCI)
-        for przedr, slownik in (("G", "polozenia"), ("I", "inkubator"), ("Z", "zagroda")):
+        for przedr, slownik in (("G", "polozenia"), ("Z", "zagroda")):
             for pole in set(re.findall(r"\b%s\.(\w+)" % przedr, cz)):
                 self.assertIn(pole, D[slownik], "%s.%s (zbuduj.py)" % (przedr, pole))
         # pola jajka (j. w klientcie i serwerze, J. i PJ. w budowie) — każde jajko ma te same
@@ -938,8 +1307,6 @@ class TestStykow(unittest.TestCase):
             for pole in set(re.findall(r"\b%s\.(\w+)" % przedr, tekst)):
                 for j in D["jajka"]:
                     self.assertIn(pole, j, "%s.%s" % (przedr, pole))
-        for pole in set(re.findall(r"\bPJ\.(\w+)", cz)):
-            self.assertIn(pole, D["jajka"][0]["polozenie"], "PJ.%s" % pole)
         for pole in set(re.findall(r"\b(?:atrybuty)\.(\w+)", k)):
             self.assertIn(pole, D["jajka"][0]["atrybuty"], "atrybuty.%s" % pole)
 
@@ -950,7 +1317,7 @@ class TestKontroli(unittest.TestCase):
         bledy, parser = SLP.sprawdz_pliki(SLP.pliki_pakietu(), wypisz=lambda *_: None)
         self.assertTrue(parser)
         self.assertEqual(bledy, [])
-        self.assertEqual(len(SLP.pliki_pakietu()), 5 + len(U["pety"]) + len(U["jajka"]))
+        self.assertEqual(len(SLP.pliki_pakietu()), 5 + len(U["pety"]))   # od 26.11.2026 bez rigów jajek
 
     def test_7b_kontrola_wykrywa_bledy(self):
         zly = 'if not game:GetService("RunService"):IsStudio() then\n\treturn {}\nend\nlocal L = {}\nlocal x = workspace\nreturn L\n'

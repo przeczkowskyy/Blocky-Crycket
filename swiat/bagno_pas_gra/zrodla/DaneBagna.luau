@@ -27,9 +27,8 @@ return {
 	zaBrama = { punkt = { 1946, 0, -700 }, patrz = { 1974, 0, -700 } },
 	powrot = { punkt = { 1528.5, 0.1, -717 }, zasieg = 10 },
 	miasteczko = {
-		punkt = { -63.6, 0, -771.5 },
-		patrz = { 0.3, 0, -698.7 },
-		teleport = "LasTeleport",
+		punkt = { 990, 0, -697 },
+		patrz = { 1000, 0, -697 },
 		bazar = { kontener = "MiasteczkoBazarGra", uchwyt = "PrzeniesDoBazaru", punkt = "start" },
 	},
 	brama = { x = 1934, z1 = -760, z2 = -640, tolerancja = 1.5, glebokosc = 200, otwarcie = { -708, -692 } },

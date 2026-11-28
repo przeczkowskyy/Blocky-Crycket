@@ -39,6 +39,8 @@ panel/serwer.py  (Python 3.9+, sama biblioteka standardowa, port 8787)
    │                    „Agent słucha” (odcinki nagrań → transkrypcja przez bc/glos.py → notatki i ustalenia przez agenta)
    ├─ bc/telegram.py    bot Telegram: alert o decyzji do drugiej osoby i jej odpowiedź (Zgoda / Brak zgody /
    │                    Przedyskutuj) — potwierdzanie decyzji D-043; tylko biblioteka standardowa
+   ├─ narzedzia/telegram_zdjecia.py  raport ze zdjęciami i podpisami na grupę zespołu (plan w JSON, `--sucho`;
+   │                    te same ustawienia bota co bc/telegram.py; tylko na prośbę człowieka)
    └─ bc/statyczny.py   eksport lustra tylko-do-odczytu (GitHub Pages) — podgląd z telefonu bez włączonego komputera
 ```
 

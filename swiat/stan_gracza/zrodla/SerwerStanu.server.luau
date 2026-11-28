@@ -69,6 +69,12 @@
 		Pety:Invoke("kup", gracz, { ile, zrodlo, cel, pet, premia = { zloto, doswiadczenie } }) → jak WydajZloto
 		                  + pet, nowy, kopie, aktywny | ("aktywny", gracz, { pet, premia } | { odstaw = true })
 		                  → { ok, aktywny } | ("stan", gracz) → { ok, kopie, aktywny, premia, wydatki, zloto }
+		                  | ("przychod", gracz, { ile, zrodlo, cel }) → { ok, zloto, ile } — 25.11.2026: Rybki
+		                  spoza walki (zagroda petów; źródło z listy D.przychody.zrodla, dopisane jak łup, bez premii)
+		                  | ("sprzedaj", gracz, { pety = { [id] = n }, ile, zrodlo, cel }) → { ok, zloto, ile, kopie }
+		                  | { ok = false, powod ("nie_masz", pet | "aktywny", pet | walidacja) } — 26.11.2026: sprzedaż
+		                  petów (swiat/pety_proba): kopie zabrane i Rybki dopisane jednym wywołaniem, bez przerwy;
+		                  ostatniej kopii peta za graczem nie sprzedaje (PetAktywny zawsze wskazuje posiadanego peta)
 	Zdalne/ZdarzeniaStanu (RemoteEvent): serwer → klient "awans", poziom, ile; "premia", zloto, doswiadczenie, pet
 	(dodatek peta w pokazanym łupie); "przegrana", kara, doswiadczenie (kara za przegraną w pokazanym łupie);
 	klient → serwer "pokaz" (bez liczb; najwyżej raz na D.publikacja.odstep_pokaz_s —
@@ -366,6 +372,9 @@ local function zbierz(gracz: Player)
 	p.shardy = liczba(gracz, A.shardy, 0)
 	local id = gracz:GetAttribute(A.klasa)
 	p.idKlasy = if type(id) == "string" and D.klasy_gracza[id] ~= nil then id else nil
+	-- 27.11.2026 (Karol: „Tak, zapisuj rasę”): rasa z atrybutu Race (ustawia ją serwer wyboru Pawła) do profilu
+	local rasa = gracz:GetAttribute(A.rasa)
+	p.idRasy = if type(rasa) == "string" and table.find(D.rasy_gracza, rasa) then rasa else nil
 	return p
 end
 
@@ -419,6 +428,11 @@ local function przyznajPunkty(gracz: Player)
 			dolicz("LicznikPrzyznanychPunktow")
 		end
 		p.punkty.poziom = poziom -- najwyższy poziom, za który już są punkty i Gemy (spadek i powrót niczego nie dają)
+	end
+	if D.punkty.na_poziom == 0 and p.punkty.pula > 0 then
+		-- agent Karola, 27.11 (dźwignia A, BALANS_2711.md): punkty do rozdania ze starych zapisów nie mają już przycisku —
+		-- ich wartość daje teraz pula rozdzielana samo (10 na poziom), więc stara pula znika (licznik na dole schowany)
+		p.punkty.pula = 0
 	end
 	local v = if punktyWlaczone() then p.punkty.pula else nil
 	if gracz:GetAttribute(D.punkty.atrybut) ~= v then
@@ -850,6 +864,45 @@ local function pety(polecenie: any, gracz: any, info: any)
 		end
 		publikujPety(gracz)
 		return { ok = true, aktywny = p.pety.aktywny }
+	elseif polecenie == "przychod" then
+		-- Rybki spoza walki (25.11.2026, swiat/pety_proba — pety stojące w zagrodzie; kwotę liczy serwer petów co kilka
+		-- sekund): kwota i źródło sprawdzone (D.przychody), dopisane do atrybutu Złota jak łup — bez premii z
+		-- modyfikatorów, bez kary i bez licznika walk; profil od razu (zapis postępu bierze p.zloto)
+		local w, powod = L.czystyPrzychod(D, info)
+		if not w then
+			return { ok = false, powod = powod }
+		end
+		dopisz(gracz, A.zloto, w.ile)
+		p.zloto = liczba(gracz, A.zloto, 0)
+		dolicz("LicznikPrzychodow")
+		kontener:SetAttribute("OstatniPrzychod", string.format("%s:%s:%s:+%dz", gracz.Name, w.zrodlo, w.cel, w.ile))
+		return { ok = true, zloto = p.zloto, ile = w.ile }
+	elseif polecenie == "sprzedaj" then
+		-- 26.11.2026 (swiat/pety_proba, sprzedaż petów): najpierw wszystko sprawdzone, potem kopie i Rybki razem —
+		-- bez przerwy, więc dwa wywołania naraz nie sprzedadzą tej samej kopii
+		local w, powod = L.czystaSprzedaz(D, info)
+		if not w then
+			return { ok = false, powod = powod }
+		end
+		for id, n in w.pety do
+			local ma = p.pety.kopie[id] or 0
+			if ma < n then
+				return { ok = false, powod = "nie_masz", pet = id }
+			end
+			if ma == n and p.pety.aktywny == id then
+				return { ok = false, powod = "aktywny", pet = id }
+			end
+		end
+		for id, n in w.pety do
+			local zostaje = p.pety.kopie[id] - n
+			p.pety.kopie[id] = if zostaje > 0 then zostaje else nil
+		end
+		dopisz(gracz, A.zloto, w.ile)
+		p.zloto = liczba(gracz, A.zloto, 0)
+		publikujPety(gracz)
+		dolicz("LicznikSprzedazy")
+		kontener:SetAttribute("OstatniaSprzedaz", string.format("%s:%s:+%dz", gracz.Name, w.zrodlo, w.ile))
+		return { ok = true, zloto = p.zloto, ile = w.ile, kopie = skopiuj(p.pety.kopie) }
 	end
 	return { ok = false, powod = "nieznane_polecenie" }
 end
@@ -1019,6 +1072,7 @@ local function przyrostTreningu(gracz: any, info: any)
 	local s, n = w[1], w[2]
 	local p = profil(gracz)
 	p.wytrenowane[s] += n
+	gracz:SetAttribute(D.trening.prefiks_wytrenowanych .. D.atrybuty_statystyk[s], p.wytrenowane[s])
 	local nazwa = D.atrybuty_statystyk[s]
 	local obecna = L.statystykaZ(D, gracz:GetAttribute(nazwa))
 	if obecna ~= nil then
@@ -1141,7 +1195,19 @@ end
 
 -- profil z zapisu → atrybuty gracza (przed podłączeniem słuchaczy; statystyki liczy potem zastosujBaze od nowa:
 -- rozkład klasy dla poziomu + trening + rozdane punkty)
+-- 27.11.2026 (limit treningu AFK, BALANS_2711.md): wytrenowane punkty każdej statystyki (profil „wytrenowane”) jako
+-- atrybuty gracza D.trening.prefiks_wytrenowanych .. atrybut statystyki — serwer TreningAFK liczy z nich limit
+local function pokazWytrenowane(gracz: Player, p)
+	for s, nazwa in D.atrybuty_statystyk do
+		local v = p.wytrenowane[s] or 0
+		if gracz:GetAttribute(D.trening.prefiks_wytrenowanych .. nazwa) ~= v then
+			gracz:SetAttribute(D.trening.prefiks_wytrenowanych .. nazwa, v)
+		end
+	end
+end
+
 local function zastosujProfil(gracz: Player, p)
+	pokazWytrenowane(gracz, p)
 	gracz:SetAttribute(A.poziom, p.poziom)
 	gracz:SetAttribute(A.xp, p.xp)
 	gracz:SetAttribute(A.zloto, p.zloto)
@@ -1154,6 +1220,11 @@ local function zastosujProfil(gracz: Player, p)
 		gracz:SetAttribute(n, v)
 	end
 	if p.idKlasy ~= nil then
+		-- 27.11.2026: najpierw rasa, potem klasa — ekran wyboru Pawła i kot rasy widzą od razu obie (rasa tylko razem
+		-- z klasą: serwer wyboru przyjmuje rasę dopiero po klasie)
+		if p.idRasy ~= nil then
+			gracz:SetAttribute(A.rasa, p.idRasy)
+		end
 		-- jedyny zapis atrybutu Class Pawła: przywrócenie wybranej klasy z zapisu (wyścig z ekranem wyboru klasy — README)
 		gracz:SetAttribute(A.klasa, p.idKlasy)
 	end
@@ -1270,6 +1341,11 @@ local function poWczytaniu(gracz: Player, stan: string, dane, powod: string?)
 end
 
 local function nowyGracz(gracz: Player)
+	for _, nazwa in D.atrybuty_statystyk do -- agent Karola, 27.11: wytrenowane od wejścia 0 (wczytany profil nadpisze)
+		if gracz:GetAttribute(D.trening.prefiks_wytrenowanych .. nazwa) == nil then
+			gracz:SetAttribute(D.trening.prefiks_wytrenowanych .. nazwa, 0)
+		end
+	end
 	if zapis and not zapis.wylaczony then
 		zapisy[gracz] = { stan = "wczytywanie", trwa = false, kolejka = {}, wyszedl = false, t0 = os.clock() }
 		gracz:SetAttribute("StanGraczaWczytany", false)
@@ -1381,7 +1457,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any)
 		for _, s in D.statystyki do
 			atrybuty[D.atrybuty_statystyk[s]] = g:GetAttribute(D.atrybuty_statystyk[s])
 		end
-		for _, n in { A.klasa, A.poziom, A.xp, A.xp_max, A.zloto, A.gemy, A.shardy } do
+		for _, n in { A.klasa, A.rasa, A.poziom, A.xp, A.xp_max, A.zloto, A.gemy, A.shardy } do
 			atrybuty[n] = g:GetAttribute(n)
 		end
 		p.atrybuty = atrybuty

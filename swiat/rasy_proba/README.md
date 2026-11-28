@@ -1,5 +1,7 @@
 # Wystawa ras w grze (D-104, etap B) — `swiat/rasy_proba`
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** kontener `Workspace/RasyProba` **usunięty z miejsca** (stał przy starym starcie). Źródła zostają. **Uwaga dla wdrożenia wyboru klasy Pawła:** `tools/studio/deploy_classselect.py` kopiuje figury ras z `Workspace/RasyProba` do `ReplicatedStorage/WyborKlasyModele/Race_*` — przed takim wdrożeniem trzeba postawić wystawę (`python -B swiat/rasy_proba/zbuduj.py`), a po nim można ją znów usunąć (`python -B tools/studio/sprzatanie_mapy.py --tylko RasyProba`). Już wdrożone kopie w `ReplicatedStorage` działają bez wystawy. Próba „rasy” wypadła z `swiat/przejscie_gry/regresja_calosci.py`.
+
 > **Status: propozycja.** Figury do obejrzenia w grze — nic nie jest podpięte do walki, bohatera gracza ani ekranu
 > wyboru (to czeka na decyzje ludzi: proporcje ras, Mag jest kotem). Modele i pytania: `swiat/postacie/RASY.md`.
 

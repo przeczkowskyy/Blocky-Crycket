@@ -44,6 +44,18 @@ python panel/narzedzia/praca.py koniec --id biom-las --raport <id raportu z rapo
 - Pliki prac leżą w danych lokalnych panelu (nie w repozytorium) — nie commitujesz ich i nie podajesz ich ścieżki ludziom.
 - **W każdej wiadomości do ludzi o pracy w toku podawaj szacowany koniec** („skończę ok. 12:40, za ok. 35 min”), także na Telegramie i w zakładce Agent.
 
+## Raport ze zdjęciami na Telegram (od 26.11)
+Gdy człowiek prosi o raport na grupie zespołu („zaraportuj na Telegram”, „wyślij zdjęcia Pawłowi”):
+```
+python -B panel/narzedzia/telegram_zdjecia.py --plan plan.json --sucho   # sprawdzenie planu i plików
+python -B panel/narzedzia/telegram_zdjecia.py --plan plan.json            # wysyłka
+```
+- `plan.json` trzymaj poza repozytorium. Pola: `tekst` (wstęp zwykłym tekstem), `grupy` (lista: `podpis` i 1–10 `zdjecia`), `koniec`.
+- Jedna grupa to jedna wiadomość: zdjęcie albo album z podpisem. Podpisuj numerem punktu raportu („2/6 Pety: …”) i pisz wprost, o co pytasz drugą osobę.
+- Zdjęcia bierz z raportów panelu (`panel/dane/raporty/<id>/`), skopiowane pod opisowe nazwy.
+- **Tylko na prośbę człowieka** — wysłanej wiadomości nie da się cofnąć. Zdjęcia bez nazw kont; tekst bez linków z kodami, kluczy i ścieżek z komputera.
+- Token i numery czatów zostają w danych lokalnych panelu; narzędzie ich nie wypisuje i Ty też nie.
+
 ## Przed kontynuacją: przeczytaj odpowiedzi
 ```
 python panel/narzedzia/raport.py odpowiedzi --od 2026-11-12T20:00      # decyzje i komentarze ludzi od tego czasu

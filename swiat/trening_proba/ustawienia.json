@@ -5,7 +5,8 @@
   "prefiks": "[TreningProba] ",
   "zdarzenie_okien": "OknoMiejsca",
   "id_miejsca_bazaru": "training_center",
-  "bazar": {"kontener": "MiasteczkoBazarGra", "podpowiedz": "Punkty/E training_center"},
+  "bazar": {"kontener": "MiasteczkoBazarGra", "podpowiedz": "Punkty/E training_center", "wybor_od_trenera": false,
+            "opis": "wybor_od_trenera = false (26.11.2026, zlecenie Karola; D-141: statystyki trenuje się na stanowiskach AFK): E przy trenerze w bazarze NIE otwiera już tymczasowego wyboru mini-gry — otwiera okno sześciu stanowisk AFK (src/client/TreningAFKClient.client.luau, okno trenera). Mini-gry i ich kontener zostają; z trenera nie da się do nich wejść (haczyk testowy \"wybor\" działa jak dawniej). true = dawne zachowanie."},
   "arena": {
     "srodek": [3000, 300, 3000],
     "rozmiar": [464, 128],
@@ -313,13 +314,14 @@
       "tarcza_blok": [0.4, 3.7, -1.7]
     }
   },
+  "mini_gry": {"w_grze": false,
+    "opis": "26.11.2026 (Karol: „usuń placeholdery”, „ma tu nie być żadnych tabliczek”; D-141 — statystyki trenuje się na stanowiskach AFK, mini-gry są z gry nieosiągalne od zmiany trenera): w_grze = false → zbuduj.py stawia kontener Workspace/TreningProba BEZ areny (ok. 2800 części), bez skryptów i modułów mini-gier — tylko Sygnaly/PrzyrostStatystyki (BindableEvent), którym skrypt Pawła src/server/TreningAFK.server.luau przekazuje przyrosty ze stanowisk AFK do swiat/stan_gracza (zapis). Atrybut kontenera MiniGry = false. true = pełna próba mini-gier jak dawniej (arena, SerwerTreningu, KlientTreningu, haczyki)."},
   "tablica_wejscia": {
+    "w_grze": false,
+    "opis": "26.11.2026 (sprzątanie mapy, Karol): tablicy Training Center przy starym starcie już nie ma — gracz zaczyna w bazarze, a do mini-gier wchodzi tylko przez trenera w bazarze (MiasteczkoBazarGra, punkt E training_center). w_grze = false: zbuduj.py jej nie stawia (stawiała się przy pierwszym SpawnLocation, czyli dziś stanęłaby w bazarze). Kod tablicy zostaje w zbuduj.py na wypadek powrotu.",
     "promienie": [14, 18, 22, 26],
     "kierunki": 16,
-    "omijaj": [
-      {"atrybut": ["MiasteczkoBazarGra", "PunktStaregoMiasteczka"], "promien": 10},
-      {"sciezka": "Workspace/LasTeleport/PortalStart", "promien": 14}
-    ],
+    "omijaj": [],
     "wolne": [7, 8, 7],
     "roznica_wysokosci": 1.5,
     "rzut_od": 12,

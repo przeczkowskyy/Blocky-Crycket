@@ -5333,6 +5333,36 @@
       "approved_sha256": "285440db023aeb653486f4ebb4e22b1c95c809bb4bac9550a3b8debfc7679d9f",
       "roblox_image": "138613041337013"
     },
+    "JajkoBagnaModel": {
+      "created_at": "2026-11-26T15:46:57+00:00",
+      "history": [],
+      "category": "model",
+      "status": "in_roblox",
+      "processed": "swiat/jajka_biomow/modele/jajko_bagno.glb",
+      "usage": "Model jajka biomu (Jajko Bagna) do Workspace/JajkaBiomowPodglad — swiat/jajka_biomow",
+      "updated_at": "2026-11-26T15:47:22+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-26T15:46:57+00:00",
+      "approved_sha256": "400fa47052283c6c41df57ada8e41246db16f3e1589586658f0ae8337cf5ddfe",
+      "moderation": "Approved",
+      "roblox_target": "Workspace/JajkaBiomowPodglad/Jajko Bagna",
+      "notes": "zasób Model 93451448952125 (wgrany przez Studio MCP open_cloud_invoke, prawo Use dla gry: tak); ustawienie: swiat/jajka_biomow/studio/jajko_bagno_ustaw.luau"
+    },
+    "JajkoDzungliModel": {
+      "created_at": "2026-11-26T15:47:13+00:00",
+      "history": [],
+      "category": "model",
+      "status": "in_roblox",
+      "processed": "swiat/jajka_biomow/modele/jajko_dzungla.glb",
+      "usage": "Model jajka biomu (Jajko Dżungli) do Workspace/JajkaBiomowPodglad — swiat/jajka_biomow",
+      "updated_at": "2026-11-26T15:47:22+00:00",
+      "approved_by_user": true,
+      "approved_at": "2026-11-26T15:47:13+00:00",
+      "approved_sha256": "4cff6e61108db918392f3655179e28e6be0957a04b826a171deefc1c07b6a1d0",
+      "moderation": "Approved",
+      "roblox_target": "Workspace/JajkaBiomowPodglad/Jajko Dżungli",
+      "notes": "zasób Model 74304827925305 (wgrany przez Studio MCP open_cloud_invoke, prawo Use dla gry: tak); ustawienie: swiat/jajka_biomow/studio/jajko_dzungla_ustaw.luau"
+    },
     "HudWideTeleport": {
       "created_at": "2026-11-25T22:52:32+00:00",
       "history": [],

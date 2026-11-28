@@ -6,7 +6,7 @@ najkrótsza droga z omijaniem przeszkód), czesci.json i uklad.json mapy. Potrze
 plan() zwraca None (testy pomijają tę część z uwagą, próba w Studio porównuje wtedy tylko z celami czasu).
 
     from czasy_biegu import plan
-    p = plan(D)   # → { id: { "droga": st, "czas": s, "cel": s albo None } } (bez nowe_miasteczko — stoi poza bazarem)
+    p = plan(D)   # → { id: { "droga": st, "czas": s, "cel": s albo None } }
 """
 import json
 import math
@@ -84,10 +84,17 @@ def punkty_przy_scianach(D):
     xs = S.x0 + (ix + 0.5) * S.krok
     zs = S.z0 + (iz + 0.5) * S.krok
     g = U["granice"]
+    # 27.11.2026: zachodnia część sali Training Center leży za brzegiem pola gry (zamykają ją ściany sali, nie
+    # niewidzialna ściana) — punkty startowe tylko z pola gry, a „zachód” tylko tam, gdzie zachodnia niewidzialna ściana
+    # stoi (na południe od przedniego boku sali); inaczej marsz na zachód szedłby w głąb sali
+    w_polu = xs >= g["pole_gry_x"][0]
+    od_z = g.get("sala_poza_polem", {}).get("zachodnia_sciana_od_z", g["pole_gry_z"][0]) + 3.0
     wynik = {}
-    for nazwa, do_sciany in (("zachod", xs - g["pole_gry_x"][0]), ("wschod", g["pole_gry_x"][1] - xs),
-                             ("polnoc", zs - g["pole_gry_z"][0]), ("poludnie", g["pole_gry_z"][1] - zs)):
-        i = int(np.argmin(do_sciany))
+    for nazwa, do_sciany, maska in (("zachod", xs - g["pole_gry_x"][0], w_polu & (zs >= od_z)),
+                                    ("wschod", g["pole_gry_x"][1] - xs, w_polu),
+                                    ("polnoc", zs - g["pole_gry_z"][0], w_polu),
+                                    ("poludnie", g["pole_gry_z"][1] - zs, w_polu)):
+        i = int(np.argmin(np.where(maska, do_sciany, np.inf)))
         wynik[nazwa] = [round(float(xs[i] + X0), 2), st[1], round(float(zs[i] + Z0), 2)]
     return wynik
 

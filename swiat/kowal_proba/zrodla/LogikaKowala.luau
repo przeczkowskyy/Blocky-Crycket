@@ -465,7 +465,11 @@ function L.czyZalozyc(D, zal, id)
 	for _, z in zal do
 		local Z = D.przedmioty[z]
 		if z ~= id and Z.slot == P.slot then
-			return Z.nrStopnia < P.nrStopnia
+			-- 27.11.2026: w tym samym stopniu (bronie puli Lv 1–10) decyduje wymagany poziom
+			if Z.nrStopnia ~= P.nrStopnia then
+				return Z.nrStopnia < P.nrStopnia
+			end
+			return Z.poziom < P.poziom
 		end
 	end
 	return true
@@ -505,6 +509,15 @@ end
 
 function L.ileMaterialowDop(D, n)
 	return string.format("%d %s", n, L.forma(D.teksty.formy_materialu_dopelniacz, n))
+end
+
+-- waluta Rybki (atrybut Gold, D-146): „1 Rybka / 3 Rybki / 5 Rybek”; dopełniacz „1 Rybki / 3 Rybek”
+function L.ileRybek(D, n)
+	return string.format("%d %s", n, L.forma(D.teksty.formy_rybki, n))
+end
+
+function L.ileRybekDop(D, n)
+	return string.format("%d %s", n, L.forma(D.teksty.formy_rybki_dopelniacz, n))
 end
 
 function L.liczbaTekst(v)
@@ -562,11 +575,11 @@ function L.wiersz(D, dane, klasa, id, zal, zloto)
 			end
 		end
 		w.nastepny = string.format(T.nastepny, L.tekstStatLista(D, przyrost))
-		w.koszt = string.format(T.koszt, k.zloto, L.ileMaterialow(D, k.materialy))
+		w.koszt = string.format(T.koszt, L.ileRybek(D, k.zloto), L.ileMaterialow(D, k.materialy))
 		if dane.materialy < k.materialy then
 			w.powod = string.format(T.za_malo_materialow, L.ileMaterialowDop(D, k.materialy - dane.materialy))
 		elseif zloto < k.zloto then
-			w.powod = string.format(T.za_malo_zlota, k.zloto - zloto)
+			w.powod = string.format(T.za_malo_zlota, L.ileRybekDop(D, k.zloto - zloto))
 		else
 			w.ulepsz = true
 		end
@@ -643,7 +656,7 @@ function L.komunikat(D, powod, ile)
 	if powod == "za_malo_materialow" then
 		return string.format(T.za_malo_materialow, L.ileMaterialowDop(D, ile or 0))
 	elseif powod == "za_malo_zlota" then
-		return string.format(T.za_malo_zlota, ile or 0)
+		return string.format(T.za_malo_zlota, L.ileRybekDop(D, ile or 0))
 	end
 	return T[MAPA_KOMUNIKATOW[powod] or "blad"]
 end
@@ -758,7 +771,8 @@ function L.sprawdzPrzypadki(D)
 		sprawdz("zaloz", i, { p.czy, p.stroj }, { L.czyZalozyc(D, zal, p.id), L.strojZPrzedmiotem(D, arg(p.napis), p.id) })
 	end
 	for i, p in P.odmiana do
-		sprawdz("odmiana", i, { p.mianownik, p.dopelniacz }, { L.ileMaterialow(D, p.n), L.ileMaterialowDop(D, p.n) })
+		sprawdz("odmiana", i, { p.mianownik, p.dopelniacz, p.rybki, p.rybkiDop },
+			{ L.ileMaterialow(D, p.n), L.ileMaterialowDop(D, p.n), L.ileRybek(D, p.n), L.ileRybekDop(D, p.n) })
 	end
 	return #zle == 0, n, zle
 end

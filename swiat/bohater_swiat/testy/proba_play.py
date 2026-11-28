@@ -86,7 +86,7 @@ KOD = {
              'if d:IsA("LuaSourceContainer") then skrypty += 1 end end end '
              'return H:JSONEncode({ bohater = jest("BohaterSwiat"), walka = jest("TestWalki2"), stroje = jest("StrojeProba"), '
              'kowal = jest("KowalProba"), pety = jest("PetyProba"), stan = jest("StanGracza"), pas = jest("LasPasGra"), '
-             'chmury = jest("TeleportChmury"), trening = jest("TreningProba"), czesci = czesci, skrypty = skrypty, '
+             'chmury = jest("TeleportChmury"), trening = (jest("TreningProba") and workspace.TreningProba:GetAttribute("MiniGry") ~= false), czesci = czesci, skrypty = skrypty, '
              'skrot = k and k:GetAttribute("Skrot") or false, wlacznik = k and k:GetAttribute("BohaterWSwiecie"), '
              'sygnal = k ~= nil and k:FindFirstChild("Sygnaly") ~= nil and k.Sygnaly:FindFirstChild("RuchBohatera") ~= nil })'),
     "gotowosc": KB + ('return H:JSONEncode({ klient = k and k:GetAttribute("KlientGotowy") or false, '
@@ -1174,7 +1174,7 @@ def main():
         # ------------------------------------------------------------------ B16 runda Training Center
         def b16():
             if not e.get("trening"):
-                punkt("B16", None, "TreningProba nie ma w miejscu — pominięte")
+                punkt("B16", None, "nie dotyczy: TreningProba nie ma w miejscu albo mini-gry wyłączone (MiniGry = false, 26.11.2026)")
                 return
             pt = slownik(js(KOD["trening_punkt"], "Server")).get("p")
             if not isinstance(pt, list):

@@ -1,0 +1,1827 @@
+{
+ "modul": "pula_wojownika_mleczarz",
+ "modele": [
+  {
+   "id": "pula_wojownika_mleczarz",
+   "nazwa": "Kot-wojownik — Mleczarz",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 600,
+     "wierzcholki": 336,
+     "wymiary": [
+      1.52,
+      0.46,
+      1.32
+     ],
+     "min": [
+      -0.76,
+      0.615,
+      -0.615
+     ],
+     "max": [
+      0.76,
+      1.075,
+      0.705
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 996,
+     "wierzcholki": 552,
+     "wymiary": [
+      1.42,
+      0.865,
+      1.115
+     ],
+     "min": [
+      -0.71,
+      0.99,
+      -0.54
+     ],
+     "max": [
+      0.71,
+      1.855,
+      0.575
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 180,
+     "wierzcholki": 104,
+     "wymiary": [
+      0.58,
+      0.47,
+      0.58
+     ],
+     "min": [
+      0.57,
+      0.7,
+      -0.29
+     ],
+     "max": [
+      1.15,
+      1.17,
+      0.29
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.57,
+      0.39,
+      0.57
+     ],
+     "min": [
+      0.015,
+      0.16,
+      -0.285
+     ],
+     "max": [
+      0.585,
+      0.55,
+      0.285
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 56,
+     "wierzcholki": 32,
+     "wymiary": [
+      0.58,
+      0.22,
+      1.14
+     ],
+     "min": [
+      0.01,
+      -0.005,
+      -0.28
+     ],
+     "max": [
+      0.59,
+      0.215,
+      0.86
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.58,
+      0.47,
+      0.58
+     ],
+     "min": [
+      -1.15,
+      0.7,
+      -0.29
+     ],
+     "max": [
+      -0.57,
+      1.17,
+      0.29
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.57,
+      0.39,
+      0.57
+     ],
+     "min": [
+      -0.585,
+      0.16,
+      -0.285
+     ],
+     "max": [
+      -0.015,
+      0.55,
+      0.285
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 152,
+     "wierzcholki": 84,
+     "wymiary": [
+      0.58,
+      0.24,
+      1.14
+     ],
+     "min": [
+      -0.59,
+      -0.005,
+      -0.28
+     ],
+     "max": [
+      -0.01,
+      0.235,
+      0.86
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "kot_rycerz_mleczarz_helm_Akc",
+     "kosc": "HatPivot",
+     "trojkaty": 732,
+     "wierzcholki": 408,
+     "wymiary": [
+      2.3,
+      1.2,
+      1.76
+     ],
+     "min": [
+      -1.15,
+      2.885,
+      -0.89
+     ],
+     "max": [
+      1.15,
+      4.085,
+      0.87
+     ]
+    },
+    {
+     "nazwa": "kot_rycerz_mleczarz_miecz_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 496,
+     "wierzcholki": 300,
+     "wymiary": [
+      1.003,
+      2.165,
+      0.779
+     ],
+     "min": [
+      -1.76,
+      0.541,
+      -0.243
+     ],
+     "max": [
+      -0.757,
+      2.706,
+      0.536
+     ]
+    }
+   ],
+   "trojkaty_razem": 5064,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 37
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.3,
+    3.155,
+    2.099
+   ],
+   "wymiary_z_akcesoriami": [
+    2.91,
+    4.09,
+    2.109
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.76,
+     -0.005,
+     -1.239
+    ],
+    [
+     1.15,
+     4.085,
+     0.87
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "kot_rycerz_mleczarz_helm",
+     "zaczep": "KapeluszAttachment",
+     "eksport": false
+    },
+    {
+     "id": "kot_rycerz_mleczarz_miecz",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 1596,
+     "limit": 1750,
+     "wymiary": [
+      1.52,
+      1.24,
+      1.32
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 356,
+     "limit": 1248,
+     "wymiary": [
+      0.58,
+      1.15,
+      0.58
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 332,
+     "limit": 1248,
+     "wymiary": [
+      0.58,
+      1.15,
+      0.58
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 212,
+     "limit": 1248,
+     "wymiary": [
+      0.58,
+      0.755,
+      1.145
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 308,
+     "limit": 1248,
+     "wymiary": [
+      0.58,
+      0.755,
+      1.145
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "kot_rycerz_mleczarz_helm",
+   "nazwa": "Hełm z Bańki na Mleko",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "kot_rycerz_mleczarz_helm",
+     "kosc": null,
+     "trojkaty": 732,
+     "wierzcholki": 408,
+     "wymiary": [
+      2.3,
+      1.2,
+      1.76
+     ],
+     "min": [
+      -1.15,
+      -0.285,
+      -0.89
+     ],
+     "max": [
+      1.15,
+      0.915,
+      0.87
+     ]
+    }
+   ],
+   "trojkaty_razem": 732,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 4
+   },
+   "zaczep": "HatAttachment",
+   "typ_roblox": "Hat",
+   "zakres_od_zaczepu": [
+    [
+     -1.15,
+     -0.285,
+     -0.89
+    ],
+    [
+     1.15,
+     0.915,
+     0.87
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.315,
+    -0.01
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "kot_rycerz_mleczarz_miecz",
+   "nazwa": "Zardzewiały Kordelas",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "kot_rycerz_mleczarz_miecz",
+     "kosc": null,
+     "trojkaty": 496,
+     "wierzcholki": 300,
+     "wymiary": [
+      0.887,
+      2.202,
+      0.2
+     ],
+     "min": [
+      -0.677,
+      -0.381,
+      -0.1
+     ],
+     "max": [
+      0.21,
+      1.821,
+      0.1
+     ]
+    }
+   ],
+   "trojkaty_razem": 496,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 7
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.677,
+     -0.381,
+     -0.1
+    ],
+    [
+     0.21,
+     1.821,
+     0.1
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.234,
+    0.72,
+    0.0
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [
+  "pula_wojownika_mleczarz: część „Trzonek otwor” cieńsza niż 0,02 studa",
+  "pula_wojownika_mleczarz: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15"
+ ],
+ "kontrola": [
+  "pula_wojownika_mleczarz.fbx: siatki 38, kości 23, trójkąty 4088, wzrost 3.15 st., akcje brak -> ZGODNE",
+  "pula_wojownika_mleczarz__idle.fbx: siatki 38, kości 23, trójkąty 4088, wzrost 3.15 st., akcje pula_wojownika_mleczarz|Scene 1-61 -> ZGODNE",
+  "pula_wojownika_mleczarz.glb: siatki 38, kości 23, trójkąty 4088, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
+  "kot_rycerz_mleczarz_helm.fbx: siatki 1, kości 0, trójkąty 732, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "kot_rycerz_mleczarz_helm.glb: siatki 1, kości 0, trójkąty 732, wzrost 1.20 st., akcje brak -> ZGODNE",
+  "kot_rycerz_mleczarz_miecz.fbx: siatki 1, kości 0, trójkąty 496, wzrost 2.20 st., akcje brak -> ZGODNE",
+  "kot_rycerz_mleczarz_miecz.glb: siatki 1, kości 0, trójkąty 496, wzrost 2.20 st., akcje brak -> ZGODNE",
+  "ekwipunek: pula_wojownika_mleczarz_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "ekwipunek: pula_wojownika_mleczarz_cialo__idle.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje pula_wojownika_mleczarz_cialo|Scene 1-61 -> ZGODNE",
+  "ekwipunek: pula_wojownika_mleczarz_cialo.glb: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_zbroja_tulow.fbx: siatki 1, kości 0, trójkąty 996, wzrost 0.86 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_zbroja_tulow.glb: siatki 1, kości 0, trójkąty 996, wzrost 0.86 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_zbroja_biodra.fbx: siatki 1, kości 0, trójkąty 232, wzrost 0.35 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_zbroja_biodra.glb: siatki 1, kości 0, trójkąty 232, wzrost 0.35 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_pas_biodra.fbx: siatki 1, kości 0, trójkąty 368, wzrost 0.46 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_pas_biodra.glb: siatki 1, kości 0, trójkąty 368, wzrost 0.46 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 180, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 180, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 156, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 156, wzrost 0.47 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 56, wzrost 0.22 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 56, wzrost 0.22 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_buty_golen_l.fbx: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_buty_golen_l.glb: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 152, wzrost 0.24 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 152, wzrost 0.24 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_buty_golen_p.fbx: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_mleczarz_buty_golen_p.glb: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE"
+ ],
+ "ekwipunek": {
+  "stroje": {
+   "golas": [],
+   "komplet": [
+    "kot_rycerz_mleczarz_helm",
+    "kot_rycerz_mleczarz_zbroja",
+    "kot_rycerz_mleczarz_pas",
+    "kot_rycerz_mleczarz_rekawice",
+    "kot_rycerz_mleczarz_buty",
+    "kot_rycerz_mleczarz_miecz"
+   ]
+  },
+  "filmy": [],
+  "modele": [
+   {
+    "id": "kot_rycerz_mleczarz_buty_golen_l",
+    "nazwa": "Buty Mleczarza (golen_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_mleczarz_buty_golen_l",
+      "kosc": null,
+      "trojkaty": 68,
+      "wierzcholki": 40,
+      "wymiary": [
+       0.57,
+       0.39,
+       0.57
+      ],
+      "min": [
+       -0.285,
+       -0.155,
+       -0.285
+      ],
+      "max": [
+       0.285,
+       0.235,
+       0.285
+      ]
+     }
+    ],
+    "trojkaty_razem": 68,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftLowerLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.285,
+      -0.155,
+      -0.285
+     ],
+     [
+      0.285,
+      0.235,
+      0.285
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.04,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_mleczarz_buty_golen_p",
+    "nazwa": "Buty Mleczarza (golen_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_mleczarz_buty_golen_p",
+      "kosc": null,
+      "trojkaty": 68,
+      "wierzcholki": 40,
+      "wymiary": [
+       0.57,
+       0.39,
+       0.57
+      ],
+      "min": [
+       -0.285,
+       -0.155,
+       -0.285
+      ],
+      "max": [
+       0.285,
+       0.235,
+       0.285
+      ]
+     }
+    ],
+    "trojkaty_razem": 68,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightLowerLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.285,
+      -0.155,
+      -0.285
+     ],
+     [
+      0.285,
+      0.235,
+      0.285
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.04,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_mleczarz_buty_stopa_l",
+    "nazwa": "Buty Mleczarza (stopa_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_mleczarz_buty_stopa_l",
+      "kosc": null,
+      "trojkaty": 56,
+      "wierzcholki": 32,
+      "wymiary": [
+       0.58,
+       0.22,
+       1.14
+      ],
+      "min": [
+       -0.29,
+       -0.095,
+       -0.365
+      ],
+      "max": [
+       0.29,
+       0.125,
+       0.775
+      ]
+     }
+    ],
+    "trojkaty_razem": 56,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 2
+    },
+    "zaczep": "EkwLeftFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.29,
+      -0.095,
+      -0.365
+     ],
+     [
+      0.29,
+      0.125,
+      0.775
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.015,
+     0.205
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_mleczarz_buty_stopa_p",
+    "nazwa": "Buty Mleczarza (stopa_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_mleczarz_buty_stopa_p",
+      "kosc": null,
+      "trojkaty": 152,
+      "wierzcholki": 84,
+      "wymiary": [
+       0.58,
+       0.24,
+       1.14
+      ],
+      "min": [
+       -0.29,
+       -0.095,
+       -0.365
+      ],
+      "max": [
+       0.29,
+       0.145,
+       0.775
+      ]
+     }
+    ],
+    "trojkaty_razem": 152,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.29,
+      -0.095,
+      -0.365
+     ],
+     [
+      0.29,
+      0.145,
+      0.775
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.025,
+     0.205
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_mleczarz_pas_biodra",
+    "nazwa": "Pas z Klamrą Patelni (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_mleczarz_pas_biodra",
+      "kosc": null,
+      "trojkaty": 368,
+      "wierzcholki": 208,
+      "wymiary": [
+       1.52,
+       0.46,
+       1.32
+      ],
+      "min": [
+       -0.76,
+       -0.26,
+       -0.615
+      ],
+      "max": [
+       0.76,
+       0.2,
+       0.705
+      ]
+     }
+    ],
+    "trojkaty_razem": 368,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 5
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.76,
+      -0.26,
+      -0.615
+     ],
+     [
+      0.76,
+      0.2,
+      0.705
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.03,
+     0.045
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_mleczarz_rekawice_dlon_l",
+    "nazwa": "Rękawice Szermiercze (dlon_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_mleczarz_rekawice_dlon_l",
+      "kosc": null,
+      "trojkaty": 180,
+      "wierzcholki": 104,
+      "wymiary": [
+       0.58,
+       0.47,
+       0.58
+      ],
+      "min": [
+       -0.29,
+       -0.26,
+       -0.29
+      ],
+      "max": [
+       0.29,
+       0.21,
+       0.29
+      ]
+     }
+    ],
+    "trojkaty_razem": 180,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLeftHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.29,
+      -0.26,
+      -0.29
+     ],
+     [
+      0.29,
+      0.21,
+      0.29
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.025,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_mleczarz_rekawice_dlon_p",
+    "nazwa": "Rękawice Szermiercze (dlon_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_mleczarz_rekawice_dlon_p",
+      "kosc": null,
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.58,
+       0.47,
+       0.58
+      ],
+      "min": [
+       -0.29,
+       -0.26,
+       -0.29
+      ],
+      "max": [
+       0.29,
+       0.21,
+       0.29
+      ]
+     }
+    ],
+    "trojkaty_razem": 156,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 2
+    },
+    "zaczep": "EkwRightHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.29,
+      -0.26,
+      -0.29
+     ],
+     [
+      0.29,
+      0.21,
+      0.29
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.025,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_mleczarz_zbroja_biodra",
+    "nazwa": "Przeszywanica Babci (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_mleczarz_zbroja_biodra",
+      "kosc": null,
+      "trojkaty": 232,
+      "wierzcholki": 128,
+      "wymiary": [
+       1.4,
+       0.35,
+       1.065
+      ],
+      "min": [
+       -0.7,
+       -0.22,
+       -0.525
+      ],
+      "max": [
+       0.7,
+       0.13,
+       0.54
+      ]
+     }
+    ],
+    "trojkaty_razem": 232,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 6
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.7,
+      -0.22,
+      -0.525
+     ],
+     [
+      0.7,
+      0.13,
+      0.54
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.045,
+     0.008
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_mleczarz_zbroja_tulow",
+    "nazwa": "Przeszywanica Babci (tulow)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_mleczarz_zbroja_tulow",
+      "kosc": null,
+      "trojkaty": 996,
+      "wierzcholki": 552,
+      "wymiary": [
+       1.42,
+       0.865,
+       1.115
+      ],
+      "min": [
+       -0.71,
+       -0.435,
+       -0.54
+      ],
+      "max": [
+       0.71,
+       0.43,
+       0.575
+      ]
+     }
+    ],
+    "trojkaty_razem": 996,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 12
+    },
+    "zaczep": "EkwUpperTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.71,
+      -0.435,
+      -0.54
+     ],
+     [
+      0.71,
+      0.43,
+      0.575
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.003,
+     0.017
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "pula_wojownika_mleczarz_cialo",
+    "nazwa": "Kot-wojownik (ciało bazowe)",
+    "rodzaj": "postac",
+    "siatki": [
+     {
+      "nazwa": "LowerTorso_Geo",
+      "kosc": "LowerTorso",
+      "trojkaty": 176,
+      "wierzcholki": 96,
+      "wymiary": [
+       1.3,
+       0.88,
+       1.155
+      ],
+      "min": [
+       -0.65,
+       0.12,
+       -0.66
+      ],
+      "max": [
+       0.65,
+       1.0,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "UpperTorso_Geo",
+      "kosc": "UpperTorso",
+      "trojkaty": 228,
+      "wierzcholki": 138,
+      "wymiary": [
+       1.36,
+       0.85,
+       1.0
+      ],
+      "min": [
+       -0.68,
+       1.0,
+       -0.505
+      ],
+      "max": [
+       0.68,
+       1.85,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "Head_Geo",
+      "kosc": "Head",
+      "trojkaty": 680,
+      "wierzcholki": 400,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ],
+      "min": [
+       -1.08,
+       1.85,
+       -0.74
+      ],
+      "max": [
+       1.08,
+       3.15,
+       0.825
+      ]
+     },
+     {
+      "nazwa": "LeftUpperArm_Geo",
+      "kosc": "LeftUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftLowerArm_Geo",
+      "kosc": "LeftLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftHand_Geo",
+      "kosc": "LeftHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       0.67,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       1.05,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftUpperLeg_Geo",
+      "kosc": "LeftUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       0.09,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       0.51,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "LeftLowerLeg_Geo",
+      "kosc": "LeftLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       0.1,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       0.5,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftFoot_Geo",
+      "kosc": "LeftFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       0.03,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       0.57,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "RightUpperArm_Geo",
+      "kosc": "RightUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightLowerArm_Geo",
+      "kosc": "RightLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightHand_Geo",
+      "kosc": "RightHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       -1.05,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       -0.67,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightUpperLeg_Geo",
+      "kosc": "RightUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       -0.51,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       -0.09,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "RightLowerLeg_Geo",
+      "kosc": "RightLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       -0.5,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       -0.1,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightFoot_Geo",
+      "kosc": "RightFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       -0.57,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       -0.03,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "LeftEar_Geo",
+      "kosc": "LeftEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       0.392,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       0.973,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "RightEar_Geo",
+      "kosc": "RightEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       -0.973,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       -0.392,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "Tail_Geo",
+      "kosc": "Tail",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.894,
+       0.32,
+       0.806
+      ],
+      "min": [
+       0.013,
+       0.08,
+       -1.205
+      ],
+      "max": [
+       0.907,
+       0.4,
+       -0.399
+      ]
+     },
+     {
+      "nazwa": "TailTip_Geo",
+      "kosc": "TailTip",
+      "trojkaty": 264,
+      "wierzcholki": 144,
+      "wymiary": [
+       0.627,
+       1.433,
+       0.728
+      ],
+      "min": [
+       0.429,
+       0.055,
+       -1.239
+      ],
+      "max": [
+       1.056,
+       1.488,
+       -0.511
+      ]
+     }
+    ],
+    "trojkaty_razem": 2532,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 11
+    },
+    "typ": "r15",
+    "skala": 1.0,
+    "wymiary_ciala": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "wymiary_z_akcesoriami": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "zakres_z_akcesoriami": [
+     [
+      -1.09,
+      0.0,
+      -1.239
+     ],
+     [
+      1.09,
+      3.822,
+      0.857
+     ]
+    ],
+    "kosci": [
+     "Root",
+     "HumanoidRootNode",
+     "LowerTorso",
+     "UpperTorso",
+     "Head",
+     "LeftUpperArm",
+     "LeftLowerArm",
+     "LeftHand",
+     "LeftUpperLeg",
+     "LeftLowerLeg",
+     "LeftFoot",
+     "RightUpperArm",
+     "RightLowerArm",
+     "RightHand",
+     "RightUpperLeg",
+     "RightLowerLeg",
+     "RightFoot",
+     "LeftEar",
+     "RightEar",
+     "Tail",
+     "TailTip",
+     "HatPivot",
+     "StaffPivot"
+    ],
+    "zaczepy": [
+     "FaceCenterAttachment",
+     "FaceFrontAttachment",
+     "HatAttachment",
+     "HairAttachment",
+     "NeckAttachment",
+     "BodyFrontAttachment",
+     "BodyBackAttachment",
+     "LeftCollarAttachment",
+     "RightCollarAttachment",
+     "WaistCenterAttachment",
+     "WaistFrontAttachment",
+     "WaistBackAttachment",
+     "LeftShoulderAttachment",
+     "LeftGripAttachment",
+     "LeftFootAttachment",
+     "RightShoulderAttachment",
+     "RightGripAttachment",
+     "RightFootAttachment",
+     "KapeluszAttachment",
+     "KosturAttachment",
+     "EkwLowerTorsoAttachment",
+     "EkwUpperTorsoAttachment",
+     "EkwHeadAttachment",
+     "EkwLeftUpperArmAttachment",
+     "EkwLeftLowerArmAttachment",
+     "EkwLeftHandAttachment",
+     "EkwRightUpperArmAttachment",
+     "EkwRightLowerArmAttachment",
+     "EkwRightHandAttachment",
+     "EkwLeftUpperLegAttachment",
+     "EkwLeftLowerLegAttachment",
+     "EkwLeftFootAttachment",
+     "EkwRightUpperLegAttachment",
+     "EkwRightLowerLegAttachment",
+     "EkwRightFootAttachment"
+    ],
+    "znaczniki_att": [
+     "FaceCenter_Att",
+     "FaceFront_Att",
+     "Hat_Att",
+     "Hair_Att",
+     "Neck_Att",
+     "BodyFront_Att",
+     "BodyBack_Att",
+     "LeftCollar_Att",
+     "RightCollar_Att",
+     "WaistCenter_Att",
+     "WaistFront_Att",
+     "WaistBack_Att",
+     "LeftShoulder_Att",
+     "LeftGrip_Att",
+     "LeftFoot_Att",
+     "RightShoulder_Att",
+     "RightGrip_Att",
+     "RightFoot_Att",
+     "Kapelusz_Att",
+     "Kostur_Att",
+     "EkwLowerTorso_Att",
+     "EkwUpperTorso_Att",
+     "EkwHead_Att",
+     "EkwLeftUpperArm_Att",
+     "EkwLeftLowerArm_Att",
+     "EkwLeftHand_Att",
+     "EkwRightUpperArm_Att",
+     "EkwRightLowerArm_Att",
+     "EkwRightHand_Att",
+     "EkwLeftUpperLeg_Att",
+     "EkwLeftLowerLeg_Att",
+     "EkwLeftFoot_Att",
+     "EkwRightUpperLeg_Att",
+     "EkwRightLowerLeg_Att",
+     "EkwRightFoot_Att",
+     "Root_Att"
+    ],
+    "klipy": [
+     {
+      "n": "idle",
+      "dlugosc": 60,
+      "fps": 30,
+      "sekundy": 2.0,
+      "petla": true
+     }
+    ],
+    "akcesoria": [],
+    "grupy_ciala": {
+     "Head": {
+      "trojkaty": 680,
+      "limit": 4000,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ]
+     },
+     "Torso": {
+      "trojkaty": 404,
+      "limit": 1750,
+      "wymiary": [
+       1.36,
+       1.73,
+       1.155
+      ]
+     },
+     "LeftArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "RightArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "LeftLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     },
+     "RightLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     }
+    },
+    "ostrzezenia": [
+     "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+    ]
+   }
+  ]
+ }
+}

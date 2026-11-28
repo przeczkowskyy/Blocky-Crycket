@@ -56,6 +56,13 @@
       "kto": "Karol",
       "kiedy": "2026-11-18 12:23",
       "dlugosc_s": 80.01
+    },
+    {
+      "plik": "assets/audio/arkusz/muzyka_arkusz_c.ogg",
+      "sha256": "477964b94f8f4f2c65af5eddfe5f12588efe1abab8f7fb6b93eaff6ae6a678eb",
+      "kto": "Karol",
+      "kiedy": "2026-11-26 20:13",
+      "dlugosc_s": 107.67
     }
   ]
 }

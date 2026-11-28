@@ -86,13 +86,38 @@ class ZgodnoscZDanymiGry(unittest.TestCase):
             self.assertEqual([s["straznik"] for s in b["strefy"]].count(True), 1)
 
     def test_bohater_jak_wzorcowy(self):
-        """Bohater bez dodatków = opis z logiki stanu gracza (ten sam, którego używa gra)."""
-        G = SP.gra()
-        Ds = G["Ds"]
-        for klasa in Ds["klasy"]:
-            for L in (1, 7, 16, 23):
-                wzor = LS.opis_bohatera(Ds, klasa, L, LS.rozdziel(Ds, Ds["rozklady"][klasa], LS.pula(Ds, L)))
-                self.assertEqual(SP.opis_bohatera(G, klasa, L)[0], wzor)
+        """Bohater bez dodatków = opis z logiki stanu gracza z pulą, którą rozdziela serwer stanu (pulaSama: punkty
+        „do rozdania” nie mają dziś przycisków); "rozdane" = pełna pula wzorcowa; "d140" = sama baza."""
+        Ds = SP.gra()["Ds"]
+        pule = {"gra": lambda L: LS.pula_sama(Ds, L, True), "rozdane": lambda L: LS.pula(Ds, L),
+                "d140": lambda L: Ds["pula"]["baza"]}
+        for tryb, pula in pule.items():
+            G = SP.gra({"punkty": tryb} if tryb != "gra" else None)
+            for klasa in Ds["klasy"]:
+                for L in (1, 7, 16, 23):
+                    wzor = LS.opis_bohatera(Ds, klasa, L, LS.rozdziel(Ds, Ds["rozklady"][klasa], pula(L)))
+                    self.assertEqual(SP.opis_bohatera(G, klasa, L)[0], wzor, (tryb, klasa, L))
+        self.assertEqual(LS.pula_sama(Ds, 11, True), 30 + Ds["punkty"]["auto_na_poziom"] * 10)
+
+    def test_trening_afk_z_pliku_gry(self):
+        """Liczby treningu AFK i sklepu trenera czytane z TreningAFKDane.luau (własny, niezależny odczyt w teście)."""
+        import re
+        with open(SP.PLIK_AFK, encoding="utf-8") as f:
+            t = f.read()
+
+        def liczba(n):
+            return float(re.search(r"\bD\.%s = ([\d.]+)" % n, t).group(1))
+        E = SP.gra()["afk"]
+        self.assertEqual(E["powtorzen"], liczba("powtorzenNaPasek"))
+        self.assertEqual(E["czas_powtorzenia"], liczba("czasPowtorzenia"))
+        self.assertEqual(E["przyrost"], liczba("przyrostNaPasek"))
+        self.assertEqual(E["przyrost_co_poziomow"], liczba("przyrostCoPoziomow"))
+        ceny = [int(x) for x in re.search(r"ceny = \{([^}]*)\}", t).group(1).replace(" ", "").split(",") if x]
+        self.assertEqual(E["ceny"], ceny)
+        self.assertEqual(E["maks"], len(ceny))
+        # limit treningu (27.11.2026, dźwignia B): D.limitNaPoziom, D.ponadLimitem
+        self.assertEqual(E["limit_na_poziom"], liczba("limitNaPoziom"))
+        self.assertEqual(E["ponad_limit"], liczba("ponadLimitem"))
 
     def test_bramy_w_kolejnosci(self):
         G = SP.gra()
@@ -153,25 +178,101 @@ class PrzypadkiBrzegowe(unittest.TestCase):
         with self.assertRaises(ValueError):
             SP.gra({"nie_ma_takiej": 1})
 
-    def test_mini_gra(self):
-        G = SP.gra()
-        los = random.Random(1)
-        for stat in G["Ds"]["statystyki"]:
-            W, pasek, traf, n = SP.runda_minigry(G, stat, 5, 0, 0.0, 0.0, los)
-            self.assertEqual((W, pasek, traf), (0, 0.0, 0), stat)
-            self.assertGreater(n, 10)
-            W1, _p, traf1, n1 = SP.runda_minigry(G, stat, 5, 0, 0.0, 1.0, los)
-            self.assertEqual(traf1, n1)
-            self.assertGreater(W1, 0, stat)
-            W2, _p, _t, _n = SP.runda_minigry(G, stat, 5, 30, 0.0, 1.0, los)   # malejący zysk: dalej trudniej
-            self.assertLess(W2 - 30, W1, stat)
+    def test_trening_afk_tempo(self):
+        """Sesja na stanowisku: pasek = powtórzenia × czas powtórzenia; ulepszenie skraca pasek; wzmacniacz ×2 tylko
+        w swoim czasie; reszta powtórzeń przechodzi na następną sesję; skill checki przyspieszają."""
+        G = SP.gra({"afk": dict(SP.BEZ_LIMITU)})          # tempo bez limitu treningu (limit: osobny test)
+        E = G["afk"]
+        pasek_s = E["powtorzen"] * E["czas_powtorzenia"]
+        W, post, dod, t = SP.trening_afk(G, 3600.0, 5, 0, 0.0)
+        self.assertEqual(dod, int(3600.0 // pasek_s) * E["przyrost"])
+        self.assertEqual(W, dod)
+        self.assertEqual(t, 3600.0)
+        W5, _p, d5, _t = SP.trening_afk(G, 3600.0, 5, 0, 0.0, E["maks"])
+        self.assertEqual(d5, int(3600.0 // (SP.afk_powtorzen(G, E["maks"]) * E["czas_powtorzenia"])))
+        self.assertGreater(d5, dod)
+        _W, _p, dw, _t = SP.trening_afk(G, 2 * E["czas_w"], 5, 0, 0.0, 0, E["czas_w"])
+        bez = int(2 * E["czas_w"] // pasek_s)
+        self.assertAlmostEqual(dw, bez + int(E["czas_w"] // pasek_s) * (E["mnoznik"] - 1), delta=E["mnoznik"])
+        a = SP.trening_afk(G, pasek_s / 2, 5, 0, 0.0)          # pół paska: zero punktów, postęp zostaje
+        self.assertEqual(a[2], 0)
+        b = SP.trening_afk(G, pasek_s / 2 + 1e-6, 5, a[0], a[1])
+        self.assertEqual(b[2], E["przyrost"])
+        self.assertGreater(SP.trening_afk(G, 3600.0, 5, 0, 0.0, 0, 0.0, 1.0)[2], dod)
 
-    def test_mini_gry_wzmacniaja(self):
+    def test_trening_afk_propozycja_limitu(self):
+        """Propozycja limitu (nie gra): do limitu pełne tempo, potem pasek ÷ ponad_limit; 0 = trening staje."""
+        G = SP.gra({"afk": {"limit_baza": 10, "limit_na_poziom": 2, "ponad_limit": 0.0}})
+        W, _p, dod, t = SP.trening_afk(G, 3600.0, 5, 0, 0.0)
+        self.assertEqual(W, 20)
+        self.assertLess(t, 3600.0)
+        G2 = SP.gra({"afk": {"limit_baza": 10, "limit_na_poziom": 2, "ponad_limit": 0.25}})
+        W2, _p, _d, t2 = SP.trening_afk(G2, 3600.0, 5, 0, 0.0)
+        self.assertEqual(t2, 3600.0)
+        self.assertGreater(W2, 20)
+        self.assertLess(W2, SP.trening_afk(SP.gra({"afk": dict(SP.BEZ_LIMITU)}), 3600.0, 5, 0, 0.0)[0])
+        self.assertIsNone(SP.afk_limit(SP.gra({"afk": dict(SP.BEZ_LIMITU)}), 5))
+        # w plikach gry (27.11): 2 × poziom, ponad limitem pasek ×10 — godzina AFK na 5. poziomie: 10 pełnym tempem,
+        # potem co 48 s
+        Gg = SP.gra()
+        self.assertEqual(SP.afk_limit(Gg, 5), 10)
+        Wg, _p, _d, tg = SP.trening_afk(Gg, 3600.0, 5, 0, 0.0)
+        pasek = Gg["afk"]["powtorzen"] * Gg["afk"]["czas_powtorzenia"]
+        self.assertEqual(Wg, 10 + int((3600.0 - 10 * pasek) // (pasek / Gg["afk"]["ponad_limit"])))
+        self.assertEqual(tg, 3600.0)
+        self.assertEqual(SP.afk_przyrost(SP.gra({"afk": {"przyrost_co_poziomow": 10}}), 23), G["afk"]["przyrost"] + 2)
+        with self.assertRaises(ValueError):
+            SP.gra({"afk": {"nie_ma": 1}})
+        with self.assertRaises(ValueError):
+            SP.gra({"punkty": "x"})
+
+    def test_trening_afk_wzmacnia(self):
         G = SP.gra()
-        w = SP.przejscie(G, "wojownik", "walki_minigry", WARIANT, 2)
+        w = SP.przejscie(G, "wojownik", "walki_afk", WARIANT, 2)
         self.assertGreater(w["wytrenowane"], 0)
         self.assertGreater(w["min_trening"], 0)
+        self.assertAlmostEqual(w["min_aktywne"] + w["min_trening"], w["czas_min"], places=6)
         self.assertEqual(SP.przejscie(G, "wojownik", "walki", WARIANT, 2)["wytrenowane"], 0)
+        wiecej = SP.przejscie(G, "wojownik", "walki_afk", WARIANT, 2, afk_min=20)
+        self.assertGreater(wiecej["min_trening"], w["min_trening"])
+        self.assertEqual(SP.przejscie(G, "wojownik", "walki", WARIANT, 2, afk_min=20)["wytrenowane"], 0)
+
+    def test_rybki_diamenty_i_zagroda(self):
+        """Wydatki po kategoriach sumują się do wydanych; zagroda dopisuje Rybki; Diamenty ≥ za poziomy i Strażników;
+        sklep trenera nie przekracza najwyższego poziomu."""
+        G = SP.gra()
+        Ds = G["Ds"]
+        for klasa in Ds["klasy"]:
+            w = SP.przejscie(G, klasa, "wszystko", WARIANT, 4)
+            self.assertTrue(w["ukonczone"], klasa)
+            self.assertEqual(sum(w["wydane_na"].values()), w["wydane"])
+            self.assertEqual(w["zarobione"] - w["wydane"] - w["stracone"], w["zloto"])
+            self.assertGreaterEqual(w["zloto"], 0)
+            self.assertGreater(w["zarobione_zagroda"], 0)
+            self.assertGreaterEqual(w["gemy"], Ds["gemy"]["za_poziom"] * (w["poziom"] - 1) + 3 * Ds["gemy"]["za_straznika"])
+            self.assertLessEqual(w["ulepszen_stanowisk"], 6 * G["afk"]["maks"])
+            self.assertGreaterEqual(w["wydane_na"]["trener"], 0)
+            self.assertEqual(set(w["biomy_min"]), {b["id"] for b in G["biomy"]})
+        bez = SP.przejscie(G, "mag", "walki", WARIANT, 4)
+        self.assertEqual((bez["zarobione_zagroda"], bez["wydane"]), (0, 0))
+
+    def test_szanse_straznikow_ksztalt(self):
+        G = SP.gra()
+        X = SP.szanse_straznikow(G, 20, 1)
+        for bm in G["biomy"]:
+            for k in G["Ds"]["klasy"]:
+                Y = X[bm["id"]][k]
+                self.assertEqual(set(Y["sam"]), {str(d) for d in SP.POZIOMY_STRAZNIKA})
+                self.assertEqual(set(Y["afk"]), {str(m) for m in SP.AFK_MINUTY})
+                for v in list(Y["sam"].values()) + list(Y["afk"].values()) + [Y["kowal2"]]:
+                    self.assertTrue(0 <= v <= 100)
+        Gb = SP.gra({"afk": dict(SP.BEZ_LIMITU)})
+        pkt = SP.punkty_afk(Gb, "wojownik", 30, 16)
+        self.assertEqual(len(pkt), 3)
+        self.assertAlmostEqual(sum(pkt.values()), SP.trening_afk(Gb, 1800.0, 16, 0, 0.0)[0], delta=3)
+        # z limitem z plików gry: żadna statystyka nie przekracza limitu o więcej niż wolne paski
+        pkt_g = SP.punkty_afk(G, "wojownik", 30, 16)
+        self.assertTrue(all(v <= SP.afk_limit(G, 16) + 40 for v in pkt_g.values()), pkt_g)
 
     def test_po_zmianie_bez_czekania_na_blokade(self):
         """D-107: po walce nie ma czekania (blokada trwa najwyżej najkrótszy pokaz) — także u niecierpliwego."""

@@ -753,13 +753,17 @@ class TestStyku(unittest.TestCase):
                 self.assertEqual(sorted(brak), [])
         self.assertIn('kontener:SetAttribute("KlientGotowy", true)', KLIENT_POTWOROW)
         self.assertIn('c:SetAttribute("Straznik"', SERWER_POTWOROW)
-        # serwer czyta tylko swoje atrybuty, testowe i te, które ustawia budowa Workspace/LasTeleport (swiat/biom_las)
-        teleport = set(re.findall(r'f:SetAttribute\("(\w+)"', czytaj(REPO, "swiat", "biom_las", "teleport.py")))
-        self.assertTrue({"PunktLas", "PatrzLas", "PunktMiasteczka", "PatrzMiasteczko"} <= teleport, teleport)
-        self.assertEqual(sorted(napisy(SERWER, "GetAttribute") - serwer - testowe - teleport), [])
-        # i odwrotnie: każdy atrybut LasTeleport, który podmieniamy albo czytamy, czyta też TeleportLasu
-        tl = napisy(czytaj(REPO, "swiat", "biom_las", "zrodla", "TeleportLasu.server.luau"), "GetAttribute")
-        self.assertTrue((napisy(SERWER, "GetAttribute") & teleport) - {"Wygenerowane"} <= tl)
+        # serwer czyta tylko swoje atrybuty i testowe (26.11.2026: bez atrybutów Workspace/LasTeleport — bramy starego
+        # miasteczka nie ma już w miejscu; do lasu prowadzi uchwyt PrzeniesDoLasu)
+        gracza = {"Class", "Level"} & napisy(SERWER, "GetAttribute")
+        self.assertEqual(sorted(napisy(SERWER, "GetAttribute") - serwer - testowe - gracza - {"Wygenerowane"}), [])
+        for zakazane in ("PunktLas", "PatrzLas", "PunktMiasteczka", "PatrzMiasteczko", "LasTeleport"):
+            self.assertNotIn(zakazane, bez_komentarzy(SERWER), zakazane)
+        self.assertNotIn("teleport", DPA["miasteczko"])
+        self.assertFalse(DPA["biom"]["przekieruj"])
+        zn = json.loads(czytaj(REPO, "swiat", "miasteczko_bazar", "znaczniki.json"))
+        self.assertEqual([DPA["miasteczko"]["punkt"][0], DPA["miasteczko"]["punkt"][2]],
+                         [zn["start"]["swiat"][0], zn["start"]["swiat"][2]])
 
     def test_8c_wiadomosci_zdalne_zgodne(self):
         do_klienta = set(re.findall(r'zdarzenia:FireClient\(gracz, "(\w+)"', bez_komentarzy(SERWER)))

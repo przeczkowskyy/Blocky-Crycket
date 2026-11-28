@@ -13,14 +13,16 @@ Sygnaly/PrzeniesDoBazaru W SESJI PLAY (po stronie serwera, przywracany w finally
 
   D01 kamera i sprzedawca na każdym stoisku z postacią (6): kamera nie w części, nie nad stropem, odległość od głowy,
       promień kamera → głowa sprzedawcy trafia sprzedawcę (albo nic), czy własna postać zasłania twarz
-  D02 dymki wszystkich 13 miejsc (haczyk klienta „dymek”, kamera za plecami gracza na stoisku): dymek na ekranie,
+  D02 dymki wszystkich 11 miejsc (haczyk klienta „dymek”, kamera za plecami gracza na stoisku): dymek na ekranie,
       ≥ 0,8 st pod stropem, po tej stronie ściany co punkt E (dymek ma AlwaysOnTop, więc zasłony nie liczymy)
-  D03 stare ↔ nowe miasteczko prawdziwym E w obie strony + licznik odrodzeń (czy to przeniesienie, nie śmierć)
-  D04 Kamień Powrotu w lesie-pasie prawdziwym E → start bazaru; bez uchwytu bazaru → stare miasteczko (LasTeleport)
+  D03 (26.11.2026, zamiast przejść stare ↔ nowe miasteczko) bez przejść do starego miasteczka: w Punkty nie ma
+      „E stare_miasteczko” ani „E nowe_miasteczko”, a E o tych id (haczyk „e”) → nieznane_miejsce
+  D04 Kamień Powrotu w lesie-pasie prawdziwym E → start bazaru; bez uchwytu bazaru → też start bazaru (zapasowy punkt
+      pasa z danych bazaru; od 26.11.2026 nie ma już starego miasteczka ani Workspace/LasTeleport)
   D05 koszt u klienta: części i instancje w Workspace na starcie bazaru, czas klatki (Studio z oknem w tle rysuje
       15 kl./s — przed pomiarem: python -B tools/studio_okno.py --na-wierzch)
   Z   zrzuty z gry (bez filmów): start, uliczka, karczma z dymkiem, karczmarz z bliska, zbrojownia, sklep magiczny,
-      zagroda, tablica, portal, Brama Leśna, przejście w bazarze, przejście w starym miasteczku
+      zagroda, tablica, portal, Brama Leśna
 """
 import io
 import json
@@ -282,13 +284,7 @@ def main():
                 wynik = {}
                 for mid in D["kolejnosc"]:
                     m = M[mid]
-                    if mid == "nowe_miasteczko":
-                        pk = js('local c = k.Punkty:FindFirstChild("E nowe_miasteczko") return H:JSONEncode(J(c.Position))', "Server")
-                        hak("przenies", "stare")
-                        time.sleep(2.5)
-                        przestaw([pk[0] + 4, pk[1] - 3.5, pk[2] + 4], pk)
-                    else:
-                        przestaw(m["stoisko"], m["punkt"])
+                    przestaw(m["stoisko"], m["punkt"])
                     time.sleep(1.2)
                     # kamera za plecami (tak stoi gracz przed sprzedawcą)
                     luau('local c = workspace.CurrentCamera local ch = game:GetService("Players").LocalPlayer.Character '
@@ -324,34 +320,16 @@ def main():
                     {mid: (w.get("na_ekranie"), w.get("do_stropu") and round(w["do_stropu"], 1), w.get("za_sciana") or "")
                      for mid, w in wynik.items()}, zle))
 
-            # ---------------------------------------------------------------- D03 stare ↔ nowe prawdziwym E
+            # ---------------------------------------------------------------- D03 bez przejść do starego miasteczka
             if "D03" in tylko:
-                hak("przenies", "bazar")
-                time.sleep(3.5)
-                hak("zeruj")
-                l0 = liczniki()
-                m = M["stare_miasteczko"]
-                przestaw(m["stoisko"], m["punkt"])
-                time.sleep(1.2)
-                nacisnij("E")
-                cel = js('return H:JSONEncode(J(k:GetAttribute("PunktPowrotuStare")))', "Server")
-                p1 = czekaj_na(lambda: (lambda q: q if odl_xz(q, cel) < 3 else None)(poz()), 6, 0.3) or poz()
-                l1 = liczniki()
-                time.sleep(3.6)
-                pk = js('local c = k.Punkty:FindFirstChild("E nowe_miasteczko") return H:JSONEncode(J(c.Position))', "Server")
-                # podejście z punktu powrotu do tabliczki (jak gracz: kilka kroków), potem E
-                przestaw([pk[0] + (cel[0] - pk[0]) * 0.3, pk[1] - 3.5, pk[2] + (cel[2] - pk[2]) * 0.3], pk)
-                time.sleep(1.2)
-                nacisnij("E")
-                p2 = czekaj_na(lambda: (lambda q: q if odl_xz(q, D["start"]["korzen"]) < 2 else None)(poz()), 6, 0.3) or poz()
-                l2 = liczniki()
-                zapisz("D03", {"przed": l0, "do_starego": {"pozycja": p1, "cel": cel, "liczniki": l1},
-                               "do_bazaru": {"pozycja": p2, "liczniki": l2}})
-                bez_smierci = (l2.get("ProbaSmierci") or 0) == (l0.get("ProbaSmierci") or 0)
-                punkt("D03", odl_xz(p1, cel) < 3 and odl_xz(p2, D["start"]["korzen"]) < 2 and bez_smierci,
-                      "E w bazarze → %.1f st od punktu powrotu (%s); E przy „Nowe miasteczko” → %.1f st od startu bazaru (%s); "
-                      "śmierci %s → %s" % (odl_xz(p1, cel), l1.get("OstatniePrzejscie"), odl_xz(p2, D["start"]["korzen"]),
-                                          l2.get("OstatniePrzejscie"), l0.get("ProbaSmierci"), l2.get("ProbaSmierci")))
+                resztki = js('local o = {} for _, n in { "E stare_miasteczko", "E nowe_miasteczko" } do '
+                             'if k.Punkty:FindFirstChild(n) then table.insert(o, n) end end return H:JSONEncode(o)', "Server")
+                resztki = resztki if isinstance(resztki, list) else []
+                odp = {mid: hak("e", mid) for mid in ("stare_miasteczko", "nowe_miasteczko")}
+                zapisz("D03", {"resztki": resztki, "e": odp})
+                punkt("D03", not resztki and all((w or {}).get("powod") == "nieznane_miejsce" for w in odp.values()),
+                      "punkty E starych przejść: %s; E o ich id: %s" % (resztki or "brak",
+                                                                        {m: (w or {}).get("powod") for m, w in odp.items()}))
 
             # ---------------------------------------------------------------- D04 Kamień Powrotu
             if "D04" in tylko:
@@ -378,7 +356,7 @@ def main():
                     nacisnij("E")
                     pa = czekaj_na(lambda: (lambda q: q if q[0] < 1070 else None)(poz()), 8, 0.3) or poz()
                     d_baz = odl_xz(pa, D["start"]["korzen"])
-                    # bez uchwytu bazaru (odpięty tylko w tej sesji Play) → stare miasteczko
+                    # bez uchwytu bazaru (odpięty tylko w tej sesji Play) → zapasowy punkt pasa = też start bazaru
                     luau('local f = workspace.MiasteczkoBazarGra.Sygnaly.PrzeniesDoBazaru f.Parent = workspace.MiasteczkoBazarGra return "ok"', "Server")
                     uchwyt_odpiety = True
                     time.sleep(3.2)
@@ -386,18 +364,17 @@ def main():
                     przestaw([kam[0] + 4, kam[1] - 2.2, kam[2] + 3], kam)
                     time.sleep(1.5)
                     nacisnij("E")
-                    pb = czekaj_na(lambda: (lambda q: q if q[0] < 900 else None)(poz()), 8, 0.3) or poz()
+                    pb = czekaj_na(lambda: (lambda q: q if q[0] < 1070 else None)(poz()), 8, 0.3) or poz()
                     luau('local f = workspace.MiasteczkoBazarGra:FindFirstChild("PrzeniesDoBazaru") if f then f.Parent = workspace.MiasteczkoBazarGra.Sygnaly end return "ok"', "Server")
                     uchwyt_odpiety = False
-                    stare = js('local t = workspace:FindFirstChild("LasTeleport") return H:JSONEncode(J(t and t:GetAttribute("PunktMiasteczka")))', "Server")
-                    d_st = odl_xz(pb, stare) if isinstance(stare, list) and len(stare) == 3 else None
+                    d_st = odl_xz(pb, D["start"]["korzen"])
                     l1 = liczniki()
                     zapisz("D04", {"kamien": kam, "z_uchwytem": {"pozycja": pa, "od_startu_bazaru": d_baz},
-                                   "bez_uchwytu": {"pozycja": pb, "od_punktu_starego": d_st, "punkt_starego": stare},
+                                   "bez_uchwytu": {"pozycja": pb, "od_startu_bazaru": d_st},
                                    "liczniki": [l0, l1]})
-                    punkt("D04", d_baz < 2 and d_st is not None and d_st < 3,
-                          "Kamień Powrotu (E) → %.1f st od startu bazaru; bez uchwytu bazaru → %s st od LasTeleport.PunktMiasteczka"
-                          % (d_baz, d_st and round(d_st, 1)))
+                    punkt("D04", d_baz < 2 and d_st < 3,
+                          "Kamień Powrotu (E) → %.1f st od startu bazaru; bez uchwytu bazaru → %.1f st od startu bazaru"
+                          % (d_baz, d_st))
 
             # ---------------------------------------------------------------- D05 koszt u klienta
             if "D05" in tylko:
@@ -477,22 +454,6 @@ def main():
                 time.sleep(1.2)
                 ujecia["brama"] = kamera([mb["stoisko"][0] - 13.0, 7.0, mb["stoisko"][2] + 6.0], [mb["punkt"][0], 6.0, mb["punkt"][2]])
                 zrzut("10_brama_lesna")
-                # przejście „Stare miasteczko (E)” w bazarze — widok od startu w tył
-                ms = M["stare_miasteczko"]
-                przestaw(st["punkt"], ms["punkt"])
-                time.sleep(1.2)
-                ujecia["stare_w_bazarze"] = kamera([st["korzen"][0] + 7.0, 7.5, st["korzen"][2] + 4.0], [ms["punkt"][0], 3.5, ms["punkt"][2]])
-                zrzut("11_przejscie_stare_w_bazarze")
-                # „Nowe miasteczko (E)” przy starcie gry (stare miasteczko)
-                hak("zeruj")
-                hak("przenies", "stare")
-                time.sleep(3.0)
-                pk = js('local c = k.Punkty:FindFirstChild("E nowe_miasteczko") return H:JSONEncode(J(c.Position))', "Server")
-                cel = js('return H:JSONEncode(J(k:GetAttribute("StartStaregoMiasteczka")))', "Server")
-                dx, dz = cel[0] - pk[0], cel[2] - pk[2]
-                dl = math.hypot(dx, dz) or 1.0
-                ujecia["nowe_w_starym"] = kamera([pk[0] + dx / dl * 15.0, pk[1] + 5.0, pk[2] + dz / dl * 15.0 + 3.0], [pk[0], pk[1], pk[2]])
-                zrzut("12_przejscie_nowe_w_starym")
                 kamera_gracza()
                 zapisz("Z", ujecia)
         finally:

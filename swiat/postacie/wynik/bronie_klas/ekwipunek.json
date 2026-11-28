@@ -1,0 +1,1124 @@
+{
+ "modul": "bronie_klas",
+ "pula": "Lv 1-10",
+ "klasy": [
+  "mag",
+  "zwiadowca"
+ ],
+ "status": "propozycja",
+ "korekty_chwytu": {
+  "HatAttachment": {
+   "zaczep": "KapeluszAttachment",
+   "pos": [
+    0,
+    0.02,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  "RightGripAttachment": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0,
+    0
+   ],
+   "rot": [
+    -90,
+    0,
+    0
+   ]
+  },
+  "miecz": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0.08,
+    0.03
+   ],
+   "rot": [
+    -41.641,
+    -61.118,
+    62.764
+   ]
+  },
+  "rozdzka": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    -30.0,
+    10.0,
+    0.0
+   ]
+  },
+  "drzewce": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.12,
+    0.03,
+    0.0
+   ],
+   "rot": [
+    -90.0,
+    5.0,
+    0.0
+   ]
+  },
+  "proca": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.12,
+    0.03,
+    0.0
+   ],
+   "rot": [
+    -85.0,
+    30.0,
+    0.0
+   ]
+  },
+  "luk": {
+   "zaczep": "LeftGripAttachment",
+   "pos": [
+    0.2,
+    0.25,
+    0.0
+   ],
+   "rot": [
+    -3.149,
+    -48.362,
+    45.274
+   ]
+  },
+  "tarcza": {
+   "zaczep": "LeftGripAttachment",
+   "pos": [
+    0.0,
+    0.0,
+    0.08
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "ksiega": {
+   "zaczep": "LeftGripAttachment",
+   "pos": [
+    0.2,
+    0.4,
+    -0.2
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "rodzaje_chwytu": {
+  "miecz": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "broń jednoręczna (miecz, tasak, pałka, pogrzebacz): pięść na rękojeści, ostrze w górę, pochylone 20° do przodu i 10° na zewnątrz, obrócone o 45° wokół własnej osi (wewnętrzna krawędź z dala od przedramienia), rękojeść nisko i z przodu łapy",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.08,
+     0.08,
+     0.03
+    ],
+    "rot": [
+     -41.641,
+     -61.118,
+     62.764
+    ]
+   },
+   "upadek": "prawa"
+  },
+  "rozdzka": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "różdżka: lekki chwyt przy końcu, czubek do przodu i w górę",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.08,
+     0.0,
+     0.0
+    ],
+    "rot": [
+     -30.0,
+     10.0,
+     0.0
+    ]
+   },
+   "upadek": "prawa"
+  },
+  "drzewce": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "kostur, włócznia, chorągiew: drzewce pionowo wzdłuż łapy, dół przy ziemi (chwyt kostura Kota-Maga, odsunięty o 0,04 na zewnątrz i 5° od rękawa; nazwa „drzewce” jak w bibliotece)",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.12,
+     0.03,
+     0.0
+    ],
+    "rot": [
+     -90.0,
+     5.0,
+     0.0
+    ]
+   },
+   "upadek": "prawa"
+  },
+  "proca": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "proca: rękojeść w pięści, widełki w górę, skórka z kamykiem do przodu",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.12,
+     0.03,
+     0.0
+    ],
+    "rot": [
+     -85.0,
+     30.0,
+     0.0
+    ]
+   },
+   "upadek": "prawa"
+  },
+  "luk": {
+   "lapa": "lewa",
+   "zaczep_standardowy": "LeftGripAttachment",
+   "opis": "łuk: majdan w lewej łapie, górne ramię pochylone do przodu i na zewnątrz (z dala od przedramienia), łuk obrócony bokiem do patrzącego z przodu — widać jego wygięcie",
+   "kot": {
+    "zaczep": "LeftGripAttachment",
+    "pos": [
+     0.2,
+     0.25,
+     0.0
+    ],
+    "rot": [
+     -3.149,
+     -48.362,
+     45.274
+    ]
+   },
+   "upadek": "lewa"
+  },
+  "tarcza": {
+   "lapa": "lewa",
+   "zaczep_standardowy": "LeftGripAttachment",
+   "opis": "tarcza: na lewym przedramieniu (pasy na łapie), lico na zewnątrz — jak tarcza Rycerza",
+   "kot": {
+    "zaczep": "LeftGripAttachment",
+    "pos": [
+     0.0,
+     0.0,
+     0.08
+    ],
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "upadek": "lewa"
+  },
+  "ksiega": {
+   "lapa": "lewa",
+   "zaczep_standardowy": "LeftGripAttachment",
+   "opis": "księga: mała, zamknięta, trzymana za górną krawędź w lewej łapie, wisi przed bokiem (odsunięta do przodu i na zewnątrz, z dala od ogona), okładką do przodu i na zewnątrz",
+   "kot": {
+    "zaczep": "LeftGripAttachment",
+    "pos": [
+     0.2,
+     0.4,
+     -0.2
+    ],
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "upadek": "lewa"
+  }
+ },
+ "upadek": {
+  "klip": "upadek",
+  "fps": 30,
+  "zapas": 0.02,
+  "przejscie": "a = clamp((klatka - od_klatki) / (do_klatki - od_klatki), 0, 1); C0 = C0_chwytu:Lerp(C0_upadku, a); C0_x = zaczep * CFrame.new(pos) * CFrame.fromOrientation(rot w radianach); po klipie z powrotem korekta chwytu",
+  "grupy": {
+   "prawa": {
+    "zaczep": "KosturAttachment",
+    "kosc": "StaffPivot",
+    "od_klatki": 22,
+    "do_klatki": 33,
+    "ulozenie": "broń wypada z łapy w kl. 22 (jak kostur Kota-Maga) i w locie obraca się do ułożenia kostura: leży płasko przed kotem, oś broni poziomo wzdłuż leżącego kota, lico (+Z) do ziemi, rękojeść w miejscu lądowania kostura (kl. 33), podniesiona tak, żeby najniższy punkt był 0,02 nad ziemią"
+   },
+   "helm": {
+    "zaczep": "KapeluszAttachment",
+    "kosc": "HatPivot",
+    "od_klatki": 30,
+    "do_klatki": 40,
+    "ulozenie": "hełm zsuwa się z głowy w kl. 30 (jak kapelusz Kota-Maga) i w locie prostuje się: stoi na ziemi obok głowy kopułą do góry (obrót wokół pionu jak kapelusz, −30°), odsunięty od głowy, najniższy punkt 0,02 nad ziemią; okno przejścia (domyślnie kl. 30→40) dobiera budowa dla każdego hełmu — krótsze, gdy hełm szybciej schodzi z głowy"
+   },
+   "lewa": {
+    "zaczep": "LeftGripAttachment",
+    "kosc": "LeftHand",
+    "od_klatki": 20,
+    "do_klatki": 32,
+    "ulozenie": "lewa łapa nie ma kości nośnej: przedmiot zostaje przy łapie i w czasie upadania (domyślnie kl. 20, kolana miękną, → kl. 32, kot leży; okno dobiera budowa tak, żeby w żadnej klatce nie zszedł pod ziemię) kładzie się płasko na ziemi pod łapą (najcieńszą osią pionowo), skręcony wokół pionu tak, żeby jak najmniej wchodził w leżącego kota; tylko przedmiot, który w stałym chwycie schodzi pod ziemię"
+   }
+  }
+ },
+ "przedmioty": [
+  {
+   "id": "mag_rozdzka_z_patyka",
+   "nazwa": "Różdżka z Patyka",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "mag_rozdzka_z_patyka",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0.0,
+      0.0
+     ],
+     "rot": [
+      -30.0,
+      10.0,
+      0.0
+     ],
+     "chwyt": "rozdzka",
+     "zaczep_standardowy": "RightGripAttachment",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       0.1739,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/mag_rozdzka_z_patyka.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/mag_rozdzka_z_patyka.glb",
+     "trojkaty": 512,
+     "attachment_pos": [
+      -0.04,
+      -0.5084,
+      -0.0083
+     ],
+     "wymiary": [
+      0.423,
+      1.507,
+      0.189
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/mag_rozdzka_z_patyka_ikona.png",
+   "ikona": "rbxassetid://84907332708348",
+   "ikona_klucz": "ItemStickWand",
+   "roblox": {
+    "model": "rbxassetid://89589227420285",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/mag_rozdzka_z_patyka",
+    "zaczep_w_handle": {
+     "nazwa": "RightGripAttachment",
+     "pos": [
+      0.04,
+      -0.5085,
+      0.0085
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  },
+  {
+   "id": "mag_kostur_z_miotly",
+   "nazwa": "Kostur z Miotły",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "mag_kostur_z_miotly",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.12,
+      0.03,
+      0.0
+     ],
+     "rot": [
+      -90.0,
+      5.0,
+      0.0
+     ],
+     "chwyt": "drzewce",
+     "zaczep_standardowy": "RightGripAttachment",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       -0.1676,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/mag_kostur_z_miotly.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/mag_kostur_z_miotly.glb",
+     "trojkaty": 860,
+     "attachment_pos": [
+      -0.0183,
+      -0.8854,
+      0.0313
+     ],
+     "wymiary": [
+      0.975,
+      3.541,
+      0.952
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/mag_kostur_z_miotly_ikona.png",
+   "ikona": "rbxassetid://73948961084878",
+   "ikona_klucz": "ItemBroomStaff",
+   "roblox": {
+    "model": "rbxassetid://103461172403422",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/mag_kostur_z_miotly",
+    "zaczep_w_handle": {
+     "nazwa": "RightGripAttachment",
+     "pos": [
+      0.0185,
+      -0.8855,
+      -0.031
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  },
+  {
+   "id": "mag_walek_czarodziejski",
+   "nazwa": "Wałek Czarodziejski",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "mag_walek_czarodziejski",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0.08,
+      0.03
+     ],
+     "rot": [
+      -41.641,
+      -61.118,
+      62.764
+     ],
+     "chwyt": "miecz",
+     "zaczep_standardowy": "RightGripAttachment",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       0.1009,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/mag_walek_czarodziejski.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/mag_walek_czarodziejski.glb",
+     "trojkaty": 692,
+     "attachment_pos": [
+      -0.0038,
+      -0.7825,
+      0.0
+     ],
+     "wymiary": [
+      0.378,
+      2.235,
+      0.357
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/mag_walek_czarodziejski_ikona.png",
+   "ikona": "rbxassetid://76821207350979",
+   "ikona_klucz": "ItemMagicRollingPin",
+   "roblox": {
+    "model": "rbxassetid://131901584276334",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/mag_walek_czarodziejski",
+    "zaczep_w_handle": {
+     "nazwa": "RightGripAttachment",
+     "pos": [
+      0.004,
+      -0.7825,
+      0.0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  },
+  {
+   "id": "mag_rozdzka_ze_swieczki",
+   "nazwa": "Różdżka ze Świeczki",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "mag_rozdzka_ze_swieczki",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0.0,
+      0.0
+     ],
+     "rot": [
+      -30.0,
+      10.0,
+      0.0
+     ],
+     "chwyt": "rozdzka",
+     "zaczep_standardowy": "RightGripAttachment",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       0.142,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/mag_rozdzka_ze_swieczki.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/mag_rozdzka_ze_swieczki.glb",
+     "trojkaty": 776,
+     "attachment_pos": [
+      -0.0098,
+      -0.5169,
+      0.003
+     ],
+     "wymiary": [
+      0.315,
+      1.694,
+      0.276
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/mag_rozdzka_ze_swieczki_ikona.png",
+   "ikona": "rbxassetid://120086401556569",
+   "ikona_klucz": "ItemCandleWand",
+   "roblox": {
+    "model": "rbxassetid://92862588806991",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/mag_rozdzka_ze_swieczki",
+    "zaczep_w_handle": {
+     "nazwa": "RightGripAttachment",
+     "pos": [
+      0.0095,
+      -0.517,
+      -0.003
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  },
+  {
+   "id": "mag_kostur_ucznia",
+   "nazwa": "Kostur Ucznia",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "mag"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_mag_uczen",
+   "czesci": [
+    {
+     "id": "mag_kostur_ucznia",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.12,
+      0.03,
+      0.0
+     ],
+     "rot": [
+      -90.0,
+      5.0,
+      0.0
+     ],
+     "chwyt": "drzewce",
+     "zaczep_standardowy": "RightGripAttachment",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       0.1569,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/mag_kostur_ucznia.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/mag_kostur_ucznia.glb",
+     "trojkaty": 664,
+     "attachment_pos": [
+      -0.006,
+      -0.826,
+      0.0
+     ],
+     "wymiary": [
+      0.952,
+      3.452,
+      0.24
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/mag_kostur_ucznia_ikona.png",
+   "ikona": "rbxassetid://81130849751144",
+   "ikona_klucz": "ItemApprenticeStaff",
+   "roblox": {
+    "model": "rbxassetid://107189194128307",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/mag_kostur_ucznia",
+    "zaczep_w_handle": {
+     "nazwa": "RightGripAttachment",
+     "pos": [
+      0.006,
+      -0.826,
+      0.0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  },
+  {
+   "id": "zwiad_proca_z_galezi",
+   "nazwa": "Proca z Gałęzi",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "zwiad_proca_z_galezi",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.12,
+      0.03,
+      0.0
+     ],
+     "rot": [
+      -85.0,
+      30.0,
+      0.0
+     ],
+     "chwyt": "proca",
+     "zaczep_standardowy": "RightGripAttachment",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       -0.1881,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/zwiad_proca_z_galezi.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/zwiad_proca_z_galezi.glb",
+     "trojkaty": 364,
+     "attachment_pos": [
+      0.0189,
+      -0.4278,
+      -0.1584
+     ],
+     "wymiary": [
+      1.038,
+      1.766,
+      0.613
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/zwiad_proca_z_galezi_ikona.png",
+   "ikona": "rbxassetid://88443827869989",
+   "ikona_klucz": "ItemBranchSlingshot",
+   "roblox": {
+    "model": "rbxassetid://112623929537195",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/zwiad_proca_z_galezi",
+    "zaczep_w_handle": {
+     "nazwa": "RightGripAttachment",
+     "pos": [
+      -0.019,
+      -0.428,
+      0.1585
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  },
+  {
+   "id": "zwiad_luk_z_wieszaka",
+   "nazwa": "Łuk z Wieszaka",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "zwiad_luk_z_wieszaka",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0.2,
+      0.25,
+      0.0
+     ],
+     "rot": [
+      -3.149,
+      -48.362,
+      45.274
+     ],
+     "chwyt": "luk",
+     "zaczep_standardowy": "LeftGripAttachment",
+     "korekta_upadku": {
+      "grupa": "lewa",
+      "od_klatki": 20,
+      "do_klatki": 28,
+      "pos": [
+       0.4012,
+       0.2108,
+       0.0352
+      ],
+      "rot": [
+       -1.962,
+       -9.547,
+       -10.858
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/zwiad_luk_z_wieszaka.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/zwiad_luk_z_wieszaka.glb",
+     "trojkaty": 724,
+     "attachment_pos": [
+      0.0,
+      0.0,
+      -0.0709
+     ],
+     "wymiary": [
+      0.15,
+      1.598,
+      0.812
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/zwiad_luk_z_wieszaka_ikona.png",
+   "ikona": "rbxassetid://95890663840529",
+   "ikona_klucz": "ItemHangerBow",
+   "roblox": {
+    "model": "rbxassetid://94227783025221",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/zwiad_luk_z_wieszaka",
+    "zaczep_w_handle": {
+     "nazwa": "LeftGripAttachment",
+     "pos": [
+      0.0,
+      0.0,
+      0.071
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  },
+  {
+   "id": "zwiad_noz_do_masla",
+   "nazwa": "Nóż do Masła",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "zwiad_noz_do_masla",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0.08,
+      0.03
+     ],
+     "rot": [
+      -41.641,
+      -61.118,
+      62.764
+     ],
+     "chwyt": "miecz",
+     "zaczep_standardowy": "RightGripAttachment",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       0.177,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/zwiad_noz_do_masla.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/zwiad_noz_do_masla.glb",
+     "trojkaty": 284,
+     "attachment_pos": [
+      -0.0112,
+      -0.48,
+      0.0
+     ],
+     "wymiary": [
+      0.337,
+      1.66,
+      0.2
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/zwiad_noz_do_masla_ikona.png",
+   "ikona": "rbxassetid://78117130092048",
+   "ikona_klucz": "ItemButterKnife",
+   "roblox": {
+    "model": "rbxassetid://74528201886264",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/zwiad_noz_do_masla",
+    "zaczep_w_handle": {
+     "nazwa": "RightGripAttachment",
+     "pos": [
+      0.0115,
+      -0.48,
+      0.0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  },
+  {
+   "id": "zwiad_sztylet_z_szyszki",
+   "nazwa": "Sztylet z Szyszki",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "zwiad_sztylet_z_szyszki",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0.08,
+      0.03
+     ],
+     "rot": [
+      -41.641,
+      -61.118,
+      62.764
+     ],
+     "chwyt": "miecz",
+     "zaczep_standardowy": "RightGripAttachment",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       0.0941,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/zwiad_sztylet_z_szyszki.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/zwiad_sztylet_z_szyszki.glb",
+     "trojkaty": 784,
+     "attachment_pos": [
+      -0.0009,
+      -0.165,
+      -0.0014
+     ],
+     "wymiary": [
+      0.365,
+      1.91,
+      0.363
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/zwiad_sztylet_z_szyszki_ikona.png",
+   "ikona": "rbxassetid://82943053367365",
+   "ikona_klucz": "ItemPineconeDagger",
+   "roblox": {
+    "model": "rbxassetid://135459604354016",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/zwiad_sztylet_z_szyszki",
+    "zaczep_w_handle": {
+     "nazwa": "RightGripAttachment",
+     "pos": [
+      0.0005,
+      -0.165,
+      0.0015
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  },
+  {
+   "id": "zwiad_luk_tropiciela",
+   "nazwa": "Łuk Tropiciela",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "zwiadowca"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": "kot_zwiadowca_tropiciel",
+   "czesci": [
+    {
+     "id": "zwiad_luk_tropiciela",
+     "kosc": "LeftHand",
+     "zakrywa": false,
+     "zaczep": "LeftGripAttachment",
+     "pos": [
+      0.2,
+      0.25,
+      0.0
+     ],
+     "rot": [
+      -3.149,
+      -48.362,
+      45.274
+     ],
+     "chwyt": "luk",
+     "zaczep_standardowy": "LeftGripAttachment",
+     "korekta_upadku": {
+      "grupa": "lewa",
+      "od_klatki": 20,
+      "do_klatki": 32,
+      "pos": [
+       0.355,
+       0.2198,
+       0.0271
+      ],
+      "rot": [
+       46.68,
+       64.162,
+       64.458
+      ]
+     },
+     "fbx": "wynik/bronie_klas/przedmioty/zwiad_luk_tropiciela.fbx",
+     "glb": "wynik/bronie_klas/przedmioty/zwiad_luk_tropiciela.glb",
+     "trojkaty": 652,
+     "attachment_pos": [
+      -0.0481,
+      0.0,
+      0.0978
+     ],
+     "wymiary": [
+      0.449,
+      1.887,
+      0.396
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/bronie_klas/ikony/zwiad_luk_tropiciela_ikona.png",
+   "ikona": "rbxassetid://110256058556217",
+   "ikona_klucz": "ItemTrackerBow",
+   "roblox": {
+    "model": "rbxassetid://113928002303156",
+    "moderacja": "Approved",
+    "akcesorium": "ReplicatedStorage/BronieKlas/zwiad_luk_tropiciela",
+    "zaczep_w_handle": {
+     "nazwa": "LeftGripAttachment",
+     "pos": [
+      0.048,
+      0.0,
+      -0.098
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ]
+    },
+    "obrot_importu": "Y180"
+   }
+  }
+ ]
+}

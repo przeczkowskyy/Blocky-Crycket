@@ -91,7 +91,7 @@ Inne pakiety NIE edytują `stan_gracza` — wpływają na bohatera i trzymają s
 | `Sygnaly/PrzyznajLup` (BindableFunction) | las → stan | `Invoke(gracz, { lup = walka.lup, wynik, czas = walka.czas, zrodlo = "LasPotwory" \| "LasPasGra" \| "BagnoPasGra", gatunek, poziom })` → `{ ok = true }` \| `{ ok = false, powod }` |
 | `Sygnaly/SterowanieSerwera` (BindableFunction) | testy | `"stan", gracz?` · `"zgodnosc"` · `"publikuj", gracz?` · `"bohater", gracz?` · `"przyznaj", gracz, lup` |
 | `Sygnaly/WydajZloto` (BindableFunction, 17.11) | pakiet → stan | `Invoke(gracz, { ile, zrodlo = kontener z listy D.wydatki.zrodla, cel })` → `{ ok = true, zloto, ile, licznik }` \| `{ ok = false, powod ("za_malo" + brakuje, zloto, ile \| "zla_kwota" \| "zle_zrodlo" \| "zly_cel" \| "zly_gracz") }` — nigdy poniżej zera |
-| `Sygnaly/Pety` (BindableFunction, 17.11) | pety → stan | `"kup", gracz, { ile, zrodlo, cel, pet, premia }` (wydatek + kopia peta w jednym wywołaniu) · `"aktywny", gracz, { pet, premia }` \| `{ odstaw = true }` · `"stan", gracz` |
+| `Sygnaly/Pety` (BindableFunction, 17.11) | pety → stan | `"kup", gracz, { ile, zrodlo, cel, pet, premia }` (wydatek + kopia peta w jednym wywołaniu) · `"aktywny", gracz, { pet, premia }` \| `{ odstaw = true }` · `"stan", gracz` · `"przychod", gracz, { ile, zrodlo, cel }` → `{ ok, zloto, ile }` (25.11.2026: Rybki spoza walki — zagroda petów; źródło z listy `PAKIETY_PRZYCHODOW`, kwota 1…`D.przychody.kwota_maks`, dopisane do `Gold` jak łup, bez premii z modyfikatorów i bez licznika walk) · `"sprzedaj", gracz, { pety = { [id] = n }, ile, zrodlo, cel }` → `{ ok, zloto, ile, kopie }` (26.11.2026: sprzedaż petów — kopie zabrane i Rybki dopisane jednym wywołaniem; za mało kopii → `nie_masz`, ostatnia kopia peta za graczem → `aktywny`, nic nie zmienione; źródło i kwota jak przy `przychod`) |
 | `Zdalne/ZdarzeniaStanu` (RemoteEvent) | serwer → klient | `"awans", poziom, ile` · `"premia", zloto, doswiadczenie, pet` (dodatek peta w pokazanym łupie — czyta go klient `swiat/pety_proba`) · `"przegrana", kara, doswiadczenie` (kara za przegraną w pokazanym łupie — napis `KlientStanu`) · `"brak_punktow"` („+” bez punktu cofnięty) · `"gemy_straznika", n` (Gemy za pierwsze pokonanie strażnika) |
 | | klient → serwer | `"pokaz"` (bez liczb, najwyżej raz na 0,5 s) |
 | `Workspace/TreningProba/Sygnaly/PrzyrostStatystyki` | trening → stan | tylko słuchamy (z ponownym podłączeniem po przebudowie) |
@@ -119,6 +119,7 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
 - **Kara za przegraną (17.11.2026):** `KARA_PROCENT` w `dane.py` (jedna liczba; `0` = wyłączona, potem
   `python -B swiat/stan_gracza/dane.py`) albo atrybut kontenera `KaraPrzegranej`: `false` = wyłączona w czasie gry, liczba
   0..1 = inny ułamek (np. do prób); przechodzi na odbudowany kontener jak `StatystykiKlasy`.
+- **Punkty statystyk od 27.11.2026 (D-165 — decyzja Karola, czeka na Pawła; zmienia D-140):** `PUNKTY_DO_ROZDANIA` = 0, `PUNKTY_SAMO_NA_POZIOM` = 10 — za poziom 10 punktów rozdzielanych samo, licznik „Punkty do rozdania” znika (stara niewydana pula wraca jako punkty rozdzielane samo). Serwer wystawia atrybuty `Wytrenowane<Atrybut>` dla limitu treningu AFK (`src/shared/TreningAFKDane.luau`). Opis niżej to stan z 18.11. Raport: `swiat/przejscie_gry/BALANS_2711.md`.
 - **Punkty statystyk (18.11.2026):** w `dane.py` dwie liczby: `PUNKTY_DO_ROZDANIA` (5, z D-097) i
   `PUNKTY_SAMO_NA_POZIOM` (5 — wariant b; **0 = czysty wariant D-097**, tylko 5 do rozdania); potem
   `python -B swiat/stan_gracza/dane.py` i `zbuduj.py --skrypty`. Atrybut kontenera `PunktyStatystyk = false` w czasie
@@ -136,7 +137,8 @@ Atrybuty kontenera do podglądu: `SerwerStanuGotowy`, `ZgodnoscLogikiStanu` („
 **Jak dodać pakiet (jedno miejsce, 18.11.2026):** listy kontenerów, które rozmawiają ze stanem gracza, są na górze
 `dane.py`: `PAKIETY_BIOMOW` (walki biomu — łup przez `PrzyznajLup` i kara za przegraną; dziś `LasPotwory`,
 `LasPasGra`, `BagnoPasGra` i od razu `DzunglaPasGra`) i `PAKIETY_WYDATKOW` (wydawanie Złota — `PetyProba`,
-`KowalProba`). Nowy pakiet: dopisz nazwę jego kontenera, `python -B swiat/stan_gracza/dane.py`, testy, potem
+`KowalProba`, od 27.11.2026 `TreningAFK` — sklep trenera w skrypcie Pawła: ulepszenia stanowisk i wzmacniacze, cele
+`trening_ulepszenie` / `trening_wzmacniacz`, dane w profilu przez `DanePakietu`, pakiet `TreningAFK`), od 25.11.2026 też `PAKIETY_PRZYCHODOW` (dopisywanie Złota / Rybek poza walką przez `Pety("przychod")` — `PetyProba`, zagroda petów). Nowy pakiet: dopisz nazwę jego kontenera, `python -B swiat/stan_gracza/dane.py`, testy, potem
 `zbuduj.py --skrypty`. Cele wydatków (`jajko_lesne`, `ulepszenie`, `zakup_przedmiotu`…) listy nie mają — przechodzi każda
 nazwa z liter, cyfr i „_”. Test `6b` sam znajduje pakiety `swiat/*_pas_gra` i oblewa, gdy kontener biomu nie jest na
 liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyKrainy_<kraina>`) też listy nie mają.
@@ -236,7 +238,8 @@ liście (bez wpisu łup dostaje odmowę `zle_zrodlo`). Krainy tokenów (`TokenyK
    potworem na poziomie przeciwnika** (łup Cierniowego Wilka z silnika: 22 + 9 × (poziom − 1)), nigdy poniżej zera.
    Bez kary czasowej, Gemy zostają. Tylko walki lasu-pasa, starego lasu i Bagna (`D.kara.zrodla`); tablica próby
    i tryb testowy `TestBohater` łupu nie wysyłają, więc kary tam nie ma. Złoto znika przy pokazaniu łupu (koniec
-   ekranu walki), a gracz widzi napis „Przegrana: −N Złota, +M doświadczenia” (na dole ekranu, tuż nad napisem
+   ekranu walki), a gracz widzi napis „Przegrana: −N Rybek, +M doświadczenia” (od 26.11.2026 Rybki, D-146, z odmianą
+   „−1 Rybka / −3 Rybki / −5 Rybek”; formy w `D.kara.formy_rybki`) (na dole ekranu, tuż nad napisem
    premii peta; bez Złota — sam XP). Profil bez zmian (wersja 2). Liczby z `kara_przegranej.py` (gracze z ekonomii
    jajek, jajko 300 w lesie i 750 w Bagnie, kupują od razu):
 
@@ -423,7 +426,7 @@ z `tools/zapis_prob.py` przeniesiony z „Edit” do serwera; kolejność wywoł
 
 | Pakiet | Co się zapisuje (i gdzie w profilu) | Domknięte 19.11.2026 |
 |---|---|---|
-| stan gracza | poziom, XP, Złoto, Gemy, shardy, tokeny krain, klasa (`idKlasy`), punkty do rozdania (pula, rozdane), walki, awanse, wytrenowane punkty statystyk | — |
+| stan gracza | poziom, XP, Złoto, Gemy, shardy, tokeny krain, klasa (`idKlasy`), rasa (`idRasy`, od 27.11.2026), punkty do rozdania (pula, rozdane), walki, awanse, wytrenowane punkty statystyk | 27.11.2026 (Karol: „Tak, zapisuj rasę”): atrybut `Race` (rasy z `src/shared/RaceData.luau` → `D.rasy_gracza`) wraca razem z `Class`, rasa ustawiana tuż przed klasą — ekran wyboru Pawła sam się pomija, a kot rasy stoi od razu. Pole nieobowiązkowe, bez zmiany wersji profilu: profil sprzed 27.11 (bez `idRasy`) = gracz bez rasy, ekran ras jak dotąd; rasa spoza listy nie trafia do zapisu, a profil z taką rasą odrzuca `czystyProfil` („zla_rasa”). Test `test_zapisu.py` z2b; Play 27.11 na magazynie próby: wybór rasy → Stop → Play 2: `Race` i `Class` z zapisu, ekranu wyboru brak, kot od pierwszej sekundy |
 | kowal + sklep (`swiat/kowal_proba`, `swiat/sklep_proba`) | posiadane przedmioty (także kupione w sklepie) z poziomem ulepszenia, zapasy, materiały — `pakiety.kowal`; założone = strój z przymierzalni | kowal czekał na `StanGraczaWczytany` tylko teoretycznie: brał gracza za nowego w trakcie wczytywania i pierwsza zmiana nadpisywała zapisane przedmioty. Teraz odkłada stan do końca wczytania i wtedy czyta profil |
 | przymierzalnia (`swiat/stroje_proba`) | atrybuty `StrojProba_<klasa>` | — |
 | pety (`swiat/pety_proba`) | kopie, aktywny pet, premia, kupione jajka (`pety`, `wydatki`) | skill aktywnego peta (Modyfikatory) i ceny jajek ustawiały się w trakcie wczytywania (odmowa) — teraz po wczytaniu |

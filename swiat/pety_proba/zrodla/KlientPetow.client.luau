@@ -3,23 +3,28 @@
 	Workspace/PetyProba). Niczego nie losuje i nie podaje cen (D-016): zakup i wybór peta decyduje SerwerPetow.
 
 	Co robi (wszystko u tego gracza; obiekty w świecie tylko lokalne, w folderze PetyLokalne kontenera):
-		1. Inkubatory (jeden na jajko z D.jajka — las-pas, Bagno): jajko z serwera (widać je w Edit) chowa u siebie
-		   i stawia lokalną, animowaną kopię (kołysanie); napis z ceną dla tego gracza (atrybut jajko.atrybuty.cena)
-		   i tekst podpowiedzi E „Kup za N Złota”.
-		2. "wyklucie" od serwera → jajko tego inkubatora trzęsie się, pęka (kolor rzadkości w środku, błysk, iskry,
-		   dźwięk), pet wyskakuje i ląduje przed gniazdem, radość, napis NOWY PET! / KOPIA +1 z nazwą, rzadkością i skillem.
-		   Reset postaci w trakcie nie przerywa animacji (pet jest już u gracza — zdecydował serwer).
+		1. (26.11.2026) Starych inkubatorów nie ma — jajka kupuje się przy nowych jajkach ze scenką Pawła
+		   (src/client/JajkoKoroweClient.client.luau gra wyklucie w świecie).
+		2. "wyklucie" od serwera: przy zakupie ze scenki (bezPokazu) własny pet gracza chowa się, a napis „Wykluł się: …”
+		   czeka na lokalny sygnał scenki (niżej); każdy inny zakup (haczyk testowy) — sam napis od razu, bez animacji.
 		3. Pet przy graczu: dla KAŻDEGO gracza z atrybutem aktywnego peta (pisze go StanGracza) lokalny model idzie
 		   za nim płynnie (wygładzanie, grunt z promienia w dół, bez kolizji), chód / spoczynek / radość przy skoku.
 		   Znika w walce, przelocie, chmurach, mini-grze i przy wyborze klasy: u siebie od razu (wtedy też wszystkie
 		   cudze — nie wchodzą w kadr walki), a innym przez "czekaj" do serwera (atrybut gracza).
-		4. Zagroda w bazarze: posiadane pety na sześciu miejscach (najrzadsze najpierw; lokalnie, tylko u tego gracza),
+		4. Zagroda w bazarze: pety STOJĄCE w zagrodzie (lista od serwera — wybór gracza albo najrzadsze, tyle, ile miejsc
+		   ma poziom zagrody; 25.11.2026) na miejscach z mapy (tyle, ile znaczników zagroda_miejsce_N — dziś 6 albo 8;
+		   pety ponad liczbę znaczników dają Rybki bez modelu), lokalnie, tylko u tego gracza; napis „+N Rybek” nad
+		   zagrodą, gdy serwer dopisze Rybki (tylko gdy gracz jest blisko); w oknie wiersz zagrody (miejsca, Rybki na
+		   minutę, „Więcej miejsc” za Rybki, „Najrzadsze”) i przy każdym pecie „Do zagrody” / „Z zagrody”;
 		   tablica „TWOJE PETY · PRÓBA” w dwóch kolumnach (jajko po jajku) z liczbą kopii (= shardy peta, D-058), okno
 		   wyboru aktywnego peta „PRÓBA” (przewijane, podzielone na jajka) — otwiera je E opiekunki
 		   (ReplicatedStorage.OknoMiejsca, id zagrody — pakiet swiat/miasteczko_bazar_gra) albo zapasowe E tablicy.
-		5. Premia peta przy łupie: komunikat "premia" od StanGracza → krótki napis „+N Złota od peta: …”.
-	Haczyk testowy: Sygnaly/SterowanieKlienta ("stan" | "okno" | "zamknij" | "wybierz", id | "wyklucie", pet, nowy,
-	jajko? | "pokaz", pet, Vector3 | "pokaz_usun").
+		5. Premia peta przy łupie: komunikat "premia" od StanGracza → krótki napis „+N Rybek od peta: …”.
+	Haczyk testowy: Sygnaly/SterowanieKlienta ("stan" | "okno" | "zamknij" | "wybierz", id | "do_zagrody", id
+	| "z_zagrody", id | "ulepsz" | "najrzadsze" (jak przyciski okna, 25.11.2026) | "wyklucie", pet, nowy (sam napis)
+	| "pokaz", pet, Vector3 | "pokaz_usun").
+	Sygnał lokalny (tworzy go ten skrypt): Sygnaly/PokazWyklucia (BindableEvent) — "odsloniety" | "koniec", Vector3? —
+	woła go scenka jajka w świecie przy zakupie „bez pokazu” (niżej, przy wyklucie).
 ]]
 if not game:GetService("RunService"):IsStudio() then
 	return
@@ -29,7 +34,6 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local SoundService = game:GetService("SoundService")
 
 local gracz = Players.LocalPlayer
 local kontener = script.Parent
@@ -106,25 +110,6 @@ lokalne.Name = "PetyLokalne"
 lokalne.Parent = kontener
 
 local animowane = {}
-
------------------------------------------------------------------- dźwięk (wbudowany ton, jak w KlientStanu)
-local function dzwiek(nuty, glosnosc: number?)
-	task.spawn(function()
-		for _, n in nuty do
-			local s = Instance.new("Sound")
-			s.Name = "PetyProbaTon"
-			s.SoundId = "rbxasset://sounds/volume_slider.ogg"
-			s.Volume = glosnosc or 0.5
-			s.PlaybackSpeed = n
-			s.Parent = SoundService
-			s:Play()
-			task.delay(1, function()
-				s:Destroy()
-			end)
-			task.wait(0.09)
-		end
-	end)
-end
 
 ------------------------------------------------------------------ ekran: komunikaty
 local gui = Instance.new("ScreenGui")
@@ -313,297 +298,68 @@ local function aktualizujTowarzyszy(dt: number, ukryte: boolean)
 	end
 end
 
------------------------------------------------------------------- inkubatory: lokalne, animowane jajka i napisy z ceną
-local jajkaLok = {} -- id jajka → { model, u, podstawa, skala, napis, j }
-
-local function przygotujInkubator(j)
-	local folder = kontener:WaitForChild(j.folder, 30)
-	if not folder then
-		return
-	end
-	local wzor = folder:FindFirstChild("Jajko")
-	local dane = daneRigu(j.rig)
-	local podstawa = folder:GetAttribute("PodstawaJajka")
-	if not (wzor and dane and typeof(podstawa) == "CFrame") then
-		return
-	end
-	for _, d in wzor:GetDescendants() do
-		if d:IsA("BasePart") then
-			d.LocalTransparencyModifier = 1
-		end
-	end
-	wzor.DescendantAdded:Connect(function(d)
-		if d:IsA("BasePart") then
-			d.LocalTransparencyModifier = 1
-		end
-	end)
-	local skala = folder:GetAttribute("SkalaJajka") or j.skala_jajka
-	local model, u = Rig.zbuduj(dane, skala, "Jajko lokalne " .. j.id)
-	model.Parent = lokalne
-	Rig.ustaw(u, podstawa)
-	animowane[u] = true
-	Rig.graj(u, "spoczynek")
-	-- napis ceny nad lokalnym jajkiem (nie zależy od wczytania części serwera przez streaming)
-	local b = Instance.new("BillboardGui")
-	b.Name = "PetyProbaCena_" .. j.id
-	b.Adornee = u.korzen
-	b.AlwaysOnTop = false
-	b.LightInfluence = 0
-	b.ResetOnSpawn = false
-	b.MaxDistance = 90
-	b.Size = UDim2.fromOffset(300, 54)
-	-- nad całym jajkiem (18.11: kwiatek na czubku jajka Bagna zasłaniał liczbę, gdy napis był na 0,8 wysokości)
-	b.StudsOffsetWorldSpace = Vector3.new(0, (dane.wysokosc or 2.8) * skala + 0.9, 0)
-	b.Parent = ekrany
-	local t = Instance.new("TextLabel")
-	t.BackgroundTransparency = 1
-	t.Size = UDim2.fromScale(1, 1)
-	t.Font = CZCIONKA
-	t.TextScaled = true
-	t.TextStrokeTransparency = 0.3
-	t.TextColor3 = kolor("FFF6E0")
-	t.Text = ""
-	t.Parent = b
-	jajkaLok[j.id] = { model = model, u = u, podstawa = podstawa, skala = skala, napis = t, j = j }
-end
-
--- podpowiedź E inkubatora (szukana przy każdym odświeżeniu — część mogła dojść później)
-local function znajdzPodpowiedz(j): ProximityPrompt?
-	local e = kontener:FindFirstChild("Punkty")
-	e = e and e:FindFirstChild(j.punkt_e)
-	local pp = e and e:FindFirstChild("Podpowiedz")
-	return if pp and pp:IsA("ProximityPrompt") then pp else nil
-end
-
-local function odswiezCene()
-	local zloto = gracz:GetAttribute(S.atrybut_zlota)
-	for _, j in D.jajka do
-		local cena = gracz:GetAttribute(j.atrybuty.cena)
-		if type(cena) == "number" then
-			local stac = type(zloto) == "number" and zloto >= cena
-			local lok = jajkaLok[j.id]
-			if lok then
-				-- cena stała (domyślna, decyzja 17.11): „Cena: 300 Złota”; rosnąca (przełącznik): twoja i następna
-				local c = j.cena
-				if c.tryb == "rosnaca" then
-					local nast = math.min(c.maks, cena + c.krok)
-					lok.napis.Text = string.format(T.twoja_cena, cena)
-						.. (if nast ~= cena then "  ·  " .. string.format(T.nastepna, nast) else "")
-				else
-					lok.napis.Text = string.format(T.cena, cena)
-				end
-				lok.napis.TextColor3 = if stac then kolor("9CFF8A") else kolor("FFF6E0")
-			end
-			local pp = znajdzPodpowiedz(j)
-			if pp then
-				pp.ActionText = string.format(D.inkubator.napis_akcja_cena, cena) -- tylko u tego gracza
-			end
-		end
-	end
-end
-for _, j in D.jajka do
-	gracz:GetAttributeChangedSignal(j.atrybuty.cena):Connect(odswiezCene)
-end
-gracz:GetAttributeChangedSignal(S.atrybut_zlota):Connect(odswiezCene)
-
 ------------------------------------------------------------------ wyklucie
-local function wybuch(pozycja: Vector3, kol: Color3, nr: number)
-	local kula = Instance.new("Part")
-	kula.Name = "Blysk"
-	kula.Shape = Enum.PartType.Ball
-	kula.Material = Enum.Material.Neon
-	kula.Color = kol
-	kula.Anchored = true
-	kula.CanCollide = false
-	kula.CanQuery = false
-	kula.CanTouch = false
-	kula.CastShadow = false
-	kula.Size = Vector3.new(1, 1, 1)
-	kula.Transparency = 0.4
-	kula.Position = pozycja
-	kula.Parent = lokalne
-	local rozmiar = 3.5 + nr * 0.8 -- nie obejmuje gracza przy E ani kamery (zrzut 03 z próby: cały kadr różowy)
-	TweenService:Create(kula, TweenInfo.new(0.55, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-		{ Size = Vector3.new(rozmiar, rozmiar, rozmiar), Transparency = 1 }):Play()
-	local a = Instance.new("Attachment")
-	a.Parent = kula
-	local iskry = Instance.new("ParticleEmitter")
-	iskry.Color = ColorSequence.new(kol, Color3.new(1, 1, 1))
-	iskry.LightEmission = 1
-	iskry.Speed = NumberRange.new(8, 16)
-	iskry.Lifetime = NumberRange.new(0.6, 1.1)
-	iskry.SpreadAngle = Vector2.new(180, 180)
-	iskry.Size = NumberSequence.new(0.5, 0)
-	iskry.Rate = 0
-	iskry.Parent = a
-	iskry:Emit(20 + nr * 15)
-	if nr >= 4 then -- epicki i legendarny: słup światła
-		local slup = Instance.new("Part")
-		slup.Name = "SlupBlasku"
-		slup.Shape = Enum.PartType.Cylinder
-		slup.Material = Enum.Material.Neon
-		slup.Color = kol
-		slup.Anchored = true
-		slup.CanCollide = false
-		slup.CanQuery = false
-		slup.CanTouch = false
-		slup.CastShadow = false
-		slup.Size = Vector3.new(40, 2.2, 2.2)
-		slup.CFrame = CFrame.new(pozycja + Vector3.new(0, 19, 0)) * CFrame.Angles(0, 0, math.rad(90))
-		slup.Transparency = 0.35
-		slup.Parent = lokalne
-		TweenService:Create(slup, TweenInfo.new(1.6), { Transparency = 1, Size = Vector3.new(40, 0.4, 0.4) }):Play()
-		task.delay(1.7, function()
-			slup:Destroy()
-		end)
-	end
-	task.delay(1.3, function()
-		kula:Destroy()
-	end)
-end
-
-local function napisNadPetem(adornee: BasePart, info, kol: Color3, r)
-	local p = L.pet(D, info.pet)
-	local b = Instance.new("BillboardGui")
-	b.Name = "PetyProbaWyklucie"
-	b.Adornee = adornee
-	b.AlwaysOnTop = false -- (z AlwaysOnTop napisu nie było na zrzutach narzędzia; nad petem i tak go widać)
-	b.MaxDistance = 120
-	b.LightInfluence = 0
-	b.ResetOnSpawn = false
-	b.Size = UDim2.fromOffset(440, 132)
-	b.StudsOffsetWorldSpace = Vector3.new(0, 3.2, 0)
-	b.Parent = ekrany
-	local lista = Instance.new("UIListLayout")
-	lista.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	lista.Parent = b
-	local function linia(tekst: string, wys: number, k: Color3, czcionka)
-		local t = Instance.new("TextLabel")
-		t.BackgroundTransparency = 1
-		t.Size = UDim2.new(1, 0, 0, wys)
-		t.Font = czcionka or CZCIONKA
-		t.TextScaled = true
-		t.TextColor3 = k
-		t.TextStrokeTransparency = 0.1
-		t.Text = tekst
-		t.Parent = b
-		return t
-	end
-	linia(if info.nowy then W.napis_nowy else W.napis_kopia, 34, kolor("FFF6E0"), CZCIONKA_TYTULU)
-	linia(p and p.nazwa or info.pet, 40, kol, CZCIONKA_TYTULU)
-	linia((r and r.nazwa or "") .. "  ·  " .. (p and L.opisSkilla(D, p) or ""), 24, kolor("FFF6E0"))
-	if not info.nowy then
-		linia(string.format("×%d", info.kopie or 1), 22, kolor("FFF6E0"))
-	end
-	b.Size = UDim2.fromOffset(440, if info.nowy then 110 else 132)
-	return b
-end
-
-local function sekwencjaWyklucia(info)
-	-- jajko z serwera (info.jajko); haczyk testowy bez jajka → jajko, z którego jest pet
-	local j = L.jajko(D, info.jajko) or L.jajkoPeta(D, info.pet) or D.jajka[1]
-	local dp = danePeta(info.pet)
-	local dj = daneRigu(j.rig)
-	if not dp or not dj then
-		return
-	end
-	local r, nr = rzadkoscPeta(info.pet)
+-- napis „Wykluł się: …” z premią peta (przy zakupie ze scenki — po odsłonięciu peta, inaczej od razu)
+local function napisWyklucia(info)
+	local r = rzadkoscPeta(info.pet)
 	local kol = if r then kolor(r.kolor) else Color3.new(1, 1, 1)
-	local G = j.polozenie
-	local lok = jajkaLok[j.id]
-	local podstawa = if lok then lok.podstawa else CFrame.new(v3(G.gniazdo) + Vector3.new(0, j.y_jajka, 0))
-	local skala = if lok then lok.skala else j.skala_jajka
-	if lok then
-		lok.model.Parent = nil
-	end
-	local em, eu = Rig.zbuduj(dj, skala, "Jajko wyklucie")
-	em.Parent = lokalne
-	Rig.ustaw(eu, podstawa)
-	animowane[eu] = true
-	-- 1. trzęsie się
-	Rig.graj(eu, "trzesienie", Rig.dlugosc(dj, "trzesienie") / W.trzesienie_s)
-	dzwiek({ 0.8, 0.9, 0.8, 1.0 }, 0.35)
-	task.wait(W.trzesienie_s)
-	-- 2. pęka: środek w kolorze rzadkości, światło, błysk, iskry
-	for _, c in Rig.czesci(eu) do
-		if c.Name == "Wnetrze" then
-			c.Color = kol
-		end
-	end
-	local swiatlo = Instance.new("PointLight")
-	swiatlo.Color = kol
-	swiatlo.Range = 12 + nr * 3
-	swiatlo.Brightness = 2 + nr
-	swiatlo.Parent = eu.korzen
-	Rig.graj(eu, "pekniecie", Rig.dlugosc(dj, "pekniecie") / W.pekniecie_s)
-	wybuch(podstawa.Position + Vector3.new(0, 1.5 * skala, 0), kol, nr)
-	local nuty = { 1, 1.26, 1.5 }
-	for i = 4, nr + 1 do
-		table.insert(nuty, 1.5 + 0.25 * (i - 3))
-	end
-	dzwiek(nuty, 0.55)
-	task.wait(W.pekniecie_s * 0.6)
-	-- 3. pet wyskakuje z jajka i ląduje przed gniazdem (w stronę punktu E)
-	local pm, pu = Rig.zbuduj(dp, skalaPeta(info.pet), "Pet wyklucie")
-	pm.Parent = lokalne
-	animowane[pu] = true
-	local e = v3(G.e)
-	local srodek = podstawa.Position
-	local kierunek = Vector3.new(e.X - srodek.X, 0, e.Z - srodek.Z)
-	kierunek = if kierunek.Magnitude > 0.01 then kierunek.Unit else Vector3.new(0, 0, -1)
-	local bok = Vector3.new(-kierunek.Z, 0, kierunek.X)
-	-- ląduje obok gracza stojącego przy E, nie w nim (próba 17.11: pet wylądował w postaci)
-	local cel = srodek + kierunek * W.przed_gniazdem + bok * W.w_bok
-	local yCel = ziemia(cel) or (srodek.Y - j.y_jajka)
-	cel = Vector3.new(cel.X, yCel, cel.Z)
-	local start = srodek + Vector3.new(0, 1.5 * skala * 0.75, 0)
-	local yaw = math.atan2(-kierunek.X, -kierunek.Z) -- przodem do gracza (od gniazda na zewnątrz)
-	Rig.graj(pu, "wyklucie", Rig.dlugosc(dp, "wyklucie") / W.wyskok_s)
-	for _, c in Rig.czesci(eu) do
-		TweenService:Create(c, TweenInfo.new(0.6), { Transparency = 1 }):Play()
-	end
-	local t0 = os.clock()
-	while os.clock() - t0 < W.wyskok_s do
-		local a = math.clamp((os.clock() - t0) / W.wyskok_s, 0, 1)
-		local poz = start:Lerp(cel, a)
-		Rig.ustaw(pu, CFrame.new(poz) * CFrame.Angles(0, yaw, 0))
-		RunService.RenderStepped:Wait()
-	end
-	Rig.ustaw(pu, CFrame.new(cel) * CFrame.Angles(0, yaw, 0))
-	animowane[eu] = nil
-	em:Destroy()
-	-- 4. radość i napis
-	Rig.graj(pu, "radosc", Rig.dlugosc(dp, "radosc") / W.radosc_s, "spoczynek")
-	local napis = napisNadPetem(pu.korzen, info, kol, r)
 	local p = L.pet(D, info.pet)
 	komunikat(string.format("%s: %s (%s) — %s", if info.nowy then "Wykluł się" else "Kopia peta",
 		p and p.nazwa or info.pet, r and r.nazwa or "", p and L.opisSkilla(D, p) or ""), kol, 4)
-	task.wait(W.radosc_s + 0.8)
-	-- 5. pet dołącza (aktywny idzie za graczem stąd) albo wraca do zagrody
-	poWykluciu = CFrame.new(cel)
-	if lok then
-		lok.model.Parent = lokalne
-		Rig.graj(lok.u, "spoczynek")
-	end
-	task.delay(1.6, function()
-		napis:Destroy()
-	end)
-	animowane[pu] = nil
-	pm:Destroy()
 end
+
+-- Zakup ze scenki jajka w świecie (info.bezPokazu, 26.11.2026; scenka: src/client/JajkoKoroweClient.client.luau):
+-- własny pet gracza schowany na czas scenki, napis „Wykluł się…” czeka na odsłonięcie
+-- peta w scence. Scenka woła lokalny sygnał Sygnaly/PokazWyklucia: "odsloniety" (napis) i "koniec", Vector3 jaja
+-- (pet rusza za graczem od jaja). Bez sygnału po BEZ_POKAZU_MAX_S — napis i pet same (scenka się nie udała).
+local BEZ_POKAZU_MAX_S = 45
+local czekajacy: any = nil -- { info, napis } zakupu bez pokazu
+
+local function koniecBezPokazu(c: any, skad: any)
+	if czekajacy ~= c then
+		return
+	end
+	czekajacy = nil
+	if not c.napis then
+		napisWyklucia(c.info)
+	end
+	poWykluciu = if typeof(skad) == "Vector3" then CFrame.new(skad) else nil
+	wylegaSie = false
+end
+
+local pokazWyklucia = Instance.new("BindableEvent") -- tylko u tego klienta
+pokazWyklucia.Name = "PokazWyklucia"
+pokazWyklucia.Parent = kontener:WaitForChild("Sygnaly")
+pokazWyklucia.Event:Connect(function(co: any, skad: any)
+	local c = czekajacy
+	if not c then
+		return
+	end
+	if co == "odsloniety" and not c.napis then
+		c.napis = true
+		napisWyklucia(c.info)
+	elseif co == "koniec" then
+		koniecBezPokazu(c, skad)
+	end
+end)
 
 local function wyklucie(info: any)
 	if type(info) ~= "table" or type(info.pet) ~= "string" or wylegaSie then
 		return
 	end
 	wylegaSie = true
-	task.spawn(function()
-		local ok, blad = pcall(sekwencjaWyklucia, info)
-		if not ok then
-			warn(D.prefiks .. "wyklucie: " .. tostring(blad))
-		end
-		wylegaSie = false
-	end)
+	if info.bezPokazu == true then
+		local c = { info = info, napis = false }
+		czekajacy = c
+		task.delay(BEZ_POKAZU_MAX_S, function()
+			koniecBezPokazu(c, nil)
+		end)
+		return
+	end
+	-- bez scenki (haczyk testowy): animacji inkubatora już nie ma — sam napis, pet od razu przy graczu
+	napisWyklucia(info)
+	poWykluciu = nil
+	wylegaSie = false
 end
 
 ------------------------------------------------------------------ zagroda: pety na miejscach, tablica, okno „PRÓBA”
@@ -637,28 +393,189 @@ local function usunPetyZagrody()
 	end
 end
 
+-- pety stojące w zagrodzie (od serwera: lista.zagroda.stoja); starszy serwer bez zagrody — wszystkie poza aktywnym
+local function stojaWZagrodzie(): { [string]: boolean }?
+	local z = wierszeZagrody and wierszeZagrody.zagroda
+	if type(z) ~= "table" or type(z.stoja) ~= "table" then
+		return nil
+	end
+	local w = {}
+	for _, id in z.stoja do
+		w[id] = true
+	end
+	return w
+end
+
+-- WYBIEG (26.11.2026, uwaga Pawła do raportu z nocy: „fajnie by było, jakby chodziły luzem po tej zagrodzie, a nie były
+-- przyklejone do stanowisk”; propozycja): pety zagrody spacerują po prostokącie wybiegu (D.polozenia.wybieg — obrys
+-- miejsc petów z mapy z marginesami), przystają, a co któryś raz odpoczywają dłużej tam, gdzie stoją (Paweł 26.11:
+-- „legowiska znikają, tempo okej” — legowisk na mapie już nie ma, więc pet nie wraca na „swoje” miejsce). To tylko
+-- obraz u gracza: o tym, kto stoi w zagrodzie i ile daje Rybek, decyduje serwer jak dotąd. Bez ustawień wybiegu
+-- (starsze dane) albo z wlaczony = false pety stoją na miejscach z mapy. Jedna tabela zamiast wielu zmiennych (limit
+-- lokalnych).
+local Wybieg = { ust = D.zagroda.wybieg, obszar = D.polozenia.wybieg, czasBledu = -math.huge }
+Wybieg.czynny = type(Wybieg.ust) == "table" and Wybieg.ust.wlaczony == true and type(Wybieg.obszar) == "table"
+
+function Wybieg.los(p: any): number
+	return p[1] + math.random() * (p[2] - p[1])
+end
+
+-- punkt wybiegu z ułamków połowy boków (a — w bok, b — ku bramce; |a|, |b| ≤ 1 = w prostokącie)
+function Wybieg.punkt(a: number, b: number): Vector3
+	local o = Wybieg.obszar
+	local s, ox, oz = o.srodek, o.os_x, o.os_z
+	return Vector3.new(s[1] + ox[1] * a * o.pol_x + oz[1] * b * o.pol_z, s[2], s[3] + ox[3] * a * o.pol_x + oz[3] * b * o.pol_z)
+end
+
+function Wybieg.poziomo(a: Vector3, b: Vector3): number
+	local dx, dz = a.X - b.X, a.Z - b.Z
+	return math.sqrt(dx * dx + dz * dz)
+end
+
+-- wolny punkt wybiegu: nie bliżej niż odstep od innych petów i ich celów; nil, gdy się nie udało (pet postoi dalej)
+function Wybieg.wolnyCel(kto: any): Vector3?
+	local ust = Wybieg.ust
+	for _ = 1, ust.prob do
+		local p = Wybieg.punkt(math.random() * 2 - 1, math.random() * 2 - 1)
+		local wolny = true
+		for _, inny in petyZagrody do
+			if inny ~= kto then
+				if Wybieg.poziomo(inny.pos, p) < ust.odstep or (inny.cel and Wybieg.poziomo(inny.cel, p) < ust.odstep) then
+					wolny = false
+					break
+				end
+			end
+		end
+		if wolny then
+			return p
+		end
+	end
+	return nil
+end
+
+-- jeden krok spaceru wszystkich petów zagrody (co klatkę): marsz do celu, postój, nowy cel, mijanie innych petów
+function Wybieg.krok(dt: number, t: number)
+	local ust = Wybieg.ust
+	for _, z in petyZagrody do
+		local chce = "spoczynek"
+		local raduje = z.u.klip == "radosc" and not z.u.koniec
+		if z.cel then
+			local dx, dz = z.cel.X - z.pos.X, z.cel.Z - z.pos.Z
+			local d = math.sqrt(dx * dx + dz * dz)
+			local krok = z.predkosc * dt
+			if d <= krok or d < 0.05 then
+				-- na miejscu: postój
+				z.pos = Vector3.new(z.cel.X, z.pos.Y, z.cel.Z)
+				z.postoj = t + Wybieg.los(ust.postoj_s)
+				z.cel = nil
+			else
+				local kx, kz = dx / d, dz / d
+				local blokada = false
+				for _, inny in petyZagrody do
+					if inny ~= z then
+						local rx, rz = inny.pos.X - z.pos.X, inny.pos.Z - z.pos.Z
+						if rx * rx + rz * rz < ust.mijanie * ust.mijanie and rx * kx + rz * kz > 0 then
+							blokada = true
+							break
+						end
+					end
+				end
+				if blokada then
+					-- inny pet na drodze: krótki postój i nowy cel
+					z.cel = nil
+					z.postoj = t + Wybieg.los(ust.mijanie_s)
+				else
+					local x, zz = z.pos.X + kx * krok, z.pos.Z + kz * krok
+					local yCel = ziemia(Vector3.new(x, z.dom.Y, zz)) or z.dom.Y
+					z.pos = Vector3.new(x, z.pos.Y + (yCel - z.pos.Y) * (1 - math.exp(-12 * dt)), zz)
+					z.yaw = kat(z.yaw, math.atan2(-kx, -kz), 1 - math.exp(-8 * dt))
+					chce = "chod"
+				end
+			end
+		elseif t >= z.postoj and not raduje then
+			-- co któryś raz pet odpoczywa dłużej tam, gdzie stoi (legowisk nie ma), inaczej losuje wolny punkt wybiegu
+			if math.random() < ust.drzemka_szansa then
+				z.drzemka = true
+				z.postoj = t + Wybieg.los(ust.drzemka_s)
+			else
+				z.drzemka = false
+				local cel = Wybieg.wolnyCel(z)
+				if cel then
+					z.cel = cel
+				else
+					z.postoj = t + Wybieg.los(ust.mijanie_s)
+				end
+			end
+		end
+		Rig.ustaw(z.u, CFrame.new(z.pos.X, z.pos.Y + z.unoszenie, z.pos.Z) * CFrame.Angles(0, z.yaw, 0))
+		if not raduje and z.u.klip ~= chce then
+			if chce == "chod" then
+				Rig.graj(z.u, "chod", ust.tempo_chodu)
+			else
+				Rig.graj(z.u, "spoczynek")
+			end
+		end
+	end
+end
+
+-- do próby w Play (haczyk "stan"): pety zagrody w układzie wybiegu (a, b — ułamki połowy boków), czy idą, klip
+-- i położenie korzenia modelu (czy model naprawdę jest tam, gdzie liczy go spacer)
+function Wybieg.pozycje()
+	local w = {}
+	for id, z in petyZagrody do
+		local a, b = 0, 0
+		if Wybieg.czynny then
+			local o = Wybieg.obszar
+			local dx, dz = z.pos.X - o.srodek[1], z.pos.Z - o.srodek[3]
+			a = (dx * o.os_x[1] + dz * o.os_x[3]) / o.pol_x
+			b = (dx * o.os_z[1] + dz * o.os_z[3]) / o.pol_z
+		end
+		local k = z.u.korzen.Position
+		table.insert(w, { id = id, x = z.pos.X, y = z.pos.Y, z = z.pos.Z, a = a, b = b, idzie = z.cel ~= nil, klip = z.u.klip,
+			kx = k.X, ky = k.Y, kz = k.Z, domx = z.dom.X, domz = z.dom.Z })
+	end
+	return w
+end
+
 local function ustawPetyZagrody()
+	-- wybieg: pet, który już chodzi po zagrodzie, po odświeżeniu listy zostaje tam, gdzie był (bez skoku na miejsce startu)
+	local poprzednie = {}
+	for id, z in petyZagrody do
+		poprzednie[id] = { pos = z.pos, yaw = z.yaw }
+	end
 	usunPetyZagrody()
 	if not bliskoZagrody or not wierszeZagrody or not wierszeZagrody.wiersze then
 		return
 	end
-	local miejsca = D.polozenia.miejsca_petow
+	local miejsca = D.polozenia.miejsca_petow -- tyle miejsc, ile znaczników zagroda_miejsce_N na mapie (6 albo 8)
 	local e = v3(D.polozenia.zagroda_e)
-	-- na sześciu miejscach najrzadsze pety (przy dziesięciu petach z dwóch jajek nie wszystkie się zmieszczą)
+	-- na miejscach pety, które STOJĄ w zagrodzie (dają Rybki), w kolejności od serwera; bez listy — najrzadsze
+	local stoja = stojaWZagrodzie()
 	local kolejka = {}
-	for _, w in wierszeZagrody.wiersze do
-		if not w.aktywny then
-			table.insert(kolejka, w)
+	if stoja then
+		local z = wierszeZagrody.zagroda
+		for _, id in z.stoja do
+			for _, w in wierszeZagrody.wiersze do
+				if w.pet == id then
+					table.insert(kolejka, w)
+				end
+			end
 		end
+	else
+		for _, w in wierszeZagrody.wiersze do
+			if not w.aktywny then
+				table.insert(kolejka, w)
+			end
+		end
+		local nrRz = {}
+		for _, w in kolejka do
+			local _r, nr = rzadkoscPeta(w.pet)
+			nrRz[w.pet] = nr
+		end
+		table.sort(kolejka, function(a, b)
+			return nrRz[a.pet] > nrRz[b.pet]
+		end)
 	end
-	local nrRz = {}
-	for _, w in kolejka do
-		local _r, nr = rzadkoscPeta(w.pet)
-		nrRz[w.pet] = nr
-	end
-	table.sort(kolejka, function(a, b)
-		return nrRz[a.pet] > nrRz[b.pet]
-	end)
 	local i = 0
 	for _, w in kolejka do
 		if i < #miejsca then
@@ -671,7 +588,14 @@ local function ustawPetyZagrody()
 				local y = ziemia(poz) or poz.Y
 				local do_e = Vector3.new(e.X - poz.X, 0, e.Z - poz.Z)
 				local yaw = if do_e.Magnitude > 0.01 then math.atan2(-do_e.Unit.X, -do_e.Unit.Z) else 0
-				Rig.ustaw(u, CFrame.new(poz.X, y, poz.Z) * CFrame.Angles(0, yaw, 0))
+				local dom = Vector3.new(poz.X, y, poz.Z)
+				local unoszenie = if Wybieg.czynny then (PP.unoszenie[w.pet] or 0) else 0
+				local stary = if Wybieg.czynny then poprzednie[w.pet] else nil
+				local pos = if stary then stary.pos else dom
+				if stary then
+					yaw = stary.yaw
+				end
+				Rig.ustaw(u, CFrame.new(pos.X, pos.Y + unoszenie, pos.Z) * CFrame.Angles(0, yaw, 0))
 				animowane[u] = true
 				Rig.graj(u, "spoczynek")
 				u.t = math.random() * 2
@@ -692,10 +616,72 @@ local function ustawPetyZagrody()
 				t.TextStrokeTransparency = 0.2
 				t.Text = string.format("%s ×%d", w.nazwa, w.kopie)
 				t.Parent = b
-				petyZagrody[w.pet] = { model = m, u = u, nastepna = os.clock() + 4 + math.random() * 6 }
+				petyZagrody[w.pet] = { model = m, u = u, nastepna = os.clock() + 4 + math.random() * 6, pos = pos, yaw = yaw,
+					dom = dom, cel = nil, drzemka = false, unoszenie = unoszenie,
+					postoj = os.clock() + (if Wybieg.czynny then Wybieg.los(Wybieg.ust.start_s) else 0),
+					predkosc = if Wybieg.czynny then Wybieg.los(Wybieg.ust.predkosc) else 0 }
 			end
 		end
 	end
+end
+
+-- napis „+N Rybek” nad zagrodą, gdy serwer dopisze Rybki za pety w zagrodzie (tylko gdy gracz jest blisko)
+local kotwicaPlus: BasePart? = nil
+local plusow, ostatniPlus = 0, nil -- do próby w Play (haczyk "stan")
+local function plusZagrody(ile: any)
+	if type(ile) ~= "number" or ile < 1 then
+		return
+	end
+	plusow += 1
+	ostatniPlus = ile
+	if not bliskoZagrody then
+		return
+	end
+	if not kotwicaPlus then
+		local srodek = Vector3.new(0, 0, 0)
+		local miejsca = D.polozenia.miejsca_petow
+		for _, m in miejsca do
+			srodek += v3(m)
+		end
+		srodek = if #miejsca > 0 then srodek / #miejsca else v3(D.polozenia.zagroda_e)
+		local k = Instance.new("Part")
+		k.Name = "PlusZagrody"
+		k.Anchored = true
+		k.CanCollide = false
+		k.CanQuery = false
+		k.CanTouch = false
+		k.Transparency = 1
+		k.Size = Vector3.new(0.2, 0.2, 0.2)
+		k.Position = srodek + Vector3.new(0, 4.5, 0)
+		k.Parent = lokalne
+		kotwicaPlus = k
+	end
+	local napis = Instance.new("BillboardGui")
+	napis.Name = "Plus"
+	napis.Adornee = kotwicaPlus
+	napis.LightInfluence = 0
+	napis.MaxDistance = D.zagroda.zasieg_pokazu
+	napis.Size = UDim2.fromOffset(170, 40)
+	napis.StudsOffsetWorldSpace = Vector3.new(0, 0, 0)
+	napis.Parent = lokalne
+	local t = Instance.new("TextLabel")
+	t.BackgroundTransparency = 1
+	t.Size = UDim2.fromScale(1, 1)
+	t.Font = CZCIONKA_TYTULU
+	t.TextScaled = true
+	t.TextColor3 = kolor("FFD54A")
+	t.TextStrokeTransparency = 0.2
+	-- odmiana (26.11): 1 Rybka, 2–4 / 22–24… Rybki, reszta Rybek
+	t.Text = string.format(L.forma({ T.plus_1, T.plus_2_4, T.plus }, ile), ile)
+	t.Parent = napis
+	local czas = D.zagroda.plus_s
+	TweenService:Create(napis, TweenInfo.new(czas, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ StudsOffsetWorldSpace = Vector3.new(0, 2.5, 0) }):Play()
+	TweenService:Create(t, TweenInfo.new(czas, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+		{ TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+	task.delay(czas + 0.1, function()
+		napis:Destroy()
+	end)
 end
 
 -- tablica przy zagrodzie: SurfaceGui u tego gracza na części Zagroda/Tablica — kolumna na każde jajko
@@ -743,7 +729,7 @@ local function przygotujTablice()
 		tytulKol.Font = CZCIONKA_TYTULU
 		tytulKol.TextScaled = true
 		tytulKol.TextXAlignment = Enum.TextXAlignment.Left
-		tytulKol.TextColor3 = kolor(j.kolor_swiatla)
+		tytulKol.TextColor3 = kolor(j.kolor)
 		tytulKol.Text = j.tytul
 		tytulKol.Parent = kol
 		local lista = Instance.new("Frame")
@@ -915,6 +901,72 @@ local function rysujOkno()
 	odstawBtn.Visible = wierszeZagrody.aktywny ~= nil
 	local kolejnosc = 0
 	local ostatnieJajko = nil
+	-- wiersz zagrody (25.11.2026): ile miejsc zajętych, Rybki na minutę, więcej miejsc za Rybki, „Najrzadsze”
+	local z = wierszeZagrody.zagroda
+	local stoja = stojaWZagrodzie() or {}
+	if type(z) == "table" then
+		kolejnosc += 1
+		local f = Instance.new("Frame")
+		f.Name = "Zagroda"
+		f.LayoutOrder = kolejnosc
+		f.Size = UDim2.new(1, -10, 0, 92)
+		f.BackgroundColor3 = kolor("2F4A2A")
+		f.Parent = przewijane
+		local r = Instance.new("UICorner")
+		r.CornerRadius = UDim.new(0, 10)
+		r.Parent = f
+		local t = Instance.new("TextLabel")
+		t.Name = "Stan"
+		t.BackgroundTransparency = 1
+		t.Position = UDim2.new(0, 12, 0, 4)
+		t.Size = UDim2.new(1, -24, 0, 36)
+		t.Font = CZCIONKA_TYTULU
+		t.TextScaled = true
+		t.TextXAlignment = Enum.TextXAlignment.Left
+		t.TextColor3 = kolor("FFD54A")
+		t.Text = string.format(T.zagroda_stan, #z.stoja, z.miejsc, if #z.stoja > 0 then z.opis else T.przychod_pusta)
+		t.Parent = f
+		local ulepsz = Instance.new("TextButton")
+		ulepsz.Name = "Ulepsz"
+		ulepsz.AnchorPoint = Vector2.new(1, 1)
+		ulepsz.Position = UDim2.new(1, -10, 1, -6)
+		ulepsz.Size = UDim2.new(0.56, 0, 0, 42)
+		ulepsz.BackgroundColor3 = if z.cena then kolor("C98A1E") else kolor("5E5244")
+		ulepsz.AutoButtonColor = z.cena ~= nil
+		ulepsz.Font = CZCIONKA
+		ulepsz.TextScaled = true
+		ulepsz.TextColor3 = kolor("FFFFFF")
+		ulepsz.Text = if z.cena then string.format(T.ulepsz, L.miejscaZagrody(D, z.poziom + 1), L.ileRybek(D, z.cena, "b"))
+			else string.format(T.ulepsz_max, z.miejsc)
+		ulepsz.Parent = f
+		local ru = Instance.new("UICorner")
+		ru.CornerRadius = UDim.new(0, 10)
+		ru.Parent = ulepsz
+		if z.cena then
+			ulepsz.Activated:Connect(function()
+				zdarzenia:FireServer("ulepsz_zagrode")
+			end)
+		end
+		if z.reczny then
+			local auto = Instance.new("TextButton")
+			auto.Name = "Najrzadsze"
+			auto.AnchorPoint = Vector2.new(0, 1)
+			auto.Position = UDim2.new(0, 12, 1, -6)
+			auto.Size = UDim2.new(0.34, 0, 0, 42)
+			auto.BackgroundColor3 = kolor("5E3A22")
+			auto.Font = CZCIONKA
+			auto.TextScaled = true
+			auto.TextColor3 = kolor("FFF6E0")
+			auto.Text = T.najrzadsze
+			auto.Parent = f
+			local ra = Instance.new("UICorner")
+			ra.CornerRadius = UDim.new(0, 10)
+			ra.Parent = auto
+			auto.Activated:Connect(function()
+				zdarzenia:FireServer("zagroda_auto")
+			end)
+		end
+	end
 	for _, w in wierszeZagrody.wiersze do
 		if w.jajko ~= ostatnieJajko then -- nagłówek jajka (lista jest w kolejności katalogu: jajko po jajku)
 			ostatnieJajko = w.jajko
@@ -928,7 +980,7 @@ local function rysujOkno()
 			h.Font = CZCIONKA_TYTULU
 			h.TextScaled = true
 			h.TextXAlignment = Enum.TextXAlignment.Left
-			h.TextColor3 = if j then kolor(j.kolor_swiatla) else kolor("FFC94A")
+			h.TextColor3 = if j then kolor(j.kolor) else kolor("FFC94A")
 			h.Text = if j then j.tytul else tostring(w.jajko)
 			h.Parent = przewijane
 		end
@@ -950,17 +1002,18 @@ local function rysujOkno()
 		local nazwa = Instance.new("TextLabel")
 		nazwa.BackgroundTransparency = 1
 		nazwa.Position = UDim2.new(0, 20, 0, 4)
-		nazwa.Size = UDim2.new(0.62, -20, 0, 30)
+		nazwa.Size = UDim2.new(0.58, -20, 0, 30)
 		nazwa.Font = CZCIONKA_TYTULU
 		nazwa.TextScaled = true
 		nazwa.TextXAlignment = Enum.TextXAlignment.Left
 		nazwa.TextColor3 = kolor(w.kolor)
 		nazwa.Text = string.format("%s  ×%d", w.nazwa, w.kopie)
+			.. (if stoja[w.pet] then "  ·  " .. string.format(T.w_zagrodzie, L.opisPrzychodu(D, L.stawka(D, w.pet))) else "")
 		nazwa.Parent = f
 		local opis = Instance.new("TextLabel")
 		opis.BackgroundTransparency = 1
 		opis.Position = UDim2.new(0, 20, 0, 35)
-		opis.Size = UDim2.new(0.62, -20, 0, 22)
+		opis.Size = UDim2.new(0.58, -20, 0, 22)
 		opis.Font = CZCIONKA
 		opis.TextScaled = true
 		opis.TextXAlignment = Enum.TextXAlignment.Left
@@ -979,11 +1032,36 @@ local function rysujOkno()
 			t.Text = T.aktywny
 			t.Parent = f
 		else
+			if type(z) == "table" then -- „Do zagrody” / „Z zagrody” (25.11.2026)
+				local wz = stoja[w.pet] == true
+				local bz = Instance.new("TextButton")
+				bz.Name = if wz then "ZZagrody" else "DoZagrody"
+				bz.AnchorPoint = Vector2.new(1, 0.5)
+				bz.Position = UDim2.new(1, -10, 0.5, 0)
+				bz.Size = UDim2.new(0.18, 0, 0, 44)
+				bz.BackgroundColor3 = if wz then kolor("5E3A22") else kolor("2E7D6B")
+				bz.Font = CZCIONKA
+				bz.TextScaled = true
+				bz.TextColor3 = kolor("FFFFFF")
+				bz.Text = if wz then T.z_zagrody else T.do_zagrody
+				bz.Parent = f
+				local rz = Instance.new("UICorner")
+				rz.CornerRadius = UDim.new(0, 10)
+				rz.Parent = bz
+				local idz = w.pet
+				bz.Activated:Connect(function()
+					if wz then
+						zdarzenia:FireServer("zagroda_zdejmij", idz)
+					else
+						zdarzenia:FireServer("zagroda_dodaj", idz)
+					end
+				end)
+			end
 			local b = Instance.new("TextButton")
 			b.Name = "Wybierz"
 			b.AnchorPoint = Vector2.new(1, 0.5)
-			b.Position = UDim2.new(1, -10, 0.5, 0)
-			b.Size = UDim2.new(0.3, 0, 0, 44)
+			b.Position = if type(z) == "table" then UDim2.new(0.82, -16, 0.5, 0) else UDim2.new(1, -10, 0.5, 0)
+			b.Size = if type(z) == "table" then UDim2.new(0.2, 0, 0, 44) else UDim2.new(0.3, 0, 0, 44)
 			b.BackgroundColor3 = kolor("4C8A35")
 			b.Font = CZCIONKA
 			b.TextScaled = true
@@ -1053,7 +1131,7 @@ local function podepnijStanGracza()
 		local nazwa = if p then p.nazwa else "?"
 		local czesci = {}
 		if type(zloto) == "number" and zloto > 0 then
-			table.insert(czesci, string.format("+%d Złota", zloto))
+			table.insert(czesci, "+" .. L.ileRybek(D, zloto))
 		end
 		if type(xp) == "number" and xp > 0 then
 			table.insert(czesci, string.format("+%d doświadczenia", xp))
@@ -1097,6 +1175,12 @@ zdarzenia.OnClientEvent:Connect(function(polecenie: any, a: any, b: any)
 		end
 	elseif polecenie == "okno" then
 		otworzOkno()
+	elseif polecenie == "zagroda_plus" then
+		plusZagrody(a)
+	elseif polecenie == "zagroda_ulepszona" then
+		if type(a) == "number" then
+			komunikat(string.format(T.ulepszona, a), kolor("FFD54A"), 3)
+		end
 	end
 end)
 
@@ -1132,9 +1216,16 @@ RunService.RenderStepped:Connect(function(dt: number)
 	end
 	local t = os.clock()
 	for _, z in petyZagrody do
-		if t > z.nastepna then
+		if t > z.nastepna and not z.cel then -- radość tylko na postoju (w marszu pet by się ślizgał)
 			z.nastepna = t + 6 + math.random() * 6
 			Rig.graj(z.u, "radosc", 1, "spoczynek")
+		end
+	end
+	if Wybieg.czynny then
+		local okW, bladW = pcall(Wybieg.krok, dt, t)
+		if not okW and t - Wybieg.czasBledu > 5 then
+			Wybieg.czasBledu = t
+			warn(D.prefiks .. "wybieg zagrody: " .. tostring(bladW))
 		end
 	end
 	for u in animowane do
@@ -1145,13 +1236,6 @@ RunService.RenderStepped:Connect(function(dt: number)
 end)
 
 ------------------------------------------------------------------ start
-for _, j in D.jajka do
-	task.spawn(function()
-		przygotujInkubator(j)
-		odswiezCene()
-	end)
-end
-odswiezCene()
 task.spawn(function()
 	przygotujTablice()
 	rysujTablice()
@@ -1171,36 +1255,32 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 		for _ in petyZagrody do
 			wZagrodzie += 1
 		end
-		local napisy, akcje, lokalneJajka = {}, {}, 0
-		for _, j in D.jajka do
-			local lok = jajkaLok[j.id]
-			local pp = znajdzPodpowiedz(j)
-			napisy[j.id] = lok and lok.napis.Text
-			akcje[j.id] = pp and pp.ActionText
-			lokalneJajka += if lok then 1 else 0
-		end
-		-- akcjaE / napisCeny: jajko inkubatora najbliżej gracza (wcześniej zawsze pierwsze — leśne — co myliło próbę
-		-- przy inkubatorze Bagna); serwer i tak sam sprawdza, przy którym inkubatorze stoi gracz
-		local pierwsze, najblizej = D.jajka[1].id, math.huge
-		if hrp then
-			for _, j in D.jajka do
-				local e = j.polozenie.e
-				local d = Vector3.new(hrp.Position.X - e[1], 0, hrp.Position.Z - e[3]).Magnitude
-				if d < najblizej then
-					pierwsze, najblizej = j.id, d
-				end
-			end
-		end
 		return {
-			jajkoPrzy = pierwsze, odlegloscOdE = if najblizej < math.huge then najblizej else nil,
 			towarzysze = n, mojPet = t and t.pet, klip = t and t.u.klip,
 			odleglosc = if t and hrp then (t.pos - hrp.Position).Magnitude else nil,
 			wylegaSie = wylegaSie, ukryte = ukryteLokalnie(), okno = okno.Enabled, petyWZagrodzie = wZagrodzie,
-			bliskoZagrody = bliskoZagrody, napisCeny = napisy[pierwsze], akcjaE = akcje[pierwsze],
-			jajkoLokalne = jajkaLok[pierwsze] ~= nil, napisy = napisy, akcjeE = akcje, jajekLokalnych = lokalneJajka,
+			bliskoZagrody = bliskoZagrody, czekaNaScenke = czekajacy ~= nil,
+			lokalnychJajek = (function()
+				local ile = 0 -- 26.11.2026: lokalnych jajek inkubatorów już nie ma (próba sprawdza, że 0)
+				for _, m in lokalne:GetChildren() do
+					ile += if string.find(m.Name, "Jajko", 1, true) then 1 else 0
+				end
+				return ile
+			end)(),
 			wiersze = wierszeZagrody and wierszeZagrody.wiersze and #wierszeZagrody.wiersze, komunikat = pasekKom.Visible
 				and pasekKom.Text or nil,
+			zagroda = wierszeZagrody and wierszeZagrody.zagroda, plusow = plusow, ostatniPlus = ostatniPlus,
+			wierszZagrodyWOknie = przewijane:FindFirstChild("Zagroda") ~= nil, miejscNaMapie = #D.polozenia.miejsca_petow,
+			wybieg = Wybieg.czynny, petyWybiegu = Wybieg.pozycje(),
 		}
+	elseif polecenie == "do_zagrody" and type(a) == "string" then
+		zdarzenia:FireServer("zagroda_dodaj", a)
+	elseif polecenie == "z_zagrody" and type(a) == "string" then
+		zdarzenia:FireServer("zagroda_zdejmij", a)
+	elseif polecenie == "ulepsz" then
+		zdarzenia:FireServer("ulepsz_zagrode")
+	elseif polecenie == "najrzadsze" then
+		zdarzenia:FireServer("zagroda_auto")
 	elseif polecenie == "okno" then
 		otworzOkno()
 	elseif polecenie == "zamknij" then
@@ -1208,7 +1288,7 @@ sterowanie.OnInvoke = function(polecenie: string, a: any, b: any, c: any)
 	elseif polecenie == "wybierz" and type(a) == "string" then
 		zdarzenia:FireServer("wybierz", a)
 	elseif polecenie == "wyklucie" and type(a) == "string" then
-		wyklucie({ pet = a, nowy = b ~= false, kopie = if b == false then 2 else 1, jajko = c })
+		wyklucie({ pet = a, nowy = b ~= false, kopie = if b == false then 2 else 1 })
 	elseif polecenie == "pokaz" and type(a) == "string" and typeof(b) == "Vector3" then
 		local dane = danePeta(a)
 		if not dane then

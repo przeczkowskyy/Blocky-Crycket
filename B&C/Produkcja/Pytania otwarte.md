@@ -666,6 +666,7 @@ Szczegóły: Karol 17.11 ustalił na czacie, że Strażnik Topieli ma być trudn
 **Odpowiedź:**
 - Karol (2026-11-19): Nie wiem czy 30% to nie za dużo. Gracz słusznie ma się pomęczyć. Może jakieś 15%?
 Rozstrzyga: D-111 (życie −15%); doświadczenie z potworów Dżungli +25% zostaje otwarte
+- Karol (2026-11-27, wybór w oknie pytania agenta; zapisał agent): „Tak, +25%” — doświadczenie z potworów Dżungli ×1,25 (D-165).
 
 
 ## 71. Paweł: makieta okna „Shop” a sklep zbrojmistrza
@@ -886,6 +887,7 @@ Rozstrzyga: D-139.
 Szczegóły: poprawki agenta (tapnięcie przyspiesza pasek, przyrost rośnie z poziomem, mini-gry jako bonus, przeliczenie tempa walk bez punktów za poziom) są w treści D-140 i D-141 w [[Rejestr decyzji]]. Dotyka D-097 (dwa podpisy), D-050, D-108 i pytania 50.
 **Odpowiedź:**
 - Karol Balucki (2026-11-25): Paweł już wdrożył
+- Claude Code u Karola (2026-11-26, dopisek agenta, nie odpowiedź człowieka): w grze (`main`) jest trening AFK (D-141), a Diamentów za poziom (D-140) nie ma — zostały na gałęzi `pawel/diamenty-afk`. Skutek: `stan_gracza` dalej daje 5 punktów statystyk za poziom, ale od 24.11 nie ma ich jak wydać (przyciski „+” usunięte), a Diamentów za awans gracz nie dostaje. Do ustalenia: kto wdraża D-140 w `stan_gracza` i z jakimi liczbami.
 
 ## 90. Pakiety Karola działają tylko w Studio — przed wydaniem?
 - Stan gracza, kowal, sklep (i inne pakiety `swiat/…`) mają na początku `if not RunService:IsStudio() then return`.
@@ -947,6 +949,7 @@ Szczegóły: poziomy robocze 5–15 (#5 i #10 to ściany), łup za pierwsze poko
 - Do wyboru: (a) jak w notatce; (b) legenda po równo na wszystkie; osobno: tier Rzadki (niebieski) zostaje / wypada; licznik pecha tak / nie.
 
 Szczegóły: mnożniki budżetu ×1,0 / ×1,4 / ×1,8 i szanse są robocze — do kalkulatora `tools/walka/balans.py`. Zastępuje tabelę rzadkości w [[Przedmioty — zestawy v1]]; rozwija D-142.
+Dopisek z 2026-11-25 (sesja główna 22:15–22:16): Karol i Paweł uzgodnili na głos — liczba statystyk nie jest sztywna (zwykły może mieć trzy słabe, legendarny jedną mocną), legendarny daje co najmniej 1,5 razy więcej statystyk niż zwykły (Paweł), a epickie i legendarne mają unikalną zdolność, np. podpalenie (Karol) — propozycja D-155. Zob. [[Sesja główna 2026-11-25 — zapis ustaleń]].
 **Odpowiedź:**
 - Karol Balucki (2026-11-25): To nie jest ogólne przypisanie. Legendarny przedmot może mieć jedną statystykę, ale bardzo mocną + specjalną umiejętnośc, a common przedmiot może mieć 3 ale bardzo słąbe
 
@@ -958,6 +961,8 @@ Szczegóły: mnożniki budżetu ×1,0 / ×1,4 / ×1,8 i szanse są robocze — d
 Szczegóły: tytuł „Blocky & Crycket” bez Blocky'ego traci sens — nowa nazwa dotknie ekranu ładowania ([[Ekran ładowania]]), strony gry i miniatur; repo i nazwy w kodzie mogą zostać. Uwaga agenta (D-114): zgoda — „Cat” w nazwie pomaga w wyszukiwaniu na Roblox, a kot jest jednym rozpoznawalnym bohaterem.
 Dopisek z 2026-11-25 (Karol): ekran ładowania trzeba poprawić już teraz, bo postaciami są tylko koty (D-145). Przy odpowiedzi do ustalenia: czy na nowym ekranie zostaje napis „BLOCKY & CRYCKET” do czasu nowej nazwy, czy ekran jest bez tytułu. Zdanie agenta: zostawić obecny tytuł i zmienić tylko grafikę na koty, bo nazwa gry w Roblox i ekran powinny mówić to samo, a zmiana nazwy to osobna sesja.
 **Odpowiedź:**
+- Claude Code (2026-11-25, z sesji głównej 21:54): Paweł i Karol: Blocky znika z tytułu — gra jest o kotach, a w nowej nazwie ma być „Cat”, słowo dobrze indeksujące się w Roblox (Paweł); warianty zaproponuje agent, wybiorą Karol i Paweł (propozycja D-148). O napisie na ekranie ładowania i o Blockym w lore nie rozmawiano. Zapis agenta z rozmowy.
+- Claude Code u Karola (2026-11-25): pięć propozycji nazw jest w [[Nazwa gry — propozycje z „Cat” (propozycja)]]: Cat Training Legends (rekomendacja agenta), Cat Training Simulator, Become the Strongest Cat, Cat Training RPG, Train Your Cat Hero. Wybierają Karol i Paweł; do tego czasu ekran ładowania zostaje bez zmian.
 
 ## 98. Karol: mistrz gier i leśne jajo — podpięcie u Ciebie
 - Okno mistrza gier działa (D-053): nagrody wypłaca dziś testowe „przyznaj” Twojego stanu gracza, a płatny rzut odmawia, bo źródła „MistrzGier” nie ma w `DaneStanu.wydatki.zrodla`.
@@ -980,6 +985,7 @@ Dopisek z 2026-11-25: mistrz gier ma planszę 3D na swoim stole zamiast płaskie
 Szczegóły: okno `src/client/OknoKowalaClient.client.luau` korzysta z Twojego zdalnego `KowalProba/Zdalne/Kuznia` („widok”, „ulepsz”, „rozbierz”) bez zmian u Ciebie; Paweł jeszcze nie wybrał.
 Dopisek z 2026-11-25: nad górną siatką są dwie zakładki — ITEMS (przedmioty) i INGREDIENTS (składniki), o które prosiłeś. Twoja kuźnia zna dziś jeden składnik (materiały z rozbiórki), więc zakładka pokazuje jedno pole „Scrap”; gdy „widok” zacznie podawać kolejne, okno je pokaże.
 **Odpowiedź:**
+- Claude Code (2026-11-25, z sesji głównej 22:05): Karol (Paweł nie zaprzeczył): wariant (a) — dół to przedmioty do rozbiórki, góra to składniki z rozbiórki; do tego w kuźni ma być sklep składników za Rybki, a Paweł zrobi okno z zakładkami zamiast przerabiać całość (propozycja D-152). Zapis agenta z rozmowy.
 
 ## 100. Miasto: kreska jak w sali dziś czy czarna i grubsza?
 - Karol 25.11 (D-147): miasto ma dostać kreskę i tekstury jak sala wyboru rasy; mówił o „widoczniejszych czarnych kreskach”.
@@ -1018,8 +1024,8 @@ Szczegóły: opis w [[HUD]], sekcja „Układ z 2026-11-25”. W szufladzie są 
 - Do ustalenia też: jak odblokowuje się sloty 3 i 4 i czy plecak petów ma limit.
 
 Szczegóły: [[Okno petów (propozycja)]]; serwer okna `src/server/OknoPetow.server.luau` woła tylko Twój haczyk `SterowanieSerwera` („stan”, „wybierz” z pominięciem zasięgu). Premie kilku petów naraz zmieniają balans walki (dziś +20% Inteligencji od jednego epickiego).
+Dopisek z 2026-11-25 (sesja główna 22:09–22:14): liczby slotów, zdejmowania poza zagrodą i usuwania kopii nie rozstrzygnięto. Padło za to: sklep petów znika, pety są pod przyciskiem Pet (propozycja D-154); pety w zagrodzie dają Rybki na sekundę, pet założony na gracza jest wyjęty z zagrody i daje statystyki oraz pasywki, a miejsc w zagrodzie jest 2 → 4 → 6 → 8 za ulepszenie u Jagody (propozycja D-153). Zob. [[Sesja główna 2026-11-25 — zapis ustaleń]].
 **Odpowiedź:**
-
 
 ## 104. Karol: przebudowa petów leśnego jajka według rysunków Pawła
 - Paweł 25.11 dał arkusze obrotów pięciu petów leśnego jajka (`assets/refs/pety_las/`).
@@ -1028,7 +1034,7 @@ Szczegóły: [[Okno petów (propozycja)]]; serwer okna `src/server/OknoPetow.ser
 
 Szczegóły: [[Pety leśnego jajka — arkusze obrotów (propozycja)]] (różnice i brakujące widoki: ślimak bez tyłu, sówka bez boku). Rysunek to wzór wyglądu — kości, klipy i rozmiar zostają, jak wymaga gra.
 **Odpowiedź:**
-
+- Claude Code u Karola (2026-11-26): na noc przyjęty wariant (a) — wszystkie pięć petów przebudowane według arkuszy i wdrożone w Studio, do oceny w raporcie „Pety leśnego jajka przebudowane według arkuszy Pawła”. Decyzja Karola nadal potrzebna; stare modele są w historii repozytorium. Zapis agenta, nie odpowiedź Karola.
 
 ## 105. Karol: tablica w miasteczku jako tablica questów
 - Paweł 25.11: tablica ogłoszeń ma dawać questy (dzienne i osiągnięcia) zamiast rankingu; wybrane questy lądują w szufladzie HUD.
@@ -1039,8 +1045,156 @@ Szczegóły: [[Pety leśnego jajka — arkusze obrotów (propozycja)]] (różnic
 Szczegóły: [[Tablica questów (propozycja)]]; serwer `src/server/Questy.server.luau` liczy postęp z atrybutów gracza i wypłaca przez Twoje „przyznaj”. Zastrzeżenie agenta: bez zapisu gracz traci postęp przy wyjściu — przed wydaniem trzeba to podpiąć.
 **Odpowiedź:**
 
+## 106. Lochy w pierwszej wersji: tak czy dopiero w aktualizacji?
+- Na sesji 25.11 obaj zgodzili się na pierwszą wersję bez Twierdzy i walk petów (propozycja D-149); o lochach nie było zgody.
+- Karol najpierw „bez dungeonów”, potem przypomniał sobie, że chcieli je dać; Paweł: „możemy dać… nie”, chodziło mu tylko o Twierdzę i walki petów.
+- Do wyboru: (a) Katakumby w pierwszej wersji; (b) lochy jako pierwsza aktualizacja po wydaniu; (c) inaczej — jak.
 
-## 106. Karol: nowa baza kota (większe uszy, szersze rondo) — do `kot_mag.py`?
+Szczegóły: [[Sesja główna 2026-11-25 — zapis ustaleń]] (21:57–21:58). Katakumby są częściowo zrobione po stronie Pawła (pytanie 95: boss gotowy; lista przeciwników w notatce Pawła, która jeszcze nie trafiła do repozytorium). Zdanie agenta (D-114): (b) — Paweł sam podał wzór gry, która dokładała treść aktualizacjami, żeby gracze wracali; loch jako pierwsza aktualizacja to gotowy „powód powrotu”, a pierwsza wersja ma być jak najkrótsza do wydania. Zmienię zdanie, jeśli przejście trzech biomów okaże się krótsze niż godzina.
+**Odpowiedź:**
+
+## 107. Konto klipów: jawne (D-126) czy „losowy Instagramer” z sesji?
+- Karol 25.11 zatwierdził w panelu D-126: konto klipów w wersji jawnej (postacie oznaczone jako AI, nasza gra oznaczona jako nasza).
+- Na sesji 25.11 (22:08–22:09) opisał to inaczej: konto losowego Instagramera, który postuje klipy z Robloxa i „pod przykrywką”, pośrednio promuje naszą grę.
+- Do wyboru: (a) zostaje wersja jawna z D-126 — agent robi klipy z gry i reakcje postaci z Higgsfield, oznaczone; (b) wersja z sesji — agent w niej nie pomoże; (c) rozmowa na sesji.
+Gra: wspolne
+
+Szczegóły: [[Sesja główna 2026-11-25 — zapis ustaleń]]; zasady i progi próby: [[Konto klipów z wirtualnymi streamerami — pomysł]], [[00 Marketing]]. Paweł na sesji zdania nie wyraził. Zdanie agenta (D-114): (a) — ukryta promocja własnej gry przez konto udające zwykłego gracza to ukryta reklama, a widzami będą dzieci; sam format (klipy z gry plus reakcje) działa też jawnie. Tego zdania nie zmienię; o kierunku decydują Karol i Paweł, ja mogę tylko odmówić wersji udawanej.
+**Odpowiedź:**
+
+## 108. Brama BONK stoi w starym miasteczku B&C — co z nią?
+- Od 20.11 brama gry BONK (D-112, propozycja; BONK wstrzymany przez D-139) stoi w miejscu Blocky & Crycket, 16 studów od płyty startu starego miasteczka. Kto wejdzie w jej zasięg (5 studów), ląduje w lesie BONK.
+- 26.11 próba bazaru trafiła tam zamiast do nowego miasteczka. Tabliczkę „Nowe miasteczko (E)” agent odsunął, brama została.
+- Do wyboru: (a) usunąć bramę i kontener BONK z miejsca B&C, a BONK budować tylko w osobnym miejscu; (b) zostawić, ale odsunąć bramę dalej od płyty startu; (c) zostawić jak jest do decyzji o BONK.
+Gra: bc
+
+Szczegóły: gracz zaczyna dziś w nowym miasteczku, a do starego trafia portalem, więc dotyczy to tylko tych, którzy tam wejdą. Zdanie agenta (D-114): (a) — w grze szykowanej do wydania nie powinno być wejścia do wstrzymanego prototypu; BONK ma budowę do osobnego miejsca (`--publikacja`). Kontener w Studio jest nasz (wygenerowany), ale jego usunięcie to decyzja człowieka. Opis znaleziska: [[Dziennik zmian]], wpis z 26.11.
+**Odpowiedź:**
+- Karol (2026-11-26, czat; zapisał agent): „nie ma tutaj portalu żadnego BONK… Usuwamy resztę rzeczy” — wariant (a): brama i cały kontener BONK usunięte z miejsca B&C, BONK buduje się tylko w osobnym miejscu.
+
+Rozstrzyga: D-159.
+
+## 109. Sala treningowa: kilku graczy przy jednym stanowisku
+- Paweł 26.11 (Telegram): „jak to będzie działać w przypadku kilku graczy, czy nie będą się widzieć nawzajem?”
+- Dziś: jedno stanowisko = jeden gracz. Drugi naciska E i nic się nie dzieje, bez komunikatu. Gracze widzą się nawzajem. Stanowisk jest sześć, po jednym na statystykę.
+- Do wyboru: (a) kilku graczy trenuje na tym samym stanowisku, a każdy widzi tam tylko siebie; (b) jeden gracz na stanowisko, ale z napisem „zajęte” i limitem czasu; (c) więcej stanowisk na każdą statystykę (większa sala).
+Gra: bc
+
+Szczegóły: tak działa skrypt serwera treningu (`src/server/TreningAFK.server.luau`, kod Pawła): przy zajętym stanowisku serwer po cichu odrzuca drugiego gracza. Zdanie agenta (D-114): (a) — trening AFK ma zatrzymywać graczy na długo, więc jeden gracz może blokować np. Siłę godzinami, a kolejka do sześciu stanowisk przy kilkunastu graczach na serwerze byłaby powodem do wyjścia z gry; (a) nie wymaga przebudowy sali. Koszt (a): zdjęcie blokady w skrypcie serwera i ukrywanie u gracza innych trenujących na jego stanowisku (kto nie trenuje, widzi na stanowisku jednego gracza). Zmienię zdanie, jeśli widok kolegi trenującego obok jest dla Was ważniejszy niż brak kolejek — wtedy (c). Nic z tego nie jest zrobione; czeka na decyzję. Dotyczy D-158.
+**Odpowiedź:**
+
+## 110. Stare inkubatory Bagna i Dżungli obok nowych jajek — schować?
+- Od 26.11 w Bagnie i Dżungli stoją nowe jajka ze scenką otwierania. Stare inkubatory z klocków stoją 13–16 studów obok i dalej sprzedają to samo jajko własnym E.
+- Strzałka celu „kup jajko” prowadzi do starego inkubatora, nie do nowego jajka.
+- Do wyboru: (a) schować stary inkubator tam, gdzie stoi nowe jajko, i przepiąć strzałkę celu na nowe jajko; (b) zostawić oba; (c) przenieść nowe jajko na miejsce starego inkubatora.
+Gra: bc
+
+Szczegóły: zdanie agenta (D-114): (a) — dwa miejsca zakupu tego samego jajka obok siebie mylą gracza, a nowe jajko ma lepszą scenkę. Koszt (a): zmiana w pakiecie petów i we wskazówkach celu oraz przepięcie prób petów Bagna i Dżungli na nowe jajko (dziś kupują w starym inkubatorze). Leśne jajo Pawła stoi w miasteczku, a leśny inkubator przy wejściu do lasu — tego pytanie nie dotyczy. Miejsce inkubatora w biomie: D-076.
+**Odpowiedź:**
+- Karol (2026-11-26, czat; zapisał agent): „Usuń też tak samo stare jajka i zastąp je nowymi w 100%” — wariant (a), także w lesie: stare inkubatory usunięte, strzałka celu prowadzi do nowych jajek.
+
+Rozstrzyga: D-160.
+
+## 111. „Same koty” — czy ludzie i Zwiadowca zostają?
+- D-145 („wszystkie postacie gracza to koty”) ma dwa podpisy: Pawła z 24.11 i Karola z 25.11.
+- Karol 26.11 na czacie: „jeszcze nie eliminuj jednak postaci ludzi i zwiadowcy. Ostateczna decyzja na »same koty« jeszcze nie zapadła”.
+- Dziś w świecie i w walce Wojownik i Zwiadowca to ludzie, kotem jest Mag; koty są na ekranie wyboru klasy i w modelach.
+- Do wyboru: (a) D-145 zostaje — ludzie zamieniani na koty także w świecie i walce; (b) zostają i ludzie, i koty; (c) wracamy do ludzi, koty tylko jako Mag i pety.
+Gra: bc
+
+Szczegóły: do Waszej odpowiedzi agent niczego nie usuwa ani nie zamienia; status D-145 bez zmian (dopisek pod decyzją). Paweł 26.11 wieczorem pracował nad kotami ras i podglądem „kot wybranej rasy jako postać gracza”. Koszt zamiany w świecie i walce (kot-wojownik i kot-zwiadowca z własnymi ruchami): ok. 1–1,5 mln tokenów. Zdanie agenta (D-114): jedna rodzina postaci jest czytelniejsza dla gracza i miniatury niż mieszanka; o tym, która, powinna rozstrzygnąć próba z graczami, nie gust.
+**Odpowiedź:**
+
+## 112. Gdzie gracz zmienia strój po usunięciu przymierzalni?
+- Przymierzalnia stała w starej wiosce i była jedynym wejściem do okna strojów; zniknęła razem z wioską (D-159).
+- Stroje z walk i od kowala zakładają się dalej same; ręcznie przebrać się nie ma gdzie.
+- Do wyboru: (a) zmianę stroju przejmuje okno ekwipunku Pawła; (b) stoisko w miasteczku, np. w zbrojowni; (c) bez ręcznej zmiany stroju w pierwszej wersji.
+Gra: bc
+
+Szczegóły: skrypty i dane strojów (`swiat/stroje_proba`) działają; przełącznik `stojak.w_grze` przywraca stoisko, ale stałoby w pustym miejscu po starej wiosce. Zdanie agenta (D-114): (a) — jedno okno do ubierania postaci, bez osobnego miejsca na mapie.
+**Odpowiedź:**
+
+## 113. Sprzedaż petów i zarobek w oknie: liczby do potwierdzenia
+- Cena sprzedaży kopii: 6 / 12 / 25 / 45 / 80% ceny jajka według rzadkości; średnio wraca ok. 15% (D-161).
+- Zarobek na kafelku jest na sekundę (+0,015…+0,45/s), a okno zagrody liczy na minutę (+0,9…+27/min).
+- Do wyboru: (a) procenty zostają, wszędzie „na minutę”; (b) wszędzie „na sekundę”; (c) inne procenty — jakie?
+Gra: bc
+
+Szczegóły: sprzedaż kopii zabiera materiał do ewolucji (D-058); chronione są tylko pet idący za graczem i pety w zagrodzie — kłódka „ulubiony” byłaby osobnym dodatkiem. Zdanie agenta (D-114): (a) — małe ułamki na sekundę źle się czyta, a jedna jednostka w całej grze jest ważniejsza niż to, która.
+**Odpowiedź:**
+
+## 114. Arena starych mini-gier Training Center — usunąć z mapy?
+- Po D-141 i D-162 trening to stanowiska AFK; E u trenera nie otwiera już wyboru mini-gier.
+- Arena mini-gier (`Workspace/TreningProba`, ok. 2,8 tys. części) stoi na mapie bez wejścia.
+- Do wyboru: (a) usunąć z miejsca w Studio, źródła zostają w repo; (b) zostawić na później; (c) siódmy kafelek „mini-gry” w oknie trenera.
+Gra: bc
+
+Szczegóły: zdanie agenta (D-114): (a), zgodnie z kierunkiem Karola z 26.11 („pozbywać się starych rzeczy”); przed usunięciem trzeba sprawdzić, czy trening AFK nie korzysta z serwera mini-gier przy zapisie statystyk.
+**Odpowiedź:**
+- Karol (2026-11-26, czat; zapisał agent): „Usuń placeholdery już” — wariant (a): arena usunięta z miejsca w Studio. Trening AFK korzystał z jednego sygnału tego kontenera, więc sygnał został (bez części i bez skryptów); źródła mini-gier zostają w repo.
+
+Rozstrzyga: D-162.
+
+## 115. Trener: wybór ćwiczeń zamiast drzewka postaci?
+- Robocze ustalenie z sesji 25.11 (D-150, propozycja): przy trenerze otwiera się drzewko postaci.
+- Karol 26.11 (D-162): E u trenera otwiera wybór ćwiczenia i przenosi na stanowisko.
+- Do wyboru: (a) trener to tylko ćwiczenia, drzewko pod przyciskiem w HUD; (b) okno trenera dostaje przycisk „Skill tree”; (c) inaczej.
+Gra: bc
+
+Szczegóły: w repo jest (a), bez zmian w drzewku. Zdanie agenta (D-114): (a) — jedno okno, jedna czynność.
+Dopisek z 2026-11-27: Paweł na Telegramie (01:15) zaproponował trzecią drogę — u trenera wybór ćwiczeń i sklep ulepszeń treningu (D-164, wdrożone); o drzewku nie pisał.
+**Odpowiedź:**
+
+## 116. Działki z własną zagrodą czy jedna wspólna zagroda?
+- Paweł 27.11 (Telegram): „czy nie dobrze by było zrobić gdzieś działki graczy, żeby każdy tam miał swoją zagrodę… ale czy gracze nie chcą, żeby np. jak mają jakiegoś super epickiego peta, żeby inni mogli go widzieć?”
+- Dziś jest jedna zagroda w miasteczku; przy kilku graczach można skryptem pokazać każdemu tylko jego pety.
+- Do wyboru: (a) w becie zostaje wspólna zagroda, a innym graczom pokazuje się pet idący za graczem; (b) działki graczy z własną zagrodą już w becie; (c) zagroda wspólna, w której inni widzą najlepsze pety każdego gracza.
+Gra: bc
+
+Szczegóły: działka jest już zaplanowana (punkt E „działka” w bazarze: „Twoja działka za tą bramą — już wkrótce”), ale razem z Twierdzą odłożona poza pierwszą wersję (D-149). Zdanie agenta (D-114): (a) — chwalenie się epickim petem działa najlepiej, gdy pet chodzi za graczem po miasteczku; działki to duża praca na aktualizację.
+**Odpowiedź:**
+
+## 117. Trening AFK jest za szybki wobec walki — zwolnić?
+- Jedno stanowisko daje ok. 750 punktów statystyki na godzinę (pełny pasek co 4,8 s, +1 za pasek — liczby robocze z D-141).
+- Według kalkulatora walki (`swiat/trening_proba/ekonomia_sklepu_afk.py --walka`) ok. 1,6 min AFK wystarcza na Strażnika Topieli, a ok. 2,8 min na Węża Stu Lian; sklep z D-164 skraca to do 0,5–0,9 min.
+- Do wyboru: (a) zwolnić podstawowe tempo (np. dłuższy pasek albo przyrost malejący z poziomem statystyki); (b) zostawić — trening ma być szybki, a trudność da się ustawić po stronie potworów; (c) inaczej.
+Gra: bc
+
+Szczegóły: dane w `src/shared/TreningAFKDane.luau` (pliki Pawła): `powtorzenNaPasek`, `czasPowtorzenia`, `przyrostNaPasek`, `przyrostCoPoziomow`. Zdanie agenta (D-114): (a) — gdy kilka minut AFK zastępuje godzinę walk, walka i łup tracą sens, a z nimi pętla gry; najtańszy test to ustawić tempo tak, żeby trening dawał np. połowę przyrostu co walka w tym samym czasie, i sprawdzić w kalkulatorze. Ceny sklepu dopiero po tej decyzji.
+**Odpowiedź:**
+- Karol (2026-11-27, wybór w oknie pytania agenta; zapisał agent): „A + B (zalecane)” — limit treningu (2 × poziom, powyżej ×0,1) razem z 10 punktami za poziom.
+
+Rozstrzyga: D-165.
+
+## 118. Sklep u trenera: wzmacniacz poza grą, waluta, podpowiedź nad matą
+- Wzmacniacz ×2 na 10 min płynie dalej, gdy gracz wyjdzie z gry — czy ma się zatrzymywać?
+- Wzmacniacz kosztuje Rybki (Diamenty idą na drzewko, D-140) — czy ma być za Diamenty albo za Robuxy (osobna decyzja)?
+- Podpowiedź E stanowiska wisi 1,5 studa nad matą (zasięg 4,5 bez zmian, z podłogi ok. 4,3 studa zamiast 3,5) — czy Paweł to akceptuje?
+Gra: bc
+
+Szczegóły: dziś (D-164) wzmacniacz płynie poza grą, kosztuje 600 Rybek, podpowiedź wisi nad matą. Zdanie agenta (D-114): wzmacniacz za Robuxy to typowe źródło przychodu symulatorów — warto go dodać po ustaleniu tempa treningu (pytanie 117), z jasną ceną i bez losowania.
+**Odpowiedź:**
+
+## 119. Drzewko umiejętności nie działa w walce, ulepszenia u trenera za drogie — co z tym?
+- Symulacja 27.11: gracz zbiera ok. 520 Diamentów na grę, ale premie drzewka nie wpływają na walkę (walka nie czyta atrybutów drzewka).
+- Pełne ulepszenia u trenera (D-164) kosztują 87 600 Rybek — 3,7 razy więcej niż wszystkie Rybki z gry; gracz wydaje tam 300–1100.
+- Zagroda daje ok. 2% Rybek z gry.
+- Do wyboru: (a) podpiąć drzewko do walki, potanić ulepszenia (np. ÷4) i podnieść stawki zagrody ×3; (b) tylko drzewko; (c) zostawić do bety.
+Gra: bc
+
+Szczegóły: raport `swiat/przejscie_gry/BALANS_2711.md`. Drzewko to okno Pawła (D-150), walka i premie po stronie Karola. Zdanie agenta (D-114): (a) — drzewko, które nic nie daje, psuje zaufanie gracza do całego systemu Diamentów; to najważniejsza z trzech rzeczy.
+**Odpowiedź:**
+
+## 120. Napisy potworów i walki: angielski czy polski?
+- Od 27.11 nad potworem jest „LV”, „RARE”, „BOSS” (po angielsku, jak HUD).
+- Ekran walki dalej ma „POZ.”, „ZWYKŁY”, przycisk E „Walcz”, panel bohatera „BOHATER: WOJOWNIK · POZ. 1”.
+- Do wyboru: (a) wszystko po angielsku (D-045); (b) wszystko po polsku; (c) zostawić.
+Gra: bc
+
+Szczegóły: D-045 mówi „angielski z tłumaczeniami”. Zdanie agenta (D-114): (a) — gra idzie do szerokiego rynku, a mieszanka języków wygląda na niedokończoną.
+**Odpowiedź:**
+
+## 121. Karol: nowa baza kota (większe uszy, szersze rondo) — do `kot_mag.py`?
 - Paweł 25.11 kazał zbliżyć koty ras do referencji z Higgsfield: uszy są większe i wystają poza rondo, rondo szersze, oczy większe.
 - Zrobione tylko w kopiach ras (pliki Pawła); Twój `kot_mag.py`, bohater w świecie i koty klas mają dawną bazę.
 - Do wyboru: (a) przenosisz te zmiany do `kot_mag.py`, żeby wszystkie koty były spójne; (b) agent Pawła robi to na gałęzi, Ty oglądasz; (c) zostaje różnica.

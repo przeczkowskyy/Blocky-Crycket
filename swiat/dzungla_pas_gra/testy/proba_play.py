@@ -33,6 +33,9 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
   J07 POMIŃ przy znanym gatunku: druga walka ze Zwijogonem bez TestBezSesji → przycisk POMIŃ, spacja, serwer „ok”
   J08 zwykły tryb (Workspace/StanGracza): Level = 18 → bohater walczy na 18. poziomie (Zwijogony z1 zaczynają od 17),
       po walce łup (OstatniLup, Gold albo XP); bez StanGracza „?”; bez źródła DzunglaPasGra w stanie gracza łup przepada
+  J08b (27.11, pytanie 70, swiat/przejscie_gry/BALANS_2711.md) doświadczenie z tej walki = łup Dżungli × MNOZNIK_DOSWIADCZENIA
+      (przeciwnicy.py, 1,25): wygrana — w przedziale 0,9–1,1 × (baza + przyrost × (poziom − 1)) i ponad 1,1 × wartość
+      bez mnożnika; przegrana — udział przy przegranej (0,2) z wartości z mnożnikiem; „?”, gdy przedziały się zachodzą
   J09 brama do Pustyni zamknięta: gracz za nią cofnięty z komunikatem, wrota z kolizją
   J10 Wąż Stu Lian: przegrana (Wojownik poz. 17) → brama dalej zamknięta; wygrana (Zwiadowca poz. 30, do 4 ziaren)
       → PokonalStraznikaDzungli, jeden baner „WĄŻ STU LIAN POKONANY!” z podpisem o Pustyni, wrota u zwycięzcy bez
@@ -608,7 +611,8 @@ def main():
             # ================================================================ J04 chmury → Dżungla, bez drugiego przelotu
             t = teleport("stan", "gracz")
             przel0 = PP.licznik(luau, "dzungla", kont("DzunglaPasGra", ["LicznikPrzelotow"]).get("LicznikPrzelotow") or 0)
-            luau(HRP + 'local t = workspace:FindFirstChild("LasTeleport") local p = t and t:GetAttribute("PunktMiasteczka") '
+            # start bazaru (26.11.2026: starego miasteczka z Workspace/LasTeleport już nie ma)
+            luau(HRP + 'local b = workspace:FindFirstChild("MiasteczkoBazarGra") local p = b and b:GetAttribute("PunktStartuBazaru") '
                        'if p then hrp.Parent:PivotTo(CFrame.new(p)) end return "ok"', "Server")
             time.sleep(2.5)
             w04 = teleport("przenies", '"dzungla", gracz')
@@ -716,6 +720,31 @@ def main():
                 punkt("J08", ok08, "walka %s, łup %s, Gold %s→%s, XP %s→%s, Level %s→%s, żetony Dżungli %s→%s" % (
                     ow, lup, a0.get("Gold"), a1.get("Gold"), a0.get("XP"), a1.get("XP"), a0.get("Level"), a1.get("Level"),
                     a0.get("TokenyKrainy_dzungla"), a1.get("TokenyKrainy_dzungla")))
+                # J08b (27.11.2026): doświadczenie Dżungli × MNOZNIK_DOSWIADCZENIA (pytanie 70)
+                import importlib.util
+                spec = importlib.util.spec_from_file_location("przeciwnicy_dzungli_proba", os.path.join(PAKIET, "przeciwnicy.py"))
+                PD = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(PD)
+                mn = PD.MNOZNIK_DOSWIADCZENIA
+                para = next(x for x in PD.przeciwnicy() if x["id"] == "zwijogon")["lup"]["doswiadczenie"]
+                lv_p = (w08.get("cel") or {}).get("poziom")
+                ok08b, opis08b = None, "brak poziomu potwora albo łupu (%s, %s)" % (lv_p, lup)
+                if isinstance(lv_p, (int, float)) and lup:
+                    baza = para[0] + para[1] * (lv_p - 1)
+                    bez = baza / mn
+                    if lup[0] == "wygrana":
+                        lo, hi = int(0.9 * baza + 0.5), int(1.1 * baza + 0.5)
+                        ok08b = (lo <= lup[2] <= hi) and (lup[2] > 1.1 * bez + 0.5 if 0.9 * baza > 1.1 * bez else None)
+                        if ok08b is None and lo <= lup[2] <= hi:
+                            ok08b = None
+                    else:
+                        ok08b = lup[2] == int(0.2 * baza + 0.5)
+                    opis08b = "%s z Zwijogonem poz. %s: %d XP; z mnożnikiem ×%s oczekiwane %s, bez mnożnika %s" % (
+                        lup[0], lv_p, lup[2], mn,
+                        "%d–%d" % (int(0.9 * baza + 0.5), int(1.1 * baza + 0.5)) if lup[0] == "wygrana" else int(0.2 * baza + 0.5),
+                        "%d–%d" % (int(0.9 * bez + 0.5), int(1.1 * bez + 0.5)) if lup[0] == "wygrana" else int(0.2 * bez + 0.5))
+                zapisz("J08b", {"poziom_potwora": lv_p, "lup": lup, "mnoznik": mn, "para": para})
+                punkt("J08b", ok08b, opis08b)
                 ustaw("DzunglaPasGra", "TestBohater", "true")
             else:
                 punkt("J08", None, "brak Workspace/StanGracza — pominięte")

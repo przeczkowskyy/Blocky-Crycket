@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Przejście „po ludzku” z petami (Roblox Studio, tryb Play) — nowy gracz, prawdziwe klawisze i kliknięcia:
-las → walki do Złota na pierwsze jajko → wskazówka o jajku → inkubator (E) → wyklucie → pet za graczem → walka
+las → walki do Złota na pierwsze jajko → wskazówka o jajku → leśne jajko w mieście (E, 5 kliknięć) → wyklucie → pet za graczem → walka
 z premią → Kamień Powrotu → bazar → zagroda (E opiekunki) → okno → odstaw / wybierz kliknięciem.
 
     python -B swiat/pety_proba/testy/proba_ludzka.py <folder wyników POZA repo> [--studio <id>] [--limit-walk 40]
     python -B swiat/pety_proba/testy/proba_ludzka.py --sprawdz
 
 Jak próba dymna (swiat/przejscie_gry/proba_dymna.py): postać jest przestawiana obok potworu, Kamienia Powrotu
-i inkubatora (dojście piechotą zajęłoby minuty), walki oglądane w tempie ×4 (przycisk ×4), wszystkie E, kliknięcia
+i jajka (dojście piechotą zajęłoby minuty), walki oglądane w tempie ×4 (przycisk ×4), wszystkie E, kliknięcia
 i klawisze są prawdziwym wejściem. Haczyki pakietów tylko do odczytu stanu. Złota NIE ustawia — zarabia je w walkach.
 Czas „w prawdziwej grze” = suma czasów walk przy tempie ×1 (czas ekranu walki ×4) + 3 s karty wyniku + dojście
 16 st/s do kolejnego potwora (jak swiat/stan_gracza/symulacja_lasu.py). Zrzuty → swiat/pety_proba/klatki/ (L*).
@@ -55,6 +55,11 @@ KOD = {
                     'and pz <= poz + 1 then local d = (q - hrp.Position).Magnitude if not bd or d < bd then best, bd = c, d end end end '
                     'return H:JSONEncode(if best then { id = best.Name, p = J(best:GetAttribute("Pozycja")), d = bd, '
                     'g = best:GetAttribute("Gatunek"), poziom = best:GetAttribute("Poziom") } else {})'),
+    # 26.11.2026: leśne jajko ze scenką Pawła (w mieście przy zagrodzie) — miejsce i przód modelu
+    "jajko": ('local k = workspace:FindFirstChild("JajkoKorowePodglad") local m = k and k:FindFirstChild("Jajko korowe") '
+              'if not m then return H:JSONEncode({ brak = true }) end local cf = m:GetPivot() '
+              'return H:JSONEncode({ p = { cf.Position.X, cf.Position.Y, cf.Position.Z }, '
+              'przod = { cf.LookVector.X, cf.LookVector.Z } })'),
     "przestaw": GR + ('local c = gracz.Character if c then local p = Vector3.new(%f, %f, %f) '
                       'c:PivotTo(CFrame.lookAt(p, Vector3.new(%f, p.Y, %f))) c.HumanoidRootPart.AssemblyLinearVelocity = '
                       'Vector3.zero end return "ok"'),
@@ -276,20 +281,27 @@ def main():
             zrzut("L04_wskazowka_jajko")
             punkt("L04", w.get("krok") == "f_jajko" and bool(w.get("znacznik")), "krok %s „%s”, znacznik %s" % (
                 w.get("krok"), w.get("tekst"), w.get("znacznik")))
-            # ---------------------------------------------------------------- inkubator, E, wyklucie
-            gn, e = D["jajka"][0]["polozenie"]["gniazdo"], D["jajka"][0]["polozenie"]["e"]
-            kx, kz = e[0] - gn[0], e[2] - gn[2]
-            n = math.hypot(kx, kz)
-            stoi = (gn[0] + kx / n * 6.0, e[1] + 3.0, gn[2] + kz / n * 6.0)
+            # ---------------------------------------------------------------- jajko (scenka Pawła), E, 5 kliknięć
+            # 26.11.2026: starych inkubatorów nie ma — leśne jajko stoi w mieście przy zagrodzie (wskazówka prowadzi przez
+            # Kamień Powrotu); postać przestawiona 5 st przed jajo jak przy potworach (dojście zajęłoby minuty)
+            mj = js(KOD["jajko"], "Server")
+            if mj.get("brak"):
+                sys.exit("Brak leśnego jajka ze scenką (Workspace/JajkoKorowePodglad/Jajko korowe)")
+            gn, pz = mj["p"], mj["przod"]
+            n = math.hypot(pz[0], pz[1]) or 1.0
+            stoi = (gn[0] + pz[0] / n * 5.0, gn[1] + 3.0, gn[2] + pz[1] / n * 5.0)
             przestaw(stoi, gn)
             luau(KOD["kamera_za"], "Client")
             time.sleep(1.0)
-            zrzut("L05_przy_inkubatorze")
+            zrzut("L05_przy_jajku")
             przed = klient()
-            klawisz("E", 900)
-            time.sleep(4.0)
+            klawisz("E")
+            time.sleep(1.2)
+            for _ in range(5):
+                klawisz("Space")
+                time.sleep(0.8)
             zrzut("L06_wyklucie")
-            time.sleep(2.0)
+            time.sleep(6.0)
             po = klient()
             punkt("L05", (po.get("pety") or 0) == 1 and (po.get("zloto") or 0) == (przed.get("zloto") or 0) - (przed.get("cena") or 0),
                   "Złoto %s → %s, pet %s, następna cena %s" % (przed.get("zloto"), po.get("zloto"), po.get("aktywny"),

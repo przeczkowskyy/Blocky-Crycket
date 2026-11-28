@@ -1,0 +1,16 @@
+{
+ "id": "r-20261127-175844-349f",
+ "tytul": "Potwory: nazwa i ranga nad potworem, portrety w walce",
+ "opis_md": "Polecenie Karola z 27.11: poprawić interfejs potworów — nazwa nad potworem i ładne portrety w walce.\n\n**Nad potworem (las, Bagno, Dżungla)**\n- Nazwa potwora, „LV N” i znaczek rangi: RARE ze złotą gwiazdką dla rzadkich, BOSS z koroną dla strażników.\n- Poziom dalej czerwony, gdy potwór ma co najmniej 3 poziomy więcej niż gracz.\n- Z daleka nazwa zwykłego potwora chowa się (zostaje „LV N”), rzadkie i strażnicy są widoczne z dalszej odległości.\n\n**W walce**\n- Portret potwora to teraz jego ikona z Blendera zamiast pikseli 8×8. Gdy obraz się nie wczyta, zostaje pikselowy.\n- 15 ikon wgranych do Roblox za zgodą Karola; wszystkie mają moderację Approved, gra ma do nich prawo użycia.\n\n**Sprawdzone w grze:** nowa próba tabliczek i portretów 17 z 17; próby lasu, Bagna i Dżungli bez błędów; próba walki 43 z 45 (dwa znane punkty o drobnym tekście w panelu wyboru próby, nie w grze).\n\n**Do decyzji:** nad potworem jest teraz po angielsku („LV”, „RARE”, „BOSS”, jak HUD), a ekran walki dalej po polsku („POZ.”, „ZWYKŁY”), przycisk E „Walcz” — ujednolicić?\n\n**Nie sprawdzono:** prawdziwego telefonu, dwóch graczy, portretów 12 pozostałych gatunków w samej walce (mają numery i Approved).",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-27T17:58:44+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg"
+ ],
+ "gra": "bc"
+}

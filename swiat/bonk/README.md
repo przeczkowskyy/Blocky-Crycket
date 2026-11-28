@@ -1,5 +1,7 @@
 # BONK — prosta gra z naszych zasobów (etap 1: rdzeń, etap 2: pałki, pety, Strażnicy, etap 3: dopracowanie)
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** kontener `Workspace/BonkGra` (brama BONK przy starym starcie i cała gra, ok. 19,7 tys. części) **usunięty z miejsca gry B&C**. Źródła i osobna budowa BONK (własne miejsce, `--publikacja`) zostają bez zmian; `tools/zapis_prob.py` dalej obsługuje `BonkGra` tam, gdzie stoi.
+
 > **Status: propozycja (prototyp, D-112).** Projekt gry: `B&C/Gra/BONK — projekt prototypu.md`. Wszystkie liczby
 > to propozycja do pomiaru. Każdy skrypt i moduł zaczyna się od strażnika `RunService:IsStudio()` (poza Studio serwer
 > usuwa kontener); wersja bez strażnika: `zbuduj.py --publikacja` (tylko do pustego miejsca).

@@ -1911,6 +1911,20 @@ class TestTelefonu(unittest.TestCase):
 
 # ============================================================================================== 6. styki
 class TestStykow(unittest.TestCase):
+    def test_6_bez_tablicy_wejscia_przy_starym_starcie(self):
+        # 26.11.2026 (Karol, sprzątanie mapy): gracz zaczyna w bazarze, do mini-gier wchodzi tylko przez trenera w
+        # bazarze — budowa nie stawia tablicy (stawiała ją przy pierwszym SpawnLocation, czyli dziś w bazarze)
+        self.assertIs(D["tablica_wejscia"]["w_grze"], False)
+        self.assertFalse(ZB.tablica_w_grze(D))
+        self.assertEqual(ZB.podpowiedzi_w_grze(D), [])
+        self.assertIn("if podpowiedzi ~= 0 then", ZB.kod_konca(D))
+        self.assertIn("nie powstaje", ZB.plan(D)[-1])
+        self.assertEqual(D["tablica_wejscia"]["omijaj"], [])
+        zb = czytaj(PAKIET, "zbuduj.py")
+        self.assertRegex(zb, r'if tablica_w_grze\(D\):\s+print\("  tablica:", wykonaj\(kod_tablicy\(D\)\)\)')
+        # wejście przez trenera w bazarze zostaje (punkt E bazaru i zapasowy punkt w danych)
+        self.assertEqual(D["bazar"]["kontener"], "MiasteczkoBazarGra")
+
     def test_6a_wiadomosci_zdalne(self):
         s, k = bez_komentarzy(SERWER), bez_komentarzy(KLIENT)
         do_serwera = set(re.findall(r'FireServer\(\s*"(\w+)"', k))

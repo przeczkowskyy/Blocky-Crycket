@@ -87,6 +87,7 @@ Kanon wspomina tylko zakładkę Arena (ikona mieczy) w HUD. Pomysł: pojedynki z
 
 ### Waluty
 - ✅ Kanon: **Złoto** i **Magiczne Kryształy**.
+- Od 24.11.2026 (D-146, oba podpisy): waluta liczona atrybutem `Gold` nazywa się w grze **Rybki** i ma ikonę rybki; w kodzie zostaje `Gold`. Od 26.11.2026 tak mówią też napisy pakietów w `swiat/` (z odmianą: 1 Rybka, 3 Rybki, 5 Rybek).
 - HUD z Figmy pokazuje **Złoto** i **Diamenty (Gems)**, opisane jako waluta premium. Czy Diamenty to Magiczne Kryształy, i czy są płatne? ❓ (pytanie otwarte #6).
 
 ## 4. Kierunek artystyczny
@@ -248,24 +249,24 @@ Blocky&Crycket/
 │   ├── demo_lesna_baza/       demo „Leśna baza startowa” (generuj.py, czesci.json, .blend, podglad/)
 │   ├── test_walki_roblox/     💡 prototyp walki v1 w Studio (Workspace/TestWalki): Rycerz kontra Zbir, 8–10 s
 │   ├── test_walki2/           💡 prototyp walki w Studio (Workspace/TestWalki2): nowe modele, umiejętności i efekty; od 17.11 silnik v3, ekran pod dziennik v3 i pomijanie walk — wdrożone w Studio
-│   ├── biom_las/  las_potwory/  💡 pierwszy las (Workspace/BiomLas), jego potwory w ruchu (Workspace/LasPotwory) i plan lasu jako pasa (biom_las/pas/)
+│   ├── biom_las/  las_potwory/  💡 pierwszy las i jego potwory (do 26.11.2026 Workspace/BiomLas i Workspace/LasPotwory; usunięte z miejsca, D-159) i plan lasu jako pasa (biom_las/pas/)
 │   ├── las_pas/  las_pas_gra/   💡 las jako wąski pas: mapa (Workspace/LasPas) i skrypty gry (Workspace/LasPasGra)
 │   ├── bagno_pas/  biomy/       💡 mapa Bagna jako odcinka pasa (zbudowana w Studio 17.11: Workspace/BagnoPas) i zarys biomów 2–8 — do akceptacji
 │   ├── dzwiek_gra/              💡 katalog dźwięków i muzyka stref (Workspace/DzwiekGra); od 18.11 własne utwory Bagna i Dżungli oraz muzyka walki, Strażnika i mini-gier; numery wgranych plików, część czeka na prawa gry i na wgranie
-│   ├── trening_proba/           💡 Training Center: sześć mini-gier na próbę, po jednej na statystykę, kamera i efekty jak w walce (Workspace/TreningProba)
+│   ├── trening_proba/           💡 Training Center: sześć mini-gier na próbę (od 26.11.2026 wyłączone przełącznikiem — w grze trenuje się na stanowiskach AFK, D-141 i D-162; w Workspace/TreningProba został tylko sygnał przyrostu statystyk)
 │   ├── stan_gracza/             💡 jeden właściciel stanu gracza: łup i awans po walce, bohater z klasy i poziomu, pety i wydatki (Workspace/StanGracza)
 │   ├── bagno_pas_gra/           💡 Bagno jako drugi biom na kodzie lasu-pasa: pięć gatunków, Strażnik Topieli (Workspace/BagnoPasGra)
 │   ├── dzungla_pas/  dzungla_pas_gra/  💡 Dżungla jako trzeci biom: mapa (Workspace/DzunglaPas) i skrypty gry (Workspace/DzunglaPasGra), pięć gatunków, strażnik Wąż Stu Lian
 │   ├── areny_walki/             💡 areny walki zależne od biomu (D-095): las, Bagno, Dżungla, plac ćwiczeń (Workspace/ArenyWalki)
-│   ├── pety_proba/              💡 jajka i pety na próbę: inkubatory w lesie i Bagnie, wyklucie, pet przy graczu, zagroda, pety z żywiołami (D-101) (Workspace/PetyProba)
+│   ├── pety_proba/              💡 jajka i pety na próbę: zakup przy nowych jajkach ze scenką (stare inkubatory usunięte 26.11, D-160), sprzedaż petów (D-161), wyklucie, pet przy graczu, zagroda, pety z żywiołami (D-101) (Workspace/PetyProba)
 │   ├── kowal_proba/             💡 Kowal na próbę (D-102): kuźnia w bazarze, przedmioty z łupu, rozbiórka na materiały, ulepszenia (Workspace/KowalProba)
 │   ├── bohater_swiat/           💡 Bohater klasy jako postać gracza w świecie (pytanie 63): model bohatera w stroju zamiast awatara, bieg, skok (Workspace/BohaterSwiat)
-│   ├── stroje_proba/            💡 ubieranie postaci (D-071): przymierzalnia i strój w walce (Workspace/StrojeProba)
+│   ├── stroje_proba/            💡 ubieranie postaci (D-071): strój w walce (Workspace/StrojeProba; przymierzalnia usunięta 26.11 razem ze starą wioską)
 │   ├── wskazowki_gry/           💡 linijka celu i znacznik w świecie dla nowego gracza (Workspace/WskazowkiGry)
-│   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi
-│   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra)
+│   ├── przejscie_gry/           raport z przejścia gry okiem nowego gracza i próba dymna całej drogi; symulator przejścia (odświeżony 27.11.2026) i balans D-165 w `BALANS_2711.md`
+│   ├── miasteczko_bazar/  miasteczko_bazar_gra/  💡 miasteczko jako ciasny bazar: mapa (Workspace/MiasteczkoBazar) i skrypty gry (Workspace/MiasteczkoBazarGra); od 26.11.2026 tu stoi punkt startu gry (D-159); od 27.11.2026 większy Training Center ze sklepem treningu u trenera (D-163, D-164)
 │   ├── teleport_chmury/       💡 przejście przez chmury zamiast okna mapy (Workspace/TeleportChmury)
-│   ├── bonk/                  💡 BONK (D-112): osobna, samowystarczalna prosta gra z naszych zasobów — bijesz potwory, odlatują; pałki, jajka i pety, Strażnicy, trzy krainy; wejście bramą przy starcie obecnej gry (Workspace/BonkGra), grafiki do sklepu w `grafika/`, kroki publikacji w README
+│   ├── bonk/                  💡 BONK (D-112): osobna, samowystarczalna prosta gra z naszych zasobów — bijesz potwory, odlatują; pałki, jajka i pety, Strażnicy, trzy krainy; do 26.11.2026 wejście bramą przy starcie obecnej gry (Workspace/BonkGra; usunięte z miejsca B&C, D-159), grafiki do sklepu w `grafika/`, kroki publikacji w README
 │   ├── pet_arena/             💡 Pet Arena (D-118): samowystarczalna gra we własnym miejscu Roblox — wrzucasz peta do dołu-areny, bitka o złoty środek, jajka i kolekcja, boss; kontener Workspace/PetArenaGra (BONK porzucony 20.11, D-117)
 │   ├── ewolucja/              💡 Monster Evolution (D-129): próbka gry o ewolucji potwora — jesz, rośniesz po drabinie ośmiu form do Olbrzyma, zdobyte formy zarabiają w legowisku; kontener Workspace/EwolucjaGra; etapy 1–3 i przeróbka na smoka (osiem stadiów z generatora klocków), wersja prywatna (22.11.2026)
 │   └── postacie/              💡 postacie, pety i ekwipunek z kodu: Blender (siatki, animacje) i postacie z klocków w Studio; od 18.11 modele ras z rzutów Pawła (D-104, `RASY.md`) i ich wystawa w Studio (`swiat/rasy_proba/`, `Workspace/RasyProba`)
@@ -417,7 +418,7 @@ Ramka portretu ma w PNG wypalony zielony pasek. Pasek XP w HUD jest nałożony d
 | **Pipeline assetów `/asset`** | grafiki z Higgsfield (MCP) → obróbka → Figma → upload przez Roblox Open Cloud, zawsze z akceptacją Game Directora | w projekcie gry (`.claude/skills/asset`, `tools/*.py`, `assets/`); zainstalowany 12.11.2026, czeka na klucz Open Cloud i logowanie Higgsfield ([Pipeline assetów](B%26C/Technika/Pipeline%20asset%C3%B3w.md)) |
 | Python | jednorazowe skrypty pomocnicze Claude (np. generowanie `.model.json`) | nie jest częścią gry |
 | ✅ **Panel zespołu** | lokalna strona dla dwóch osób i miejsce pracy na sejfie: odpowiedzi na pytania, zadania i decyzje zapisywane do sejfu, raporty z wdrożeń z akceptacją, podgląd 3D mapy (także z telefonu), agent Claude Code na subskrypcji (zadania z polem „· agent: Imię” wykonuje agent tej osoby, na jej koncie i jej komputerze — propozycja D-072), głosówki, graf sejfu, analityka oraz zakładka **Sesja** — rozmowa głosowa w panelu z przyciskiem „Agent słucha” (lokalna transkrypcja na żywo, notatki, ustalenia jako propozycje) i listą tematów z notatki [Sesje główne](B%26C/Produkcja/Sesje%20g%C5%82%C3%B3wne.md) | `panel\start.bat` albo `python panel/serwer.py` → `http://127.0.0.1:8787` (start otwiera panel z kluczem lokalnym — tylko wtedy działa agent, git i nowa migawka); instrukcja [`panel/INSTALACJA.md`](panel/INSTALACJA.md); D-012 i D-028 zatwierdzone 13.11.2026 ([Panel zespołu](B%26C/Technika/Panel%20zespo%C5%82u.md)). Nagrania i pełna transkrypcja sesji zostają w danych lokalnych komputera z panelem, poza repozytorium |
-| 💡 **Klocki: Blender ↔ Roblox** | mapa z prostych brył z jednego pliku `czesci.json`: Blender (podgląd, edycja), Studio (części), panel (model 3D) | `swiat/`, `tools/blender/klocki.py`, `tools/studio_buduj.py`; demo `Workspace/DemoLesnaBaza` ([Klocki — Blender i Roblox](B%26C/Technika/Klocki%20%E2%80%94%20Blender%20i%20Roblox.md)) |
+| 💡 **Klocki: Blender ↔ Roblox** | mapa z prostych brył z jednego pliku `czesci.json`: Blender (podgląd, edycja), Studio (części), panel (model 3D) | `swiat/`, `tools/blender/klocki.py`, `tools/studio_buduj.py`; demo `Workspace/DemoLesnaBaza` (usunięte z miejsca 26.11.2026, źródła w `swiat/demo_lesna_baza`) ([Klocki — Blender i Roblox](B%26C/Technika/Klocki%20%E2%80%94%20Blender%20i%20Roblox.md)) |
 | 💡 **Postacie 3D** | postacie, pety i ekwipunek opisane kodem: w Blenderze siatki ze szkieletem i animacjami, w Studio postacie z części Roblox ze stawami i klipami (bez wgrywania zasobów) | `swiat/postacie/` (`README.md`), `python -B swiat/postacie/roblox_postac.py`; kontener `Workspace/TestPostaci` ([Postacie 3D — Blender i Roblox](B%26C/Technika/Postacie%203D%20%E2%80%94%20Blender%20i%20Roblox.md)) |
 
 ### Przewidziane w dokumentacji do tworzenia assetów ✅

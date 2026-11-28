@@ -10,9 +10,8 @@
   miejsca.json                              — ustawienia pakietu: akcje, teksty, sygnały, czasy, zasięgi (bez położeń)
   swiat/miasteczko_bazar/znaczniki.json     — WSZYSTKIE położenia w bazarze (start, punkty E, tablica, granice)
   swiat/miasteczko_bazar/uklad.json         — granice pola gry i części bazaru
-  swiat/krzywe_miasteczko/uklad.json        — punkt startu i kierunek patrzenia starego miasteczka (układ miasta)
-Przesunięcie starego miasteczka w świecie (0; 0; −700) jest w miejsca.json i test porównuje je z
-swiat/krzywe_miasteczko/README.md (--przesun) — żadnych liczb położeń w kodzie.
+Żadnych liczb położeń w kodzie. Od 26.11.2026 bez przejść stare ↔ nowe miasteczko: starego miasteczka
+i starego startu nie ma już w miejscu gry, więc pakiet nie czyta swiat/krzywe_miasteczko.
 
 Do danych dopisywane są przypadki wzorcowe logiki (logika_bazaru.przypadki): wynik liczy lustro w Pythonie,
 a SerwerBazaru przy starcie i test offline (luau_mini) sprawdzają, że LogikaBazaru.luau daje to samo.
@@ -20,7 +19,6 @@ a SerwerBazaru przy starcie i test offline (luau_mini) sprawdzają, że LogikaBa
 import argparse
 import hashlib
 import json
-import math
 import os
 import re
 import sys
@@ -81,23 +79,11 @@ def _dodaj(a, b):
     return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]
 
 
-def kierunki(katy, patrz_deg):
-    """Wektory jednostkowe (x, z) kątów liczonych od kierunku patrzenia starego miasteczka (x = sin, z = cos, jak
-    PROJEKT.md starego miasteczka: obrot_y 58° → (0,848; 0,530))."""
-    wynik = []
-    for k in katy:
-        a = math.radians(patrz_deg + k)
-        wynik.append([_r(math.sin(a), 6), _r(math.cos(a), 6)])
-    return wynik
-
-
 def wszystko():
     """→ (konfig, znaczniki, D) — D to dane dla Luau (bez przypadków i skrótu dopisywanych w dane_z_przypadkami)."""
     K = czytaj_json(KONFIG)
     zn = czytaj_json(sciezka_repo(K["znaczniki"]))
     ub = czytaj_json(sciezka_repo(zn["uklad"]))
-    stare_cfg = K["stare_miasteczko"]
-    us = czytaj_json(sciezka_repo(stare_cfg["uklad"]))
     pp = K["podpowiedz"]
 
     start = zn["start"]
@@ -149,16 +135,10 @@ def wszystko():
         for klucz in ("hud", "gui", "dymek_otwarte", "cel", "tabliczka"):
             if m.get(klucz) is not None:
                 w[klucz] = m[klucz]
-        if w.get("hud") is not None and w["hud"] not in K["przyciski_hud"]:
-            raise BladDanych("%s: hud %r nie jest przyciskiem HUD %s" % (mid, w["hud"], K["przyciski_hud"]))
-        if m.get("znacznik") == "start":
-            # przejście „Stare miasteczko” w bazarze: start + przesunięcie w układzie bazaru (bez obrotu = świat)
-            st = _r(_dodaj(start_punkt, m["od_startu_bazar"]))
-            w["znacznik"] = "start"
-            w["stoisko"] = st
-            w["punkt"] = _r(_dodaj(st, [0, stare_cfg["wysokosc_podpowiedzi"], 0]))
-            w["dymek_nad"] = _r(_dodaj(w["punkt"], [0, K["dymek"]["nad_podpowiedzia"], 0]))
-        elif m.get("znacznik"):
+        if w.get("hud") is not None and w["hud"] not in K["przyciski_hud"]                 and w["hud"] not in K.get("sygnaly_hud_bez_przycisku", {}):
+            raise BladDanych("%s: hud %r nie jest przyciskiem HUD %s ani sygnałem bez przycisku %s"
+                             % (mid, w["hud"], K["przyciski_hud"], sorted(K.get("sygnaly_hud_bez_przycisku", {}))))
+        if m.get("znacznik"):
             z = znajdz(zn, m["znacznik"])
             if "podpowiedz" not in z or "stoisko" not in z:
                 raise BladDanych("%s: znacznik %s bez „podpowiedz” albo „stoisko”" % (mid, m["znacznik"]))
@@ -171,6 +151,8 @@ def wszystko():
                 w["model"] = z["model"]
             if z.get("czesc_podpowiedzi"):
                 w["czesc_mapy"] = z["grupa_zaczepu"] + "/" + z["czesc_podpowiedzi"]
+        else:
+            raise BladDanych("%s: miejsce bez znacznika — od 26.11.2026 każde miejsce stoi w bazarze" % mid)
         kolejnosc.append(mid)
         miejsca[mid] = w
     D["kolejnosc"] = kolejnosc
@@ -192,27 +174,6 @@ def wszystko():
         raise BladDanych("lochy.blokada %r ≠ znaczniki lochy/blokada %r" % (kl["blokada"], znajdz(zn, "lochy/blokada")["grupa"]))
     D["las"] = {k: v for k, v in K["las"].items() if k != "opis"}
     D["chmury"] = {k: v for k, v in K["chmury"].items() if k != "opis"}
-
-    sp = us["spawn"]
-    prz = stare_cfg["przesuniecie"]
-    D["stare"] = {
-        "znacznik": _r([sp[0] + prz[0], prz[1], sp[1] + prz[2]]),
-        "patrz_deg": us["patrz"],
-        "obszar_xz": list(stare_cfg["obszar_xz"]),
-        "promienie": list(stare_cfg["promienie"]),
-        "kierunki": kierunki(stare_cfg["katy_od_patrzenia"], us["patrz"]),
-        "min_od_portalu": stare_cfg["min_od_portalu"],
-        "min_od_odcinka": stare_cfg["min_od_odcinka"],
-        "min_od_startu": stare_cfg["min_od_startu"],
-        "wolne": list(stare_cfg["wolne"]),
-        "roznica_wysokosci": stare_cfg["roznica_wysokosci"],
-        "rzut_od": stare_cfg["rzut_od"],
-        "rzut_dlugosc": stare_cfg["rzut_dlugosc"],
-        "powrot": stare_cfg["powrot"],
-        "wysokosc_podpowiedzi": stare_cfg["wysokosc_podpowiedzi"],
-    }
-    if min(stare_cfg["promienie"]) < stare_cfg["min_od_startu"]:
-        raise BladDanych("stare_miasteczko: najmniejszy promień < min_od_startu")
     return K, zn, D
 
 
@@ -269,8 +230,8 @@ def luau_wartosc(v, wc=1):
 
 def tekst_luau(D):
     return ("--[[\n"
-            "\tDaneBazaru — WYGENEROWANE przez swiat/miasteczko_bazar_gra/dane.py z miejsca.json, swiat/miasteczko_bazar/\n"
-            "\tznaczniki.json i swiat/krzywe_miasteczko/uklad.json. Nie edytuj ręcznie: zmień źródła i uruchom dane.py.\n"
+            "\tDaneBazaru — WYGENEROWANE przez swiat/miasteczko_bazar_gra/dane.py z miejsca.json i swiat/miasteczko_bazar/\n"
+            "\tznaczniki.json (+ uklad.json bazaru). Nie edytuj ręcznie: zmień źródła i uruchom dane.py.\n"
             "\tSkrót danych: %s\n"
             "]]\n" % D["skrot"]
             + STRAZNIK + "\n\treturn {}\nend\n\nreturn " + luau_wartosc(D) + "\n")

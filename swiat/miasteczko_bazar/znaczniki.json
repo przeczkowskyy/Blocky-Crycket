@@ -244,8 +244,8 @@
   "czesc_stoiska": "Punkt E training_center",
   "czesc_podpowiedzi": "Podpowiedź E training_center",
   "sklep": "training_center",
-  "nazwa": "Training Center — wybór mini-gry",
-  "okno": "Okno wyboru mini-gry (Paweł)",
+  "nazwa": "Training Center — trener (okno stanowisk AFK)",
+  "okno": "Okno trenera: sześć stanowisk AFK (src/client/TreningAFKClient.client.luau, Paweł)",
   "postac": "trener",
   "model": "Workspace/MiasteczkoBazar/TrainingCenter/Trener",
   "statystyki": [
@@ -282,19 +282,19 @@
    "typ": "zagroda",
    "id": "zagroda_petow",
    "swiat": [
-    959.994,
-    0.5,
-    -676.13
+    954.632,
+    0.3,
+    -692.153
    ],
    "stoisko": [
-    959.994,
-    0.5,
-    -676.13
+    954.632,
+    0.3,
+    -692.153
    ],
    "podpowiedz": [
-    959.669,
-    5.1,
-    -671.116
+    954.172,
+    4.9,
+    -688.134
    ],
    "grupa_zaczepu": "Workspace/MiasteczkoBazar/ZagrodaPetow/_Interakcja",
    "czesc_stoiska": "Punkt E zagroda_petow",
@@ -310,19 +310,19 @@
     -0.9994
    ],
    "bazar": [
-    -34.006,
-    0.5,
-    23.87
+    -39.368,
+    0.3,
+    7.847
    ],
    "stoisko_bazar": [
-    -34.006,
-    0.5,
-    23.87
+    -39.368,
+    0.3,
+    7.847
    ],
    "podpowiedz_bazar": [
-    -34.331,
-    5.1,
-    28.884
+    -39.828,
+    4.9,
+    11.866
    ]
   },
   "miejsca_petow": [
@@ -330,90 +330,120 @@
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_1",
     "swiat": [
-     971.547,
+     969.835,
      0.5,
-     -674.832
+     -680.876
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -22.453,
+     -24.165,
      0.5,
-     25.168
+     19.124
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_2",
     "swiat": [
-     970.785,
+     953.844,
      0.5,
-     -682.31
+     -680.318
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -23.215,
+     -40.156,
      0.5,
-     17.69
+     19.682
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_3",
     "swiat": [
-     966.753,
+     970.016,
      0.5,
-     -683.17
+     -675.68
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -27.247,
+     -23.984,
      0.5,
-     16.83
+     24.32
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_4",
     "swiat": [
-     955.26,
+     954.026,
      0.5,
-     -682.769
+     -675.121
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -38.74,
+     -39.974,
      0.5,
-     17.231
+     24.879
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_5",
     "swiat": [
-     951.936,
+     970.198,
      0.5,
-     -677.65
+     -670.483
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -42.064,
+     -23.802,
      0.5,
-     22.35
+     29.517
     ]
    },
    {
     "typ": "miejsce_peta",
     "id": "zagroda_miejsce_6",
     "swiat": [
-     952.663,
+     954.207,
      0.5,
-     -671.171
+     -669.924
     ],
     "opis": "miejsce na odstawionego peta (Zagroda petów)",
     "bazar": [
-     -41.337,
+     -39.793,
      0.5,
-     28.829
+     30.076
+    ]
+   },
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_7",
+    "swiat": [
+     965.593,
+     0.5,
+     -670.522
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -28.407,
+     0.5,
+     29.478
+    ]
+   },
+   {
+    "typ": "miejsce_peta",
+    "id": "zagroda_miejsce_8",
+    "swiat": [
+     958.798,
+     0.5,
+     -670.285
+    ],
+    "opis": "miejsce na odstawionego peta (Zagroda petów)",
+    "bazar": [
+     -35.202,
+     0.5,
+     29.715
     ]
    }
   ]
@@ -871,17 +901,17 @@
    "swiat": [
     926.0,
     0.27,
-    -700.0
+    -694.0
    ],
    "stoisko": [
     926.0,
     0.27,
-    -700.0
+    -694.0
    ],
    "podpowiedz": [
     925.0,
     4.87,
-    -700.0
+    -694.0
    ],
    "grupa_zaczepu": "Workspace/MiasteczkoBazar/StudniaPomnik/_Interakcja",
    "czesc_stoiska": "Punkt interakcji",
@@ -894,41 +924,41 @@
    "bazar": [
     -68.0,
     0.27,
-    0.0
+    6.0
    ],
    "stoisko_bazar": [
     -68.0,
     0.27,
-    0.0
+    6.0
    ],
    "podpowiedz_bazar": [
     -69.0,
     4.87,
-    0.0
+    6.0
    ]
   }
  ],
  "czesci_na_budynek": {
   "Teren": 2,
-  "TrainingCenter": 213,
+  "TrainingCenter": 259,
   "Karczma": 318,
   "PortalKrain": 54,
   "Tablica": 41,
   "SklepMagiczny": 237,
   "Zbrojownia": 212,
-  "ZagrodaPetow": 219,
+  "ZagrodaPetow": 121,
   "BramaTwierdzy": 229,
   "BramaLochow": 271,
   "StudniaPomnik": 77,
   "BramaLesna": 39,
-  "Domy": 259,
+  "Domy": 130,
   "Kulisy/Domy": 1149,
   "Stragany": 75,
-  "Mury": 88,
-  "Rekwizyty": 296,
-  "Kulisy i tło": 271,
+  "Mury": 80,
+  "Rekwizyty": 290,
+  "Kulisy i tło": 266,
   "Niewidzialne": 4,
-  "Uliczka (bruk)": 292,
+  "Uliczka (bruk)": 284,
   "Start": 7,
   "Uliczka (kody)": 57
  },
@@ -978,8 +1008,8 @@
    "czesc_stoiska": "Punkt E training_center",
    "czesc_podpowiedzi": "Podpowiedź E training_center",
    "sklep": "training_center",
-   "nazwa": "Training Center — wybór mini-gry",
-   "okno": "Okno wyboru mini-gry (Paweł)",
+   "nazwa": "Training Center — trener (okno stanowisk AFK)",
+   "okno": "Okno trenera: sześć stanowisk AFK (src/client/TreningAFKClient.client.luau, Paweł)",
    "postac": "trener",
    "model": "Workspace/MiasteczkoBazar/TrainingCenter/Trener",
    "statystyki": [
@@ -1405,19 +1435,19 @@
    "typ": "zagroda",
    "id": "zagroda_petow",
    "swiat": [
-    959.994,
-    0.5,
-    -676.13
+    954.632,
+    0.3,
+    -692.153
    ],
    "stoisko": [
-    959.994,
-    0.5,
-    -676.13
+    954.632,
+    0.3,
+    -692.153
    ],
    "podpowiedz": [
-    959.669,
-    5.1,
-    -671.116
+    954.172,
+    4.9,
+    -688.134
    ],
    "grupa_zaczepu": "Workspace/MiasteczkoBazar/ZagrodaPetow/_Interakcja",
    "czesc_stoiska": "Punkt E zagroda_petow",
@@ -1433,109 +1463,139 @@
     -0.9994
    ],
    "bazar": [
-    -34.006,
-    0.5,
-    23.87
+    -39.368,
+    0.3,
+    7.847
    ],
    "stoisko_bazar": [
-    -34.006,
-    0.5,
-    23.87
+    -39.368,
+    0.3,
+    7.847
    ],
    "podpowiedz_bazar": [
-    -34.331,
-    5.1,
-    28.884
+    -39.828,
+    4.9,
+    11.866
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_1",
    "swiat": [
-    971.547,
+    969.835,
     0.5,
-    -674.832
+    -680.876
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -22.453,
+    -24.165,
     0.5,
-    25.168
+    19.124
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_2",
    "swiat": [
-    970.785,
+    953.844,
     0.5,
-    -682.31
+    -680.318
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -23.215,
+    -40.156,
     0.5,
-    17.69
+    19.682
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_3",
    "swiat": [
-    966.753,
+    970.016,
     0.5,
-    -683.17
+    -675.68
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -27.247,
+    -23.984,
     0.5,
-    16.83
+    24.32
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_4",
    "swiat": [
-    955.26,
+    954.026,
     0.5,
-    -682.769
+    -675.121
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -38.74,
+    -39.974,
     0.5,
-    17.231
+    24.879
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_5",
    "swiat": [
-    951.936,
+    970.198,
     0.5,
-    -677.65
+    -670.483
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -42.064,
+    -23.802,
     0.5,
-    22.35
+    29.517
    ]
   },
   {
    "typ": "miejsce_peta",
    "id": "zagroda_miejsce_6",
    "swiat": [
-    952.663,
+    954.207,
     0.5,
-    -671.171
+    -669.924
    ],
    "opis": "miejsce na odstawionego peta (Zagroda petów)",
    "bazar": [
-    -41.337,
+    -39.793,
     0.5,
-    28.829
+    30.076
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_7",
+   "swiat": [
+    965.593,
+    0.5,
+    -670.522
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -28.407,
+    0.5,
+    29.478
+   ]
+  },
+  {
+   "typ": "miejsce_peta",
+   "id": "zagroda_miejsce_8",
+   "swiat": [
+    958.798,
+    0.5,
+    -670.285
+   ],
+   "opis": "miejsce na odstawionego peta (Zagroda petów)",
+   "bazar": [
+    -35.202,
+    0.5,
+    29.715
    ]
   },
   {
@@ -1690,17 +1750,17 @@
    "swiat": [
     926.0,
     0.27,
-    -700.0
+    -694.0
    ],
    "stoisko": [
     926.0,
     0.27,
-    -700.0
+    -694.0
    ],
    "podpowiedz": [
     925.0,
     4.87,
-    -700.0
+    -694.0
    ],
    "grupa_zaczepu": "Workspace/MiasteczkoBazar/StudniaPomnik/_Interakcja",
    "czesc_stoiska": "Punkt interakcji",
@@ -1713,17 +1773,17 @@
    "bazar": [
     -68.0,
     0.27,
-    0.0
+    6.0
    ],
    "stoisko_bazar": [
     -68.0,
     0.27,
-    0.0
+    6.0
    ],
    "podpowiedz_bazar": [
     -69.0,
     4.87,
-    0.0
+    6.0
    ]
   },
   {
@@ -1813,5 +1873,168 @@
     0.0
    ]
   }
- ]
+ ],
+ "trening_afk": {
+  "opis": "miejsca sześciu stanowisk treningu AFK w dużej sali Training Center (27.11.2026; środek maty na posadzce, świat Studio; obrot = stopnie obrotu stanowiska w Roblox, gracz patrzy w −Z stanowiska = „przod”; „korytarz” = kierunek od środka maty ku przejściu między rzędami; „zejscie” = gdzie staje gracz po treningu, w układzie stanowiska x, z). Wpisane do src/shared/TreningAFKDane.luau (D.miejsca).",
+  "przejscie": {
+   "szer": 9.3,
+   "os_z_modulu": -1.85,
+   "przedsionek": [
+    919.234,
+    0.5,
+    -714.335
+   ],
+   "koniec": [
+    887.669,
+    0.5,
+    -723.346
+   ]
+  },
+  "stanowiska": [
+   {
+    "id": "Sila",
+    "pozycja": [
+     908.082,
+     0.5,
+     -731.275
+    ],
+    "obrot": 3.0,
+    "przod": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ],
+    "korytarz": [
+     0.0523,
+     0.0,
+     0.9986
+    ],
+    "zejscie": [
+     0.0,
+     3.4
+    ],
+    "rzad": "tylny"
+   },
+   {
+    "id": "Inteligencja",
+    "pozycja": [
+     899.094,
+     0.5,
+     -730.804
+    ],
+    "obrot": 3.0,
+    "przod": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ],
+    "korytarz": [
+     0.0523,
+     0.0,
+     0.9986
+    ],
+    "zejscie": [
+     0.0,
+     3.4
+    ],
+    "rzad": "tylny"
+   },
+   {
+    "id": "Szczescie",
+    "pozycja": [
+     890.106,
+     0.5,
+     -730.333
+    ],
+    "obrot": 93.0,
+    "przod": [
+     -0.9986,
+     0.0,
+     0.0523
+    ],
+    "korytarz": [
+     0.0523,
+     0.0,
+     0.9986
+    ],
+    "zejscie": [
+     -3.4,
+     0.0
+    ],
+    "rzad": "tylny"
+   },
+   {
+    "id": "Pancerz",
+    "pozycja": [
+     908.799,
+     0.5,
+     -717.594
+    ],
+    "obrot": 183.0,
+    "przod": [
+     0.0523,
+     0.0,
+     0.9986
+    ],
+    "korytarz": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ],
+    "zejscie": [
+     0.0,
+     3.4
+    ],
+    "rzad": "przedni"
+   },
+   {
+    "id": "Kondycja",
+    "pozycja": [
+     899.811,
+     0.5,
+     -717.123
+    ],
+    "obrot": 93.0,
+    "przod": [
+     -0.9986,
+     0.0,
+     0.0523
+    ],
+    "korytarz": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ],
+    "zejscie": [
+     3.4,
+     0.0
+    ],
+    "rzad": "przedni"
+   },
+   {
+    "id": "Zrecznosc",
+    "pozycja": [
+     890.823,
+     0.5,
+     -716.652
+    ],
+    "obrot": 93.0,
+    "przod": [
+     -0.9986,
+     0.0,
+     0.0523
+    ],
+    "korytarz": [
+     -0.0523,
+     0.0,
+     -0.9986
+    ],
+    "zejscie": [
+     3.4,
+     0.0
+    ],
+    "rzad": "przedni"
+   }
+  ]
+ }
 }

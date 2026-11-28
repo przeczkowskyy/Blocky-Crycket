@@ -1,0 +1,25 @@
+{
+ "id": "r-20261126-000441-e49c",
+ "tytul": "Przedmioty wojownika 3D: pięć zestawów na kocie według arkuszy Pawła (do oceny)",
+ "opis_md": "Wszystkie pięć arkuszy Pawła z puli wojownika (poziomy 1–10) ma modele 3D: 30 przedmiotów założonych na kota-wojownika. To modele do oceny — nie są w Studio ani w grze.\n\n**Co powstało**\n- Pięć zestawów po sześć przedmiotów: Podwórkowy, Targowy, Kuchenny, Mleczarz i Giermek (hełm, zbroja, pas, rękawice, buty, broń).\n- Każdy zestaw ma planszę „arkusz Pawła obok modeli”, przymiarkę na kocie i ikony z renderów.\n- Kot w komplecie ma 184–202 części przy limicie 220.\n\n**Co odbiega od rysunków**\n- Żaden hełm nie zasłania twarzy kota (uwaga Karola z pytania 93): garnek, durszlak, kubeł i bańka siedzą nad oczami, a uszy przebijają hełmy.\n- Bronie są krótsze i grubsze, hełmy szerokie i niskie — tak wymusza sylwetka kota.\n- Wzory tkanin i rdza to płaskie kolorowe łaty; napis z arkusza kuchennego pominięty.\n\n**Co blokuje wejście do gry**\n- Przymierzalnia i walka używają dziś wojownika z ciałem człowieka; przedmioty kota się na niego nie założą. Najpierw potrzebny jest kot-wojownik w walce z własnymi klipami z mieczem.\n- Nazwy przedmiotów czekają na pytanie 94; statystyki i ceny nie są ruszane.\n\n**Do oceny**\n- Czy styl modeli pasuje? Które przedmioty poprawić?\n- Ikony w ekwipunku: pocięte rysunki Pawła czy rendery modeli?",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T00:04:41+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "plik",
+   "cel": "assets/refs/przedmioty_rycerz/CZYTAJ.md",
+   "etykieta": "Arkusze Pawła"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ],
+ "pytanie": "Czy styl modeli przedmiotów wojownika pasuje do arkuszy Pawła?",
+ "gra": "bc"
+}

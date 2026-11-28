@@ -109,6 +109,25 @@ def punkty(litera, kontener, L, luau, punkt, zapisz, przestaw, nacisnij, czekaj_
     def js(kod, dm="Server"):
         return json.loads(luau(K + kod, dm))
 
+    def kamera_stan():
+        """Kamera klienta: typ, podmiot i odległość od korzenia postaci."""
+        try:
+            return json.loads(luau(
+                'local H = game:GetService("HttpService") local c = workspace.CurrentCamera '
+                'local p = game:GetService("Players").LocalPlayer local h = p.Character and p.Character:FindFirstChild("HumanoidRootPart") '
+                'local o = c.CFrame.Position return H:JSONEncode({ typ = c.CameraType.Name, '
+                'podmiot = c.CameraSubject and c.CameraSubject.ClassName or false, '
+                'odl = h and math.floor((o - h.Position).Magnitude * 10) / 10 or -1, '
+                'poz = { math.floor(o.X), math.floor(o.Y), math.floor(o.Z) } })', "Client"))
+        except Exception as e:  # noqa: BLE001
+            return {"blad": str(e)[:200]}
+
+    def kamera_gracza():
+        """Zwykła kamera gry za postacią (Custom, podmiot = Humanoid) — tak jak ma ją gracz."""
+        luau('local p = game:GetService("Players").LocalPlayer task.delay(0.1, function() local c = workspace.CurrentCamera '
+             'c.CameraType = Enum.CameraType.Custom local h = p.Character and p.Character:FindFirstChildOfClass("Humanoid") '
+             'if h then c.CameraSubject = h end end) return "ok"', "Client")
+
     def fotka(nazwa):
         if zrzut is not None:
             try:
@@ -198,6 +217,16 @@ def punkty(litera, kontener, L, luau, punkt, zapisz, przestaw, nacisnij, czekaj_
             fotka("d107_strefa_pelna")
         przestaw(gesta["x"], 3.5, gesta["z"])
         time.sleep(8)       # budowa widoków (jeden klon co 0,1 s) i wejście nowych potworów na pętlę
+        # 27.11.2026: klient wybiera widoki wokół KAMERY (12 najbliższych w promieniu 120), nie wokół postaci. Próba
+        # zostawiała kamerę skryptową gdzie indziej (do 26.11 naprawiał ją po drodze punkt P15 starego lasu; po D-159
+        # starego lasu nie ma, P15 się nie wykonuje) — wtedy „widoków 2” mierzyło kamerę próby, nie grę. Kamera gracza
+        # jak w grze (Custom, za postacią); stan zastany zapisujemy.
+        d3["kamera_przed"] = kamera_stan()
+        d3["kamera_przed"]["widoki"] = (klient_potworow() or {}).get("widoki")
+        if d3["kamera_przed"].get("typ") != "Custom" or d3["kamera_przed"].get("odl", 0) > 40:
+            kamera_gracza()
+            time.sleep(8)
+            d3["kamera_po"] = kamera_stan()
         luau(K + 'S:Invoke("koszt", true) return "ok"', "Server")
         luau(K + 'k.Sygnaly.SterowanieKlienta:Invoke("koszt", true) return "ok"', "Client")
         d3["klatki"] = js('local RS = game:GetService("RunService") local t = {} '
@@ -231,7 +260,10 @@ def punkty(litera, kontener, L, luau, punkt, zapisz, przestaw, nacisnij, czekaj_
           "widoków %s, brył widoków %s; pętla ruchu serwera śr. %.2f ms, maks. %.2f ms%s" % (
               se.get("potworow"), d3.get("strefa"), se.get("w_strefie"), kl.get("sr_ms", -1), kl.get("p95_ms", -1),
               kl.get("maks_ms", -1), kli.get("widoki"), kli.get("czesciWidokow"), se.get("ruch_sr_ms", -1),
-              se.get("ruch_maks_ms", -1), "" if w_budzecie else " (brak danych klienta)"))
+              se.get("ruch_maks_ms", -1), "" if w_budzecie else " (brak danych klienta)")
+          + ("; kamera zastana: %s %s st od postaci (widoków %s) → kamera gracza" % (
+              d3["kamera_przed"].get("typ"), d3["kamera_przed"].get("odl"), d3["kamera_przed"].get("widoki"))
+             if d3.get("kamera_po") else ""))
     try:
         js('S:Invoke("gracze", nil) local cel = %s przytnij(cel) task.wait(0.5) przytnij(cel) '
            'return H:JSONEncode({ stan = licz() })' % _tabela(cel1))
@@ -403,4 +435,7 @@ def punkty(litera, kontener, L, luau, punkt, zapisz, przestaw, nacisnij, czekaj_
           "strażnik „%s”, rewanż ruszył po %s s (odmowy: %s); próby: %s" % (
               w1.get("pokaz_s"), w1.get("blokada_gracza_s"), (w1.get("po_zamknieciu") or {}).get("stan"),
               w2.get("start_po_s"), w2.get("odmowy"), [(p.get("ziarno"), p.get("wynik")) for p in d4["proby"]]))
+    # 27.11.2026: kamera po walkach D2–D5 (E i przyciski okna jak u gracza; D3 zostawił kamerę gracza) — gdyby
+    # prawdziwa ścieżka walki zostawiała kamerę skryptową, widać to tutaj
+    zapisz(litera + "D_kamera_koniec", kamera_stan())
     return {"D1": d1, "D2": d2, "D3": d3, "D4": d4, "D5": d5}

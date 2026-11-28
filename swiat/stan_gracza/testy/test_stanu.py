@@ -138,9 +138,13 @@ class TestDanych(unittest.TestCase):
                       czytaj(REPO, "src", "server", "ClassSelect.server.luau"))
         # PlayerStatsDefaults ustawia tylko brakujące atrybuty — nie nadpisze tego, co wpisze SerwerStanu
         self.assertIn("if player:GetAttribute(key) == nil then", domyslne)
-        # StatPoints dopisuje do tych samych atrybutów (darmowy „+”), limit jak nasz
+        # StatPoints Pawła: do 23.11.2026 darmowy „+” dopisywał do tych samych atrybutów (limit MAX_VALUE = nasz
+        # statystyka_maks). Od 33a7dbf (24.11, D-140) zdarzenie AddStatPoint zostaje, ale serwer nic nie zapisuje —
+        # sprawdzamy, że to dalej prawda (drugi pisarz statystyk wróciłby tylko razem z limitem jak nasz).
         punkty = czytaj(REPO, "src", "server", "StatPoints.server.luau")
-        self.assertIn("local MAX_VALUE = %d" % D["limity"]["statystyka_maks"], punkty)
+        self.assertIn('Name = "AddStatPoint"', punkty)
+        if "SetAttribute" in punkty:
+            self.assertIn("local MAX_VALUE = %d" % D["limity"]["statystyka_maks"], punkty)
 
     def test_1d_hud_pawla(self):
         # ScreenGui HUD (Rojo: nazwa z pliku src/gui/HUD.model.json); HUDClient słucha zmian atrybutów, które piszemy
@@ -771,15 +775,17 @@ class TestSerweraOffline(unittest.TestCase):
         oczek = LS.rozdziel(D, ROZKLADY_GRY["mag"], LS.pula_sama(D, 2))
         self.assertEqual(self.staty(), oczek)
         self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"])
+        # 27.11.2026: przy 0 punktach do rozdania (dźwignia A, BALANS_2711.md) „+” jest cofany — przyjęty tylko z punktem
+        plus = 1 if D["punkty"]["na_poziom"] > 0 else 0
         self.g.ustaw("Luck", self.atr("Luck") + 1)
-        oczek["szczescie"] += 1
-        self.assertEqual(self.staty(), oczek, "„+” z punktem przyjęty")
-        self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"] - 1)
+        oczek["szczescie"] += plus
+        self.assertEqual(self.staty(), oczek, "„+” z punktem przyjęty, bez punktu cofnięty")
+        self.assertEqual(self.atr("PunktyDoRozdania"), D["punkty"]["na_poziom"] - plus)
         self.g.ustaw("Level", 3)
         oczek3 = LS.rozdziel(D, ROZKLADY_GRY["mag"], LS.pula_sama(D, 3))
-        oczek3["szczescie"] += 1
+        oczek3["szczescie"] += plus
         self.assertEqual(self.staty(), oczek3, "awans dopisał różnicę, rozdany punkt został")
-        self.assertEqual(self.atr("PunktyDoRozdania"), 2 * D["punkty"]["na_poziom"] - 1)
+        self.assertEqual(self.atr("PunktyDoRozdania"), 2 * D["punkty"]["na_poziom"] - plus)
 
     def test_8c_pokaz_od_klienta_i_gemy_drzewka(self):
         self.uruchom()
@@ -847,6 +853,9 @@ class TestSerweraOffline(unittest.TestCase):
         self.przyrost.odpal(self.g.t, LM.do_luau({"statystyka": "sila", "atrybut": "Strength", "przyrost": 2}))
         self.przyrost.odpal(self.g.t, LM.do_luau({"atrybut": "Mana", "przyrost": 5}))  # nieznana — pominięta
         self.assertEqual(self.atr("Strength"), przed["sila"] + 2)
+        # 27.11.2026: wytrenowane punkty statystyki jako atrybut (limit treningu AFK); inne statystyki 0 albo brak
+        self.assertEqual(self.atr(D["trening"]["prefiks_wytrenowanych"] + "Strength"), 2)
+        self.assertIn(self.atr(D["trening"]["prefiks_wytrenowanych"] + "Luck"), (None, 0))
         self.g.ustaw("Level", 5)  # np. tester w pasku poleceń
         cel = LS.rozdziel(D, ROZKLADY_GRY["wojownik"], LS.pula_sama(D, 5))
         self.assertEqual(self.atr("Strength"), cel["sila"] + 2)
@@ -880,6 +889,20 @@ class TestSerweraOffline(unittest.TestCase):
         cel = LS.rozdziel(D, ROZKLADY_GRY["zwiadowca"], LS.pula_sama(D, 3))
         self.assertEqual(self.atr("Armor"), cel["pancerz"] + 1)
         self.assertEqual(self.atr("PunktyDoRozdania"), 0, "punkty za poziomy z czasu wyłączenia nie dochodzą")
+
+    def test_8q_stara_pula_bez_punktow_do_rozdania(self):
+        # 27.11.2026 (dźwignia A): profil ze starą pulą do rozdania (np. 45 z czasów 5 na poziom) — przy na_poziom = 0
+        # pula znika przy najbliższym przeliczeniu punktów, licznik 0; statystyki z puli rozdzielanej samo
+        if D["punkty"]["na_poziom"] != 0:
+            self.skipTest("punkty do rozdania włączone w danych")
+        self.uruchom()
+        self.g.ustaw("Class", "Warrior")
+        stan = self.wywolaj("SterowanieSerwera", "stan", self.g.t)
+        self.assertIn("punkty", stan)
+        self.g.ustaw("Level", 4)
+        self.assertEqual(self.atr("PunktyDoRozdania"), 0)
+        self.assertEqual(self.staty(), LS.rozdziel(D, ROZKLADY_GRY["wojownik"], LS.pula_sama(D, 4)))
+        self.assertEqual(LS.pula_sama(D, 4) - LS.pula_sama(D, 3), D["punkty"]["auto_na_poziom"])
 
     def test_8p_punkty_do_rozdania(self):
         # D-097: 5 do rozdania za poziom; „+” z punktem przyjęty, bez punktu i spadek cofnięte; trening osobno
@@ -1014,6 +1037,56 @@ class TestSerweraOffline(unittest.TestCase):
 
     def mody(self, polecenie, zrodlo=None, mod=None):
         return self.wywolaj("Modyfikatory", polecenie, self.g.t, zrodlo, mod)
+
+    def test_8j2_przychod_zagrody(self):
+        """25.11.2026: Pety("przychod") — Rybki (atrybut Gold) spoza walki od zarejestrowanego źródła (zagroda petów):
+        dopisane od razu, do profilu, bez premii z modyfikatorów, bez licznika walk; złe dane = odmowa bez zmian."""
+        self.uruchom()
+        self.g.ustaw("Gold", 50)
+        self.assertEqual(self.wywolaj("Modyfikatory", "ustaw", self.g.t, "pety", {"lup": {"zloto": 0.5}})["ok"], True)
+        dobry = {"ile": 7, "zrodlo": "PetyProba", "cel": "zagroda"}
+        w = self.pety("przychod", dobry)
+        self.assertEqual((w["ok"], w["zloto"], w["ile"]), (True, 57, 7))
+        self.assertEqual(self.atr("Gold"), 57, "bez premii +50% z modyfikatora (to nie łup z walki)")
+        st = self.wywolaj("SterowanieSerwera", "stan", self.g.t)
+        self.assertEqual((st["zloto"], st["walki"]["wygrane"], st["walki"]["przegrane"]), (57, 0, 0))
+        self.assertEqual(self.k.atrybuty.get("LicznikPrzychodow"), 1)
+        for zle, powod in ((dict(dobry, ile=0), "zla_kwota"), (dict(dobry, ile=2.5), "zla_kwota"),
+                           (dict(dobry, ile=D["przychody"]["kwota_maks"] + 1), "zla_kwota"),
+                           (dict(dobry, zrodlo="KowalProba"), "zle_zrodlo"), (dict(dobry, cel="zle cel"), "zly_cel")):
+            self.assertEqual(self.pety("przychod", zle)["powod"], powod, zle)
+        self.assertEqual(self.atr("Gold"), 57)
+        # górna granica waluty jak przy łupie
+        self.g.ustaw("Gold", D["limity"]["waluta_maks"] - 3)
+        self.assertEqual(self.pety("przychod", dobry)["zloto"], D["limity"]["waluta_maks"])
+
+    def test_8j3_sprzedaz_petow(self):
+        """26.11.2026: Pety("sprzedaj") — kopie zabrane i Rybki dopisane jednym wywołaniem; za mało kopii albo ostatnia
+        kopia peta za graczem = odmowa bez żadnej zmiany; pet bez kopii znika z profilu; złe dane = odmowa."""
+        self.uruchom()
+        self.g.ustaw("Gold", 1000)
+        kup = {"ile": 100, "zrodlo": "PetyProba", "cel": "jajko_lesne", "pet": "zoledziak", "premia": {"zloto": 0.02}}
+        for pet in ("zoledziak", "zoledziak", "zoledziak", "lisciolis"):
+            self.assertTrue(self.pety("kup", dict(kup, pet=pet))["ok"])
+        self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba"), self.atr("PetAktywny")), (600, 4, "zoledziak"))
+        sprz = {"pety": {"zoledziak": 2, "lisciolis": 1}, "ile": 111, "zrodlo": "PetyProba", "cel": "sprzedaz_petow"}
+        w = self.pety("sprzedaj", sprz)
+        self.assertEqual((w["ok"], w["zloto"], w["ile"], w["kopie"]), (True, 711, 111, {"zoledziak": 1}))
+        self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba"), self.atr("PetAktywny")), (711, 1, "zoledziak"))
+        self.assertEqual(self.k.atrybuty.get("LicznikSprzedazy"), 1)
+        # ostatnia kopia aktywnego peta, za mało kopii, pet spoza profilu — bez zmian
+        for zle, powod in (({"zoledziak": 1}, "aktywny"), ({"zoledziak": 2}, "nie_masz"), ({"lisciolis": 1}, "nie_masz")):
+            w = self.pety("sprzedaj", dict(sprz, pety=zle, ile=5))
+            self.assertEqual((w["ok"], w["powod"]), (False, powod), zle)
+        self.assertEqual((self.atr("Gold"), self.atr("PetyLiczba")), (711, 1))
+        # złe dane
+        for zle, powod in ((dict(sprz, pety={}), "zle_pety"), (dict(sprz, pety={"zoledziak": 0}), "zle_pety"),
+                           (dict(sprz, ile=0), "zla_kwota"), (dict(sprz, zrodlo="KowalProba"), "zle_zrodlo"),
+                           (dict(sprz, cel="zly cel"), "zly_cel")):
+            self.assertEqual(self.pety("sprzedaj", zle)["powod"], powod, zle)
+        st = self.pety("stan")
+        self.assertEqual((st["kopie"], st["zloto"]), ({"zoledziak": 1}, 711))
+        self.assertEqual(self.ostrzezenia(), [])
 
     def test_8m_modyfikatory(self):
         # Sygnaly/Modyfikatory (18.11.2026): jeden wpis na źródło, złożenie w bohaterze walki i w premii do łupu
@@ -1216,7 +1289,7 @@ class TestSerweraOffline(unittest.TestCase):
         self.k.ustaw(D["rozklady_klas"]["atrybut"], "wzorcowe")
         oczek = LS.rozdziel(D, D["rozklady"]["mag"], LS.pula_sama(D, 2))
         oczek["sila"] += 3
-        oczek["szczescie"] += 1
+        oczek["szczescie"] += 1 if D["punkty"]["na_poziom"] > 0 else 0   # bez punktów do rozdania „+” cofnięty
         self.assertEqual(self.staty(), oczek)
         self.assertEqual(self.k.atrybuty["RozkladyZ"], rozklady_z(tryb="wzorcowe"))
         self.assertEqual(self.ostrzezenia(), [])
@@ -1344,7 +1417,7 @@ class TestKlientaOffline(unittest.TestCase):
         return [o for o in self.nowe if o.klasa == "ScreenGui" and o.t.get("Name") == "StanGraczaKomunikat"]
 
     def test_9d_komunikat_przegranej(self):
-        # propozycja D-098: „Przegrana: −N Złota, +M doświadczenia” dopiero przy widocznym HUD; bez Złota — sam XP
+        # propozycja D-098: „Przegrana: −N Rybek, +M doświadczenia” dopiero przy widocznym HUD; bez Rybek — sam XP
         self.uruchom(hud_wlaczony=False)
         self.do_klienta.odpal("przegrana", 12.0, 7.0)
         self.do_klienta.odpal("przegrana", "x", 7.0)  # złe dane — pominięte
@@ -1353,12 +1426,20 @@ class TestKlientaOffline(unittest.TestCase):
         self.wlacz_hud(True)
         self.sw.krok(D["baner"]["opoznienie_po_hud_s"] + 0.1)
         self.assertEqual(len(self.komunikaty()), 1)
-        tekst = D["kara"]["komunikat"] % (12, 7)
+        tekst = "Przegrana: −12 Rybek, +7 doświadczenia"
         self.assertIn("  %s  " % tekst, self.napisy())
-        self.assertEqual(tekst, "Przegrana: −12 Złota, +7 doświadczenia")
         self.do_klienta.odpal("przegrana", 0.0, 3.0)
         self.assertIn("  %s  " % (D["kara"]["komunikat_bez_zlota"] % 3), self.napisy())
         self.assertEqual(len(self.komunikaty()), 2)
+        # waluta to Rybki (D-146): odmiana przy liczbie w napisie klienta (0 = napis bez Rybek, wyżej)
+        formy = {1: "Rybka", 2: "Rybki", 4: "Rybki", 5: "Rybek", 11: "Rybek", 12: "Rybek", 14: "Rybek", 21: "Rybek",
+                 22: "Rybki", 25: "Rybek", 100: "Rybek", 101: "Rybek", 102: "Rybki", 112: "Rybek"}
+        for n, slowo in formy.items():
+            self.do_klienta.odpal("przegrana", float(n), 7.0)
+            self.assertIn("  Przegrana: −%d %s, +7 doświadczenia  " % (n, slowo), self.napisy(), n)
+            self.assertEqual(LS.ile_rybek(D, n), "%d %s" % (n, slowo), "lustro w Pythonie (próba w Play)")
+        self.assertEqual(len(self.komunikaty()), 2 + len(formy))
+        self.assertFalse([t for t in self.napisy() if "Złot" in t], "waluta to Rybki, nie Złoto")
         self.assertEqual(self.banery(), [], "przegrana bez awansu — bez banera")
         self.assertEqual(self.sw.ostrzezenia, [])
 

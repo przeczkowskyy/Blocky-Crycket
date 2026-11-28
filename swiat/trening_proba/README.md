@@ -1,5 +1,109 @@
 # Training Center — próba sześciu mini-gier
 
+> **Kości Szczęścia, bieżnia i sztanga (27.11.2026 wieczorem, polecenie Karola).** Status: **propozycja**, wdrożone
+> w Studio (`wdroz_trening_afk.py`, wersja sprzed zmiany = main 567ba18) i sprawdzone w Play. Karol: „w gierce szczęścia
+> w sali AFK niech też rzuca się prawdziwymi kośćmi, wypadają prawdziwe wyniki — i tyle szczęścia dostajemy, ile wypadnie”
+> oraz „animacje na bieżni nie działają: bieżnia się rusza, ale ludek stoi w miejscu. Tak samo ze sztangą — słabo się
+> podnosi”.
+> - **Kości** (`D.kosci` w `src/shared/TreningAFKDane.luau`; liczby Karola: 1 kość k6, pasek Szczęścia 3,5× dłuższy —
+>   średnio tyle samo punktów na minutę co inne statystyki): na końcu paska serwer losuje oczka, przyrost = suma oczek ×
+>   zwykły przyrost (poziom, wzmacniacz ×2), wytrenowane punkty limitu D-165 rosną o faktyczny przyrost. Zdarzenie
+>   `"punkt"` niesie listę oczek; klient przez cały pasek potrząsa kubkiem, a na końcu rzuca — kość koziołkuje coraz
+>   wolniej i ląduje ścianką wyniku do góry, potem duże „+N LUCK” na ekranie, po chwili kość wraca do kubka.
+>   Kości z oczkami są z klocków (bez SurfaceGui), ścianki jak prawdziwa kość (przeciwne = 7) — jeden opis
+>   `D.kosci.sciany` dla serwera i klienta. Panel: „+1-6 LCK / ROLL”.
+> - **Bieżnia i sztanga — przyczyna:** awatar Robloxa ma dziś stawy `AnimationConstraint`, a jego Animator co klatkę
+>   nadpisuje ich `Transform`; pozy z pętli renderowania nie docierały do ciała, a kot rasy Pawła (kopiuje pozy ze stawów
+>   awatara) dostawał zera. Próba w Play: wpis w pętli renderowania nie ruszał dłoni (2,59 st stale), w `PreSimulation`
+>   albo po odpięciu Animatora — ruszał (2,6–4,2 st). Naprawa w kliencie: Animator awatara odpięty na czas treningu
+>   (wraca przed włączeniem `Animate`), pozy jeszcze raz w `PreSimulation`, celowanie dłoni liczy stawy
+>   `AnimationConstraint` z zaczepów, kot Pawła (`Workspace/KotyRasSwiatLokalne/<gracz>`, tylko odczyt) to osobny rodzaj
+>   szkieletu — pozy z jego wymiarów, rekwizyty w jego łapach, te same pozy na stawach awatara. Bieg: własna poza na każdym
+>   szkielecie (biodro ±46°, kolano do −98° w przenoszeniu, ręce naprzemiennie, dwa podskoki na cykl, 1,35 cyklu/s, taśma
+>   7 st/s — droga taśmy i faza kroku narastają w pętli); klip „bieg” bohatera już nie jest używany. Sztanga: wyciśnięcie,
+>   przytrzymanie na górze, wolniejsze opuszczanie, ok. 1,9 s na ruch; gryf dotyka klatki na dole, ramiona prawie proste
+>   na górze.
+> - **Testy:** `testy/test_afk_trener.py` (55: nowe 10a–10f kości, 11a–11e animacje). W Play (27.11, 20:36–20:49): kot
+>   rasy — stawy biegu i stopy w ruchu, Animator odpięty, sztanga 0,85–1,33 st nad klatką z gryfem ≤ 0,11 st od dłoni,
+>   goły awatar (bez wyboru rasy) — stopa 1,8–2,7 st, sztanga 0,78–1,56 st; sześć rzutów kośćmi (4 na kocie, 2 na
+>   awatarze): górna ścianka = wynik z serwera, Luck rośnie dokładnie o wynik. Bohatera klasy (podgląd kotów Pawła go
+>   wyłącza) w Play nie sprawdzono.
+
+> **Duża sala i sklep trenera (27.11.2026, polecenie Pawła na Telegramie zespołu; Karol: „zastosuj się”).** Status:
+> **propozycja**, etap 1 bez Studio (wdrożenie i próby w Play — etap 2). Paweł: „ta hala ze sprzętami powinna zajmować
+> mniej więcej taki obszar, żeby było tam dużo przestrzeni” oraz „u trenera … panel sklepu/ulepszeń, gdzie np. gracz może
+> ulepszyć bieżnię, żeby dawała więcej na powtórzenie, albo kupić jakieś wzmacniacze na trening, np. siła ×2 na 10 min”.
+> - **Sala** (mapa: `swiat/miasteczko_bazar/README.md`, „Duża sala Training Center”): 40 × 22 st, korytarz 9,3 st, maty
+>   co 9 st, krawędź od korytarza wolna, podpowiedź E na zaczepie 1,5 st nad matą (zasięg 4,5 bez zmian), zejście
+>   w korytarz. Dane: `src/shared/TreningAFKDane.luau` (`D.miejsca`, `D.podpowiedzWysokosc`).
+> - **Sklep** (skrypty Pawła `src/server/TreningAFK.server.luau`, `src/client/TreningAFKClient.client.luau`; liczby
+>   w `D.sklep`): okno trenera ma zakładki TRAIN i SHOP. **Ulepszenie stanowiska** (poziom 0–5, osobno dla gracza
+>   i stanowiska): +10% tempa na poziom — pasek ma mniej powtórzeń (`D.powtorzenDla`, 4 → 3,64 → … → 2,67), czyli każde
+>   powtórzenie daje więcej („więcej na powtórzenie”); ceny 300 / 700 / 1600 / 3600 / 8400 Rybek. **Wzmacniacz**: ×2
+>   statystyki za pasek jednego stanowiska przez 10 min czasu rzeczywistego (wyjście z gry go nie zatrzymuje, koniec
+>   zapisany w profilu), jeden na statystykę, 600 Rybek. Płaci stan gracza (`Sygnaly/WydajZloto`, źródło `TreningAFK`
+>   dopisane do `PAKIETY_WYDATKOW` w `swiat/stan_gracza/dane.py`), poziomy i końce wzmacniaczy zapisuje profil
+>   (`Sygnaly/DanePakietu`, pakiet `TreningAFK`: `{ u = { [id] = poziom }, w = { [atrybut] = os.time końca } }`;
+>   stare zapisy bez pakietu = poziomy 0). Serwer: limit 0,4 s, typy, wczytany profil, odległość od trenera
+>   (`D.trener.zasieg`), najwyższy poziom / aktywny wzmacniacz, saldo; odmowy po angielsku w tytule okna. **Bez Robuxów**
+>   — sprzedaż za Robuxy to osobna decyzja; hak: `przyznajUlepszenie` / `przyznajWzmacniacz` w skrypcie serwera to
+>   jedyne miejsca przyznania (przyszły ProcessReceipt zawołałby je po sprawdzeniu paragonu).
+> - **Rachunek** `ekonomia_sklepu_afk.py` (`--walka` — strażnicy Bagna i Dżungli silnikiem walki): pełne stanowisko
+>   14 600 Rybek (sześć: 87 600 = 11,1 h walk w lesie, 5,4 h w Dżungli), wzmacniacz bez przerwy 3600 Rybek/h (więcej niż
+>   typowa zagroda). **Uwaga do balansu:** już dziś trening AFK daje 750 punktów statystyki na godzinę na stanowisku —
+>   strażnikowi Bagna wystarcza ok. 19 punktów ponad pulę (1,6 min AFK), Wężowi Stu Lian ok. 36 (2,8 min); sklep skraca to
+>   ×1,5 (pełne ulepszenie), ×2 (wzmacniacz), ×3 (oba) — w minutach mało, bo wolne nie jest samo tempo AFK (do decyzji).
+> - **Próby w Play** (etap 2): `testy/proba_afk_zasieg.py` (A1x–A4x: E z krawędzi maty od korytarza, 5,5 st i oś
+>   korytarza — nic, marsz do maty bez wypychania na rekwizyt, postać stoi po zejściu), `testy/proba_afk_trener.py`
+>   (S00–S08: zakładka SHOP, brak Rybek, zakup, krótszy pasek, najwyższy poziom, spam, aktywny wzmacniacz, ×2 i koniec,
+>   z daleka; zrzuty 02 korytarz od wejścia, 04 SHOP z licznikiem wzmacniacza, 05 panel z licznikiem, 06 sala z góry),
+>   zapis: `swiat/stan_gracza/testy/proba_zapisu.py` (Z02 kupuje przy trenerze, Z04 porównuje pakiety profilu).
+>   `--sprawdz` w obu próbach AFK parsuje ich kawałki Luau bez Studio. Testy offline: `testy/test_afk_trener.py` (40).
+
+> **Mini-gry wyłączone z gry (26.11.2026 ok. 22:00, Karol: „usuń placeholdery”, „pozbądź się starych rzeczy”).**
+> `ustawienia.json → mini_gry.w_grze = false` (→ `DaneTreningu.mini_gry.w_grze`). `zbuduj.py` stawia wtedy
+> `Workspace/TreningProba` **bez areny (ok. 2800 części), bez modułów, skryptów i haczyków** — tylko folder `Sygnaly`
+> z `PrzyrostStatystyki` (BindableEvent) i atrybut kontenera `MiniGry = false`. Tym sygnałem skrypt Pawła
+> `src/server/TreningAFK.server.luau` oddaje przyrosty ze stanowisk AFK, a `swiat/stan_gracza` (SerwerStanu, słucha
+> wprost zdarzenia, `TreningPodlaczony`) dopisuje je do atrybutu i profilu (zapis). Żaden skrypt mini-gier nie jest do
+> tego potrzebny: zdarzenie powstaje przy budowie, a `SerwerTreningu` / `KlientTreningu` (128 tys. znaków) to wyłącznie
+> mini-gry. Haczyków (BindableFunction) nie ma celowo — wywołanie haczyka bez odbiorcy czekałoby w nieskończoność.
+> `--skrypty` w tym trybie odmawia (pełna budowa usuwa starą arenę). Kod mini-gier, arena i ich testy offline zostają
+> w repo; `mini_gry.w_grze = true` przywraca wszystko jak przed 26.11. Dowód offline: `testy/test_afk_trener.py`
+> (7a–7d: budowa = sam sygnał, ten sam sygnał co w `DaneStanu.trening` i w skrypcie Pawła, `czysty_przyrost` przyjmuje
+> przyrost AFK każdej z sześciu statystyk) i testy `swiat/stan_gracza` (8f, 8g: przyrost tym sygnałem w atrapie z samym
+> kontenerem `TreningProba/Sygnaly/PrzyrostStatystyki`). Próby w Play: `testy/proba_play.py` w tym trybie sprawdza
+> T01 (kontener bez części i skryptów, sygnał podpięty), T03 (E przy trenerze → okno AFK), T32 (trening AFK przez sygnał:
+> +1 sygnał, Strength rośnie, STOP) i T22 (konsola), a T02 i T04–T31 wypisuje jako „?” z powodem „nie dotyczy”;
+> `swiat/przejscie_gry/proba_dymna.py`, `swiat/stan_gracza/testy/proba_play.py` (S07), `proba_zapisu.py` (Z02, krok
+> mini-gry) i `swiat/bohater_swiat/testy/proba_play.py` (B16) rozpoznają `MiniGry = false` i oznaczają rundę mini-gry
+> jako „nie dotyczy”. Wskazówki (`swiat/wskazowki_gry`): „potrenował” = atrybut `TreningAFK` (wcześniej `TreningGra`).
+
+> **Wejście przez trenera do stanowisk AFK (26.11.2026, zlecenie Karola: „podchodzimy do trenera, E, klikamy, w co
+> chcemy wejść, i nas teleportuje”; D-141 — statystyki trenuje się na stanowiskach AFK).** Etap 1 zrobiony bez Studio
+> (pliki gotowe, testy offline zielone na kopii z odświeżonymi danymi); etap 2 (wdrożenie, próba w Play, zrzuty) —
+> w toku. Co się zmienia:
+> - **E przy trenerze** (bazar, punkt `training_center`, podpowiedź teraz „Train”) otwiera **okno sześciu ćwiczeń**
+>   w skrypcie Pawła `src/client/TreningAFKClient.client.luau` (ScreenGui `TreningAFKMenu`: kafelki z ikoną, nazwą,
+>   czynnością, obecną wartością statystyki i kolorem stanowiska; zajęte — szare z BUSY; X, stuknięcie obok, B pada,
+>   Escape i odejście od trenera zamykają). Klik → serwer (`src/server/TreningAFK.server.luau`, `"wybierz", id`)
+>   sprawdza odległość od trenera (16 st), czy gracz już nie trenuje i limit 0,5 s, a potem stawia go na stanowisku
+>   tak samo jak E przy macie. Dane w `src/shared/TreningAFKDane.luau` → `D.trener`.
+> - **Bez tabliczek** przy stanowiskach (zasłaniały przejście) — co jest czym, mówi okno trenera.
+> - **Tymczasowy wybór mini-gry nie otwiera się już od trenera:** `ustawienia.json → bazar.wybor_od_trenera = false`
+>   (→ `DaneTreningu.bazar.wybor_od_trenera`, klient: `wyborOdTrenera()`). Mini-gry i kontener zostają; wejść do nich
+>   można tylko haczykiem testowym (`"wybor"`) — **z gry są dziś nieosiągalne** (pytanie do Karola). `true` = jak dawniej.
+> - Próby: `testy/proba_play.py` T03 sprawdza nową drogę (okno AFK zamiast wyboru; poprawka 26.11: pusta tabela Luau
+>   „[]” nie wywraca już T02 — `js()` zwraca wtedy `{}`); nowa `testy/proba_afk_trener.py` (B00–B50: bez tabliczek,
+>   E → okno, sześć ćwiczeń kliknięciem, zajęte, z daleka, limit, w trakcie, zamykanie, trzy zrzuty); offline
+>   `testy/test_afk_trener.py` (20 testów: serwer, klient, dane, układ okna na sześciu ekranach, bazar, mapa);
+>   wdrożenie skryptów Pawła: `wdroz_trening_afk.py` (najpierw porównuje Source w Studio z wersją sprzed zmiany —
+>   inna wersja = STOP).
+> - Układ okna (piksele, bez paska Robloxa): poziomo 3 × 2, pionowo 2 × 3; telefon 667 × 375 → okno 635 × 315,
+>   kafelek 199 × 123 px (przy pasku 58 px: 199 × 112), pionowo 375 × 667 → 157 × 101, X 44 × 44.
+
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** tablica wejścia `TablicaWejscia` przy starym starcie zniknęła — `ustawienia.json → tablica_wejscia.w_grze = false` (budowa stawiała ją przy pierwszym `SpawnLocation`, czyli dziś stanęłaby w bazarze). Do mini-gier wchodzi się tylko przez trenera w bazarze (`MiasteczkoBazarGra`, punkt E `training_center`); `Podpowiedzi = 0`. Kod tablicy zostaje w `zbuduj.py`. Próba w Play: T01 liczy 0 podpowiedzi, T02 sprawdza, że tablicy nie ma. Usuwanie z miejsca: `python -B tools/studio/sprzatanie_mapy.py` (najpierw `--sucho`); start gry na starcie bazaru: `python -B tools/studio/start_w_miasteczku.py`.
+
 *Status: **propozycja** (17.11.2026). **Siła i Pancerz wdrożone w Studio i sprawdzone w trybie Play 17.11.2026 przed
 południem** (etap B): lista T01–T14 zaliczona, zrzuty z gry w `klatki/`, wyniki w „Co sprawdzone w grze”. **Cztery
 nowe mini-gry (Kondycja „Bieżnia”, Zręczność „Kłody”, Inteligencja „Runy”, Szczęście „Koniczyny”) — noc 17/18.11:
@@ -70,7 +174,7 @@ Wymagania: D-050, D-063, D-074, D-085, D-093 (✅) i model statystyk D-062 (✅)
 | `Sygnaly/WybierzGre` | BindableFunction (klient) | **uchwyt dla docelowego okna 2D Pawła** |
 | `Sygnaly/SterowanieSerwera`, `Sygnaly/SterowanieKlienta` | BindableFunction | haczyki testowe |
 | `Arena` (Model, `ModelStreamingMode = Persistent`) | części | od D-108 (w Studio od 19.11.2026): pas sześciu scenerii krain — podłoże komórek, niewidzialne ściany 16 st wokół pasa, sześć stanowisk i `Dekoracje/<Gra>` ze scenerią każdej gry, 2797 części; bez lobby (gracz przechodzi z okna wyboru prosto do scenerii) |
-| `TablicaWejscia` (Model, Persistent) | części | tablica „TRAINING CENTER / MINI-GRY” z podpowiedzią E 14–26 st od pierwszego SpawnLocation, na wolnym gruncie, z dala od „Nowe miasteczko (E)” bazaru i portalu startowego; miejsce wybiera budowa w Studio |
+| `TablicaWejscia` (Model, Persistent) | części | tablica „TRAINING CENTER / MINI-GRY” z podpowiedzią E 14–26 st od pierwszego SpawnLocation, na wolnym gruncie, z dala od „Nowe miasteczko (E)” bazaru i portalu startowego; miejsce wybiera budowa w Studio — **od 26.11.2026 nie powstaje** (`tablica_wejscia.w_grze = false`) |
 
 Atrybuty kontenera: `Wygenerowane`, `Zrodlo`, `Zbudowano`, `Skrot`, `PunktTablicy`, **`WyborTymczasowy`** (true; false
 = tymczasowy wybór się nie otwiera, bo jest okno Pawła). Ręczne w Edit i przenoszone przy odbudowie:
@@ -89,6 +193,8 @@ zmienia.
 - **Bazar** (`swiat/miasteczko_bazar_gra`): E przy trenerze wysyła `ReplicatedStorage.OknoMiejsca("training_center")`.
   Klient próby słucha każdego zdarzenia o tej nazwie i otwiera tymczasowy wybór. Ustawia też na zdarzeniu atrybut
   `training_center = true` — to opisany w README bazaru sposób wyłączenia dymku „Trener: mini-gry w budowie”.
+  **Od 26.11.2026 (`bazar.wybor_od_trenera = false`) tego nie robi** — zdarzenie obsługuje okno stanowisk AFK
+  w `src/client/TreningAFKClient.client.luau` (ono też ustawia atrybut `training_center`).
 - **Okno Pawła** (gdy powstanie): w Edit `WyborTymczasowy = false`, a w jego skrypcie klienta:
   ```lua
   bindable("OknoMiejsca").Event:Connect(function(id) if id == "training_center" then open() end end)
@@ -122,6 +228,12 @@ python -B swiat/trening_proba/zbuduj.py --usun           # usuwa Workspace/Treni
 python -B swiat/trening_proba/testy/proba_play.py <folder poza repo>   # próba T01–T22 w trybie Play (ok. 12 min)
 python -B swiat/trening_proba/testy/proba_play.py <folder> --nowe      # tylko T01 i T15–T22 (ok. 8 min)
 python -B swiat/trening_proba/testy/proba_play.py <folder> --walka     # tylko T01, T22 i T23–T27 — wygląd jak w walce (ok. 7 min)
+python -B swiat/trening_proba/testy/proba_afk_zasieg.py <folder>       # stanowiska AFK w sali: zasięg podpowiedzi E (ok. 6–8 min)
+python -B swiat/trening_proba/testy/test_afk_trener.py                 # 40 testów offline okna trenera, sklepu, sali i mapy (bez Studio)
+python -B swiat/trening_proba/ekonomia_sklepu_afk.py [--walka]         # rachunek sklepu trenera (ceny, tempo, strażnicy)
+python -B swiat/trening_proba/wdroz_trening_afk.py --sucho             # Studio Edit: czy w Studio stoją skrypty AFK sprzed 27.11
+python -B swiat/trening_proba/wdroz_trening_afk.py                     # podmiana Source trzech skryptów AFK (inna wersja = STOP)
+python -B swiat/trening_proba/testy/proba_afk_trener.py <folder>       # Play: okno trenera, sześć ćwiczeń, sklep, odmowy, zrzuty (ok. 10–12 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py                      # 24 zrzuty do klatki/ (ok. 7 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py --nowe               # tylko 09–24 (cztery nowe gry, ok. 5 min)
 python -B swiat/trening_proba/testy/zrzuty_gry.py --telefon            # 26–37: sześć gier na telefonie (ok. 5 min)

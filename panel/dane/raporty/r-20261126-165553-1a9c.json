@@ -1,0 +1,18 @@
+{
+ "id": "r-20261126-165553-1a9c",
+ "tytul": "Jajka Bagna i Dżungli w grze: modele i scenka otwierania",
+ "opis_md": "Jajka Bagna i Dżungli stoją w grze jako prawdziwe modele i otwierają się tą samą scenką co jajo lasu. Paweł zgodził się na to 26.11 („niech zrobi agent Karola, wzorując się na animacji jaja lasu”).\n\n**Co jest w grze (Studio)**\n- Jajko Bagna przy wejściu do Bagna, jajko Dżungli przy wejściu do Dżungli. Każde ma własną kartę szans i cenę: 750 i 1350 Rybek (leśne 300).\n- E przy jajku → 5 kliknięć → skorupa pęka, słup światła, pet. Żyły świecą w kolorze biomu: zielonym w Bagnie, różowym w Dżungli.\n- W chwili otwarcia reagują ozdoby: w Bagnie pękają bąble i odchylają się trzciny, w Dżungli liście i kwiaty.\n\n**Sprawdzone w Play na prawdziwych modelach:** 30 punktów bez niezaliczeń — cena, odmowa bez Rybek, zakup prawdziwym E, pet z właściwej puli, drugi E w trakcie scenki odrzucony, konsola czysta. Leśne jajo działa jak wcześniej.\n\n**Paweł, do Twojej wiadomości (Twój plik):** w skrypcie serwera jajka była blokada — gracz, któremu zabrakło Rybek, przez 45 s dostawał „Jajko już pęka…”. Teraz po nieudanym zakupie blokada schodzi od razu. Dotyczy też leśnego jaja.\n\n**Do poprawy (widać na zdjęciach):**\n- Napis „Wykluł się: …” na dole ekranu pojawia się zaraz po E i zdradza peta, zanim gracz otworzy jajo. Tak jest też przy leśnym.\n- Obok nowego jajka stoi jeszcze stary inkubator z klocków z własnym E.\n- Pet w słupie światła jest słabo widoczny (tak jak w scence leśnej).\n\n**Nie sprawdzono:** widoku u drugiego gracza, dotyku i myszy (klikanie spacją), prawdziwego telefonu.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T16:55:53+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg",
+  "zrzut_4.jpg",
+  "zrzut_5.jpg",
+  "zrzut_6.jpg"
+ ],
+ "gra": "bc"
+}

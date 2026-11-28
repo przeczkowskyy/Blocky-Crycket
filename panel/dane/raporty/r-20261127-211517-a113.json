@@ -1,0 +1,19 @@
+{
+ "id": "r-20261127-211517-a113",
+ "tytul": "Bronie Maga i Zwiadowcy: 10 ikon i 10 modeli 3D (D-167)",
+ "opis_md": "**Polecenie Karola (27.11):** „Najpierw powstają modele UI tych broni, na podstawie których robimy modele 3D broni” (D-167).\n\n- **Ikony:** arkusze w Higgsfield (12 kredytów), Karol wybrał Mag A i Zwiadowca B. 10 ikon 512 px wgranych do Roblox (Approved), rejestr `swiat/postacie/ikony_broni.json`, moduł `swiat/postacie/roblox/IkonyBroni.luau`.\n- **Modele 3D (Blender, bez kredytów):** 10 broni według ikon, w skali kota, 284–860 trójkątów; sprawdzone w chodzie, spoczynku i upadku kota (nic nie wchodzi w ciało ani w ziemię). Wgrane do Roblox (Approved).\n- **Studio:** `ReplicatedStorage/BronieKlas` — 10 akcesoriów z zaczepem dłoni (łuki: lewa łapa), Kostur Ucznia i Łuk Tropiciela ze słabą poświatą. Zapis 558, nieopublikowane.\n- **Jeszcze nie w grze:** podpięcie do ekwipunku, sklepu, walki i kotów ras — osobny krok z Pawłem.\n- **Do decyzji:** łuk w lewej łapie (prawa pusta) zgodnie z kontraktem ekwipunku; Wałek trzymany jak miecz (albo jak różdżka); w klipach walki kota łuki wchodzą w tułów — jak w puli wojownika.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-27T21:15:17+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "Rejestr decyzji",
+   "etykieta": "D-167"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg"
+ ],
+ "gra": "bc"
+}

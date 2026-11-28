@@ -3,7 +3,8 @@
 	Workspace/KowalProba. Niczego nie decyduje: pokazuje okno z widokiem od serwera, wysyła tylko nazwę akcji i id
 	przedmiotu (Zdalne/Kuznia), gra klipy kowala z klocków (lokalnie, Motor6D.Transform) i pokazuje napisy o łupie.
 
-	E przy kowalu (ProximityPrompt „Podpowiedz” na części Kuznia/E; włącza go serwer w Play) → okno; X albo odejście dalej
+	E przy kowalu (ProximityPrompt „Podpowiedz” na części Kuznia/E; włącza go serwer w Play) → okno (od 26.11.2026 tylko,
+	gdy w PlayerGui nie ma okna kowala Pawła „OknoKowala” — ono zastępuje to okno próbne); X albo odejście dalej
 	niż D.kuznia.zasiegOkna od punktu E → zamknięcie. Kowal: klip D.kowal.klip w pętli, po udanym ulepszeniu raz
 	D.kowal.klipRadosci. Atrybut kontenera EmulacjaEkranu = Vector2 (np. 667, 375) — okno jak na telefonie (zrzuty).
 	Sygnaly/SterowanieKlienta (BindableFunction, haczyk prób): "otworz" · "zamknij" · "stan" → { otwarte, wiersze,
@@ -167,7 +168,19 @@ local function podlaczPodpowiedz()
 		warn(D.prefiks .. "brak podpowiedzi E kowala")
 		return
 	end
-	pp.Triggered:Connect(otworz)
+	pp.Triggered:Connect(function()
+		-- okno kowala Pawła (ScreenGui „OknoKowala”, src/client/OknoKowalaClient, 24.11.2026) otwiera się na to samo E
+		-- i zastępuje to okno próbne: wtedy na E nie otwieramy swojego (bez dwóch okien naraz i bez mignięcia).
+		-- Haczyk prób "otworz" działa dalej; atrybut kontenera OknoZastapione mówi próbom, czyje okno stoi.
+		local pg = gracz:FindFirstChild("PlayerGui")
+		local cudze = pg and pg:FindFirstChild("OknoKowala")
+		if cudze and cudze:IsA("ScreenGui") then
+			kontener:SetAttribute("OknoZastapione", cudze.Name)
+			return
+		end
+		kontener:SetAttribute("OknoZastapione", nil)
+		otworz()
+	end)
 end
 task.spawn(podlaczPodpowiedz)
 

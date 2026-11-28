@@ -1,5 +1,7 @@
 # Las-pas w grze — potwory w przegrodach, brama, teleport, mgła, przelot kamery
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** bramy starego miasteczka `Workspace/LasTeleport` i starego lasu (`BiomLas`, `LasPotwory`, `LasMgla`) nie ma już w miejscu. `SerwerPasa` niczego nie przekierowuje (atrybut `Przekierowanie = "nie_ten_biom"` we wszystkich biomach, `biom.przekieruj = false`), nie czyta atrybutów `LasTeleport`, a zapasowy cel Kamienia Powrotu (bez uchwytu bazaru) to start bazaru ze `swiat/miasteczko_bazar/znaczniki.json` (`DanePasa.miasteczko`). Do lasu prowadzą Brama Leśna bazaru i przejście przez chmury — oba przez `Sygnaly/PrzeniesDoLasu`. Kod potworów nadal dzieli źródła ze `swiat/las_potwory/` (źródła zostają). Usuwanie z miejsca: `python -B tools/studio/sprzatanie_mapy.py` (najpierw `--sucho`); start gry na starcie bazaru: `python -B tools/studio/start_w_miasteczku.py`.
+
 *Status: **propozycja** (16–17.11.2026). Kod sprawdzony bez Studio, a 17.11.2026 w nocy **wdrożony do Studio
 i sprawdzony w trybie Play** (jeden gracz, komputer; wyniki niżej, rozdz. „Co sprawdzone w grze”). Źródło wymagań:
 plan `swiat/biom_las/pas/PLAN_PASA.md` (zaakceptowany plan lasu) i decyzje D-075,
@@ -56,6 +58,7 @@ wejścia biomu, przelotu nie da się pominąć, stary las zostaje nietknięty i 
 | `testy/proba_d107.py` | D-107: krótka próba w Play samych punktów D1–D5 jednego biomu (ok. 2,5 min) i dwa zrzuty |
 | `testy/proba_play.py` | próba w Studio (Play) z listą kontrolną P01–P16 i listą zrzutów (od 19.11.2026 też PD1–PD5) |
 | `testy/proba_dodatkowa.py` | druga próba w Play: obie drogi do lasu z przelotem, bieg Polana → brama, ściany i ratunek, walka z każdym gatunkiem, Strażnik (przegrana i wygrana), koszt przy pełnym zestawie, ujęcia potworów |
+| `testy/proba_tabliczek.py` | próba w Play (27.11.2026) trzech biomów: tabliczka zwykłego, rzadkiego i Strażnika (nazwa, „LV N”, RARE / BOSS, czerwień poziomu, nazwa schowana z daleka) i portret przeciwnika w walce z obrazu (T00–T09; ok. 3 min, zrzuty i wycinki 667 × 375 poza repo) |
 | `wyniki/` | zapisy prób w Play (JSON, zapisywane po każdym kroku) |
 | `klatki/` | wybrane zrzuty z gry (bez filmów) |
 

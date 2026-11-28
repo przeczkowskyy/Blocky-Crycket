@@ -7,6 +7,10 @@
 	pety (jeden kafelek na gatunek, licznik kopii). Klik w peta na dole zakłada go, klik w założonego zdejmuje.
 	EQUIP BEST zakłada najrzadsze, UNEQUIP ALL zdejmuje, DELETE — jeszcze nieczynne (brak usuwania w stanie gracza).
 	Podpowiedź przy najechaniu: nazwa, rzadkość, co pet daje graczowi (opis z danych Karola), liczba kopii.
+	26.11 (agent Karola, za zgodą Karola): na każdym kafelku widać bez najeżdżania, ile pet daje Rybek na sekundę
+	w zagrodzie („+0.04/s” z ikoną Rybki z HUD; zielone — stoi tam teraz). DELETE → SELL: tryb sprzedaży — klik
+	zaznacza nadmiar kopii peta (pet założony i pet w zagrodzie zostawiają jedną kopię, z jedną kopią nie da się ich
+	zaznaczyć — napis na kafelku), EQUIP BEST → „SELL N FOR X”, pierwszy klik pyta, drugi sprzedaje (serwer petów Karola).
 
 	Dane i polecenia: ReplicatedStorage.OknoPetow (src/server/OknoPetow.server.luau). Podobizny 3D budują moduły Karola
 	(PetyProba/Moduly: RigPetow.zbuduj + Rig_<pet>) — działają tylko w Studio; bez nich kafelek ma samą nazwę.
@@ -177,6 +181,138 @@ local function zalozonyW(petId: string): number?
 	return nil
 end
 
+------------------------------------------------------------------ dochód na kafelku i sprzedaż (26.11, agent Karola)
+local ZIELONY, KREMOWY = Color3.fromRGB(140, 232, 101), Color3.fromRGB(252, 227, 176)
+local ikonaRybki: string? = nil -- obrazek Rybki z HUD (GoldIcon) — bez nowych zasobów
+local function ikona(): string
+	if ikonaRybki == nil or ikonaRybki == "" then
+		local hud = player.PlayerGui:FindFirstChild("HUD")
+		local i = hud and hud:FindFirstChild("GoldIcon", true)
+		ikonaRybki = if i and (i:IsA("ImageLabel") or i:IsA("ImageButton")) then (i :: any).Image else ""
+	end
+	return ikonaRybki :: string
+end
+
+-- napis „+0.04/s” na kafelku: kopia etykiety nazwy (ta sama czcionka, obrys i limit wielkości), nad nazwą
+local function dochodKafelka(slot: Instance): (TextLabel, ImageLabel)
+	local t = slot:FindFirstChild("Income") :: TextLabel?
+	local r = slot:FindFirstChild("IncomeIcon") :: ImageLabel?
+	if t and r then
+		return t, r
+	end
+	local nowy = etykieta(slot, "PetName"):Clone()
+	nowy.Name = "Income"
+	nowy.Text = ""
+	nowy.Position = UDim2.fromScale(0.27, 0.5)
+	nowy.Size = UDim2.fromScale(0.7, 0.21)
+	nowy.TextXAlignment = Enum.TextXAlignment.Left
+	nowy.Parent = slot
+	local obraz = Instance.new("ImageLabel")
+	obraz.Name = "IncomeIcon"
+	obraz.BackgroundTransparency = 1
+	obraz.Position = UDim2.fromScale(0.05, 0.5)
+	obraz.Size = UDim2.fromScale(0.2, 0.21)
+	obraz.ScaleType = Enum.ScaleType.Fit
+	obraz.ZIndex = nowy.ZIndex
+	obraz.Parent = slot
+	return nowy, obraz
+end
+
+-- zielone kółko z „✓” z dwóch kresek (czcionka gry nie ma tego znaku) w rogu zaznaczonego kafelka
+local function znaczekWyboru(slot: Instance): Frame
+	local z = slot:FindFirstChild("SellCheck") :: Frame?
+	if z then
+		return z
+	end
+	local f = Instance.new("Frame")
+	f.Name = "SellCheck"
+	f.AnchorPoint = Vector2.new(0.5, 0.5)
+	f.Position = UDim2.fromScale(0.22, 0.2)
+	f.Size = UDim2.fromScale(0.34, 0.34)
+	f.BackgroundColor3 = ZIELONY
+	f.ZIndex = 9
+	f.Visible = false
+	local rog = Instance.new("UICorner")
+	rog.CornerRadius = UDim.new(1, 0)
+	rog.Parent = f
+	local proporcja = Instance.new("UIAspectRatioConstraint")
+	proporcja.Parent = f
+	local obrys = Instance.new("UIStroke")
+	obrys.Color = Color3.fromRGB(43, 33, 24)
+	obrys.Thickness = 2
+	obrys.Parent = f
+	for _, k in ipairs({ { 0.36, 0.58, 0.28, 45 }, { 0.6, 0.48, 0.52, -48 } }) do
+		local kreska = Instance.new("Frame")
+		kreska.AnchorPoint = Vector2.new(0.5, 0.5)
+		kreska.Position = UDim2.fromScale(k[1], k[2])
+		kreska.Size = UDim2.fromScale(k[3], 0.14)
+		kreska.Rotation = k[4]
+		kreska.BackgroundColor3 = Color3.new(1, 1, 1)
+		kreska.BorderSizePixel = 0
+		kreska.ZIndex = 10
+		kreska.Parent = f
+	end
+	f.Parent = slot
+	return f
+end
+
+local trybSprzedazy = false
+local wybrane: { [string]: number } = {} -- pet → ile kopii sprzedać
+local potwierdzenie = 0 -- do kiedy (os.clock) drugi klik w „SELL N FOR X” sprzedaje
+
+-- ile kopii peta można sprzedać: założony (slot 1 / 2) i stojący w zagrodzie zostawiają sobie jedną kopię
+local function doSprzedazy(p: any): (number, string?)
+	local chroniony = zalozonyW(p.pet) ~= nil or p.wZagrodzie == true
+	local n = (p.kopie or 0) - (if chroniony then 1 else 0)
+	if n > 0 then
+		return n, nil
+	end
+	return 0, if zalozonyW(p.pet) then "EQUIPPED" else "IN PEN"
+end
+
+local function wybraneRazem(): (number, number)
+	local sztuk, suma = 0, 0
+	for _, p in ipairs(if stan and stan.ok then stan.pety else {}) do
+		local n = wybrane[p.pet]
+		if n then
+			sztuk += n
+			suma += n * (p.sprzedaz or 0)
+		end
+	end
+	return sztuk, suma
+end
+
+local function rysujStopke()
+	local sztuk, suma = wybraneRazem()
+	etykieta(panel, "DeleteLabel").Text = if trybSprzedazy then "CANCEL" else "SELL"
+	etykieta(panel, "UnequipLabel").Text = if trybSprzedazy then "CLEAR" else "UNEQUIP ALL"
+	etykieta(panel, "EquipBestLabel").Text = if not trybSprzedazy then "EQUIP BEST"
+		elseif sztuk == 0 then "TAP PETS"
+		elseif os.clock() < potwierdzenie then "TAP TO CONFIRM"
+		else string.format("SELL %d FOR %d", sztuk, suma)
+end
+
+-- napis dochodu (albo, w trybie sprzedaży, dlaczego peta nie da się zaznaczyć) i znaczek wyboru jednego kafelka
+local function rysujKafelek(slot: Instance, p: any)
+	local t, ik = dochodKafelka(slot)
+	local n, powod: string? = 0, nil
+	if p then
+		n, powod = doSprzedazy(p)
+		local juz = wybrane[p.pet]
+		wybrane[p.pet] = if juz and n > 0 then math.min(juz, n) else nil -- po sprzedaży / zmianie stanu nie więcej, niż wolno
+	end
+	local obrazek = if p and not (trybSprzedazy and powod) then ikona() else ""
+	t.Text = if not p then "" elseif trybSprzedazy and powod then powod else (p.rybki or "")
+	t.TextColor3 = if p and p.wZagrodzie and not (trybSprzedazy and powod) then ZIELONY else KREMOWY
+	t.TextTransparency = if p and p.wZagrodzie and not (trybSprzedazy and powod) then 0 else 0.3
+	t.Position = if obrazek ~= "" then UDim2.fromScale(0.27, 0.5) else UDim2.fromScale(0.03, 0.5)
+	t.Size = if obrazek ~= "" then UDim2.fromScale(0.7, 0.21) else UDim2.fromScale(0.94, 0.21)
+	t.TextXAlignment = if obrazek ~= "" then Enum.TextXAlignment.Left else Enum.TextXAlignment.Center
+	ik.Image = obrazek
+	ik.ImageTransparency = t.TextTransparency
+	znaczekWyboru(slot).Visible = trybSprzedazy and p ~= nil and wybrane[p.pet] ~= nil
+end
+
 local function rysuj()
 	local s = stan
 	local ok = s ~= nil and s.ok
@@ -205,7 +341,9 @@ local function rysuj()
 		local w = if p then zalozonyW(p.pet) else nil
 		etykieta(slot, "Mark").Text = if w then "E" else ""
 		obwodka(slot, if p then p.kolor else nil)
+		rysujKafelek(slot, p)
 	end
+	rysujStopke()
 	if s and type(s.tekst) == "string" then
 		msg.Text = s.tekst
 		local znacznik = s
@@ -235,11 +373,72 @@ local function wyslij(polecenie: string, a: any?)
 	end
 end
 
+------------------------------------------------------------------ sprzedaż: tryb, zaznaczanie, potwierdzenie (26.11)
+local function przelaczTryb()
+	trybSprzedazy = not trybSprzedazy
+	table.clear(wybrane)
+	potwierdzenie = 0
+	schowajPodpowiedz(nil)
+	rysuj()
+	msg.Text = if trybSprzedazy then "Tap pets to sell their extra copies" else ""
+end
+
+local function przelaczWybor(p: any)
+	local n, powod = doSprzedazy(p)
+	potwierdzenie = 0
+	local tekst: string? = nil
+	if wybrane[p.pet] then
+		wybrane[p.pet] = nil
+	elseif n > 0 then
+		wybrane[p.pet] = n
+	else
+		tekst = if powod == "EQUIPPED" then "Equipped pets stay — only extra copies can be sold"
+			else "This pet earns fish in your pen — take it out at the Pet Pen first"
+	end
+	rysuj()
+	if tekst then
+		msg.Text = tekst
+	end
+end
+
+local function sprzedajWybrane()
+	local sztuk, suma = wybraneRazem()
+	if sztuk == 0 then
+		rysuj()
+		msg.Text = "Tap pets to sell their extra copies"
+		return
+	end
+	if os.clock() > potwierdzenie then
+		potwierdzenie = os.clock() + 5
+		rysuj()
+		msg.Text = string.format("Sell %d %s for %d fish? Tap again to confirm", sztuk, if sztuk == 1 then "pet" else "pets",
+			suma)
+		task.delay(5.1, function()
+			if os.clock() > potwierdzenie then
+				rysujStopke()
+			end
+		end)
+		return
+	end
+	potwierdzenie = 0
+	local lista = {}
+	for _, p in ipairs(if stan and stan.ok then stan.pety else {}) do
+		if wybrane[p.pet] then
+			table.insert(lista, { pet = p.pet, ile = wybrane[p.pet] })
+		end
+	end
+	table.clear(wybrane)
+	wyslij("sprzedaj", lista) -- serwer odpowiada stanem z tekstem „Sold N pets for X fish”
+end
+
 ------------------------------------------------------------------ kliknięcia i najechanie
 local dotyk = UIS.TouchEnabled and not UIS.MouseEnabled
 
 for i, slot in ipairs(slotyGory) do
 	slot.Activated:Connect(function()
+		if trybSprzedazy then
+			return -- w trybie sprzedaży sloty u góry nic nie robią (nie zdejmujemy peta przy okazji)
+		end
 		if i > 2 then
 			msg.Text = "This slot unlocks later in the game"
 			return
@@ -273,6 +472,10 @@ for i, slot in ipairs(slotyDolu) do
 		if not p then
 			return
 		end
+		if trybSprzedazy then
+			przelaczWybor(p)
+			return
+		end
 		local w = zalozonyW(p.pet)
 		if w then
 			wyslij("zdejmij", w)
@@ -300,14 +503,23 @@ for i, slot in ipairs(slotyDolu) do
 	end)
 end
 
-local function przycisk(nazwa: string, polecenie: string)
+-- w trybie sprzedaży EQUIP BEST sprzedaje zaznaczone (z potwierdzeniem), UNEQUIP ALL czyści zaznaczenie
+local function przycisk(nazwa: string, polecenie: string, wSprzedazy: () -> ())
 	(panel:WaitForChild(nazwa) :: ImageButton).Activated:Connect(function()
-		wyslij(polecenie)
+		if trybSprzedazy then
+			wSprzedazy()
+		else
+			wyslij(polecenie)
+		end
 	end)
 end
-przycisk("EquipBestButton", "najlepsze")
-przycisk("UnequipButton", "zdejmij_wszystkie")
-przycisk("DeleteButton", "usun")
+przycisk("EquipBestButton", "najlepsze", sprzedajWybrane)
+przycisk("UnequipButton", "zdejmij_wszystkie", function()
+	table.clear(wybrane)
+	potwierdzenie = 0
+	rysuj()
+end);
+(panel:WaitForChild("DeleteButton") :: ImageButton).Activated:Connect(przelaczTryb)
 
 ------------------------------------------------------------------ otwieranie i zamykanie
 local function zamknij()
@@ -317,6 +529,9 @@ local function zamknij()
 	otwarte = false
 	gui.Enabled = false
 	schowajPodpowiedz(nil)
+	trybSprzedazy = false -- okno zawsze otwiera się w zwykłym trybie
+	table.clear(wybrane)
+	potwierdzenie = 0
 end
 
 local function otworz()

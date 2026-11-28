@@ -33,6 +33,26 @@ def uklad(D, W, H):
             "tekst": tekst, "widoczne": math.floor(lista / wiersz * 10) / 10}
 
 
+def forma(formy, n):
+    """Odmiana przy liczbie: formy = [1, 2–4, 5+]; 0 i 12–14 jak 5+, 22–24, 32–34… jak 2–4 (jak u kowala)."""
+    n = int(abs(n))
+    if n == 1:
+        return formy[0]
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return formy[1]
+    return formy[2]
+
+
+def ile_rybek(D, n):
+    """Waluta Rybki (atrybut Gold, D-146): „1 Rybka”, „3 Rybki”, „5 Rybek” (cena)."""
+    return "%d %s" % (n, forma(D["teksty"]["formy_rybki"], n))
+
+
+def ile_rybek_dop(D, n):
+    """„1 Rybki”, „3 Rybek” (dopełniacz: „Brakuje ci …”)."""
+    return "%d %s" % (n, forma(D["teksty"]["formy_rybki_dopelniacz"], n))
+
+
 def grupy(D, oferta):
     """Oferta → stopnie w kolejności danych (startowy, leśny, bagienny, Dżungli) z wierszami w kolejności oferty."""
     w = []
@@ -66,7 +86,7 @@ def wiersz(D, o):
     if posiadany and o["ulepszenie"] > 0:
         nazwa = "%s %s" % (nazwa, T["ulepszenie"] % o["ulepszenie"])
     staty = o["staty"] if o["staty"] != "" else T["bez_dodatkow"]
-    cena = (T["cena"] % o["cena"]) if o["cena"] > 0 else T["cena_zero"]
+    cena = (T["cena"] % ile_rybek(D, o["cena"])) if o["cena"] > 0 else T["cena_zero"]
     w = {"id": o["id"], "nazwa": nazwa, "opis": "%s · %s" % (o["slotNazwa"], staty),
          "wymaga": "%s · %s" % (T["wymaga"] % o["poziom"], cena), "stan": T["stan_" + o["stan"]], "akcja": "",
          "przycisk": "", "aktywny": False, "powod": ""}
@@ -75,7 +95,7 @@ def wiersz(D, o):
     elif o["stan"] == "masz":
         w["akcja"], w["przycisk"], w["aktywny"] = "zaloz", T["zaloz"], True
     elif o["stan"] == "za_drogie":
-        w["przycisk"], w["powod"] = T["kup"], T["za_malo_zlota"] % o["brakuje"]
+        w["przycisk"], w["powod"] = T["kup"], T["za_malo_zlota"] % ile_rybek_dop(D, o["brakuje"])
     elif o["stan"] == "za_niski_poziom":
         w["przycisk"], w["powod"] = T["kup"], T["za_niski_poziom"] % o["poziom"]
     return w
@@ -107,7 +127,7 @@ def komunikat(D, akcja, r):
     powod = r.get("powod")
     ile = r.get("brakuje") if isinstance(r.get("brakuje"), (int, float)) and not isinstance(r.get("brakuje"), bool) else 0
     if powod == "za_malo_zlota":
-        return T["za_malo_zlota"] % ile
+        return T["za_malo_zlota"] % ile_rybek_dop(D, ile)
     if powod == "za_niski_poziom":
         wymagany = r.get("wymagany")
         return T["za_niski_poziom"] % (wymagany if isinstance(wymagany, (int, float)) else ile)

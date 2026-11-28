@@ -110,17 +110,21 @@ def main():
                     time.sleep(2.2)
                 else:
                     if co == "krytyk":
-                        i = next(i for i, z in enumerate(d) if z["typ"] == "krytyk" and z["kto"] == "gracz")
+                        i = next((i for i, z in enumerate(d) if z["typ"] == "krytyk" and z["kto"] == "gracz"), None)
                         dt = 0.06
                     elif co == "kula_ognia":
-                        i = next(i for i, z in enumerate(d) if z["umiejetnosc"] == "kula_ognia" and z["typ"] == "umiejetnosc")
+                        i = next((i for i, z in enumerate(d) if z.get("umiejetnosc") == "kula_ognia" and z["typ"] == "umiejetnosc"), None)
                         dt = -0.12
                     elif co == "utrata":
-                        i = next(i for i, z in enumerate(d) if z["typ"] == "utrata_tury" and z["kto"] == "wrog")
+                        i = next((i for i, z in enumerate(d) if z["typ"] == "utrata_tury" and z["kto"] == "wrog"), None)
                         dt = None
                     else:
-                        i = next(i for i, z in enumerate(d) if z["typ"] == "efekt_nalozony" and z["efekt"] == "spowolnienie")
+                        i = next((i for i, z in enumerate(d) if z["typ"] == "efekt_nalozony" and z["efekt"] == "spowolnienie"), None)
                         dt = None
+                    if i is None:
+                        # silnik się zmienił i w dzienniku tego ziarna nie ma już takiej chwili: kadr zostaje stary
+                        log(nazwa, "POMINIĘTY — w dzienniku ziarna %d nie ma chwili „%s”" % (ziarno, co))
+                        continue
                     # napisy starzeją się w czasie rzeczywistym: najpierw do chwili tuż przed zdarzeniem, przerwa, aż
                     # stare napisy znikną, dopiero potem do kadru (inaczej na zrzucie piętrzą się napisy z kilku zdarzeń)
                     s.steruj('"przewinDo", %f' % max(0.0, d[i]["t"] - 0.05))

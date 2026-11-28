@@ -7,13 +7,14 @@
 		   do końca sesji (haczyk testowy "wlacz" je przywraca).
 		2. Strzałka obok przycisku TELEPORT w HUD Pawła (tylko czyta jego położenie — HUD-u nie zmienia) albo znacznik
 		   w świecie nad celem: najbliższy potwór, Strażnik Gaju, Kamień Powrotu, trener, brama za Strażnikiem,
-		   inkubator jajek biomu (swiat/pety_proba — gdy Złota wystarcza na pierwsze jajko lasu albo Bagna).
+		   jajko biomu (od 26.11.2026 nowe jajka ze scenką Pawła: leśne w mieście przy zagrodzie, Bagna i Dżungli przy
+		   przybyciu biomu — gdy Rybek wystarcza na pierwsze jajko tego biomu; w lesie znacznik nad Kamieniem Powrotu).
 		3. Krok wynika ze stanu gracza (LogikaWskazowek.krok): klasa, wynik ostatniej walki w lesie, pokonany Strażnik,
 		   położenie (prostokąty biomów z ich danych: las-pas, Bagno), stan gracza (swiat/stan_gracza: poziomy i trening), a nie ze
 		   sztywnego scenariusza. Bez StanGracza kroki o poziomach i treningu się nie pokazują.
 		4. Schowane, gdy trwa walka, przelot, chmury, mini-gra, wybór klasy albo gdy HUD jest schowany — nie zasłania
 		   HUD-u ani ekranu walki.
-	Źródła (tylko odczyt): atrybuty gracza Class, Level, PokonalStraznikaLasu, TreningGra; atrybuty klienta kontenerów
+	Źródła (tylko odczyt): atrybuty gracza Class, Level, PokonalStraznikaLasu, TreningAFK (z danych); atrybuty klienta kontenerów
 	lasu (OstatniWynik, OstatnieZiarno, KlientOstatniaWalka — ustawia je odtwarzacz walki); moduł DanePasa lasu-pasa;
 	Stan potworów lasu; punkty E trenera i Kamienia Powrotu; StanGracza (SerwerStanuGotowy, TreningPodlaczony);
 	TeleportChmury (Trwa); ScreenGui HUD, TestWalki2Cutscenka, ClassSelect.
@@ -133,7 +134,8 @@ local function podepnijLasy()
 	end
 end
 
--- trening: wejście na stanowisko (atrybut gracza TreningGra) po przegranej = „potrenował” (w każdym biomie)
+-- trening: wejście na stanowisko (atrybut gracza z danych: od 26.11.2026 TreningAFK — stanowiska AFK; wcześniej TreningGra
+-- mini-gier) po przegranej = „potrenował” (w każdym biomie)
 gracz:GetAttributeChangedSignal(Z.atrybut_treningu):Connect(function()
 	if gracz:GetAttribute(Z.atrybut_treningu) == nil then
 		return
@@ -376,7 +378,14 @@ local function punktCelu(cel, od, kraina)
 	elseif cel == "trener" then
 		return najblizszyTrener(od)
 	elseif cel == "jajko" then
-		return b and b.inkubator and pozycja(sciezka(b.inkubator)) -- inkubator biomu (swiat/pety_proba)
+		-- jajko biomu ze scenką (punkt E, a gdy streaming go jeszcze nie dał — model jajka); w mieście: leśne
+		for _, s in (if b and b.jajko then b.jajko else {}) do
+			local p = pozycja(sciezka(s))
+			if p then
+				return p
+			end
+		end
+		return nil
 	elseif cel == "kowal" then
 		return pozycja(sciezka(Z.kowal_e)) -- punkt E kowala w bazarze (swiat/kowal_proba)
 	elseif not b then
@@ -550,6 +559,7 @@ sterowanie.OnInvoke = function(polecenie, a, b)
 		return {
 			krok = biezacy and biezacy.id, tekst = biezacy and biezacy.tekst, cel = biezacy and biezacy.cel,
 			widoczne = pasek.Visible, strzalka = strzalka.Visible, znacznik = znacznik.Enabled,
+			znacznikNad = if znacznik.Enabled then kotwica.Position else nil, -- 26.11.2026: punkt znacznika (próby)
 			ukryte = s.ukryte, kraina = s.kraina, miejsce = s.miejsce, wygrane = s.wygrane, przegrane = s.przegrane,
 			ostatni = s.ostatni, trenowal = s.trenowal, wylaczone = sesja.wylaczone, bagno = s.bagno,
 			straznik = s.straznik, straznik_bagna = s.straznik_bagna, straznik_dzungli = s.straznik_dzungli,

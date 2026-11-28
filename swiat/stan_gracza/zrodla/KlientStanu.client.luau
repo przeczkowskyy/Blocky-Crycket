@@ -1,7 +1,7 @@
 --[[
 	KlientStanu — kliencka połowa „stanu gracza” (Script, RunContext = Client, w kontenerze Workspace/StanGracza).
 	Niczego nie liczy i nie wysyła liczb (D-016). Trzy rzeczy (trzecia: komunikat "przegrana", kara, doświadczenie →
-	napis „Przegrana: −N Złota, +M doświadczenia” na dole ekranu jak premia peta — 17.11.2026, propozycja D-098):
+	napis „Przegrana: −N Rybek, +M doświadczenia” na dole ekranu jak premia peta — 17.11.2026, propozycja D-098):
 		1. gdy HUD Pawła (PlayerGui.HUD) znów jest włączony — a odtwarzacz walki chowa go na czas walki — zgłasza
 		   serwerowi "pokaz": łup z zakończonej walki trafia wtedy do atrybutów i HUD sam go odlicza;
 		2. komunikat serwera "awans", poziom, ile → krótki baner „POZIOM N” (własny ScreenGui D.baner.gui, pokazywany
@@ -175,6 +175,14 @@ end
 -- czasie; gdy HUD schowany (walka) — czeka na HUD
 local K = D.kara
 local czekajacyKomunikat: string? = nil
+
+-- waluta Rybki (atrybut Gold, D-146): „1 Rybka”, „3 Rybki”, „5 Rybek”; 0 i 12–14 jak 5+, 22–24, 32–34… jak 2–4
+local function ileRybek(n: number): string
+	local f = K.formy_rybki
+	local d, s = n % 10, n % 100
+	local slowo = if n == 1 then f[1] elseif d >= 2 and d <= 4 and not (s >= 12 and s <= 14) then f[2] else f[3]
+	return string.format("%d %s", n, slowo)
+end
 local ostatniKomunikat: ScreenGui? = nil
 
 local function pokazKomunikat(tekst: string)
@@ -282,7 +290,7 @@ zdarzenia.OnClientEvent:Connect(function(polecenie: any, kara: any, xp: any)
 	if polecenie ~= "przegrana" or type(kara) ~= "number" or type(xp) ~= "number" then
 		return
 	end
-	czekajacyKomunikat = if kara > 0 then string.format(K.komunikat, math.floor(kara), math.floor(xp))
+	czekajacyKomunikat = if kara > 0 then string.format(K.komunikat, ileRybek(math.floor(kara)), math.floor(xp))
 		else string.format(K.komunikat_bez_zlota, math.floor(xp))
 	pokazCzekajacy()
 end)

@@ -1,0 +1,6609 @@
+{
+ "modul": "bronie_klas",
+ "modele": [
+  {
+   "id": "na_kocie_mag_rozdzka_z_patyka",
+   "nazwa": "Kot — Różdżka z Patyka",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "mag_rozdzka_z_patyka_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 512,
+     "wierzcholki": 308,
+     "wymiary": [
+      0.441,
+      0.818,
+      1.352
+     ],
+     "min": [
+      -1.187,
+      0.779,
+      -0.247
+     ],
+     "max": [
+      -0.746,
+      1.597,
+      1.105
+     ]
+    }
+   ],
+   "trojkaty_razem": 3044,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 16
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    2.277,
+    3.822,
+    2.344
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.187,
+     0.0,
+     -1.239
+    ],
+    [
+     1.09,
+     3.822,
+     1.105
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "mag_rozdzka_z_patyka",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "na_kocie_mag_kostur_z_miotly",
+   "nazwa": "Kot — Kostur z Miotły",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "mag_kostur_z_miotly_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 860,
+     "wierzcholki": 532,
+     "wymiary": [
+      0.985,
+      3.549,
+      0.952
+     ],
+     "min": [
+      -1.672,
+      0.072,
+      -0.477
+     ],
+     "max": [
+      -0.687,
+      3.621,
+      0.475
+     ]
+    }
+   ],
+   "trojkaty_razem": 3392,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 21
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    2.762,
+    3.822,
+    2.096
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.672,
+     0.0,
+     -1.239
+    ],
+    [
+     1.09,
+     3.822,
+     0.857
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "mag_kostur_z_miotly",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "na_kocie_mag_walek_czarodziejski",
+   "nazwa": "Kot — Wałek Czarodziejski",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "mag_walek_czarodziejski_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 692,
+     "wierzcholki": 406,
+     "wymiary": [
+      0.593,
+      2.077,
+      0.924
+     ],
+     "min": [
+      -1.391,
+      0.614,
+      -0.099
+     ],
+     "max": [
+      -0.798,
+      2.691,
+      0.825
+     ]
+    }
+   ],
+   "trojkaty_razem": 3224,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 19
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    2.481,
+    3.822,
+    2.096
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.391,
+     0.0,
+     -1.239
+    ],
+    [
+     1.09,
+     3.822,
+     0.857
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "mag_walek_czarodziejski",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "na_kocie_mag_rozdzka_ze_swieczki",
+   "nazwa": "Kot — Różdżka ze Świeczki",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "mag_rozdzka_ze_swieczki_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 776,
+     "wierzcholki": 444,
+     "wymiary": [
+      0.366,
+      0.909,
+      1.477
+     ],
+     "min": [
+      -1.145,
+      0.739,
+      -0.296
+     ],
+     "max": [
+      -0.779,
+      1.648,
+      1.181
+     ]
+    }
+   ],
+   "trojkaty_razem": 3308,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 20
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    2.235,
+    3.822,
+    2.42
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.145,
+     0.0,
+     -1.239
+    ],
+    [
+     1.09,
+     3.822,
+     1.181
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "mag_rozdzka_ze_swieczki",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "na_kocie_mag_kostur_ucznia",
+   "nazwa": "Kot — Kostur Ucznia",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "mag_kostur_ucznia_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 664,
+     "wierzcholki": 402,
+     "wymiary": [
+      0.954,
+      3.443,
+      0.24
+     ],
+     "min": [
+      -1.631,
+      0.056,
+      -0.09
+     ],
+     "max": [
+      -0.677,
+      3.499,
+      0.15
+     ]
+    }
+   ],
+   "trojkaty_razem": 3196,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 19
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    2.721,
+    3.822,
+    2.096
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.631,
+     0.0,
+     -1.239
+    ],
+    [
+     1.09,
+     3.822,
+     0.857
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "mag_kostur_ucznia",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "na_kocie_zwiad_proca_z_galezi",
+   "nazwa": "Kot — Proca z Gałęzi",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "zwiad_proca_z_galezi_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 364,
+     "wierzcholki": 220,
+     "wymiary": [
+      1.379,
+      1.725,
+      0.709
+     ],
+     "min": [
+      -2.056,
+      0.521,
+      -0.135
+     ],
+     "max": [
+      -0.677,
+      2.246,
+      0.574
+     ]
+    }
+   ],
+   "trojkaty_razem": 2896,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 19
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    3.146,
+    3.822,
+    2.096
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -2.056,
+     0.0,
+     -1.239
+    ],
+    [
+     1.09,
+     3.822,
+     0.857
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "zwiad_proca_z_galezi",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "na_kocie_zwiad_luk_z_wieszaka",
+   "nazwa": "Kot — Łuk z Wieszaka",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "zwiad_luk_z_wieszaka_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 724,
+     "wierzcholki": 418,
+     "wymiary": [
+      1.038,
+      1.006,
+      1.176
+     ],
+     "min": [
+      0.629,
+      0.617,
+      -0.351
+     ],
+     "max": [
+      1.667,
+      1.623,
+      0.825
+     ]
+    }
+   ],
+   "trojkaty_razem": 3256,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 16
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    2.757,
+    3.822,
+    2.096
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.09,
+     0.0,
+     -1.239
+    ],
+    [
+     1.667,
+     3.822,
+     0.857
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "zwiad_luk_z_wieszaka",
+     "zaczep": "LeftGripAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "na_kocie_zwiad_noz_do_masla",
+   "nazwa": "Kot — Nóż do Masła",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "zwiad_noz_do_masla_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 284,
+     "wierzcholki": 172,
+     "wymiary": [
+      0.468,
+      1.55,
+      0.712
+     ],
+     "min": [
+      -1.263,
+      0.606,
+      -0.105
+     ],
+     "max": [
+      -0.795,
+      2.156,
+      0.607
+     ]
+    }
+   ],
+   "trojkaty_razem": 2816,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 20
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    2.353,
+    3.822,
+    2.096
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.263,
+     0.0,
+     -1.239
+    ],
+    [
+     1.09,
+     3.822,
+     0.857
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "zwiad_noz_do_masla",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "na_kocie_zwiad_sztylet_z_szyszki",
+   "nazwa": "Kot — Sztylet z Szyszki",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "zwiad_sztylet_z_szyszki_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 784,
+     "wierzcholki": 480,
+     "wymiary": [
+      0.52,
+      1.78,
+      0.778
+     ],
+     "min": [
+      -1.186,
+      0.199,
+      -0.292
+     ],
+     "max": [
+      -0.666,
+      1.979,
+      0.486
+     ]
+    }
+   ],
+   "trojkaty_razem": 3316,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 22
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    2.276,
+    3.822,
+    2.096
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.186,
+     0.0,
+     -1.239
+    ],
+    [
+     1.09,
+     3.822,
+     0.857
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "zwiad_sztylet_z_szyszki",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "na_kocie_zwiad_luk_tropiciela",
+   "nazwa": "Kot — Łuk Tropiciela",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 176,
+     "wierzcholki": 96,
+     "wymiary": [
+      1.3,
+      0.88,
+      1.155
+     ],
+     "min": [
+      -0.65,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.65,
+      1.0,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 228,
+     "wierzcholki": 138,
+     "wymiary": [
+      1.36,
+      0.85,
+      1.0
+     ],
+     "min": [
+      -0.68,
+      1.0,
+      -0.505
+     ],
+     "max": [
+      0.68,
+      1.85,
+      0.495
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      0.67,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      1.05,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      0.1,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      0.5,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      0.03,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      0.57,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.38,
+      0.32,
+      0.39
+     ],
+     "min": [
+      -1.05,
+      0.72,
+      -0.19
+     ],
+     "max": [
+      -0.67,
+      1.04,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.4,
+      0.3,
+      0.4
+     ],
+     "min": [
+      -0.5,
+      0.165,
+      -0.2
+     ],
+     "max": [
+      -0.1,
+      0.465,
+      0.2
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 156,
+     "wierzcholki": 88,
+     "wymiary": [
+      0.54,
+      0.18,
+      1.082
+     ],
+     "min": [
+      -0.57,
+      0.0,
+      -0.225
+     ],
+     "max": [
+      -0.03,
+      0.18,
+      0.857
+     ]
+    },
+    {
+     "nazwa": "LeftEar_Geo",
+     "kosc": "LeftEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      0.392,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      0.973,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "RightEar_Geo",
+     "kosc": "RightEar",
+     "trojkaty": 40,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.581,
+      0.69,
+      0.343
+     ],
+     "min": [
+      -0.973,
+      3.132,
+      -0.203
+     ],
+     "max": [
+      -0.392,
+      3.822,
+      0.14
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "zwiad_luk_tropiciela_Akc",
+     "kosc": "LeftHand",
+     "trojkaty": 652,
+     "wierzcholki": 392,
+     "wymiary": [
+      0.922,
+      1.119,
+      1.343
+     ],
+     "min": [
+      0.726,
+      0.511,
+      -0.429
+     ],
+     "max": [
+      1.648,
+      1.63,
+      0.914
+     ]
+    }
+   ],
+   "trojkaty_razem": 3184,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 21
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.18,
+    3.822,
+    2.096
+   ],
+   "wymiary_z_akcesoriami": [
+    2.738,
+    3.822,
+    2.153
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.09,
+     0.0,
+     -1.239
+    ],
+    [
+     1.648,
+     3.822,
+     0.914
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "zwiad_luk_tropiciela",
+     "zaczep": "LeftGripAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 404,
+     "limit": 1750,
+     "wymiary": [
+      1.36,
+      1.73,
+      1.155
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 264,
+     "limit": 1248,
+     "wymiary": [
+      0.46,
+      1.13,
+      0.46
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 244,
+     "limit": 1248,
+     "wymiary": [
+      0.54,
+      0.75,
+      1.082
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "mag_rozdzka_z_patyka",
+   "nazwa": "Różdżka z Patyka",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_rozdzka_z_patyka",
+     "kosc": null,
+     "trojkaty": 512,
+     "wierzcholki": 308,
+     "wymiary": [
+      0.422,
+      1.507,
+      0.189
+     ],
+     "min": [
+      -0.171,
+      -0.245,
+      -0.086
+     ],
+     "max": [
+      0.251,
+      1.262,
+      0.103
+     ]
+    }
+   ],
+   "trojkaty_razem": 512,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.171,
+     -0.245,
+     -0.086
+    ],
+    [
+     0.251,
+     1.262,
+     0.103
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.04,
+    0.508,
+    0.009
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_kostur_z_miotly",
+   "nazwa": "Kostur z Miotły",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_kostur_z_miotly",
+     "kosc": null,
+     "trojkaty": 860,
+     "wierzcholki": 532,
+     "wymiary": [
+      0.975,
+      3.541,
+      0.952
+     ],
+     "min": [
+      -0.469,
+      -0.885,
+      -0.507
+     ],
+     "max": [
+      0.506,
+      2.656,
+      0.445
+     ]
+    }
+   ],
+   "trojkaty_razem": 860,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 10
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.469,
+     -0.885,
+     -0.507
+    ],
+    [
+     0.506,
+     2.656,
+     0.445
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.019,
+    0.886,
+    -0.031
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_walek_czarodziejski",
+   "nazwa": "Wałek Czarodziejski",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_walek_czarodziejski",
+     "kosc": null,
+     "trojkaty": 692,
+     "wierzcholki": 406,
+     "wymiary": [
+      0.378,
+      2.235,
+      0.358
+     ],
+     "min": [
+      -0.185,
+      -0.335,
+      -0.179
+     ],
+     "max": [
+      0.193,
+      1.9,
+      0.179
+     ]
+    }
+   ],
+   "trojkaty_razem": 692,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.185,
+     -0.335,
+     -0.179
+    ],
+    [
+     0.193,
+     1.9,
+     0.179
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.004,
+    0.782,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_rozdzka_ze_swieczki",
+   "nazwa": "Różdżka ze Świeczki",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_rozdzka_ze_swieczki",
+     "kosc": null,
+     "trojkaty": 776,
+     "wierzcholki": 444,
+     "wymiary": [
+      0.315,
+      1.694,
+      0.276
+     ],
+     "min": [
+      -0.148,
+      -0.33,
+      -0.141
+     ],
+     "max": [
+      0.167,
+      1.364,
+      0.135
+     ]
+    }
+   ],
+   "trojkaty_razem": 776,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 9
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.148,
+     -0.33,
+     -0.141
+    ],
+    [
+     0.167,
+     1.364,
+     0.135
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.01,
+    0.517,
+    -0.003
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "mag_kostur_ucznia",
+   "nazwa": "Kostur Ucznia",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "mag_kostur_ucznia",
+     "kosc": null,
+     "trojkaty": 664,
+     "wierzcholki": 402,
+     "wymiary": [
+      0.952,
+      3.452,
+      0.24
+     ],
+     "min": [
+      -0.47,
+      -0.9,
+      -0.12
+     ],
+     "max": [
+      0.482,
+      2.552,
+      0.12
+     ]
+    }
+   ],
+   "trojkaty_razem": 664,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.47,
+     -0.9,
+     -0.12
+    ],
+    [
+     0.482,
+     2.552,
+     0.12
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.006,
+    0.826,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "zwiad_proca_z_galezi",
+   "nazwa": "Proca z Gałęzi",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "zwiad_proca_z_galezi",
+     "kosc": null,
+     "trojkaty": 364,
+     "wierzcholki": 220,
+     "wymiary": [
+      1.038,
+      1.766,
+      0.613
+     ],
+     "min": [
+      -0.538,
+      -0.455,
+      -0.148
+     ],
+     "max": [
+      0.5,
+      1.311,
+      0.465
+     ]
+    }
+   ],
+   "trojkaty_razem": 364,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 8
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.538,
+     -0.455,
+     -0.148
+    ],
+    [
+     0.5,
+     1.311,
+     0.465
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    -0.019,
+    0.428,
+    0.159
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "zwiad_luk_z_wieszaka",
+   "nazwa": "Łuk z Wieszaka",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "zwiad_luk_z_wieszaka",
+     "kosc": null,
+     "trojkaty": 724,
+     "wierzcholki": 418,
+     "wymiary": [
+      0.15,
+      1.598,
+      0.812
+     ],
+     "min": [
+      -0.075,
+      -0.799,
+      -0.335
+     ],
+     "max": [
+      0.075,
+      0.799,
+      0.477
+     ]
+    }
+   ],
+   "trojkaty_razem": 724,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.075,
+     -0.799,
+     -0.335
+    ],
+    [
+     0.075,
+     0.799,
+     0.477
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.0,
+    0.071
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "zwiad_noz_do_masla",
+   "nazwa": "Nóż do Masła",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "zwiad_noz_do_masla",
+     "kosc": null,
+     "trojkaty": 284,
+     "wierzcholki": 172,
+     "wymiary": [
+      0.337,
+      1.66,
+      0.2
+     ],
+     "min": [
+      -0.157,
+      -0.35,
+      -0.1
+     ],
+     "max": [
+      0.18,
+      1.31,
+      0.1
+     ]
+    }
+   ],
+   "trojkaty_razem": 284,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 9
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.157,
+     -0.35,
+     -0.1
+    ],
+    [
+     0.18,
+     1.31,
+     0.1
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.011,
+    0.48,
+    0.0
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "zwiad_sztylet_z_szyszki",
+   "nazwa": "Sztylet z Szyszki",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "zwiad_sztylet_z_szyszki",
+     "kosc": null,
+     "trojkaty": 784,
+     "wierzcholki": 480,
+     "wymiary": [
+      0.365,
+      1.91,
+      0.363
+     ],
+     "min": [
+      -0.182,
+      -0.79,
+      -0.18
+     ],
+     "max": [
+      0.183,
+      1.12,
+      0.183
+     ]
+    }
+   ],
+   "trojkaty_razem": 784,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 11
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.182,
+     -0.79,
+     -0.18
+    ],
+    [
+     0.183,
+     1.12,
+     0.183
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.001,
+    0.165,
+    0.002
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "zwiad_luk_tropiciela",
+   "nazwa": "Łuk Tropiciela",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "zwiad_luk_tropiciela",
+     "kosc": null,
+     "trojkaty": 652,
+     "wierzcholki": 392,
+     "wymiary": [
+      0.45,
+      1.886,
+      0.396
+     ],
+     "min": [
+      -0.177,
+      -0.943,
+      -0.296
+     ],
+     "max": [
+      0.273,
+      0.943,
+      0.1
+     ]
+    }
+   ],
+   "trojkaty_razem": 652,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 10
+   },
+   "zaczep": "LeftGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.177,
+     -0.943,
+     -0.296
+    ],
+    [
+     0.273,
+     0.943,
+     0.1
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.048,
+    0.0,
+    -0.098
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [
+  "na_kocie_mag_kostur_ucznia: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15",
+  "na_kocie_mag_kostur_z_miotly: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15",
+  "na_kocie_mag_rozdzka_z_patyka: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15",
+  "na_kocie_mag_rozdzka_ze_swieczki: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15",
+  "na_kocie_mag_walek_czarodziejski: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15",
+  "na_kocie_zwiad_luk_tropiciela: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15",
+  "na_kocie_zwiad_luk_z_wieszaka: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15",
+  "na_kocie_zwiad_noz_do_masla: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15",
+  "na_kocie_zwiad_proca_z_galezi: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15",
+  "na_kocie_zwiad_sztylet_z_szyszki: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15"
+ ],
+ "kontrola": [
+  "na_kocie_mag_rozdzka_z_patyka.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_mag_rozdzka_z_patyka__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_rozdzka_z_patyka|Scene 1-61 -> ZGODNE",
+  "na_kocie_mag_rozdzka_z_patyka.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "na_kocie_mag_kostur_z_miotly.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_mag_kostur_z_miotly__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_kostur_z_miotly|Scene 1-61 -> ZGODNE",
+  "na_kocie_mag_kostur_z_miotly.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "na_kocie_mag_walek_czarodziejski.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_mag_walek_czarodziejski__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_walek_czarodziejski|Scene 1-61 -> ZGODNE",
+  "na_kocie_mag_walek_czarodziejski.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "na_kocie_mag_rozdzka_ze_swieczki.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_mag_rozdzka_ze_swieczki__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_rozdzka_ze_swieczki|Scene 1-61 -> ZGODNE",
+  "na_kocie_mag_rozdzka_ze_swieczki.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "na_kocie_mag_kostur_ucznia.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_mag_kostur_ucznia__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_mag_kostur_ucznia|Scene 1-61 -> ZGODNE",
+  "na_kocie_mag_kostur_ucznia.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "na_kocie_zwiad_proca_z_galezi.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_zwiad_proca_z_galezi__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_proca_z_galezi|Scene 1-61 -> ZGODNE",
+  "na_kocie_zwiad_proca_z_galezi.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "na_kocie_zwiad_luk_z_wieszaka.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_zwiad_luk_z_wieszaka__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_luk_z_wieszaka|Scene 1-61 -> ZGODNE",
+  "na_kocie_zwiad_luk_z_wieszaka.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "na_kocie_zwiad_noz_do_masla.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_zwiad_noz_do_masla__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_noz_do_masla|Scene 1-61 -> ZGODNE",
+  "na_kocie_zwiad_noz_do_masla.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "na_kocie_zwiad_sztylet_z_szyszki.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_zwiad_sztylet_z_szyszki__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_sztylet_z_szyszki|Scene 1-61 -> ZGODNE",
+  "na_kocie_zwiad_sztylet_z_szyszki.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "na_kocie_zwiad_luk_tropiciela.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "na_kocie_zwiad_luk_tropiciela__idle.fbx: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje na_kocie_zwiad_luk_tropiciela|Scene 1-61 -> ZGODNE",
+  "na_kocie_zwiad_luk_tropiciela.glb: siatki 40, kości 23, trójkąty 2784, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "mag_rozdzka_z_patyka.fbx: siatki 1, kości 0, trójkąty 512, wzrost 1.51 st., akcje brak -> ZGODNE",
+  "mag_rozdzka_z_patyka.glb: siatki 1, kości 0, trójkąty 512, wzrost 1.51 st., akcje brak -> ZGODNE",
+  "mag_kostur_z_miotly.fbx: siatki 1, kości 0, trójkąty 860, wzrost 3.54 st., akcje brak -> ZGODNE",
+  "mag_kostur_z_miotly.glb: siatki 1, kości 0, trójkąty 860, wzrost 3.54 st., akcje brak -> ZGODNE",
+  "mag_walek_czarodziejski.fbx: siatki 1, kości 0, trójkąty 692, wzrost 2.23 st., akcje brak -> ZGODNE",
+  "mag_walek_czarodziejski.glb: siatki 1, kości 0, trójkąty 692, wzrost 2.23 st., akcje brak -> ZGODNE",
+  "mag_rozdzka_ze_swieczki.fbx: siatki 1, kości 0, trójkąty 776, wzrost 1.69 st., akcje brak -> ZGODNE",
+  "mag_rozdzka_ze_swieczki.glb: siatki 1, kości 0, trójkąty 776, wzrost 1.69 st., akcje brak -> ZGODNE",
+  "mag_kostur_ucznia.fbx: siatki 1, kości 0, trójkąty 664, wzrost 3.45 st., akcje brak -> ZGODNE",
+  "mag_kostur_ucznia.glb: siatki 1, kości 0, trójkąty 664, wzrost 3.45 st., akcje brak -> ZGODNE",
+  "zwiad_proca_z_galezi.fbx: siatki 1, kości 0, trójkąty 364, wzrost 1.77 st., akcje brak -> ZGODNE",
+  "zwiad_proca_z_galezi.glb: siatki 1, kości 0, trójkąty 364, wzrost 1.77 st., akcje brak -> ZGODNE",
+  "zwiad_luk_z_wieszaka.fbx: siatki 1, kości 0, trójkąty 724, wzrost 1.60 st., akcje brak -> ZGODNE",
+  "zwiad_luk_z_wieszaka.glb: siatki 1, kości 0, trójkąty 724, wzrost 1.60 st., akcje brak -> ZGODNE",
+  "zwiad_noz_do_masla.fbx: siatki 1, kości 0, trójkąty 284, wzrost 1.66 st., akcje brak -> ZGODNE",
+  "zwiad_noz_do_masla.glb: siatki 1, kości 0, trójkąty 284, wzrost 1.66 st., akcje brak -> ZGODNE",
+  "zwiad_sztylet_z_szyszki.fbx: siatki 1, kości 0, trójkąty 784, wzrost 1.91 st., akcje brak -> ZGODNE",
+  "zwiad_sztylet_z_szyszki.glb: siatki 1, kości 0, trójkąty 784, wzrost 1.91 st., akcje brak -> ZGODNE",
+  "zwiad_luk_tropiciela.fbx: siatki 1, kości 0, trójkąty 652, wzrost 1.89 st., akcje brak -> ZGODNE",
+  "zwiad_luk_tropiciela.glb: siatki 1, kości 0, trójkąty 652, wzrost 1.89 st., akcje brak -> ZGODNE"
+ ]
+}

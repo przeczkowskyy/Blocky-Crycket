@@ -7,22 +7,24 @@ gatunki, koszt przy pełnym zestawie).
     python -B swiat/las_pas_gra/testy/proba_play.py <folder wyjściowy> [--studio <studio_id>] [--bez-zrzutow]
 
 Warunki: Studio w trybie Edit, otwarte miejsce gry (placeId sprawdza cel_studio), zbudowane Workspace/LasPas
-(swiat/las_pas) i Workspace/LasPasGra (python -B swiat/las_pas_gra/zbuduj.py); najlepiej też TestWalki2, LasTeleport,
-LasPotwory i LasMgla (stary las ma dalej działać). Skrypt sam włącza i wyłącza Play (tylko swoje), niczego nie
+(swiat/las_pas) i Workspace/LasPasGra (python -B swiat/las_pas_gra/zbuduj.py); najlepiej też TestWalki2 i
+MiasteczkoBazarGra (start bazaru). Od 26.11.2026 starego lasu (BiomLas, LasPotwory, LasMgla) ani bramy starego
+miasteczka (LasTeleport) nie ma w miejscu. Skrypt sam włącza i wyłącza Play (tylko swoje), niczego nie
 zapisuje w miejscu i niczego nie publikuje. Wyniki: <wyj>/wyniki.json, lista kontrolna na ekranie i w
 <wyj>/lista.txt, zrzuty <wyj>/<nazwa>.jpg (bez filmów). Przy wygaszonym ekranie Studio nie rysuje — skrypt budzi go
 przed każdym zrzutem (swiat/test_walki2/testy/czuwanie.py).
 
 LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
   P01 serwery gotowe: SerwerGotowy (potwory pasa), SerwerPasaGotowy, StanMapy ok, StanBiomu ok, SzablonyGotowe,
-      Potworow = 20 przy 1 graczu, ZgodnoscLogiki „OK 70/70”, ZgodnoscLogikiPasa „OK 39/39”, Przekierowanie „tak”;
-      stary las: LasPotwory SerwerGotowy, Potworow 36
+      Potworow = 20 przy 1 graczu, ZgodnoscLogiki „OK 70/70”, ZgodnoscLogikiPasa „OK 39/39”, Przekierowanie
+      „nie_ten_biom” (26.11.2026: bramy starego miasteczka już nie ma); w miejscu nie ma Workspace/LasPotwory
   P02 klienci gotowi: KlientGotowy i KlientTryb „aktorzy” (potwory pasa), KlientPasaGotowy
-  P03 przybycie: z miasteczka przez dzisiejszą bramę (LasTeleport.Steruj „las”, przekierowana) → Polana Przybycia
+  P03 przybycie: ze startu bazaru przez uchwyt Sygnaly/PrzeniesDoLasu (ten sam, którego używają Brama Leśna bazaru
+      i przejście przez chmury) → Polana Przybycia
   P04 pierwszy przelot: fazy uspokaja → laduje → trwa → brak, kamera skryptowa, czas lotu z krótkiego planu (D-096) ± 1,5 s, ryk Strażnika
       zagrał, postać nie ruszyła się (zakotwiczona), walka w trakcie odrzucona (licznik walk bez zmian), po locie
       kamera Custom, postać i walki odblokowane, WidzialPrzelotLasu = true
-  P05 brak drugiego przelotu: miasteczko → brama → las, 6 s — faza „brak”, LicznikPrzelotow bez zmian
+  P05 brak drugiego przelotu: miasteczko → uchwyt PrzeniesDoLasu → las, 6 s — faza „brak”, LicznikPrzelotow bez zmian
   P05t TELEPORT „Las” z głębi lasu (D-096, „Kliknąć Las jeszcze raz?”): przeniesienie na Polanę Przybycia (inkubator,
       Kamień Powrotu), bez odmowy i bez drugiego przelotu; bez Workspace/TeleportChmury „?”
   P06 uchwyt „odtwórz ponownie”: przelot jeszcze raz i znów kończy się czysto
@@ -49,8 +51,8 @@ LISTA KONTROLNA (każdy punkt kończy się OK / BŁĄD / ? w liście):
   P12 Kamień Powrotu: podpowiedź E przy kamieniu, prawdziwe E → miasteczko
   P13 mgła: waga 1 w pasie, 0 w miasteczku; Atmosphere u klienta zmieniona, NA SERWERZE taka jak w miejscu
   P14 koszt: serwer potworów, serwer pasa, klient potworów (ms) i klatki klienta w trzech miejscach pasa
-  P15 stary las działa: widoki potworów starego lasu i jego mgła po przeniesieniu do Boru; w Borze widać tylko
-      panel bohatera starego lasu
+  P15 stary las (tylko gdy Workspace/LasPotwory jeszcze stoi — od 26.11.2026 usunięty, więc „?” pominięte): widoki
+      potworów starego lasu i jego mgła po przeniesieniu do Boru; w Borze widać tylko panel bohatera starego lasu
   P16 konsola: bez błędów [LasPasGra]
   (ręcznie, poza skryptem: telefon w emulatorze Studio — przelot, przycisk E, Kamień Powrotu, panel bohatera;
    dwóch graczy (Test → Clients and Servers, 2) — brama otwarta tylko dla zwycięzcy, drugi cofany)
@@ -242,6 +244,22 @@ def main():
         def poz():
             return js(HRP + 'return H:JSONEncode(J(hrp.Position))', "Server")
 
+        # 27.11.2026 (PD3): ślad kamery klienta w punktach P11–P12 — po drodze kamera zostawała skryptowa
+        slad_kamery = []
+
+        def kamera_slad(znacznik):
+            try:
+                slad_kamery.append([znacznik, time.strftime("%H:%M:%S"), js(
+                    'local c = workspace.CurrentCamera local h = game:GetService("Players").LocalPlayer.Character '
+                    'h = h and h:FindFirstChild("HumanoidRootPart") local o = c.CFrame.Position '
+                    'local cs = workspace:FindFirstChild("CutscenkaBiomu") '
+                    'return H:JSONEncode({ typ = c.CameraType.Name, odl = h and math.floor((o - h.Position).Magnitude) or -1, '
+                    'poz = { math.floor(o.X), math.floor(o.Y), math.floor(o.Z) }, '
+                    'cutscenka = cs and tostring(cs:GetAttribute("KlientTrwa")) or "brak" })', "Client")])
+                zapisz("kamera_slad", slad_kamery)
+            except Exception as e:  # noqa: BLE001
+                log("kamera_slad:", str(e)[:120])
+
         def nacisnij(klawisz):
             call("user_keyboard_input", {"datamodel_type": "Client", "actions": [{"action": "keyPress", "key_code": klawisz}]})
 
@@ -304,7 +322,7 @@ def main():
             punkt("P01", bool(gotowe) and gotowe.get("StanMapy") == "ok" and gotowe.get("StanBiomu") == "ok"
                   and gotowe.get("SzablonyGotowe") is True and gotowe.get("Potworow") == G["potworow_1"]
                   and gotowe.get("ZgodnoscLogiki") == "OK 70/70" and gotowe.get("ZgodnoscLogikiPasa") == "OK 39/39"
-                  and gotowe.get("Przekierowanie") == "tak" and (stary.get("brak") or stary.get("Potworow") == 36),
+                  and gotowe.get("Przekierowanie") == "nie_ten_biom" and stary.get("brak") is True,
                   "serwery: %s | stary las: %s" % (gotowe, stary))
             kl = czekaj_na(lambda: (lambda a: a if a.get("KlientGotowy") and a.get("KlientPasaGotowy") else None)(
                 atrybuty("LasPasGra", ["KlientGotowy", "KlientTryb", "KlientPasaGotowy"], "Client")), 60, 1.0) or {}
@@ -327,18 +345,18 @@ def main():
             # ---------------------------------------------------------------- P03–P04 przybycie i pierwszy przelot
             nowa = PP.dopasuj(luau, "las", G)     # nowa cutscenka (CutscenkaBiomu) albo stary przelot pasa
             log("przelot lasu gra: %s" % ("nowa cutscenka (CutscenkaBiomu)" if nowa else "stary przelot pasa"))
-            luau(HRP + 'local t = workspace:FindFirstChild("LasTeleport") local p = t and t:GetAttribute("PunktMiasteczka") '
+            luau(HRP + 'local b = workspace:FindFirstChild("MiasteczkoBazarGra") local p = b and b:GetAttribute("PunktStartuBazaru") '
                        'if p then hrp.Parent:PivotTo(CFrame.new(p)) end return "ok"', "Server")
             time.sleep(3)
             licznik_walk = atrybuty("LasPasGra", ["SerwerLicznikWalk"]).get("SerwerLicznikWalk") or 0
-            wynik_bramy = luau('local t = workspace:FindFirstChild("LasTeleport") local s = t and t:FindFirstChild("Steruj") '
-                               'return tostring(s and s:Invoke("las"))', "Server")
+            wynik_bramy = luau('local g = game:GetService("Players"):GetPlayers()[1] local f = workspace.LasPasGra.Sygnaly.PrzeniesDoLasu '
+                               'local r = f:Invoke(g, { punkt = "las", przelotPo = 0 }) return tostring(type(r) == "table" and r.ok == true)', "Server")
             time.sleep(0.4)
             p_przyb = poz()
             cel = gotowe.get("PunktPrzybyciaLasu") or [1114, 3.2, -700]
             d = ((p_przyb[0] - cel[0]) ** 2 + (p_przyb[2] - cel[2]) ** 2) ** 0.5
             zapisz("P03", {"steruj": wynik_bramy, "pozycja": p_przyb, "cel": cel, "odleglosc": d})
-            punkt("P03", wynik_bramy == "true" and d < 3, "brama miasteczka → (%.1f; %.1f; %.1f), %.1f st od przybycia" % (
+            punkt("P03", wynik_bramy == "true" and d < 3, "start bazaru → PrzeniesDoLasu → (%.1f; %.1f; %.1f), %.1f st od przybycia" % (
                 p_przyb[0], p_przyb[1], p_przyb[2], d))
             zrzut("01_przybycie")
             # próba walki w czasie przelotu (serwer ma odmówić: postać zablokowana)
@@ -374,7 +392,8 @@ def main():
             time.sleep(3)
             zrzut("19_miasteczko_bez_mgly")
             waga_miasto = atrybuty("LasPasGra", ["WagaMglyPasa"], "Client").get("WagaMglyPasa")
-            luau('return tostring(workspace.LasTeleport.Steruj:Invoke("las"))', "Server")
+            luau('local g = game:GetService("Players"):GetPlayers()[1] local f = workspace.LasPasGra.Sygnaly.PrzeniesDoLasu '
+                 'local r = f:Invoke(g, { punkt = "las", przelotPo = 0 }) return tostring(type(r) == "table" and r.ok == true)', "Server")
             fazy2 = []
             for _ in range(12):
                 fazy2.append(gracz_serwer()["faza"])
@@ -413,7 +432,10 @@ def main():
                       'return H:JSONEncode({ gestosc = a and a.Density or -1 })', "Server")
             zrzut("18_mgla_pas")
             zapisz("P13", {"pas": mg, "serwer": mg_s, "miasteczko": waga_miasto, "edit": edit["gestosc"]})
-            punkt("P13", mg.get("waga") == 1 and abs(mg.get("gestosc", 0) - 0.36) < 0.01 and waga_miasto == 0
+            # 26.11.2026: „miasteczko” to dziś start bazaru, 86 studów od brzegu mgły lasu — w pasie przejścia mgły
+            # (DanePasa.mgla.pas = 120 st), więc waga jest tam mała, ale nie zerowa (stare miasteczko stało daleko)
+            punkt("P13", mg.get("waga") == 1 and abs(mg.get("gestosc", 0) - 0.36) < 0.01
+                  and waga_miasto is not None and waga_miasto <= 0.35
                   and abs(mg_s["gestosc"] - edit["gestosc"]) < 1e-6,
                   "waga w pasie %s (gęstość %.3f), w miasteczku %s; serwer %.3f = Edit %.3f"
                   % (mg.get("waga"), mg.get("gestosc", -1), waga_miasto, mg_s["gestosc"], edit["gestosc"]))
@@ -722,6 +744,7 @@ def main():
                     continue
                 przestaw(G["straznik"] - 9, 3.5, -700, 1)
                 time.sleep(1.5)
+                kamera_slad("P11 przed walką")
                 luau(KP + 'return tostring(k.Sygnaly.SterowanieKlienta:Invoke("walcz", "%s"))' % sid_str, "Client")
                 if czekaj_na(lambda: klient_potworow().get("walka"), 10, 0.5):
                     # przewijać można dopiero odtwarzanie (w czasie prośby do serwera przewinięcie nic nie robi, a „zamknij”
@@ -730,6 +753,7 @@ def main():
                     odtw('"przewinDo", 1000')
                     time.sleep(2.5)
                     odtw('"zamknij"')
+                    kamera_slad("P11 po zamknięciu walki")
                     # P11j: banery od razu po zamknięciu walki — przez 10 s co 0,25 s (baner klienta potworów żyje 5 s,
                     # zapasowy baner KlientPasa pokazałby się po 8 s bez walki)
                     banery = js('local g = game:GetService("Players").LocalPlayer.PlayerGui local wid, maks, podpisy = {}, 0, {} '
@@ -775,10 +799,12 @@ def main():
                                                                                "jest" if bagno.get("zaBrama") else "usunięta"))
             pasa("przenies", None, "przed_brama")
             time.sleep(1.5)
+            kamera_slad("P11 przed bramą")
             zrzut("15_brama_otwarta")
             cof = atrybuty("LasPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
             call("character_navigation", {"datamodel_type": "Client", "x": G["brama"] + 14, "y": 3, "z": -700})
             time.sleep(6)
+            kamera_slad("P11 za bramą (nawigacja)")
             p11 = poz()
             cof2 = atrybuty("LasPasGra", ["LicznikCofniec"]).get("LicznikCofniec") or 0
             zrzut("16_za_brama_tabliczka")
@@ -791,6 +817,7 @@ def main():
             ratunki = licz_ratunki()
             przestaw(G["brama"] + 56, -60, -700)
             time.sleep(2)
+            kamera_slad("P11 po ratunku")
             p11b = poz()
             ratunki2 = licz_ratunki()
             zapisz("P11", {"proby": proby, "jak": jak_otwarta, "wrota_klient": wrota_k2, "wrota_serwer": wrota_s,
@@ -801,6 +828,7 @@ def main():
                   % (jak_otwarta, wrota_k2, wrota_s, p11[0], cof, cof2, p11b[0], p11b[1], p11b[2]))
 
             # ---------------------------------------------------------------- P12 Kamień Powrotu
+            kamera_slad("P12 start")
             kam = js('local p = k.Punkty.KamienPowrotu return H:JSONEncode(J(p.Position))', "Server")
             przestaw(kam[0] + 4, kam[1] + 1, kam[2] + 3, -1)
             time.sleep(1.5)
@@ -833,7 +861,8 @@ def main():
                 jak12 = "haczyk (E nie przeniosło)"
                 time.sleep(2)
                 p12 = poz()
-            zapisz("P12", {"podpowiedz": pp, "jak": jak12, "pozycja": p12, "cel": "bazar" if bazar12 else "stare"})
+            zapisz("P12", {"podpowiedz": pp, "jak": jak12, "pozycja": p12, "cel": "bazar" if bazar12 else "stare",
+                            "kamera": js('local c = workspace.CurrentCamera local h = game:GetService("Players").LocalPlayer.Character h = h and h:FindFirstChild("HumanoidRootPart") return H:JSONEncode({ typ = c.CameraType.Name, odl = h and math.floor((c.CFrame.Position - h.Position).Magnitude) or -1 })', "Client")})
             punkt("P12", pp.get("wlaczona") and jak12.startswith("E") and w_miasteczku(p12), "podpowiedź %s, %s → %s (%.0f; %.0f; %.0f)"
                   % (pp, jak12, "nowe miasteczko" if bazar12 else "stare miasteczko", p12[0], p12[1], p12[2]))
 
@@ -853,6 +882,7 @@ def main():
                     "serwer_pasa": pasa("koszt"),
                     "klient_potworow": js('return H:JSONEncode(J(k.Sygnaly.SterowanieKlienta:Invoke("koszt")))', "Client"),
                     "klatki": klatki,
+                    "kamera": js('local c = workspace.CurrentCamera local h = game:GetService("Players").LocalPlayer.Character h = h and h:FindFirstChild("HumanoidRootPart") return H:JSONEncode({ typ = c.CameraType.Name, odl = h and math.floor((c.CFrame.Position - h.Position).Magnitude) or -1 })', "Client"),  # 27.11: widoki liczy klient wokół kamery
                 }
             zapisz("P14", koszt)
             punkt("P14", None, "koszt zapisany w wyniki.json (P14) — ocenia człowiek; klatka śr. %s ms"

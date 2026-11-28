@@ -25,6 +25,10 @@ Edit. Play tylko na czas próby (SesjaPlay z swiat/test_walki2/testy/sesja_play.
   S10 konsola bez błędów [StrojeProba]
   S11 okno na małym ekranie (emulacja 667 × 375): tekst ≥ 12 pt; zrzut
 
+Bez przymierzalni (26.11.2026: ustawienia.json → stojak.w_grze = false — stała przy starym starcie, który zniknął z
+miejsca): klient zgłasza w „stan” stojak = false, S01 oczekuje 0 podpowiedzi E, a S02, S03, S05, S06 i S11 (okno
+i podgląd na podeście) kończą się „?” z powodem; S04, S07, S08 (bez okna) i S10 sprawdzają strój jak dotąd.
+
 Dwa tryby (18.11.2026), próba wybiera sama na starcie Play:
   • bez kowala (brak Workspace/KowalProba albo gracz bez atrybutu KowalDostepne) — wszystko jak dotąd;
   • z kowalem (swiat/kowal_proba: przymierzalnia zakłada tylko posiadane przedmioty i nie ma „Dawnego wyglądu”) —
@@ -100,8 +104,10 @@ def main():
         wyniki.append({"punkt": kod, "wynik": "OK" if ok is True else ("?" if ok is None else "BŁĄD"), "opis": opis})
         log("%s %s — %s" % (kod, "OK" if ok is True else ("?" if ok is None else "BŁĄD"), opis))
 
+    pomin = set()   # punkty, których nie da się sprawdzić bez przymierzalni (26.11.2026)
+
     def chce(kod):
-        return not tylko or kod in tylko
+        return (not tylko or kod in tylko) and kod not in pomin
 
     def napis(klasa, ids):
         ok, st = L.normalizuj(D, klasa, list(ids))
@@ -171,6 +177,15 @@ def main():
             tk = js(KOD_TRYB, "Server")
         dane["tryb"] = {"kowal": kowal, "nadane": nadane, "dostepne": tk.get("dostepne")}
         log("tryb: %s" % ("z kowalem — nadano %d przedmiotów haczykiem kowala" % len(nadane) if kowal else "bez kowala"))
+        czekaj(lambda: js(KS + 'return H:JSONEncode({ g = k:GetAttribute("KlientGotowy") })').get("g"), 20)
+        stojak = hak('"stan"').get("stojak", True) is not False
+        dane["stojak"] = stojak
+        if not stojak:
+            for kod in ("S02", "S03", "S05", "S06", "S11"):
+                if chce(kod):
+                    punkt(kod, None, "pominięte: przymierzalni nie ma w miejscu (stojak.w_grze = false, 26.11.2026) — "
+                                     "okno i podgląd na podeście nie powstają")
+                pomin.add(kod)
 
         # ------------------------------------------------------------------ S00–S01
         if chce("S01"):
@@ -178,7 +193,7 @@ def main():
             s = js(KS + 'return H:JSONEncode({ s = k:GetAttribute("SerwerGotowy"), p = k:GetAttribute("PodpowiedziWlaczone"), '
                    'skrot = k:GetAttribute("SkrotSerwera"), haczyk = string.find(workspace.TestWalki2.Moduly.Aktorzy.Source, '
                    '"zeStrojem", 1, true) ~= nil })', "Server")
-            punkt("S01", ok and s.get("s") and s.get("p") == 1 and s.get("skrot") == D["skrot"] and s.get("haczyk"),
+            punkt("S01", ok and s.get("s") and s.get("p") == (1 if stojak else 0) and s.get("skrot") == D["skrot"] and s.get("haczyk"),
                   "klient %s, serwer %s, podpowiedzi %s, skrót %s (lokalnie %s), haczyk w Aktorzy %s; tryb %s"
                   % (ok, s.get("s"), s.get("p"), s.get("skrot"), D["skrot"], s.get("haczyk"),
                      "z kowalem (nadano %d)" % len(nadane) if kowal else "bez kowala"))
@@ -373,13 +388,15 @@ def main():
             przed = atrybut("wojownik")
             r = hak('"zmien", "dawny", "wojownik"')
             po = atrybut("wojownik")
-            hak('"otworz"')
-            hak('"klasa", "wojownik"')
-            time.sleep(0.8)
-            przycisk = sp.luau(KOD_PRZYCISK_DAWNY).strip()
-            hak('"zamknij"')
+            przycisk = "bez okna (brak przymierzalni)"
+            if stojak:
+                hak('"otworz"')
+                hak('"klasa", "wojownik"')
+                time.sleep(0.8)
+                przycisk = sp.luau(KOD_PRZYCISK_DAWNY).strip()
+                hak('"zamknij"')
             dane["S08"] = {"odpowiedz": r, "przycisk_dawny": przycisk}
-            punkt("S08", r.get("powod") == "dawny_niedostepny" and przed == po and przycisk == "false",
+            punkt("S08", r.get("powod") == "dawny_niedostepny" and przed == po and (przycisk == "false" or not stojak),
                   "z kowalem „Dawnego wyglądu” nie ma: serwer %s (powód %r), atrybut bez zmian %s, przycisk w oknie %s"
                   % ("odmawia" if not r.get("ok") else "PRZYJĄŁ", r.get("powod"), przed == po, przycisk))
         elif chce("S08"):

@@ -1,5 +1,7 @@
 # Las Potworów — potwory w ruchu w Borze Pod Ukłonem
 
+> **Sprzątanie mapy 26.11.2026 (zlecenie Karola):** kontener `Workspace/LasPotwory` (potwory starego lasu) **usunięty z miejsca** razem z `BiomLas`. Źródła zostają — ten sam kod (Stale, Logika, SerwerPotworow, KlientPotworow) buduje potwory lasu-pasa, Bagna i Dżungli. Próba „stary las” wypadła z `swiat/przejscie_gry/regresja_calosci.py`.
+
 Ten pakiet sprawia, że po 16 strefach lasu `Workspace/BiomLas` chodzą potwory. Przy jednym graczu jest ich 35, przy
 ośmiu 64, a przy dwudziestu 86. Do tego w Kamiennym Kręgu stoi Strażnik Gaju, który jest celem strefy. Gracz
 podchodzi do potwora i naciska E (na telefonie stuka podpowiedź). Wtedy serwer liczy walkę silnikiem v3 (od 17.11.2026; wcześniej v2), a klient
@@ -110,6 +112,15 @@ Test offline `test_styku.py` 16/16 (podpis z lasu-pasa dopisany do atrybutów, k
 lasu w Play (`testy/proba_play.py`, okno Studio na wierzchu, kod końcowy; `wyniki/proba_play_20261117_0944.json`,
 `…_lista.txt`): **5/5 OK** (L1–L5 jak w nocy). Panel w Borze sprawdza próba lasu-pasa (P15: widoczny tylko panel
 starego lasu), w pasie — P08j. W lesie-pasie: `swiat/las_pas_gra/README.md` (P08j, P11j, P15).
+
+## Tabliczka z nazwą i rangą (27.11.2026, polecenie Karola)
+
+Nad potworem (wszystkie trzy biomy — kod klienta jest wspólny) jeden BillboardGui 180 × 46 px: nazwa z danych
+(LuckiestGuy z obrysem; rzadki złoty, Strażnik pomarańczowo-złoty), pod nią rząd [RARE z gwiazdką / BOSS z koroną]
+[„LV N” — czerwone, gdy poziom ≥ poziom bohatera + 3] [miecze, gdy walka trwa]. Ranga ze strefy w danych (`rzadki`,
+`straznik`). Nazwa zwykłego potwora widać do `Stale.TABLICZKA_NAZWA_DO` (55 studs od kamery), dalej samo „LV” —
+zmiana w wyborze widoków co 0,5 s, nic co klatkę; zasięg tabliczki: zwykły 80, rzadki 110, Strażnik 140 (widok i tak
+znika dalej niż 135). Podpowiedź E: „<nazwa> · LV N”. Próba w Play: `swiat/las_pas_gra/testy/proba_tabliczek.py`.
 
 ## Pliki
 

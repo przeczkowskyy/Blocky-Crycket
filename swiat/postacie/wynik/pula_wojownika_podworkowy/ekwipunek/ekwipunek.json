@@ -1,0 +1,694 @@
+{
+ "bohater": "kot_rycerz",
+ "cialo": "kot",
+ "klasy": [
+  "wojownik"
+ ],
+ "pula": "Lv 1-10",
+ "arkusz": "Podwórkowy",
+ "kolumna_arkusza": 1,
+ "komplet_z_premia": false,
+ "kanon": [
+  "kot_rycerz_podworkowy_helm",
+  "kot_rycerz_podworkowy_zbroja",
+  "kot_rycerz_podworkowy_pas",
+  "kot_rycerz_podworkowy_rekawice",
+  "kot_rycerz_podworkowy_buty",
+  "kot_rycerz_podworkowy_miecz"
+ ],
+ "stroje": {
+  "golas": [],
+  "komplet": [
+   "kot_rycerz_podworkowy_helm",
+   "kot_rycerz_podworkowy_zbroja",
+   "kot_rycerz_podworkowy_pas",
+   "kot_rycerz_podworkowy_rekawice",
+   "kot_rycerz_podworkowy_buty",
+   "kot_rycerz_podworkowy_miecz"
+  ]
+ },
+ "korekty_chwytu": {
+  "HatAttachment": {
+   "zaczep": "KapeluszAttachment",
+   "pos": [
+    0,
+    0.02,
+    0
+   ],
+   "rot": [
+    0,
+    0,
+    0
+   ]
+  },
+  "RightGripAttachment": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0,
+    0
+   ],
+   "rot": [
+    -90,
+    0,
+    0
+   ]
+  },
+  "miecz": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0.08,
+    0.03
+   ],
+   "rot": [
+    -41.641,
+    -61.118,
+    62.764
+   ]
+  },
+  "rozdzka": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.08,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    -30.0,
+    10.0,
+    0.0
+   ]
+  },
+  "drzewce": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.12,
+    0.03,
+    0.0
+   ],
+   "rot": [
+    -90.0,
+    5.0,
+    0.0
+   ]
+  },
+  "proca": {
+   "zaczep": "KosturAttachment",
+   "pos": [
+    -0.12,
+    0.03,
+    0.0
+   ],
+   "rot": [
+    -85.0,
+    30.0,
+    0.0
+   ]
+  },
+  "luk": {
+   "zaczep": "LeftGripAttachment",
+   "pos": [
+    0.2,
+    0.25,
+    0.0
+   ],
+   "rot": [
+    -3.149,
+    -48.362,
+    45.274
+   ]
+  },
+  "tarcza": {
+   "zaczep": "LeftGripAttachment",
+   "pos": [
+    0.0,
+    0.0,
+    0.08
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "ksiega": {
+   "zaczep": "LeftGripAttachment",
+   "pos": [
+    0.2,
+    0.4,
+    -0.2
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "rodzaje_chwytu": {
+  "miecz": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "broń jednoręczna (miecz, tasak, pałka, pogrzebacz): pięść na rękojeści, ostrze w górę, pochylone 20° do przodu i 10° na zewnątrz, obrócone o 45° wokół własnej osi (wewnętrzna krawędź z dala od przedramienia), rękojeść nisko i z przodu łapy",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.08,
+     0.08,
+     0.03
+    ],
+    "rot": [
+     -41.641,
+     -61.118,
+     62.764
+    ]
+   },
+   "upadek": "prawa"
+  },
+  "rozdzka": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "różdżka: lekki chwyt przy końcu, czubek do przodu i w górę",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.08,
+     0.0,
+     0.0
+    ],
+    "rot": [
+     -30.0,
+     10.0,
+     0.0
+    ]
+   },
+   "upadek": "prawa"
+  },
+  "drzewce": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "kostur, włócznia, chorągiew: drzewce pionowo wzdłuż łapy, dół przy ziemi (chwyt kostura Kota-Maga, odsunięty o 0,04 na zewnątrz i 5° od rękawa; nazwa „drzewce” jak w bibliotece)",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.12,
+     0.03,
+     0.0
+    ],
+    "rot": [
+     -90.0,
+     5.0,
+     0.0
+    ]
+   },
+   "upadek": "prawa"
+  },
+  "proca": {
+   "lapa": "prawa",
+   "zaczep_standardowy": "RightGripAttachment",
+   "opis": "proca: rękojeść w pięści, widełki w górę, skórka z kamykiem do przodu",
+   "kot": {
+    "zaczep": "KosturAttachment",
+    "pos": [
+     -0.12,
+     0.03,
+     0.0
+    ],
+    "rot": [
+     -85.0,
+     30.0,
+     0.0
+    ]
+   },
+   "upadek": "prawa"
+  },
+  "luk": {
+   "lapa": "lewa",
+   "zaczep_standardowy": "LeftGripAttachment",
+   "opis": "łuk: majdan w lewej łapie, górne ramię pochylone do przodu i na zewnątrz (z dala od przedramienia), łuk obrócony bokiem do patrzącego z przodu — widać jego wygięcie",
+   "kot": {
+    "zaczep": "LeftGripAttachment",
+    "pos": [
+     0.2,
+     0.25,
+     0.0
+    ],
+    "rot": [
+     -3.149,
+     -48.362,
+     45.274
+    ]
+   },
+   "upadek": "lewa"
+  },
+  "tarcza": {
+   "lapa": "lewa",
+   "zaczep_standardowy": "LeftGripAttachment",
+   "opis": "tarcza: na lewym przedramieniu (pasy na łapie), lico na zewnątrz — jak tarcza Rycerza",
+   "kot": {
+    "zaczep": "LeftGripAttachment",
+    "pos": [
+     0.0,
+     0.0,
+     0.08
+    ],
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "upadek": "lewa"
+  },
+  "ksiega": {
+   "lapa": "lewa",
+   "zaczep_standardowy": "LeftGripAttachment",
+   "opis": "księga: mała, zamknięta, trzymana za górną krawędź w lewej łapie, wisi przed bokiem (odsunięta do przodu i na zewnątrz, z dala od ogona), okładką do przodu i na zewnątrz",
+   "kot": {
+    "zaczep": "LeftGripAttachment",
+    "pos": [
+     0.2,
+     0.4,
+     -0.2
+    ],
+    "rot": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "upadek": "lewa"
+  }
+ },
+ "znaczniki_ciala": {
+  "Uszy": [
+   "LeftEar",
+   "RightEar"
+  ]
+ },
+ "upadek": {
+  "klip": "upadek",
+  "fps": 30,
+  "zapas": 0.02,
+  "przejscie": "a = clamp((klatka - od_klatki) / (do_klatki - od_klatki), 0, 1); C0 = C0_chwytu:Lerp(C0_upadku, a); C0_x = zaczep * CFrame.new(pos) * CFrame.fromOrientation(rot w radianach); po klipie z powrotem korekta chwytu",
+  "grupy": {
+   "prawa": {
+    "zaczep": "KosturAttachment",
+    "kosc": "StaffPivot",
+    "od_klatki": 22,
+    "do_klatki": 33,
+    "ulozenie": "broń wypada z łapy w kl. 22 (jak kostur Kota-Maga) i w locie obraca się do ułożenia kostura: leży płasko przed kotem, oś broni poziomo wzdłuż leżącego kota, lico (+Z) do ziemi, rękojeść w miejscu lądowania kostura (kl. 33), podniesiona tak, żeby najniższy punkt był 0,02 nad ziemią"
+   },
+   "helm": {
+    "zaczep": "KapeluszAttachment",
+    "kosc": "HatPivot",
+    "od_klatki": 30,
+    "do_klatki": 40,
+    "ulozenie": "hełm zsuwa się z głowy w kl. 30 (jak kapelusz Kota-Maga) i w locie prostuje się: stoi na ziemi obok głowy kopułą do góry (obrót wokół pionu jak kapelusz, −30°), odsunięty od głowy, najniższy punkt 0,02 nad ziemią; okno przejścia (domyślnie kl. 30→40) dobiera budowa dla każdego hełmu — krótsze, gdy hełm szybciej schodzi z głowy"
+   },
+   "lewa": {
+    "zaczep": "LeftGripAttachment",
+    "kosc": "LeftHand",
+    "od_klatki": 20,
+    "do_klatki": 32,
+    "ulozenie": "lewa łapa nie ma kości nośnej: przedmiot zostaje przy łapie i w czasie upadania (domyślnie kl. 20, kolana miękną, → kl. 32, kot leży; okno dobiera budowa tak, żeby w żadnej klatce nie zszedł pod ziemię) kładzie się płasko na ziemi pod łapą (najcieńszą osią pionowo), skręcony wokół pionu tak, żeby jak najmniej wchodził w leżącego kota; tylko przedmiot, który w stałym chwycie schodzi pod ziemię"
+   }
+  }
+ },
+ "przedmioty": [
+  {
+   "id": "kot_rycerz_podworkowy_helm",
+   "nazwa": "Garnek po Zupie",
+   "slot": "Helmet",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [
+    "Uszy"
+   ],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_helm",
+     "kosc": "HatPivot",
+     "zakrywa": false,
+     "zaczep": "KapeluszAttachment",
+     "pos": [
+      0,
+      0.02,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "korekta_upadku": {
+      "grupa": "helm",
+      "od_klatki": 30,
+      "do_klatki": 40,
+      "pos": [
+       0.4139,
+       0.7565,
+       -0.0335
+      ],
+      "rot": [
+       0.0,
+       0.0,
+       12.0
+      ]
+     },
+     "fbx": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_helm.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_helm.glb",
+     "trojkaty": 708,
+     "attachment_pos": [
+      0.0,
+      -0.008,
+      0.01
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_helm_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_zbroja",
+   "nazwa": "Napierśnik z Tary",
+   "slot": "Chest",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_zbroja_tulow",
+     "kosc": "UpperTorso",
+     "zakrywa": false,
+     "zaczep": "EkwUpperTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_zbroja_tulow.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_zbroja_tulow.glb",
+     "trojkaty": 416,
+     "attachment_pos": [
+      0.0,
+      0.09,
+      -0.097
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_zbroja_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_pas",
+   "nazwa": "Sznurek do Snopków",
+   "slot": "Belt",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_pas_biodra",
+     "kosc": "LowerTorso",
+     "zakrywa": false,
+     "zaczep": "EkwLowerTorsoAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_pas_biodra.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_pas_biodra.glb",
+     "trojkaty": 568,
+     "attachment_pos": [
+      -0.018,
+      -0.163,
+      -0.062
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_pas_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_rekawice",
+   "nazwa": "Rękawice z Dziurawych Skarpet",
+   "slot": "Gloves",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_rekawice_dlon_l",
+     "kosc": "LeftHand",
+     "zakrywa": true,
+     "zaczep": "EkwLeftHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_rekawice_dlon_l.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_rekawice_dlon_l.glb",
+     "trojkaty": 280,
+     "attachment_pos": [
+      0.0,
+      -0.006,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_rycerz_podworkowy_rekawice_dlon_p",
+     "kosc": "RightHand",
+     "zakrywa": true,
+     "zaczep": "EkwRightHandAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_rekawice_dlon_p.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_rekawice_dlon_p.glb",
+     "trojkaty": 268,
+     "attachment_pos": [
+      0.0,
+      -0.006,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_rekawice_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_buty",
+   "nazwa": "Kalosze Dziadka",
+   "slot": "Boots",
+   "kategoria": "Armor",
+   "cialo": "kot",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_buty_stopa_l",
+     "kosc": "LeftFoot",
+     "zakrywa": true,
+     "zaczep": "EkwLeftFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_stopa_l.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_stopa_l.glb",
+     "trojkaty": 144,
+     "attachment_pos": [
+      0.0,
+      -0.015,
+      -0.21
+     ]
+    },
+    {
+     "id": "kot_rycerz_podworkowy_buty_golen_l",
+     "kosc": "LeftLowerLeg",
+     "zakrywa": false,
+     "zaczep": "EkwLeftLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_golen_l.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_golen_l.glb",
+     "trojkaty": 80,
+     "attachment_pos": [
+      -0.005,
+      -0.04,
+      0.0
+     ]
+    },
+    {
+     "id": "kot_rycerz_podworkowy_buty_stopa_p",
+     "kosc": "RightFoot",
+     "zakrywa": true,
+     "zaczep": "EkwRightFootAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_stopa_p.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_stopa_p.glb",
+     "trojkaty": 144,
+     "attachment_pos": [
+      0.0,
+      -0.015,
+      -0.21
+     ]
+    },
+    {
+     "id": "kot_rycerz_podworkowy_buty_golen_p",
+     "kosc": "RightLowerLeg",
+     "zakrywa": false,
+     "zaczep": "EkwRightLowerLegAttachment",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_golen_p.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/przedmioty/kot_rycerz_podworkowy_buty_golen_p.glb",
+     "trojkaty": 68,
+     "attachment_pos": [
+      0.0,
+      -0.04,
+      0.0
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_buty_ikona.png"
+  },
+  {
+   "id": "kot_rycerz_podworkowy_miecz",
+   "nazwa": "Miecz ze Sztachety",
+   "slot": "Weapon",
+   "kategoria": "Weapons",
+   "cialo": "dowolne",
+   "klasy": [
+    "wojownik"
+   ],
+   "czesc_od": null,
+   "ukrywa": [],
+   "zestaw": null,
+   "czesci": [
+    {
+     "id": "kot_rycerz_podworkowy_miecz",
+     "kosc": "StaffPivot",
+     "zakrywa": false,
+     "zaczep": "KosturAttachment",
+     "pos": [
+      -0.08,
+      0.08,
+      0.03
+     ],
+     "rot": [
+      -41.641,
+      -61.118,
+      62.764
+     ],
+     "chwyt": "miecz",
+     "korekta_upadku": {
+      "grupa": "prawa",
+      "od_klatki": 22,
+      "do_klatki": 33,
+      "pos": [
+       -0.08,
+       0.0117,
+       0.0
+      ],
+      "rot": [
+       -90.0,
+       0.0,
+       0.0
+      ]
+     },
+     "fbx": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_miecz.fbx",
+     "glb": "wynik/pula_wojownika_podworkowy/przedmioty/kot_rycerz_podworkowy_miecz.glb",
+     "trojkaty": 412,
+     "attachment_pos": [
+      0.0,
+      -0.745,
+      -0.097
+     ]
+    }
+   ],
+   "plik_ikony": "wynik/pula_wojownika_podworkowy/ekwipunek/ikony/kot_rycerz_podworkowy_miecz_ikona.png"
+  }
+ ],
+ "cialo_pliki": {
+  "fbx": "wynik/pula_wojownika_podworkowy/ekwipunek/pula_wojownika_podworkowy_cialo.fbx",
+  "glb": "wynik/pula_wojownika_podworkowy/ekwipunek/pula_wojownika_podworkowy_cialo.glb"
+ }
+}

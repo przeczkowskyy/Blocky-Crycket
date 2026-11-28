@@ -1,0 +1,15 @@
+{
+ "id": "r-20261126-171640-3cef",
+ "tytul": "Jajka: napis nie zdradza już peta przed otwarciem",
+ "opis_md": "Poprawka do raportu „Jajka Bagna i Dżungli w grze: modele i scenka otwierania”.\n\n**Co się zmieniło (Studio)**\n- Napis „Wykluł się: … — premia” nie pojawia się już zaraz po E. Widać go dopiero, gdy pet wyłoni się ze słupa światła, razem z dymkiem „NEW PET!”.\n- Przy zakupie z jajka stary inkubator obok nie gra już swojej animacji.\n- Dotyczy wszystkich trzech jajek: leśnego, Bagna i Dżungli. Po scence pet rusza za graczem od jajka.\n- Zakup w starym inkubatorze działa jak wcześniej.\n\n**Sprawdzone w Play:** próba jajek na prawdziwych modelach 36 punktów bez niezaliczeń; pełna próba petów lasu 17 punktów bez niezaliczeń.\n\n**Zostaje do decyzji (pytanie 110):** stare inkubatory z klocków stoją obok nowych jajek i mają własne E, a strzałka celu „kup jajko” prowadzi do starego inkubatora.\n\n**Nie sprawdzono:** dotyku i myszy (klikanie spacją), prawdziwego telefonu, widoku u drugiego gracza.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T17:16:40+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "gra": "bc"
+}

@@ -9,7 +9,9 @@ i jajko_lesne.py. Tu są tylko:
     peta w zagrodzie, gdy gracz skacze);
   • oczy(p, …)                 — duże „błyszczące” oczy z odblaskiem (2–3 bryły na oko), wspólny styl petów;
   • jajko_gladkie, klipy_jajka, tablica_szans — wspólny kształt i klipy jajek (las, Bagno) i tablica szans
-    inkubatora (od 17.11 używają ich też pety Bagna: palkus, nenufarek, wazeczka, ognik, perlowa_wydra).
+    inkubatora (od 17.11 używają ich też pety Bagna: palkus, nenufarek, wazeczka, ognik, perlowa_wydra);
+  • na_elipsoidzie, naklejka, oczy_okragle, usmiech, model, lata — obłe ciała z elipsoid (przebudowa petów lasu według
+    arkuszy obrotów Pawła, noc 25/26.11.2026): oko, rumieniec czy łatka „przyklejone” do elipsoidy wzdłuż normalnej.
 Klipy nie mają kanału skali (Roblox przenosi tylko położenie i obrót kości). Obrót 360° wokół pionu kończy się
 w tej samej pozie co spoczynek, więc przejście do następnego klipu jest bez szwu.
 """
@@ -156,3 +158,98 @@ def oczy(p, x, y, z, szer=0.26, wys=0.32, kolor="tusz", teczowka=None, odstep=No
             p.blok("Oko " + s, (zn * x, y, z + 0.02), (szer, wys, 0.05), kolor, "polysk", faza=0.03)
         p.blok("Blysk " + s, (zn * x - zn * szer * 0.2, y + wys * 0.22, z + 0.075), (szer * 0.36, wys * 0.3, 0.03),
                "bialy", "swiecacy", faza=0.0)
+
+
+# ------------------------------------------------------------------ obłe ciała (pety lasu według arkuszy Pawła, 25/26.11)
+def model(p, kosc):
+    """Układ kości z początkiem w punkcie (0, 0, 0) MODELU: bryły podaje się w układzie modelu (spoczynek), a i tak
+    poruszają się z kością. with model(p, "Tulow"): p.kula(...)."""
+    return p.na(kosc, pos=tuple(-v for v in p.staw(kosc)))
+
+
+def na_elipsoidzie(el, x, y, z_znak=1.0):
+    """Punkt powierzchni elipsoidy el = (środek, średnice) o danych x, y (strona z_znak: +1 przód, −1 tył), normalna
+    i obrót (rx, ry) kładący lokalną oś Z bryły wzdłuż normalnej. Zwraca (punkt, normalna, (rx, ry))."""
+    import math as _m
+    (cx, cy, cz), (sx, sy, sz) = el
+    a, b, c = sx / 2.0, sy / 2.0, sz / 2.0
+    u = ((x - cx) / a) ** 2 + ((y - cy) / b) ** 2
+    z = cz + z_znak * c * _m.sqrt(max(0.0, 1.0 - u))
+    n = ((x - cx) / a ** 2, (y - cy) / b ** 2, (z - cz) / c ** 2)
+    d = _m.sqrt(sum(v * v for v in n)) or 1.0
+    n = tuple(v / d for v in n)
+    return (x, y, z), n, (-_m.degrees(_m.asin(max(-1.0, min(1.0, n[1])))), _m.degrees(_m.atan2(n[0], n[2])))
+
+
+def naklejka(p, nazwa, el, x, y, size, kolor, mat="matowy", ksztalt="kula", obrot=0.0, wysun=0.0, z_znak=1.0,
+             segm=12):
+    """Płaska bryła (oko, rumieniec, łatka, kreska buzi) na elipsoidzie el: oś Z bryły wzdłuż normalnej, środek na
+    powierzchni (+ wysun wzdłuż normalnej), obrot = obrót wokół normalnej (stopnie). ksztalt: "kula" | "blok"."""
+    pt, n, (rx, ry) = na_elipsoidzie(el, x, y, z_znak)
+    pos = tuple(pt[i] + n[i] * (wysun - 0.004) for i in range(3))
+    if ksztalt == "kula":
+        return p.kula(nazwa, pos, size, kolor, mat, rot=(rx, ry, obrot), segm=segm)
+    return p.blok(nazwa, pos, size, kolor, mat, rot=(rx, ry, obrot), faza=0.0)
+
+
+def oczy_okragle(p, el, x, y, szer=0.18, wys=0.22, kolor="tusz", grub=0.07, teczowka=None, mat_teczowki="swiecacy",
+                 blysk_maly=True):
+    """Para okrągłych oczu na elipsoidzie el (x = odległość środka oka od osi): ciemne oko (albo `teczowka` z czarną
+    źrenicą) i białe odblaski „Blysk L/P” u góry od strony +X obrazu, mniejszy u dołu — jak na arkuszach Pawła."""
+    for zn, s in ((1, "L"), (-1, "P")):
+        ox = zn * x
+        if teczowka:
+            naklejka(p, "Teczowka " + s, el, ox, y, (szer, wys, grub), teczowka, mat_teczowki)
+            naklejka(p, "Zrenica " + s, el, ox, y - wys * 0.04, (szer * 0.48, wys * 0.56, grub * 0.8), kolor, "polysk",
+                     wysun=grub * 0.42)
+        else:
+            naklejka(p, "Oko " + s, el, ox, y, (szer, wys, grub), kolor, "polysk")
+        naklejka(p, "Blysk " + s, el, ox + szer * 0.2, y + wys * 0.2, (szer * 0.36, wys * 0.32, grub * 0.5), "bialy",
+                 "swiecacy", wysun=grub * 0.45)
+        if blysk_maly:
+            naklejka(p, "Blysk " + s, el, ox - szer * 0.22, y - wys * 0.24, (szer * 0.18, wys * 0.15, grub * 0.4),
+                     "bialy", "swiecacy", wysun=grub * 0.4)
+
+
+def usmiech(p, el, y, szer=0.16, kolor="tusz", grub=0.035, x=0.0):
+    """Uśmiech „◡” z trzech kresek przyklejonych do elipsoidy el (środek kreski dolnej na wysokości y)."""
+    naklejka(p, "Buzia", el, x, y, (szer * 0.5, grub, grub), kolor, "matowy", ksztalt="blok")
+    for zn in (1, -1):
+        naklejka(p, "Buzia", el, x + zn * szer * 0.36, y + szer * 0.1, (szer * 0.36, grub, grub), kolor, "matowy",
+                 ksztalt="blok", obrot=zn * 35.0)
+
+
+def lata(el, n, d, s=0.1):
+    """Łata innego koloru na elipsoidzie el (jasny brzuszek, pyszczek, maska): elipsoida, która wystaje z el dokładnie
+    za płaszczyzną n·p = d w układzie znormalizowanym (el = kula jednostkowa; n = wektor jednostkowy ku łacie,
+    d = 0 → pół elipsoidy, d → 1 → mała łata). Wystaje najwyżej o ok. s/2 promienia (s małe = płasko).
+    Zwraca (środek, średnice) do p.kula(...)."""
+    import math as _m
+    (cx, cy, cz), (sx, sy, sz) = el
+    dl = _m.sqrt(sum(v * v for v in n)) or 1.0
+    n = tuple(v / dl for v in n)
+    k = _m.sqrt(max(1e-6, 1.0 + s * s - 2.0 * d * s))   # skala kopii sfery jednostkowej przesuniętej o s wzdłuż n
+    a, b, c = sx / 2.0, sy / 2.0, sz / 2.0
+    return (cx + s * a * n[0], cy + s * b * n[1], cz + s * c * n[2]), (sx * k, sy * k, sz * k)
+
+
+def lata_przez(el, p1, p2, s=0.1, bok=None):
+    """Łata, której granica przechodzi przez dwa punkty powierzchni el leżące w płaszczyźnie symetrii x = 0
+    (p1, p2 = (y, z_znak): wysokość i strona +1 przód / −1 tył), z łatą po stronie `bok` (wektor w układzie
+    modelu wskazujący łatę, np. (0, −1, 1) = dół-przód). Zwraca (środek, średnice)."""
+    import math as _m
+    (cx, cy, cz), (sx, sy, sz) = el
+    b, c = sy / 2.0, sz / 2.0
+    pts = []
+    for y, zn in (p1, p2):
+        yy = (y - cy) / b
+        pts.append((yy, zn * _m.sqrt(max(0.0, 1.0 - yy * yy))))
+    (y1, z1), (y2, z2) = pts
+    # n = (0, ny, nz) z n·P1 = n·P2: ny (y1 − y2) = −nz (z1 − z2)
+    ny, nz = -(z1 - z2), (y1 - y2)
+    dl = _m.hypot(ny, nz)
+    ny, nz = ny / dl, nz / dl
+    if bok is not None and ny * bok[1] + nz * bok[2] < 0:
+        ny, nz = -ny, -nz
+    d = ny * y1 + nz * z1
+    return lata(el, (0.0, ny, nz), d, s)

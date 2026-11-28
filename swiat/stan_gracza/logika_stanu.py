@@ -234,6 +234,8 @@ def nowy_profil(D):
         # wersja 4 (18.11.2026, zapis postępu): wybrana klasa (atrybut Class) i zapisywane atrybuty innych pakietów
         # (przeloty i strażnicy biomów, strój z przymierzalni — przedrostki D["zapis"]["atrybuty_prefiksy"])
         "idKlasy": None,
+        # 27.11.2026 (Karol: „Tak, zapisuj rasę”): wybrana rasa (atrybut Race, D["rasy_gracza"]); brak = jak dotąd
+        "idRasy": None,
         "atrybuty": {},
     }
 
@@ -252,6 +254,46 @@ def czysty_wydatek(D, info):
     if not nazwa_ok(D, info.get("cel")):
         return None, "zly_cel"
     return {"ile": int(ile), "zrodlo": info["zrodlo"], "cel": info["cel"]}, "ok"
+
+
+def czysty_przychod(D, info):
+    """Sygnał Pety "przychod" (25.11.2026, zagroda petów): {ile, zrodlo, cel} → kopia albo (None, powód). Bez zaufania
+    do wołającego: kwota całkowita 1..kwota_maks, źródło z listy D["przychody"]["zrodla"], cel = nazwa z liter, cyfr
+    i „_”."""
+    if not isinstance(info, dict):
+        return None, "zly_przychod"
+    ile = info.get("ile")
+    if not _calkowita(ile, D["przychody"]["kwota_maks"]) or ile < 1:
+        return None, "zla_kwota"
+    if not isinstance(info.get("zrodlo"), str) or info["zrodlo"] not in D["przychody"]["zrodla"]:
+        return None, "zle_zrodlo"
+    if not nazwa_ok(D, info.get("cel")):
+        return None, "zly_cel"
+    return {"ile": int(ile), "zrodlo": info["zrodlo"], "cel": info["cel"]}, "ok"
+
+
+def czysta_sprzedaz(D, info):
+    """Sygnał Pety "sprzedaj" (26.11.2026, sprzedaż petów — swiat/pety_proba): {pety: {id: n}, ile, zrodlo, cel} →
+    kopia albo (None, powód). Bez zaufania do wołającego: 1..rodzajow_maks petów, id z liter, cyfr i „_”, kopie
+    całkowite 1..kopii_maks; kwota całkowita 1..kwota_maks przychodów, źródło z listy D["przychody"]["zrodla"], cel —
+    nazwa. Kopie i obecność peta sprawdza dopiero właściciel stanu (z profilu)."""
+    if not isinstance(info, dict):
+        return None, "zla_sprzedaz"
+    pety = info.get("pety")
+    if not isinstance(pety, dict) or not 1 <= len(pety) <= D["pety"]["rodzajow_maks"]:
+        return None, "zle_pety"
+    for k, v in pety.items():
+        if not nazwa_ok(D, k) or not _calkowita(v, D["pety"]["kopii_maks"]) or v < 1:
+            return None, "zle_pety"
+    ile = info.get("ile")
+    if not _calkowita(ile, D["przychody"]["kwota_maks"]) or ile < 1:
+        return None, "zla_kwota"
+    if not isinstance(info.get("zrodlo"), str) or info["zrodlo"] not in D["przychody"]["zrodla"]:
+        return None, "zle_zrodlo"
+    if not nazwa_ok(D, info.get("cel")):
+        return None, "zly_cel"
+    return {"pety": {k: int(v) for k, v in pety.items()}, "ile": int(ile), "zrodlo": info["zrodlo"],
+            "cel": info["cel"]}, "ok"
 
 
 def wydaj(D, zloto, ile):
@@ -306,6 +348,16 @@ def kara_przegranej(D, zloto, poziom_potwora, procent):
         return 0
     k = int(math.floor(z * min(procent, 1)))
     return min(k, lup_zwyklego(D, poziom_potwora), z)
+
+
+def ile_rybek(D, n):
+    """Waluta Rybki (atrybut Gold, D-146) w napisie po przegranej: „1 Rybka”, „3 Rybki”, „5 Rybek” (0 i 12–14 jak 5+,
+    22–24, 32–34… jak 2–4). Lustro funkcji ileRybek w KlientStanu.client.luau (napis buduje tylko klient)."""
+    f = D["kara"]["formy_rybki"]
+    n = int(n)
+    d, s = n % 10, n % 100
+    slowo = f[0] if n == 1 else (f[1] if 2 <= d <= 4 and not 12 <= s <= 14 else f[2])
+    return "%d %s" % (n, slowo)
 
 
 # ------------------------------------------------------------------ modyfikatory bohatera (18.11.2026, pety D-101, Kowal D-102)
@@ -613,6 +665,8 @@ def czysty_profil(D, p):
         return None, "zla_klasa"
     if k.get("idKlasy") is not None and k.get("idKlasy") not in D["klasy_gracza"]:
         return None, "zla_klasa"
+    if k.get("idRasy") is not None and k.get("idRasy") not in D["rasy_gracza"]:  # 27.11.2026: rasa w zapisie
+        return None, "zla_rasa"
     if not _calkowita(k.get("poziom"), L["poziom_maks"]) or k["poziom"] < 1:
         return None, "zly_poziom"
     if not _liczba(k.get("xp")) or k["xp"] < 0:

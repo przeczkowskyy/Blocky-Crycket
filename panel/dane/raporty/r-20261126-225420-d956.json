@@ -1,0 +1,15 @@
+{
+ "id": "r-20261126-225420-d956",
+ "tytul": "Sala treningowa: wybór ćwiczenia u trenera, bez tabliczek",
+ "opis_md": "Polecenie Karola z 26.11: prostsze wejście do ćwiczeń, bez tabliczek, wybór u trenera (decyzja D-162, czeka na Pawła).\n\n**Co się zmieniło w grze**\n- E u trenera otwiera okno „CHOOSE YOUR TRAINING” z sześcioma ćwiczeniami. Kliknięcie przenosi na stanowisko i od razu zaczyna trening.\n- Tabliczki przy stanowiskach i tablica mini-gier na ścianie zniknęły. Podpowiedź E na macie została.\n- Studnia stoi 6 studów dalej od wejścia, obie ławki i latarnia są przestawione.\n- Trener nie otwiera już starych mini-gier.\n\n**Pliki Pawła:** skrypty stanowisk (`TreningAFK`, `TreningAFKClient`, `TreningAFKDane`) zmienił agent Karola na polecenie Karola — do obejrzenia przez Pawła.\n\n**Sprawdzone w grze:** próba okna trenera 17 z 17 punktów (sześć ćwiczeń, zajęte stanowisko, prośba z daleka, zamykanie okna); krótka droga gracza i próba treningu bez błędów.\n\n**Do wyjaśnienia:** w próbie zasięgu E przy Pancerzu i Zręczności naciśnięcie E z przejścia (3 study) nie włączyło treningu; od frontu rzędu działa, a po południu ten sam punkt przechodził.\n\n**Na zdjęciach widać też** panel „ANIMACJE (podgląd)” w rogu — to roboczy podgląd Pawła (kot rasy jako postać gracza), nie część sali.\n\n**Nie sprawdzono:** telefonu, dwóch graczy przy jednym stanowisku.",
+ "kto": "Claude (Karol)",
+ "czas": "2026-11-26T22:54:20+01:00",
+ "rodzaj": "wdrozenie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg",
+  "zrzut_2.jpg",
+  "zrzut_3.jpg"
+ ],
+ "gra": "bc"
+}

@@ -2,40 +2,34 @@
 # -*- coding: utf-8 -*-
 """Buduje w Roblox Studio kontener Workspace/MiasteczkoBazarGra — „miasteczko-bazar w grze”: podpowiedzi E przy
 sprzedawcach i bramach bazaru, uchwyt dla okien 2D Pawła, portal krain (przejście przez chmury), Brama Leśna (uchwyt
-pasa Lasu), działka i lochy (dymki), tablica z rankingiem oraz tymczasowe przejścia stare ↔ nowe miasteczko.
+pasa Lasu), działka i lochy (dymki) oraz tablica z rankingiem. Do 26.11.2026 były tu też tymczasowe przejścia
+stare ↔ nowe miasteczko — zniknęły razem ze starym miasteczkiem i starym startem (gracz zaczyna na starcie bazaru:
+tools/studio/start_w_miasteczku.py; resztki w Studio usuwa tools/studio/sprzatanie_mapy.py albo pełna przebudowa).
 
     python -B swiat/miasteczko_bazar_gra/zbuduj.py --sucho      # bez Studio: dane, kontrola Luau, strażniki, plan budowy
     python -B swiat/miasteczko_bazar_gra/zbuduj.py              # buduje / odbudowuje kontener (Studio w trybie Edit)
-    python -B swiat/miasteczko_bazar_gra/zbuduj.py --skrypty    # tylko moduły i skrypty (części i punkt w starym
-                                                                #   miasteczku zostają)
+    python -B swiat/miasteczko_bazar_gra/zbuduj.py --skrypty    # tylko moduły i skrypty (części zostają)
     python -B swiat/miasteczko_bazar_gra/zbuduj.py --usun       # usuwa Workspace/MiasteczkoBazarGra
     python -B swiat/miasteczko_bazar_gra/zbuduj.py --studio <studio_id>   # gdy otwartych jest kilka okien Studio
 
-Co powstaje (tylko w Workspace/MiasteczkoBazarGra z atrybutem Wygenerowane = true; mapy Workspace/MiasteczkoBazar,
-starego miasteczka ani żadnego innego kontenera budowa NIE zmienia — cudze obiekty tylko czyta):
+Co powstaje (tylko w Workspace/MiasteczkoBazarGra z atrybutem Wygenerowane = true; mapy Workspace/MiasteczkoBazar
+ani żadnego innego kontenera budowa NIE zmienia — cudze obiekty tylko czyta):
   Moduly/DaneBazaru, Moduly/LogikaBazaru     ModuleScript (zrodla/; DaneBazaru wygenerowany przez dane.py)
   SerwerBazaru (RunContext = Server), KlientBazaru (RunContext = Client)
   Zdalne/ZdarzeniaBazaru                      RemoteEvent (serwer → klient: okno, dymek, chmury, przeniesiono)
   Sygnaly/PrzeniesDoBazaru                    BindableFunction — uchwyt serwera: start bazaru (np. przejście przez chmury)
   Sygnaly/SterowanieSerwera, SterowanieKlienta  BindableFunction — haczyki testowe
   Punkty/E <id>                               niewidzialne części z ProximityPrompt „Podpowiedz” (Enabled = false —
-                                              włącza SerwerBazaru w Play) w miejscach ze znaczniki.json; „E nowe_miasteczko”
-                                              stoi w STARYM miasteczku przy miejscu startu (wybór w Studio, niżej)
+                                              włącza SerwerBazaru w Play) w miejscach ze znaczniki.json
   Tablica/Ekran                               niewidzialna płytka z SurfaceGui „Ranking” na powierzchni tablica_ranking
 Atrybuty kontenera: Wygenerowane, Zrodlo, Zbudowano, Skrot, PunktStartuBazaru / PatrzStartuBazaru (Vector3, środek
-HumanoidRootPart — do wpisu „atrybut” w swiat/teleport_chmury/krainy.json), PunktStaregoMiasteczka,
-StartStaregoMiasteczka, ZrodloStartuStarego, PunktPowrotuStare / PatrzPowrotuStare. Atrybuty testowe ustawione ręcznie
-w Edit (DymkiWylaczone, BezDymku, RecznyPunktStaregoMiasteczka) przechodzą na odbudowany kontener.
+HumanoidRootPart — do wpisu „atrybut” w swiat/teleport_chmury/krainy.json). Atrybuty testowe ustawione ręcznie
+w Edit (DymkiWylaczone, BezDymku, PrzenikanieKamery) przechodzą na odbudowany kontener.
 
 Zasady (wspólne miejsce Team Create): okno wybiera swiat/test_walki_roblox/cel_studio.py (jedno okno albo --studio,
 zawsze placeId gry); KAŻDY wysyłany kod sprawdza game.PlaceId == 129485428021967 i tryb Edit; ruszany jest tylko własny
 kontener (obiekt o tej nazwie bez atrybutu Wygenerowane → STOP); punkty historii przed i po (Ctrl+Z cofa całość);
 nic nie jest zapisywane ani publikowane, Lighting nietknięty. --sucho nie importuje studio_mcp ani cel_studio.
-
-„Nowe miasteczko (E)” w starym miasteczku: budowa szuka (tylko odczyt) SpawnLocation spoza bazaru najbliższego punktowi
-startu z swiat/krzywe_miasteczko/uklad.json (bez niego — sam ten punkt) i portalu Workspace/LasTeleport/PortalStart;
-kolejność kandydatów liczy LogikaBazaru.kandydaci (ta sama funkcja co w lustrze Pythona), a pierwszy z wolną skrzynką
-(bez części z kolizją) i gruntem na wysokości startu wygrywa. Wynik: część „E nowe_miasteczko” i atrybuty kontenera.
 """
 import argparse
 import json
@@ -72,7 +66,7 @@ INNE = [
     ("BindableFunction", "Sygnaly/SterowanieSerwera"),  # haczyk testowy SerwerBazaru (+ odblokowanie lochów)
     ("BindableFunction", "Sygnaly/SterowanieKlienta"),  # haczyk testowy KlientBazaru
 ]
-ATRYBUTY_TESTOWE = ["DymkiWylaczone", "BezDymku", "RecznyPunktStaregoMiasteczka", "PrzenikanieKamery"]
+ATRYBUTY_TESTOWE = ["DymkiWylaczone", "BezDymku", "PrzenikanieKamery"]
 
 NAGLOWEK_MIEJSCA = ('if game.PlaceId ~= __MIEJSCE__ then return "STOP: inne miejsce (PlaceId " .. tostring(game.PlaceId) .. ")" end\n'
                     'if game:GetService("RunService"):IsRunning() then return "STOP: Studio jest w trybie Play — buduję tylko w trybie Edit" end\n')
@@ -100,9 +94,6 @@ else
 	if #braki > 0 then table.insert(uwagi, "w mapie brak: " .. table.concat(braki, ", ")) end
 	if not sciezka("__BLOKADA__") then table.insert(uwagi, "brak __BLOKADA__ (kłódka lochów)") end
 end
-if not workspace:FindFirstChild("KrzyweMiasteczko") then table.insert(uwagi, "brak Workspace/KrzyweMiasteczko (stare miasteczko)") end
-local lt = workspace:FindFirstChild("LasTeleport")
-table.insert(uwagi, "LasTeleport/PortalStart: " .. tostring(lt ~= nil and lt:FindFirstChild("PortalStart") ~= nil))
 local tc = workspace:FindFirstChild("__CHMURY__")
 table.insert(uwagi, "__CHMURY__/__OTWORZ__: " .. tostring(tc ~= nil and tc:FindFirstChild("__OTWORZ__") ~= nil))
 table.insert(uwagi, "__LAS__: " .. tostring(sciezka("__LAS__") ~= nil))
@@ -237,7 +228,7 @@ end)()
 __PUNKT__
 local punkty = f:FindFirstChild("Punkty")
 for _, d in punkty:GetChildren() do
-	if d.Name ~= "E nowe_miasteczko" then d:Destroy() end
+	d:Destroy()
 end
 local n = 0
 for _, id in D.kolejnosc do
@@ -309,112 +300,6 @@ napis("Stopka", 0.91, 0.06, T.stopka, Color3.fromHex("8A7F72"), Enum.TextXAlignm
 model.PrimaryPart = e
 model.Parent = f
 return "OK (punktów E w bazarze: " .. n .. ", tablica " .. string.format("%.1f × %.1f", T.rozmiar[1], T.rozmiar[2]) .. ")"
-'''
-
-STARE = r'''
-local f = workspace:FindFirstChild("__KONTENER__")
-if not f or f:GetAttribute("Wygenerowane") ~= true then return "STOP: brak kontenera" end
-local D = (function()
-__DANE__
-end)()
-local L = (function()
-__LOGIKA__
-end)()
-__PUNKT__
-local S = D.stare
-local m = D.miejsca.nowe_miasteczko
-local uwagi = {}
-local stary = f.Punkty:FindFirstChild("E nowe_miasteczko")
-if stary then stary:Destroy() end
-local pomin = { f }
-local function grunt(x, z, y0)
-	local par = RaycastParams.new()
-	par.FilterType = Enum.RaycastFilterType.Exclude
-	par.FilterDescendantsInstances = pomin
-	par.RespectCanCollide = true
-	local r = workspace:Raycast(Vector3.new(x, y0 + S.rzut_od, z), Vector3.new(0, -S.rzut_dlugosc, 0), par)
-	return if r then r.Position.Y else nil
-end
--- 1. miejsce startu starego miasteczka: SpawnLocation spoza bazaru najbliższy punktowi z uklad.json, inaczej ten punkt
-local zn = Vector3.new(S.znacznik[1], S.znacznik[2], S.znacznik[3])
-local sl, zrodlo, najblizej, spawny = nil, "swiat/krzywe_miasteczko/uklad.json (spawn)", math.huge, 0
-for _, d in workspace:GetDescendants() do
-	if d:IsA("SpawnLocation") and not d:IsDescendantOf(f) then
-		spawny += 1
-		local p = d.Position
-		if p.X >= D.bazar.czesci_x[1] and p.X <= D.bazar.czesci_x[2] and p.Z >= D.bazar.czesci_z[1] and p.Z <= D.bazar.czesci_z[2] then
-			table.insert(uwagi, "SpawnLocation w bazarze pominięty: " .. d:GetFullName())
-		else
-			local o = Vector3.new(p.X - zn.X, 0, p.Z - zn.Z).Magnitude
-			if o < najblizej then
-				najblizej, sl, zrodlo = o, d, d:GetFullName()
-			end
-		end
-	end
-end
-local s
-if sl then
-	s = sl.Position + Vector3.new(0, sl.Size.Y / 2, 0)
-else
-	s = Vector3.new(zn.X, grunt(zn.X, zn.Z, zn.Y) or zn.Y, zn.Z)
-	table.insert(uwagi, "brak SpawnLocation poza bazarem — start z uklad.json")
-end
-local o = S.obszar_xz
-if s.X < o[1] or s.X > o[2] or s.Z < o[3] or s.Z > o[4] then
-	table.insert(uwagi, "start poza obszarem starego miasteczka")
-end
--- 2. portal przy starcie (Workspace/LasTeleport/PortalStart, tylko odczyt): nie stawiamy obok i nie na drodze do niego
-local lt = workspace:FindFirstChild("LasTeleport")
-local ps = lt and lt:FindFirstChild("PortalStart")
-local portal = nil
-if ps and ps:IsA("Model") then
-	portal = ps:GetPivot().Position
-elseif ps and ps:IsA("BasePart") then
-	portal = ps.Position
-end
--- 3. ręczny punkt (atrybut testowy) albo pierwszy wolny kandydat z L.kandydaci
-local wybrany, opis = nil, ""
-local reczny = f:GetAttribute("RecznyPunktStaregoMiasteczka")
-if typeof(reczny) == "Vector3" then
-	wybrany, opis = reczny, "ręczny (atrybut RecznyPunktStaregoMiasteczka)"
-else
-	local op = OverlapParams.new()
-	op.FilterType = Enum.RaycastFilterType.Exclude
-	op.FilterDescendantsInstances = pomin
-	op.RespectCanCollide = true
-	local kand = L.kandydaci(D, { x = s.X, z = s.Z }, if portal then { x = portal.X, z = portal.Z } else nil)
-	for i, c in kand do
-		local y = grunt(c.x, c.z, s.Y)
-		if y and math.abs(y - s.Y) <= S.roznica_wysokosci then
-			local w = S.wolne
-			local zajete = workspace:GetPartBoundsInBox(CFrame.new(c.x, y + w[2] / 2 + 0.3, c.z), Vector3.new(w[1], w[2], w[3]), op)
-			if #zajete == 0 then
-				wybrany, opis = Vector3.new(c.x, y, c.z), string.format("kandydat %d z %d", i, #kand)
-				break
-			end
-		end
-	end
-	if not wybrany then
-		local c = kand[1]
-		wybrany = if c then Vector3.new(c.x, s.Y, c.z) else s + Vector3.new(S.promienie[1], 0, 0)
-		opis = "BRAK WOLNEGO MIEJSCA — pierwszy kandydat"
-		table.insert(uwagi, "żaden kandydat nie był wolny — sprawdź punkt na oko")
-	end
-end
--- 4. punkt E z tabliczką i punkt powrotu (S.powrot st ku startowi, twarzą do startu)
-punktE(f.Punkty, "nowe_miasteczko", wybrany + Vector3.new(0, S.wysokosc_podpowiedzi, 0), m, m.tabliczka)
-local ku = Vector3.new(s.X - wybrany.X, 0, s.Z - wybrany.Z)
-local kier = if ku.Magnitude > 0.1 then ku.Unit else Vector3.new(1, 0, 0)
-local powrot = wybrany + kier * S.powrot
-f:SetAttribute("PunktStaregoMiasteczka", wybrany)
-f:SetAttribute("StartStaregoMiasteczka", s)
-f:SetAttribute("ZrodloStartuStarego", zrodlo)
-f:SetAttribute("PunktPowrotuStare", Vector3.new(powrot.X, wybrany.Y, powrot.Z))
-f:SetAttribute("PatrzPowrotuStare", Vector3.new(s.X, wybrany.Y, s.Z) + kier * 10)
-return string.format("OK Nowe miasteczko (E): (%.1f; %.1f; %.1f) — %s | start (%.1f; %.1f; %.1f) z %s | PortalStart %s | SpawnLocation: %d%s",
-	wybrany.X, wybrany.Y, wybrany.Z, opis, s.X, s.Y, s.Z, zrodlo,
-	if portal then string.format("(%.1f; %.1f; %.1f)", portal.X, portal.Y, portal.Z) else "brak", spawny,
-	if #uwagi > 0 then " | UWAGI: " .. table.concat(uwagi, "; ") else "")
 '''
 
 SKRYPT = r'''
@@ -537,13 +422,6 @@ def kod_czesci(D):
             .replace("__DANE__", dane))
 
 
-def kod_stare(D):
-    dane = wczytaj(os.path.join(ZRODLA, DANE.PLIK_LUAU))
-    logika = wczytaj(os.path.join(ZRODLA, "LogikaBazaru.luau"))
-    return (STARE.replace("__KONTENER__", D["kontener"]).replace("__PUNKT__", PUNKT)
-            .replace("__LOGIKA__", logika).replace("__DANE__", dane))
-
-
 def kod_skryptu(D, sciezka, klasa, kontekst, tekst):
     kod = (SKRYPT.replace("__KONTENER__", D["kontener"]).replace("__SCIEZKA__", sciezka).replace("__KLASA__", klasa)
            .replace("__RUNCONTEXT__", "s.RunContext = Enum.RunContext.%s" % kontekst if kontekst else ""))
@@ -560,7 +438,7 @@ def plan(D):
     linie = []
     for mid in D["kolejnosc"]:
         m = D["miejsca"][mid]
-        gdzie = "(%s)" % _w(m["punkt"]) if m.get("punkt") else "stare miasteczko — wybór w Studio"
+        gdzie = "(%s)" % _w(m["punkt"])
         dodatki = []
         if m.get("hud"):
             dodatki.append("HUD „%s”" % m["hud"])
@@ -574,9 +452,6 @@ def plan(D):
     T = D["tablica"]
     linie.append("  %-24s → SurfaceGui %g × %g st @ (%s), normalna (%s), %d wierszy rankingu" % (
         "Tablica/Ekran", T["rozmiar"][0], T["rozmiar"][1], _w(T["srodek"]), _w(T["normalna"]), T["wiersze"]))
-    S = D["stare"]
-    linie.append("  %-24s → wokół SpawnLocation spoza bazaru (zapas: (%s) z uklad.json), pierścienie %s, %d kierunków"
-                 % ("stare miasteczko", _w(S["znacznik"]), S["promienie"], len(S["kierunki"])))
     return linie
 
 
@@ -613,7 +488,7 @@ def main():
         print("  zdarzenie dla okien 2D: ReplicatedStorage.%s (BindableEvent u klienta); sygnał HUD: ReplicatedStorage.%s"
               % (D["zdarzenie_okien"], D["sygnal_hud"]))
         kody = {"sprawdz": kod_sprawdz(D), "start": kod_start(D, czas="x", skrot="x"), "czesci": kod_czesci(D),
-                "stare": kod_stare(D), "koniec": kod_konca(D)}
+                "koniec": kod_konca(D)}
         print("  kod wysyłany do Studio: %s" % ", ".join("%s %d zn." % (k, len(v)) for k, v in kody.items()))
     if a.sucho:
         print("sucho: OK (Studio nieużywane)")
@@ -666,7 +541,6 @@ def main():
             if a.usun or wynik != "OK":
                 return
             print("  części:", wykonaj(kod_czesci(D)))
-            print("  stare miasteczko:", wykonaj(kod_stare(D)))
             skrypty()
             print("gotowe: %s (%.0f s)" % (wykonaj(kod_konca(D)), time.time() - t0))
     except StudioError as e:

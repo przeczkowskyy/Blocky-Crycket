@@ -38,20 +38,31 @@ STATYSTYKI_LUAU = os.path.join(REPO, "src", "server", "Walka", "Statystyki.luau"
 # atrybut gracza Class (src/server/ClassSelect.server.luau, ClassData.id) → klasa silnika walki
 KLASY_GRACZA = {"Warrior": "wojownik", "Scout": "zwiadowca", "Mage": "mag"}
 
+# atrybut gracza Race (src/server/ClassSelect.server.luau, RaceData.id; D-079) — agent Karola, 27.11.2026 (Karol: „Tak, zapisuj
+# rasę”): rasy, które zapis przywraca. Czytane z src/shared/RaceData.luau (tylko odczyt), razem z rasą premium
+# (dziś zablokowana na serwerze — do zapisu trafia tylko to, co serwer wyboru przyjął).
+RACE_DATA_LUAU = os.path.join(REPO, "src", "shared", "RaceData.luau")
+
 # JEDNO MIEJSCE: które pakiety mogą rozmawiać ze stanem gracza (nazwy kontenerów w Workspace). Jak dodać pakiet:
 # dopisz nazwę jego kontenera tutaj, uruchom `python -B swiat/stan_gracza/dane.py` i testy, przebuduj StanGracza
 # (`zbuduj.py --skrypty` wystarcza — DaneStanu to moduł). Nazwy niezbudowanych jeszcze kontenerów nic nie psują.
 #  • BIOMY — kontenery z walkami biomu (kod SerwerPotworow): ich łup przyjmuje Sygnaly/PrzyznajLup i tylko w ich
 #    walkach działa kara za przegraną (tablica próby TestWalki2 łupu nie wysyła);
-#  • WYDATKI — kontenery, które mogą wydawać Złoto gracza (Sygnaly/WydajZloto, Pety "kup").
+#  • WYDATKI — kontenery, które mogą wydawać Złoto gracza (Sygnaly/WydajZloto, Pety "kup");
+#  • PRZYCHODY — kontenery, które mogą DOPISAĆ Złoto (Rybki, D-146) poza walką (Sygnaly/Pety "przychod"; 25.11.2026:
+#    zagroda petów — pety stojące w zagrodzie dają Rybki na sekundę, kwotę liczy serwer petów).
 PAKIETY_BIOMOW = ["LasPotwory", "LasPasGra", "BagnoPasGra", "DzunglaPasGra"]   # 18.11: Dżungla (trzeci biom)
-PAKIETY_WYDATKOW = ["PetyProba", "KowalProba"]                                # 18.11: Kowal (D-102)
+PAKIETY_WYDATKOW = ["PetyProba", "KowalProba", "TreningAFK"]                  # 18.11: Kowal (D-102); 27.11: sklep trenera (TreningAFK)
+PAKIETY_PRZYCHODOW = ["PetyProba"]                                            # 25.11: zagroda petów (Rybki/s)
 
 # punkty statystyk za poziom (D-097 ✅ 17.11: „5 punktów do rozdania za poziom”). PUNKTY_SAMO_NA_POZIOM = ile
 # punktów na poziom rozdziela się SAMO rozkładem klasy: 5 = wariant b (odstępstwo przyjęte roboczo dla balansu — suma
 # 10 jak przy strojeniu potworów); 0 = czysty wariant a z D-097 (las ok. 61 zamiast 31 min — punkty_statystyk.py)
-PUNKTY_DO_ROZDANIA = 5
-PUNKTY_SAMO_NA_POZIOM = 5
+# 27.11.2026 (Karol, dźwignia A z swiat/przejscie_gry/BALANS_2711.md; zmienia D-140, czeka na Pawła): przyciski „+”
+# zniknęły 24.11, więc punkty do rozdania były martwe — wszystkie 10 na poziom rozdziela się samo, do rozdania 0
+# (licznik na dole ekranu się chowa). Powrót do stanu sprzed 27.11: 5 i 5.
+PUNKTY_DO_ROZDANIA = 0
+PUNKTY_SAMO_NA_POZIOM = 10
 
 # Gemy bez płacenia (D-099 ✅ 17.11; liczby „do zmiany”, tools/walka/REBIRTH_1711.md część 1): za każdy awans i za
 # pierwsze pokonanie strażnika każdego biomu (gatunek zaczyna się od PREFIKS_STRAZNIKA); za co dziesiątą wygraną
@@ -137,6 +148,15 @@ def atrybuty_gracza_silnika():
     return {s: w[s] for s in wzorcowe.STATYSTYKI}
 
 
+def rasy_gracza():
+    """Identyfikatory ras z src/shared/RaceData.luau (Paweł, D-079) → lista w kolejności pliku."""
+    with open(RACE_DATA_LUAU, encoding="utf-8") as f:
+        ids = re.findall(r'\{ id = "(\w+)", name = ', f.read())
+    if len(ids) < 2 or len(set(ids)) != len(ids):
+        raise BladDanych("nie odczytałem ras z %s: %s" % (RACE_DATA_LUAU, ids))
+    return ids
+
+
 def progi_slotow():
     """wzorcowe.sloty(poziom) → lista progów { od, n } od najwyższego (sprawdzane do 200. poziomu)."""
     progi, poprzedni = [], None
@@ -166,7 +186,9 @@ def podstawa():
         "prefiks": "[StanGracza] ",
         # 2 (17.11.2026): pety i licznik wydatków w profilu (swiat/pety_proba); 3 (18.11.2026): dane pakietów
         # (Sygnaly/DanePakietu — pole pakiety; profil 2 dostaje puste pakiety)
-        # 4 (18.11.2026, zapis postępu): idKlasy i atrybuty innych pakietów (przeloty, strażnicy biomów, strój)
+        # 4 (18.11.2026, zapis postępu): idKlasy i atrybuty innych pakietów (przeloty, strażnicy biomów, strój);
+        # 27.11.2026: pole idRasy (atrybut Race) bez zmiany wersji — pole nieobowiązkowe: profil bez niego = gracz bez rasy
+        # (ekran wyboru jak dotąd), a starszy kod przy zapisie je pomija (nie odrzuca profilu)
         "wersja_profilu": 4,
         "krzywa": {"a": tempo.DOMYSLNE_A, "b": 1.6},
         "pula": {"baza": wzorcowe.PUNKTY_START, "na_poziom": wzorcowe.PUNKTY_NA_POZIOM},
@@ -177,6 +199,8 @@ def podstawa():
         "klasy": list(wzorcowe.KLASY),
         "klasa_domyslna": wzorcowe.KLASY[0],
         "klasy_gracza": dict(KLASY_GRACZA),
+        # 27.11.2026 (Karol: „Tak, zapisuj rasę”): rasy, które przywraca zapis (pole profilu idRasy → atrybut Race)
+        "rasy_gracza": rasy_gracza(),
         "nazwy_klas": {k: wzorcowe.postac(k, 1)["nazwa"] for k in wzorcowe.KLASY},
         "rozklady": {k: dict(wzorcowe.ROZKLADY[k]) for k in wzorcowe.KLASY},
         "umiejetnosci": {k: list(wzorcowe.UMIEJETNOSCI[k]) for k in wzorcowe.KLASY},
@@ -184,8 +208,8 @@ def podstawa():
         "atrybuty_statystyk": atrybuty_gracza_silnika(),
         # atrybuty gracza: pięć pierwszych ustawia dziś src/server/PlayerStatsDefaults (Paweł), Class — ClassSelect;
         # ShardyEwolucji i TokenyKrainy_<kraina> są tego pakietu (HUD ich jeszcze nie pokazuje)
-        "atrybuty": {"klasa": "Class", "poziom": "Level", "xp": "XP", "xp_max": "XPMax", "zloto": "Gold", "gemy": "Gems",
-                     "shardy": "ShardyEwolucji", "tokeny_prefiks": "TokenyKrainy_"},
+        "atrybuty": {"klasa": "Class", "rasa": "Race", "poziom": "Level", "xp": "XP", "xp_max": "XPMax", "zloto": "Gold",
+                     "gemy": "Gems", "shardy": "ShardyEwolucji", "tokeny_prefiks": "TokenyKrainy_"},
         "pola_lupu": ["zloto", "doswiadczenie", "tokeny_krainy", "gemy", "shard_ewolucji"],
         "limity": {
             "poziom_maks": 999,             # silnik przyjmuje do 1000
@@ -206,6 +230,9 @@ def podstawa():
         # wydawanie Złota (Sygnaly/WydajZloto i Sygnaly/Pety "kup", 17.11.2026): kto może wydawać (nazwy kontenerów
         # pakietów) i największa jedna kwota; licznik wydatków na cel (np. kupione jajka) jest w profilu
         "wydatki": {"zrodla": list(PAKIETY_WYDATKOW), "kwota_maks": 1000000},
+        # przychody spoza walki (Sygnaly/Pety "przychod", 25.11.2026 — zagroda petów): kto może dopisać Złoto i
+        # największa jedna kwota (naliczanie co kilka sekund — setki, nie tysiące); bez premii i bez licznika walk
+        "przychody": {"zrodla": list(PAKIETY_PRZYCHODOW), "kwota_maks": 100000},
         # pety w profilu (swiat/pety_proba): kopie każdego peta (kopia = shard peta, D-058), aktywny pet i jego premia
         # do łupu z walk (wartości premii przysyła pakiet petów — tu tylko granice); atrybuty gracza dla klientów
         "pety": {"rodzajow_maks": 100, "kopii_maks": 1000000, "premia_maks": 0.5,
@@ -216,8 +243,10 @@ def podstawa():
         # `zrodla` (las-pas, stary las, Bagno — nie tablica próby, nie tryb testowy TestBohater, który łupu nie wysyła);
         # atrybut kontenera StanGracza `atrybut_wylacznika` = false wyłącza karę w czasie gry (próby, testy)
         "kara": {"procent": KARA_PROCENT, "limit_lupu": limit_lupu_zwyklego(), "zrodla": list(PAKIETY_BIOMOW),
-                 "atrybut_wylacznika": "KaraPrzegranej", "komunikat": "Przegrana: −%d Złota, +%d doświadczenia",
-                 "komunikat_bez_zlota": "Przegrana: +%d doświadczenia", "czas_s": 3.5},
+                 "atrybut_wylacznika": "KaraPrzegranej", "komunikat": "Przegrana: −%s, +%d doświadczenia",
+                 "komunikat_bez_zlota": "Przegrana: +%d doświadczenia", "czas_s": 3.5,
+                 # waluta to Rybki (atrybut Gold, D-146): odmiana przy liczbie — 1 Rybka, 2–4 / 22–24… Rybki, reszta Rybek
+                 "formy_rybki": ["Rybka", "Rybki", "Rybek"]},
         # modyfikatory bohatera (18.11.2026, Sygnaly/Modyfikatory — pety D-101, Kowal D-102): granice jednego wpisu
         # źródła i złożenia; pasywki = nazwy z silnika z ich modyfikatorami (pole premie opisu postaci)
         "modyfikatory": {"zrodel_maks": 16, "statystyka_maks": 1000, "procent_maks": 1, "procent_suma_maks": 3,
@@ -252,8 +281,8 @@ def podstawa():
                   "proba": {"atrybut_do": "ZapisProbaDo", "atrybut_magazynu": "ZapisProbaMagazyn",
                             "atrybut_bledow": "ZapisProbaBledy", "przyrostek": "_Proba", "czas_s": 900},
                   "przyrostek_studio": "_Studio", "klucz": "player_",
-                  "pola": ["wersja", "klasa", "idKlasy", "poziom", "xp", "zloto", "gemy", "tokeny", "shardy", "wytrenowane",
-                           "walki", "awanse", "pety", "wydatki", "pakiety", "punkty", "straznicy", "atrybuty"],
+                  "pola": ["wersja", "klasa", "idKlasy", "idRasy", "poziom", "xp", "zloto", "gemy", "tokeny", "shardy",
+                           "wytrenowane", "walki", "awanse", "pety", "wydatki", "pakiety", "punkty", "straznicy", "atrybuty"],
                   "atrybuty_prefiksy": ["WidzialPrzelot", "PokonalStraznika", "StrojProba_"],
                   "limity": {"wartosci_maks": 70000, "glebokosc_maks": 10, "napis_maks": 200, "bajty_maks": 3000000},
                   "proby": 4, "odstep_s": 1, "proby_blokady": 6, "czekaj_blokada_s": 5, "blokada_s": 600,
@@ -262,7 +291,9 @@ def podstawa():
                   "start": {"gemy": 0, "zloto": 0}},
         "rozklady_klas": {"tryb": ROZKLADY_KLAS, "atrybut": "RozkladyKlas", "tryby": ["wzorcowe", "classdata"]},
         "klasy_pawla": {"folder": "Shared", "modul": "ClassData", "czekaj_s": 10},
-        "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki"},
+        # 27.11.2026 (dźwignia B, BALANS_2711.md): wytrenowane punkty każdej statystyki jako atrybut gracza
+        # prefiks_wytrenowanych .. atrybut statystyki (np. WytrenowaneStrength) — czyta je limit treningu AFK
+        "trening": {"kontener": "TreningProba", "sygnal": "PrzyrostStatystyki", "prefiks_wytrenowanych": "Wytrenowane"},
         "hud": {"gui": "HUD", "czekaj_s": 60},
         "baner": {"gui": "StanGraczaBaner", "tekst": "POZIOM %d", "podpis": "AWANS!", "podpis_wiele": "AWANS x%d!",
                   "czas_s": 2.6, "opoznienie_po_hud_s": 0.5, "wysokosc": 0.24, "szer_px": 460, "wys_px": 130,
@@ -337,6 +368,24 @@ def przypadki(D):
                  dict(dobry_w, cel=""), dict(dobry_w, cel="jajko lesne"), dict(dobry_w, cel="x" * 25)):
         w, powod = LS.czysty_wydatek(D, info)
         P["wydatek"].append({"info": info, "wynik": nil(w), "powod": powod})
+    P["przychod"] = []
+    dobry_p = {"ile": 3, "zrodlo": D["przychody"]["zrodla"][0], "cel": "zagroda"}
+    for info in (dobry_p, dict(dobry_p, ile=1), dict(dobry_p, ile=0), dict(dobry_p, ile=-2), dict(dobry_p, ile=1.5),
+                 dict(dobry_p, ile=D["przychody"]["kwota_maks"]), dict(dobry_p, ile=D["przychody"]["kwota_maks"] + 1),
+                 dict(dobry_p, ile="3"), dict(dobry_p, zrodlo="KowalProba"), dict(dobry_p, zrodlo=None),
+                 dict(dobry_p, cel="zagroda petow"), dict(dobry_p, cel=None), "x"):
+        w, powod = LS.czysty_przychod(D, info)
+        P["przychod"].append({"info": info, "wynik": nil(w), "powod": powod})
+    # sprzedaż petów (26.11.2026, Pety "sprzedaj"): kopie i Rybki jednym wywołaniem
+    P["sprzedaz"] = []
+    dobry_s = {"pety": {"zoledziak": 2, "ognik": 1}, "ile": 373, "zrodlo": D["przychody"]["zrodla"][0],
+               "cel": "sprzedaz_petow"}
+    for info in (dobry_s, dict(dobry_s, pety={}), dict(dobry_s, pety={"zly pet": 1}), dict(dobry_s, pety={"ognik": 0}),
+                 dict(dobry_s, pety={"ognik": 1.5}), dict(dobry_s, pety=["ognik"]), dict(dobry_s, ile=0),
+                 dict(dobry_s, ile=D["przychody"]["kwota_maks"] + 1), dict(dobry_s, zrodlo="KowalProba"),
+                 dict(dobry_s, cel="sprzedaz petow"), "x"):
+        w, powod = LS.czysta_sprzedaz(D, info)
+        P["sprzedaz"].append({"info": info, "wynik": nil(w), "powod": powod})
     P["wydaj"] = [{"zloto": z, "ile": i, "wynik": list(LS.wydaj(D, z, i))}
                   for z, i in ((500, 300), (300, 300), (299, 300), (0, 300), (-40, 10), (12.7, 12), (None, 5), ("9", 5))]
     P["premia"] = []
@@ -399,13 +448,15 @@ def przypadki(D):
     P["migruj"] = []
     for dane_ in (None, "x", 7, stary1, stary2, stary3, dict(stary3, wersja=99), dict(stary3, wersja="3"),
                   dict(stary3, wersja=4, punkty={"pula": 3, "rozdane": {s: 1 for s in D["statystyki"]}, "poziom": 7},
-                       straznicy={"straznik_lasu": True}, idKlasy="Mage", atrybuty={"PokonalStraznikaLasu": True})):
+                       straznicy={"straznik_lasu": True}, idKlasy="Mage", atrybuty={"PokonalStraznikaLasu": True}),
+                  dict(stary3, wersja=4, idKlasy="Scout", idRasy="Elf")):  # 27.11: rasa w zapisie
         w, powod = LS.migruj_profil(D, dane_)
         P["migruj"].append({"dane": nil(dane_), "wynik": nil(w), "powod": powod})
     dobry = LS.migruj_profil(D, stary3)[0]
     P["czysty_profil"] = []
     for prof in (dobry, dict(dobry, poziom=0), dict(dobry, poziom=2.5), dict(dobry, zloto=-1), dict(dobry, klasa="lucznik"),
                  dict(dobry, idKlasy="Rogue"), dict(dobry, xp="5"), dict(dobry, tokeny={"las": 1.5}),
+                 dict(dobry, idRasy="Elf"), dict(dobry, idRasy="Robot"), dict(dobry, idRasy=5),  # 27.11: rasa
                  dict(dobry, atrybuty={"Haker": True}), dict(dobry, atrybuty={"StrojProba_mag": "a,b"}),
                  dict(dobry, straznicy={"straznik_lasu": 1}), dict(dobry, wersja=3),
                  dict(dobry, punkty={"pula": -1, "rozdane": {}, "poziom": 1}), dict(dobry, wytrenowane={"sila": 1}),
@@ -413,7 +464,8 @@ def przypadki(D):
         w, powod = LS.czysty_profil(D, prof)
         P["czysty_profil"].append({"p": prof, "wynik": nil(w), "powod": powod})
     P["do_zapisu"] = [{"p": prof, "wynik": LS.profil_do_zapisu(D, prof)}
-                      for prof in (dict(dobry, oczekujace=[1], baza={"klasa": "mag"}), LS.nowy_profil(D))]
+                      for prof in (dict(dobry, oczekujace=[1], baza={"klasa": "mag"}), LS.nowy_profil(D),
+                                   dict(dobry, idKlasy="Mage", idRasy="DarkElf"))]  # 27.11: rasa idzie do zapisu
     # Gemy za strażnika (18.11.2026, D-099)
     P["straznik"] = [{"gatunek": nil(g), "wynik": LS.czy_straznik(D, g)}
                      for g in ("straznik_lasu", "straznik_topieli", "lesny_slime", "straznik", "", None, 7, "xstraznik_lasu")]

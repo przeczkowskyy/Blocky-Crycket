@@ -1,8 +1,8 @@
 RAPORT — lisciolis
-LIŚCIOLIS — pet rzadki z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+LIŚCIOLIS — pet rzadki z leśnego jajka (próba swiat/pety_proba; status: propozycja).
 
 Status: propozycja, nie kanon. Import do Roblox Studio nie był testowany.
-Źródło: swiat/postacie/lisciolis.py · wygenerowano 17.11.2026 poleceniem:
+Źródło: swiat/postacie/lisciolis.py · wygenerowano 25.11.2026 poleceniem:
   python -B swiat/postacie/przebuduj.py lisciolis
 Jednostka = 1 stud; wymiary = szer X × wys Y × głęb Z; postać patrzy w +Z, jej lewa strona to +X.
 
@@ -14,22 +14,23 @@ PODSUMOWANIE
 
 ZNANE SŁABOŚCI
 - Łapy są jednoczęściowe (bez kolan) — kłus to wymach całej łapy.
-- Liście uszu i ogona są płaskie (grubość 0,12–0,14) — z boku cienkie.
+- Głowa to klocek z fazą — w Blenderze zaokrąglony, w Roblox (Part) ma ostre krawędzie (arkusz: „kanciasta głowa”).
+- Liście (uszy, ogon, kołnierz) to spłaszczone elipsoidy — końce są zaokrąglone, nie szpiczaste jak na rysunku.
 
 MODEL lisciolis „Liściolis” (stwor)
-  wymiary ciała: 1,34 × 2,55 × 3,35; z akcesoriami: 1,34 × 2,55 × 3,35
-  trójkąty: 1232 (siatek: 10)
+  wymiary ciała: 1,59 × 2,58 × 2,15; z akcesoriami: 1,59 × 2,58 × 2,15
+  trójkąty: 4368 (siatek: 10)
   kości (11): Root, Tulow, Glowa, UchoL, LapaPrzodL, LapaTylL, UchoP, LapaPrzodP, LapaTylP, Ogon, OgonLisc
   klipy: spoczynek 60 kl. 2,00 s pętla, chod 20 kl. 0,67 s pętla, radosc 36 kl. 1,20 s jednorazowy, wyklucie 30 kl. 1,00 s jednorazowy
   punkty zaczepienia: RootAttachment, GlowaAttachment
 
 KONTROLA EKSPORTÓW
-- lisciolis.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje brak -> ZGODNE
-- lisciolis__spoczynek.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje lisciolis|Scene 1-61 -> ZGODNE
-- lisciolis__chod.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje lisciolis|Scene 1-21 -> ZGODNE
-- lisciolis__radosc.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje lisciolis|Scene 1-37 -> ZGODNE
-- lisciolis__wyklucie.fbx: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje lisciolis|Scene 1-31 -> ZGODNE
-- lisciolis.glb: siatki 12, kości 11, trójkąty 1256, wzrost 2.55 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
+- lisciolis.fbx: siatki 12, kości 11, trójkąty 4392, wzrost 2.58 st., akcje brak -> ZGODNE
+- lisciolis__spoczynek.fbx: siatki 12, kości 11, trójkąty 4392, wzrost 2.58 st., akcje lisciolis|Scene 1-61 -> ZGODNE
+- lisciolis__chod.fbx: siatki 12, kości 11, trójkąty 4392, wzrost 2.58 st., akcje lisciolis|Scene 1-21 -> ZGODNE
+- lisciolis__radosc.fbx: siatki 12, kości 11, trójkąty 4392, wzrost 2.58 st., akcje lisciolis|Scene 1-37 -> ZGODNE
+- lisciolis__wyklucie.fbx: siatki 12, kości 11, trójkąty 4392, wzrost 2.58 st., akcje lisciolis|Scene 1-31 -> ZGODNE
+- lisciolis.glb: siatki 12, kości 11, trójkąty 4392, wzrost 2.58 st., akcje chod 0-20, radosc 0-36, spoczynek 0-60, wyklucie 0-30 -> ZGODNE
 
 PLIKI
 - lisciolis.blend

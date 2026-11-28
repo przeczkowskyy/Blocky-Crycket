@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-"""MCHOWY ŚLIMAK — pet zwykły z leśnego jajka (próba swiat/pety_proba, 17.11.2026; status: propozycja, własny projekt).
+"""MCHOWY ŚLIMAK — pet zwykły z leśnego jajka (próba swiat/pety_proba; status: propozycja).
 
-Bladozielony ślimak (ok. 2,4 studa długości, 2 studa wysokości z grzybkiem): długa, niska stopa, uniesiona główka
-z oczami na czułkach, kanciasta brązowa muszla z kwadratową „spiralą” na bokach, czapa mchu na grzbiecie muszli
-i mały czerwony grzybek w białe kropki. Sylwetka: niska i podłużna — zupełnie inna niż żołądź i lis.
+Przebudowa 25/26.11.2026 według arkusza obrotów Pawła (`mchowy_slimak_obroty.jpg`: cztery widoki 3/4 z buzią, BEZ
+widoku z tyłu — tył uzupełniony z boków i z modelu z 17.11). Wzór wyglądu: bladozielony ślimak (ok. 2,4 studa
+długości, 2,3 studa wysokości z grzybkiem) z DUŻĄ głową w kształcie kostki (szerszą niż wysoka, buzia z przodu:
+oczy z odblaskiem, uśmiech, rumieńce), na niej dwa czułki z zielonymi kulkami; długa stopa z jaśniejszą podeszwą,
+zwężona w ogonek; kanciasta brązowa muszla z kwadratową spiralą na obu bokach, czapa mchu w kępkach i czerwony
+grzybek w białe kropki na grzbiecie. Kości, nazwy kości i klipy jak w modelu z 17.11.
 
     python -B swiat/postacie/przebuduj.py mchowy_slimak --bez-filmow
 
@@ -12,89 +15,108 @@ Budowa (typ="stwor", patrzy w +Z, lewa = +X):
 Klipy: spoczynek, chod (sunięcie z falowaniem stopy, pętla), radosc, wyklucie.
 """
 from swiat.postacie.biblioteka.postac import Postac
-from swiat.postacie.pety_lesne import klip_radosc, klip_wyklucie
+from swiat.postacie.pety_lesne import klip_radosc, klip_wyklucie, lata, model, naklejka
 
 ID = "mchowy_slimak"
 
 PALETA = {
-    "cialo": "A8C98A", "cialo_ciemne": "7FA866", "podeszwa": "D9EBC4",
-    "muszla": "8A5A3A", "muszla_ciemna": "5E3A22", "muszla_jasna": "B9844F",
-    "mech": "5E9B3A", "mech_jasny": "7CC04A",
-    "grzyb": "D94A3A", "kropka": "FFF4E0", "trzon": "F2E6CC",
-    "rumieniec": "F08C8C", "buzia": "3E5A2A",
+    "cialo": "A8CF8C", "cialo_jasne": "D6ECC2", "cialo_ciemne": "86B26C",
+    "muszla": "7A4A28", "muszla_ciemna": "4A2A14", "muszla_jasna": "9A6338",
+    "mech": "5FA83A", "mech_jasny": "82C94E",
+    "grzyb": "D9412F", "kropka": "FFF4E6", "trzon": "F2E6CC",
+    "oko": "1E1A14", "rumieniec": "F3A0A0", "buzia": "2E3A1E",
 }
 
-STOPA = (0.95, 0.42, 2.0)
-Y_STOPY = 0.24
-Z_STOPY = -0.15
+STOPA = ((0.0, 0.34, -0.22), (0.98, 0.68, 2.44))        # elipsoida stopy: środek, średnice
+GLOWA = ((0.0, 1.03, 0.55), (1.1, 1.0, 0.9))          # „kostka” głowy: środek, rozmiar
+MUSZLA = ((0.0, 0.98, -0.4), (1.02, 1.2, 1.24))
+Y_STOPY, Z_STOPY = 0.3, 0.0
+
+
+def _plasko(p, nazwa, x, y, size, kolor, mat="matowy", ksztalt="kula", obrot=0.0, wysun=0.0):
+    """Bryła płaska na przedniej ścianie głowy-kostki (z = przód głowy)."""
+    (gx, gy, gz), (gw, gh, gd) = GLOWA
+    pos = (x, y, gz + gd / 2 + size[2] / 2 - 0.012 + wysun)
+    if ksztalt == "kula":
+        return p.kula(nazwa, pos, size, kolor, mat, rot=(0, 0, obrot), segm=12)
+    return p.blok(nazwa, pos, size, kolor, mat, rot=(0, 0, obrot), faza=0.0)
 
 
 def zbuduj():
     p = Postac(ID, "Mchowy Ślimak", typ="stwor", skala=1.0, faza=0.07, paleta=PALETA)
-    p.kosc("Cialo", "Root", staw=(0, Y_STOPY, Z_STOPY), czesc=STOPA, srodek=(0, 0, 0))
-    p.kosc("Glowa", "Cialo", staw=(0, 0.4, 0.55), czesc=(0.8, 0.74, 0.7), srodek=(0, 0.34, 0.15))
+    (sx, sy, sz), (sw, sh, sd) = STOPA
+    (gx, gy, gz), (gw, gh, gd) = GLOWA
+    (mx, my, mz), (mw, mh, md) = MUSZLA
+    p.kosc("Cialo", "Root", staw=(0, Y_STOPY, Z_STOPY), czesc=(sw, sh, sd), srodek=(sx, sy - Y_STOPY, sz - Z_STOPY))
+    p.kosc("Glowa", "Cialo", staw=(0, 0.5, gz), czesc=(gw, gh, gd), srodek=(0, gy - 0.5, 0))
     for s, zn in (("L", 1), ("P", -1)):
-        p.kosc("Czulek" + s, "Glowa", staw=(zn * 0.2, 1.08, 0.78), czesc=(0.12, 0.5, 0.12), srodek=(0, 0.25, 0))
-    p.kosc("Muszla", "Cialo", staw=(0, 0.45, -0.35), czesc=(1.15, 1.2, 1.25), srodek=(0, 0.58, -0.05))
-    p.kosc("Grzybek", "Muszla", staw=(0.18, 1.62, -0.5), czesc=(0.62, 0.55, 0.62), srodek=(0, 0.27, 0))
+        p.kosc("Czulek" + s, "Glowa", staw=(zn * 0.27, gy + gh / 2 - 0.04, gz + 0.12), czesc=(0.09, 0.4, 0.09),
+               srodek=(0, 0.2, 0))
+    p.kosc("Muszla", "Cialo", staw=(0, 0.45, -0.32), czesc=(mw, mh, md), srodek=(0, my - 0.45, mz + 0.32))
+    p.kosc("Grzybek", "Muszla", staw=(0.1, my + mh / 2 + 0.2, -0.52), czesc=(0.5, 0.48, 0.5), srodek=(0, 0.24, 0))
 
-    # ------------------------------------------------------------------ stopa
-    with p.na("Cialo", od="srodek"):
-        w, h, d = STOPA
-        p.blok("Stopa", (0, 0, 0), STOPA, "cialo", faza=0.12)
-        p.blok("Podeszwa", (0, -h / 2 + 0.05, 0), (w + 0.06, 0.1, d + 0.04), "podeszwa", "matowy", faza=0.03)
-        p.blok("Ogonek stopy", (0, -0.06, -d / 2 - 0.12), (0.6, 0.26, 0.4), "cialo_ciemne", faza=0.06)
+    # ------------------------------------------------------------------ stopa: długa, zwężona w ogonek, jasna podeszwa
+    with model(p, "Cialo"):
+        p.kula("Stopa", (sx, sy, sz), (sw, sh, sd), "cialo", segm=24)
+        p.kula("Spod stopy", *lata(STOPA, (0, -1, 0.25), 0.45, s=0.12), "cialo_jasne", "matowy", segm=24)
+        p.kula("Ogonek stopy", (0, 0.15, -1.22), (0.46, 0.28, 0.84), "cialo", rot=(-6, 0, 0), segm=16)
 
-    # ------------------------------------------------------------------ główka z buzią
-    with p.na("Glowa", od="srodek"):
-        w, h, d = 0.8, 0.74, 0.7
-        z = d / 2
-        p.blok("Glowa", (0, 0, 0), (w, h, d), "cialo", faza=0.14)
-        p.blok("Buzia", (0, -0.1, z + 0.02), (0.26, 0.06, 0.04), "buzia", "matowy", faza=0.0)
+    # ------------------------------------------------------------------ głowa-kostka z buzią
+    with model(p, "Glowa"):
+        p.blok("Glowa", (gx, gy, gz), (gw, gh, gd), "cialo", faza=0.16)
+        for zn, s in ((1, "L"), (-1, "P")):
+            _plasko(p, "Oko " + s, zn * 0.24, gy - 0.01, (0.15, 0.19, 0.05), "oko", "polysk")
+            _plasko(p, "Blysk " + s, zn * 0.24 + 0.03, gy + 0.035, (0.06, 0.06, 0.025), "bialy", "swiecacy",
+                    wysun=0.02)
+            _plasko(p, "Rumieniec " + s, zn * 0.36, gy - 0.15, (0.15, 0.07, 0.03), "rumieniec")
+        _plasko(p, "Buzia", 0, gy - 0.17, (0.08, 0.035, 0.03), "buzia", ksztalt="blok")
         for zn in (1, -1):
-            p.blok("Kacik", (zn * 0.15, -0.07, z + 0.02), (0.06, 0.06, 0.04), "buzia", "matowy", faza=0.0)
-        for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Rumieniec " + s, (zn * 0.28, -0.02, z + 0.02), (0.16, 0.09, 0.04), "rumieniec", "matowy", faza=0.0)
+            _plasko(p, "Buzia", zn * 0.065, gy - 0.152, (0.07, 0.035, 0.03), "buzia", ksztalt="blok", obrot=zn * 35)
 
-    # ------------------------------------------------------------------ oczy na czułkach
+    # ------------------------------------------------------------------ czułki z zielonymi kulkami (oczka z kropką)
     for s, zn in (("L", 1), ("P", -1)):
-        with p.na("Czulek" + s, od="staw"):
-            p.blok("Czulek", (0, 0.24, 0), (0.12, 0.5, 0.12), "cialo_ciemne", faza=0.03)
-            p.blok("Oko", (0, 0.56, 0.02), (0.3, 0.3, 0.3), "bialy", "polysk", faza=0.07)
-            p.blok("Zrenica", (-zn * 0.03, 0.55, 0.18), (0.15, 0.18, 0.04), "tusz", "polysk", faza=0.0)
+        with p.na("Czulek" + s, od="staw"), p.uklad(obrot=(-8, 0, -zn * 10)):
+            p.walec("Czulek", (0, 0.19, 0), (0.08, 0.4, 0.08), "cialo", segm=8, faza=0.0)
+            p.kula("Kulka", (0, 0.44, 0), (0.21, 0.21, 0.21), "cialo", segm=14)
+            naklejka(p, "Kropka oka", ((0, 0.44, 0), (0.21, 0.21, 0.21)), 0, 0.44, (0.09, 0.1, 0.04), "oko", "polysk")
 
-    # ------------------------------------------------------------------ muszla z mchem
-    with p.na("Muszla", od="srodek"):
-        w, h, d = 1.15, 1.2, 1.25
-        p.blok("Muszla", (0, 0, 0), (w, h, d), "muszla", faza=0.16)
+    # ------------------------------------------------------------------ muszla: kanciasta, kwadratowa spirala na bokach
+    with model(p, "Muszla"):
+        p.blok("Muszla", (mx, my, mz), (mw, mh, md), "muszla", faza=0.22)
+        R, t, g = 0.36, 0.09, 0.2                       # połowa boku spirali, grubość rowka, odstęp zwojów
+        odcinki = [((0, R), (2 * R + t, t)), ((R, 0), (t, 2 * R + t)), ((0, -R), (2 * R + t, t)),
+                   ((-R, -g / 2), (t, 2 * R - g + t)), ((-g / 2, R - g), (2 * R - g + t, t)),
+                   ((R - g, 0), (t, 2 * R - 2 * g + t)), ((R - 1.5 * g, -R + g), (g + t, t))]
         for zn, s in ((1, "L"), (-1, "P")):
-            x = zn * (w / 2 + 0.02)
-            p.blok("Spirala " + s, (x, -0.04, 0.02), (0.05, 0.9, 0.95), "muszla_ciemna", "matowy", faza=0.0)
-            p.blok("Spirala srodek " + s, (x + zn * 0.02, 0.0, -0.04), (0.05, 0.52, 0.55), "muszla_jasna", "matowy",
-                   faza=0.0)
-            p.blok("Spirala oczko " + s, (x + zn * 0.04, 0.04, -0.08), (0.05, 0.2, 0.2), "muszla_ciemna", "matowy",
-                   faza=0.0)
-        p.blok("Mech", (0, h / 2 + 0.05, -0.02), (1.0, 0.2, 1.08), "mech", "matowy", faza=0.06)
-        p.blok("Mech kepka", (0.22, h / 2 + 0.17, 0.25), (0.42, 0.16, 0.4), "mech_jasny", "matowy", faza=0.05)
-        p.blok("Mech zwis", (0, h / 2 - 0.12, -d / 2 - 0.03), (0.7, 0.32, 0.08), "mech", "matowy", faza=0.02)
+            x = zn * (mw / 2 + 0.012)
+            for (u, v), (du, dv) in odcinki:
+                # u wzdłuż boku (+u ku przodowi), v w górę; po prawej stronie lustrzanie, żeby spirala kręciła się tak samo
+                p.blok("Spirala " + s, (x, my + v, mz + zn * u), (0.03, dv, du), "muszla_ciemna", "matowy", faza=0.0)
+        p.kula("Mech", (0, my + mh / 2 + 0.0, mz), (mw + 0.14, 0.42, md + 0.14), "mech", "matowy", segm=16)
+        for x, z, r in ((0.26, 0.3, 0.46), (-0.24, -0.32, 0.5), (0.22, -0.36, 0.4), (-0.26, 0.26, 0.42)):
+            p.kula("Mech kepka", (x, my + mh / 2 + 0.12, mz + z), (r, 0.26, r), "mech_jasny" if x * z > 0 else "mech",
+                   "matowy", segm=12)
 
-    # ------------------------------------------------------------------ grzybek
+    # ------------------------------------------------------------------ czerwony grzybek w białe kropki
     with p.na("Grzybek", od="staw"):
-        p.blok("Trzon", (0, 0.16, 0), (0.2, 0.32, 0.2), "trzon", "matowy", faza=0.04)
-        p.blok("Kapelusz", (0, 0.4, 0), (0.62, 0.22, 0.62), "grzyb", faza=0.07)
-        p.blok("Kropka", (0.14, 0.52, 0.1), (0.14, 0.04, 0.14), "kropka", "matowy", faza=0.0)
-        p.blok("Kropka", (-0.12, 0.52, -0.12), (0.12, 0.04, 0.12), "kropka", "matowy", faza=0.0)
+        p.walec("Trzon", (0, 0.11, 0), (0.17, 0.3, 0.17), "trzon", "matowy", segm=10, faza=0.02)
+        KAP = ((0, 0.33, 0), (0.52, 0.34, 0.52))
+        p.kula("Kapelusz", KAP[0], KAP[1], "grzyb", segm=16)
+        for x, y in ((0.12, 0.42), (-0.14, 0.38), (0.02, 0.33)):
+            naklejka(p, "Kropka", KAP, x, y, (0.09, 0.08, 0.03), "kropka")
 
     p.zaczep("RootAttachment", "Cialo", (0, -Y_STOPY, -Z_STOPY))
-    p.zaczep("GlowaAttachment", "Muszla", (0, 1.4, 0))
+    p.zaczep("GlowaAttachment", "Muszla", (0, 1.92, -0.1))
     _klipy(p)
     p.ustaw_poze_renderu("spoczynek", 10)
     return p
 
 
 SLABOSCI = [
+    "Na arkuszu nie ma widoku z tyłu: tył (koniec stopy, tylna ściana muszli z mchem) jest dorobiony z boków arkusza.",
+    "Głowa i muszla to klocki z fazą — w Blenderze zaokrąglone, w Roblox (Part) mają ostre krawędzie.",
+    "Spirala na muszli to płaskie listewki (po sześć na bok), nie rowek.",
     "Stopa jest jedną sztywną bryłą — falowanie przy sunięciu robi przesunięcie kości, nie zginanie.",
-    "Muszla i stopa to kanciaste klocki; „spirala” jest płaska (kwadraty na bokach).",
 ]
 
 

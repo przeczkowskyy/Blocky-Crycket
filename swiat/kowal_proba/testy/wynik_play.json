@@ -1,15 +1,15 @@
 {
- "czas": "2026-11-19 14:45",
+ "czas": "2026-11-26 19:50",
  "punkty": [
   {
    "punkt": "K00",
    "wynik": "OK",
-   "opis": "kontenery {'stroje': True, 'kowal': True, 'stan': True, 'las': True, 'mod': True, 'dane': True, 'czesci': 332, 'skrot': '0585e95842ec', 'bazar': True, 'wydaj': True}; skrót 0585e95842ec (lokalnie 0585e95842ec)"
+   "opis": "kontenery {'stroje': True, 'kowal': True, 'stan': True, 'las': True, 'mod': True, 'dane': True, 'czesci': 332, 'skrot': '9d2b5b3d8c3d', 'bazar': True, 'wydaj': True}; skrót 9d2b5b3d8c3d (lokalnie 9d2b5b3d8c3d)"
   },
   {
    "punkt": "K01",
    "wynik": "OK",
-   "opis": "klient {'animowany': True, 'gotowy': True}; serwer {'StanGraczaPodlaczony': True, 'SerwerKowalaGotowy': True, 'SkrotSerwera': '0585e95842ec', 'ZgodnoscLogikiKowala': 'OK 427/427', 'PodpowiedziWlaczone': 1} (przypadków w danych 355)"
+   "opis": "klient {'animowany': True, 'gotowy': True}; serwer {'StanGraczaPodlaczony': True, 'SerwerKowalaGotowy': True, 'SkrotSerwera': '9d2b5b3d8c3d', 'ZgodnoscLogikiKowala': 'OK 430/430', 'PodpowiedziWlaczone': 1} (przypadków w danych 358)"
   },
   {
    "punkt": "K02",
@@ -24,7 +24,7 @@
   {
    "punkt": "K04",
    "wynik": "OK",
-   "opis": "okno True, wierszy 7 (klasa ma 7 przedmiotów)"
+   "opis": "okno Pawła po E True, okno próbne False (OknoZastapione OknoKowala), wierszy w widoku serwera 7 (klasa ma 7), zamknięte jego X: True"
   },
   {
    "punkt": "K05",
@@ -34,7 +34,7 @@
   {
    "punkt": "K06",
    "wynik": "OK",
-   "opis": "wpis kowala {'ok': True, 'statystyki': {'Constitution': 2}, 'pasywki': [], 'procent': {'Dexterity': 1.75, 'Luck': 1.75, 'Constitution': 1.75, 'Armor': 1.75, 'Strength': 1.75, 'Intelligence': 1.75}, 'lup': {'doswiadczenie': 0, 'zloto': 0}, 'tarcza': 0, 'bron': 0, 'pancerz': 2, 'zrodla': ['kowal', 'szczescie_poczatkujacego']} (oczekiwany {'pancerz': 2, 'statystyki': {'Constitution': 2}}); przedmioty z łupu na sobie ['rycerz_helm', 'rycerz_pas']; las {'poz': [1114, 3.358025074005127, -700], 'po_przelocie': True}; w walce broń 12 / pancerz 6.5 (wzór L1 + przedmioty: 12 / 6.5), modele w stroju [{'kontener': 'LasPasGra', 'stroj': 'rycerz_helm,rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_miecz,rycerz_tarcza', 'model': 'wojownik_lokalny'}], karta wyniku True"
+   "opis": "wpis kowala {'ok': True, 'statystyki': {'Constitution': 1}, 'pasywki': [], 'procent': {'Dexterity': 1.75, 'Luck': 1.75, 'Constitution': 1.75, 'Armor': 1.75, 'Strength': 1.75, 'Intelligence': 1.75}, 'lup': {'doswiadczenie': 0, 'zloto': 0}, 'tarcza': 0, 'bron': 0, 'pancerz': 2, 'zrodla': ['kowal', 'szczescie_poczatkujacego']} (oczekiwany {'pancerz': 2, 'statystyki': {'Constitution': 1}}); przedmioty z łupu na sobie ['rycerz_helm']; las {'poz': [1114, 3.3580234050750732, -700], 'po_przelocie': True}; w walce broń 12 / pancerz 6.5 (wzór L1 + przedmioty: 12 / 6.5), modele w stroju [{'kontener': 'LasPasGra', 'stroj': 'rycerz_helm,rycerz_zbroja,rycerz_nogawice,rycerz_miecz,rycerz_tarcza', 'model': 'wojownik_lokalny'}], karta wyniku True"
   },
   {
    "punkt": "K07",
@@ -49,7 +49,7 @@
   {
    "punkt": "K09",
    "wynik": "OK",
-   "opis": "za mało Złota: Brakuje ci 300 Złota.; za mało materiałów: Brakuje ci 2 materiałów — rozbierz zapasowe przedmioty z walk.; obcy przedmiot: nieznany_przedmiot; daleko: daleko; Złoto 5000"
+   "opis": "za mało Złota: Brakuje ci 300 Rybek.; za mało materiałów: Brakuje ci 2 materiałów — rozbierz zapasowe przedmioty z walk.; obcy przedmiot: nieznany_przedmiot; daleko: daleko; Złoto 5000"
   },
   {
    "punkt": "K10",
@@ -63,8 +63,8 @@
   },
   {
    "punkt": "K12",
-   "wynik": "OK",
-   "opis": "tekst 12 pt, okno {'lewo': 0.23988006606749143, 'gora': 0.41917632500813096, 'dol': 0.93138293277049, 'prawo': 0.758620699967081}"
+   "wynik": "?",
+   "opis": "okno zastąpione przez okno Pawła — okno próbne na małym ekranie: tekst 12 pt, okno {'lewo': 0.24769818812010044, 'gora': 0.41722196046018645, 'dol': 0.9318886043140723, 'prawo': 0.7508476141444145}; okna Pawła na telefonie ta próba nie mierzy"
   },
   {
    "punkt": "K13",
@@ -143,13 +143,12 @@
   "K06": {
    "wpis": true,
    "z_lupu": [
-    "rycerz_helm",
-    "rycerz_pas"
+    "rycerz_helm"
    ],
    "las": {
     "poz": [
      1114,
-     3.358025074005127,
+     3.3580234050750732,
      -700
     ],
     "po_przelocie": true
@@ -164,7 +163,7 @@
       "inteligencja": 4,
       "zrecznosc": 2,
       "szczescie": 3,
-      "kondycja": 11,
+      "kondycja": 10,
       "pancerz": 4,
       "sila": 8
      },
@@ -181,7 +180,7 @@
     "mod": {
      "ok": true,
      "statystyki": {
-      "Constitution": 2
+      "Constitution": 1
      },
      "pasywki": [],
      "procent": [],
@@ -199,7 +198,7 @@
     "stroje": [
      {
       "kontener": "LasPasGra",
-      "stroj": "rycerz_helm,rycerz_zbroja,rycerz_nogawice,rycerz_pas,rycerz_miecz,rycerz_tarcza",
+      "stroj": "rycerz_helm,rycerz_zbroja,rycerz_nogawice,rycerz_miecz,rycerz_tarcza",
       "model": "wojownik_lokalny"
      }
     ],

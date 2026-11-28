@@ -31,7 +31,17 @@ K = 'local k = workspace:WaitForChild("TeleportChmury", 10) local H = game:GetSe
 WYNIKI = os.path.join(KAT, "wyniki")
 KLATKI = os.path.join(KAT, "klatki")
 LAS = (1114, -700)
-MIASTO = (-63.6, -771.9)
+
+
+def _start_bazaru():
+    """(x, z) startu bazaru ze swiat/miasteczko_bazar/znaczniki.json — 26.11.2026: „miasteczko” to zawsze bazar
+    (starego miasteczka przy (−64; −772) nie ma już w miejscu)."""
+    with open(os.path.join(REPO, "swiat", "miasteczko_bazar", "znaczniki.json"), encoding="utf-8-sig") as f:
+        st = json.load(f)["start"]["swiat"]
+    return (st[0], st[2])
+
+
+MIASTO = _start_bazaru()
 
 
 def log(*a):
@@ -284,14 +294,14 @@ def testy(s, tylko):
         zapisz(wyniki, nazwa_pliku)
         log("TEST %s: %s" % (nr, "OK" if dane.get("ok") else "NIE"), json.dumps(dane, ensure_ascii=False)[:900])
 
-    # „miasteczko” to start nowego bazaru, gdy stoi Workspace/MiasteczkoBazarGra (pierwszy wpis przybycia w krainy.json,
-    # D-075); bez niego stare miasteczko jak dotąd
+    # „miasteczko” to start bazaru: atrybut Workspace/MiasteczkoBazarGra (pierwszy wpis przybycia w krainy.json), bez
+    # niego zapasowy punkt z krainy.json — ten sam start ze znaczników mapy bazaru (od 26.11.2026 bez starego miasteczka)
     global MIASTO
     baz = json.loads(s.luau('local k = workspace:FindFirstChild("MiasteczkoBazarGra") local p = k and k:GetAttribute("PunktStartuBazaru") '
                             'return game:GetService("HttpService"):JSONEncode(if typeof(p) == "Vector3" then { p.X, p.Z } else {})', "Server"))
     if len(baz) == 2:
         MIASTO = (baz[0], baz[1])
-    log("cel krainy „miasteczko”:", MIASTO, "(nowy bazar)" if len(baz) == 2 else "(stare miasteczko)")
+    log("cel krainy „miasteczko”:", MIASTO, "(atrybut bazaru)" if len(baz) == 2 else "(start bazaru ze znaczników)")
 
     # przygotowanie: gracz w miasteczku
     w = s.serwer("przenies", "miasteczko")

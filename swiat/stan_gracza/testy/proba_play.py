@@ -35,7 +35,12 @@ LISTA KONTROLNA (OK / BŁĄD / ?):
       LicznikKar +1; zrzut 11_przegrana_komunikat
   S14 (18.11.2026, D-097) punkty do rozdania: po awansach PunktyDoRozdania = 5 × (poziom − 1) − rozdane; „+” jak okno
       ekwipunku (AddStatPoint:FireServer("Luck") — StatPoints Pawła) zdejmuje punkt; po wydaniu wszystkich kolejny „+”
-      jest cofnięty i klient pokazuje „Brak punktów — zdobądź poziom”
+      jest cofnięty i klient pokazuje „Brak punktów — zdobądź poziom”. Od 26.11.2026: gdy „+” klienta nic nie zmienia
+      (Paweł wyłączył go 24.11, 33a7dbf, D-140) — ten sam przebieg zmianą atrybutu z serwera (strażnik statystyk),
+      a wynik to „?” (punkty bez sposobu wydania w grze, decyzja o wdrożeniu D-140), BŁĄD tylko przy złym strażniku.
+      Od 27.11.2026 (dźwignia A, swiat/przejscie_gry/BALANS_2711.md: 0 do rozdania, 10 samo): Level + 1 z serwera →
+      suma sześciu statystyk rośnie dokładnie o auto_na_poziom, PunktyDoRozdania 0 (albo brak), licznik na dole ekranu
+      schowany, atrybuty Wytrenowane<Atrybut> są liczbami; zrzut 15_awans_10_punktow
   S15 (18.11.2026) „szczęście początkującego”: przed pierwszą walką S03 źródło modyfikatorów „szczescie_poczatkujacego”
       jest w stanie gracza, po pierwszej wygranej go nie ma (pierwsza walka Wojownika ze slime'em — wygrana)
   S12 (h) konsola: bez błędów naszych skryptów ([StanGracza], [LasPasGra], [LasPotwory], „Script …StanGracza”);
@@ -86,7 +91,7 @@ KOD = {
     "edit": ('local H = game:GetService("HttpService") local function jest(n) local o = workspace:FindFirstChild(n) '
              'return o ~= nil and o:GetAttribute("Wygenerowane") == true end '
              'return H:JSONEncode({ stan = jest("StanGracza"), pas = jest("LasPasGra"), mapa = workspace:FindFirstChild("LasPas") ~= nil, '
-             'proto = workspace:FindFirstChild("TestWalki2") ~= nil, trening = jest("TreningProba"), '
+             'proto = workspace:FindFirstChild("TestWalki2") ~= nil, trening = (jest("TreningProba") and workspace.TreningProba:GetAttribute("MiniGry") ~= false), '
              'statystyki = workspace:FindFirstChild("StanGracza") and workspace.StanGracza:GetAttribute("StatystykiKlasy") })'),
     "gracz_atr": GR + 'local o = {} for _, n in { %s } do o[n] = J(gracz:GetAttribute(n)) end return H:JSONEncode(o)',
     "kont_atr": 'local o = {} local f = workspace:FindFirstChild("%s") if not f then return H:JSONEncode({ brak = true }) end '
@@ -100,6 +105,8 @@ KOD = {
     "zero_komunikatu_stanu": ('local s = workspace:FindFirstChild("StanGracza") if s then s:SetAttribute("KlientOstatniKomunikat", nil) end '
                               'return "ok"'),
     "plus": 'game:GetService("ReplicatedStorage"):WaitForChild("AddStatPoint"):FireServer("%s") return "ok"',
+    # zmiana statystyki spoza serwera stanu (jak dawny „+” StatPoints, ale z serwera) — strażnik pilnujStatystyki
+    "plus_serwer": GR + 'gracz:SetAttribute("%s", (gracz:GetAttribute("%s") or 0) + 1) return "ok"',
     "stan_haczyk": KS + 'if not s then return H:JSONEncode({ brak = true }) end '
                         'return H:JSONEncode(J(s.Sygnaly.SterowanieSerwera:Invoke("%s", game:GetService("Players"):GetPlayers()[1])))',
     "klient_potworow": KP + 'return H:JSONEncode(J(k.Sygnaly.SterowanieKlienta:Invoke("stan")))',
@@ -632,7 +639,8 @@ def main():
                               gp.get("Level"), gpo.get("Level")))
                     # S13: komunikat po przegranej (tekst z danych, liczby z S06)
                     if lup and lup[0] == "przegrana":
-                        oczek = (D["kara"]["komunikat"] % (kara, lup[2]) if kara > 0 else D["kara"]["komunikat_bez_zlota"] % lup[2])
+                        oczek = (D["kara"]["komunikat"] % (LS.ile_rybek(D, kara), lup[2]) if kara > 0
+                                 else D["kara"]["komunikat_bez_zlota"] % lup[2])
                         ok13 = (kara > 0 and kom.get("ostatni") == oczek and (kary.get("LicznikKar") or 0) == kary0 + 1)
                         punkt("S13", ok13, "komunikat %r (oczekiwany %r), LicznikKar %s→%s, OstatniaKara %s" % (
                             kom.get("ostatni"), oczek, kary0, kary.get("LicznikKar"), kary.get("OstatniaKara")))
@@ -675,7 +683,7 @@ def main():
                         a0.get("Strength"), a1.get("Strength"), dS, t1 - t0, (opis or {}).get("statystyki", {}).get("sila") if isinstance(opis, dict) else opis,
                         w7 and w7["po"]["walka"].get("SerwerOstatniaWalka")))
                 else:
-                    punkt("S07", None, "brak Workspace/TreningProba — pominięte")
+                    punkt("S07", None, "nie dotyczy: brak Workspace/TreningProba albo mini-gry wyłączone (MiniGry = false, 26.11.2026: kontener bez areny, trening statystyk = stanowiska AFK)")
 
                 # ================================================================ S08 tryb testowy TestBohater
                 luau(KOD["test_atr"] % ("LasPasGra", "TestBohater", "true"), "Server")
@@ -809,22 +817,39 @@ def main():
 
             if not tylko_m6:
                 # ================================================================ S14 punkty do rozdania (D-097)
+                # 26.11.2026: Paweł wyłączył „+” (33a7dbf, 24.11, D-140 — Diamenty za poziom zamiast punktów):
+                # AddStatPoint zostaje, ale serwer nic nie robi, a w oknie ekwipunku nie ma przycisków „+”. Najpierw jeden
+                # prawdziwy „+” jak dawniej; gdy nic nie zmienia — punkty nie mają w grze jak się wydać (stan „?”, decyzja
+                # Karola: wdrożenie D-140 w stan_gracza, pytanie 89), a strażnik statystyk serwera stanu (zmiana spoza
+                # niego: z punktem przyjęta, bez punktu cofnięta + komunikat) jest sprawdzany zmianą atrybutu z serwera.
                 a0 = js(KOD["gracz_atr"] % lua_lista(["Level", "Luck", "PunktyDoRozdania"]), "Server")
                 pula0 = a0.get("PunktyDoRozdania")
                 przebieg14 = {"przed": a0}
                 ok14 = False
+                plus_dziala = None
                 if isinstance(pula0, (int, float)) and pula0 > 0:
                     luau(KOD["zero_komunikatu_stanu"], "Client")
                     luau(KOD["plus"] % "Luck", "Client")
                     a1 = czekaj_na(lambda: (lambda a: a if a.get("Luck") != a0.get("Luck") else None)(
-                        js(KOD["gracz_atr"] % lua_lista(["Luck", "PunktyDoRozdania"]), "Server")), 5, 0.3) or {}
+                        js(KOD["gracz_atr"] % lua_lista(["Luck", "PunktyDoRozdania"]), "Server")), 3, 0.3) or {}
+                    plus_dziala = bool(a1)
+                    przebieg14["plus_klienta_dziala"] = plus_dziala
+                    if plus_dziala:
+                        def plus():
+                            luau(KOD["plus"] % "Luck", "Client")
+                    else:
+                        def plus():
+                            luau(KOD["plus_serwer"] % ("Luck", "Luck"), "Server")
+                        plus()
+                        a1 = czekaj_na(lambda: (lambda a: a if a.get("Luck") != a0.get("Luck") else None)(
+                            js(KOD["gracz_atr"] % lua_lista(["Luck", "PunktyDoRozdania"]), "Server")), 5, 0.3) or {}
                     przebieg14["po_plusie"] = a1
                     for _ in range(int(pula0) - 1):
-                        luau(KOD["plus"] % "Luck", "Client")
+                        plus()
                         time.sleep(0.2)
                     time.sleep(0.5)
                     a2 = js(KOD["gracz_atr"] % lua_lista(["Luck", "PunktyDoRozdania"]), "Server")
-                    luau(KOD["plus"] % "Luck", "Client")
+                    plus()
                     time.sleep(1.0)
                     a3 = js(KOD["gracz_atr"] % lua_lista(["Luck", "PunktyDoRozdania"]), "Server")
                     kom = js(KOD["komunikat_stanu"], "Client")
@@ -832,13 +857,52 @@ def main():
                     ok14 = (a1.get("Luck") == (a0.get("Luck") or 0) + 1 and a1.get("PunktyDoRozdania") == pula0 - 1
                             and a2.get("PunktyDoRozdania") == 0 and a2.get("Luck") == (a0.get("Luck") or 0) + pula0
                             and a3.get("Luck") == a2.get("Luck") and kom.get("ostatni") == D["punkty"]["komunikat_brak"])
+                if D["punkty"]["na_poziom"] == 0:
+                    # 27.11.2026 (dźwignia A): bez punktów do rozdania — awans rozdziela samo auto_na_poziom punktów
+                    STATY = ["Strength", "Constitution", "Intelligence", "Dexterity", "Luck", "Armor"]
+                    wytr = ["Wytrenowane" + s_ for s_ in STATY]
+                    b0 = js(KOD["gracz_atr"] % lua_lista(["Level", "PunktyDoRozdania"] + STATY + wytr), "Server")
+                    luau(KOD["plus_serwer"] % ("Level", "Level"), "Server")
+                    b1 = czekaj_na(lambda: (lambda a: a if a.get("Level") == (b0.get("Level") or 0) + 1
+                                            and sum((a.get(s_) or 0) for s_ in STATY) != sum((b0.get(s_) or 0) for s_ in STATY)
+                                            else None)(js(KOD["gracz_atr"] % lua_lista(["Level", "PunktyDoRozdania"] + STATY + wytr),
+                                                          "Server")), 6, 0.3) or {}
+                    time.sleep(0.8)
+                    licz = js('local lp = game:GetService("Players").LocalPlayer local g = lp.PlayerGui:FindFirstChild('
+                              '"StanGraczaPunkty") local l = g and g:FindFirstChild("Tekst") '
+                              'return game:GetService("HttpService"):JSONEncode({ widac = l ~= nil and l.Visible, '
+                              'tekst = l and l.Text or false })', "Client")
+                    ok_z15 = zrzut("15_awans_10_punktow")
+                    przyrost = sum((b1.get(s_) or 0) for s_ in STATY) - sum((b0.get(s_) or 0) for s_ in STATY)
+                    ok14 = (bool(b1) and przyrost == D["punkty"]["auto_na_poziom"]
+                            and (b1.get("PunktyDoRozdania") or 0) == 0 and not licz.get("widac")
+                            and all(isinstance(b1.get(w_), (int, float)) for w_ in wytr))
+                    przebieg14.update(awans={"przed": b0, "po": b1, "przyrost": przyrost, "licznik": licz, "zrzut": ok_z15})
                 zapisz("S14", przebieg14)
-                punkt("S14", ok14 if isinstance(pula0, (int, float)) and pula0 > 0 else None,
-                      "punkty %s, Luck %s → %s (pula %s) → wszystkie %s → ponad pulę %s, komunikat %r" % (
-                          pula0, a0.get("Luck"), (przebieg14.get("po_plusie") or {}).get("Luck"),
-                          (przebieg14.get("po_plusie") or {}).get("PunktyDoRozdania"),
-                          (przebieg14.get("wszystkie") or {}).get("Luck"), (przebieg14.get("ponad") or {}).get("Luck"),
-                          (przebieg14.get("komunikat") or {}).get("ostatni")))
+                opis14 = "punkty %s, Luck %s → %s (pula %s) → wszystkie %s → ponad pulę %s, komunikat %r" % (
+                    pula0, a0.get("Luck"), (przebieg14.get("po_plusie") or {}).get("Luck"),
+                    (przebieg14.get("po_plusie") or {}).get("PunktyDoRozdania"),
+                    (przebieg14.get("wszystkie") or {}).get("Luck"), (przebieg14.get("ponad") or {}).get("Luck"),
+                    (przebieg14.get("komunikat") or {}).get("ostatni"))
+                if D["punkty"]["na_poziom"] == 0:
+                    aw = przebieg14.get("awans") or {}
+                    punkt("S14", ok14, "awans %s → %s: suma statystyk +%s (ma być +%d samo), PunktyDoRozdania %s, licznik "
+                          "na dole %s, Wytrenowane* %s; zrzut 15 %s" % (
+                              (aw.get("przed") or {}).get("Level"), (aw.get("po") or {}).get("Level"), aw.get("przyrost"),
+                              D["punkty"]["auto_na_poziom"], (aw.get("po") or {}).get("PunktyDoRozdania"),
+                              "widać" if (aw.get("licznik") or {}).get("widac") else "schowany",
+                              "są" if all(isinstance((aw.get("po") or {}).get("Wytrenowane" + s_), (int, float))
+                                          for s_ in ("Strength", "Luck")) else "brak", aw.get("zrzut")))
+                elif not (isinstance(pula0, (int, float)) and pula0 > 0):
+                    punkt("S14", None, opis14)
+                elif plus_dziala:
+                    punkt("S14", ok14, "„+” klienta (AddStatPoint): " + opis14)
+                else:
+                    # bez „+” punkty do rozdania są martwe — nigdy OK; strażnik serwera zły = BŁĄD
+                    punkt("S14", None if ok14 else False,
+                          "„+” Pawła wyłączony (AddStatPoint nic nie zmienia, 33a7dbf, D-140): pula %s bez sposobu wydania "
+                          "w grze — wdrożenie D-140 w stan_gracza czeka na decyzję Karola (pytanie 89); strażnik statystyk "
+                          "(zmiana z serwera) %s: %s" % (pula0, "OK" if ok14 else "BŁĄD", opis14))
 
                 # ================================================================ S10 brak sygnału Bohater
                 js(KOD["przemianuj"] % ("Bohater", "BohaterWylaczony"), "Server")

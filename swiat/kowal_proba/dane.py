@@ -41,6 +41,9 @@ PLIK_RIGU = "RigKowal.luau"
 PLIK_KUZNI = os.path.join(TU, "kuznia", "czesci.json")
 KATALOG = os.path.join(REPO, "swiat", "postacie", "przedmioty.json")
 KATALOG_SKLEPU = os.path.join(REPO, "swiat", "postacie", "sklep_przedmioty.json")
+# 27.11.2026 (UI broni, D-167): bronie Maga i Zwiadowcy z puli Lv 1–10 — drugi katalog w tym samym formacie, doklejany
+# do przedmiotów katalogu sklepu (swiat/postacie/bronie_klas_sklep.py; liczby robocze); kilka broni w jednym stopniu
+KATALOG_BRONI = os.path.join(REPO, "swiat", "postacie", "bronie_klas_sklep.json")
 STOPIEN_STARTOWY = "start"
 BAZAR = os.path.join(REPO, "swiat", "miasteczko_bazar")
 ZESTAWY_BOHATEROW = ("rycerz", "zwiadowca", "kot_mag")
@@ -62,8 +65,13 @@ def katalog():
 
 
 def katalog_sklepu():
+    """Katalog sklepu + bronie puli (KATALOG_BRONI, wpisy z polem „pula”) na końcu listy przedmiotów."""
     with open(KATALOG_SKLEPU, encoding="utf-8") as f:
-        return json.load(f)
+        KS = json.load(f)
+    if os.path.isfile(KATALOG_BRONI):
+        with open(KATALOG_BRONI, encoding="utf-8") as f:
+            KS["przedmioty"] = list(KS["przedmioty"]) + list(json.load(f)["przedmioty"])
+    return KS
 
 
 def _json(sciezka):
@@ -108,7 +116,7 @@ def _wpis(G, staty, pid, nazwa, slot, klasa, u, sklep):
             "krok": {k: u["krok"][k] for k in staty if k in u["krok"]},
             "koszt": {"zloto": zl, "materialy": mat},
             "cena": sklep["cena"], "poziom": sklep["poziom"], "stopien": sklep["stopien"],
-            "nrStopnia": sklep["nr_stopnia"]}
+            "nrStopnia": sklep["nr_stopnia"], **({"pula": sklep["pula"]} if sklep.get("pula") else {})}
 
 
 def przedmioty(U, K, KS):
@@ -201,11 +209,14 @@ def przedmioty(U, K, KS):
             raise BladDanych("część %s: całość %s nie jest zbroją z danych" % (cz, cal))
     kl = {}
     for k in klasy:
+        # w stopniu i slocie według wymaganego poziomu (kilka broni puli w jednym stopniu — wyżej = później)
         wszystkie = sorted((i for i, P in wynik.items() if P["klasa"] == k),
-                           key=lambda i: (wynik[i]["nrStopnia"], KOLEJNOSC_SLOTOW.index(wynik[i]["slot"]), i))
+                           key=lambda i: (wynik[i]["nrStopnia"], KOLEJNOSC_SLOTOW.index(wynik[i]["slot"]),
+                                          wynik[i]["poziom"], i))
         # „przedmioty” = dzisiejsza lista klasy (stopień startowy): z niej losuje łup i ona ustawia okno kowala
         ids = [i for i in wszystkie if wynik[i]["nrStopnia"] == 0]
-        para = [(wynik[i]["nrStopnia"], wynik[i]["slot"]) for i in wszystkie]
+        # jeden przedmiot stopnia na slot — poza bronią puli (D-142: pule według poziomu, nie stopnia)
+        para = [(wynik[i]["nrStopnia"], wynik[i]["slot"]) for i in wszystkie if not wynik[i].get("pula")]
         if len(set(para)) != len(para):
             raise BladDanych("klasa %s: dwa przedmioty jednego stopnia w jednym slocie" % k)
         sloty_kl = [wynik[i]["slot"] for i in ids]
@@ -481,8 +492,9 @@ def przypadki(D):
     for o in ({"bron": {"obrazenia": 30.4}, "pancerz_przedmiotow": 13.5, "tarcza": {"blok": 0.2828}},
               {"bron": {"obrazenia": 12}}, "zle"):
         P["opis"].append({"opis": o, "wynik": LK.opis_bohatera(D, o)})
-    for n in (0, 1, 2, 4, 5, 11, 12, 14, 21, 22, 25, 104, 112):
-        P["odmiana"].append({"n": n, "mianownik": LK.ile_materialow(D, n), "dopelniacz": LK.ile_materialow_dop(D, n)})
+    for n in (0, 1, 2, 4, 5, 11, 12, 14, 21, 22, 25, 100, 101, 102, 104, 112):
+        P["odmiana"].append({"n": n, "mianownik": LK.ile_materialow(D, n), "dopelniacz": LK.ile_materialow_dop(D, n),
+                             "rybki": LK.ile_rybek(D, n), "rybkiDop": LK.ile_rybek_dop(D, n)})
     return P
 
 

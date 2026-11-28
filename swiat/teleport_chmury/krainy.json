@@ -1,5 +1,5 @@
 {
-  "opis": "Teleport przez chmury i makieta pasa krain — JEDYNE źródło liczb dla zbuduj.py, makieta.py i obu skryptów Luau (zrodla/Dane.luau jest z tego pliku generowany). Wymaganie Karola z 16.11.2026 (D-075, doprecyzowanie): pod przyciskiem Teleport nie ma okna mapy ani HUD — kamera wchodzi w chmury, z chmur wyłania się widziany z góry pas krain, po wyborze znów chmury i kamera opada na gracza w nowym miejscu. Położenia krain i punktów przybycia: swiat/las_pas/krotki/plan_pasa.json — krótki pas D-096, z swiat/biomy/przycinarka.py (świat = (1100 + u; y; −700 + v)).",
+  "opis": "Teleport przez chmury i makieta pasa krain — JEDYNE źródło liczb dla zbuduj.py, makieta.py i obu skryptów Luau (zrodla/Dane.luau jest z tego pliku generowany). Wymaganie Karola z 16.11.2026 (D-075, doprecyzowanie): pod przyciskiem Teleport nie ma okna mapy ani HUD — kamera wchodzi w chmury, z chmur wyłania się widziany z góry pas krain, po wyborze znów chmury i kamera opada na gracza w nowym miejscu. Położenia krain i punktów przybycia: swiat/las_pas/krotki/plan_pasa.json — krótki pas D-096, z swiat/biomy/przycinarka.py (świat = (1100 + u; y; −700 + v)). Od 26.11.2026 (sprzątanie mapy) Miasteczko = bazar: przybycie z atrybutu MiasteczkoBazarGra, zapas = start bazaru (swiat/miasteczko_bazar/znaczniki.json → start, zbuduj.py sprawdza zgodność); Las = las-pas (uchwyt LasPasGra albo punkt mapy LasPas). Starego miasteczka, starego lasu i Workspace/LasTeleport nie ma już w miejscu.",
   "wersja": 1,
   "status": "propozycja",
   "kontener": "TeleportChmury",
@@ -12,11 +12,10 @@
       "kolor_gruntu": "E0C48E",
       "kolor_podloza": "6B5848",
       "kolor_drogi": "C9A66A",
-      "obszary_xz": [[-293, 392, -954, -442], [882, 1066, -790, -610]],
+      "obszary_xz": [[882, 1066, -790, -610]],
       "przybycie": [
         {"atrybut": ["MiasteczkoBazarGra", "PunktStartuBazaru", "PatrzStartuBazaru"]},
-        {"atrybut": ["LasTeleport", "PunktMiasteczka", "PatrzMiasteczko"]},
-        {"xyz": [-63.6, 3.37, -771.9], "patrz_xyz": [0.3, 3.37, -698.7]}
+        {"gdy_jest": "MiasteczkoBazar", "xz": [990, -697], "patrz_xz": [1000, -697]}
       ]
     },
     {
@@ -27,12 +26,10 @@
       "kolor_gruntu": "6DB33F",
       "kolor_podloza": "8B5A2E",
       "kolor_drogi": "C08A55",
-      "obszary_xz": [[1076, 1520, -790, -610], [-700, 700, -2700, -1300]],
+      "obszary_xz": [[1076, 1520, -790, -610]],
       "przybycie": [
         {"gdy_jest": "LasPasGra", "uchwyt": "PrzeniesDoLasu", "punkt": "las", "przelot_po_s": 2.4},
-        {"gdy_jest": "LasPas", "xz": [1114, -700], "patrz_xz": [1160, -700]},
-        {"atrybut": ["LasTeleport", "PunktLas", "PatrzLas"]},
-        {"xyz": [-200, 3.51, -2400], "patrz_xyz": [0, 3.51, -2000]}
+        {"gdy_jest": "LasPas", "xz": [1114, -700], "patrz_xz": [1160, -700]}
       ]
     },
     {

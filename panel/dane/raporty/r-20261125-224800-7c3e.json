@@ -1,0 +1,33 @@
+{
+ "id": "r-20261125-224800-7c3e",
+ "tytul": "Sesja główna 2026-11-25 — do zatwierdzenia",
+ "opis_md": "Sesja Karola i Pawła 21:53–22:20 (ok. 27 min), temat: **powrót do Blocky & Crycket** (D-139 ma oba podpisy). Ustalenia spisane własnymi słowami w notatce „Sesja główna 2026-11-25 — zapis ustaleń”. **Nic nie jest zatwierdzone** — każdą propozycję zatwierdzacie osobno w zakładce Pytania.\n\n## Propozycje do zatwierdzenia\n- **D-148 — nazwa gry bez Blocky'ego, z „Cat” w tytule.** Paweł: słowo, które dobrze indeksuje się w Roblox; Karol: warianty zaproponuje agent, wy wybieracie. Odpowiedź dopisana pod pytaniem 97.\n- **D-149 — pierwsza wersja (beta na test rynku) bez Twierdzy i walk petów, treść dawkowana aktualizacjami.** Paweł: gracz, który dostanie wszystko, zmaksuje grę w 4–5 dni; Karol: „ja się z tym zgadzam”. Lochy bez rozstrzygnięcia → pytanie 106. Uwaga agenta: w tej samej rozmowie doszły trzy nowe mechaniki (niżej) — zakres trzeba domknąć listą „bez tego nie wydajemy” i datą.\n- **D-150 — drzewko tylko postać i pety; gałąź Twierdzy pod kłódką, kod zostaje** (Paweł, Karol: „dobra”).\n- **D-151 — stanowiska AFK w rozszerzonym budynku Training Center, NPC trener zostaje, animacje stanowisk do poprawy** (Karol; sztanga przez ubranie, książka w głowie).\n- **D-152 — kuźnia: dół okna to przedmioty do rozbiórki, góra składniki, plus sklep składników za Rybki; okno z zakładkami** (obaj). Odpowiedź dopisana pod pytaniem 99. Uwaga agenta: rozbiórka musi dawać mniej niż cena w sklepie, inaczej powstaje maszynka na Rybki.\n- **D-153 — pety w zagrodzie dają Rybki na sekundę, założony pet daje statystyki i pasywki; miejsca 2 → 4 → 6 → 8 u Jagody; zagroda nie rośnie, bez smoka, psa i domku** (obaj). Uwaga agenta: nie wdrażać bez liczb — Rybki są jedyną miękką walutą, a pętla „Rybki → miejsca → Rybki” rozsadza ceny.\n- **D-154 — sklep petów znika, pety tylko pod przyciskiem Pet** (Karol, Paweł: „no tak”). Do potwierdzenia, które okno znika.\n- **D-155 — rzadkość: legendarny co najmniej 1,5× statystyk zwykłego, liczba statystyk nie sztywna, epickie i legendarne z unikalną zdolnością** (obaj).\n\n## Pytania\n- **Odpowiedzi z sesji dopisałem pod pytaniami 97 (nazwa) i 99 (dolna siatka kowala).**\n- Dopiski (bez odpowiedzi, bo niepełne): 96 (rzadkość) i 103 (okno petów — slotów, zdejmowania i usuwania nie rozstrzygnięto).\n- Nowe: **106** (lochy w pierwszej wersji czy w aktualizacji) i **107** (marketing: Karol zatwierdził dziś jawną wersję konta klipów D-126, a na sesji opisał wersję „losowego Instagramera pod przykrywką” — w tej drugiej agent nie pomoże).\n\n## Zadania (start po poleceniu na czacie)\n- **Agent Karola (noc, Karol: „mojego Clauda”):** jajka Bagna i Dżungli na wzór jaja Pawła; poprawa petów i zagrody; rozszerzenie Training Center i przeniesienie stanowisk z poprawą animacji.\n- **Paweł** (Karol: „spisz Pawłowi… odpali swojego Clauda”): obraz referencyjny broni i referencje petów; okno kowala z zakładkami i sklepem składników; UI questów przy tablicy ogłoszeń; poprawa mistrza gier; modele kotów wszystkich ras do końca.\n- Bez przydziału: warianty nazwy z „Cat”; po zatwierdzeniu D-149/D-150/D-154 — schowanie Twierdzy, gałęzi drzewka i sklepu petów.\n\n## Czego nie zrobiłem\n- Karol pod koniec prosił o push listy na GitHub i wiadomość do Pawła na Telegramie. Polecenie panelu dla tej sesji mówi „nie commituj”, więc **nic nie wypchnąłem i nie pisałem na Telegramie** — zrobię to po poleceniu na czacie.\n- Narzędzia terminala były w tej sesji zablokowane, więc ten raport zapisałem ręcznie jako plik w danych panelu.\n\n## Odłożone na kolejną sesję\n- Poradnik i pierwsza godzina gracza (Karol: „jak będziemy o tutorialu gadać”); lochy i termin pierwszej wersji — dopisane do agendy.",
+ "kto": "Claude (sesja)",
+ "czas": "2026-11-25T22:48:00+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Sesja główna 2026-11-25 — zapis ustaleń.md",
+   "etykieta": "Zapis ustaleń"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Rejestr decyzji.md",
+   "etykieta": "Rejestr decyzji (D-148–D-155)"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Produkcja/Pytania otwarte.md",
+   "etykieta": "Pytania 97, 99, 106, 107"
+  },
+  {
+   "typ": "notatka",
+   "cel": "B&C/Wytwórnia/Pomysły/Blocky & Crycket.md",
+   "etykieta": "Karta pomysłu"
+  }
+ ],
+ "zrzuty": [],
+ "pytanie": "Czy zatwierdzacie propozycje D-148–D-155 z sesji 25.11 (nazwa z „Cat”, beta bez Twierdzy, drzewko, Training Center, kuźnia, pety, rzadkość)?",
+ "gra": "bc"
+}

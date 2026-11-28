@@ -25,7 +25,7 @@
 		                                                       lasu-pasa (jego uchwyt); pierwszy przelot kamery czeka s
 		{ gdy_jest = "LasPas", xz = {…}, patrz_xz = {…} }  — tylko gdy w Workspace jest ten obiekt; wysokość z rzutu
 		                                                       promienia w dół (tylko części z kolizją, bez postaci)
-		{ atrybut = { "LasTeleport", "PunktLas", "PatrzLas" } } — odczyt atrybutów cudzego kontenera (tylko odczyt)
+		{ atrybut = { "MiasteczkoBazarGra", "PunktStartuBazaru", "PatrzStartuBazaru" } } — odczyt atrybutów cudzego kontenera (tylko odczyt)
 		{ xyz = {…}, patrz_xyz = {…} }                       — zapas wpisany w danych
 		{ xz = {…}, patrz_xz = {…} }                         — rzut promienia (krainy jeszcze niezbudowane)
 

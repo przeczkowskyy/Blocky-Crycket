@@ -16,14 +16,13 @@ return {
 			kolor_gruntu = "E0C48E",
 			kolor_podloza = "6B5848",
 			kolor_drogi = "C9A66A",
-			obszary_xz = { { -293, 392, -954, -442 }, { 882, 1066, -790, -610 } },
+			obszary_xz = { { 882, 1066, -790, -610 } },
 			przybycie = { {
 					atrybut = { "MiasteczkoBazarGra", "PunktStartuBazaru", "PatrzStartuBazaru" },
 				}, {
-					atrybut = { "LasTeleport", "PunktMiasteczka", "PatrzMiasteczko" },
-				}, {
-					xyz = { -63.6, 3.37, -771.9 },
-					patrz_xyz = { 0.3, 3.37, -698.7 },
+					gdy_jest = "MiasteczkoBazar",
+					xz = { 990, -697 },
+					patrz_xz = { 1000, -697 },
 				} },
 		}, {
 			id = "las",
@@ -33,7 +32,7 @@ return {
 			kolor_gruntu = "6DB33F",
 			kolor_podloza = "8B5A2E",
 			kolor_drogi = "C08A55",
-			obszary_xz = { { 1076, 1520, -790, -610 }, { -700, 700, -2700, -1300 } },
+			obszary_xz = { { 1076, 1520, -790, -610 } },
 			przybycie = { {
 					gdy_jest = "LasPasGra",
 					uchwyt = "PrzeniesDoLasu",
@@ -43,11 +42,6 @@ return {
 					gdy_jest = "LasPas",
 					xz = { 1114, -700 },
 					patrz_xz = { 1160, -700 },
-				}, {
-					atrybut = { "LasTeleport", "PunktLas", "PatrzLas" },
-				}, {
-					xyz = { -200, 3.51, -2400 },
-					patrz_xyz = { 0, 3.51, -2000 },
 				} },
 		}, {
 			id = "bagno",
@@ -243,5 +237,5 @@ return {
 		ukryj_gui = true,
 		klawisz_testowy = "T",
 	},
-	skrot = "2e78390913cd",
+	skrot = "5fed0719197d",
 }

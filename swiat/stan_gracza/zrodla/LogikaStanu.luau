@@ -19,6 +19,8 @@
 		czystyLup(D, lup), czystyPrzyrost(D, info) → kopia ze znanymi polami albo nil, powód
 		sumaLupow(D, lista), nowyProfil(D), rowne(a, b), sprawdzPrzypadki(D) → ok, n, bledy
 		czystyWydatek(D, info), czystaPremia(D, premia) → kopia albo nil, powód   (17.11.2026, swiat/pety_proba)
+		czystyPrzychod(D, info)                   → kopia albo nil, powód   (25.11.2026, Pety "przychod" — zagroda)
+		czystaSprzedaz(D, info)                   → kopia albo nil, powód   (26.11.2026, Pety "sprzedaj" — sprzedaż petów)
 		wydaj(D, zloto, ile)                      → Złoto po, brakuje (nigdy poniżej zera)
 		premiaLupu(D, lup, premia)                → { zloto, doswiadczenie } — dodatek od aktywnego peta
 	lupZwyklego(D, poziom)                    → Złoto za wygraną ze zwykłym potworem na tym poziomie (17.11.2026)
@@ -352,6 +354,8 @@ function L.nowyProfil(D)
 		straznicy = {},
 		-- wersja 4 (18.11.2026, zapis postępu): wybrana klasa (atrybut Class) i zapisywane atrybuty innych pakietów
 		idKlasy = nil,
+		-- 27.11.2026 (Karol: „Tak, zapisuj rasę”): wybrana rasa (atrybut Race, D.rasy_gracza); brak = jak dotąd
+		idRasy = nil,
 		atrybuty = {},
 	}
 end
@@ -367,6 +371,67 @@ function L.czystyWydatek(D, info)
 	end
 	local znane = false
 	for _, z in D.wydatki.zrodla do
+		if info.zrodlo == z then
+			znane = true
+		end
+	end
+	if type(info.zrodlo) ~= "string" or not znane then
+		return nil, "zle_zrodlo"
+	end
+	if not L.nazwaOk(D, info.cel) then
+		return nil, "zly_cel"
+	end
+	return { ile = ile, zrodlo = info.zrodlo, cel = info.cel }, "ok"
+end
+
+function L.czystaSprzedaz(D, info)
+	if type(info) ~= "table" then
+		return nil, "zla_sprzedaz"
+	end
+	local pety = info.pety
+	if type(pety) ~= "table" or #pety > 0 then
+		return nil, "zle_pety"
+	end
+	local n, kopia = 0, {}
+	for k, v in pety do
+		n += 1
+		if not L.nazwaOk(D, k) or not calkowita(v, D.pety.kopii_maks) or v < 1 then
+			return nil, "zle_pety"
+		end
+		kopia[k] = v
+	end
+	if n < 1 or n > D.pety.rodzajow_maks then
+		return nil, "zle_pety"
+	end
+	local ile = info.ile
+	if not calkowita(ile, D.przychody.kwota_maks) or ile < 1 then
+		return nil, "zla_kwota"
+	end
+	local znane = false
+	for _, z in D.przychody.zrodla do
+		if info.zrodlo == z then
+			znane = true
+		end
+	end
+	if type(info.zrodlo) ~= "string" or not znane then
+		return nil, "zle_zrodlo"
+	end
+	if not L.nazwaOk(D, info.cel) then
+		return nil, "zly_cel"
+	end
+	return { pety = kopia, ile = ile, zrodlo = info.zrodlo, cel = info.cel }, "ok"
+end
+
+function L.czystyPrzychod(D, info)
+	if type(info) ~= "table" then
+		return nil, "zly_przychod"
+	end
+	local ile = info.ile
+	if not calkowita(ile, D.przychody.kwota_maks) or ile < 1 then
+		return nil, "zla_kwota"
+	end
+	local znane = false
+	for _, z in D.przychody.zrodla do
 		if info.zrodlo == z then
 			znane = true
 		end
@@ -844,6 +909,10 @@ function L.czystyProfil(D, p)
 	if k.idKlasy ~= nil and (type(k.idKlasy) ~= "string" or D.klasy_gracza[k.idKlasy] == nil) then
 		return nil, "zla_klasa"
 	end
+	-- 27.11.2026: rasa w zapisie (pole nieobowiązkowe)
+	if k.idRasy ~= nil and (type(k.idRasy) ~= "string" or not table.find(D.rasy_gracza, k.idRasy)) then
+		return nil, "zla_rasa"
+	end
 	if not calkowita(k.poziom, G.poziom_maks) or k.poziom < 1 then
 		return nil, "zly_poziom"
 	end
@@ -1032,6 +1101,14 @@ function L.sprawdzPrzypadki(D)
 	for i, c in P.wydatek do
 		local w, powod = L.czystyWydatek(D, c.info)
 		sprawdz("wydatek", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.przychod do
+		local w, powod = L.czystyPrzychod(D, c.info)
+		sprawdz("przychod", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
+	end
+	for i, c in P.sprzedaz or {} do
+		local w, powod = L.czystaSprzedaz(D, c.info)
+		sprawdz("sprzedaz", i, L.rowne(falsz(w), c.wynik) and powod == c.powod)
 	end
 	for i, c in P.wydaj do
 		local z, brak = L.wydaj(D, c.zloto, c.ile)

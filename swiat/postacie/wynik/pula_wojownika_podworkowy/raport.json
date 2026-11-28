@@ -1,0 +1,1771 @@
+{
+ "modul": "pula_wojownika_podworkowy",
+ "modele": [
+  {
+   "id": "pula_wojownika_podworkowy",
+   "nazwa": "Kot-wojownik — Podwórkowy",
+   "rodzaj": "postac",
+   "siatki": [
+    {
+     "nazwa": "LowerTorso_Geo",
+     "kosc": "LowerTorso",
+     "trojkaty": 744,
+     "wierzcholki": 412,
+     "wymiary": [
+      1.536,
+      1.433,
+      1.38
+     ],
+     "min": [
+      -0.75,
+      0.12,
+      -0.66
+     ],
+     "max": [
+      0.786,
+      1.553,
+      0.72
+     ]
+    },
+    {
+     "nazwa": "UpperTorso_Geo",
+     "kosc": "UpperTorso",
+     "trojkaty": 644,
+     "wierzcholki": 382,
+     "wymiary": [
+      1.4,
+      1.005,
+      1.255
+     ],
+     "min": [
+      -0.7,
+      0.845,
+      -0.53
+     ],
+     "max": [
+      0.7,
+      1.85,
+      0.725
+     ]
+    },
+    {
+     "nazwa": "Head_Geo",
+     "kosc": "Head",
+     "trojkaty": 680,
+     "wierzcholki": 400,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ],
+     "min": [
+      -1.08,
+      1.85,
+      -0.74
+     ],
+     "max": [
+      1.08,
+      3.15,
+      0.825
+     ]
+    },
+    {
+     "nazwa": "LeftUpperArm_Geo",
+     "kosc": "LeftUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftLowerArm_Geo",
+     "kosc": "LeftLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      0.63,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      1.09,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "LeftHand_Geo",
+     "kosc": "LeftHand",
+     "trojkaty": 280,
+     "wierzcholki": 160,
+     "wymiary": [
+      0.5,
+      0.521,
+      0.5
+     ],
+     "min": [
+      0.61,
+      0.705,
+      -0.25
+     ],
+     "max": [
+      1.11,
+      1.226,
+      0.25
+     ]
+    },
+    {
+     "nazwa": "LeftUpperLeg_Geo",
+     "kosc": "LeftUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      0.09,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      0.51,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "LeftLowerLeg_Geo",
+     "kosc": "LeftLowerLeg",
+     "trojkaty": 124,
+     "wierzcholki": 72,
+     "wymiary": [
+      0.58,
+      0.39,
+      0.57
+     ],
+     "min": [
+      0.015,
+      0.16,
+      -0.285
+     ],
+     "max": [
+      0.595,
+      0.55,
+      0.285
+     ]
+    },
+    {
+     "nazwa": "LeftFoot_Geo",
+     "kosc": "LeftFoot",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      0.6,
+      0.22,
+      1.16
+     ],
+     "min": [
+      0.0,
+      -0.005,
+      -0.285
+     ],
+     "max": [
+      0.6,
+      0.215,
+      0.875
+     ]
+    },
+    {
+     "nazwa": "RightUpperArm_Geo",
+     "kosc": "RightUpperArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.42,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.43,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.85,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightLowerArm_Geo",
+     "kosc": "RightLowerArm",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.46,
+      0.36,
+      0.46
+     ],
+     "min": [
+      -1.09,
+      1.07,
+      -0.23
+     ],
+     "max": [
+      -0.63,
+      1.43,
+      0.23
+     ]
+    },
+    {
+     "nazwa": "RightHand_Geo",
+     "kosc": "RightHand",
+     "trojkaty": 268,
+     "wierzcholki": 152,
+     "wymiary": [
+      0.5,
+      0.521,
+      0.5
+     ],
+     "min": [
+      -1.11,
+      0.705,
+      -0.25
+     ],
+     "max": [
+      -0.61,
+      1.226,
+      0.25
+     ]
+    },
+    {
+     "nazwa": "RightUpperLeg_Geo",
+     "kosc": "RightUpperLeg",
+     "trojkaty": 44,
+     "wierzcholki": 24,
+     "wymiary": [
+      0.42,
+      0.3,
+      0.42
+     ],
+     "min": [
+      -0.51,
+      0.45,
+      -0.21
+     ],
+     "max": [
+      -0.09,
+      0.75,
+      0.21
+     ]
+    },
+    {
+     "nazwa": "RightLowerLeg_Geo",
+     "kosc": "RightLowerLeg",
+     "trojkaty": 112,
+     "wierzcholki": 64,
+     "wymiary": [
+      0.57,
+      0.39,
+      0.57
+     ],
+     "min": [
+      -0.585,
+      0.16,
+      -0.285
+     ],
+     "max": [
+      -0.015,
+      0.55,
+      0.285
+     ]
+    },
+    {
+     "nazwa": "RightFoot_Geo",
+     "kosc": "RightFoot",
+     "trojkaty": 144,
+     "wierzcholki": 80,
+     "wymiary": [
+      0.6,
+      0.22,
+      1.16
+     ],
+     "min": [
+      -0.6,
+      -0.005,
+      -0.285
+     ],
+     "max": [
+      0.0,
+      0.215,
+      0.875
+     ]
+    },
+    {
+     "nazwa": "Tail_Geo",
+     "kosc": "Tail",
+     "trojkaty": 88,
+     "wierzcholki": 48,
+     "wymiary": [
+      0.894,
+      0.32,
+      0.806
+     ],
+     "min": [
+      0.013,
+      0.08,
+      -1.205
+     ],
+     "max": [
+      0.907,
+      0.4,
+      -0.399
+     ]
+    },
+    {
+     "nazwa": "TailTip_Geo",
+     "kosc": "TailTip",
+     "trojkaty": 264,
+     "wierzcholki": 144,
+     "wymiary": [
+      0.627,
+      1.433,
+      0.728
+     ],
+     "min": [
+      0.429,
+      0.055,
+      -1.239
+     ],
+     "max": [
+      1.056,
+      1.488,
+      -0.511
+     ]
+    },
+    {
+     "nazwa": "kot_rycerz_podworkowy_helm_Akc",
+     "kosc": "HatPivot",
+     "trojkaty": 708,
+     "wierzcholki": 416,
+     "wymiary": [
+      2.28,
+      1.712,
+      1.74
+     ],
+     "min": [
+      -1.14,
+      2.322,
+      -0.88
+     ],
+     "max": [
+      1.14,
+      4.034,
+      0.86
+     ]
+    },
+    {
+     "nazwa": "kot_rycerz_podworkowy_miecz_Akc",
+     "kosc": "StaffPivot",
+     "trojkaty": 412,
+     "wierzcholki": 238,
+     "wymiary": [
+      0.712,
+      2.229,
+      0.976
+     ],
+     "min": [
+      -1.396,
+      0.514,
+      -0.147
+     ],
+     "max": [
+      -0.684,
+      2.743,
+      0.829
+     ]
+    }
+   ],
+   "trojkaty_razem": 5052,
+   "tekstury": {
+    "rozmiar_px": 64,
+    "kolory_materialy": 32
+   },
+   "typ": "r15",
+   "skala": 1.0,
+   "wymiary_ciala": [
+    2.22,
+    3.155,
+    2.114
+   ],
+   "wymiary_z_akcesoriami": [
+    2.536,
+    4.039,
+    2.114
+   ],
+   "zakres_z_akcesoriami": [
+    [
+     -1.396,
+     -0.005,
+     -1.239
+    ],
+    [
+     1.14,
+     4.034,
+     0.875
+    ]
+   ],
+   "kosci": [
+    "Root",
+    "HumanoidRootNode",
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot",
+    "LeftEar",
+    "RightEar",
+    "Tail",
+    "TailTip",
+    "HatPivot",
+    "StaffPivot"
+   ],
+   "zaczepy": [
+    "FaceCenterAttachment",
+    "FaceFrontAttachment",
+    "HatAttachment",
+    "HairAttachment",
+    "NeckAttachment",
+    "BodyFrontAttachment",
+    "BodyBackAttachment",
+    "LeftCollarAttachment",
+    "RightCollarAttachment",
+    "WaistCenterAttachment",
+    "WaistFrontAttachment",
+    "WaistBackAttachment",
+    "LeftShoulderAttachment",
+    "LeftGripAttachment",
+    "LeftFootAttachment",
+    "RightShoulderAttachment",
+    "RightGripAttachment",
+    "RightFootAttachment",
+    "KapeluszAttachment",
+    "KosturAttachment"
+   ],
+   "znaczniki_att": [
+    "FaceCenter_Att",
+    "FaceFront_Att",
+    "Hat_Att",
+    "Hair_Att",
+    "Neck_Att",
+    "BodyFront_Att",
+    "BodyBack_Att",
+    "LeftCollar_Att",
+    "RightCollar_Att",
+    "WaistCenter_Att",
+    "WaistFront_Att",
+    "WaistBack_Att",
+    "LeftShoulder_Att",
+    "LeftGrip_Att",
+    "LeftFoot_Att",
+    "RightShoulder_Att",
+    "RightGrip_Att",
+    "RightFoot_Att",
+    "Kapelusz_Att",
+    "Kostur_Att",
+    "Root_Att"
+   ],
+   "klipy": [
+    {
+     "n": "idle",
+     "dlugosc": 60,
+     "fps": 30,
+     "sekundy": 2.0,
+     "petla": true
+    }
+   ],
+   "akcesoria": [
+    {
+     "id": "kot_rycerz_podworkowy_helm",
+     "zaczep": "KapeluszAttachment",
+     "eksport": false
+    },
+    {
+     "id": "kot_rycerz_podworkowy_miecz",
+     "zaczep": "KosturAttachment",
+     "eksport": false
+    }
+   ],
+   "grupy_ciala": {
+    "Head": {
+     "trojkaty": 680,
+     "limit": 4000,
+     "wymiary": [
+      2.16,
+      1.3,
+      1.565
+     ]
+    },
+    "Torso": {
+     "trojkaty": 1388,
+     "limit": 1750,
+     "wymiary": [
+      1.536,
+      1.73,
+      1.385
+     ]
+    },
+    "LeftArm": {
+     "trojkaty": 456,
+     "limit": 1248,
+     "wymiary": [
+      0.5,
+      1.145,
+      0.5
+     ]
+    },
+    "RightArm": {
+     "trojkaty": 444,
+     "limit": 1248,
+     "wymiary": [
+      0.5,
+      1.145,
+      0.5
+     ]
+    },
+    "LeftLeg": {
+     "trojkaty": 312,
+     "limit": 1248,
+     "wymiary": [
+      0.6,
+      0.755,
+      1.16
+     ]
+    },
+    "RightLeg": {
+     "trojkaty": 300,
+     "limit": 1248,
+     "wymiary": [
+      0.6,
+      0.755,
+      1.16
+     ]
+    }
+   },
+   "ostrzezenia": [
+    "ciało razem: wys 3.15 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+   ]
+  },
+  {
+   "id": "kot_rycerz_podworkowy_helm",
+   "nazwa": "Garnek po Zupie",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "kot_rycerz_podworkowy_helm",
+     "kosc": null,
+     "trojkaty": 708,
+     "wierzcholki": 416,
+     "wymiary": [
+      2.28,
+      1.712,
+      1.74
+     ],
+     "min": [
+      -1.14,
+      -0.848,
+      -0.88
+     ],
+     "max": [
+      1.14,
+      0.864,
+      0.86
+     ]
+    }
+   ],
+   "trojkaty_razem": 708,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "HatAttachment",
+   "typ_roblox": "Hat",
+   "zakres_od_zaczepu": [
+    [
+     -1.14,
+     -0.848,
+     -0.88
+    ],
+    [
+     1.14,
+     0.864,
+     0.86
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.008,
+    -0.01
+   ],
+   "ostrzezenia": []
+  },
+  {
+   "id": "kot_rycerz_podworkowy_miecz",
+   "nazwa": "Miecz ze Sztachety",
+   "rodzaj": "akcesorium",
+   "siatki": [
+    {
+     "nazwa": "kot_rycerz_podworkowy_miecz",
+     "kosc": null,
+     "trojkaty": 412,
+     "wierzcholki": 238,
+     "wymiary": [
+      0.746,
+      2.39,
+      0.334
+     ],
+     "min": [
+      -0.373,
+      -0.45,
+      -0.07
+     ],
+     "max": [
+      0.373,
+      1.94,
+      0.264
+     ]
+    }
+   ],
+   "trojkaty_razem": 412,
+   "tekstury": {
+    "rozmiar_px": 32,
+    "kolory_materialy": 5
+   },
+   "zaczep": "RightGripAttachment",
+   "typ_roblox": "Bron",
+   "zakres_od_zaczepu": [
+    [
+     -0.373,
+     -0.45,
+     -0.07
+    ],
+    [
+     0.373,
+     1.94,
+     0.264
+    ]
+   ],
+   "srodek_skrzynki_od_zaczepu": [
+    0.0,
+    0.745,
+    0.097
+   ],
+   "ostrzezenia": []
+  }
+ ],
+ "uwagi_podgladu": [
+  "pula_wojownika_podworkowy: kości spoza standardu R15 (LeftEar, RightEar, Tail, TailTip, HatPivot, StaffPivot) — w Roblox to już nie zwykły R15"
+ ],
+ "kontrola": [
+  "pula_wojownika_podworkowy.fbx: siatki 38, kości 23, trójkąty 4184, wzrost 3.15 st., akcje brak -> ZGODNE",
+  "pula_wojownika_podworkowy__idle.fbx: siatki 38, kości 23, trójkąty 4184, wzrost 3.15 st., akcje pula_wojownika_podworkowy|Scene 1-61 -> ZGODNE",
+  "pula_wojownika_podworkowy.glb: siatki 38, kości 23, trójkąty 4184, wzrost 3.15 st., akcje idle 0-60 -> ZGODNE",
+  "kot_rycerz_podworkowy_helm.fbx: siatki 1, kości 0, trójkąty 708, wzrost 1.71 st., akcje brak -> ZGODNE",
+  "kot_rycerz_podworkowy_helm.glb: siatki 1, kości 0, trójkąty 708, wzrost 1.71 st., akcje brak -> ZGODNE",
+  "kot_rycerz_podworkowy_miecz.fbx: siatki 1, kości 0, trójkąty 412, wzrost 2.39 st., akcje brak -> ZGODNE",
+  "kot_rycerz_podworkowy_miecz.glb: siatki 1, kości 0, trójkąty 412, wzrost 2.39 st., akcje brak -> ZGODNE",
+  "ekwipunek: pula_wojownika_podworkowy_cialo.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje brak -> ZGODNE",
+  "ekwipunek: pula_wojownika_podworkowy_cialo__idle.fbx: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje pula_wojownika_podworkowy_cialo|Scene 1-61 -> ZGODNE",
+  "ekwipunek: pula_wojownika_podworkowy_cialo.glb: siatki 55, kości 23, trójkąty 2964, wzrost 3.82 st., akcje idle 0-60 -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_zbroja_tulow.fbx: siatki 1, kości 0, trójkąty 416, wzrost 0.98 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_zbroja_tulow.glb: siatki 1, kości 0, trójkąty 416, wzrost 0.98 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_pas_biodra.fbx: siatki 1, kości 0, trójkąty 568, wzrost 1.03 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_pas_biodra.glb: siatki 1, kości 0, trójkąty 568, wzrost 1.03 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_rekawice_dlon_l.fbx: siatki 1, kości 0, trójkąty 280, wzrost 0.52 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_rekawice_dlon_l.glb: siatki 1, kości 0, trójkąty 280, wzrost 0.52 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_rekawice_dlon_p.fbx: siatki 1, kości 0, trójkąty 268, wzrost 0.52 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_rekawice_dlon_p.glb: siatki 1, kości 0, trójkąty 268, wzrost 0.52 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_buty_stopa_l.fbx: siatki 1, kości 0, trójkąty 144, wzrost 0.22 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_buty_stopa_l.glb: siatki 1, kości 0, trójkąty 144, wzrost 0.22 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_buty_golen_l.fbx: siatki 1, kości 0, trójkąty 80, wzrost 0.39 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_buty_golen_l.glb: siatki 1, kości 0, trójkąty 80, wzrost 0.39 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_buty_stopa_p.fbx: siatki 1, kości 0, trójkąty 144, wzrost 0.22 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_buty_stopa_p.glb: siatki 1, kości 0, trójkąty 144, wzrost 0.22 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_buty_golen_p.fbx: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE",
+  "ekwipunek: kot_rycerz_podworkowy_buty_golen_p.glb: siatki 1, kości 0, trójkąty 68, wzrost 0.39 st., akcje brak -> ZGODNE"
+ ],
+ "ekwipunek": {
+  "stroje": {
+   "golas": [],
+   "komplet": [
+    "kot_rycerz_podworkowy_helm",
+    "kot_rycerz_podworkowy_zbroja",
+    "kot_rycerz_podworkowy_pas",
+    "kot_rycerz_podworkowy_rekawice",
+    "kot_rycerz_podworkowy_buty",
+    "kot_rycerz_podworkowy_miecz"
+   ]
+  },
+  "filmy": [],
+  "modele": [
+   {
+    "id": "kot_rycerz_podworkowy_buty_golen_l",
+    "nazwa": "Kalosze Dziadka (golen_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_podworkowy_buty_golen_l",
+      "kosc": null,
+      "trojkaty": 80,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.58,
+       0.39,
+       0.57
+      ],
+      "min": [
+       -0.285,
+       -0.155,
+       -0.285
+      ],
+      "max": [
+       0.295,
+       0.235,
+       0.285
+      ]
+     }
+    ],
+    "trojkaty_razem": 80,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwLeftLowerLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.285,
+      -0.155,
+      -0.285
+     ],
+     [
+      0.295,
+      0.235,
+      0.285
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.005,
+     0.04,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_podworkowy_buty_golen_p",
+    "nazwa": "Kalosze Dziadka (golen_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_podworkowy_buty_golen_p",
+      "kosc": null,
+      "trojkaty": 68,
+      "wierzcholki": 40,
+      "wymiary": [
+       0.57,
+       0.39,
+       0.57
+      ],
+      "min": [
+       -0.285,
+       -0.155,
+       -0.285
+      ],
+      "max": [
+       0.285,
+       0.235,
+       0.285
+      ]
+     }
+    ],
+    "trojkaty_razem": 68,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwRightLowerLegAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.285,
+      -0.155,
+      -0.285
+     ],
+     [
+      0.285,
+      0.235,
+      0.285
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.04,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_podworkowy_buty_stopa_l",
+    "nazwa": "Kalosze Dziadka (stopa_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_podworkowy_buty_stopa_l",
+      "kosc": null,
+      "trojkaty": 144,
+      "wierzcholki": 80,
+      "wymiary": [
+       0.6,
+       0.22,
+       1.16
+      ],
+      "min": [
+       -0.3,
+       -0.095,
+       -0.37
+      ],
+      "max": [
+       0.3,
+       0.125,
+       0.79
+      ]
+     }
+    ],
+    "trojkaty_razem": 144,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 2
+    },
+    "zaczep": "EkwLeftFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.3,
+      -0.095,
+      -0.37
+     ],
+     [
+      0.3,
+      0.125,
+      0.79
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.015,
+     0.21
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_podworkowy_buty_stopa_p",
+    "nazwa": "Kalosze Dziadka (stopa_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_podworkowy_buty_stopa_p",
+      "kosc": null,
+      "trojkaty": 144,
+      "wierzcholki": 80,
+      "wymiary": [
+       0.6,
+       0.22,
+       1.16
+      ],
+      "min": [
+       -0.3,
+       -0.095,
+       -0.37
+      ],
+      "max": [
+       0.3,
+       0.125,
+       0.79
+      ]
+     }
+    ],
+    "trojkaty_razem": 144,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 2
+    },
+    "zaczep": "EkwRightFootAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.3,
+      -0.095,
+      -0.37
+     ],
+     [
+      0.3,
+      0.125,
+      0.79
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.015,
+     0.21
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_podworkowy_pas_biodra",
+    "nazwa": "Sznurek do Snopków (biodra)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_podworkowy_pas_biodra",
+      "kosc": null,
+      "trojkaty": 568,
+      "wierzcholki": 316,
+      "wymiary": [
+       1.536,
+       1.031,
+       1.315
+      ],
+      "min": [
+       -0.75,
+       -0.353,
+       -0.595
+      ],
+      "max": [
+       0.786,
+       0.678,
+       0.72
+      ]
+     }
+    ],
+    "trojkaty_razem": 568,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 3
+    },
+    "zaczep": "EkwLowerTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.75,
+      -0.353,
+      -0.595
+     ],
+     [
+      0.786,
+      0.678,
+      0.72
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.018,
+     0.163,
+     0.062
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_podworkowy_rekawice_dlon_l",
+    "nazwa": "Rękawice z Dziurawych Skarpet (dlon_l)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_podworkowy_rekawice_dlon_l",
+      "kosc": null,
+      "trojkaty": 280,
+      "wierzcholki": 160,
+      "wymiary": [
+       0.5,
+       0.521,
+       0.5
+      ],
+      "min": [
+       -0.25,
+       -0.255,
+       -0.25
+      ],
+      "max": [
+       0.25,
+       0.266,
+       0.25
+      ]
+     }
+    ],
+    "trojkaty_razem": 280,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 5
+    },
+    "zaczep": "EkwLeftHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.25,
+      -0.255,
+      -0.25
+     ],
+     [
+      0.25,
+      0.266,
+      0.25
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.006,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_podworkowy_rekawice_dlon_p",
+    "nazwa": "Rękawice z Dziurawych Skarpet (dlon_p)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_podworkowy_rekawice_dlon_p",
+      "kosc": null,
+      "trojkaty": 268,
+      "wierzcholki": 152,
+      "wymiary": [
+       0.5,
+       0.521,
+       0.5
+      ],
+      "min": [
+       -0.25,
+       -0.255,
+       -0.25
+      ],
+      "max": [
+       0.25,
+       0.266,
+       0.25
+      ]
+     }
+    ],
+    "trojkaty_razem": 268,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 4
+    },
+    "zaczep": "EkwRightHandAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.25,
+      -0.255,
+      -0.25
+     ],
+     [
+      0.25,
+      0.266,
+      0.25
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     0.006,
+     0.0
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "kot_rycerz_podworkowy_zbroja_tulow",
+    "nazwa": "Napierśnik z Tary (tulow)",
+    "rodzaj": "akcesorium",
+    "siatki": [
+     {
+      "nazwa": "kot_rycerz_podworkowy_zbroja_tulow",
+      "kosc": null,
+      "trojkaty": 416,
+      "wierzcholki": 244,
+      "wymiary": [
+       1.4,
+       0.98,
+       1.255
+      ],
+      "min": [
+       -0.7,
+       -0.58,
+       -0.53
+      ],
+      "max": [
+       0.7,
+       0.4,
+       0.725
+      ]
+     }
+    ],
+    "trojkaty_razem": 416,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 7
+    },
+    "zaczep": "EkwUpperTorsoAttachment",
+    "typ_roblox": "Inne",
+    "zakres_od_zaczepu": [
+     [
+      -0.7,
+      -0.58,
+      -0.53
+     ],
+     [
+      0.7,
+      0.4,
+      0.725
+     ]
+    ],
+    "srodek_skrzynki_od_zaczepu": [
+     0.0,
+     -0.09,
+     0.097
+    ],
+    "ostrzezenia": []
+   },
+   {
+    "id": "pula_wojownika_podworkowy_cialo",
+    "nazwa": "Kot-wojownik (ciało bazowe)",
+    "rodzaj": "postac",
+    "siatki": [
+     {
+      "nazwa": "LowerTorso_Geo",
+      "kosc": "LowerTorso",
+      "trojkaty": 176,
+      "wierzcholki": 96,
+      "wymiary": [
+       1.3,
+       0.88,
+       1.155
+      ],
+      "min": [
+       -0.65,
+       0.12,
+       -0.66
+      ],
+      "max": [
+       0.65,
+       1.0,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "UpperTorso_Geo",
+      "kosc": "UpperTorso",
+      "trojkaty": 228,
+      "wierzcholki": 138,
+      "wymiary": [
+       1.36,
+       0.85,
+       1.0
+      ],
+      "min": [
+       -0.68,
+       1.0,
+       -0.505
+      ],
+      "max": [
+       0.68,
+       1.85,
+       0.495
+      ]
+     },
+     {
+      "nazwa": "Head_Geo",
+      "kosc": "Head",
+      "trojkaty": 680,
+      "wierzcholki": 400,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ],
+      "min": [
+       -1.08,
+       1.85,
+       -0.74
+      ],
+      "max": [
+       1.08,
+       3.15,
+       0.825
+      ]
+     },
+     {
+      "nazwa": "LeftUpperArm_Geo",
+      "kosc": "LeftUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftLowerArm_Geo",
+      "kosc": "LeftLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       0.63,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       1.09,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "LeftHand_Geo",
+      "kosc": "LeftHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       0.67,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       1.05,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftUpperLeg_Geo",
+      "kosc": "LeftUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       0.09,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       0.51,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "LeftLowerLeg_Geo",
+      "kosc": "LeftLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       0.1,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       0.5,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "LeftFoot_Geo",
+      "kosc": "LeftFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       0.03,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       0.57,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "RightUpperArm_Geo",
+      "kosc": "RightUpperArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.42,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.43,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.85,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightLowerArm_Geo",
+      "kosc": "RightLowerArm",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.46,
+       0.36,
+       0.46
+      ],
+      "min": [
+       -1.09,
+       1.07,
+       -0.23
+      ],
+      "max": [
+       -0.63,
+       1.43,
+       0.23
+      ]
+     },
+     {
+      "nazwa": "RightHand_Geo",
+      "kosc": "RightHand",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.38,
+       0.32,
+       0.39
+      ],
+      "min": [
+       -1.05,
+       0.72,
+       -0.19
+      ],
+      "max": [
+       -0.67,
+       1.04,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightUpperLeg_Geo",
+      "kosc": "RightUpperLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.42,
+       0.3,
+       0.42
+      ],
+      "min": [
+       -0.51,
+       0.45,
+       -0.21
+      ],
+      "max": [
+       -0.09,
+       0.75,
+       0.21
+      ]
+     },
+     {
+      "nazwa": "RightLowerLeg_Geo",
+      "kosc": "RightLowerLeg",
+      "trojkaty": 44,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.4,
+       0.3,
+       0.4
+      ],
+      "min": [
+       -0.5,
+       0.165,
+       -0.2
+      ],
+      "max": [
+       -0.1,
+       0.465,
+       0.2
+      ]
+     },
+     {
+      "nazwa": "RightFoot_Geo",
+      "kosc": "RightFoot",
+      "trojkaty": 156,
+      "wierzcholki": 88,
+      "wymiary": [
+       0.54,
+       0.18,
+       1.082
+      ],
+      "min": [
+       -0.57,
+       0.0,
+       -0.225
+      ],
+      "max": [
+       -0.03,
+       0.18,
+       0.857
+      ]
+     },
+     {
+      "nazwa": "LeftEar_Geo",
+      "kosc": "LeftEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       0.392,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       0.973,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "RightEar_Geo",
+      "kosc": "RightEar",
+      "trojkaty": 40,
+      "wierzcholki": 24,
+      "wymiary": [
+       0.581,
+       0.69,
+       0.343
+      ],
+      "min": [
+       -0.973,
+       3.132,
+       -0.203
+      ],
+      "max": [
+       -0.392,
+       3.822,
+       0.14
+      ]
+     },
+     {
+      "nazwa": "Tail_Geo",
+      "kosc": "Tail",
+      "trojkaty": 88,
+      "wierzcholki": 48,
+      "wymiary": [
+       0.894,
+       0.32,
+       0.806
+      ],
+      "min": [
+       0.013,
+       0.08,
+       -1.205
+      ],
+      "max": [
+       0.907,
+       0.4,
+       -0.399
+      ]
+     },
+     {
+      "nazwa": "TailTip_Geo",
+      "kosc": "TailTip",
+      "trojkaty": 264,
+      "wierzcholki": 144,
+      "wymiary": [
+       0.627,
+       1.433,
+       0.728
+      ],
+      "min": [
+       0.429,
+       0.055,
+       -1.239
+      ],
+      "max": [
+       1.056,
+       1.488,
+       -0.511
+      ]
+     }
+    ],
+    "trojkaty_razem": 2532,
+    "tekstury": {
+     "rozmiar_px": 32,
+     "kolory_materialy": 11
+    },
+    "typ": "r15",
+    "skala": 1.0,
+    "wymiary_ciala": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "wymiary_z_akcesoriami": [
+     2.18,
+     3.822,
+     2.096
+    ],
+    "zakres_z_akcesoriami": [
+     [
+      -1.09,
+      0.0,
+      -1.239
+     ],
+     [
+      1.09,
+      3.822,
+      0.857
+     ]
+    ],
+    "kosci": [
+     "Root",
+     "HumanoidRootNode",
+     "LowerTorso",
+     "UpperTorso",
+     "Head",
+     "LeftUpperArm",
+     "LeftLowerArm",
+     "LeftHand",
+     "LeftUpperLeg",
+     "LeftLowerLeg",
+     "LeftFoot",
+     "RightUpperArm",
+     "RightLowerArm",
+     "RightHand",
+     "RightUpperLeg",
+     "RightLowerLeg",
+     "RightFoot",
+     "LeftEar",
+     "RightEar",
+     "Tail",
+     "TailTip",
+     "HatPivot",
+     "StaffPivot"
+    ],
+    "zaczepy": [
+     "FaceCenterAttachment",
+     "FaceFrontAttachment",
+     "HatAttachment",
+     "HairAttachment",
+     "NeckAttachment",
+     "BodyFrontAttachment",
+     "BodyBackAttachment",
+     "LeftCollarAttachment",
+     "RightCollarAttachment",
+     "WaistCenterAttachment",
+     "WaistFrontAttachment",
+     "WaistBackAttachment",
+     "LeftShoulderAttachment",
+     "LeftGripAttachment",
+     "LeftFootAttachment",
+     "RightShoulderAttachment",
+     "RightGripAttachment",
+     "RightFootAttachment",
+     "KapeluszAttachment",
+     "KosturAttachment",
+     "EkwLowerTorsoAttachment",
+     "EkwUpperTorsoAttachment",
+     "EkwHeadAttachment",
+     "EkwLeftUpperArmAttachment",
+     "EkwLeftLowerArmAttachment",
+     "EkwLeftHandAttachment",
+     "EkwRightUpperArmAttachment",
+     "EkwRightLowerArmAttachment",
+     "EkwRightHandAttachment",
+     "EkwLeftUpperLegAttachment",
+     "EkwLeftLowerLegAttachment",
+     "EkwLeftFootAttachment",
+     "EkwRightUpperLegAttachment",
+     "EkwRightLowerLegAttachment",
+     "EkwRightFootAttachment"
+    ],
+    "znaczniki_att": [
+     "FaceCenter_Att",
+     "FaceFront_Att",
+     "Hat_Att",
+     "Hair_Att",
+     "Neck_Att",
+     "BodyFront_Att",
+     "BodyBack_Att",
+     "LeftCollar_Att",
+     "RightCollar_Att",
+     "WaistCenter_Att",
+     "WaistFront_Att",
+     "WaistBack_Att",
+     "LeftShoulder_Att",
+     "LeftGrip_Att",
+     "LeftFoot_Att",
+     "RightShoulder_Att",
+     "RightGrip_Att",
+     "RightFoot_Att",
+     "Kapelusz_Att",
+     "Kostur_Att",
+     "EkwLowerTorso_Att",
+     "EkwUpperTorso_Att",
+     "EkwHead_Att",
+     "EkwLeftUpperArm_Att",
+     "EkwLeftLowerArm_Att",
+     "EkwLeftHand_Att",
+     "EkwRightUpperArm_Att",
+     "EkwRightLowerArm_Att",
+     "EkwRightHand_Att",
+     "EkwLeftUpperLeg_Att",
+     "EkwLeftLowerLeg_Att",
+     "EkwLeftFoot_Att",
+     "EkwRightUpperLeg_Att",
+     "EkwRightLowerLeg_Att",
+     "EkwRightFoot_Att",
+     "Root_Att"
+    ],
+    "klipy": [
+     {
+      "n": "idle",
+      "dlugosc": 60,
+      "fps": 30,
+      "sekundy": 2.0,
+      "petla": true
+     }
+    ],
+    "akcesoria": [],
+    "grupy_ciala": {
+     "Head": {
+      "trojkaty": 680,
+      "limit": 4000,
+      "wymiary": [
+       2.16,
+       1.3,
+       1.565
+      ]
+     },
+     "Torso": {
+      "trojkaty": 404,
+      "limit": 1750,
+      "wymiary": [
+       1.36,
+       1.73,
+       1.155
+      ]
+     },
+     "LeftArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "RightArm": {
+      "trojkaty": 264,
+      "limit": 1248,
+      "wymiary": [
+       0.46,
+       1.13,
+       0.46
+      ]
+     },
+     "LeftLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     },
+     "RightLeg": {
+      "trojkaty": 244,
+      "limit": 1248,
+      "wymiary": [
+       0.54,
+       0.75,
+       1.082
+      ]
+     }
+    },
+    "ostrzezenia": [
+     "ciało razem: wys 3.82 poza 4.00…10.00 studa (dotyczy ciała awatara; NPC to nie blokuje)"
+    ]
+   }
+  ]
+ }
+}

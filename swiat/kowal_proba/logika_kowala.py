@@ -361,12 +361,15 @@ def stac_na(D, dane, klasa, poziom, zloto):
 
 def czy_zalozyc(D, zal, pid):
     """Reguła zakładania po kupnie (i po łupie): przedmiot zakłada się sam, gdy jego slot jest pusty albo założony
-    w nim przedmiot ma niższy stopień; przy tym samym lub wyższym stopniu zostaje dotychczasowy."""
+    w nim przedmiot ma niższy stopień; przy tym samym lub wyższym stopniu zostaje dotychczasowy. W tym samym stopniu
+    (kilka broni puli Lv 1–10, 27.11.2026) decyduje wymagany poziom: wyższy zakłada się sam, niższy i równy czeka."""
     P = D["przedmioty"][pid]
     for z in zal:
         Z = D["przedmioty"][z]
         if z != pid and Z["slot"] == P["slot"]:
-            return Z["nrStopnia"] < P["nrStopnia"]
+            if Z["nrStopnia"] != P["nrStopnia"]:
+                return Z["nrStopnia"] < P["nrStopnia"]
+            return Z["poziom"] < P["poziom"]
     return True
 
 
@@ -403,6 +406,16 @@ def ile_materialow(D, n):
 def ile_materialow_dop(D, n):
     """„1 materiału”, „3 materiałów” (dopełniacz: „Brakuje ci …”)."""
     return "%d %s" % (n, forma(D["teksty"]["formy_materialu_dopelniacz"], n))
+
+
+def ile_rybek(D, n):
+    """Waluta Rybki (atrybut Gold, D-146): „1 Rybka”, „3 Rybki”, „5 Rybek” (mianownik / biernik: koszt)."""
+    return "%d %s" % (n, forma(D["teksty"]["formy_rybki"], n))
+
+
+def ile_rybek_dop(D, n):
+    """„1 Rybki”, „3 Rybek”, „5 Rybek” (dopełniacz: „Brakuje ci …”)."""
+    return "%d %s" % (n, forma(D["teksty"]["formy_rybki_dopelniacz"], n))
 
 
 def liczba_tekst(v):
@@ -450,11 +463,11 @@ def wiersz(D, dane, klasa, pid, zal, zloto):
             if v != 0:
                 przyrost[x["id"]] = v
         w["nastepny"] = T["nastepny"] % tekst_stat_lista(D, przyrost)
-        w["koszt"] = T["koszt"] % (k["zloto"], ile_materialow(D, k["materialy"]))
+        w["koszt"] = T["koszt"] % (ile_rybek(D, k["zloto"]), ile_materialow(D, k["materialy"]))
         if dane["materialy"] < k["materialy"]:
             w["powod"] = T["za_malo_materialow"] % ile_materialow_dop(D, k["materialy"] - dane["materialy"])
         elif zloto < k["zloto"]:
-            w["powod"] = T["za_malo_zlota"] % (k["zloto"] - zloto)
+            w["powod"] = T["za_malo_zlota"] % ile_rybek_dop(D, k["zloto"] - zloto)
         else:
             w["ulepsz"] = True
     if s["zapas"] > 0:
@@ -510,7 +523,7 @@ def komunikat(D, powod, ile=0):
     if powod == "za_malo_materialow":
         return T["za_malo_materialow"] % ile_materialow_dop(D, ile)
     if powod == "za_malo_zlota":
-        return T["za_malo_zlota"] % ile
+        return T["za_malo_zlota"] % ile_rybek_dop(D, ile)
     mapa = {"brak_zapasu": "brak_zapasu", "nie_masz": "nie_masz_przedmiotu", "najwyzszy": "najwyzszy",
             "daleko": "podejdz", "za_szybko": "za_szybko", "brak_stanu": "nieczynna"}
     return T[mapa.get(powod, "blad")]

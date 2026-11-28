@@ -235,7 +235,7 @@ class TestStykuZLasem(unittest.TestCase):
         self.assertIn('kontener:FindFirstChild("ZaBrama")', serwer)
         self.assertIn('kontener:SetAttribute("NastepnyBiomJest", true)', serwer)
         self.assertFalse(DPA["biom"]["przekieruj"])
-        self.assertTrue(DPA_LASU["biom"]["przekieruj"])
+        self.assertFalse(DPA_LASU["biom"]["przekieruj"])   # 26.11.2026: bramy starego miasteczka (LasTeleport) już nie ma
 
     def test_3c_brama_do_dzungli_i_tabliczka(self):
         b = DPA["brama"]

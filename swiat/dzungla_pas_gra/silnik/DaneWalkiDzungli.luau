@@ -747,7 +747,7 @@ return {
 			klasa = "zwiadowca",
 			kraina = "dzungla",
 			lup = {
-				doswiadczenie = { 14, 6 },
+				doswiadczenie = { 17.5, 7.5 },
 				szansa_gemow = 0.01,
 				szansa_sharda = 0,
 				szansa_tokenu = 0.3,
@@ -783,7 +783,7 @@ return {
 			klasa = "mag",
 			kraina = "dzungla",
 			lup = {
-				doswiadczenie = { 14, 6 },
+				doswiadczenie = { 17.5, 7.5 },
 				szansa_gemow = 0.01,
 				szansa_sharda = 0,
 				szansa_tokenu = 0.3,
@@ -819,7 +819,7 @@ return {
 			klasa = "wojownik",
 			kraina = "dzungla",
 			lup = {
-				doswiadczenie = { 14, 6 },
+				doswiadczenie = { 17.5, 7.5 },
 				szansa_gemow = 0.01,
 				szansa_sharda = 0,
 				szansa_tokenu = 0.3,
@@ -854,7 +854,7 @@ return {
 			klasa = "wojownik",
 			kraina = "dzungla",
 			lup = {
-				doswiadczenie = { 45, 18 },
+				doswiadczenie = { 56.25, 22.5 },
 				szansa_gemow = 0.05,
 				szansa_sharda = 0,
 				szansa_tokenu = 0.5,
@@ -889,7 +889,7 @@ return {
 			klasa = "straznik",
 			kraina = "dzungla",
 			lup = {
-				doswiadczenie = { 100, 40 },
+				doswiadczenie = { 125, 50 },
 				szansa_gemow = 0.15,
 				szansa_sharda = 0.1,
 				szansa_tokenu = 0.5,
