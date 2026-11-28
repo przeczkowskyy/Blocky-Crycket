@@ -27,7 +27,11 @@
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 
-local POL = 26 -- start + 25 pól; ostatnie to złota gwiazda
+-- Paweł 26.11: plansza 3D z artefaktu „Treasure Loop” — pętla 36 pól (START + 3 złote narożniki + 4 × 8 pól).
+-- Pola 1..36 to pętla (1 = START), pole 37 = powrót na START: złota gwiazda i nowa, lepsza plansza (wersja robocza,
+-- układ nagród do potwierdzenia — Pytania otwarte).
+local POL = 37
+local PETLA, BOK = 36, 9 -- pól w pętli; pól na bok razem z narożnikiem
 -- Paweł 24.11 wieczorem: „usuwamy cooldown na rzucanie” — każdy rzut darmowy (0 = bez odliczania). Uwaga agenta
 -- (D-114): bez odliczania i bez opłaty plansza daje nieskończenie dużo Rybek — przed wydaniem wrócić do D-053
 -- (darmowy rzut na czas + płatne rzuty).
@@ -64,9 +68,11 @@ local function stan(gracz: Player): Stan
 	return s
 end
 
--- rodzaje pól (Paweł 24.11): większość daje Rybki, co piąte Diamenty, kilka przedmiot, gwiazda Rybki + Diamenty
-local POLA_DIAMENTOW = { [5] = true, [10] = true, [15] = true, [20] = true }
-local POLA_PRZEDMIOTOW = { [8] = true, [17] = true, [23] = true }
+-- rodzaje pól jak w artefakcie: wzór ośmiu pól na bok, przesuwany o 3 na kolejnym boku (ryba = Rybki, diament =
+-- Diamenty, skrzynka = przedmiot), złote narożniki = skarb (więcej Rybek), gwiazda = Rybki + Diamenty.
+-- Kwoty dobrane tak, by na jeden rzut wypadało tyle samo co na planszy 26 pól (Rybki ok. 100, Diamenty ok. 2,
+-- przedmiot co ok. 9 rzutów) — pól z Diamentami jest więcej, więc każde daje mniej.
+local WZOR = { "rybki", "diamenty", "rybki", "przedmiot", "diamenty", "rybki", "diamenty", "rybki" }
 
 type Nagroda = { typ: string, ile: number, gemy: number? }
 
@@ -74,9 +80,16 @@ local function nagroda(plansza: number, pole: number): Nagroda
 	local mn = 1.5 ^ (plansza - 1)
 	if pole >= POL then
 		return { typ = "gwiazda", ile = math.floor(300 * mn + 0.5), gemy = 10 * plansza }
-	elseif POLA_DIAMENTOW[pole] then
-		return { typ = "diamenty", ile = (2 + pole // 5) * plansza }
-	elseif POLA_PRZEDMIOTOW[pole] then
+	end
+	local j = (pole - 1) % PETLA
+	local bok, k = j // BOK, j % BOK
+	if k == 0 then
+		return { typ = "skarb", ile = math.floor((100 + 5 * pole) * mn + 0.5) }
+	end
+	local rodzaj = WZOR[(k - 1 + bok * 3) % #WZOR + 1]
+	if rodzaj == "diamenty" then
+		return { typ = "diamenty", ile = (1 + pole // 8) * plansza }
+	elseif rodzaj == "przedmiot" then
 		return { typ = "przedmiot", ile = 1 }
 	end
 	return { typ = "rybki", ile = math.floor((10 + 6 * pole) * mn + 0.5) }

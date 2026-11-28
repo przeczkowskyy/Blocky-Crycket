@@ -313,6 +313,12 @@ Szczegóły: Na drugiej sesji 14.11 obaj opisali planszę bez stawek: kostka sze
 **Odpowiedź:**
 - Karol Balucki (2026-11-14): W game passie będzie opcja, która dla danego VIPa pozwoli mu rzucać 2 kościami naraz u tego mistrza gier. Rzucamy TYLKO ZA ZŁOT, rezygnujemy z biletów
 
+Dopisek z 2026-11-26 (Claude Code u Pawła, wersja robocza w grze — do potwierdzenia przez Pawła i Karola):
+- Plansza 3D ma teraz kształt z artefaktu Pawła „Treasure Loop”: pętla 36 pól (START, 3 złote narożniki, 4 × 8 pól).
+- Zasady D-053 bez zmian: powrót na START = gwiazda i nowa, lepsza plansza (pola kręcą się i zmieniają kolor) — to łączy pętlę Pawła z osobnymi planszami Karola.
+- Do decyzji: układ nagród (12 pól z Diamentami po mniej, 4 pola z przedmiotem, 3 narożniki ze skarbem Rybek) — kwoty dobrane tak, by na rzut wypadało tyle co na planszy 26 pól.
+Szczegóły: wzór pól wzięty z artefaktu (ryba = Rybki, diament = Diamenty, skrzynka = przedmiot). Nie przeniesione z artefaktu: ulepszanie pola po każdym lądowaniu i premia za okrążenie liczona osobno — to zmiana zasad, wymaga decyzji. Rzut dalej bez odliczania i bez opłaty (uwaga agenta z 24.11 w mocy). Pliki: `src/server/MistrzGier.server.luau`, `src/client/MistrzGier3DClient.client.luau`.
+
 ## 38. Pety: od początku czy z drzewka; jawne szanse jajek (D-052)
 - Paweł: podstawowe jajka w mieście od początku; Karol pamiętał, że pety odblokowuje drzewko umiejętności.
 - Jajka za Złoto, a Złoto da się kupić przez Diamenty (D-038) — lista petów i szanse muszą być widoczne przed zakupem.
@@ -575,6 +581,13 @@ Dopisek z 2026-11-18 (własne efekty umiejętności): do oceny doszły (1) napis
 Szczegóły: Próba powstaje w `swiat/bohater_swiat/` (kontener `Workspace/BohaterSwiat`) z wyłącznikiem, który przywraca awatar bez przebudowy. Za (a): gracz widzi w świecie strój i przedmioty z D-071, a rasy z D-079 mają sens także poza walką. Za (b): gracze Roblox są przywiązani do własnego awatara, a bohater z klocków to więcej części na ekranie telefonu. Wynik próby i zrzuty dojdą w raporcie w panelu.
 Dopisek z 2026-11-18 (po próbie w Studio): bohater chodzi po świecie w stroju gracza u wszystkich trzech klas; raport w panelu „Bohater klasy chodzi po świecie zamiast awatara” ze zrzutami i modelami 3D. Wyłącznik bez przebudowy: atrybut `BohaterWSwiecie = false` na `Workspace/BohaterSwiat`. Na komputerze 60 klatek na sekundę także z dwunastoma bohaterami naraz; telefon niesprawdzony. Drugi wybór przy okazji: bieg liczony przez kod (jest dziś) czy ręcznie zrobiony klip biegu w modelach postaci.
 Dopisek z 2026-11-18 (wieczór): bieg liczony przez kod został poprawiony — prostsze kolana, praca rąk, poły stroju i szata kota w ruchu, brak ślizgu stopy przy przeszkodzie. Paski klatek trzech klas są w raporcie „Bohater w świecie: nowy bieg trzech klas”. Wybór „bieg z kodu czy ręczny klip w modelach” zostaje otwarty.
+Dopisek z 2026-11-26 (Claude Code u Pawła, podgląd — do zgody Karola):
+- Paweł chce biegać po świecie kotem wybranej rasy (modele według jego rzutów), nie bohaterem klasy.
+- Podgląd działa u Pawła obok pakietu Karola: bohater klasy jest u gracza chowany przez umowę `RuchBohatera "przezroczystosc"`, pliki Karola bez zmian.
+- Do decyzji Karola: przenieść to do „Bohatera w świecie” (kot rasy jako ciało bohatera, ze strojem i biegiem z kodu) czy zostawić osobno.
+- Paweł (26.11, wieczór): kota mają widzieć wszyscy gracze; bohater klasy to tylko podgląd klasy, nie postać w świecie. Dlatego podgląd w czasie gry wyłącza „Bohatera w świecie” wyłącznikiem Karola (`BohaterWSwiecie`), dopóki `KotyRasSwiat.Wlaczone` jest prawdą — czeka na zgodę Karola.
+- Stroje i przedmioty na kocie: przedmioty sklepu są zbudowane na ciało ludzika, kot potrzebuje własnych wersji — nie zrobione, do ustalenia z Karolem.
+Szczegóły: wzory w `ReplicatedStorage.KotyRasSwiat`, skrypt `src/client/KotRasySwiatClient.client.luau`, wyłącznik — atrybut `Wlaczone` folderu. Ograniczenia podglądu: widzi go tylko sam gracz; tylko klipy spoczynku i chodu Kota-Maga (chód przyspieszany do tempa biegu); klipy rejestrowane sposobem działającym tylko w Studio — do prawdziwej gry trzeba wgrać animacje; strój i broń gracza nie są pokazywane na kocie.
 **Odpowiedź:**
 - Claude Code na polecenie Karola (2026-11-20): nieaktualne — szczegół B&C wstrzymany do decyzji o kierunku (Wytwórnia pomysłów, D-115; B&C na karcie 13/30). Robocze ustawienia z próby zostają w grze bez zmian; pytanie wraca, jeśli B&C zostanie wybrane do dalszej budowy.
 
@@ -1024,5 +1037,14 @@ Szczegóły: [[Pety leśnego jajka — arkusze obrotów (propozycja)]] (różnic
 - Osobno: zapis postępu w stanie gracza i jak pogodzić to z zadaniami na czas z karczmy (D-034).
 
 Szczegóły: [[Tablica questów (propozycja)]]; serwer `src/server/Questy.server.luau` liczy postęp z atrybutów gracza i wypłaca przez Twoje „przyznaj”. Zastrzeżenie agenta: bez zapisu gracz traci postęp przy wyjściu — przed wydaniem trzeba to podpiąć.
+**Odpowiedź:**
+
+
+## 106. Karol: nowa baza kota (większe uszy, szersze rondo) — do `kot_mag.py`?
+- Paweł 25.11 kazał zbliżyć koty ras do referencji z Higgsfield: uszy są większe i wystają poza rondo, rondo szersze, oczy większe.
+- Zrobione tylko w kopiach ras (pliki Pawła); Twój `kot_mag.py`, bohater w świecie i koty klas mają dawną bazę.
+- Do wyboru: (a) przenosisz te zmiany do `kot_mag.py`, żeby wszystkie koty były spójne; (b) agent Pawła robi to na gałęzi, Ty oglądasz; (c) zostaje różnica.
+
+Szczegóły: [[Rasy jako koty — referencje]], sekcja „Baza bliżej referencji”; funkcje `ulepsz_baze` i `szersze_rondo` w `swiat/postacie/kot_demon.py`. Większe uszy trzeba sprawdzić z hełmem Rycerza i w animacjach (Twoja uwaga z pytania 93 o nachodzeniu na twarz).
 **Odpowiedź:**
 

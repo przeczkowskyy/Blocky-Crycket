@@ -65,6 +65,9 @@ Negative Prompt: realistic 3D, photorealism, plastic texture, blurry, external d
 - Sprawdzone 23.11 w Play (Studio): E przy zbrojmistrzu → jedno okno; kupno prawdziwym kliknięciem (Kapelusz Kota-Maga, 2684 → 2534 Złota) → kapelusz w slocie hełmu w sklepie i w EQ; zakładki; sklep magiczny; bez błędów skryptów. Na prawdziwym telefonie nie sprawdzone (nazwy na kafelkach są małe).
 - Ograniczenia: serwer sklepu Karola działa tylko w Studio (pytanie 90). Nazwy przedmiotów są po polsku, bo tak są w katalogu Karola. Slot tarczy wojownika (`Slot_OffHand`) nie ma miejsca na grafice sklepu, więc tarcza widać tylko w EQ.
 
+## Losowy towar i rybka przy cenie (26.11)
+- Paweł: towar losowany przy każdym otwarciu i odświeżeniu (zamiast przewijania stałej listy), tylko przedmioty klasy gracza; rybka przed ceną na ladzie i na karcie; podpowiedź ze statystykami i ceną oraz lupa porównania — [[Okno Index i podpowiedź przedmiotu (propozycja)]].
+
 ## Do ustalenia
 - Czy z ekwipunku po lewej można sprzedawać przedmioty (przeciągnięciem do sklepu?) i czy plecak 5 × 2 wystarczy.
 - Ceny: w Złocie czy Diamentach, i co robi przycisk odświeżenia (darmowo raz na czas, potem za Diamenty?). Od 23.11 roboczo: ceny w Złocie z katalogu Karola, odświeżenie = następne sześć pozycji, bez kosztu.

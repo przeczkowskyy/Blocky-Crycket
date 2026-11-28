@@ -688,6 +688,8 @@ Gracz gra **kotem**: każda rasa to wariant naszego Kota-Maga — ten sam model 
 
 Uwaga agenta (D-114), zgoda z poprawką: jeden słodki, rozpoznawalny bohater (kot) to mocniejsza marka i miniatura niż ludziki Roblox, a jeden szkielet dla wszystkich ras upraszcza klipy i przedmioty. Poprawka: przedmioty Rycerza i Zwiadowcy oraz cały katalog sklepu (`swiat/postacie/sklep_przedmioty.json`, ciało „czlowiek”) trzeba przerobić pod ciało „kot” — to duża praca 3D, najlepiej po stronie Karola. Tytuł „Blocky & Crycket” zostaje spójny tylko, jeśli Blocky jest widoczny w grze (np. NPC-opiekun w miasteczku, przewodnik w samouczku). Zmienię zdanie, jeśli testerzy będą woleli wygląd ludzików.
 
+> [!warning] Zmiana w toku (Paweł 24.11 wieczorem): bez Blocky'ego w lore — gra „po prostu o kotkach”, w duchu Shakes & Fidget; ekran ładowania i nazwa gry do przerobienia później. Część o kotach jako postaciach gracza bez zmian. Pytanie 97 w [[Pytania otwarte]].
+
 ### D-147 Miasto w kresce sali wyboru rasy: tekstury na budynkach i widoczny obrys
 ✅ zatwierdzona · art direction / świat 3D · 2026-11-25 · źródło: wiadomość Karola na czacie 25.11 (Karol mówi o rozmowie z Pawłem na osobności) · zdecydował: Karol 2026-11-25
 Miasteczko dostaje ten sam wygląd co sala wyboru rasy: tekstury na budynkach zamiast gładkich kolorów i widoczną kreskę obrysu. Bez przebudowy miasta — chodzi o jednolitość. Tekstury: paczka Pawła (`CsTex`, `CsProp` w `assets/processed/ClassSelectTextures/`); brakujące agent generuje w Higgsfield w tym samym stylu. Czeka na potwierdzenie Pawła (D-043). Kolor i grubość kreski: pytanie 100 w [[Pytania otwarte]].

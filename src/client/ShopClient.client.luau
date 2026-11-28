@@ -12,7 +12,9 @@
 	PRAWA STRONA = towar zbrojmistrza z serwera sklepu Karola (swiat/sklep_proba, D-106): RemoteFunction
 	Workspace/SklepProba/Zdalne/Sklep — "oferta" → widok { oferta, zloto, poziom, klasa }, "kup", id, "zaloz", id.
 	O cenie, poziomie, klasie i Złocie decyduje serwer (kowal); klient wysyła tylko akcję i id. Sześć slotów
-	pokazuje po sześć pozycji, przycisk odświeżenia przechodzi do następnych. Kliknięcie slotu → karta przedmiotu
+	pokazuje sześć pozycji LOSOWANYCH z oferty przy każdym otwarciu i każdym odświeżeniu (Paweł 26.11 — zamiast
+	przewijania stałej listy); oferta przychodzi już przefiltrowana według klasy gracza (kowal Karola), a klient
+	dodatkowo odrzuca przedmioty innych klas z katalogu (Shared.IndeksPrzedmioty). Kliknięcie slotu → karta przedmiotu
 	z przyciskiem BUY (albo EQUIP dla posiadanego). Przedmioty posiadane trafiają też do EQ (EkwipunekStan.zKowala).
 	Sklep magiczny nie ma jeszcze towaru (serwer obsługuje tylko zbrojownię) — tabliczka „COMING SOON”.
 
@@ -32,6 +34,7 @@ local TS = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
 local Stan = require(script.Parent:WaitForChild("EkwipunekStan"))
+local Podpowiedz = require(script.Parent:WaitForChild("PodpowiedzPrzedmiotu"))
 
 local player = Players.LocalPlayer
 local gui = player:WaitForChild("PlayerGui"):WaitForChild("Shop")
@@ -45,7 +48,7 @@ local QUICK = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Ou
 local ZASIEG_KLIKU = 22 -- studów: sprzedawcę klika się z bliska (jak E)
 local ZASIEG_OKNA = 26 -- studów od miejsca otwarcia: dalej okno się zamyka (u Karola 20 od stoiska)
 local SLOTY_PLECAKA = 15
-local ZAKLADKI = { "Weapons", "Armor", "Amulets", "Others" }
+local ZAKLADKI = { "Items", "Others" } -- Paweł 26.11: jak w oknie ekwipunku (pierwsza strona plecaka)
 local KOLOR_ZAKLADKI = Color3.fromRGB(255, 255, 255)
 local KOLOR_ZAKLADKI_NIE = Color3.fromRGB(150, 150, 150)
 local NAZWY_STOPNI = { start = "STARTER", las = "FOREST", bagno = "SWAMP", dzungla = "JUNGLE" }
@@ -105,15 +108,52 @@ end
 local otwarte: string? = nil
 local zamykanie = false
 local miejsceOtwarcia: Vector3? = nil
-local zakladka = "Weapons"
+local zakladka = "Items"
+local stronaPlecaka = 0 -- Paweł 26.11: strony plecaka po lewej (po SLOTY_PLECAKA slotów)
 local oferta: { any } = {}
-local strona = 0 -- która szóstka towaru jest na ladzie
+local lada: { string } = {} -- id przedmiotów wylosowanych na ladę (do następnego odświeżenia)
 local wybrany: any = nil -- wiersz oferty na karcie
 local czeka = false
 local zloto: number? = nil
 
 ------------------------------------------------------------ tabliczka: Złoto albo komunikat
 local komunikatDo = 0
+
+-- Paweł 28.11: przy kwocie rybka PRZED liczbą (bez słowa „FISH”). Ikona jest dzieckiem tabliczki; odstęp z lewej
+-- (UIPadding) przesuwa napis tak, żeby para „rybka + liczba” stała na środku tabliczki. Komunikaty: bez rybki, środek.
+local rybkaTabliczki = plate:FindFirstChild("FishIcon") :: ImageLabel?
+local odstepTabliczki = plate:FindFirstChildOfClass("UIPadding")
+local rybkaWidac = false
+local function ulozTabliczke()
+	if not (rybkaTabliczki and odstepTabliczki) then
+		return
+	end
+	if not rybkaWidac then
+		rybkaTabliczki.Visible = false
+		odstepTabliczki.PaddingLeft = UDim.new(0, 0)
+		plate.TextXAlignment = Enum.TextXAlignment.Center
+		return
+	end
+	local wys = plate.AbsoluteSize.Y
+	local ikona = wys * 1.3 -- Paweł 28.11: rybka mniej więcej tak duża jak cyfry (obrazek ma puste marginesy)
+	local przerwa = wys * 0.04
+	local razem = ikona + przerwa + plate.TextBounds.X
+	local lewo = math.max(0, (plate.AbsoluteSize.X - razem) / 2 + ikona + przerwa)
+	-- UIPadding liczymy w ułamku szerokości tabliczki: okno ma UIScale, więc piksele ekranu ≠ piksele układu
+	odstepTabliczki.PaddingLeft = UDim.new(lewo / math.max(1, plate.AbsoluteSize.X), 0)
+	plate.TextXAlignment = Enum.TextXAlignment.Left
+	local tresc = math.max(1, plate.AbsoluteSize.X - lewo) -- szerokość pola napisu po odjęciu odstępu
+	rybkaTabliczki.Size = UDim2.new(ikona / tresc, 0, 1.3, 0)
+	rybkaTabliczki.Position = UDim2.new(-(ikona + przerwa) / tresc, 0, 0.5, 0)
+	rybkaTabliczki.Visible = true
+end
+function ustawRybkeTabliczki(widac: boolean)
+	rybkaWidac = widac
+	ulozTabliczke()
+	task.defer(ulozTabliczke) -- po przeliczeniu szerokości nowego napisu
+end
+plate:GetPropertyChangedSignal("TextBounds"):Connect(ulozTabliczke)
+plate:GetPropertyChangedSignal("AbsoluteSize"):Connect(ulozTabliczke)
 local function rysujTabliczke()
 	if os.clock() < komunikatDo then
 		return
@@ -122,11 +162,12 @@ local function rysujTabliczke()
 	if s and not s.towar then
 		plate.Text = "COMING SOON"
 	elseif zloto then
-		plate.Text = tostring(zloto) .. " FISH" -- Paweł 24.11: waluta to Rybki (ikona rybki zamiast monety)
+		plate.Text = tostring(zloto) -- Paweł 28.11: sama liczba, rybka stoi przed nią (ustawRybkeTabliczki)
 	else
 		plate.Text = "NEW GOODS"
 	end
 	plate.TextColor3 = Color3.fromRGB(252, 227, 176)
+	ustawRybkeTabliczki(zloto ~= nil and not (s and not s.towar))
 end
 
 local function komunikat(tekst: string, blad: boolean)
@@ -152,16 +193,27 @@ local function rysujEkwipunek()
 		end
 	end
 	local page = Stan.bag[zakladka]
+	local stron = math.max(1, math.ceil(Stan.ROZMIAR_PLECAKA / SLOTY_PLECAKA))
+	stronaPlecaka = stronaPlecaka % stron
 	for i = 1, SLOTY_PLECAKA do
 		local s = bagFolder:FindFirstChild(string.format("BagSlot%02d", i))
 		if s then
-			Stan.rysujIkone(s:WaitForChild("Icon"), page[i])
+			Stan.rysujIkone(s:WaitForChild("Icon"), page[i + stronaPlecaka * SLOTY_PLECAKA])
 		end
+	end
+	local strony = panel:FindFirstChild("Pages")
+	local napis = strony and strony:FindFirstChild("PageLabel") and strony.PageLabel:FindFirstChild("Text")
+	if napis then
+		napis.Text = string.format("%d / %d", stronaPlecaka + 1, stron)
 	end
 	for _, nazwa in ipairs(ZAKLADKI) do
 		local t = panel.Tabs:FindFirstChild("Tab" .. nazwa)
-		if t then
-			t.TextColor3 = if nazwa == zakladka then KOLOR_ZAKLADKI else KOLOR_ZAKLADKI_NIE
+		if t and t:IsA("ImageButton") then
+			t.ImageColor3 = if nazwa == zakladka then KOLOR_ZAKLADKI else KOLOR_ZAKLADKI_NIE
+			local l = t:FindFirstChild("Label") :: TextLabel?
+			if l then
+				l.TextColor3 = if nazwa == zakladka then KOLOR_ZAKLADKI else KOLOR_ZAKLADKI_NIE
+			end
 		end
 	end
 end
@@ -266,23 +318,82 @@ local function definicjaTowaru(w: any)
 end
 
 local naLadzie: { any } = {}
+local okDane, DaneIndeksu = pcall(function()
+	return require(RS:WaitForChild("Shared"):WaitForChild("IndeksPrzedmioty"))
+end)
+local klasyPrzedmiotu: { [string]: { string } } = {}
+if okDane and type(DaneIndeksu) == "table" then
+	for _, p in ipairs((DaneIndeksu :: any).przedmioty) do
+		klasyPrzedmiotu[p.id] = p.klasy
+	end
+end
+
+local function dlaMojejKlasy(id: string): boolean
+	local k = klasyPrzedmiotu[id]
+	local moja = Players.LocalPlayer:GetAttribute("Class")
+	return k == nil or type(moja) ~= "string" or table.find(k, moja) ~= nil
+end
+
+-- Paweł 26.11: towar losowany przy każdym odświeżeniu. Najpierw to, co gracz może kupić albo na co go prawie stać
+-- (stan „kup” / „za_drogie”), potem przedmioty na wyższy poziom; posiadane i założone tylko na dopełnienie.
+local function losujLade()
+	local pule: { { any } } = { {}, {}, {} }
+	for _, w in ipairs(towarNaLadzie()) do
+		if dlaMojejKlasy(w.id) then
+			local nr = if w.stan == "kup" or w.stan == "za_drogie" then 1 elseif w.stan == "za_niski_poziom" then 2 else 3
+			table.insert(pule[nr], w)
+		end
+	end
+	lada = {}
+	for _, pula in ipairs(pule) do
+		for i = #pula, 2, -1 do
+			local j = math.random(i)
+			pula[i], pula[j] = pula[j], pula[i]
+		end
+		for _, w in ipairs(pula) do
+			if #lada < 6 then
+				table.insert(lada, w.id)
+			end
+		end
+	end
+	-- na ladzie w kolejności ceny, żeby łatwiej porównać
+	local cena: { [string]: number } = {}
+	for _, w in ipairs(oferta) do
+		if type(w) == "table" and type(w.id) == "string" then
+			cena[w.id] = w.cena or 0
+		end
+	end
+	table.sort(lada, function(a, b)
+		return (cena[a] or 0) < (cena[b] or 0)
+	end)
+end
+
 local function rysujTowar()
-	local lista = towarNaLadzie()
-	local stron = math.max(1, math.ceil(#lista / 6))
-	strona = strona % stron
+	local wgId: { [string]: any } = {}
+	for _, w in ipairs(towarNaLadzie()) do
+		wgId[w.id] = w
+	end
+	if #lada == 0 then
+		losujLade()
+	end
 	naLadzie = {}
 	for i = 1, 6 do
 		local slot = panel:FindFirstChild("ShopSlot" .. i)
 		if not slot then
 			continue
 		end
-		local w = lista[strona * 6 + i]
+		local w = lada[i] and wgId[lada[i]]
 		naLadzie[i] = w
 		local icon = slot:WaitForChild("Icon")
+		local rybka = slot:FindFirstChild("FishIcon") :: ImageLabel?
 		if w then
 			-- ten sam rysunek co w EQ (ikona albo kafelek stopnia z nazwą)
 			Stan.rysujDefinicje(icon, definicjaTowaru(w) :: any)
-			slot.Price.Text = if w.stan == "masz" or w.stan == "zalozone" then "" else tostring(w.cena) .. " G"
+			local cenaWidac = not (w.stan == "masz" or w.stan == "zalozone")
+			slot.Price.Text = if cenaWidac then tostring(w.cena) else ""
+			if rybka then
+				rybka.Visible = cenaWidac
+			end
 			slot.Price.TextColor3 = if w.stan == "za_drogie" then Color3.fromRGB(255, 120, 100) else Color3.fromRGB(255, 214, 90)
 			slot.Lock.Text = if w.stan == "za_niski_poziom" then "LV " .. tostring(w.poziom) else ""
 			slot.Owned.Text = if w.stan == "zalozone" then "EQUIPPED" elseif w.stan == "masz" then "OWNED" else ""
@@ -290,6 +401,9 @@ local function rysujTowar()
 		else
 			Stan.rysujIkone(icon, nil)
 			slot.Price.Text = ""
+			if rybka then
+				rybka.Visible = false
+			end
 			slot.Lock.Text = ""
 			slot.Owned.Text = ""
 		end
@@ -308,7 +422,12 @@ local function pokazKarte(w: any, zLewej: boolean)
 	end
 	card.Req.Text = if w.poziom then "REQUIRES LV " .. tostring(w.poziom) else ""
 	card.Req.TextColor3 = if w.stan == "za_niski_poziom" then Color3.fromRGB(255, 120, 100) else Color3.new(1, 1, 1)
-	card.Price.Text = if w.cena and w.cena > 0 and w.stan ~= "masz" and w.stan ~= "zalozone" then tostring(w.cena) .. " FISH" else ""
+	local cenaKarty = w.cena and w.cena > 0 and w.stan ~= "masz" and w.stan ~= "zalozone"
+	card.Price.Text = if cenaKarty then tostring(w.cena) else ""
+	local rybkaKarty = card:FindFirstChild("FishIcon") :: ImageLabel?
+	if rybkaKarty then
+		rybkaKarty.Visible = cenaKarty == true
+	end
 	card.Price.TextColor3 = if w.stan == "za_drogie" then Color3.fromRGB(255, 120, 100) else Color3.fromRGB(255, 214, 90)
 	local b = card.BuyButton
 	if zLewej or w.stan == "zalozone" then
@@ -393,13 +512,21 @@ local function open(id: string)
 	end
 	otwarte = id
 	zamykanie = false
-	strona = 0
+	lada = {} -- nowe otwarcie = nowe losowanie towaru
 	schowajKarte()
 	local char = player.Character
 	local root = char and char:FindFirstChild("HumanoidRootPart")
 	miejsceOtwarcia = root and root.Position or nil
 	for _, k in pairs(SKLEPY) do
 		panel[k.art].Visible = k == s
+		local lata = panel:FindFirstChild("TabErase" .. string.sub(k.art, 4)) -- zamazane stare zakładki z tła (28.11)
+		if lata then
+			lata.Visible = k == s
+		end
+		local okladka = panel:FindFirstChild("TabCover" .. string.sub(k.art, 4)) -- krawędź ramki nad zakładkami plecaka
+		if okladka then
+			okladka.Visible = k == s
+		end
 	end
 	panel.TitleRight.Text = s.tytul
 	rysujPoziom()
@@ -476,7 +603,7 @@ end
 
 hitButton(panel:WaitForChild("CloseButton"), close)
 hitButton(panel:WaitForChild("RerollButton"), function()
-	strona += 1
+	losujLade()
 	schowajKarte()
 	rysujTowar()
 end)
@@ -516,6 +643,7 @@ for _, nazwa in ipairs(ZAKLADKI) do
 	if t then
 		t.Activated:Connect(function()
 			zakladka = nazwa
+			stronaPlecaka = 0
 			rysujEkwipunek()
 		end)
 	end
@@ -539,7 +667,7 @@ for i = 1, SLOTY_PLECAKA do
 	local s = bagFolder:FindFirstChild(string.format("BagSlot%02d", i))
 	if s then
 		hitButton(s, function()
-			podgladPrzedmiotu(Stan.bag[zakladka][i])
+			podgladPrzedmiotu(Stan.bag[zakladka][i + stronaPlecaka * SLOTY_PLECAKA])
 		end)
 	end
 end
@@ -627,3 +755,63 @@ UIS.InputEnded:Connect(function(input, processed)
 		kliknij(Vector2.new(input.Position.X, input.Position.Y))
 	end
 end)
+
+------------------------------------------------------------ podpowiedź przy najechaniu i porównanie (Paweł 26.11)
+-- Towar: nazwa, rzadkość, statystyki, poziom i cena z rybką. Lewa strona (kopia EQ): to samo bez ceny.
+for i = 1, 6 do
+	local s = panel:FindFirstChild("ShopSlot" .. i)
+	if s and s:IsA("GuiObject") then
+		Podpowiedz.podepnij(s, function()
+			local w = naLadzie[i]
+			if not w then
+				return nil
+			end
+			local cenaW = if w.stan == "masz" or w.stan == "zalozone" then nil else w.cena
+			return w.id, { cena = cenaW, ulepszenie = tonumber(w.ulepszenie) or 0, zalozony = w.stan == "zalozone" }
+		end)
+	end
+end
+for _, s in ipairs(equipFolder:GetChildren()) do
+	if s:IsA("GuiObject") then
+		Podpowiedz.podepnij(s, function()
+			return Stan.equip[s.Name], { zalozony = true }
+		end)
+	end
+end
+for i = 1, SLOTY_PLECAKA do
+	local s = bagFolder:FindFirstChild(string.format("BagSlot%02d", i))
+	if s and s:IsA("GuiObject") then
+		Podpowiedz.podepnij(s, function()
+			return Stan.bag[zakladka][i + stronaPlecaka * SLOTY_PLECAKA], nil
+		end)
+	end
+end
+
+local porownaj = panel:FindFirstChild("CompareButton") :: ImageButton?
+if porownaj then
+	local function pokazStan()
+		local on = porownaj:FindFirstChild("On") :: GuiObject?
+		if on then
+			on.Visible = Podpowiedz.porownanie
+		end
+	end
+	hitButton(porownaj, function()
+		Podpowiedz.ustawPorownanie(not Podpowiedz.porownanie)
+		komunikat(if Podpowiedz.porownanie then "COMPARE ON" else "COMPARE OFF", false)
+	end)
+	Podpowiedz.Zmiana.Event:Connect(pokazStan)
+	pokazStan()
+end
+
+-- strzałki stron plecaka (Paweł 26.11)
+local stronyPlecaka = panel:FindFirstChild("Pages")
+if stronyPlecaka then
+	hitButton(stronyPlecaka:WaitForChild("PrevPage"), function()
+		stronaPlecaka -= 1
+		rysujEkwipunek()
+	end)
+	hitButton(stronyPlecaka:WaitForChild("NextPage"), function()
+		stronaPlecaka += 1
+		rysujEkwipunek()
+	end)
+end

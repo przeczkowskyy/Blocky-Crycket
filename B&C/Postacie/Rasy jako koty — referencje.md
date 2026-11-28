@@ -14,6 +14,14 @@ tags: [postacie, rasy, kot-mag, modele]
 - Wymiary, kości i klipy zawsze z `swiat/postacie/kot_mag.py` (wariant = nowy plik, który wczytuje Kota-Maga i zmienia paletę oraz dodaje cechy; pliku Karola nie zmieniamy).
 - Dwie wersje każdej rasy (Paweł 23.11): w pełnym stroju jak na referencji i w stroju podstawowym (koszulka i spodenki, bez przedmiotów).
 
+## Baza bliżej referencji (25.11)
+Paweł 25.11: „żeby modele kotów bardziej przypominały te z Higgsfielda” i „popraw bazowe modele, a nie tylko dodatki”. Zrobione w naszych plikach (`swiat/postacie/kot_demon.py`, `koty_ras.py`), plik Karola `kot_mag.py` bez zmian — kości i klipy te same:
+- **Baza (wszystkie rasy, także demon i człowiek):** większe uszy mocniej odchylone na boki (wystają poza rondo, jak na referencjach), szersze rondo kapelusza, większa kolorowa tęczówka ze źrenicą, jasna lamówka pod peleryną. Funkcje `ulepsz_baze`, `szersze_rondo`, `obszycie_peleryny` w `kot_demon.py`.
+- **Dodatki ras:** klejnot z przodu kapelusza w kolorze rasy; kostury — półksiężyc (mroczny elf), kość (ork), butelka z miksturą (goblin), promienie słońca (półbóg), listki (elf); łaty na kapeluszu goblina; ciemnoszary pas kapelusza orka; cieplejsze futro elfa i żywsza lawenda mrocznego elfa.
+- Uszy: nadal **jedna para** u wszystkich (cztery uszy są tylko na obrazkach z Higgsfield — Paweł 25.11).
+- W Studio przebudowane `Workspace/KotRasyPodglad` i `KotDemonPodglad` oraz kopie w wyborze rasy (`tools/studio/koty_ras_wybor.luau`, nowy `tools/studio/kot_demon_wybor.luau`).
+- **Nie zmienione:** Koci Rycerz i Koci Zwiadowca z selektora klas (`kot_klasy.py`) oraz bohater w świecie (pakiet Karola) mają dawne, mniejsze uszy — do ujednolicenia po decyzji, czy nowa baza trafia do `kot_mag.py` ([[Pytania otwarte]] 106). Do dalszych rund: pasma włosów elfów (dziś jak kaptur), łaty na szacie goblina, pręgi orka i półboga.
+
 ## Wszystkie rasy jako koty (24.11)
 Paweł 24.11: pozostałe koty ras na bazie referencji — `swiat/postacie/koty_ras.py` (jak `kot_demon.py`: własna kopia Kota-Maga, inna paleta i cechy rasy; dwie wersje: pełny strój i podstawowy). W Studio `Workspace/KotRasyPodglad` (`tools/studio/koty_ras_studio.py`), w wyborze rasy wersje podstawowe ×1,4 (`tools/studio/koty_ras_wybor.luau`); ludziki zostały jako `Race_<Id>_ludek`.
 

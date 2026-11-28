@@ -7,6 +7,10 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [x] 2026-11-26: zakładka SKILLS (3 sloty, kłódki, lista umiejętności z drzewka), podpowiedź przedmiotu, lupa porównania, rybka przy cenie, losowy towar sklepu — wdrożone, sprawdzone w Play na komputerze (bez telefonu); losowanie po odświeżeniu sprawdzić ręcznie — [[Okno Index i podpowiedź przedmiotu (propozycja)]] (Paweł)
+- [ ] Sprawdzić w Play przeciąganie umiejętności z zakładki SKILLS na pas slotów, strony plecaka w EQ i sklepie, wygląd na telefonie; potwierdzić przypisanie umiejętności drzewka do walki — [[Okno Index i podpowiedź przedmiotu (propozycja)]] · Paweł · #wysoki
+- [ ] Karol: zapis `SkillLoadout` (wybrane umiejętności w slotach) w stanie gracza i odczyt w silniku walki; losowanie towaru na serwerze sklepu (dziś losuje klient) · agent Karola · #średni
+- [x] 2026-11-26: Okno Index (pety według krain, przedmioty klasy z ikonami), awans z konfetti, 80 ikon przedmiotów Karola w grze — [[Okno Index i podpowiedź przedmiotu (propozycja)]] (Paweł)
 - [ ] Miasto: ocenić wygląd po teksturach (raport w panelu) i wybrać kreskę (pytanie 100); do poprawy według uwag: grube słupy narożne (1,3 studa), pasy na wodzie, kafel „igliwie” · Karol, Paweł · #wysoki
 - [ ] Bazar: dwa testy pakietu `miasteczko_bazar_gra` nie przechodzą po zmianach HUD Pawła z 25.11 (przyciski HUD i sygnał okien) — dostosować pakiet albo testy do nowego układu · agent Karola · #średni
 - [ ] Dźwięki i grafiki wgrane z konta Karola: gra należy do innego konta, więc każdy zasób potrzebuje zgody „Use” dla gry; dwa dźwięki jej nie mają i w grze nie zagrają — nadać zgodę tak jak teksturom miasta · agent Karola · #średni
@@ -14,10 +18,14 @@ tags: [produkcja, zadania]
 - [ ] Responsywność: lag przy otwieraniu sklepu i ekwipunku — pomiar i poprawka według odpowiedzi na pytanie 101 · agent Karola albo Pawła · #wysoki
 - [ ] Ekran ładowania z kotami zamiast ludzików (D-145; napis tytułu — pytanie 97) · agent Karola · #średni
 - [ ] Modele 3D przedmiotów wojownika (pula Lv 1–10) według arkuszy Pawła: 5 zestawów po 6 przedmiotów w `assets/refs/przedmioty_rycerz/`, opis w [[Przedmioty — pula Lv 1–10, 5 na slot (propozycja)]]; do tego 6 ikon „Leśnego Złomu”. Arkusze zwiadowcy i maga — jeszcze nie ma · agent Karola (Karol 25.11: „przedmiotami zajmuję się ja”) · #średni
+- [ ] Modele 3D tarcz do pięciu zestawów wojownika według arkusza Pawła `assets/refs/przedmioty_rycerz/tarcze_zestawow.png` (pokrywka, wieko beczki, dno bańki w łaty, szalka wagi, tarcza giermka; opis w `CZYTAJ.md`) · agent Karola · #średni
 - [ ] Pety leśnego jajka: przebudować modele według arkuszy obrotów Pawła (`assets/refs/pety_las/`, [[Pety leśnego jajka — arkusze obrotów (propozycja)]]); przed przebudową peta agent otwiera jego arkusz — zakres: pytanie 104 · agent Karola · #średni
-- [ ] HUD: usunąć na razie przycisk gildii i przerobić przyciski na podłużne (ikona po lewej, napis po prawej) według referencji Karola (Paweł 25.11, „na ostatnie zadanie”) · agent Pawła · #średni
-- [ ] Koty ras: dopracować modele do referencji z Higgsfield; elf i mroczny elf z jedną parą uszu, goblin zostaje (Paweł 25.11) · agent Pawła (Blender) · #średni
+- [x] 2026-11-26: HUD — gildie ukryte, pięć podłużnych przycisków jeden pod drugim (ikona po lewej, napis po prawej), napisy w stylu z Figmy; sprawdzone w Play na komputerze, telefon do sprawdzenia — [[HUD]] (Paweł 25–26.11)
+- [ ] Koty ras, dalsze rundy: pasma włosów elfów, łaty na szacie goblina, pręgi orka i półboga; ujednolicić koty klas z nową bazą (pytanie 106) · agent Pawła · #średni
+- [x] 2026-11-25: koty ras bliżej referencji — nowa baza (uszy, rondo, oczy) i dodatki ras, w Studio i w wyborze rasy ([[Rasy jako koty — referencje]])
 - [ ] Figma: dokończyć makiety „MistrzGier — stół” (58:115) i „OknoQuestow — tablica” (58:130) na stronie „HUD Buttons”, gdy odnowi się limit wywołań planu Starter · agent Pawła · #niski
+- [ ] Mistrz gier, plansza „Treasure Loop”: ocena Pawła w grze (wielkość pól, kamera, stolik z tacą), test na telefonie, decyzja o układzie nagród (pytanie 37) · Paweł · #gra/bc
+- [x] 2026-11-26: mistrz gier — plansza 3D i kostka przeniesione z artefaktu Pawła „Treasure Loop” (pętla 36 pól, kot-czarodziej, taca z kostką); interfejs bez zmian · agent Pawła · #gra/bc
 - [x] 2026-11-25: [[Tablica questów (propozycja)]] (dzienne, osiągnięcia, szuflada), kowal z zakładkami ITEMS / INGREDIENTS, mistrz gier z planszą 3D na stole i własnym interfejsem, drzewko bez zakładki fortecy; 18 grafik wgranych po „tak” Pawła — w Studio, sprawdzone w Play (Paweł; pytania 98, 99, 105)
 - [x] 2026-11-25: HUD — przyciski po lewej w dwóch rzędach, Index zamiast Quests, szuflada questów, [[Okno petów (propozycja)]] pod przyciskiem Pets (Paweł; czeka na Karola: pytania 102 i 103)
 - [x] 2026-11-24: trening AFK na `main` i w Studio (Paweł po rozmowie z Karolem); koty w ikonach ras, ramkach XP, selektorze klas; sklepy z NPC Karola — wgrane i sprawdzone w Play
@@ -59,6 +67,10 @@ Karol 25.11: „Okej, wracamy do pracy. Ostateczną decyzją jest powrót do B&C
 - [ ] Paweł: ocenić kartą w panelu Pet Arenę i Super Kitty Brawlers (Karol ocenił Pet Arenę na 28/30) i potwierdzić albo zmienić D-116–D-118 · Paweł · #wysoki
 
 ## 🔁 Blocky & Crycket: zadania wracają po D-139 (od 2026-11-25, do przejrzenia)
+- [ ] Połączyć lokalny folder Pawła z GitHubem (97 zmian do tyłu, niezapisane zmiany z 25–28.11; kolizje w dzienniku, pytaniach, rejestrze, zadaniach i manifeście) · agent Pawła z Pawłem · #wysoki #gra/wspolne
+- [ ] Ekran walki w naszej kresce: przyciski, okno zwycięstwa, ikony nagród, paski życia natywne, ramki ras zamiast pikselowych portretów; model wybranego kota zamiast starego Kota-Maga — pakiet walki Karola (`swiat/test_walki2`), grafiki w `assets/processed/WalkaUI/` · do uzgodnienia z Karolem · #gra/bc
+- [ ] Miasteczko: plac +50%, modele low poly, Brama Leśna z kłódką i przejście do lasu pieszo — [[Miasteczko — większy plac i Brama Leśna z kłódką (propozycja)]] · strona Karola po decyzji · #gra/bc
+- [ ] Paweł: obejrzeć w grze poprawki z 28.11 (mistrz gier z góry, sklepy, jajko w gnieździe, wyklucie bez smugi) · Paweł · #gra/bc
 Wstrzymane od 20.11 („większość jest już zupełnie nieaktualna” — Karol). Po D-139 trzeba je przejrzeć: nieaktualne przenieść do „Zrobione” albo skreślić z dopiskiem, aktualne przenieść do „Teraz”.
 Karol 20.11: „większość jest już zupełnie nieaktualna”. Zadania Blocky & Crycket czekają na wybór kierunku w [[00 Wytwórnia pomysłów]] (D-115) — nie są skasowane; wracają do „Teraz”, jeśli B&C zostanie wybrane do dalszej budowy.
 

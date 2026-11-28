@@ -32,6 +32,9 @@ def _value(v):
         if "UDim2" in v:
             (xs, xo), (ys, yo) = v["UDim2"]
             return f"UDim2.new({xs}, {xo}, {ys}, {yo})"
+        if "Rect" in v:  # SliceCenter: {"Rect": [[minX, minY], [maxX, maxY]]} (zapis jawny Rojo)
+            (x0, y0), (x1, y1) = v["Rect"]
+            return f"Rect.new({x0}, {y0}, {x1}, {y1})"
         if "UDim" in v:
             s, o = v["UDim"]
             return f"UDim.new({s}, {o})"

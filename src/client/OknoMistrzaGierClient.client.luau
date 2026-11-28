@@ -64,7 +64,7 @@ local function pole(i: number): Frame
 end
 
 local function srodekPola(i: number): UDim2
-	local f = pole(i)
+	local f = pole(math.min(i, 26)) -- okno ma 26 pól; plansza 3D (pętla 36) używa go tylko awaryjnie
 	return UDim2.fromScale(f.Position.X.Scale + f.Size.X.Scale / 2, f.Position.Y.Scale + f.Size.Y.Scale * 0.9)
 end
 

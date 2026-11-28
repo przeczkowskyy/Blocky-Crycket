@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""HUD + okno petów (Paweł 25.11): przerabia src/gui/HUD.model.json (6 mniejszych przycisków po lewej w dwóch rzędach
-po 3, Index zamiast Quests, wysuwana szuflada questów po prawej) i buduje src/gui/OknoPetow.model.json.
+"""HUD + okno petów (Paweł 25.11): przerabia src/gui/HUD.model.json (5 podłużnych przycisków w jednej kolumnie po
+lewej — ikona i napis, bez gildii; Index zamiast Quests, wysuwana szuflada questów po prawej) i buduje src/gui/OknoPetow.model.json.
 Grafiki z jednej generacji (tools/hud_pety_ui.py, ID w assets/manifest.json); pozycje slotów i przycisków to ułamki
 obrazów zmierzone po kolorach 25.11. Skrypty: src/client/HUDClient, QuestyClient, OknoPetowClient.
 
@@ -37,11 +37,17 @@ def ciemny(name, r, s, mx, z=5, x_align="Left", gruby=False):
 
 
 # ------------------------------------------------------------------------------------------------ HUD
-WYS_RZEDU = 0.1058  # wysokość rzędu jako ułamek ekranu -> przycisk ok. 114 px przy 1080p (było 150)
-ODSTEP_RZEDOW = 0.0135
 SRODEK_SZUFLADY = 0.46  # środek szuflady questów (i jej zakładki ze strzałką) na wysokości ekranu
-# Paweł 25.11 (wieczór): przyciski wyżej, mniej więcej na wysokości strzałki — środek obu rzędów = środek szuflady
-DOL_SIATKI = round(SRODEK_SZUFLADY + WYS_RZEDU + ODSTEP_RZEDOW / 2, 5)
+# Paweł 25.11 (noc): pięć podłużnych przycisków jeden pod drugim (ikona po lewej, napis po prawej), bez gildii.
+# Grafiki: tools/hud_podluzne_ui.py (HudWide*, proporcje 3,064). Wszystko w Scale: kolumna trzyma proporcje,
+# siatka dzieli ją na komórki. Na telefonie (HUDClient) ta sama kolumna staje tuż pod panelem gracza i jest wyższa
+# względem ekranu, żeby przyciski dało się trafić palcem (Paweł 26.11: jeden pod drugim także na telefonie).
+PROP_PRZYCISKU = 3.0638
+ODSTEP = 0.12  # odstęp między przyciskami jako ułamek wysokości przycisku
+WYS_KOLUMNY = 0.45  # ułamek ekranu: przycisk ok. 89 × 272 px przy 1080p; góra kolumny tuż pod panelem gracza
+PRZYCISKI = ["Teleport", "Equipment", "Pets", "Index", "Shop"]
+NAPIS_ZOLTY, NAPIS_BIALY = ("FFE95A", "F7A81B"), ("FFFFFF", "D5DAE8")  # gradient góra -> dół, jak na starych ikonach
+POLE_NAPISU = (0.35, 0.24, 0.615, 0.52)  # ułamek przycisku, na prawo od ikony (jak w hud_podluzne_napisy.py)
 
 
 def znajdz(n, nazwa):
@@ -54,24 +60,35 @@ def znajdz(n, nazwa):
     return None
 
 
-def slot_hud(wzor, nazwa, obraz=None, kolejnosc=1):
-    s = copy.deepcopy(wzor)
-    stara = next(c for c in s["Children"] if c["ClassName"] == "ImageButton")["Name"]
-    s["Name"] = nazwa + "Slot"
-    s["Properties"]["LayoutOrder"] = kolejnosc
-    s["Properties"]["Size"] = {"UDim2": [[0, 0], [1, 0]]}
-    for c in s["Children"]:
-        if c["ClassName"] == "UISizeConstraint":
-            c["Properties"] = {"MinSize": [50, 50], "MaxSize": [132, 132]}
-        if c["ClassName"] == "UIAspectRatioConstraint":
-            c["Properties"] = {"AspectRatio": 1, "AspectType": "ScaleWithParentSize", "DominantAxis": "Height"}
-        if c["ClassName"] == "ImageButton":
-            c["Name"] = nazwa
-            if obraz:
-                c["Properties"]["Image"] = obraz
-            elif stara != nazwa:
-                c["Properties"]["Image"] = ""
-    return s
+def napis(nazwa, tekst, kolory, cien=False):
+    """Napis natywny w stylu starych ikon: kanciasty Luckiest Guy, gradient, gruby czarny obrys, ciemny cień od dołu."""
+    x, y, w, h = POLE_NAPISU
+    t = node(nazwa, "TextLabel", {**ud(x, y + (0.075 if cien else 0), w, h), "BackgroundTransparency": 1,
+                                  "Text": tekst, "TextColor3": c3("2A1608" if cien else "FFFFFF"), "FontFace": S.FONT,
+                                  "TextScaled": True, "TextXAlignment": "Center", "TextYAlignment": "Center",
+                                  "Active": False, "ZIndex": 2 if cien else 3},
+             [node("UIStroke", "UIStroke", {"Color": c3("1A1008"), "Thickness": 4, "LineJoinMode": "Round",
+                                            "ApplyStrokeMode": "Contextual"})])
+    if not cien:
+        t["Children"].append(node("UIGradient", "UIGradient", {"Rotation": 90, "Color": {"ColorSequence": {"keypoints": [
+            {"time": 0, "color": c3(kolory[0])}, {"time": 1, "color": c3(kolory[1])}]}}}))
+    return t
+
+
+def slot_podluzny(nazwa, kolejnosc):
+    # Napis: obrazek wycięty ze starej ikony (tools/hud_podluzne_napisy.py) — identyczne liternictwo jak dotąd.
+    # Dopóki obrazka nie ma w Roblox, stoi napis natywny (Luckiest Guy), żeby przycisk nie był pusty.
+    if img("HudLabel" + nazwa):
+        x, y, w, h = POLE_NAPISU
+        napisy = [node("Label", "ImageLabel", {**ud(x, y, w, h), "BackgroundTransparency": 1, "Active": False,
+                                               "Image": img("HudLabel" + nazwa), "ScaleType": "Fit", "ZIndex": 3})]
+    else:
+        kolory = NAPIS_BIALY if nazwa == "Equipment" else NAPIS_ZOLTY  # Equipment był biały także na starej ikonie
+        napisy = [napis("LabelShadow", nazwa.upper(), kolory, True), napis("Label", nazwa.upper(), kolory)]
+    return node(nazwa + "Slot", "Frame", {"BackgroundTransparency": 1, "LayoutOrder": kolejnosc}, [
+        node(nazwa, "ImageButton", {"AnchorPoint": [0.5, 0.5], **ud(0.5, 0.5, 1, 1), "BackgroundTransparency": 1,
+                                    "Image": img("HudWide" + nazwa), "ScaleType": "Stretch", "AutoButtonColor": False},
+             [node("UIScale", "UIScale", {"Scale": 1}), *napisy])])
 
 
 def szuflada_questow():
@@ -104,29 +121,33 @@ def szuflada_questow():
 
 def hud():
     g = json.loads(HUD.read_text(encoding="utf-8"))
-    sloty = {}
-    for n in ("Teleport", "Equipment", "Pets", "Quests", "Shop", "Guilds", "Index"):
-        s = znajdz(g, n + "Slot")
-        if s:
-            sloty[n] = s
-    wzor = sloty.get("Index") or sloty["Quests"]
-    kolejnosc = [["Teleport", "Equipment", "Pets"], ["Index", "Shop", "Guilds"]]
-    # Dwa rzędy to dwie osobne ramki wprost w HUD. Górny nazywa się nadal „LeftColumn”, bo wskazówki Karola
-    # (swiat/wskazowki_gry) szukają przycisku pod ścieżką HUD/LeftColumn/TeleportSlot/Teleport.
-    rzedy = []
-    for r, (nazwa_rzedu, nazwy) in enumerate(zip(("LeftColumn", "BottomRow"), kolejnosc), 1):
-        dz = [node("UIListLayout", "UIListLayout", {"FillDirection": "Horizontal", "SortOrder": "LayoutOrder",
-                                                    "VerticalAlignment": "Center", "HorizontalAlignment": "Left",
-                                                    "Padding": {"UDim": [0.014, 0]}})]
-        for k, n in enumerate(nazwy, 1):
-            dz.append(slot_hud(sloty.get(n, wzor), n, img("IconIndex") if n == "Index" else None, k))
-        y = DOL_SIATKI if r == 2 else DOL_SIATKI - WYS_RZEDU - ODSTEP_RZEDOW
-        rzedy.append(node(nazwa_rzedu, "Frame", {"BackgroundTransparency": 1, "AnchorPoint": [0, 1],
-                                                 "Position": {"UDim2": [[0.02083, 0], [round(y, 5), 0]]},
-                                                 "Size": {"UDim2": [[0.5, 0], [WYS_RZEDU, 0]]}}, dz))
+    n = len(PRZYCISKI)
+    jedn = n + (n - 1) * ODSTEP  # wysokość kolumny w wysokościach przycisku
+    # Kolumna nazywa się nadal „LeftColumn”, bo wskazówki Karola (swiat/wskazowki_gry) szukają przycisku pod ścieżką
+    # HUD/LeftColumn/TeleportSlot/Teleport.
+    dz = [
+        node("UIAspectRatioConstraint", "UIAspectRatioConstraint", {"AspectRatio": round(PROP_PRZYCISKU / jedn, 4),
+                                                                     "AspectType": "ScaleWithParentSize",
+                                                                     "DominantAxis": "Height"}),
+        node("UIGridLayout", "UIGridLayout", {"FillDirection": "Vertical", "FillDirectionMaxCells": n,
+                                              "SortOrder": "LayoutOrder", "StartCorner": "TopLeft",
+                                              "HorizontalAlignment": "Left", "VerticalAlignment": "Top",
+                                              "CellSize": {"UDim2": [[1, 0], [round(1 / jedn, 5), 0]]},
+                                              "CellPadding": {"UDim2": [[0, 0], [round(ODSTEP / jedn, 5), 0]]}}),
+    ]
+    dz += [slot_podluzny(nazwa, k) for k, nazwa in enumerate(PRZYCISKI, 1)]
+    # Gildie wyłączone „na razie” (Paweł 25.11): przycisk zostaje w modelu, ukryty — siatka pomija ukryte elementy.
+    gildie = znajdz(g, "GuildsSlot")
+    if gildie:
+        gildie = copy.deepcopy(gildie)
+        gildie["Properties"].update({"Visible": False, "LayoutOrder": 99})
+        dz.append(gildie)
+    kolumna = node("LeftColumn", "Frame", {"BackgroundTransparency": 1, "AnchorPoint": [0, 0.5],
+                                           "Position": {"UDim2": [[0.02083, 0], [SRODEK_SZUFLADY, 0]]},
+                                           "Size": {"UDim2": [[1, 0], [WYS_KOLUMNY, 0]]}}, dz)
     g["Children"] = [c for c in g["Children"]
                      if c.get("Name") not in ("LeftColumn", "RightColumn", "BottomRow", "ButtonGrid", "QuestDrawer")]
-    g["Children"] += [*rzedy, szuflada_questow()]
+    g["Children"] += [kolumna, szuflada_questow()]
     HUD.write_text(json.dumps(g, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print("ok", HUD.relative_to(ROOT))
 

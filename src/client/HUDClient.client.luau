@@ -7,7 +7,7 @@
 	Kliknięcia: ReplicatedStorage.HUDButtonPressed (BindableEvent, tylko klient):
 
 		RS:WaitForChild("HUDButtonPressed").Event:Connect(function(name) ... end)
-		-- "Teleport" | "Equipment" | "Pets" | "Index" | "Shop" | "Guilds"
+		-- "Teleport" | "Equipment" | "Pets" | "Index" | "Shop"   (Guilds ukryty od 25.11)
 
 	Vault: B&C/UI/HUD.md
 ]]
@@ -19,7 +19,7 @@ local RS = game:GetService("ReplicatedStorage")
 
 -- === USTAWIENIA ===
 local REF_H = 1080 -- grubości obrysów w modelu są podane w px @1080p
-local COLUMN_Y_MOBILE = 0.46 -- telefon: środek rzędów przycisków, jak na komputerze (na wysokości strzałki questów)
+local COLUMN_H_MOBILE = 0.56 -- telefon: wysokość kolumny pięciu przycisków (przycisk ok. 38 × 117 px przy 375 px ekranu)
 local LOADING_TIMEOUT = 30
 local AFTER_LOADING_FADE = 0.7 -- s: loading screen kończy fade-out (0.6 s)
 local QUICK = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
@@ -253,16 +253,28 @@ if fishLbl then
 	setCurrency(fishLbl, "Fish", true)
 end
 
------------------------------------------------- telefon: kolumny wyżej, nad kontrolkami dotykowymi
--- Paweł 25.11: wszystkie przyciski po lewej w dwóch rzędach po 3, mniejsze niż dawniej; Index zamiast Quests (questy
--- siedzą w wysuwanej szufladzie po prawej — QuestyClient). Górny rząd nazywa się nadal LeftColumn (ścieżka, której
--- szukają wskazówki Karola: HUD/LeftColumn/TeleportSlot/Teleport), dolny BottomRow.
-local columns = { hud:WaitForChild("LeftColumn"), hud:WaitForChild("BottomRow") }
+------------------------------------------------ kolumna przycisków
+-- Paweł 25–26.11: pięć podłużnych przycisków jeden pod drugim (ikona + napis), bez gildii — tak samo na telefonie;
+-- questy siedzą w wysuwanej szufladzie po prawej (QuestyClient). Kolumna nazywa się nadal LeftColumn (ścieżka, której
+-- szukają wskazówki Karola: HUD/LeftColumn/TeleportSlot/Teleport). Układ i proporcje: tools/hud_pety_build_gui.py.
+local column = hud:WaitForChild("LeftColumn") :: Frame
+local columns = { column }
 if UIS.TouchEnabled and not UIS.KeyboardEnabled then
-	local gora, dol = columns[1] :: Frame, columns[2] :: Frame
-	local odstep = dol.Position.Y.Scale - dol.Size.Y.Scale - gora.Position.Y.Scale
-	gora.Position = UDim2.fromScale(gora.Position.X.Scale, COLUMN_Y_MOBILE - odstep / 2)
-	dol.Position = UDim2.fromScale(dol.Position.X.Scale, COLUMN_Y_MOBILE + odstep / 2 + dol.Size.Y.Scale)
+	-- Telefon: kolumna zaczyna się tuż pod panelem gracza i jest wyższa względem ekranu niż na komputerze, żeby
+	-- przycisk miał ok. 38 px przy 375 px ekranu. Dół kolumny (ok. 80% ekranu) wchodzi w strefę drążka — do oceny.
+	column.AnchorPoint = Vector2.new(0, 0)
+	column.Size = UDim2.fromScale(1, COLUMN_H_MOBILE)
+	local function podPanel()
+		local h = hud.AbsoluteSize.Y
+		if h <= 0 then
+			return
+		end
+		local dol = (panel.AbsolutePosition.Y + panel.AbsoluteSize.Y - hud.AbsolutePosition.Y) / h
+		column.Position = UDim2.fromScale(column.Position.X.Scale, dol + 0.015)
+	end
+	podPanel()
+	hud:GetPropertyChangedSignal("AbsoluteSize"):Connect(podPanel)
+	panel:GetPropertyChangedSignal("AbsoluteSize"):Connect(podPanel)
 end
 
 ------------------------------------------------ przyciski i panel: od razu na miejscu

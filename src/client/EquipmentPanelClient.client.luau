@@ -320,6 +320,10 @@ local function tabButton(btn: ImageButton, onClick: () -> ()): (boolean) -> ()
 	shade.Name = "Shade"
 	shade.Image = btn.Image
 	shade.ScaleType = btn.ScaleType
+	shade.ImageRectOffset = btn.ImageRectOffset -- z grafiki zakładki bierzemy tylko górę (bez ciemnego paska)
+	shade.ImageRectSize = btn.ImageRectSize
+	shade.SliceCenter = btn.SliceCenter -- szerokie zakładki (26.11) są rozciągane 9-slice
+	shade.SliceScale = btn.SliceScale
 	shade.ImageColor3 = Color3.new(0, 0, 0)
 	shade.ImageTransparency = 1
 	shade.BackgroundTransparency = 1
@@ -429,7 +433,7 @@ local function tabGroup(folder, default)
 	activate(folder:FindFirstChild(default))
 end
 tabGroup(panel.CharacterTabs, "TabAttributes")
-tabGroup(panel.BackpackTabs, "TabWeapons")
+tabGroup(panel.BackpackTabs, "TabItems")
 
 ------------------------------------------------ statystyki
 local function pop(obj, peak)
@@ -491,12 +495,14 @@ local GuiService = game:GetService("GuiService")
 -- stan ekwipunku jest wspólny z oknem sklepu (ShopClient): moduł EkwipunekStan obok tego skryptu
 local Stan = require(script.Parent:WaitForChild("EkwipunekStan"))
 local DRAG_START = 6 -- px ruchu, po których kliknięcie staje się przeciąganiem
-local BAG_TABS = { TabWeapons = "Weapons", TabArmor = "Armor", TabAmulets = "Amulets", TabOthers = "Others" }
+-- Paweł 26.11: plecak = ITEMS / OTHERS (po 3 strony po 25 slotów) + SKILLS (umiejętności z drzewka)
+local BAG_TABS = { TabItems = "Items", TabOthers = "Others", TabSkills = "Skills" }
 
 local equipFolder, bagFolder = panel.Character.EquipSlots, panel.BackpackGrid
 local equip = Stan.equip -- nazwa slotu ("Slot_Trinket") -> id przedmiotu
 local bag = Stan.bag -- kategoria -> [numer slotu 1–25] -> id
-local bagTab = "Weapons" -- aktywna zakładka plecaka
+local bagTab = "Items" -- aktywna zakładka plecaka
+local strona = 0 -- strona plecaka (0 … Stan.STRONY - 1), strzałki pod plecakiem
 
 local allSlots = {}
 for _, folder in ipairs({ equipFolder, bagFolder }) do
@@ -511,11 +517,12 @@ local function isBag(slot)
 	return slot.Parent == bagFolder
 end
 local function bagIndex(slot)
-	return tonumber(slot.Name:match("%d+"))
+	return tonumber(slot.Name:match("%d+")) + strona * Stan.NA_STRONE
 end
 local function get(slot)
 	if isBag(slot) then
-		return bag[bagTab][bagIndex(slot)]
+		local page = bag[bagTab]
+		return page and page[bagIndex(slot)] -- zakładka SKILLS nie trzyma przedmiotów
 	end
 	return equip[slot.Name]
 end
@@ -572,7 +579,7 @@ end
 local function move(from, target)
 	local moving, there = get(from), get(target)
 	if isBag(target) then
-		local cat = Stan.definicja(moving).category
+		local cat = Stan.zakladka(Stan.definicja(moving))
 		if cat ~= bagTab then
 			-- inna zakładka: przedmiot trafia na stronę swojej kategorii (tu znika z widoku)
 			if not storeInBag(moving, bagIndex(target)) then
@@ -690,6 +697,7 @@ end)
 action.Event:Connect(function(a, name)
 	if a == "Tab" and BAG_TABS[name] then
 		bagTab = BAG_TABS[name]
+		strona = 0
 		renderAll()
 	end
 end)
@@ -845,3 +853,321 @@ hudPressed.Event:Connect(function(name)
 		end
 	end
 end)
+
+------------------------------------------------ podpowiedź przedmiotu i porównanie (Paweł 26.11)
+-- Najechanie na przedmiot (sloty założone i plecak): nazwa, rzadkość, statystyki (PodpowiedzPrzedmiotu).
+-- Lupa między slotem amuletu a plecakiem przełącza porównanie z przedmiotem założonym w tym samym slocie (+/−/0).
+local Podpowiedz = require(script.Parent:WaitForChild("PodpowiedzPrzedmiotu"))
+for _, s in ipairs(allSlots) do
+	Podpowiedz.podepnij(s, function()
+		return get(s), { zalozony = not isBag(s) }
+	end)
+end
+local porownajEq = panel:FindFirstChild("CompareButton")
+if porownajEq then
+	local function pokazPorownanie()
+		local on = porownajEq:FindFirstChild("On")
+		if on then
+			on.Visible = Podpowiedz.porownanie
+		end
+	end
+	bounce(porownajEq, function()
+		Podpowiedz.ustawPorownanie(not Podpowiedz.porownanie)
+	end)
+	Podpowiedz.Zmiana.Event:Connect(pokazPorownanie)
+	pokazPorownanie()
+end
+
+------------------------------------------------ strony plecaka i umiejętności (Paweł 26.11, przebudowa po konsultacji)
+-- Plecak: ITEMS / OTHERS mają po Stan.STRONY stron po 25 slotów (strzałki i tabliczka pod plecakiem), SKILLS — zdobyte
+-- umiejętności (odblokowane w drzewku, gałąź SKILLS). Umiejętność przeciąga się z zakładki SKILLS na jeden z trzech
+-- slotów w pasie między postacią a plecakiem (pod lupą); przeciągnięcie ze slotu poza pas zdejmuje ją. Sloty otwiera
+-- drzewko (SKILL SLOT I–III) — zamknięty slot ma kłódkę na placeholderze kuli ognia. Serwer: SkillSloty.
+-- Podpowiedź umiejętności: co robi, koszt many, obrażenia, efekty (dane walki Karola przez Shared.SkilleDane).
+local pages = panel:FindFirstChild("Pages")
+local strip = panel:FindFirstChild("SkillStrip")
+local Shared = RS:WaitForChild("Shared")
+local SkillIcons = require(Shared:WaitForChild("SkillTreeIcons")) :: any
+local TreeData = require(Shared:WaitForChild("SkillTreeData")) :: any
+local okSD, SkilleDane = pcall(function()
+	return require(Shared:WaitForChild("SkilleDane"))
+end)
+if not okSD then
+	SkilleDane = {}
+end
+local zdalneSkilli = RS:WaitForChild("SkillSloty", 30) :: RemoteFunction?
+local stanSkilli: any = nil
+local placeholder = if strip then (strip:WaitForChild("SkillSlot1"):WaitForChild("Icon") :: ImageLabel).Image else ""
+
+local function infoUmiejetnosci(id: string?): any
+	if not id or id == "" or not stanSkilli then
+		return nil
+	end
+	for _, u in ipairs(stanSkilli.umiejetnosci) do
+		if u.id == id then
+			local node = TreeData.Nodes[id]
+			local d = node and (SkilleDane :: any)[node.stat] or nil
+			local okD, drz = pcall(function()
+				return TreeData.describe(node, u.poziom or 1)
+			end)
+			return {
+				nazwa = u.nazwa,
+				rodzaj = d and d.rodzaj or "SKILL",
+				mana = d and d.mana or 0,
+				opis = d and d.opis or {},
+				drzewko = if okD and type(drz) == "string" then "Tree lv " .. (u.poziom or 1) .. ": " .. drz else nil,
+				stopka = "Drag onto a skill slot",
+			}
+		end
+	end
+	return nil
+end
+
+local function umiejetnoscWBagu(slot): any
+	if bagTab ~= "Skills" or not stanSkilli then
+		return nil
+	end
+	local nr = tonumber(slot.Name:match("%d+"))
+	return nr and stanSkilli.umiejetnosci[nr] or nil
+end
+
+local function rysujStrony()
+	if not pages then
+		return
+	end
+	pages.Visible = bagTab ~= "Skills"
+	local etykieta = pages:FindFirstChild("PageLabel")
+	local t = etykieta and etykieta:FindFirstChild("Text")
+	if t then
+		t.Text = string.format("%d / %d", strona + 1, Stan.STRONY)
+	end
+end
+
+local function rysujPas()
+	if not strip then
+		return
+	end
+	local s = stanSkilli
+	for i = 1, 3 do
+		local slot = strip:FindFirstChild("SkillSlot" .. i)
+		if not slot then
+			continue
+		end
+		local otwarty = s ~= nil and i <= (s.slotow or 0)
+		local wybrany = if s then s.wybrane[i] else ""
+		slot.Lock.Visible = not otwarty
+		local node = otwarty and wybrany ~= "" and TreeData.Nodes[wybrany]
+		if node then
+			slot.Icon.Image = SkillIcons[node.icon] or placeholder
+			slot.Icon.ImageTransparency = 0
+		else
+			slot.Icon.Image = placeholder
+			slot.Icon.ImageTransparency = if otwarty then 0.8 else 0.25
+		end
+	end
+end
+
+local function rysujSkilleWPlecaku()
+	if bagTab ~= "Skills" then
+		return
+	end
+	for i = 1, Stan.NA_STRONE do
+		local s = bagFolder:FindFirstChild(string.format("BagSlot%02d", i))
+		local u = stanSkilli and stanSkilli.umiejetnosci[i]
+		if s and u then
+			s.Icon.Image = SkillIcons[u.ikona] or ""
+			s.Icon.ImageTransparency = 0
+			local naPasie = table.find(stanSkilli.wybrane, u.id) ~= nil
+			s.Icon.ImageColor3 = if naPasie then Color3.fromRGB(150, 150, 150) else Color3.new(1, 1, 1)
+		elseif s then
+			s.Icon.ImageColor3 = Color3.new(1, 1, 1)
+		end
+	end
+end
+
+-- renderAll rysuje też strony, umiejętności w plecaku i pas (zmienna lokalna: wszystkie wywołania biorą nową wersję)
+local renderPrzedmiotow = renderAll
+renderAll = function()
+	renderPrzedmiotow()
+	if bagTab ~= "Skills" then
+		for _, s in ipairs(bagFolder:GetChildren()) do
+			local ik = s:FindFirstChild("Icon")
+			if ik and ik:IsA("ImageLabel") then
+				ik.ImageColor3 = Color3.new(1, 1, 1)
+			end
+		end
+	end
+	rysujSkilleWPlecaku()
+	rysujStrony()
+	rysujPas()
+end
+
+local function pobierzSkille(polecenie: string, a: any?, b: any?)
+	if not zdalneSkilli then
+		return
+	end
+	local ok, w = pcall(function()
+		return (zdalneSkilli :: RemoteFunction):InvokeServer(polecenie, a, b)
+	end)
+	if ok and type(w) == "table" and w.ok then
+		stanSkilli = w
+	end
+	renderAll()
+end
+
+-- strzałki stron
+if pages then
+	local function zmienStrone(o: number)
+		strona = (strona + o) % Stan.STRONY
+		renderAll()
+	end
+	bounce(pages:WaitForChild("PrevPage"), function()
+		zmienStrone(-1)
+	end)
+	bounce(pages:WaitForChild("NextPage"), function()
+		zmienStrone(1)
+	end)
+end
+
+-- podpowiedzi umiejętności (plecak SKILLS i pas)
+for _, s in ipairs(bagFolder:GetChildren()) do
+	if s:IsA("GuiObject") then
+		Podpowiedz.podepnijUmiejetnosc(s, function()
+			local u = umiejetnoscWBagu(s)
+			return u and infoUmiejetnosci(u.id) or nil
+		end)
+	end
+end
+if strip then
+	for i = 1, 3 do
+		local slot = strip:FindFirstChild("SkillSlot" .. i)
+		if slot then
+			Podpowiedz.podepnijUmiejetnosc(slot, function()
+				local s = stanSkilli
+				if not s then
+					return nil
+				end
+				if i > (s.slotow or 0) then
+					return { nazwa = "LOCKED SLOT", rodzaj = "SKILL SLOT",
+						opis = { "Unlock it in the skill tree:", "SKILLS branch, SKILL SLOT " .. string.rep("I", i) } }
+				end
+				local info = infoUmiejetnosci(s.wybrane[i])
+				if info then
+					info.stopka = "Drag out of the slot to remove"
+					return info
+				end
+				return { nazwa = "EMPTY SLOT", rodzaj = "SKILL SLOT", opis = { "Drag a skill here from the", "SKILLS tab of the backpack" } }
+			end)
+		end
+	end
+end
+
+-- przeciąganie umiejętności: z plecaka (SKILLS) na slot pasa; ze slotu na inny slot (zamiana) albo poza pas (zdjęcie)
+local skillDrag: any = nil
+local function slotPasaPod(pos: Vector2): number?
+	if not strip then
+		return nil
+	end
+	for i = 1, 3 do
+		local s = strip:FindFirstChild("SkillSlot" .. i) :: GuiObject?
+		if s then
+			local p, z = s.AbsolutePosition, s.AbsoluteSize
+			if pos.X >= p.X and pos.X <= p.X + z.X and pos.Y >= p.Y and pos.Y <= p.Y + z.Y then
+				return i
+			end
+		end
+	end
+	return nil
+end
+
+UIS.InputBegan:Connect(function(input)
+	local t = input.UserInputType
+	if not gui.Enabled or skillDrag or not stanSkilli or (t ~= Enum.UserInputType.MouseButton1 and t ~= Enum.UserInputType.Touch) then
+		return
+	end
+	local pos = screenPos(input)
+	local naPasie = slotPasaPod(pos)
+	if naPasie then
+		local id = stanSkilli.wybrane[naPasie]
+		if id and id ~= "" then
+			skillDrag = { id = id, zPasa = naPasie, start = pos }
+		end
+		return
+	end
+	local s = slotAt(pos)
+	if s and isBag(s) then
+		local u = umiejetnoscWBagu(s)
+		if u then
+			skillDrag = { id = u.id, start = pos }
+		end
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if not skillDrag then
+		return
+	end
+	local t = input.UserInputType
+	if t ~= Enum.UserInputType.MouseMovement and t ~= Enum.UserInputType.Touch then
+		return
+	end
+	local pos = screenPos(input)
+	if not skillDrag.ghost and (pos - skillDrag.start).Magnitude >= DRAG_START then
+		local node = TreeData.Nodes[skillDrag.id]
+		local g = Instance.new("ImageLabel")
+		g.Name = "SkillGhost"
+		g.BackgroundTransparency = 1
+		g.Image = node and SkillIcons[node.icon] or ""
+		g.AnchorPoint = Vector2.new(0.5, 0.5)
+		local bok = if strip then strip.SkillSlot1.AbsoluteSize.X * 1.1 else 48
+		g.Size = UDim2.fromOffset(bok, bok)
+		g.ZIndex = 50
+		g.Parent = gui
+		skillDrag.ghost = g
+		Podpowiedz.schowaj()
+	end
+	if skillDrag.ghost then
+		local inset = GuiService:GetGuiInset()
+		skillDrag.ghost.Position = UDim2.fromOffset(pos.X + inset.X, pos.Y + inset.Y)
+	end
+end)
+
+UIS.InputEnded:Connect(function(input)
+	local t = input.UserInputType
+	if not skillDrag or (t ~= Enum.UserInputType.MouseButton1 and t ~= Enum.UserInputType.Touch) then
+		return
+	end
+	local d = skillDrag
+	skillDrag = nil
+	if not d.ghost then
+		return
+	end
+	d.ghost:Destroy()
+	local cel = slotPasaPod(screenPos(input))
+	if cel then
+		if cel ~= d.zPasa then
+			if stanSkilli and cel > (stanSkilli.slotow or 0) then
+				shake(strip["SkillSlot" .. cel].Icon) -- zamknięty slot
+				return
+			end
+			task.spawn(function()
+				pobierzSkille("wybierz", cel, d.id)
+				pop(strip["SkillSlot" .. cel].Icon, 1.25)
+			end)
+		end
+	elseif d.zPasa then
+		task.spawn(pobierzSkille, "wybierz", d.zPasa, "") -- przeciągnięta poza pas: zdejmujemy
+	end
+end)
+
+action.Event:Connect(function(a)
+	if a == "Opened" then
+		task.spawn(pobierzSkille, "stan")
+	end
+end)
+player:GetAttributeChangedSignal("SkillTree"):Connect(function()
+	if gui.Enabled then
+		task.spawn(pobierzSkille, "stan")
+	end
+end)
+task.spawn(pobierzSkille, "stan")

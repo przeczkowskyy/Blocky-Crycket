@@ -35,13 +35,13 @@ from swiat.postacie import kot_demon as KD  # noqa: E402  (strój podstawowy)
 # paleta: futro, strój pełny (szata/kapelusz/wstążka/kryształ) i strój podstawowy (koszulka/spodenki) + cechy
 RASY = {
     "elf": {"nazwa": "Kot-Elf", "paleta": {
-        "kot": "F3E3C8", "kot_jasny": "FFF6E6", "kot_ciemny": "D9C29E",
+        "kot": "F6D2A6", "kot_jasny": "FFE9CF", "kot_ciemny": "E0B483",
         "szata": "2F8F4E", "szata_ciemna": "1F6136", "szata_jasna": "4DB06B",
         "wstazka": "E8B93A", "krysztal": "4CE38A", "krysztal_jasny": "A8FFC6",
         "wlosy": "F2C94C", "wlosy_cien": "D9A92E", "oko_rasy": "3FBF5A",
         "koszulka": "F1E6CC", "spodenki": "2F8F4E"}},
     "mroczny_elf": {"nazwa": "Kot-Mroczny elf", "paleta": {
-        "kot": "9C8FC4", "kot_jasny": "C9C0E6", "kot_ciemny": "7A6CA6",
+        "kot": "A894D6", "kot_jasny": "CDBFEA", "kot_ciemny": "7F6CB0",
         "szata": "2B2547", "szata_ciemna": "1A1630", "szata_jasna": "433A6B",
         "wstazka": "C9CED8", "krysztal": "B98CFF", "krysztal_jasny": "E2D2FF",
         "wlosy": "F1EEF7", "wlosy_cien": "CFCBE0", "oko_rasy": "B36BFF",
@@ -49,7 +49,7 @@ RASY = {
     "ork": {"nazwa": "Kot-Ork", "paleta": {
         "kot": "6F8A3A", "kot_jasny": "9DB36A", "kot_ciemny": "4E6427",
         "szata": "7A4E2C", "szata_ciemna": "5A361C", "szata_jasna": "9A6A40",
-        "wstazka": "3A2A1C", "krysztal": "E8E0CC", "krysztal_jasny": "FFF8E8",
+        "wstazka": "55565C", "krysztal": "E8E0CC", "krysztal_jasny": "FFF8E8",
         "wlosy": "1E1A17", "wlosy_cien": "0F0D0B", "kiel": "FFF8E8",
         "koszulka": "F1E6CC", "spodenki": "7A4E2C"}},
     "goblin": {"nazwa": "Kot-Goblin", "paleta": {
@@ -72,7 +72,76 @@ def _modul(rasa):
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
     m.PALETA.update(RASY[rasa]["paleta"])
-    return m
+    # dodatki rasy na kapeluszu i kosturze (Paweł 25.11: modele mają bardziej przypominać referencje z Higgsfield).
+    # Przedmioty buduje m.przedmioty() z funkcji modułu — podmieniamy je w TEJ kopii modułu, plik Karola bez zmian.
+    stary_kapelusz, stary_kostur = m.kapelusz, m.kostur
+
+    def kapelusz():
+        a = stary_kapelusz()
+        _dodatki_kapelusza(a, rasa)
+        return a
+
+    def kostur():
+        a = stary_kostur()
+        _dodatki_kostura(a, rasa)
+        return a
+
+    m.kapelusz, m.kostur = kapelusz, kostur
+    return KD.szersze_rondo(m)
+
+
+# kolor klejnotu na kapeluszu (romb z przodu, jak na referencjach) — None = bez klejnotu
+KLEJNOT_KAPELUSZA = {"elf": "3FD06A", "mroczny_elf": "C58CFF", "ork": "FF9A2E", "goblin": "5CFF5C", "polbog": "FFE14A"}
+
+
+def _dodatki_kapelusza(a, rasa):
+    """Układ kapelusza Kota-Maga: (0,0,0) = środek góry głowy, stożek od y≈0,1 do 1,05, przód = +Z."""
+    kolor = KLEJNOT_KAPELUSZA.get(rasa)
+    if kolor:
+        a.blok("Klejnot oprawa", (0, 0.72, 0.47), (0.3, 0.3, 0.05), "zloto" if rasa != "mroczny_elf" else "C9CED8",
+               "metal", rot=(-12, 0, 45), faza=0.0)
+        a.blok("Klejnot", (0, 0.72, 0.5), (0.2, 0.2, 0.05), kolor, "swiecacy", rot=(-12, 0, 45), faza=0.0)
+    if rasa == "goblin":
+        # łaty na kapeluszu (referencja: zielone łaty z fastrygą)
+        a.blok("Lata 1", (-0.36, 0.62, 0.42), (0.26, 0.24, 0.05), "5E9A22", "matowy", rot=(-12, -18, 12), faza=0.0)
+        a.blok("Lata 2", (0.5, 0.07, 0.72), (0.34, 0.03, 0.24), "5E9A22", "matowy", rot=(0, 20, 0), faza=0.0)
+        a.blok("Lata 3", (0.1, 1.28, 0.2), (0.22, 0.18, 0.05), "5E9A22", "matowy", rot=(-25, 0, -8), faza=0.0)
+
+
+def _dodatki_kostura(a, rasa):
+    """Układ kostura Kota-Maga: uchwyt w (0,0,0), drzewce w +Y, kryształ w y≈2,02, oprawa w y≈1,73."""
+    if rasa == "mroczny_elf":
+        # półksiężyc wokół kryształu: łuk z klocków w płaszczyźnie XY, otwarty w prawo
+        r, n = 0.46, 7
+        for i in range(n):
+            kat = math.radians(70 + i * (220 / (n - 1)))
+            a.blok("Ksiezyc %d" % i, (r * math.cos(kat), 2.08 + r * math.sin(kat), 0),
+                   (0.2 if i in (0, n - 1) else 0.26, 0.14 if i in (0, n - 1) else 0.2, 0.12), "E9E2FF", "swiecacy",
+                   rot=(0, 0, math.degrees(kat) - 90), faza=0.0)
+    elif rasa == "ork":
+        # kość przywiązana w poprzek pod kryształem
+        a.blok("Kosc", (0, 1.9, 0.02), (0.86, 0.13, 0.13), "F2EAD6", "matowy", rot=(0, 0, 14), faza=0.03)
+        for zn in (1, -1):
+            for dy in (0.07, -0.07):
+                a.kula("Kosc koniec", (zn * 0.44, 1.9 + zn * 0.11 + dy, 0.02), (0.16, 0.16, 0.16), "F2EAD6", "matowy")
+        a.blok("Kosc rzemien", (0, 1.9, 0.02), (0.14, 0.24, 0.26), "3A2A1C", "matowy", rot=(0, 0, 14), faza=0.0)
+    elif rasa == "goblin":
+        # butelka z miksturą zawieszona pod oprawą kryształu
+        a.blok("Sznurek", (0.2, 1.62, 0), (0.3, 0.04, 0.04), "6B4325", "matowy", rot=(0, 0, -20), faza=0.0)
+        a.kula("Butelka", (0.38, 1.36, 0), (0.36, 0.36, 0.36), "5CFF5C", "swiecacy")
+        a.blok("Butelka szyjka", (0.38, 1.57, 0), (0.14, 0.14, 0.14), "A8E8A8", "polysk", faza=0.0)
+        a.blok("Korek", (0.38, 1.67, 0), (0.12, 0.08, 0.12), "8A5A30", "matowy", faza=0.0)
+    elif rasa == "polbog":
+        # promienie słońca wokół kryształu
+        r, n = 0.5, 8
+        for i in range(n):
+            kat = 2 * math.pi * i / n
+            a.blok("Promien %d" % i, (r * math.cos(kat), 2.06 + r * math.sin(kat), 0), (0.1, 0.24, 0.08), "FFD54A",
+                   "swiecacy", rot=(0, 0, math.degrees(kat) - 90), faza=0.0)
+    elif rasa == "elf":
+        # listki przy oprawie kryształu
+        for zn in (1, -1):
+            a.blok("Listek", (zn * 0.24, 1.86, 0), (0.24, 0.1, 0.06), "4DB06B", "matowy", rot=(0, 0, zn * 35), faza=0.0)
 
 
 # ------------------------------------------------------------------------------------------- cechy ras
@@ -81,7 +150,9 @@ def _oczy(p, kolor, mat="polysk"):
     w, h, d = p.wymiary("Head")
     with p.na("Head", od="srodek"):
         for zn, s in ((1, "L"), (-1, "P")):
-            p.blok("Oko rasy " + s, (zn * 0.38, 0.1, d / 2 + 0.045), (0.22, 0.32, 0.02), kolor, mat, faza=0.0)
+            # większa tęczówka i ciemna źrenica w środku (referencje: duże kolorowe oczy z jasnym błyskiem)
+            p.blok("Oko rasy " + s, (zn * 0.38, 0.11, d / 2 + 0.045), (0.27, 0.4, 0.02), kolor, mat, faza=0.0)
+            p.blok("Zrenica " + s, (zn * 0.38, 0.06, d / 2 + 0.064), (0.1, 0.18, 0.02), "tusz", "polysk", faza=0.0)
 
 
 def _wlosy_dlugie(p):
@@ -194,7 +265,7 @@ def zbuduj_rase(rasa):
     prz = m.przedmioty()
     p = m.ubierz(m.cialo(), m.wybierz(m.KANON, prz), id="kot_" + rasa, nazwa=RASY[rasa]["nazwa"],
                  korekty=m.KOREKTY_CHWYTU)
-    return CECHY[rasa](p)
+    return CECHY[rasa](KD.obszycie_peleryny(KD.ulepsz_baze(p)))
 
 
 def podstawowy(rasa):
@@ -202,7 +273,7 @@ def podstawowy(rasa):
     m = _modul(rasa)
     p = m.cialo()
     p.id, p.nazwa = "kot_%s_podstawowy" % rasa, RASY[rasa]["nazwa"] + " (strój podstawowy)"
-    return CECHY[rasa](KD._stroj_podstawowy(p))
+    return CECHY[rasa](KD._stroj_podstawowy(KD.ulepsz_baze(p)))
 
 
 def zbuduj():

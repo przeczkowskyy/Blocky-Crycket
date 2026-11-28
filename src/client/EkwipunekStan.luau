@@ -6,7 +6,7 @@
 
 	Stan (TEST, jak dotąd — tylko po stronie klienta, bez zapisu):
 		Stan.equip[nazwaSlotu]            -- "Slot_Helmet" … "Slot_Weapon" -> id przedmiotu
-		Stan.bag[kategoria][numer 1–25]   -- kategorie: Weapons, Armor, Amulets, Others
+		Stan.bag[kategoria][numer 1–75]   -- kategorie: Items, Others (Paweł 26.11: 3 strony po 25 slotów)
 	Zakładka plecaka jest osobna w każdym oknie. Kto zmienia stan, woła Stan.zmieniono() — wtedy oba okna rysują się od nowa (Stan.Zmiana.Event).
 
 	Przedmioty: Shared.Items (przedmioty testowe i bronie startowe) + przedmioty kowala Karola
@@ -41,11 +41,15 @@ export type Definicja = {
 
 local Stan = {}
 
-Stan.KATEGORIE = { "Weapons", "Armor", "Amulets", "Others" }
-Stan.ROZMIAR_PLECAKA = 25
+-- Paweł 26.11: plecak ma dwie zakładki przedmiotów — ITEMS (broń, zbroja, amulety) i OTHERS (reszta) — oraz
+-- trzecią SKILLS (umiejętności z drzewka, nie leżą w tym stanie). Każda zakładka ma STRONY stron po 25 slotów.
+Stan.KATEGORIE = { "Items", "Others" }
+Stan.NA_STRONE = 25
+Stan.STRONY = 3
+Stan.ROZMIAR_PLECAKA = Stan.NA_STRONE * Stan.STRONY
 
 Stan.equip = {} :: { [string]: string }
-Stan.bag = { Weapons = {}, Armor = {}, Amulets = {}, Others = {} } :: { [string]: { [number]: string } }
+Stan.bag = { Items = {}, Others = {} } :: { [string]: { [number]: string } }
 
 local zmiana = Instance.new("BindableEvent")
 Stan.Zmiana = zmiana
@@ -74,12 +78,13 @@ function Stan.definicja(id: string?): Definicja?
 end
 
 function Stan.kategoriaSlotu(slot: string): string
-	if slot == "Weapon" or slot == "OffHand" then
-		return "Weapons"
-	elseif slot == "Amulet" or slot == "Ring" or slot == "Trinket" then
-		return "Amulets"
-	end
-	return "Armor"
+	-- wszystko, co się zakłada (broń, zbroja, amulety), leży w zakładce ITEMS
+	return "Items"
+end
+
+-- zakładka plecaka przedmiotu: stare kategorie z Shared.Items (Weapons / Armor / Amulets) -> Items
+function Stan.zakladka(d: Definicja?): string
+	return if d and d.category == "Others" then "Others" else "Items"
 end
 
 function Stan.zmieniono()
@@ -168,7 +173,7 @@ function Stan.doPlecaka(id: string, prefer: number?): number?
 	if not d then
 		return nil
 	end
-	local page = Stan.bag[d.category]
+	local page = Stan.bag[Stan.zakladka(d)]
 	if prefer and page[prefer] == nil then
 		page[prefer] = id
 		return prefer

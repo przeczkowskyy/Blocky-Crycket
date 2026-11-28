@@ -29,13 +29,16 @@ implementacja: wersja z Figmy (panel gracza + 6 przycisków) w Roblox, 2026-11-1
 > [!warning] Propozycja w grze
 > Wdrożone na próbę w Studio; układ z Figmy (dwie kolumny) i tabela kanonu wyżej zostają bez zmian do decyzji — [[Pytania otwarte]] 102.
 
-- **Sześć przycisków po lewej**, w dwóch rzędach po 3, mniejsze: ok. 114 px przy 1080p (było 150). Górny rząd: Teleport, Equipment, Pets; dolny: **Index**, Shop, Guilds. Od wieczora 25.11 (Paweł) oba rzędy są wyżej: ich środek wypada na wysokości strzałki szuflady questów (46% wysokości ekranu), tak samo na telefonie.
-- **Index zamiast Quests:** nowy przycisk (`IconIndex`, `rbxassetid://78578283184741`); okna indeksu jeszcze nie ma.
+- **Pięć podłużnych przycisków jeden pod drugim** (Paweł 25–26.11, zamiast dwóch rzędów po 3): Teleport, Equipment, Pets, Index, Shop — ikona po lewej, napis po prawej. Kolumna zaczyna się pod panelem gracza, środek na wysokości strzałki szuflady questów; przycisk ok. 89 × 272 px przy 1080p. Na telefonie ta sama kolumna, wyższa względem ekranu (przycisk ok. 38 px przy 375 px) — dół sięga ok. 80% ekranu, w strefę drążka; do sprawdzenia na telefonie.
+- **Gildie wyłączone na razie** (Paweł 25.11): `GuildsSlot` zostaje w modelu, ukryty.
+- **Grafiki:** przyciski z jednej generacji Higgsfield (wzór: stare kwadratowe ikony) — `HudWide<Nazwa>`, `tools/hud_podluzne_ui.py`; napisy jako obrazki w stylu z Figmy (Luckiest Guy, żółty gradient, gruby czarny obrys, brązowy cień od dołu; EQUIPMENT biały) — `HudLabel<Nazwa>`, `tools/hud_napisy_figma.py`, edytowalne źródło w pliku Figmy „Blocky & Crycket — napisy przycisków HUD” na drugim koncie Pawła. Zapas: napisy wycięte ze starych ikon (`assets/processed/HudPodluzne/wyciete_ze_starych/`, `tools/hud_podluzne_napisy.py`).
+- **Index zamiast Quests:** otwiera okno kolekcji — [[Okno Index i podpowiedź przedmiotu (propozycja)]] (od 26.11).
 - **Questy w szufladzie po prawej:** zakładka ze strzałką wysuwa panel zza krawędzi ekranu i chowa go. Treść to na razie trzy przykładowe wpisy bez postępu i nagród; docelowo miejsce na zadania na czas z [[Karczma (Questy)|karczmy]] (D-034: licznik zadania w HUD).
 - **Pets** otwiera [[Okno petów (propozycja)]].
-- Pliki: `tools/hud_pety_build_gui.py` (przerabia `src/gui/HUD.model.json`), `src/client/HUDClient.client.luau`, `src/client/QuestyClient.client.luau`. Górny rząd nazywa się nadal `LeftColumn`, bo wskazówki Karola szukają `HUD/LeftColumn/TeleportSlot/Teleport`.
+- Pliki: `tools/hud_pety_build_gui.py` (przerabia `src/gui/HUD.model.json`), `src/client/HUDClient.client.luau`, `src/client/QuestyClient.client.luau`. Kolumna nazywa się nadal `LeftColumn`, bo wskazówki Karola szukają `HUD/LeftColumn/TeleportSlot/Teleport`.
 
 ## Stan implementacji
+- [x] 2026-11-26 (Paweł): pięć podłużnych przycisków w jednej kolumnie, bez gildii, napisy w stylu z Figmy — wgrane (10 obrazów po „tak” Pawła), wdrożone w Studio, sprawdzone w Play na komputerze (napisy wczytane, Teleport otwiera mapę krain, kliknięcia Equipment/Pets/Index/Shop dochodzą). Nie sprawdzone: telefon.
 - [x] 2026-11-25 (Paweł): szuflada questów pokazuje questy wybrane na tablicy — [[Tablica questów (propozycja)]]; pusta mówi, gdzie je wziąć.
 - [x] 2026-11-25 (Paweł): przyciski w dwóch rzędach po lewej, Index zamiast Quests, szuflada questów po prawej, okno petów pod przyciskiem Pets — sprawdzone w Play (opis wyżej).
 - [x] 2026-11-24 (Paweł): HUD od razu na miejscu (bez wlatywania przycisków), okna bez wjazdu, wczytywanie i podgrzewanie grafik przy starcie (`PreloadUI`); licznik Rybek usunięty (D-146), ikona Złota → rybka po wgraniu `GoldFish`.

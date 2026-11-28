@@ -52,6 +52,8 @@ Klimat: złota świątynia, jadeit, pióra i jaguar — pierwszy naprawdę „bo
 | Miecz | **Sunstone Blade** | szerokie złote ostrze z jadeitowymi klejnotami i promieniami słońca na jelcu, delikatny blask |
 
 ## Rzadkie przedmioty (propozycja agenta do D-142)
+> [!note] 24.11: nowa wersja Pawła (zwykły 1–2 statystyki, epicki 3, legendarny wszystkie, sekretne) — [[Rzadkość przedmiotów — zwykłe, epickie, legendarne, sekretne (propozycja)]]. Tabela niżej zostaje jako poprzedni wariant.
+
 | Rzadkość | Szansa przy łupie (robocza) | Co daje ponad zwykły przedmiot | Wygląd |
 |---|---|---|---|
 | Rzadki | ok. 8% | statystyki jak zwykły z puli + 1 dodatkowa statystyka | niebieska poświata |

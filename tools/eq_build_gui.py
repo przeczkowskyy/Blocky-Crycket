@@ -208,6 +208,9 @@ def main():
     OUT.write_text(json.dumps(gui, indent=1, ensure_ascii=False), encoding="utf-8")
     missing = [n for n in list(L["bg_tiles"]) + list(S) if not MAN.get(n, {}).get("roblox_image")]
     print(f"ok {OUT.relative_to(ROOT)}; brak ID Roblox: {len(missing)} ({', '.join(missing) if missing else '-'})")
+    # Paweł 26.11: zakładka SKILLS, sloty umiejętności i przycisk porównania dopisuje osobny skrypt
+    import eq_skille_build
+    eq_skille_build.main()
 
 
 if __name__ == "__main__":
