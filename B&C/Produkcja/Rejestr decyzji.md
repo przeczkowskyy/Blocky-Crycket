@@ -868,6 +868,7 @@ Gra: bc
 - Plac nieco większy; układ, wnętrza budynków i NPC zostają.
 - Wersja 2 podglądu (28.11, po uwadze Pawła o „pustych klockach”): na bryłach leżą nasze tekstury z paczki sali wyboru klasy (tynk z cegłami, kamień, gont, deski), doszły wieża zegarowa, lukarny, świerki, płot, wóz — czyli low poly w kształtach, a w materiałach to samo, o czym mówi D-147.
 - Stan: tylko podgląd stylu — osobny kontener `Workspace/MiasteczkoLowPolyPodglad` (cztery domy, wieża zegarowa, studnia, stragan, wóz, drzewa; 929 części) w wolnym miejscu mapy, źródło `tools/studio/miasteczko_lowpoly_podglad.luau`. Miasteczko Karola (`Workspace/MiasteczkoBazar`, generator `swiat/miasteczko_bazar/`) jest nietknięte.
+- Wersja 3 (28.11): ciemny kontur jak w kreskówce na bryłach (trzy grupy z obrysem). Paweł po obejrzeniu z bliska w Play: „wygląda to bardzo dobrze” — chce wiedzieć, czy Karolowi też się podoba i czy przebudowujemy miasteczko pod ten wygląd.
 - Jeśli Karol przyjmie styl: wchodzi do generatora miasteczka (jedno miasto, nie dwa), razem z większym placem.
 - Rozbieżność z D-147 (miasto w kresce sali wyboru rasy, tekstury i obrys; podpis Karola, czeka na Pawła): pytanie 122 w [[Pytania otwarte]]. Notatka: [[Miasteczko — większy plac i Brama Leśna z kłódką (propozycja)]].
 
@@ -880,3 +881,29 @@ Gra: bc
 - Ekran zwycięstwa: okno z banerem VICTORY, kafle nagród (Rybki, diamenty, XP), przyciski NEXT i CLOSE.
 - Grafiki: dziesięć pustych elementów z jednej generacji Higgsfield (`assets/processed/WalkaUI/`, `tools/walka_ui.py`); makieta obu ekranów: `tools/walka_ui_makieta.py` → `build/walka_makieta.jpg`.
 - Stan: makieta. Elementy nie są wgrane do Roblox (czekają na „tak” Pawła); ekran walki Karola (`swiat/test_walki2`) jest nietknięty. Po wgraniu powstaje jako osobna nakładka po stronie Pawła; do wersji Karola trafia, jeśli Karol się zgodzi — pytanie 123 w [[Pytania otwarte]].
+
+### D-170 Brama Leśna z kłódką i kluczem; przejście do lasu pieszo
+💡 propozycja · game design / świat 3D · 2026-11-28 · źródło: polecenia Pawła w Claude Code 28.11 (lista z rana i „dopisz do decyzji o bramie z kluczem”) · zaproponował: Paweł, zapisał: Claude Code · czeka na Karola
+Gra: bc
+- Przy pierwszym wejściu na Bramie Leśnej wisi kłódka; gracz przytrzymuje E, kamera kinowa najeżdża na bramę, klucz wchodzi w kłódkę i się przekręca, kłódka spada, wrota się otwierają. Brama zostaje otwarta na stałe dla tego gracza (zapis w profilu).
+- Do lasu przechodzi się pieszo przez otwartą bramę, bez teleportu — las przysunięty do muru miasteczka.
+- Stan: nic w grze. Brama z kłódką i kluczem stoi tylko na makiecie lasu (`Workspace/LasLowPolyPodglad`, D-171), żeby było widać pomysł.
+- Co wymaga Karola: przejście pieszo to przysunięcie pasa lasu (`LasPas`, jego generator) do muru i sprawa niewidzialnych ścian oraz ładowania lasu. Samą scenkę z kluczem da się zrobić na dzisiejszej bramie bez zmian w jego plikach.
+- Notatka: [[Miasteczko — większy plac i Brama Leśna z kłódką (propozycja)]]. Pytanie 124 w [[Pytania otwarte]].
+
+### D-171 Las w stylu low poly z konturem — makieta Pawła
+💡 propozycja · art direction / świat 3D · 2026-11-28 · źródło: polecenie Pawła w Claude Code 28.11 („przebudujmy planszę lasu pod ten sam styl, dodając do obiektów lekkie ciemne obrysy; nie zmieniajmy tego Karola, zróbmy nową poglądową makietę”) · zaproponował: Paweł, zapisał: Claude Code · czeka na Karola
+Gra: bc
+- Makieta wycinka lasu w tym samym stylu co podgląd miasteczka (D-168): bryły low poly, nasze tekstury z paczki sali wyboru klasy, ciemny kontur.
+- Na makiecie: brama z kłódką (D-170), kręta ścieżka, ściany świerków i drzew, polana z ogniskiem, kamienny krąg areny, leże potwora, gniazdo z jajem, staw z pomostem, chata leśnika, grzyby, głazy, pniaki, latarnie — 1109 części.
+- Stan: osobny kontener `Workspace/LasLowPolyPodglad` (826; 0; −500), na zachód od podglądu miasteczka; źródło `tools/studio/las_lowpoly_podglad.luau`. Las Karola (`Workspace/LasPas`) i jego generator nietknięte.
+- Jeśli obaj przyjmą styl: wchodzi do generatora lasu, razem z miasteczkiem (pytanie 122).
+
+### D-172 Lekki ciemny obrys własnej postaci i własnego peta
+💡 propozycja · art direction / postacie · 2026-11-28 · źródło: Paweł w Claude Code 28.11 po próbie w Play („wygląda to bardzo dobrze, zapisz dla mnie te zmiany”) · zaproponował: Paweł, zapisał: Claude Code · wdrożone po stronie Pawła, czeka na Karola
+Gra: bc
+- Kot gracza i jego aktywny pet mają lekki ciemny obrys (Highlight z samym konturem, kolor tuszu, przezroczystość 0,25).
+- Tylko własna para u każdego gracza: silnik rysuje naraz najwyżej 31 Highlightów, a gra ma ich już ponad 30 (17 w sali wyboru klasy, 14 na planszy mistrza gier), więc obrysy wszystkich graczy by się nie zmieściły. Z tego samego powodu kontury makiet włączają się dopiero, gdy kamera jest blisko nich.
+- Kod: `src/client/KotRasySwiatClient.client.luau` (plik Pawła); pet to model Karola z `PetyProba/PetyLokalne` — skrypt dokłada mu tylko obrys, niczego w nim nie zmienia.
+- Uwaga agenta (D-114): obrys wszystkich postaci i potworów wymagałby kreski z geometrii albo porządku w limicie Highlightów (sala wyboru klasy zużywa 17 także wtedy, gdy gracz jej nie widzi) — to tania poprawka, warto ją zrobić przed kolejnymi obrysami.
+

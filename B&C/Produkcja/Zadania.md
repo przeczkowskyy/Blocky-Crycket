@@ -7,6 +7,9 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [x] 2026-11-28: lekki obrys kota i peta gracza (D-172), makieta lasu low poly z bramą i kłódką (D-171, D-170), kontur na podglądzie miasteczka #gra/bc
+- [ ] Karol: obejrzeć `MiasteczkoLowPolyPodglad` i `LasLowPolyPodglad` w Studio i odpowiedzieć na pytania 122 (styl miasteczka i lasu), 123 (ekran walki), 124 (brama z kłódką) · Karol · #wysoki #gra/bc
+- [ ] Limit 31 Highlightów: sala wyboru klasy trzyma 17 także poza salą — wyłączać je, gdy gracz jej nie widzi (warunek dla kolejnych obrysów) · agent Pawła albo Karola · #średni #gra/bc
 - [x] 2026-11-28: mistrz gier — kamera za pionkiem, okienko kostki przy rzucie, licznik nad pionkiem, nagroda jako plakietka pod tabliczką; niewidzialne ściany miasteczka z powrotem na miejscach z generatora #gra/bc
 - [ ] Paweł: obejrzeć w Play okienko kostki, licznik nad pionkiem i plakietkę nagrody (wgrane 28.11, nieoglądane) oraz kamerę na trzech dalszych bokach planszy · Paweł · #wysoki #gra/bc
 - [ ] Karol: kamera rzutu z góry (Twoja z 27.11) zastąpiona okienkiem kostki — daj znać, jeśli wolisz inaczej · Karol · #niski #gra/bc

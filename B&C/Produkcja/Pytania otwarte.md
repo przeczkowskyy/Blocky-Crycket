@@ -1210,6 +1210,7 @@ Szczegóły: [[Rasy jako koty — referencje]], sekcja „Baza bliżej referencj
 Gra: bc
 
 Szczegóły: propozycja D-168, notatka [[Miasteczko — większy plac i Brama Leśna z kłódką (propozycja)]], źródło podglądu `tools/studio/miasteczko_lowpoly_podglad.luau`. Zdanie agenta (D-114): jedno miasto w generatorze, nie dwie wersje; który styl — to wybór Was obu, podgląd jest po to, żeby ocenić go w silniku.
+Dopisek 28.11 (wieczór): podgląd ma już nasze tekstury i ciemny kontur (wersja 3), obok stoi makieta lasu w tym samym stylu (`Workspace/LasLowPolyPodglad`, D-171), a kot i pet Pawła mają lekki obrys (D-172). Paweł: „wygląda to bardzo dobrze”. Pytanie do Ciebie: czy Ci się podoba i czy przebudowujemy miasteczko i las pod ten wygląd?
 **Odpowiedź:**
 
 ## 123. Karol: ekran walki Pawła — przyjąć do Twojej wersji?
@@ -1219,5 +1220,14 @@ Szczegóły: propozycja D-168, notatka [[Miasteczko — większy plac i Brama Le
 Gra: bc
 
 Szczegóły: propozycja D-169; elementy w `assets/processed/WalkaUI/`, makieta `tools/walka_ui_makieta.py`. Język napisów zależy od pytania 120.
+**Odpowiedź:**
+
+## 124. Karol: brama z kłódką i przejście pieszo do lasu?
+- Paweł chce: przy pierwszym wejściu kłódka na Bramie Leśnej, scenka z kluczem, potem brama otwarta na stałe.
+- Do lasu pieszo przez bramę, bez teleportu — wymaga przysunięcia Twojego pasa lasu do muru.
+- Do wyboru: (a) scenka z kluczem i przejście pieszo; (b) sama scenka, teleport zostaje; (c) bez zmian.
+Gra: bc
+
+Szczegóły: propozycja D-170, notatka [[Miasteczko — większy plac i Brama Leśna z kłódką (propozycja)]]; brama z kłódką stoi poglądowo na makiecie lasu. Zdanie agenta (D-114): scenka z kluczem to tani, zapamiętywany moment pierwszej minuty gry — warto; przejście pieszo zależy od kosztu ładowania lasu na telefonie, to trzeba zmierzyć.
 **Odpowiedź:**
 

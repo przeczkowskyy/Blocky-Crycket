@@ -622,3 +622,70 @@ task.spawn(function()
 		task.wait(0.25)
 	end
 end)
+
+-- Paweł 28.11 („wygląda to bardzo dobrze, zapisz”): lekki ciemny obrys własnego kota i własnego peta. Tylko u tego
+-- gracza i tylko jego para — silnik rysuje naraz najwyżej 31 Highlightów, a gra ma ich już ponad 30 (sala wyboru
+-- klasy, plansza mistrza gier), więc obrysy wszystkich graczy by się nie zmieściły. Z tego samego powodu kontury makiet
+-- (MiasteczkoLowPolyPodglad, LasLowPolyPodglad) są włączone tylko wtedy, gdy kamera jest blisko nich.
+-- Pet to model „Pet <id>” z lokalnych petów Karola (Workspace/PetyProba/PetyLokalne): dokładamy mu tylko obrys.
+local TUSZ_KONTURU = Color3.fromRGB(46, 32, 34)
+local MAKIETY = { MiasteczkoLowPolyPodglad = Vector3.new(976, 0, -500), LasLowPolyPodglad = Vector3.new(826, 0, -500) }
+local function konturNa(m: Instance)
+	if m:FindFirstChild("KonturGracza") then
+		return
+	end
+	local h = Instance.new("Highlight")
+	h.Name = "KonturGracza"
+	h.FillTransparency, h.OutlineTransparency = 1, 0.25
+	h.OutlineColor = TUSZ_KONTURU
+	h.DepthMode = Enum.HighlightDepthMode.Occluded
+	h.Parent = m
+end
+task.spawn(function()
+	while true do
+		local s = koty[player]
+		if s and s.model and s.model.Parent then
+			konturNa(s.model)
+			local petyGra = workspace:FindFirstChild("PetyProba")
+			local pety = petyGra and petyGra:FindFirstChild("PetyLokalne")
+			local aktywny = player:GetAttribute("PetAktywny")
+			if pety then
+				local najblizszy, odl = nil, 40
+				if type(aktywny) == "string" and aktywny ~= "" then
+					local tu = s.model:GetPivot().Position
+					for _, c in ipairs(pety:GetChildren()) do
+						if c:IsA("Model") and c.Name == "Pet " .. aktywny then
+							local d = (c:GetPivot().Position - tu).Magnitude
+							if d < odl then
+								najblizszy, odl = c, d
+							end
+						end
+					end
+				end
+				for _, c in ipairs(pety:GetChildren()) do
+					local h = c:FindFirstChild("KonturGracza")
+					if h and c ~= najblizszy then
+						h:Destroy()
+					end
+				end
+				if najblizszy then
+					konturNa(najblizszy)
+				end
+			end
+		end
+		local kam = workspace.CurrentCamera.CFrame.Position
+		for nazwa, srodek in pairs(MAKIETY) do
+			local k = workspace:FindFirstChild(nazwa)
+			if k then
+				local blisko = (Vector3.new(kam.X, 0, kam.Z) - srodek).Magnitude < 260
+				for _, g in ipairs(k:GetChildren()) do
+					local h = g:FindFirstChild("Kontur")
+					if h and h:IsA("Highlight") and h.Enabled ~= blisko then
+						h.Enabled = blisko
+					end
+				end
+			end
+		end
+		task.wait(0.5)
+	end
+end)

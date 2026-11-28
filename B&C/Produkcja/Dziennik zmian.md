@@ -6,6 +6,13 @@ tags: [produkcja, dziennik]
 
 Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i notatki.
 
+## 2026-11-28 · Claude Code u Pawła (obrys kota i peta, makieta lasu low poly, propozycje D-170–D-172)
+- **Obrys postaci (Paweł po próbie w Play: „wygląda to bardzo dobrze, zapisz”):** kot gracza i jego aktywny pet mają lekki ciemny obrys — tylko własna para u każdego gracza (limit 31 Highlightów). Kontury makiet włączają się dopiero blisko kamery, żeby nie zabierały limitu grze. Plik `src/client/KotRasySwiatClient.client.luau`, wdrożony w Studio; po wdrożeniu nieoglądany jeszcze w Play (próba ręczna wcześniej — tak). Propozycja D-172.
+- **Makieta lasu low poly (propozycja D-171):** `tools/studio/las_lowpoly_podglad.luau` → kontener `Workspace/LasLowPolyPodglad` (826; 0; −500), 1109 części: brama z kłódką i kluczem, ścieżka, świerki i drzewa, polana z ogniskiem, krąg areny, leże potwora, gniazdo z jajem, staw, chata, grzyby, głazy. Las Karola nietknięty.
+- **Decyzje i pytania:** D-170 (brama z kłódką i przejście pieszo), D-171 (las), D-172 (obrys) jako propozycje; dopisek przy D-168 i pod pytaniem 122 (czy przebudowujemy miasteczko i las pod ten wygląd); nowe pytanie 124 o bramę. Ekran walki: D-169 i pytanie 123 bez zmian.
+- **Dla Karola:** raport w panelu i wiadomość ze zdjęciami na Telegramie (na prośbę Pawła).
+- Notatki: [[Rejestr decyzji]], [[Pytania otwarte]], [[Zadania]].
+
 ## 2026-11-28 · Claude Code u Pawła (mistrz gier: kamera za pionkiem i okienko kostki; podgląd low poly z teksturami; niewidzialne ściany miasteczka)
 - **Mistrz gier — kamera za pionkiem (Paweł: „żeby gracz miał odczucie, jak się porusza po tej planszy”):** po wejściu kamera dolatuje za pionek i idzie za nim; patrzy wzdłuż boku pętli, którym pionek pójdzie dalej (na narożniku i na START już wzdłuż następnego boku). Zastępuje widok stołu pod kątem z tego samego dnia (funkcja `widokStolu` została w pliku, nieużywana). Płaskie podpisy pól obrócone zgodnie z kierunkiem marszu po swoim boku pętli (0°, 90°, 180°, 270° zamiast wspólnych 45°). Sprawdzone w Play na zrzutach: START i pierwszy bok.
 - **Okienko kostki zamiast kamery rzutu:** po naciśnięciu ROLL pojawia się okienko (między LEAVE a tabliczką ceny) z podglądem tacy i kostki, znika pół sekundy po wyniku. **Dla Karola:** to zastępuje widok rzutu z góry, który Twój agent dodał 27.11 — cel ten sam (widać, co wypadło), kamera zostaje za pionkiem. Kostka w okienku to kopia z oczkami z części, bo ścianki prawdziwej (SurfaceGui) nie rysują się w ViewportFrame.
