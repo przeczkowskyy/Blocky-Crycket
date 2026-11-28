@@ -10,7 +10,8 @@ Najnowsze na górze. Każdy wpis: data, kto, co się zmieniło, które pliki i n
 - **Obrys postaci (Paweł po próbie w Play: „wygląda to bardzo dobrze, zapisz”):** kot gracza i jego aktywny pet mają lekki ciemny obrys — tylko własna para u każdego gracza (limit 31 Highlightów). Kontury makiet włączają się dopiero blisko kamery, żeby nie zabierały limitu grze. Plik `src/client/KotRasySwiatClient.client.luau`, wdrożony w Studio; po wdrożeniu nieoglądany jeszcze w Play (próba ręczna wcześniej — tak). Propozycja D-172.
 - **Makieta lasu low poly (propozycja D-171):** `tools/studio/las_lowpoly_podglad.luau` → kontener `Workspace/LasLowPolyPodglad` (826; 0; −500), 1109 części: brama z kłódką i kluczem, ścieżka, świerki i drzewa, polana z ogniskiem, krąg areny, leże potwora, gniazdo z jajem, staw, chata, grzyby, głazy. Las Karola nietknięty.
 - **Decyzje i pytania:** D-170 (brama z kłódką i przejście pieszo), D-171 (las), D-172 (obrys) jako propozycje; dopisek przy D-168 i pod pytaniem 122 (czy przebudowujemy miasteczko i las pod ten wygląd); nowe pytanie 124 o bramę. Ekran walki: D-169 i pytanie 123 bez zmian.
-- **Dla Karola:** raport w panelu i wiadomość ze zdjęciami na Telegramie (na prośbę Pawła).
+- **Dla Karola:** raport w panelu ze zdjęciem (pytania 122 i 124). Wiadomość na Telegram NIE poszła: na komputerze Pawła bot panelu nie jest ustawiony (próba na sucho: bot wyłączony, 0 grup); plan wiadomości z pięcioma zdjęciami czeka lokalnie w `build/raport2811/telegram_plan.json`.
+- **Makieta lasu stoi na zachód od placu** (x 751–901): przy pierwszej próbie na wschodzie (x ≥ ok. 1044) gra Karola przenosiła gracza do prawdziwego lasu, więc makieta była nie do przejścia.
 - Notatki: [[Rejestr decyzji]], [[Pytania otwarte]], [[Zadania]].
 
 ## 2026-11-28 · Claude Code u Pawła (mistrz gier: kamera za pionkiem i okienko kostki; podgląd low poly z teksturami; niewidzialne ściany miasteczka)
