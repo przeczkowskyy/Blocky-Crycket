@@ -521,8 +521,8 @@
  "materialy": {
   "Slate": {
    "tekstura": "CsTex01",
-   "studs": 9,
-   "przezr": 0.25
+   "studs": 10,
+   "przezr": 0.12
   },
   "Cobblestone": {
    "tekstura": "CsTex09",
@@ -536,23 +536,23 @@
   },
   "Wood": {
    "tekstura": "CsTex05",
-   "studs": 5,
-   "przezr": 0.2
+   "studs": 9,
+   "przezr": 0.55
   },
   "WoodPlanks": {
    "tekstura": "CsTex06",
-   "studs": 5,
-   "przezr": 0.15
+   "studs": 9,
+   "przezr": 0.45
   },
   "Plaster": {
    "tekstura": "CsTex03",
    "studs": 12,
-   "przezr": 0.1
+   "przezr": 0.04
   },
   "Metal": {
    "tekstura": "CsTex15",
-   "studs": 3,
-   "przezr": 0.25
+   "studs": 4,
+   "przezr": 0.4
   },
   "Fabric": {
    "tekstura": "CsTex14",
