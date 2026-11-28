@@ -7,6 +7,11 @@ tags: [produkcja, zadania]
 > Format: `- [ ] Zadanie — kontekst · #priorytet`. Ukończone przenoś do sekcji „Zrobione” z datą.
 
 ## 🔥 Teraz (Sprint 1 — fundament Fazy 1)
+- [x] 2026-11-28: praca Pawła z 26–28.11 na GitHubie (scalenie z 97 zmianami, konflikty rozwiązane bez strat); kamera mistrza gier pod kątem od przodu, zmierzona w Play #gra/bc
+- [x] 2026-11-28: podgląd stylu low poly miasteczka w Studio (`MiasteczkoLowPolyPodglad`) i makieta ekranu walki — propozycje D-168, D-169 #gra/bc
+- [ ] Karol: obejrzeć podgląd low poly w Studio i odpowiedzieć na pytanie 122 (styl miasteczka) oraz 123 (ekran walki Pawła) · Karol · #wysoki #gra/bc
+- [ ] Paweł: obejrzeć makietę ekranu walki i powiedzieć „tak” na wgranie 10 elementów `WalkaUI`; potem nakładka ekranu walki i zwycięstwa po stronie Pawła (D-169) · Paweł, agent Pawła · #średni #gra/bc
+- [ ] Po odpowiedzi na pytanie 122: styl i większy plac w generatorze miasteczka albo usunięcie podglądu `MiasteczkoLowPolyPodglad` · agent Karola albo Pawła · #średni #gra/bc
 - [x] 2026-11-26: zakładka SKILLS (3 sloty, kłódki, lista umiejętności z drzewka), podpowiedź przedmiotu, lupa porównania, rybka przy cenie, losowy towar sklepu — wdrożone, sprawdzone w Play na komputerze (bez telefonu); losowanie po odświeżeniu sprawdzić ręcznie — [[Okno Index i podpowiedź przedmiotu (propozycja)]] (Paweł)
 - [ ] Sprawdzić w Play przeciąganie umiejętności z zakładki SKILLS na pas slotów, strony plecaka w EQ i sklepie, wygląd na telefonie; potwierdzić przypisanie umiejętności drzewka do walki — [[Okno Index i podpowiedź przedmiotu (propozycja)]] · Paweł · #wysoki
 - [ ] Karol: zapis `SkillLoadout` (wybrane umiejętności w slotach) w stanie gracza i odczyt w silniku walki; losowanie towaru na serwerze sklepu (dziś losuje klient) · agent Karola · #średni

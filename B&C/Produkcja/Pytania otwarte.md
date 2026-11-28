@@ -1202,3 +1202,22 @@ Szczegóły: D-045 mówi „angielski z tłumaczeniami”. Zdanie agenta (D-114)
 Szczegóły: [[Rasy jako koty — referencje]], sekcja „Baza bliżej referencji”; funkcje `ulepsz_baze` i `szersze_rondo` w `swiat/postacie/kot_demon.py`. Większe uszy trzeba sprawdzić z hełmem Rycerza i w animacjach (Twoja uwaga z pytania 93 o nachodzeniu na twarz).
 **Odpowiedź:**
 
+## 122. Karol: miasteczko low poly Pawła zamiast kreski z D-147?
+- Paweł 28.11 chce budynków w stylu low poly ze swoich referencji i nieco większego placu; wnętrza i NPC zostają.
+- W Studio stoi podgląd: `Workspace/MiasteczkoLowPolyPodglad` (cztery domy, studnia, stragan), obok Twojego miasta, nic w nim nie zmienia.
+- D-147 (Twój podpis) mówi: miasto w kresce sali wyboru rasy, tekstury i obrys.
+- Do wyboru: (a) low poly wchodzi do generatora miasteczka; (b) zostaje D-147; (c) low poly z obrysem jak w D-147.
+Gra: bc
+
+Szczegóły: propozycja D-168, notatka [[Miasteczko — większy plac i Brama Leśna z kłódką (propozycja)]], źródło podglądu `tools/studio/miasteczko_lowpoly_podglad.luau`. Zdanie agenta (D-114): jedno miasto w generatorze, nie dwie wersje; który styl — to wybór Was obu, podgląd jest po to, żeby ocenić go w silniku.
+**Odpowiedź:**
+
+## 123. Karol: ekran walki Pawła — przyjąć do Twojej wersji?
+- Paweł 28.11 chce ekranu walki i zwycięstwa w naszej kresce: portret w ramce rasy, natywne paski życia, przyciski tempa, baner VICTORY, kafle nagród.
+- Jest makieta i dziesięć elementów graficznych; nic nie jest wgrane ani podpięte, Twój ekran w `test_walki2` jest nietknięty.
+- Do wyboru: (a) przyjmujesz i podpinasz grafiki w swoim ekranie; (b) agent Pawła buduje nakładkę, Ty oglądasz; (c) zostaje Twój ekran.
+Gra: bc
+
+Szczegóły: propozycja D-169; elementy w `assets/processed/WalkaUI/`, makieta `tools/walka_ui_makieta.py`. Język napisów zależy od pytania 120.
+**Odpowiedź:**
+

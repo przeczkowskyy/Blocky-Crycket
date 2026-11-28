@@ -1,0 +1,20 @@
+{
+ "id": "r-20261128-140307-084a",
+ "tytul": "Miasteczko low poly — podgląd stylu Pawła (D-168)",
+ "opis_md": "Paweł chce budynków w stylu low poly i nieco większego placu; wnętrza i NPC zostają. To sam podgląd: osobny kontener Workspace/MiasteczkoLowPolyPodglad (976; 0; -500), obok miasteczka — MiasteczkoBazar i generator są nietknięte. Rozbieżność z D-147 (kreska sali wyboru rasy). Źródło: tools/studio/miasteczko_lowpoly_podglad.luau.",
+ "kto": "Claude (przeczkowskyy)",
+ "czas": "2026-11-28T14:03:07+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [
+  {
+   "typ": "studio",
+   "cel": "Workspace/MiasteczkoLowPolyPodglad",
+   "etykieta": "Podgląd low poly"
+  }
+ ],
+ "zrzuty": [
+  "zrzut_1.jpg"
+ ],
+ "pytanie": "Pytanie 122: low poly do generatora miasteczka, zostaje D-147, czy low poly z obrysem?",
+ "gra": "bc"
+}

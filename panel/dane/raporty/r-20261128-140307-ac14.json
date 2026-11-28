@@ -1,0 +1,14 @@
+{
+ "id": "r-20261128-140307-ac14",
+ "tytul": "Ekran walki i zwycięstwa — makieta Pawła (D-169)",
+ "opis_md": "Makieta z dziesięciu elementów assets/processed/WalkaUI: portret w ramce rasy, natywne paski życia, tempo x1/x2/x4, baner VICTORY, kafle nagród. Nic nie jest wgrane ani podpięte; ekran walki w test_walki2 jest nietknięty.",
+ "kto": "Claude (przeczkowskyy)",
+ "czas": "2026-11-28T14:03:07+01:00",
+ "rodzaj": "pytanie",
+ "komponenty": [],
+ "zrzuty": [
+  "zrzut_1.jpg"
+ ],
+ "pytanie": "Pytanie 123: przyjąć do ekranu walki Karola, nakładka po stronie Pawła, czy zostaje obecny ekran?",
+ "gra": "bc"
+}

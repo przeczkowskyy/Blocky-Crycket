@@ -860,3 +860,22 @@ Gra: bc
 - 27.11: arkusze broni Maga (Różdżka z Patyka, Kostur z Miotły, Wałek Czarodziejski, Różdżka ze Świeczki, Kostur Ucznia) i Zwiadowcy (Proca z Gałęzi, Łuk z Wieszaka, Nóż do Masła, Sztylet z Szyszki, Łuk Tropiciela) — nazwy z [[Przedmioty — pula Lv 1–10, 5 na slot (propozycja)]] (lista dalej czeka na akceptację, pytanie 94). Koszt: 12 kredytów Higgsfield (4 arkusze 4k). Ikony 512 px: `assets/processed/Item*.png`; numery obrazów w rejestrze `swiat/postacie/ikony_broni.json` (nie w `assets/manifest.json` — tam jest nierozwiązany konflikt).
 - Wojownik: ikony mieczy wytniemy z pięciu arkuszy Pawła; modele 3D jego zestawów już są (raport „Przedmioty wojownika 3D”).
 - Podpięcie broni do ekwipunku, sklepu i kotów ras to osobny krok razem z Pawłem (jego okna i podgląd kotów).
+
+### D-168 Miasteczko w stylu low poly z nieco większym placem — wersja Pawła
+💡 propozycja · art direction / świat 3D · 2026-11-28 · źródło: polecenie Pawła w Claude Code 28.11 („nowy styl budynków/modeli i powiększony nieco plac… bez ingerencji w pliki Karola… dodaj do decyzji, jeśli on to zaakceptuje, to dodamy też do jego wersji”) · zaproponował: Paweł, zapisał: Claude Code · czeka na Karola
+Gra: bc
+- Budynki i rekwizyty miasteczka w stylu low poly z referencji Pawła: proste bryły, gładkie kolory bez tekstur, kamienny parter, piętro z muru pruskiego wysunięte nad parter, strome kolorowe dachy, świecące okna.
+- Plac nieco większy; układ, wnętrza budynków i NPC zostają.
+- Stan: tylko podgląd stylu — osobny kontener `Workspace/MiasteczkoLowPolyPodglad` (cztery domy, studnia, stragan, drzewa, latarnie; 638 części) w wolnym miejscu mapy, źródło `tools/studio/miasteczko_lowpoly_podglad.luau`. Miasteczko Karola (`Workspace/MiasteczkoBazar`, generator `swiat/miasteczko_bazar/`) jest nietknięte.
+- Jeśli Karol przyjmie styl: wchodzi do generatora miasteczka (jedno miasto, nie dwa), razem z większym placem.
+- Rozbieżność z D-147 (miasto w kresce sali wyboru rasy, tekstury i obrys; podpis Karola, czeka na Pawła): pytanie 122 w [[Pytania otwarte]]. Notatka: [[Miasteczko — większy plac i Brama Leśna z kłódką (propozycja)]].
+
+Uwaga agenta (D-114), zgoda z poprawką: styl z referencji jest czytelny na telefonie i tani w budowie, ale ręczna przebudowa całego miasta obok generatora dałaby dwa miasta, których nie da się scalić, a D-147 mówi co innego. Dlatego najpierw podgląd kilku domów i decyzja obu; pełna budowa dopiero w generatorze. Zmienię zdanie, jeśli Karol nie chce tego stylu w generatorze, a Paweł mimo to chce własną mapę — wtedy to osobna, duża praca.
+
+### D-169 Ekran walki i ekran zwycięstwa w naszej kresce — wersja Pawła
+💡 propozycja · UI / walka · 2026-11-28 · źródło: polecenia Pawła w Claude Code 28.11 („UI walk i ekran zwycięstwa w naszym stylu”, „zbuduj to bez ingerencji w pliki Karola”) · zaproponował: Paweł, zapisał: Claude Code · czeka na Karola
+Gra: bc
+- Ekran walki: portret gracza w ramce rasy, nazwy i poziomy, natywne paski życia (Frame, nie tekstura), plakietka VS z numerem tury, przyciski tempa ×1/×2/×4, dźwięk, SKIP.
+- Ekran zwycięstwa: okno z banerem VICTORY, kafle nagród (Rybki, diamenty, XP), przyciski NEXT i CLOSE.
+- Grafiki: dziesięć pustych elementów z jednej generacji Higgsfield (`assets/processed/WalkaUI/`, `tools/walka_ui.py`); makieta obu ekranów: `tools/walka_ui_makieta.py` → `build/walka_makieta.jpg`.
+- Stan: makieta. Elementy nie są wgrane do Roblox (czekają na „tak” Pawła); ekran walki Karola (`swiat/test_walki2`) jest nietknięty. Po wgraniu powstaje jako osobna nakładka po stronie Pawła; do wersji Karola trafia, jeśli Karol się zgodzi — pytanie 123 w [[Pytania otwarte]].

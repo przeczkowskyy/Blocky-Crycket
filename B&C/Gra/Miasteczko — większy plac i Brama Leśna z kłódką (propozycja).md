@@ -12,6 +12,12 @@ buduje generator Karola (`swiat/miasteczko_bazar/`), więc budowa należy do jeg
 - Co pokazuje: szeroki plac ze studnią, wokół karczma, zbrojownia, sklep magiczny, Training Center ze szklanym dachem, tablica questów, portal krain, zagroda petów; mur miejski z basztami; Brama Leśna z kłódką wstawiona w mur, tuż za nią ścieżka do lasu.
 - Styl: low poly jak na referencjach Pawła (proste bryły, mur pruski, kolorowe dachy, świecące okna). To zmiana wyglądu wobec dzisiejszej kreski miasteczka — do decyzji, patrz „Do ustalenia”.
 
+## Podgląd stylu w Studio (28.11)
+- Kontener `Workspace/MiasteczkoLowPolyPodglad` w wolnym miejscu mapy (976; 0; −500), obok miasteczka Karola: Karczma, Sklep magiczny, Zbrojownia, dom mieszczan, studnia, stragan, drzewa, latarnie — 638 części.
+- Styl: kamienny parter pusty w środku (drzwi 5 × 7), piętro z muru pruskiego wysunięte nad parter, strome kolorowe dachy, świecące okna, gładkie kolory bez tekstur.
+- To wycinek do oceny, nie przebudowa: wnętrza i NPC nie były przenoszone, plac ma rozmiar poglądowy.
+- Źródło: `tools/studio/miasteczko_lowpoly_podglad.luau` (ponowne uruchomienie odbudowuje, usunięcie kontenera cofa). Propozycja D-168, pytanie 122 w [[Pytania otwarte]].
+
 ## 1. Plac większy o ok. 50%
 - Plac szerszy mniej więcej o połowę; budynki zostają te same i stoją wokół niego frontem do środka.
 - Do dopracowania modele: tablica questów, portal krain, zagroda petów.

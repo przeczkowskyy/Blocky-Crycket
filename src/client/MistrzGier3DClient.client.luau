@@ -1626,8 +1626,11 @@ local function widokStolu(): CFrame
 	-- Paweł 28.11 (druga uwaga): nie całkiem z góry, tylko lekko pod kątem od przodu (od strony gracza), tak żeby
 	-- w kadrze była cała plansza i taca z kostką, a płaskie podpisy pól dalej były czytelne. Kąt ok. 58° w dół.
 	-- Widok rzutu agenta Karola (prawie pionowy, na czas rzutu) zostaje bez zmian.
-	local srodek = miejsce(0.9, 0, 0.2) -- między środkiem planszy a tacą z kostką
-	return CFrame.lookAt(srodek + UP * 5.6 - przod * 3.5, srodek)
+	-- Pomiar w Play 28.11 (1366 × 670): przy pierwszym ustawieniu plansza z tacą zajmowała tylko ok. 40% szerokości
+	-- ekranu, więc kamera podeszła o 12% bliżej (ten sam kąt) i celuje trochę w prawo, żeby kadr był między tytułem
+	-- a prawą kolumną przycisków (cena, RZUĆ).
+	local srodek = miejsce(1.2, 0, -0.05) -- między środkiem planszy a tacą z kostką; pomiar: całość x 280–976, y ok. 122–641
+	return CFrame.lookAt(srodek + UP * 4.9 - przod * 3.1, srodek)
 end
 
 widokPowrotu, FOV_POWROTU = widokStolu, FOV_STOLU -- agent Karola, 27.11: powrót kamery po rzucie
