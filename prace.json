@@ -2,22 +2,8 @@
  "wersja": 1,
  "osoba": "przeczkowskyy",
  "nazwa": "przeczkowskyy",
- "aktualizacja": "2026-11-28T13:57:32+01:00",
+ "aktualizacja": "2026-11-28T14:03:17+01:00",
  "prace": [
-  {
-   "id": "git-i-kamera-2811",
-   "tytul": "Polaczenie z GitHubem, kamera mistrza gier",
-   "stan": "w_toku",
-   "etap": "podglad stylu low poly w osobnym kontenerze",
-   "start": "2026-11-28T13:41:51+01:00",
-   "koniec_szacowany": "2026-11-28T14:57:32+01:00",
-   "aktualizacja": "2026-11-28T13:57:32+01:00",
-   "obszary": [
-    "src/client/MistrzGier3DClient.client.luau"
-   ],
-   "kto": "Claude (przeczkowskyy)",
-   "komputer": "0c03c4ec"
-  },
   {
    "id": "koty-rasy-dopracowanie",
    "tytul": "Koty ras: dopracowanie modeli do referencji",
